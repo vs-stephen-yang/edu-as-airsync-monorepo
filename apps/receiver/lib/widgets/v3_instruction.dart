@@ -14,7 +14,7 @@ import 'package:display_flutter/widgets/connection_status.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -54,9 +54,9 @@ class V3Instruction extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Image(
-                          image:
-                              Svg('assets/images/ic_local_connection_only.svg'),
+                        SvgPicture.asset(
+                          'assets/images/ic_local_connection_only.svg',
+                          excludeFromSemantics: true,
                           width: 21,
                           height: 21,
                         ),
@@ -101,8 +101,9 @@ class V3Instruction extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Image(
-              image: Svg('assets/images/ic_item1.svg'),
+            SvgPicture.asset(
+              'assets/images/ic_item1.svg',
+              excludeFromSemantics: true,
               height: 27,
               width: 27,
             ),
@@ -176,6 +177,9 @@ class V3Instruction extends StatelessWidget {
                                 ),
                               ),
                               V3Focus(
+                                label: S
+                                    .of(context).v3_lbl_open_download_app_menu,
+                                identifier: 'v3_qa_open_download_app_menu',
                                 child: InkWell(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
@@ -191,9 +195,9 @@ class V3Instruction extends StatelessWidget {
                                       ),
                                       child: Row(
                                         children: [
-                                          const Image(
-                                            image: Svg(
-                                                'assets/images/ic_download_sender.svg'),
+                                          SvgPicture.asset(
+                                            'assets/images/ic_download_sender.svg',
+                                            excludeFromSemantics: true,
                                             width: 23,
                                             height: 23,
                                           ),
@@ -233,8 +237,9 @@ class V3Instruction extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Image(
-              image: Svg('assets/images/ic_item2.svg'),
+            SvgPicture.asset(
+              'assets/images/ic_item2.svg',
+              excludeFromSemantics: true,
               height: 27,
               width: 27,
             ),
@@ -267,8 +272,9 @@ class V3Instruction extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Image(
-              image: Svg('assets/images/ic_item3.svg'),
+            SvgPicture.asset(
+              'assets/images/ic_item3.svg',
+              excludeFromSemantics: true,
               height: 27,
               width: 27,
             ),
@@ -410,4 +416,3 @@ class V3Instruction extends StatelessWidget {
     return TextSpan(children: spans);
   }
 }
-

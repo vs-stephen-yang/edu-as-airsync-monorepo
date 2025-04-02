@@ -2170,6 +2170,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Disagree with EULA`
+  String get v3_lbl_eula_disagree {
+    return Intl.message(
+      'Disagree with EULA',
+      name: 'v3_lbl_eula_disagree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Agree with EULA`
+  String get v3_lbl_eula_agree {
+    return Intl.message(
+      'Agree with EULA',
+      name: 'v3_lbl_eula_agree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Setting Menu is locked`
+  String get v3_lbl_settings_menu_locked {
+    return Intl.message(
+      'Setting Menu is locked',
+      name: 'v3_lbl_settings_menu_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Setting Menu`
+  String get v3_lbl_open_menu_settings {
+    return Intl.message(
+      'Open Setting Menu',
+      name: 'v3_lbl_open_menu_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open download sender app menu`
+  String get v3_lbl_open_download_app_menu {
+    return Intl.message(
+      'Open download sender app menu',
+      name: 'v3_lbl_open_download_app_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close download sender app menu`
+  String get v3_lbl_close_download_app_menu {
+    return Intl.message(
+      'Close download sender app menu',
+      name: 'v3_lbl_close_download_app_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Toggle moderator mode`
+  String get v3_lbl_moderator_toggle {
+    return Intl.message(
+      'Toggle moderator mode',
+      name: 'v3_lbl_moderator_toggle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel exiting moderator mode`
+  String get v3_lbl_exit_moderator_cancel {
+    return Intl.message(
+      'Cancel exiting moderator mode',
+      name: 'v3_lbl_exit_moderator_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm exiting moderator mode`
+  String get v3_lbl_exit_moderator_exit {
+    return Intl.message(
+      'Confirm exiting moderator mode',
+      name: 'v3_lbl_exit_moderator_exit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

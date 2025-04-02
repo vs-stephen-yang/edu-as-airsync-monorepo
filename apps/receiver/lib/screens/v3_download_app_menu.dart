@@ -4,7 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -100,6 +100,7 @@ class PortraitWidget extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/images/ic_store_windows.png',
+                      excludeFromSemantics: true,
                       width: 118,
                       height: 60,
                     ),
@@ -112,6 +113,7 @@ class PortraitWidget extends StatelessWidget {
                     const Gap(30),
                     Image.asset(
                       'assets/images/ic_store_mac.png',
+                      excludeFromSemantics: true,
                       width: 102,
                       height: 60,
                     ),
@@ -120,12 +122,11 @@ class PortraitWidget extends StatelessWidget {
                 const Gap(16),
                 Row(
                   children: [
-                    const SizedBox(
+                    SvgPicture.asset(
+                      'assets/images/ic_download_thumbs.svg',
+                      excludeFromSemantics: true,
                       width: 27,
                       height: 27,
-                      child: Image(
-                        image: Svg('assets/images/ic_download_thumbs.svg'),
-                      ),
                     ),
                     const Gap(5),
                     Text(
@@ -164,10 +165,11 @@ class PortraitWidget extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const Image(
+                      SvgPicture.asset(
+                        'assets/images/ic_store_magnifier.svg',
+                        excludeFromSemantics: true,
                         width: 33,
                         height: 33,
-                        image: Svg('assets/images/ic_store_magnifier.svg'),
                       ),
                     ],
                   ),
@@ -227,10 +229,11 @@ class PortraitWidget extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const Image(
+                      SvgPicture.asset(
+                        'assets/images/ic_store_magnifier.svg',
+                        excludeFromSemantics: true,
                         width: 33,
                         height: 33,
-                        image: Svg('assets/images/ic_store_magnifier.svg'),
                       ),
                     ],
                   ),
@@ -303,6 +306,7 @@ class PortraitWidget extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/images/ic_store_google_play.png',
+                      excludeFromSemantics: true,
                       width: 110,
                       height: 60,
                     ),
@@ -315,6 +319,7 @@ class PortraitWidget extends StatelessWidget {
                     const Gap(13),
                     Image.asset(
                       'assets/images/ic_store_appstore.png',
+                      excludeFromSemantics: true,
                       width: 101,
                       height: 60,
                     ),
@@ -333,13 +338,16 @@ class PortraitWidget extends StatelessWidget {
             right: 13,
             bottom: 13,
             child: V3Focus(
+              label: S.current.v3_lbl_close_download_app_menu,
+              identifier: 'v3_qa_close_download_app_menu',
               child: SizedBox(
                 width: 33,
                 height: 33,
                 child: IconButton(
                   focusNode: primaryFocusNode,
-                  icon: const Image(
-                    image: Svg('assets/images/ic_menu_close_gray.svg'),
+                  icon: SvgPicture.asset(
+                    'assets/images/ic_menu_close_gray.svg',
+                    excludeFromSemantics: true,
                   ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -427,6 +435,7 @@ class LandscapeWidget extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/images/ic_store_windows.png',
+                        excludeFromSemantics: true,
                         width: 118,
                         height: 60,
                       ),
@@ -439,6 +448,7 @@ class LandscapeWidget extends StatelessWidget {
                       const Gap(30),
                       Image.asset(
                         'assets/images/ic_store_mac.png',
+                        excludeFromSemantics: true,
                         width: 102,
                         height: 60,
                       ),
@@ -449,12 +459,11 @@ class LandscapeWidget extends StatelessWidget {
                     width: 400,
                     child: Row(
                       children: [
-                        const SizedBox(
+                        SvgPicture.asset(
+                          'assets/images/ic_download_thumbs.svg',
+                          excludeFromSemantics: true,
                           width: 27,
                           height: 27,
-                          child: Image(
-                            image: Svg('assets/images/ic_download_thumbs.svg'),
-                          ),
                         ),
                         const Gap(5),
                         Text(
@@ -498,10 +507,11 @@ class LandscapeWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 9),
-                        const Image(
+                        SvgPicture.asset(
+                          'assets/images/ic_store_magnifier.svg',
+                          excludeFromSemantics: true,
                           width: 33,
                           height: 33,
-                          image: Svg('assets/images/ic_store_magnifier.svg'),
                         ),
                       ],
                     ),
@@ -560,10 +570,11 @@ class LandscapeWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 9),
-                        const Image(
+                        SvgPicture.asset(
+                          'assets/images/ic_store_magnifier.svg',
+                          excludeFromSemantics: true,
                           width: 33,
                           height: 33,
-                          image: Svg('assets/images/ic_store_magnifier.svg'),
                         ),
                       ],
                     ),
@@ -618,6 +629,7 @@ class LandscapeWidget extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/images/ic_store_google_play.png',
+                        excludeFromSemantics: true,
                         width: 110,
                         height: 60,
                       ),
@@ -630,6 +642,7 @@ class LandscapeWidget extends StatelessWidget {
                       const Gap(13),
                       Image.asset(
                         'assets/images/ic_store_appstore.png',
+                        excludeFromSemantics: true,
                         width: 101,
                         height: 60,
                       ),
@@ -687,13 +700,15 @@ class LandscapeWidget extends StatelessWidget {
             right: 13,
             bottom: 13,
             child: V3Focus(
+              label: S.current.v3_lbl_close_download_app_menu,
+              identifier: 'v3_qa_close_download_app_menu',
               child: SizedBox(
                 width: 33,
                 height: 33,
                 child: IconButton(
                   focusNode: primaryFocusNode,
-                  icon: const Image(
-                    image: Svg('assets/images/ic_menu_close_gray.svg'),
+                  icon: SvgPicture.asset(
+                    'assets/images/ic_menu_close_gray.svg',
                   ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),

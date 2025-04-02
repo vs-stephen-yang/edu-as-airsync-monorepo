@@ -213,5 +213,14 @@
   "v3_main_local_connection_only_dialog_desc": "LAN connection only，please check device network setting。",
   "v3_main_internet_connection_only_error_dialog_desc": "Connectivity error，please check device network setting。",
   "v3_main_connection_dialog_close": "Close",
-  "v3_authorize_prompt_accept_all": "Accept All"
+  "v3_authorize_prompt_accept_all": "Accept All",
+  "v3_lbl_eula_disagree": "Disagree with EULA",
+  "v3_lbl_eula_agree": "Agree with EULA",
+  "v3_lbl_settings_menu_locked": "Setting Menu is locked",
+  "v3_lbl_open_menu_settings": "Open Setting Menu",
+  "v3_lbl_open_download_app_menu": "Open download sender app menu",
+  "v3_lbl_close_download_app_menu": "Close download sender app menu",
+  "v3_lbl_moderator_toggle": "Toggle moderator mode",
+  "v3_lbl_exit_moderator_cancel": "Cancel exiting moderator mode",
+  "v3_lbl_exit_moderator_exit": "Confirm exiting moderator mode"
 }

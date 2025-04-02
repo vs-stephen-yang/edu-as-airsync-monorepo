@@ -4,7 +4,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -27,19 +27,19 @@ class V3QrCodeImage extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         if (isShowBackground)
-          Image(
+          SvgPicture.asset(
+            isStringOnTop
+                ? 'assets/images/ic_qrcode_background2.svg'
+                : 'assets/images/ic_qrcode_background1.svg',
+            excludeFromSemantics: true,
             width: size,
             height: size,
-            image: Svg(isStringOnTop
-                ? 'assets/images/ic_qrcode_background2.svg'
-                : 'assets/images/ic_qrcode_background1.svg'),
           ),
         Consumer2<InstanceInfoProvider, ChannelProvider>(
           builder: (_, instanceProvider, channelProvider, __) {
             return ValueListenableBuilder<String>(
               valueListenable: channelProvider.otp,
               builder: (_, otp, __) {
-                // todo: design deep link to implement quick connect
                 final ver = appVersion.replaceAll('-', '_');
                 final dc = instanceProvider.displayCode;
                 final otp = channelProvider.otp.value;

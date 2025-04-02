@@ -7,7 +7,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_participant_item.dart';
 import 'package:display_flutter/widgets/v3_participant_mirror_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3ParticipantList extends StatelessWidget {
@@ -50,14 +50,13 @@ class V3ParticipantList extends StatelessWidget {
                 ),
                 const SizedBox(height: 133),
               ],
-              SizedBox(
+              SvgPicture.asset(
+                ChannelProvider.isModeratorMode
+                    ? 'assets/images/ic_moderator_people.svg'
+                    : 'assets/images/ic_moderator_screen.svg',
+                excludeFromSemantics: true,
                 width: 126,
                 height: 110,
-                child: Image(
-                  image: Svg(ChannelProvider.isModeratorMode
-                      ? 'assets/images/ic_moderator_people.svg'
-                      : 'assets/images/ic_moderator_screen.svg'),
-                ),
               ),
               SizedBox(
                 height: ChannelProvider.isModeratorMode

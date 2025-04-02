@@ -8,7 +8,7 @@ import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3Eula extends StatelessWidget {
@@ -33,11 +33,12 @@ class V3Eula extends StatelessWidget {
               bottom: 0,
               child: Image.asset(
                 'assets/images/ic_wallpaper.png',
+                excludeFromSemantics: true,
                 width: 1280,
                 height: 360,
               ),
             ),
-            const Positioned(
+            Positioned(
               left: 25,
               top: 25,
               right: 25,
@@ -45,17 +46,22 @@ class V3Eula extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image(
-                    image: Svg('assets/images/ic_logo_airsync_icon.svg'),
-                    height: 36,
+                  SvgPicture.asset(
+                    'assets/images/ic_logo_airsync_icon.svg',
+                    excludeFromSemantics: true,
                     width: 36,
+                    height: 36,
                   ),
-                  Padding(padding: EdgeInsets.only(left: 7)),
-                  Image(
-                    image: Svg('assets/images/ic_logo_airsync_text.svg'),
-                    height: 31,
+                  const Padding(padding: EdgeInsets.only(left: 7)),
+                  SvgPicture.asset(
+                    'assets/images/ic_logo_airsync_text.svg',
+                    excludeFromSemantics: true,
                     width: 140,
-                    color: Colors.black,
+                    height: 31,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.black,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ],
               ),
@@ -65,6 +71,7 @@ class V3Eula extends StatelessWidget {
               bottom: 13,
               child: Image.asset(
                 'assets/images/ic_logo_viewsonic.png',
+                excludeFromSemantics: true,
                 width: 513 / 3,
                 height: 160 / 3,
               ),
@@ -132,6 +139,8 @@ class V3Eula extends StatelessWidget {
                         width: 108,
                         height: 40,
                         child: V3Focus(
+                          label: S.of(context).v3_lbl_eula_disagree,
+                          identifier: 'v3_qa_eula_disagree',
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               foregroundColor:
@@ -167,6 +176,8 @@ class V3Eula extends StatelessWidget {
                         width: 108,
                         height: 40,
                         child: V3Focus(
+                          label: S.of(context).v3_lbl_eula_agree,
+                          identifier: 'v3_qa_eula_agree',
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 5.0,
