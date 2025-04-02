@@ -235,9 +235,10 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: const Color(0xFFF0F1F7),
               unselectedWidgetColor: Colors.white,
               textTheme: Theme.of(context).textTheme.apply(
-                    fontFamily: 'Inter',
-                    bodyColor: context.tokens.color.vsdswColorOnSurface,
-                  ),
+                fontFamily: 'Inter',
+                bodyColor: context.tokens.color.vsdswColorOnSurface,
+                fontFamilyFallback: ['NotoSansTC'],
+              ),
             ),
             initialRoute: kIsWeb ? '/v3home' : '/v3splash',
             navigatorKey: NavigationService.navigationKey,
