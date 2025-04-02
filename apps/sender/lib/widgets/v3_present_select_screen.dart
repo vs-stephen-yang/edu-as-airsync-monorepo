@@ -17,7 +17,6 @@ import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
@@ -444,10 +443,10 @@ class SelectScreenDialog extends Dialog {
                                         break;
                                     }
                                     setState(() {
-                                      if (index == 0) {
-                                        enableAudioCheckbox = true;
-                                      } else {
+                                      if (index == 1) {
                                         enableAudioCheckbox = false;
+                                      } else {
+                                        enableAudioCheckbox = true;
                                       }
                                     });
                                   },
@@ -798,7 +797,7 @@ class SelectScreenDialog extends Dialog {
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx,
           CustomDesktopCaptureSource(
-              _selectedSource, false, isExtensionSelected));
+              _selectedSource, systemAudio, isExtensionSelected));
       annotationModel.selectedSource = null;
     } else {
       annotationModel.selectedSource = selectedSource;
