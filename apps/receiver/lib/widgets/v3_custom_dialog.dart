@@ -18,6 +18,10 @@ class V3CustomDialog extends StatelessWidget {
     required this.onItem1,
     required this.onItem2,
     required this.primaryFocusNode,
+    this.item1Label,
+    this.item1Identifier,
+    this.item2Label,
+    this.item2Identifier,
   });
 
   final Offset? offset;
@@ -26,6 +30,8 @@ class V3CustomDialog extends StatelessWidget {
   final String item1, item2;
   final VoidCallback onItem1, onItem2;
   final FocusNode primaryFocusNode;
+  final String? item1Label, item1Identifier;
+  final String? item2Label, item2Identifier;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +95,8 @@ class V3CustomDialog extends StatelessWidget {
                             width: 108,
                             height: 40,
                             child: V3Focus(
+                              label: item1Label,
+                              identifier: item1Identifier,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor:
@@ -116,6 +124,8 @@ class V3CustomDialog extends StatelessWidget {
                             width: 108,
                             height: 40,
                             child: V3Focus(
+                              label: item2Label,
+                              identifier: item2Identifier,
                               child: ElevatedButton(
                                 focusNode: primaryFocusNode,
                                 style: ElevatedButton.styleFrom(

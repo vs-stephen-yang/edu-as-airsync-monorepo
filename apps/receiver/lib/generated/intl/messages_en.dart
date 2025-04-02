@@ -341,11 +341,53 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "Screen sharing is about to end. Please restart the screen sharing if necessary.",
     ),
-    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
-      "Close",
-    ),
-    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
-      "Internet connection only。",
+        "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+          "Close download sender app menu",
+        ),
+        "v3_lbl_close_feature_set_cast_device":
+            MessageLookupByLibrary.simpleMessage("Close cast device list"),
+        "v3_lbl_close_feature_set_moderator":
+            MessageLookupByLibrary.simpleMessage(
+          "Close moderator list",
+        ),
+        "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
+          "Agree with EULA",
+        ),
+        "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+          "Disagree with EULA",
+        ),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+          "Cancel exiting moderator mode",
+        ),
+        "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+          "Confirm exiting moderator mode",
+        ),
+        "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+          "Toggle moderator mode",
+        ),
+        "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+          "Open download sender app menu",
+        ),
+        "v3_lbl_open_feature_set_cast_device":
+            MessageLookupByLibrary.simpleMessage(
+          "Open cast device list",
+        ),
+        "v3_lbl_open_feature_set_moderator":
+            MessageLookupByLibrary.simpleMessage(
+          "Open moderator list",
+        ),
+        "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+          "Open Setting Menu",
+        ),
+        "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+          "Setting Menu is locked",
+        ),
+        "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+          "Close",
+        ),
+        "v3_main_internet_connection_only":
+            MessageLookupByLibrary.simpleMessage(
+          "Internet connection only。",
     ),
     "v3_main_internet_connection_only_error":
         MessageLookupByLibrary.simpleMessage(

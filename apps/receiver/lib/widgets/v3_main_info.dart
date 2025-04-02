@@ -10,7 +10,7 @@ import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3MainInfo extends StatelessWidget {
@@ -125,11 +125,15 @@ class V3MainInfo extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 35),
-          child: Image(
-            image: const Svg('assets/images/ic_arrow_to_screen.svg'),
+          child: SvgPicture.asset(
+            'assets/images/ic_arrow_to_screen.svg',
+            excludeFromSemantics: true,
             width: 21,
             height: 21,
-            color: context.tokens.color.vsdslColorSurface600,
+            colorFilter: ColorFilter.mode(
+              context.tokens.color.vsdslColorSurface600,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         Padding(

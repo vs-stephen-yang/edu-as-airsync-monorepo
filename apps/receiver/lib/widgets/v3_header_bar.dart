@@ -1,7 +1,7 @@
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/widgets/v3_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class V3HeaderBar extends StatefulWidget {
   const V3HeaderBar({super.key, this.isWaitForStream = false});
@@ -30,6 +30,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
+                excludeFromSemantics: true,
                 onTap: () {
                   debugCounter++;
                   if (debugCounter == openDebugCounter) {
@@ -37,18 +38,23 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
                     debugCounter = 0;
                   }
                 },
-                child: const Image(
-                  image: Svg('assets/images/ic_logo_airsync_icon.svg'),
-                  height: 36,
+                child: SvgPicture.asset(
+                  'assets/images/ic_logo_airsync_icon.svg',
+                  excludeFromSemantics: true,
                   width: 36,
+                  height: 36,
                 ),
               ),
               const Padding(padding: EdgeInsets.only(left: 7)),
-              Image(
-                image: const Svg('assets/images/ic_logo_airsync_text.svg'),
-                height: 31,
+              SvgPicture.asset(
+                'assets/images/ic_logo_airsync_text.svg',
+                excludeFromSemantics: true,
                 width: 140,
-                color: widget.isWaitForStream ? Colors.white : Colors.black,
+                height: 31,
+                colorFilter: ColorFilter.mode(
+                  widget.isWaitForStream ? Colors.white : Colors.black,
+                  BlendMode.srcIn,
+                ),
               ),
             ],
           ),

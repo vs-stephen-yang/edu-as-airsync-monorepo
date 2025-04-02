@@ -10,7 +10,7 @@ import 'package:display_flutter/widgets/v3_custom_dialog.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -48,6 +48,8 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
         Positioned(
           bottom: widget.isLandscape ? 20 : 40,
           child: V3Focus(
+            label: S.of(context).v3_lbl_moderator_toggle,
+            identifier: 'v3_qa_moderator_toggle',
             child: Container(
               width: 270,
               height: 53,
@@ -77,10 +79,11 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                       width: 37,
                       height: 21,
                       child: IconButton(
-                        icon: Image(
-                          image: Svg(ChannelProvider.isModeratorMode
+                        icon: SvgPicture.asset(
+                          ChannelProvider.isModeratorMode
                               ? 'assets/images/ic_switch_on.svg'
-                              : 'assets/images/ic_switch_off.svg'),
+                              : 'assets/images/ic_switch_off.svg',
+                          excludeFromSemantics: true,
                         ),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
@@ -154,12 +157,16 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
             title: S.of(context).v3_exit_moderator_mode_title,
             content: S.of(context).v3_exit_moderator_mode_desc,
             item1: S.of(context).v3_exit_moderator_mode_cancel,
+            item1Label: S.of(context).v3_lbl_exit_moderator_cancel,
+            item1Identifier: 'v3_qa_exit_moderator_cancel',
             onItem1: () {
               if (navService.canPop()) {
                 navService.goBack();
               }
             },
             item2: S.of(context).v3_exit_moderator_mode_exit,
+            item2Label: S.of(context).v3_lbl_exit_moderator_exit,
+            item2Identifier: 'v3_qa_exit_moderator_exit',
             onItem2: () async {
               trackEvent('click_moderator', EventCategory.menu, target: 'off');
 

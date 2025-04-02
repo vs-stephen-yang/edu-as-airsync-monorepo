@@ -16,6 +16,7 @@ class V3Status extends StatelessWidget {
     return Row(
       children: [
         Image(
+          excludeFromSemantics: true,
           image: const Svg('assets/images/ic_screen.svg'),
           width: 27,
           height: 27,
@@ -59,6 +60,7 @@ class V3Status extends StatelessWidget {
               networkIconName = 'ic_network_disconnect.svg';
             }
             return Image(
+              excludeFromSemantics: true,
               height: 27,
               width: 27,
               image: Svg('assets/images/$networkIconName'),
