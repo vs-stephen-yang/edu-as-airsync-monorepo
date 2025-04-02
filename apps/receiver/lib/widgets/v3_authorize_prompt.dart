@@ -124,7 +124,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
         var dialogWidth = 628.0;
         dialogContextList.add(dialogContext);
         return PopScope(
-          // Using onWillPop to block back key return,
+          // Using canPop=false to block back key return,
           // it will break "Show Prompt mechanism"
           canPop: false,
           child: Dialog(

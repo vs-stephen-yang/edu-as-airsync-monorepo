@@ -103,9 +103,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     _fullHeight = size.height;
     _halfWidth = size.width / 2;
     _halfHeight = size.height / 2;
-    return PopScope(
+    return PopScope<Object?>(
       canPop: Platform.isAndroid ? false : true,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         log.info('PopScope didPop: $didPop');
         if (didPop) {
           return;
@@ -240,7 +240,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 if (mirrorStateProvider.pinCode.isNotEmpty &&
                     pinDialogContextList.isEmpty) {
                   Future.delayed(Duration.zero, () {
-                    _showPinCodeDialog(context);
+                    if (context.mounted) {
+                      _showPinCodeDialog(context);
+                    }
                   });
                 } else if (pinDialogContextList.isNotEmpty &&
                     mirrorStateProvider.pinCode.isEmpty) {
@@ -269,7 +271,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           HybridConnectionList.maxHybridSplitScreen) {
                         Future.delayed(Duration.zero, () {
                           if (mirrorStateProvider.isMirrorConfirmation) {
-                            _showAuthDialog(context);
+                            if (context.mounted) {
+                              _showAuthDialog(context);
+                            }
                           } else {
                             mirrorStateProvider
                                 .setAcceptMirrorId(request.mirrorId);
@@ -311,10 +315,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           Provider.of<ChannelProvider>(context, listen: false);
                           if (ChannelProvider.isModeratorMode) {
                             Future.delayed(Duration.zero, () {
-                              Toast.makeReconnectToast(
-                                connector.reconnectChannelState,
-                                '${connector.senderNameWithEllipsis} ${S.of(context).main_feature_no_network_warning}',
-                              )?.show(context);
+                              if (context.mounted) {
+                                Toast.makeReconnectToast(
+                                  connector.reconnectChannelState,
+                                  '${connector.senderNameWithEllipsis} ${S.of(context).main_feature_no_network_warning}',
+                                )?.show(context);
+                              }
                               ChannelProvider.showReconnectWarnToast.value =
                                   false;
                             });
@@ -422,7 +428,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         return Consumer<MirrorStateProvider>(
           builder: (_, mirrorStateProvider, __) {
             return PopScope(
-              // Using onWillPop to block back key return,
+              // Using canPop=false to block back key return,
               // it will break "Show PinCode mechanism"
               canPop: false,
               child: Dialog(
@@ -510,7 +516,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             double minHeight =
                 min((mirrorRequestIdles.length * height).toDouble(), 500.0);
             return PopScope(
-              // Using onWillPop to block back key return,
+              // Using canPop=false to block back key return,
               // it will break "Show Prompt mechanism"
               canPop: false,
               child: Dialog(
