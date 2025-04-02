@@ -2,17 +2,24 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 
 class V3Focus extends StatelessWidget {
-  final BorderRadius borderRadius;
-
   const V3Focus({
     super.key,
     required this.child,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
     this.onFocusMove,
+    this.label,
+    this.identifier,
+    this.button = true,
+    this.excludeSemantics = true,
   });
 
   final Widget child;
   final KeyEventResult Function(FocusNode node, KeyEvent event)? onFocusMove;
+  final BorderRadius borderRadius;
+  final String? label;
+  final String? identifier;
+  final bool button;
+  final bool excludeSemantics;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,13 @@ class V3Focus extends StatelessWidget {
                     : Colors.transparent,
               ),
             ),
-            child: child,
+            child: Semantics(
+              label: label,
+              identifier: identifier,
+              button: button,
+              excludeSemantics: excludeSemantics,
+              child: child,
+            ),
           );
         },
       ),
