@@ -332,7 +332,7 @@ class WebRTCConnector {
   // frame duplication in WebRTC.
   //
   // Related: https://issues.chromium.org/issues/40922733
-  void _applyMinFrameRate(MediaStreamTrack track) {
+  void _applyWebMinFrameRateWorkaround(MediaStreamTrack track) {
     track.applyConstraints(
       <String, dynamic>{
         'frameRate': {
@@ -396,7 +396,7 @@ class WebRTCConnector {
         // On Web, we need to apply minFrameRate to avoid static content
         // delay or black screen issue.
         if (kIsWeb) {
-          _applyMinFrameRate(track);
+          _applyWebMinFrameRateWorkaround(track);
         }
       }
       await _pc!.addTrack(track, _localStream!);
@@ -823,7 +823,7 @@ class WebRTCConnector {
       final videoTrack = _localStream?.getVideoTracks().first;
       if (kIsWeb) {
         // Apply both constraints and minimum frame rate for web platform
-        _applyMinFrameRate(videoTrack!);
+        _applyWebMinFrameRateWorkaround(videoTrack!);
       } else {
         // For Android and iOS, just apply the basic constraints
         final constraints = <String, dynamic>{
