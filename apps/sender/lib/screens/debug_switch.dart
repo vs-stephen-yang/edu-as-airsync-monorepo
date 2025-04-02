@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
-import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
@@ -23,7 +22,6 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  bool _showOldUI = false;
   bool _initialized = false;
   bool _isLogVerbose = false;
   bool _iceGatheringContinually = false;
@@ -40,15 +38,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Restart the program to apply the changes.")));
-  }
-
-  void _showOldUIChanged(bool value) async {
-    await AppPreferences().setShowOldUI(value);
-
-    setState(() {
-      _showOldUI = value;
-      _notifyRestart();
-    });
   }
 
   void _showDebugOverlayChanged(bool value) async {
@@ -132,7 +121,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize(BuildContext context) {
-    _showOldUI = AppPreferences().showOldUI;
     _isLogVerbose = isLogLevelVerbose();
     if (!_initialized) {
       final Profile profile =
@@ -190,10 +178,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
                 controller: _scrollController, // 這裡也要使用相同的 ScrollController
                 child: Column(
                   children: [
-                    SwitchListTile(
-                        title: const Text('show old UI'),
-                        value: _showOldUI,
-                        onChanged: _showOldUIChanged),
                     SwitchListTile(
                       title: const Text('Show Debug Overlay'),
                       value: _showDebugOverlay, // Use static value

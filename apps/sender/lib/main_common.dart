@@ -23,7 +23,6 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
-//import 'package:display_cast_flutter/utilities/app_unresponsive_detector.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -236,10 +235,8 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: const Color(0xFFF0F1F7),
               unselectedWidgetColor: Colors.white,
               textTheme: Theme.of(context).textTheme.apply(
-                    fontFamily: AppPreferences().showOldUI ? null : 'Inter',
-                    bodyColor: AppPreferences().showOldUI
-                        ? null
-                        : context.tokens.color.vsdswColorOnSurface,
+                    fontFamily: 'Inter',
+                    bodyColor: context.tokens.color.vsdswColorOnSurface,
                   ),
             ),
             initialRoute: kIsWeb ? '/v3home' : '/v3splash',
