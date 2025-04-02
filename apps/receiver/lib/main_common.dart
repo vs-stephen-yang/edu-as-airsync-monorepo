@@ -199,13 +199,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       builder: (primaryFocusNode) =>
                           V3Eula(primaryFocusNode: primaryFocusNode))),
             },
-            builder: (context, child) {
-              return MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(textScaler: const TextScaler.linear(1.0)),
-                child: child!,
-              );
-            },
           );
         },
       ),
