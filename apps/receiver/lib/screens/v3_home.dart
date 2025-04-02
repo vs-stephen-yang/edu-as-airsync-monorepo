@@ -80,9 +80,9 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
+    return PopScope<Object?>(
       canPop: Platform.isAndroid ? false : true,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         log.info('PopScope didPop: $didPop');
         if (didPop) {
           return;

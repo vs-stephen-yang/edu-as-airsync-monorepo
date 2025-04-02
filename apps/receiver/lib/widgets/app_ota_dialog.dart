@@ -72,9 +72,10 @@ class AppOTADialogState extends State<AppOTADialog>
       barrierDismissible: false,
       builder: (BuildContext context) {
         ctxDownloading = context;
-        return WillPopScope(
-          // False will prevent and true will allow to dismiss
-          onWillPop: () async => false,
+        return PopScope(
+          // Using canPop=false to block back key return,
+          // it will break "Show Prompt mechanism"
+          canPop: false,
           child: AlertDialog(
             title: Row(
               mainAxisSize: MainAxisSize.max,
