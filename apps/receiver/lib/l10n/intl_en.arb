@@ -222,5 +222,8 @@
   "v3_lbl_close_download_app_menu": "Close download sender app menu",
   "v3_lbl_moderator_toggle": "Toggle moderator mode",
   "v3_lbl_exit_moderator_cancel": "Cancel exiting moderator mode",
-  "v3_lbl_exit_moderator_exit": "Confirm exiting moderator mode"
+  "v3_lbl_exit_moderator_exit": "Confirm exiting moderator mode",
+  "v3_lbl_internet_connection_warning": "Local connection only",
+  "v3_lbl_internet_connection_only_error": "Connectivity error，please check device network setting",
+  "v3_lbl_connection_dialog_close": "Close connection status dialog"
 }

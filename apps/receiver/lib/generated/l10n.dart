@@ -2260,6 +2260,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Local connection only`
+  String get v3_lbl_internet_connection_warning {
+    return Intl.message(
+      'Local connection only',
+      name: 'v3_lbl_internet_connection_warning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connectivity error，please check device network setting`
+  String get v3_lbl_internet_connection_only_error {
+    return Intl.message(
+      'Connectivity error，please check device network setting',
+      name: 'v3_lbl_internet_connection_only_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close connection status dialog`
+  String get v3_lbl_connection_dialog_close {
+    return Intl.message(
+      'Close connection status dialog',
+      name: 'v3_lbl_connection_dialog_close',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -7,7 +7,7 @@ import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +35,8 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
               return tunnelServerActivated
                   ? const SizedBox.shrink()
                   : V3Focus(
+                      label: S.of(context).v3_lbl_internet_connection_warning,
+                      identifier: 'v3_qa_internet_connection_warning',
                       child: InkWell(
                         onTap: () => _showConnectionStatusDialog(context,
                             message: S
@@ -62,6 +64,8 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
               }
 
               return V3Focus(
+                label: S.of(context).v3_lbl_internet_connection_only_error,
+                identifier: 'v3_qa_internet_connection_only_error',
                 child: InkWell(
                   onTap: () => _showConnectionStatusDialog(context,
                       message: S
@@ -167,6 +171,10 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8),
                                   child: V3Focus(
+                                    label: S
+                                        .of(context)
+                                        .v3_lbl_connection_dialog_close,
+                                    identifier: 'v3_qa_connection_dialog_close',
                                     borderRadius: BorderRadius.circular(2),
                                     child: InkWell(
                                       splashColor: Colors.transparent,
@@ -247,11 +255,15 @@ class _ConnectionStatusWidget extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image(
-            image: Svg(imgPath),
-            color: color ?? context.tokens.color.vsdslColorSurface600,
+          SvgPicture.asset(
+            imgPath,
+            excludeFromSemantics: true,
             width: 21,
             height: 21,
+            colorFilter: ColorFilter.mode(
+              color ?? context.tokens.color.vsdslColorSurface600,
+              BlendMode.srcIn,
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(
