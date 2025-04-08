@@ -333,6 +333,11 @@ class ChannelProvider extends ChangeNotifier {
     // Get local IP address
     final ipAddress = await getPreferredNetworkIpAddress();
     if (ipAddress == null || ipAddress.isEmpty) {
+      // consider the device is not connected to any network while looking for the IP address
+      if (_lastConnectivityResult == ConnectivityResult.none) {
+        log.warning('No IP address found');
+        return;
+      }
       log.severe('No IP address found');
       return;
     }
