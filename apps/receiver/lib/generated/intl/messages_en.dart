@@ -344,11 +344,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
           "Close download sender app menu",
         ),
-        "v3_lbl_close_feature_set_cast_device":
-            MessageLookupByLibrary.simpleMessage("Close cast device list"),
-        "v3_lbl_close_feature_set_moderator":
-            MessageLookupByLibrary.simpleMessage(
-          "Close moderator list",
+        "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+          "Close connection status dialog",
         ),
         "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
           "Agree with EULA",
@@ -362,19 +359,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
           "Confirm exiting moderator mode",
         ),
+        "v3_lbl_internet_connection_only_error":
+            MessageLookupByLibrary.simpleMessage(
+          "Connectivity error，please check device network setting",
+        ),
+        "v3_lbl_internet_connection_warning":
+            MessageLookupByLibrary.simpleMessage(
+          "Local connection only",
+        ),
         "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
           "Toggle moderator mode",
         ),
         "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
           "Open download sender app menu",
-        ),
-        "v3_lbl_open_feature_set_cast_device":
-            MessageLookupByLibrary.simpleMessage(
-          "Open cast device list",
-        ),
-        "v3_lbl_open_feature_set_moderator":
-            MessageLookupByLibrary.simpleMessage(
-          "Open moderator list",
         ),
         "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
           "Open Setting Menu",
@@ -388,7 +385,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_internet_connection_only":
             MessageLookupByLibrary.simpleMessage(
           "Internet connection only。",
-    ),
+        ),
     "v3_main_internet_connection_only_error":
         MessageLookupByLibrary.simpleMessage(
           "Connectivity error，please check device network setting。",
