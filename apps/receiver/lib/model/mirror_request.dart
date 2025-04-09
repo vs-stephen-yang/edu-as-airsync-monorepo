@@ -35,7 +35,7 @@ class MirrorRequest {
     trackEvent(
       name,
       EventCategory.session,
-      mode: mirrorType.name.replaceAll('googlecast', 'google_cast'),
+      mode: mirrorType.name,
       participatorId: mirrorId,
     );
   }
