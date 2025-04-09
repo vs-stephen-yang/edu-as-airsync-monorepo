@@ -10,6 +10,8 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
     required this.onTap,
     required this.trialling,
     required this.disable,
+    required this.label,
+    required this.identifier,
   });
 
   final String title;
@@ -17,10 +19,14 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
   final VoidCallback? onTap;
   final String trialling;
   final bool disable;
+  final String label;
+  final String identifier;
 
   @override
   Widget build(BuildContext context) {
     return V3SettingMenuSubItemFocus(
+      label: label,
+      identifier: identifier,
       child: SizedBox(
         height: 26,
         child: Row(

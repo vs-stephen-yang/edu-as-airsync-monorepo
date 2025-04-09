@@ -11,6 +11,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_item_toggle_tile.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_navigation_tile.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
 
 class V3SettingsDevice extends StatefulWidget {
   const V3SettingsDevice({super.key});
@@ -145,14 +147,18 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             SizedBox(
               width: 20,
               height: 20,
-              child: V3CustomCheckbox(
-                value: channelProvider.isAuthorizeMode,
-                isDisable: settingsProvider.isDeviceSettingLock,
-                onChanged: (bool? value) {
-                  channelProvider.isAuthorizeMode = value ?? true;
+              child: V3Focus(
+                label: S.of(context).v3_lbl_settings_device_authorize_mode,
+                identifier: "v3_qa_settings_device_authorize_mode",
+                child: V3CustomCheckbox(
+                  value: channelProvider.isAuthorizeMode,
+                  isDisable: settingsProvider.isDeviceSettingLock,
+                  onChanged: (bool? value) {
+                    channelProvider.isAuthorizeMode = value ?? true;
 
-                  trackClickApprove();
-                },
+                    trackClickApprove();
+                  },
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.only(left: 4)),
@@ -195,15 +201,19 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             SizedBox(
               width: 20,
               height: 20,
-              child: V3CustomCheckbox(
-                value: (snapshot.hasData) ? snapshot.data as bool : null,
-                isDisable: settingsProvider.isDeviceSettingLock,
-                tristate: true,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _setAutoStartUpSettings(value ?? false);
-                  });
-                },
+              child: V3Focus(
+                label: S.of(context).v3_lbl_settings_device_launch_on_startup,
+                identifier: "v3_qa_settings_device_launch_on_startup",
+                child: V3CustomCheckbox(
+                  value: (snapshot.hasData) ? snapshot.data as bool : null,
+                  isDisable: settingsProvider.isDeviceSettingLock,
+                  tristate: true,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _setAutoStartUpSettings(value ?? false);
+                    });
+                  },
+                ),
               ),
             ),
             const Padding(
@@ -246,23 +256,28 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             SizedBox(
               width: 20,
               height: 20,
-              child: V3CustomCheckbox(
-                value: channelProvider.isDeviceListQuickConnect,
-                isDisable: settingsProvider.isDeviceSettingLock,
-                onChanged: (bool? value) {
-                  if (channelProvider.isDeviceListQuickConnect) {
-                    channelProvider.isDeviceListQuickConnect = false;
-                  } else {
-                    channelProvider.isDeviceListQuickConnect = true;
-                  }
+              child: V3Focus(
+                label: S.of(context).v3_lbl_settings_device_auto_fill_otp,
+                identifier: "v3_qa_settings_device_auto_fill_otp",
+                child: V3CustomCheckbox(
+                  value: channelProvider.isDeviceListQuickConnect,
+                  isDisable: settingsProvider.isDeviceSettingLock,
+                  onChanged: (bool? value) {
+                    if (channelProvider.isDeviceListQuickConnect) {
+                      channelProvider.isDeviceListQuickConnect = false;
+                    } else {
+                      channelProvider.isDeviceListQuickConnect = true;
+                    }
 
-                  trackEvent(
-                    'click_auto_fill_otp',
-                    EventCategory.setting,
-                    target:
-                        channelProvider.isDeviceListQuickConnect ? 'on' : 'off',
-                  );
-                },
+                    trackEvent(
+                      'click_auto_fill_otp',
+                      EventCategory.setting,
+                      target: channelProvider.isDeviceListQuickConnect
+                          ? 'on'
+                          : 'off',
+                    );
+                  },
+                ),
               ),
             ),
             const Padding(
@@ -357,6 +372,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           isRunning = snapshot.data as bool;
         }
         return V3SettingMenuItemToggleTile(
+          label: S.of(context).v3_lbl_settings_show_display_code,
+          identifier: "v3_qa_settings_show_display_code",
           switchOn: isRunning,
           isLocked: settingsProvider.isDeviceSettingLock,
           title: S.of(context).v3_settings_device_show_display_code,
@@ -372,6 +389,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       BuildContext context, SettingsProvider settingsProvider) {
     return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
       return V3SettingMenuItemToggleTile(
+        label: S.of(context).v3_lbl_settings_device_smart_scaling,
+        identifier: "v3_qa_settings_device_smart_scaling",
         switchOn: channelProvider.smartScaling,
         isLocked: settingsProvider.isDeviceSettingLock,
         title: S.of(context).v3_settings_device_smart_scaling,
@@ -387,6 +406,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     PrefLanguageProvider languageProvider =
         Provider.of<PrefLanguageProvider>(context, listen: false);
     return V3SettingMenuNavigationTile(
+      label: S.of(context).v3_lbl_main_language_title,
+      identifier: "v3_qa_main_language_title",
       title: S.of(context).main_language_title,
       onTap: settingsProvider.isDeviceSettingLock
           ? null
@@ -401,6 +422,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   Widget _buildDeviceName(
           BuildContext context, SettingsProvider settingsProvider) =>
       V3SettingMenuNavigationTile(
+          label: S.of(context).v3_lbl_settings_device_name,
+          identifier: "v3_qa_settings_device_name",
           title: S.of(context).v3_settings_device_name,
           focusNode: settingsProvider.subFocusNode,
           onTap: settingsProvider.isDeviceSettingLock
@@ -550,47 +573,54 @@ class CustomDropdownState extends State<CustomDropdown> {
                         child: Builder(builder: (context) {
                           final FocusNode focusNode = Focus.of(context);
                           final bool hasFocus = focusNode.hasFocus;
-                          return InkWell(
-                            focusNode: overlayFocusNodes[option.key],
-                            onTap: () {
-                              _hideDropdownMenu();
-                              widget.onChange.call(option.value);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: hasFocus
-                                    ? context.tokens.color.vsdslColorPrimary
-                                    : Colors.transparent,
-                                borderRadius:
-                                    context.tokens.radii.vsdslRadiusSm,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      option.value,
-                                      style: TextStyle(
-                                        fontSize: 9,
+                          return V3Focus(
+                            label: sprintf(
+                                S.of(context).v3_lbl_settings_invite_group_item,
+                                [option.value]),
+                            identifier:
+                                "v3_qa_settings_invite_group_${option.key}",
+                            child: InkWell(
+                              focusNode: overlayFocusNodes[option.key],
+                              onTap: () {
+                                _hideDropdownMenu();
+                                widget.onChange.call(option.value);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: hasFocus
+                                      ? context.tokens.color.vsdslColorPrimary
+                                      : Colors.transparent,
+                                  borderRadius:
+                                      context.tokens.radii.vsdslRadiusSm,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        option.value,
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          color: hasFocus
+                                              ? context.tokens.color
+                                                  .vsdslColorOnPrimary
+                                              : context.tokens.color
+                                                  .vsdslColorOnSurface,
+                                        ),
+                                      ),
+                                    ),
+                                    if (isSelected)
+                                      Icon(
+                                        size: 16,
+                                        Icons.check,
                                         color: hasFocus
                                             ? context.tokens.color
-                                                .vsdslColorOnPrimary
+                                                .vsdslColorOnSurfaceInverse
                                             : context.tokens.color
                                                 .vsdslColorOnSurface,
                                       ),
-                                    ),
-                                  ),
-                                  if (isSelected)
-                                    Icon(
-                                      size: 16,
-                                      Icons.check,
-                                      color: hasFocus
-                                          ? context.tokens.color
-                                              .vsdslColorOnSurfaceInverse
-                                          : context
-                                              .tokens.color.vsdslColorOnSurface,
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -630,51 +660,55 @@ class CustomDropdownState extends State<CustomDropdown> {
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: _layerLink,
-      child: InkWell(
-        onTap: widget.isDisable
-            ? null
-            : () {
-                setState(() {
-                  if (_overlayEntry == null) {
-                    _showDropdownMenu();
-                  } else {
-                    _hideDropdownMenu();
-                  }
-                });
-              },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: _overlayEntry != null
-                ? context.tokens.color.vsdslColorSurface300
-                : context.tokens.color.vsdslColorOnSurfaceInverse,
-            borderRadius: context.tokens.radii.vsdslRadiusSm,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Text(
-                  widget.selectedValue,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: context.tokens.color.vsdslColorOnSurface
-                        .withOpacity(widget.isDisable ? 0.32 : 1),
-                    fontWeight: FontWeight.w600,
+      child: V3Focus(
+        label: S.of(context).v3_lbl_settings_invite_group,
+        identifier: "v3_qa_settings_invite_group",
+        child: InkWell(
+          onTap: widget.isDisable
+              ? null
+              : () {
+                  setState(() {
+                    if (_overlayEntry == null) {
+                      _showDropdownMenu();
+                    } else {
+                      _hideDropdownMenu();
+                    }
+                  });
+                },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            decoration: BoxDecoration(
+              color: _overlayEntry != null
+                  ? context.tokens.color.vsdslColorSurface300
+                  : context.tokens.color.vsdslColorOnSurfaceInverse,
+              borderRadius: context.tokens.radii.vsdslRadiusSm,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.selectedValue,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: context.tokens.color.vsdslColorOnSurface
+                          .withOpacity(widget.isDisable ? 0.32 : 1),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Icon(
-                _overlayEntry != null
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down,
-                size: 16,
-                color: context.tokens.color.vsdslColorOnSurface
-                    .withOpacity(widget.isDisable ? 0.32 : 1),
-              ),
-            ],
+                Icon(
+                  _overlayEntry != null
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  size: 16,
+                  color: context.tokens.color.vsdslColorOnSurface
+                      .withOpacity(widget.isDisable ? 0.32 : 1),
+                ),
+              ],
+            ),
           ),
         ),
       ),

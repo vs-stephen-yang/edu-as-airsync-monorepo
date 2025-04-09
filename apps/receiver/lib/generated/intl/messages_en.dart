@@ -367,6 +367,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Local connection only",
         ),
+        "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+          "Select language",
+        ),
+        "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+          "Select %s",
+        ),
+        "v3_lbl_minimal_quick_connect_menu":
+            MessageLookupByLibrary.simpleMessage(
+          "Minimize quick connect menu",
+        ),
         "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
           "Toggle moderator mode",
         ),
@@ -376,8 +386,65 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
           "Open Setting Menu",
         ),
+        "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+          "Open broadcast setting menu",
+        ),
+        "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+          "Open connectivity setting menu",
+        ),
+        "v3_lbl_settings_device_authorize_mode":
+            MessageLookupByLibrary.simpleMessage(
+                "Turn on/off authorization mode"),
+        "v3_lbl_settings_device_auto_fill_otp":
+            MessageLookupByLibrary.simpleMessage(
+                "Turn on/off auto fill OTP mode"),
+        "v3_lbl_settings_device_launch_on_startup":
+            MessageLookupByLibrary.simpleMessage(
+                "Turn on/off auto startup mode"),
+        "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+          "Modify device name",
+        ),
+        "v3_lbl_settings_device_name_close":
+            MessageLookupByLibrary.simpleMessage(
+          "Close device name setting",
+        ),
+        "v3_lbl_settings_device_name_save":
+            MessageLookupByLibrary.simpleMessage(
+          "Save device name",
+        ),
+        "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+          "Open device setting menu",
+        ),
+        "v3_lbl_settings_device_smart_scaling":
+            MessageLookupByLibrary.simpleMessage(
+          "Turn on/off smart scaling toggle",
+        ),
+        "v3_lbl_settings_enter_device_name":
+            MessageLookupByLibrary.simpleMessage(
+          "Enter device name",
+        ),
+        "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+          "Open screen broadcasting dropdown menu",
+        ),
+        "v3_lbl_settings_invite_group_item":
+            MessageLookupByLibrary.simpleMessage(
+          "Select %s",
+        ),
+        "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+          "Open legal policy setting menu",
+        ),
         "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
           "Setting Menu is locked",
+        ),
+        "v3_lbl_settings_show_display_code":
+            MessageLookupByLibrary.simpleMessage(
+          "Turn on/off display code toggle",
+        ),
+        "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+          "Open what\'s new setting menu",
+        ),
+        "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+          "Open mirroring setting menu",
         ),
         "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
           "Close",
@@ -386,7 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Internet connection only。",
         ),
-    "v3_main_internet_connection_only_error":
+        "v3_main_internet_connection_only_error":
         MessageLookupByLibrary.simpleMessage(
           "Connectivity error，please check device network setting。",
         ),

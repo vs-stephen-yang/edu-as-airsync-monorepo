@@ -2290,6 +2290,206 @@ class S {
       args: [],
     );
   }
+
+  /// `Minimize quick connect menu`
+  String get v3_lbl_minimal_quick_connect_menu {
+    return Intl.message(
+      'Minimize quick connect menu',
+      name: 'v3_lbl_minimal_quick_connect_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open device setting menu`
+  String get v3_lbl_settings_device_setting {
+    return Intl.message(
+      'Open device setting menu',
+      name: 'v3_lbl_settings_device_setting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open broadcast setting menu`
+  String get v3_lbl_settings_broadcast {
+    return Intl.message(
+      'Open broadcast setting menu',
+      name: 'v3_lbl_settings_broadcast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open mirroring setting menu`
+  String get v3_lbl_shortcuts_mirroring {
+    return Intl.message(
+      'Open mirroring setting menu',
+      name: 'v3_lbl_shortcuts_mirroring',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open connectivity setting menu`
+  String get v3_lbl_settings_connectivity {
+    return Intl.message(
+      'Open connectivity setting menu',
+      name: 'v3_lbl_settings_connectivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open what's new setting menu`
+  String get v3_lbl_settings_whats_new {
+    return Intl.message(
+      'Open what\'s new setting menu',
+      name: 'v3_lbl_settings_whats_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open legal policy setting menu`
+  String get v3_lbl_settings_legal_policy {
+    return Intl.message(
+      'Open legal policy setting menu',
+      name: 'v3_lbl_settings_legal_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify device name`
+  String get v3_lbl_settings_device_name {
+    return Intl.message(
+      'Modify device name',
+      name: 'v3_lbl_settings_device_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter device name`
+  String get v3_lbl_settings_enter_device_name {
+    return Intl.message(
+      'Enter device name',
+      name: 'v3_lbl_settings_enter_device_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close device name setting`
+  String get v3_lbl_settings_device_name_close {
+    return Intl.message(
+      'Close device name setting',
+      name: 'v3_lbl_settings_device_name_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save device name`
+  String get v3_lbl_settings_device_name_save {
+    return Intl.message(
+      'Save device name',
+      name: 'v3_lbl_settings_device_name_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select language`
+  String get v3_lbl_main_language_title {
+    return Intl.message(
+      'Select language',
+      name: 'v3_lbl_main_language_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_main_language_title_item {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_main_language_title_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off display code toggle`
+  String get v3_lbl_settings_show_display_code {
+    return Intl.message(
+      'Turn on/off display code toggle',
+      name: 'v3_lbl_settings_show_display_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off smart scaling toggle`
+  String get v3_lbl_settings_device_smart_scaling {
+    return Intl.message(
+      'Turn on/off smart scaling toggle',
+      name: 'v3_lbl_settings_device_smart_scaling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open screen broadcasting dropdown menu`
+  String get v3_lbl_settings_invite_group {
+    return Intl.message(
+      'Open screen broadcasting dropdown menu',
+      name: 'v3_lbl_settings_invite_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_settings_invite_group_item {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_settings_invite_group_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off authorization mode`
+  String get v3_lbl_settings_device_authorize_mode {
+    return Intl.message(
+      'Turn on/off authorization mode',
+      name: 'v3_lbl_settings_device_authorize_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off auto startup mode`
+  String get v3_lbl_settings_device_launch_on_startup {
+    return Intl.message(
+      'Turn on/off auto startup mode',
+      name: 'v3_lbl_settings_device_launch_on_startup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off auto fill OTP mode`
+  String get v3_lbl_settings_device_auto_fill_otp {
+    return Intl.message(
+      'Turn on/off auto fill OTP mode',
+      name: 'v3_lbl_settings_device_auto_fill_otp',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

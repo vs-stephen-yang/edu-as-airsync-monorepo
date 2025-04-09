@@ -6,11 +6,12 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/utility/V3TextFieldShortcutsHandler.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDeviceName extends StatefulWidget {
@@ -78,53 +79,61 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
-                  width: 100,
-                  child: () {
-                    return V3TextFieldShortcutsHandler(
-                      focusNode: widget.focusNode,
-                      child: TextField(
-                        autofocus: true,
-                        textAlign: TextAlign.right,
-                        controller: _controller,
+                V3Focus(
+                  label: S.current.v3_lbl_settings_enter_device_name,
+                  identifier: "v3_qa_settings_enter_device_name",
+                  child: SizedBox(
+                    width: 100,
+                    child: () {
+                      return V3TextFieldShortcutsHandler(
                         focusNode: widget.focusNode,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
+                        child: TextField(
+                          autofocus: true,
+                          textAlign: TextAlign.right,
+                          controller: _controller,
+                          focusNode: widget.focusNode,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none, // 去掉底線
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp('[a-zA-Z0-9]')),
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                          onSubmitted: (_) => onSummit(),
                         ),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none, // 去掉底線
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp('[a-zA-Z0-9]')),
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        onSubmitted: (_) => onSummit(),
-                      ),
-                    );
-                  }(),
+                      );
+                    }(),
+                  ),
                 ),
-                Visibility(
-                  visible: _isEditing,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: IconButton(
-                    focusNode: FocusNode()
-                      // disable remote focus
-                      ..canRequestFocus = false
-                      // skip when using tab key to be focused
-                      ..skipTraversal = true,
-                    icon: const Image(
-                      image: Svg('assets/images/ic_close_white.svg'),
-                      width: 21,
-                      height: 21,
+                V3Focus(
+                  label: S.current.v3_lbl_settings_device_name_close,
+                  identifier: "v3_qa_settings_device_name_close",
+                  child: Visibility(
+                    visible: _isEditing,
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: IconButton(
+                      focusNode: FocusNode()
+                        // disable remote focus
+                        ..canRequestFocus = false
+                        // skip when using tab key to be focused
+                        ..skipTraversal = true,
+                      icon: SvgPicture.asset(
+                        'assets/images/ic_close_white.svg',
+                        fit: BoxFit.contain,
+                        width: 21,
+                      ),
+                      padding: const EdgeInsets.only(right: 8),
+                      onPressed: () {
+                        _controller.text = '';
+                      },
                     ),
-                    padding: const EdgeInsets.only(left: 0, right: 13),
-                    onPressed: () {
-                      _controller.text = '';
-                    },
                   ),
                 )
               ],
@@ -183,6 +192,8 @@ class _SaveButton extends StatelessWidget {
       builder: (context, value, child) {
         final enable = value.text.isNotEmpty;
         return V3SettingMenuSubItemFocus(
+          label: S.current.v3_lbl_settings_device_name_save,
+          identifier: "v3_qa_settings_device_name_save",
           child: InkWell(
             focusNode: focusNode,
             onTap: enable

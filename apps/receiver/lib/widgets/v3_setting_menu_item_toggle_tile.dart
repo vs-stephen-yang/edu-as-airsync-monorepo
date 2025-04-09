@@ -1,7 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class V3SettingMenuItemToggleTile extends StatelessWidget {
   const V3SettingMenuItemToggleTile({
@@ -11,6 +11,8 @@ class V3SettingMenuItemToggleTile extends StatelessWidget {
     required this.switchOn,
     this.onTap,
     this.isLocked = false,
+    this.label,
+    this.identifier,
   });
 
   final String title;
@@ -18,10 +20,14 @@ class V3SettingMenuItemToggleTile extends StatelessWidget {
   final bool switchOn;
   final VoidCallback? onTap;
   final bool isLocked;
+  final String? label;
+  final String? identifier;
 
   @override
   Widget build(BuildContext context) {
     return V3SettingMenuSubItemFocus(
+      label: label,
+      identifier: identifier,
       child: InkWell(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -41,18 +47,21 @@ class V3SettingMenuItemToggleTile extends StatelessWidget {
               const Spacer(),
               SizedBox(
                 height: 21,
+                width: 38,
                 child: ExcludeFocus(
                   child: InkWell(
                     highlightColor: Colors.transparent,
                     onTap: isLocked ? null : onTap,
-                    child: Image(
-                      image: Svg(isLocked
+                    child: SvgPicture.asset(
+                      isLocked
                           ? switchOn
                               ? 'assets/images/ic_switch_on_lock.svg'
                               : 'assets/images/ic_switch_off_lock.svg'
                           : switchOn
                               ? 'assets/images/ic_switch_on.svg'
-                              : 'assets/images/ic_switch_off.svg'),
+                              : 'assets/images/ic_switch_off.svg',
+                      fit: BoxFit
+                          .fitHeight, // Ensure it fits the height properly
                     ),
                   ),
                 ),
