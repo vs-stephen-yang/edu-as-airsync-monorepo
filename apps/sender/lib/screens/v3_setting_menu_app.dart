@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_language.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_legal_policy.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_license.dart';
@@ -72,24 +73,33 @@ class V3SettingMenuApp extends StatelessWidget {
                             backgroundColor:
                                 context.tokens.color.vsdswColorSurface900,
                             radius: 24,
-                            child: IconButton(
-                              icon: SvgPicture.asset(
-                                  'assets/images/v3_ic_arrow_left.svg'),
-                              color:
-                                  context.tokens.color.vsdswColorNeutralInverse,
-                              onPressed: () {
-                                SettingsProvider settingsProvider =
-                                    Provider.of<SettingsProvider>(context,
-                                        listen: false);
-                                if (settingsProvider.currentPage ==
-                                    SettingPageState.licenses) {
-                                  settingsProvider
-                                      .setPage(SettingPageState.legalPolicy);
-                                } else {
-                                  settingsProvider
-                                      .setPage(SettingPageState.appHome);
-                                }
-                              },
+                            child: V3Focus(
+                              label: S.of(context).v3_lbl_setting_menu_back,
+                              identifier: 'v3_qa_setting_menu_back',
+                              child: IconButton(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                icon: ExcludeSemantics(
+                                  child: SvgPicture.asset(
+                                    'assets/images/v3_ic_arrow_left.svg',
+                                  ),
+                                ),
+                                color: context
+                                    .tokens.color.vsdswColorNeutralInverse,
+                                onPressed: () {
+                                  SettingsProvider settingsProvider =
+                                      Provider.of<SettingsProvider>(context,
+                                          listen: false);
+                                  if (settingsProvider.currentPage ==
+                                      SettingPageState.licenses) {
+                                    settingsProvider
+                                        .setPage(SettingPageState.legalPolicy);
+                                  } else {
+                                    settingsProvider
+                                        .setPage(SettingPageState.appHome);
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -97,20 +107,31 @@ class V3SettingMenuApp extends StatelessWidget {
                         top: 0,
                         right: 16,
                         bottom: 0,
-                        child: CircleAvatar(
-                          backgroundColor:
-                              context.tokens.color.vsdswColorSurface900,
-                          radius: 24,
-                          child: IconButton(
-                            icon: SvgPicture.asset(
-                                'assets/images/v3_ic_menu_close.svg'),
-                            color:
-                                context.tokens.color.vsdswColorNeutralInverse,
-                            onPressed: () {
-                              if (navService.canPop()) {
-                                navService.goBack();
-                              }
-                            },
+                        child: V3Focus(
+                          label: S.of(context).v3_lbl_setting_menu_close,
+                          identifier: 'v3_qa_setting_menu_close',
+                          child: CircleAvatar(
+                            backgroundColor:
+                                context.tokens.color.vsdswColorSurface900,
+                            radius: 24,
+                            child: InkWell(
+                              onTap: () {
+                                if (navService.canPop()) {
+                                  navService.goBack();
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(24),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ExcludeSemantics(
+                                  child: SvgPicture.asset(
+                                    'assets/images/v3_ic_menu_close.svg',
+                                    color: context
+                                        .tokens.color.vsdswColorNeutralInverse,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),

@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,8 @@ class V3PresentSelectRole extends StatelessWidget {
       Size iconSize) {
     return [
       RoleButton(
+        label: S.of(context).v3_lbl_select_role_share,
+        identifier: 'v3_qa_select_role_share',
         buttonSize: buttonSize,
         iconSize: iconSize,
         name: S.of(context).v3_main_select_role_share,
@@ -111,6 +114,8 @@ class V3PresentSelectRole extends StatelessWidget {
       ),
       const Padding(padding: EdgeInsets.all(8)),
       RoleButton(
+        label: S.of(context).v3_lbl_select_role_receive,
+        identifier: 'v3_qa_select_role_receive',
         buttonSize: buttonSize,
         iconSize: iconSize,
         name: S.of(context).v3_main_select_role_receive,
@@ -144,6 +149,8 @@ class RoleButton extends StatelessWidget {
     required this.name,
     required this.iconPath,
     required this.onTap,
+    required this.label,
+    required this.identifier,
   });
 
   final Size buttonSize;
@@ -153,37 +160,44 @@ class RoleButton extends StatelessWidget {
   final String iconPath;
   final VoidCallback onTap;
 
+  final String label;
+  final String identifier;
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: buttonSize.width,
-        height: buttonSize.height,
-        decoration: BoxDecoration(
-          color: context.tokens.color.vsdswColorSurface100,
-          border: Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-                width: iconSize.width,
-                height: iconSize.height,
-                child: SvgPicture.asset(iconPath)),
-            const SizedBox(height: 16),
-            Text(
-              name,
-              style: TextStyle(
-                color: context.tokens.color.vsdswColorOnSurface,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            )
-          ],
+    return V3Focus(
+      label: label,
+      identifier: identifier,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          width: buttonSize.width,
+          height: buttonSize.height,
+          decoration: BoxDecoration(
+            color: context.tokens.color.vsdswColorSurface100,
+            border: Border.all(color: Colors.white),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                  width: iconSize.width,
+                  height: iconSize.height,
+                  child: SvgPicture.asset(iconPath)),
+              const SizedBox(height: 16),
+              Text(
+                name,
+                style: TextStyle(
+                  color: context.tokens.color.vsdswColorOnSurface,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

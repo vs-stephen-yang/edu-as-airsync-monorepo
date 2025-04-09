@@ -2,18 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auto_updater/auto_updater.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:auto_updater/auto_updater.dart';
 
 enum CompareVersionResult { forceUpgrade, userChoose, noUpdate, noNetwork }
 
@@ -203,34 +203,53 @@ class V3UpdateManager {
               content: Text(_dialogDescription(context, status)),
               actions: [
                 if (status == CompareVersionResult.userChoose)
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                        S.of(context).v3_setting_software_update_deny_action),
+                  V3Focus(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_deny_action,
+                    identifier: 'v3_qa_setting_software_update_deny_action',
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                          S.of(context).v3_setting_software_update_deny_action),
+                    ),
                   ),
                 if (isUpdate)
-                  TextButton(
-                    onPressed: () async {
-                      if (status == CompareVersionResult.userChoose) {
-                        Navigator.of(context).pop();
-                      }
-                      unawaited(launchUrl(Uri.parse(
-                          'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast')));
-                    },
-                    child: Text(S
+                  V3Focus(
+                    label: S
                         .of(context)
-                        .v3_setting_software_update_positive_action),
+                        .v3_lbl_setting_software_update_positive_action,
+                    identifier: 'v3_qa_setting_software_update_positive_action',
+                    child: TextButton(
+                      onPressed: () async {
+                        if (status == CompareVersionResult.userChoose) {
+                          Navigator.of(context).pop();
+                        }
+                        unawaited(launchUrl(Uri.parse(
+                            'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast')));
+                      },
+                      child: Text(S
+                          .of(context)
+                          .v3_setting_software_update_positive_action),
+                    ),
                   ),
                 if (!isUpdate)
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(S
+                  V3Focus(
+                    label: S
                         .of(context)
-                        .v3_setting_software_update_no_available_action),
+                        .v3_lbl_setting_software_update_no_available_action,
+                    identifier:
+                        'v3_qa_setting_software_update_no_available_action',
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(S
+                          .of(context)
+                          .v3_setting_software_update_no_available_action),
+                    ),
                   ),
               ],
             )));
@@ -251,12 +270,19 @@ class V3UpdateManager {
                   if (status == CompareVersionResult.userChoose)
                     Align(
                       alignment: Alignment.centerRight,
-                      child: IconButton(
-                        iconSize: 12,
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                      child: V3Focus(
+                        identifier: 'v3_qa_setting_update_close',
+                        child: IconButton(
+                          iconSize: 12,
+                          icon: Icon(
+                            Icons.close,
+                            semanticLabel:
+                                S.current.v3_lbl_setting_update_close,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
                       ),
                     ),
                   Padding(
@@ -287,6 +313,10 @@ class V3UpdateManager {
               actions: [
                 if (status == CompareVersionResult.userChoose)
                   _updateDialogButton(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_deny_action,
+                    identifier: 'v3_qa_setting_software_update_deny_action',
                     text: S.of(context).v3_setting_software_update_deny_action,
                     textColor: context.tokens.color.vsdswColorSecondary,
                     backgroundColor: Colors.transparent,
@@ -296,6 +326,9 @@ class V3UpdateManager {
                   ),
                 if (isUpdate)
                   _updateDialogButton(
+                    label:
+                        S.of(context).v3_lbl_setting_software_update_now_action,
+                    identifier: 'v3_qa_setting_software_update_now_action',
                     text: S
                         .of(context)
                         .v3_setting_software_update_positive_action,
@@ -307,7 +340,9 @@ class V3UpdateManager {
                       }
                       if (Platform.isMacOS) {
                         if (VersionUtil.isOpenVersion) {
-                          String? feedURL = AppConfig.of(context)?.settings.appUpdateMacAppcastUrl;
+                          String? feedURL = AppConfig.of(context)
+                              ?.settings
+                              .appUpdateMacAppcastUrl;
                           if (feedURL != null) {
                             await autoUpdater.setFeedURL(feedURL);
                             await autoUpdater.checkForUpdates();
@@ -332,6 +367,10 @@ class V3UpdateManager {
                   ),
                 if (!isUpdate)
                   _updateDialogButton(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_no_available,
+                    identifier: 'v3_qa_setting_software_update_no_available',
                     text: S
                         .of(context)
                         .v3_setting_software_update_no_available_action,
@@ -371,33 +410,39 @@ class V3UpdateManager {
       {required String text,
       required Color textColor,
       required Color backgroundColor,
+      required String label,
+      required String identifier,
       required GestureTapCallback onPressed}) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        alignment: Alignment.center,
-        width: 105,
-        height: 48,
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: backgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(9999),
+    return V3Focus(
+      label: label,
+      identifier: identifier,
+      child: InkWell(
+        onTap: onPressed,
+        child: Container(
+          alignment: Alignment.center,
+          width: 105,
+          height: 48,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: backgroundColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(9999),
+            ),
+            shadows: backgroundColor != Colors.transparent
+                ? [
+                    BoxShadow(
+                      color: backgroundColor.withOpacity(0.31),
+                      blurRadius: 24,
+                      offset: const Offset(0, 16),
+                      spreadRadius: 0,
+                    )
+                  ]
+                : null,
           ),
-          shadows: backgroundColor != Colors.transparent
-              ? [
-                  BoxShadow(
-                    color: backgroundColor.withOpacity(0.31),
-                    blurRadius: 24,
-                    offset: const Offset(0, 16),
-                    spreadRadius: 0,
-                  )
-                ]
-              : null,
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: textColor),
+          child: Text(
+            text,
+            style: TextStyle(color: textColor),
+          ),
         ),
       ),
     );
@@ -412,12 +457,20 @@ class V3UpdateManager {
                 children: [
                   Align(
                     alignment: Alignment.centerRight,
-                    child: IconButton(
-                      iconSize: 12,
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                    child: V3Focus(
+                      identifier: 'v3_qa_setting_software_update_fail_close',
+                      button: true,
+                      child: IconButton(
+                        iconSize: 12,
+                        icon: Icon(
+                          Icons.close,
+                          semanticLabel: S.current
+                              .v3_lbl_setting_software_update_fail_close,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
                   ),
                   Padding(
@@ -448,6 +501,8 @@ class V3UpdateManager {
               ),
               actions: [
                 _updateDialogButton(
+                  label: S.of(context).v3_lbl_setting_software_update_fail_ok,
+                  identifier: 'v3_qa_setting_software_update_fail_ok',
                   text: S.of(context).device_list_enter_pin_ok,
                   textColor: context.tokens.color.vsdswColorSecondary,
                   backgroundColor: Colors.transparent,

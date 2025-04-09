@@ -126,7 +126,7 @@ class _RemoteVideoView extends State<RemoteVideoView> {
             focusNode: _focusNode,
             autofocus: true,
             onKeyEvent: (KeyEvent event) {
-              channelProvider.remoteScreenClient!.onKeyDown(event);
+              channelProvider.remoteScreenClient?.onKeyDown(event);
             },
             child: Listener(
               onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,

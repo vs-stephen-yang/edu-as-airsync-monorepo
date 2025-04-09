@@ -4,12 +4,14 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/demo/v3_present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/v3_present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/v3_remote_screen_widget_demo.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/screens/v3_setting_menu_app.dart';
 import 'package:display_cast_flutter/screens/v3_setting_menu_desktop.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_device_list.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
@@ -126,26 +128,40 @@ class SettingMenu extends StatelessWidget {
         top: isMobile ? 24 : null,
         right: isMobile ? 8 : null,
         bottom: isMobile ? null : 24,
-        child: Container(
-          width: 48,
-          height: 48,
-          decoration: ShapeDecoration(
-            color: context.tokens.color.vsdswColorSurface900,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 1,
-                color: context.tokens.color.vsdswColorNeutral,
-              ),
-              borderRadius: context.tokens.radii.vsdswRadiusFull,
-            ),
-            shadows: context.tokens.shadow.vsdswShadowNeutralLg,
-          ),
-          child: IconButton(
-            color: context.tokens.color.vsdswColorNeutral,
-            icon: SvgPicture.asset('assets/images/v3_ic_setting.svg'),
-            onPressed: () {
+        child: V3Focus(
+          label: S.of(context).v3_lbl_setting,
+          identifier: 'v3_qa_setting',
+          button: true,
+          child: InkWell(
+            onTap: () {
               _showOptionsMenuDialog(context);
             },
+            borderRadius: context.tokens.radii.vsdswRadiusFull,
+            child: Ink(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: context.tokens.color.vsdswColorSurface900,
+                borderRadius: context.tokens.radii.vsdswRadiusFull,
+                border: Border.all(
+                  width: 1,
+                  color: context.tokens.color.vsdswColorNeutral,
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 4,
+                    offset: Offset(0, 2), // 對應 elevation: 4
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/v3_ic_setting.svg',
+                  excludeFromSemantics: true,
+                ),
+              ),
+            ),
           ),
         ));
   }

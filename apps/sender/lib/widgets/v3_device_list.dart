@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -102,14 +103,23 @@ class _V3DeviceListState extends State<V3DeviceList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          _presentStateProvider.presentMainPage();
-                        },
-                        child: Icon(
-                          size: 20.0,
-                          Icons.close,
-                          color: context.tokens.color.vsdswColorOnSurface,
+                      V3Focus(
+                        identifier: 'v3_qa_device_list_close',
+                        child: SizedBox(
+                          width: 28, // Android 要 48
+                          height: 28,
+                          child: InkWell(
+                            onTap: () {
+                              _presentStateProvider.presentMainPage();
+                            },
+                            child: Icon(
+                              size: 20.0,
+                              Icons.close,
+                              semanticLabel:
+                                  S.of(context).v3_lbl_device_list_close,
+                              color: context.tokens.color.vsdswColorOnSurface,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -129,15 +139,21 @@ class _V3DeviceListState extends State<V3DeviceList> {
                     itemCount: value.devices.length,
                     itemBuilder: (context, index) {
                       final airSyncBonsoirService = value.devices[index];
-                      return InkWell(
-                        child: isMobile()
-                            ? buildMobileItem(airSyncBonsoirService, context)
-                            : buildDeskTopItem(airSyncBonsoirService, context),
-                        onTap: () {
-                          setState(() {
-                            _connectService = airSyncBonsoirService;
-                          });
-                        },
+                      return V3Focus(
+                        label:
+                            '${airSyncBonsoirService.name} ${airSyncBonsoirService.displayCode}',
+                        identifier: 'v3_qa_device_list_item_$index',
+                        child: InkWell(
+                          child: isMobile()
+                              ? buildMobileItem(airSyncBonsoirService, context)
+                              : buildDeskTopItem(
+                                  airSyncBonsoirService, context),
+                          onTap: () {
+                            setState(() {
+                              _connectService = airSyncBonsoirService;
+                            });
+                          },
+                        ),
                       );
                     },
                   );
@@ -174,44 +190,52 @@ class _V3DeviceListState extends State<V3DeviceList> {
       required bool enable,
       required String text,
       required GestureTapCallback onTap}) {
-    return InkWell(
-      onTap: enable ? onTap : null,
-      child: Container(
-        margin: const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6),
-        alignment: Alignment.center,
-        height: 48,
-        clipBehavior: Clip.antiAlias,
-        constraints: isMobile()
-            ? null
-            : const BoxConstraints(
-                maxWidth: 240,
+    return Container(
+      margin: const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6),
+      child: V3Focus(
+        label: S.of(context).v3_lbl_device_list_next,
+        identifier: 'v3_qa_device_list_next',
+        child: InkWell(
+          onTap: enable ? onTap : null,
+          child: Container(
+            alignment: Alignment.center,
+            height: 48,
+            clipBehavior: Clip.antiAlias,
+            constraints: isMobile()
+                ? null
+                : const BoxConstraints(
+                    maxWidth: 240,
+                  ),
+            decoration: ShapeDecoration(
+              color: enable
+                  ? buildContext.tokens.color.vsdswColorPrimary
+                  : buildContext.tokens.color.vsdswColorDisabled,
+              shape: RoundedRectangleBorder(
+                borderRadius: buildContext.tokens.radii.vsdswRadiusFull,
               ),
-        decoration: ShapeDecoration(
-          color: enable
-              ? buildContext.tokens.color.vsdswColorPrimary
-              : buildContext.tokens.color.vsdswColorDisabled,
-          shape: RoundedRectangleBorder(
-            borderRadius: buildContext.tokens.radii.vsdswRadiusFull,
-          ),
-          shadows: [
-            BoxShadow(
-              color: enable ? const Color(0x515D80ED) : const Color(0x28151C32),
-              blurRadius: 24,
-              offset: const Offset(0, 16),
-              spreadRadius: 0,
-            )
-          ],
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: enable
-                ? buildContext.tokens.color.vsdswColorOnPrimary
-                : buildContext.tokens.color.vsdswColorOnDisabled,
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
-            height: 0.07,
+              shadows: [
+                BoxShadow(
+                  color: enable
+                      ? const Color(0x515D80ED)
+                      : const Color(0x28151C32),
+                  blurRadius: 24,
+                  offset: const Offset(0, 16),
+                  spreadRadius: 0,
+                )
+              ],
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: enable
+                    ? buildContext.tokens.color.vsdswColorOnPrimary
+                    : buildContext.tokens.color.vsdswColorOnDisabled,
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
+                height: 0.07,
+              ),
+            ),
           ),
         ),
       ),
@@ -271,9 +295,11 @@ class _V3DeviceListState extends State<V3DeviceList> {
           Row(
             children: [
               SvgPicture.asset(
-                  width: 24,
-                  height: 24,
-                  'assets/images/ic_device_list_qrcode.svg'),
+                width: 24,
+                height: 24,
+                'assets/images/ic_device_list_qrcode.svg',
+                excludeFromSemantics: true,
+              ),
               const Gap(8),
               Text(
                 airSyncBonsoirService.displayCode,

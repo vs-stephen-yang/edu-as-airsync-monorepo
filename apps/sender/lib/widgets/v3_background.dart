@@ -19,15 +19,15 @@ class V3Background extends StatelessWidget {
       child: (Platform.isAndroid || Platform.isIOS)
           ? Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
-              child: GestureDetector(
-                onTap: () {
-                  debugCounter++;
-                  if (debugCounter == openDebugCounter) {
-                    _showMenuDialog(context, const DebugSwitch());
-                    debugCounter = 0;
-                  }
-                },
-                child: ExcludeSemantics(
+              child: ExcludeSemantics(
+                child: GestureDetector(
+                  onTap: () {
+                    debugCounter++;
+                    if (debugCounter == openDebugCounter) {
+                      _showMenuDialog(context, const DebugSwitch());
+                      debugCounter = 0;
+                    }
+                  },
                   child: Image.asset(
                     'assets/images/ic_logo_viewsonic_mobile.png',
                     width: 170,
@@ -39,24 +39,23 @@ class V3Background extends StatelessWidget {
           : Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                ExcludeSemantics(
-                  child: Image.asset(
-                    'assets/images/ic_wallpaper.png',
-                    width: 1280,
-                  ),
+                Image.asset(
+                  excludeFromSemantics: true,
+                  'assets/images/ic_wallpaper.png',
+                  width: 1280,
                 ),
                 Positioned(
                   right: 24,
                   bottom: 16,
-                  child: GestureDetector(
-                    onTap: () {
-                      debugCounter++;
-                      if (debugCounter == openDebugCounter) {
-                        _showMenuDialog(context, const DebugSwitch());
-                        debugCounter = 0;
-                      }
-                    },
-                    child: ExcludeSemantics(
+                  child: ExcludeSemantics(
+                    child: GestureDetector(
+                      onTap: () {
+                        debugCounter++;
+                        if (debugCounter == openDebugCounter) {
+                          _showMenuDialog(context, const DebugSwitch());
+                          debugCounter = 0;
+                        }
+                      },
                       child: Image.asset(
                         'assets/images/ic_logo_viewsonic_desktop.png',
                         width: 193,
