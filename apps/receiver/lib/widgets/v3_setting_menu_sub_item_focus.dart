@@ -5,13 +5,18 @@ import 'package:provider/provider.dart';
 
 class V3SettingMenuSubItemFocus extends StatelessWidget {
   final Widget child;
+  final String? label;
+  final String? identifier;
 
-  const V3SettingMenuSubItemFocus({super.key, required this.child});
+  const V3SettingMenuSubItemFocus(
+      {super.key, required this.child, this.label, this.identifier});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(builder: (context, settingsProvider, _) {
       return V3Focus(
+        label: label,
+        identifier: identifier,
         onFocusMove: settingsProvider.onSubFocusMove,
         child: child,
       );

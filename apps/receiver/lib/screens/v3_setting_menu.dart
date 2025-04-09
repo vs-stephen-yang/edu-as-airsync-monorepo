@@ -90,6 +90,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                           child: Column(
                             children: <Widget>[
                               _SubTittleButton(
+                                label: S.current.v3_lbl_settings_device_setting,
+                                identifier: "v3_qa_settings_device_setting",
                                 index: 0,
                                 state: SettingPageState.deviceSetting,
                                 text: S.of(context).v3_settings_device_setting,
@@ -100,6 +102,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
                               _SubTittleButton(
+                                label: S.current.v3_lbl_settings_broadcast,
+                                identifier: "v3_qa_settings_broadcast",
                                 index: 1,
                                 state: SettingPageState.broadcast,
                                 text: S.of(context).v3_settings_broadcast,
@@ -110,6 +114,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
                               _SubTittleButton(
+                                label: S.current.v3_lbl_shortcuts_mirroring,
+                                identifier: "v3_qa_shortcuts_mirroring",
                                 index: 2,
                                 state: SettingPageState.mirroring,
                                 text: S.of(context).v3_shortcuts_mirroring,
@@ -120,6 +126,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
                               _SubTittleButton(
+                                label: S.current.v3_lbl_settings_connectivity,
+                                identifier: "v3_qa_settings_connectivity",
                                 index: 3,
                                 state: SettingPageState.connectivity,
                                 text: S.of(context).v3_settings_connectivity,
@@ -130,6 +138,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
                               _SubTittleButton(
+                                label: S.current.v3_lbl_settings_whats_new,
+                                identifier: "v3_qa_settings_whats_new",
                                 index: 4,
                                 state: SettingPageState.whatsNew,
                                 text: S.of(context).v3_settings_whats_new,
@@ -140,6 +150,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
                               _SubTittleButton(
+                                label: S.current.v3_lbl_settings_legal_policy,
+                                identifier: "v3_qa_settings_legal_policy",
                                 index: 5,
                                 state: SettingPageState.legalPolicy,
                                 text: S.of(context).v3_settings_legal_policy,
@@ -275,6 +287,8 @@ class _SubTittleButton extends StatelessWidget {
     required this.locked,
     required this.index,
     required this.onClick,
+    this.label,
+    this.identifier,
   });
 
   final SettingPageState state;
@@ -282,11 +296,15 @@ class _SubTittleButton extends StatelessWidget {
   final bool locked;
   final int index;
   final void Function() onClick;
+  final String? label;
+  final String? identifier;
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SettingsProvider>(context);
     return V3Focus(
+      label: label,
+      identifier: identifier,
       onFocusMove: (node, event) =>
           provider.onMainFocusMove(node, event, onClick, state),
       child: InkWell(

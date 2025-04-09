@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
 
 class V3SettingsRadioGroupItem {
   V3SettingsRadioGroupItem({
@@ -69,6 +71,9 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
           return Column(
             children: [
               V3SettingMenuListItemFocus(
+                label: sprintf(
+                    S.current.v3_lbl_main_language_title_item, [key.title]),
+                identifier: "v3_qa_main_language_title_item_${key.title}",
                 focusNode:
                     (key == widget.radioList.first) && widget.hasSubFocusItem
                         ? settingsProvider.subFocusNode

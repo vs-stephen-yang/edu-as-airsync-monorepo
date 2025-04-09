@@ -12,6 +12,8 @@ class V3MenuNavigationIconButton extends StatelessWidget {
   final BoxConstraints constraints;
   final double iconSize;
   final FocusNode? focusNode;
+  final String? label;
+  final String? identifier;
 
   const V3MenuNavigationIconButton({
     super.key,
@@ -25,6 +27,8 @@ class V3MenuNavigationIconButton extends StatelessWidget {
     ),
     this.iconSize = 21,
     this.focusNode,
+    this.label,
+    this.identifier,
   });
 
   @override
@@ -44,21 +48,27 @@ class V3MenuNavigationIconButton extends StatelessWidget {
 
           return settingsProvider.onSubFocusMove(node, event);
         },
-        child: InkWell(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          onTap: disabled ? null : onPressed,
-          focusNode: focusNode,
-          child: Container(
-            padding: EdgeInsets.zero,
-            constraints: constraints,
-            alignment: Alignment.center,
-            child: SvgPicture.asset(
-              disabled ? disabledIconPath ?? enabledIconPath : enabledIconPath,
-              width: iconSize,
-              height: iconSize,
+        child: Semantics(
+          label: label,
+          identifier: identifier,
+          child: InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            onTap: disabled ? null : onPressed,
+            focusNode: focusNode,
+            child: Container(
+              padding: EdgeInsets.zero,
+              constraints: constraints,
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                disabled
+                    ? disabledIconPath ?? enabledIconPath
+                    : enabledIconPath,
+                width: iconSize,
+                height: iconSize,
+              ),
             ),
           ),
         ),

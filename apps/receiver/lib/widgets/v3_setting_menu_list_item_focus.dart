@@ -10,6 +10,8 @@ class V3SettingMenuListItemFocus extends StatefulWidget {
   final BorderRadius borderRadius;
   final double borderWidth;
   final FocusNode? focusNode;
+  final String? label;
+  final String? identifier;
 
   const V3SettingMenuListItemFocus({
     super.key,
@@ -18,6 +20,8 @@ class V3SettingMenuListItemFocus extends StatefulWidget {
     this.borderWidth = 2.0,
     this.onTap,
     this.focusNode,
+    this.label,
+    this.identifier,
   });
 
   @override
@@ -50,33 +54,37 @@ class _V3SettingMenuListItemFocusState
           }
           return settingsProvider.onSubFocusMove(node, event);
         },
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            if (_isFocused)
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: context.tokens.color.vsdslColorSecondary,
-                      width: widget.borderWidth,
+        child: Semantics(
+          label: widget.label,
+          identifier: widget.identifier,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              if (_isFocused)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: context.tokens.color.vsdslColorSecondary,
+                        width: widget.borderWidth,
+                      ),
+                      borderRadius: widget.borderRadius,
                     ),
+                  ),
+                ),
+              Material(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widget.borderWidth),
+                  child: InkWell(
                     borderRadius: widget.borderRadius,
+                    onTap: widget.onTap,
+                    child: widget.child,
                   ),
                 ),
               ),
-            Material(
-              color: Colors.transparent,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.borderWidth),
-                child: InkWell(
-                  borderRadius: widget.borderRadius,
-                  onTap: widget.onTap,
-                  child: widget.child,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });
