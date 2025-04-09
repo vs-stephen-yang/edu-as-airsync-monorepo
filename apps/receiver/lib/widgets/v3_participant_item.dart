@@ -441,6 +441,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
       // waitForStream and streaming
       rtcConnector.sendStopPresent();
     }
+    rtcConnector.trackSessionEvent('stop_cast');
   }
 }
 
