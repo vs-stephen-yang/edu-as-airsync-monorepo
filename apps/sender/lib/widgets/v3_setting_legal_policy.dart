@@ -3,9 +3,11 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/oss_licenses.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
 
 class V3SettingsLegalPolicy extends StatelessWidget {
   const V3SettingsLegalPolicy({super.key, this.isAppMode = false});
@@ -118,16 +120,23 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          IconButton(
-                            icon: SvgPicture.asset(
-                                'assets/images/v3_ic_arrow_right.svg'),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            onPressed: () {
-                              settingsProvider.setPage(
-                                  SettingPageState.licenses,
-                                  license: license);
-                            },
+                          V3Focus(
+                            label: sprintf(
+                                S.of(context).v3_lbl_setting_legal_policy,
+                                [license.name]),
+                            identifier: sprintf('v3_qa_setting_legal_policy %s',
+                                [license.name]),
+                            child: IconButton(
+                              icon: SvgPicture.asset(
+                                  'assets/images/v3_ic_arrow_right.svg'),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                settingsProvider.setPage(
+                                    SettingPageState.licenses,
+                                    license: license);
+                              },
+                            ),
                           )
                         ],
                       ),

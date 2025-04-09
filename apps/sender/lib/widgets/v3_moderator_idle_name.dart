@@ -71,6 +71,8 @@ class V3ModeratorIdleName extends StatelessWidget {
 
   V3BackButton _backButton(BuildContext context) {
     return V3BackButton(
+      label: S.of(context).v3_lbl_moderator_back,
+      identifier: 'v3_qa_moderator_back',
       onPressed: () {
         ChannelProvider channelProvider =
             Provider.of<ChannelProvider>(context, listen: false);
@@ -141,6 +143,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                 channelProvider.currentRole == JoinIntentType.remoteScreen
                     ? 'assets/images/v3_ic_select_receive.svg'
                     : 'assets/images/v3_ic_select_share.svg',
+                excludeFromSemantics: true,
               ),
             ),
             const Padding(padding: EdgeInsets.only(bottom: 24)),
@@ -202,25 +205,29 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                   ),
                 ),
                 const Padding(padding: EdgeInsets.only(bottom: 10)),
-                Row(
-                  children: [
-                    SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: SvgPicture.asset(
-                            'assets/images/v3_ic_error_black.svg')),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: context.tokens.spacing.vsdswSpacing2xs.left)),
-                    AutoSizeText(
-                      S.of(context).v3_main_moderator_input_limit,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdswColorOnSurface,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                MergeSemantics(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: SvgPicture.asset(
+                            'assets/images/v3_ic_error_black.svg',
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left:
+                                  context.tokens.spacing.vsdswSpacing2xs.left)),
+                      AutoSizeText(
+                        S.of(context).v3_main_moderator_input_limit,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdswColorOnSurface,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -2084,6 +2084,371 @@ class S {
       args: [],
     );
   }
+
+  /// `Settings`
+  String get v3_lbl_setting {
+    return Intl.message('Settings', name: 'v3_lbl_setting', desc: '', args: []);
+  }
+
+  /// `Back to previous menu`
+  String get v3_lbl_setting_menu_back {
+    return Intl.message(
+      'Back to previous menu',
+      name: 'v3_lbl_setting_menu_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close settings menu`
+  String get v3_lbl_setting_menu_close {
+    return Intl.message(
+      'Close settings menu',
+      name: 'v3_lbl_setting_menu_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close update dialog`
+  String get v3_lbl_setting_update_close {
+    return Intl.message(
+      'Close update dialog',
+      name: 'v3_lbl_setting_update_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Now`
+  String get v3_lbl_setting_software_update_now_action {
+    return Intl.message(
+      'Update Now',
+      name: 'v3_lbl_setting_software_update_now_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close update error dialog`
+  String get v3_lbl_setting_software_update_fail_close {
+    return Intl.message(
+      'Close update error dialog',
+      name: 'v3_lbl_setting_software_update_fail_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_lbl_setting_software_update_fail_ok {
+    return Intl.message(
+      'OK',
+      name: 'v3_lbl_setting_software_update_fail_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand streaming controls`
+  String get v3_lbl_streaming_expand_button {
+    return Intl.message(
+      'Expand streaming controls',
+      name: 'v3_lbl_streaming_expand_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop streaming`
+  String get v3_lbl_streaming_stop_button {
+    return Intl.message(
+      'Stop streaming',
+      name: 'v3_lbl_streaming_stop_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minimize streaming controls`
+  String get v3_lbl_streaming_minimize_button {
+    return Intl.message(
+      'Minimize streaming controls',
+      name: 'v3_lbl_streaming_minimize_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close device list`
+  String get v3_lbl_device_list_close {
+    return Intl.message(
+      'Close device list',
+      name: 'v3_lbl_device_list_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get v3_lbl_device_list_next {
+    return Intl.message(
+      'Next',
+      name: 'v3_lbl_device_list_next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select language: %s`
+  String get v3_lbl_setting_language_select {
+    return Intl.message(
+      'Select language: %s',
+      name: 'v3_lbl_setting_language_select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close QR code scanner`
+  String get v3_lbl_qr_close {
+    return Intl.message(
+      'Close QR code scanner',
+      name: 'v3_lbl_qr_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open QR code scanner`
+  String get v3_lbl_qr_code {
+    return Intl.message(
+      'Open QR code scanner',
+      name: 'v3_lbl_qr_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear display code`
+  String get v3_lbl_main_display_code_remove {
+    return Intl.message(
+      'Clear display code',
+      name: 'v3_lbl_main_display_code_remove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download audio driver`
+  String get v3_lbl_present_idle_audio_driver_warning_download {
+    return Intl.message(
+      'Download audio driver',
+      name: 'v3_lbl_present_idle_audio_driver_warning_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close audio driver warning`
+  String get v3_lbl_present_idle_audio_driver_warning_close {
+    return Intl.message(
+      'Close audio driver warning',
+      name: 'v3_lbl_present_idle_audio_driver_warning_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable touchback`
+  String get v3_lbl_touch_back_on {
+    return Intl.message(
+      'Enable touchback',
+      name: 'v3_lbl_touch_back_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable touchback`
+  String get v3_lbl_touch_back_off {
+    return Intl.message(
+      'Disable touchback',
+      name: 'v3_lbl_touch_back_off',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go back`
+  String get v3_lbl_moderator_back {
+    return Intl.message(
+      'Go back',
+      name: 'v3_lbl_moderator_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share screen`
+  String get v3_lbl_select_role_share {
+    return Intl.message(
+      'Share screen',
+      name: 'v3_lbl_select_role_share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive screen`
+  String get v3_lbl_select_role_receive {
+    return Intl.message(
+      'Receive screen',
+      name: 'v3_lbl_select_role_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go back`
+  String get v3_lbl_select_screen_ios_back {
+    return Intl.message(
+      'Go back',
+      name: 'v3_lbl_select_screen_ios_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start sharing`
+  String get v3_lbl_select_screen_ios_start_sharing {
+    return Intl.message(
+      'Start sharing',
+      name: 'v3_lbl_select_screen_ios_start_sharing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close screen selection`
+  String get v3_lbl_select_screen_close {
+    return Intl.message(
+      'Close screen selection',
+      name: 'v3_lbl_select_screen_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share computer audio`
+  String get v3_lbl_select_screen_audio {
+    return Intl.message(
+      'Share computer audio',
+      name: 'v3_lbl_select_screen_audio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel sharing`
+  String get v3_lbl_select_screen_cancel {
+    return Intl.message(
+      'Cancel sharing',
+      name: 'v3_lbl_select_screen_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share screen`
+  String get v3_lbl_select_screen_share {
+    return Intl.message(
+      'Share screen',
+      name: 'v3_lbl_select_screen_share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect`
+  String get v3_lbl_moderator_disconnect {
+    return Intl.message(
+      'Disconnect',
+      name: 'v3_lbl_moderator_disconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Later`
+  String get v3_lbl_setting_software_update_deny_action {
+    return Intl.message(
+      'Later',
+      name: 'v3_lbl_setting_software_update_deny_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get v3_lbl_setting_software_update_positive_action {
+    return Intl.message(
+      'Update',
+      name: 'v3_lbl_setting_software_update_positive_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_lbl_setting_software_update_no_available_action {
+    return Intl.message(
+      'OK',
+      name: 'v3_lbl_setting_software_update_no_available_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Update Available`
+  String get v3_lbl_setting_software_update_no_available {
+    return Intl.message(
+      'No Update Available',
+      name: 'v3_lbl_setting_software_update_no_available',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View legal policy: %s`
+  String get v3_lbl_setting_legal_policy {
+    return Intl.message(
+      'View legal policy: %s',
+      name: 'v3_lbl_setting_legal_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screen source:  %s`
+  String get v3_lbl_select_screen_source_name {
+    return Intl.message(
+      'Screen source:  %s',
+      name: 'v3_lbl_select_screen_source_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_setting_select {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_setting_select',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -7,15 +7,15 @@ class V3Focus extends StatelessWidget {
     required this.child,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
     this.onFocusMove,
-    required this.label,
+    this.label,
     required this.identifier,
-    this.button = false,
+    this.button = true,
   });
 
   final Widget child;
   final KeyEventResult Function(FocusNode node, KeyEvent event)? onFocusMove;
   final BorderRadius borderRadius;
-  final String label;
+  final String? label;
   final String identifier;
   final bool button;
 

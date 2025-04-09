@@ -2,6 +2,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -53,25 +54,30 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton> {
               right: context.tokens.spacing.vsdswSpacingMd.left,
             ),
           ),
-          SizedBox(
-            width: 56,
-            height: 32,
-            child: IconButton(
-              icon: isButtonEnabled
-                  ? SvgPicture.asset('assets/images/v3_ic_switch_on.svg')
-                  : SvgPicture.asset('assets/images/v3_ic_switch_off.svg'),
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                trackEvent(
-                  'click_touchback',
-                  EventCategory.session,
-                  target: isButtonEnabled ? 'on' : 'off',
-                );
+          V3Focus(
+            label: isButtonEnabled
+                ? S.of(context).v3_lbl_touch_back_on
+                : S.of(context).v3_lbl_touch_back_off,
+            identifier: 'v3_touch_back_button',
+            child: SizedBox(
+              width: 56,
+              height: 32,
+              child: InkWell(
+                child: isButtonEnabled
+                    ? SvgPicture.asset('assets/images/v3_ic_switch_on.svg')
+                    : SvgPicture.asset('assets/images/v3_ic_switch_off.svg'),
+                onTap: () {
+                  trackEvent(
+                    'click_touchback',
+                    EventCategory.session,
+                    target: isButtonEnabled ? 'on' : 'off',
+                  );
 
-                isButtonEnabled = !isButtonEnabled;
-                WebRTCHelper().setTouchBack(isButtonEnabled);
-                setState(() {});
-              },
+                  isButtonEnabled = !isButtonEnabled;
+                  WebRTCHelper().setTouchBack(isButtonEnabled);
+                  setState(() {});
+                },
+              ),
             ),
           ),
         ],

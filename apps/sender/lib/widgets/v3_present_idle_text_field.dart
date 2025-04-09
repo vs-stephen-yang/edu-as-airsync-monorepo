@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -306,6 +307,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         children: <Widget>[
           // Check range outside listview
           GestureDetector(
+            excludeFromSemantics: true,
             onTap: () {
               _isDropDownMenuVisible = false;
               _dropDownMenuEntry?.remove();
@@ -347,15 +349,22 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                           style: const TextStyle(fontSize: 16),
                         ),
                         hoverColor: context.tokens.color.vsdswColorTertiary,
-                        trailing: IconButton(
-                          icon: const Icon(Icons.highlight_remove),
-                          onPressed: () {
-                            DataDisplayCode.getInstance()
-                                .remove(displayList[index]);
-                            displayList.removeAt(index);
-                            _isDropDownMenuVisible = false;
-                            _dropDownMenuEntry?.remove();
-                          },
+                        trailing: V3Focus(
+                          identifier: 'v3_qa_main_display_code_remove',
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.highlight_remove,
+                              semanticLabel:
+                                  S.of(context).v3_lbl_main_display_code_remove,
+                            ),
+                            onPressed: () {
+                              DataDisplayCode.getInstance()
+                                  .remove(displayList[index]);
+                              displayList.removeAt(index);
+                              _isDropDownMenuVisible = false;
+                              _dropDownMenuEntry?.remove();
+                            },
+                          ),
                         ),
                         onTap: () {
                           _isCodeSelectedFromHistory = true;

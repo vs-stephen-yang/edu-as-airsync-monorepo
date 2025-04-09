@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -84,18 +85,25 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
             ),
             const Spacer(),
             Image.asset('assets/images/img_scanframe_scan.png',
-                width: HOLE_SIZE, height: HOLE_SIZE, fit: BoxFit.fitWidth),
+                excludeFromSemantics: true,
+                width: HOLE_SIZE,
+                height: HOLE_SIZE,
+                fit: BoxFit.fitWidth),
             const Spacer(),
-            GestureDetector(
-              child: const Image(
-                width: 56,
-                height: 56,
-                image: Svg('assets/images/ic_qr_close.svg'),
+            V3Focus(
+              label: S.of(context).v3_lbl_qr_close,
+              identifier: 'v3_qa_qr_close',
+              child: InkWell(
+                child: const Image(
+                  width: 56,
+                  height: 56,
+                  image: Svg('assets/images/ic_qr_close.svg'),
+                ),
+                onTap: () {
+                  Provider.of<PresentStateProvider>(context, listen: false)
+                      .presentMainPage();
+                },
               ),
-              onTap: () {
-                Provider.of<PresentStateProvider>(context, listen: false)
-                    .presentMainPage();
-              },
             ),
             const Spacer(),
           ],

@@ -493,12 +493,19 @@ class AnnotationButton extends StatelessWidget {
     final iconPath = isOn
         ? 'assets/images/${Platform.isAndroid ? 'v3_ic_annotation_on' : 'v3_ic_annotation_expand'}.svg'
         : 'assets/images/v3_ic_sharing_pen.svg';
-    return CircleAvatar(
-      backgroundColor: backgroundColor,
-      radius: 28,
-      child: IconButton(
-        onPressed: onClick,
-        icon: SvgPicture.asset(iconPath),
+    return V3Focus(
+      label: S.current.v3_lbl_sharing_stop,
+      identifier: 'v3_qa_enable_sharing_annotation',
+      button: true,
+      child: CircleAvatar(
+        backgroundColor: backgroundColor,
+        radius: 28,
+        child: InkWell(
+          onTap: onClick,
+          child: ExcludeSemantics(
+            child: SvgPicture.asset(iconPath),
+          ),
+        ),
       ),
     );
   }

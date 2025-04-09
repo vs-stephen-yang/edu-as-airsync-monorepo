@@ -9,9 +9,11 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class V3SettingMainList extends StatelessWidget {
@@ -25,7 +27,6 @@ class V3SettingMainList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -38,51 +39,56 @@ class V3SettingMainList extends StatelessWidget {
               return SizedBox(
                 width: 204,
                 height: 40,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shadowColor: Colors.transparent,
-                    foregroundColor:
-                        context.tokens.color.vsdswColorOnSurfaceInverse,
-                    backgroundColor: !isAppMode &&
-                            SettingsProvider.currentTittlePage.index == index
-                        ? context.tokens.color.vsdswColorPrimary
-                        : context.tokens.color.vsdswColorSurface1000,
-                    textStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
+                child: V3Focus(
+                  label: sprintf(S.current.v3_lbl_setting_select,
+                      [settings[index].itemTitle]),
+                  identifier: 'v3_qa_setting_select_$index',
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shadowColor: Colors.transparent,
+                      foregroundColor:
+                          context.tokens.color.vsdswColorOnSurfaceInverse,
+                      backgroundColor: !isAppMode &&
+                              SettingsProvider.currentTittlePage.index == index
+                          ? context.tokens.color.vsdswColorPrimary
+                          : context.tokens.color.vsdswColorSurface1000,
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: context.tokens.spacing.vsdswSpacingXs.top,
+                        horizontal: context.tokens.spacing.vsdswSpacingSm.left,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: context.tokens.spacing.vsdswSpacingXs.top,
-                      horizontal: context.tokens.spacing.vsdswSpacingSm.left,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    settings[index].callback?.call();
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: AutoSizeText(
-                          settings[index].itemTitle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
+                    onPressed: () {
+                      settings[index].callback?.call();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: AutoSizeText(
+                            settings[index].itemTitle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
-                      ),
-                      if (settings[index].itemIcon != null)
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: settings[index].itemIcon!,
-                        ),
-                    ],
+                        if (settings[index].itemIcon != null)
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: settings[index].itemIcon!,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               );

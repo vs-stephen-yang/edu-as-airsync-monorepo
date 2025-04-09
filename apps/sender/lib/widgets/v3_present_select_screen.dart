@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
@@ -163,6 +164,8 @@ class V3PresentSelectScreen extends StatelessWidget {
             left: 8,
             top: 24,
             child: V3BackButton(
+                label: S.of(context).v3_lbl_select_screen_ios_back,
+                identifier: 'v3_qa_select_screen_ios_back',
                 isDarkTheme: true,
                 onPressed: () {
                   provider.presentStop();
@@ -199,6 +202,8 @@ class V3PresentSelectScreen extends StatelessWidget {
                 const CountDownText(),
                 Padding(padding: context.tokens.spacing.vsdswSpacingLg),
                 V3CustomWhiteButton(
+                  label: S.of(context).v3_lbl_select_screen_ios_start_sharing,
+                  identifier: 'v3_qa_select_screen_ios_start_sharing',
                   buttonSize: const Size(300, 48),
                   text: S.of(context).v3_select_screen_ios_start_sharing,
                   onPressed: () {
@@ -371,16 +376,23 @@ class SelectScreenDialog extends Dialog {
                     ),
                     Align(
                       alignment: Alignment.topRight,
-                      child: InkWell(
-                        child: Container(
-                          margin: const EdgeInsets.all(8),
-                          width: 48,
-                          height: 48,
-                          child: Icon(Icons.close,
+                      child: V3Focus(
+                        identifier: 'v3_qa_select_screen_close',
+                        child: InkWell(
+                          child: Container(
+                            margin: const EdgeInsets.all(8),
+                            width: 48,
+                            height: 48,
+                            child: Icon(
+                              Icons.close,
                               size: 20,
-                              color: context.tokens.color.vsdswColorOnSurface),
+                              color: context.tokens.color.vsdswColorOnSurface,
+                              semanticLabel:
+                                  S.of(context).v3_lbl_select_screen_close,
+                            ),
+                          ),
+                          onTap: () => cancel(),
                         ),
-                        onTap: () => cancel(),
                       ),
                     ),
                   ],
@@ -451,24 +463,34 @@ class SelectScreenDialog extends Dialog {
                                     });
                                   },
                                   tabs: [
-                                    Tab(
-                                      child: buildTabWidget(
-                                          context,
-                                          S.current
-                                              .present_select_screen_entire),
+                                    V3Focus(
+                                      identifier: 'v3_qa_select_screen_entire',
+                                      child: Tab(
+                                        child: buildTabWidget(
+                                            context,
+                                            S.current
+                                                .present_select_screen_entire),
+                                      ),
                                     ),
-                                    Tab(
-                                      child: buildTabWidget(
-                                          context,
-                                          S.current
-                                              .present_select_screen_window),
+                                    V3Focus(
+                                      identifier: 'v3_qa_select_screen_window',
+                                      child: Tab(
+                                        child: buildTabWidget(
+                                            context,
+                                            S.current
+                                                .present_select_screen_window),
+                                      ),
                                     ),
-                                    Tab(
-                                      child: buildTabWidget(
-                                          context,
-                                          S.current
-                                              .v3_present_select_screen_extension,
-                                          enable: isExtensionEnable),
+                                    V3Focus(
+                                      identifier:
+                                          'v3_qa_select_screen_extension',
+                                      child: Tab(
+                                        child: buildTabWidget(
+                                            context,
+                                            S.current
+                                                .v3_present_select_screen_extension,
+                                            enable: isExtensionEnable),
+                                      ),
                                     ),
                                   ],
                                   labelColor:
@@ -516,35 +538,44 @@ class SelectScreenDialog extends Dialog {
                                             height: 48,
                                             child: Row(
                                               children: [
-                                                Checkbox(
-                                                  value: _systemAudio,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            2.0),
+                                                V3Focus(
+                                                  identifier:
+                                                      'v3_qa_select_screen_audio',
+                                                  child: Checkbox(
+                                                    semanticLabel: S
+                                                        .of(context)
+                                                        .v3_lbl_select_screen_audio,
+                                                    value: _systemAudio,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              2.0),
+                                                    ),
+                                                    side: WidgetStateBorderSide
+                                                        .resolveWith(
+                                                      (states) => BorderSide(
+                                                          width: 1.0,
+                                                          color: (!displayAudioDriverWarning)
+                                                              ? context
+                                                                  .tokens
+                                                                  .color
+                                                                  .vsdswColorPrimary
+                                                              : context
+                                                                  .tokens
+                                                                  .color
+                                                                  .vsdswColorDisabled),
+                                                    ),
+                                                    onChanged:
+                                                        (!displayAudioDriverWarning)
+                                                            ? (bool? value) {
+                                                                setState(() {
+                                                                  _systemAudio =
+                                                                      value!;
+                                                                });
+                                                              }
+                                                            : null,
                                                   ),
-                                                  side: WidgetStateBorderSide
-                                                      .resolveWith(
-                                                    (states) => BorderSide(
-                                                        width: 1.0,
-                                                        color: (!displayAudioDriverWarning)
-                                                            ? context
-                                                                .tokens
-                                                                .color
-                                                                .vsdswColorPrimary
-                                                            : context
-                                                                .tokens
-                                                                .color
-                                                                .vsdswColorDisabled),
-                                                  ),
-                                                  onChanged:
-                                                      (!displayAudioDriverWarning)
-                                                          ? (bool? value) {
-                                                              setState(() {
-                                                                _systemAudio = value!;
-                                                    });
-                                                            }
-                                                          : null,
                                                 ),
                                                 const Gap(8),
                                                 Text(
@@ -564,34 +595,40 @@ class SelectScreenDialog extends Dialog {
                                           ),
                                           if (displayAudioDriverWarning)
                                             SizedBox(
-                                              child: Row(
-                                                children: [
-                                                  const Gap(8),
-                                                  SizedBox(
-                                                    width: 16,
-                                                    height: 16,
-                                                    child: SvgPicture.asset(
-                                                        'assets/images/v3_ic_audio_driver_warning.svg'),
-                                                  ),
-                                                  const Gap(8),
-                                                  Text(
-                                                    S.current
-                                                        .v3_present_select_screen_mac_audio_driver,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily: 'Inter',
-                                                        color: context
-                                                            .tokens
-                                                            .color
-                                                            .vsdswColorWarning),
-                                                  ),
-                                                ],
+                                              child: MergeSemantics(
+                                                child: Row(
+                                                  children: [
+                                                    const Gap(8),
+                                                    SizedBox(
+                                                      width: 16,
+                                                      height: 16,
+                                                      child: SvgPicture.asset(
+                                                          'assets/images/v3_ic_audio_driver_warning.svg'),
+                                                    ),
+                                                    const Gap(8),
+                                                    Text(
+                                                      S.current
+                                                          .v3_present_select_screen_mac_audio_driver,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: 'Inter',
+                                                          color: context
+                                                              .tokens
+                                                              .color
+                                                              .vsdswColorWarning),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                         ],
                                       ),
                                     const Spacer(),
                                     createButton(
+                                      label: S
+                                          .of(context)
+                                          .v3_lbl_select_screen_cancel,
+                                      identifier: 'v3_qa_select_screen_cancel',
                                       text: S
                                           .of(context)
                                           .present_select_screen_cancel,
@@ -603,6 +640,10 @@ class SelectScreenDialog extends Dialog {
                                       },
                                     ),
                                     createButton(
+                                      label: S
+                                          .of(context)
+                                          .v3_lbl_select_screen_share,
+                                      identifier: 'v3_qa_select_screen_share',
                                       text: S.current.v3_main_select_role_share,
                                       textColor: sourceSelected
                                           ? context
@@ -676,36 +717,42 @@ class SelectScreenDialog extends Dialog {
   }
 
   Widget createButton(
-      {required String text,
+      {required String label,
+      required String identifier,
+      required String text,
       required Color textColor,
       required Color backgroundColor,
       required GestureTapCallback onPressed}) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        alignment: Alignment.center,
-        width: 240,
-        height: 48,
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: backgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(9999),
+    return V3Focus(
+      identifier: identifier,
+      label: label,
+      child: InkWell(
+        onTap: onPressed,
+        child: Container(
+          alignment: Alignment.center,
+          width: 240,
+          height: 48,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: backgroundColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(9999),
+            ),
+            shadows: backgroundColor != Colors.transparent
+                ? [
+                    BoxShadow(
+                      color: backgroundColor.withOpacity(0.31),
+                      blurRadius: 24,
+                      offset: const Offset(0, 16),
+                      spreadRadius: 0,
+                    )
+                  ]
+                : null,
           ),
-          shadows: backgroundColor != Colors.transparent
-              ? [
-                  BoxShadow(
-                    color: backgroundColor.withOpacity(0.31),
-                    blurRadius: 24,
-                    offset: const Offset(0, 16),
-                    spreadRadius: 0,
-                  )
-                ]
-              : null,
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: textColor),
+          child: Text(
+            text,
+            style: TextStyle(color: textColor),
+          ),
         ),
       ),
     );
@@ -739,7 +786,9 @@ class SelectScreenDialog extends Dialog {
     final completer = Completer<bool>();
 
     // Set up a listener that triggers when the virtual display starts
-    _virtualDisplaySubscription = FlutterVirtualDisplay.instance.onVirtualDisplayStarted.stream.listen((_) {
+    _virtualDisplaySubscription = FlutterVirtualDisplay
+        .instance.onVirtualDisplayStarted.stream
+        .listen((_) {
       log.info('Virtual display started');
       if (!completer.isCompleted) {
         completer.complete(true);
@@ -747,7 +796,8 @@ class SelectScreenDialog extends Dialog {
     });
 
     // Add error handling
-    FlutterVirtualDisplay.instance.onVirtualDisplayError.stream.listen((errorMsg) {
+    FlutterVirtualDisplay.instance.onVirtualDisplayError.stream
+        .listen((errorMsg) {
       log.severe('Virtual display error: $errorMsg');
       if (!completer.isCompleted) {
         completer.complete(false);
@@ -756,7 +806,8 @@ class SelectScreenDialog extends Dialog {
 
     // Start the virtual display
     log.info('Starting virtual display');
-    final startResult = await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    final startResult =
+        await FlutterVirtualDisplay.instance.startVirtualDisplay();
 
     if (!startResult!) {
       log.warning('Failed to start virtual display');
@@ -948,47 +999,53 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
     final sourceName = source.name.length > 20
         ? '${source.name.substring(0, 20)}...'
         : source.name;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: () {
-              log.info('Selected source id => ${source.id}');
-              widget.onTap(source);
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              padding: const EdgeInsets.all(4),
-              decoration: widget.selected
-                  ? BoxDecoration(
-                      border: Border.all(
-                          width: 4,
-                          color: context.tokens.color.vsdswColorSecondary),
-                      borderRadius: context.tokens.radii.vsdswRadiusLg,
-                    )
-                  : null,
-              child: source.thumbnail != null
-                  ? Image.memory(
-                      fit: BoxFit.fill,
-                      source.thumbnail!,
-                      gaplessPlayback: true,
-                      // alignment: Alignment.center,
-                    )
-                  : Container(),
+    return V3Focus(
+      label:
+          sprintf(S.of(context).v3_lbl_select_screen_source_name, [sourceName]),
+      identifier: sprintf('v3_qa_select_screen_source_name_%s', [sourceName]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                log.info('Selected source id => ${source.id}');
+                widget.onTap(source);
+              },
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.all(4),
+                decoration: widget.selected
+                    ? BoxDecoration(
+                        border: Border.all(
+                            width: 4,
+                            color: context.tokens.color.vsdswColorSecondary),
+                        borderRadius: context.tokens.radii.vsdswRadiusLg,
+                      )
+                    : null,
+                child: source.thumbnail != null
+                    ? Image.memory(
+                        fit: BoxFit.fill,
+                        source.thumbnail!,
+                        gaplessPlayback: true,
+                        // alignment: Alignment.center,
+                      )
+                    : Container(),
+              ),
             ),
           ),
-        ),
-        const Gap(8),
-        Text(
-          sourceName,
-          style: TextStyle(
-              fontSize: 16,
-              color: context.tokens.color.vsdswColorOnSurface,
-              fontWeight:
-                  widget.selected ? FontWeight.bold : FontWeight.normal),
-        ),
-      ],
+          const Gap(8),
+          Text(
+            sourceName,
+            style: TextStyle(
+                fontSize: 16,
+                color: context.tokens.color.vsdswColorOnSurface,
+                fontWeight:
+                    widget.selected ? FontWeight.bold : FontWeight.normal),
+          ),
+        ],
+      ),
     );
   }
 }

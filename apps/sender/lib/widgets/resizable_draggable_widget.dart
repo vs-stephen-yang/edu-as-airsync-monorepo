@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -195,17 +197,21 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
           _currentX = _currentX.clamp(0.0, screenWidth - _collapsedWidth);
         });
       },
-      child: GestureDetector(
-        onTap: () {
-          _updatePositionForExpandOrCollapse(
-              true, _collapsedWidth, screenWidth);
-          setState(() => _isExpanded = true);
-        },
-        child: CollapsedContentWidget(
-          width: _collapsedWidth,
-          height: widget.height,
-          isDragging: false,
-          parentContext: context,
+      child: V3Focus(
+        label: S.of(context).v3_lbl_streaming_expand_button,
+        identifier: 'v3_qa_streaming_expand_button',
+        child: InkWell(
+          onTap: () {
+            _updatePositionForExpandOrCollapse(
+                true, _collapsedWidth, screenWidth);
+            setState(() => _isExpanded = true);
+          },
+          child: CollapsedContentWidget(
+            width: _collapsedWidth,
+            height: widget.height,
+            isDragging: false,
+            parentContext: context,
+          ),
         ),
       ),
     );
@@ -270,7 +276,7 @@ class ExpandedContentWidget extends StatelessWidget {
       width: 26,
       height: 26,
       alignment: Alignment.center,
-      child: SvgPicture.asset(assetPath),
+      child: ExcludeSemantics(child: SvgPicture.asset(assetPath)),
     );
   }
 
@@ -289,21 +295,25 @@ class ExpandedContentWidget extends StatelessWidget {
   }
 
   Widget _buildStopButton(BuildContext context) {
-    return GestureDetector(
-      onTap: onStop,
-      child: SizedBox(
-        width: 26,
-        height: 26,
-        child: CircleAvatar(
-          radius: 13,
-          backgroundColor: context.tokens.color.vsdswColorError,
-          child: Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: context.tokens.color.vsdswColorSurface100,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(2),
+    return V3Focus(
+      label: S.of(context).v3_lbl_streaming_stop_button,
+      identifier: 'v3_qa_streaming_stop_button',
+      child: InkWell(
+        onTap: onStop,
+        child: SizedBox(
+          width: 26,
+          height: 26,
+          child: CircleAvatar(
+            radius: 13,
+            backgroundColor: context.tokens.color.vsdswColorError,
+            child: Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: context.tokens.color.vsdswColorSurface100,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
         ),
@@ -312,9 +322,13 @@ class ExpandedContentWidget extends StatelessWidget {
   }
 
   Widget _buildMinimizeButton() {
-    return GestureDetector(
-      onTap: onMinimize,
-      child: _buildIcon('assets/images/ic_minimize.svg'),
+    return V3Focus(
+      label: S.current.v3_lbl_streaming_minimize_button,
+      identifier: 'v3_qa_streaming_minimize_button',
+      child: InkWell(
+        onTap: onMinimize,
+        child: _buildIcon('assets/images/ic_minimize.svg'),
+      ),
     );
   }
 }
@@ -355,7 +369,8 @@ class CollapsedContentWidget extends StatelessWidget {
             .withOpacity(isDragging ? 1.0 : 0.3),
       ),
       alignment: Alignment.center,
-      child: SvgPicture.asset('assets/images/ic_expend.svg'),
+      child: ExcludeSemantics(
+          child: SvgPicture.asset('assets/images/ic_expend.svg')),
     );
   }
 }

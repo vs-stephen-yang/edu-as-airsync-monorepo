@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -85,47 +86,65 @@ class _V3PresentIdleAudioDriverWarningState
                         ),
                       ),
                       const SizedBox(width: 16),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                context.tokens.radii.vsdswRadiusmd.topLeft.x),
+                      V3Focus(
+                        label: S
+                            .of(context)
+                            .v3_lbl_present_idle_audio_driver_warning_download,
+                        identifier:
+                            'v3_qa_present_idle_audio_driver_warning_download',
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  context.tokens.radii.vsdswRadiusmd.topLeft.x),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 6),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 6),
-                        ),
-                        onPressed: () {
-                          launchUrl(Uri.parse(
-                              'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
-                        },
-                        child: Text(
-                          S.current
-                              .v3_present_idle_download_virtual_audio_device,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: context.tokens.color.vsdswColorWarning,
+                          onPressed: () {
+                            launchUrl(Uri.parse(
+                                'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
+                          },
+                          child: Text(
+                            S.current
+                                .v3_present_idle_download_virtual_audio_device,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: context.tokens.color.vsdswColorWarning,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  icon: Icon(
-                    Icons.close,
-                    size: 14,
-                    color: context.tokens.color.vsdswColorOnWarning,
+                V3Focus(
+                  label: S
+                      .of(context)
+                      .v3_lbl_present_idle_audio_driver_warning_close,
+                  identifier: 'v3_qa_present_idle_audio_driver_warning_close',
+                  button: true,
+                  child: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: InkWell(
+                      child: ExcludeSemantics(
+                        child: Icon(
+                          Icons.close,
+                          size: 14,
+                          color: context.tokens.color.vsdswColorOnWarning,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _isVisible = false;
+                        });
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isVisible = false;
-                    });
-                  },
                 ),
-                const SizedBox(width: 16), // 右边距
+                const SizedBox(width: 12),
               ],
             ),
           ),

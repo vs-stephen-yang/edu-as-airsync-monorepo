@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:sprintf/sprintf.dart';
 
 class V3Toast {
   static final V3Toast _instance = V3Toast._internal();
@@ -62,6 +64,10 @@ class V3Toast {
       enableAnimation: false,
       position: MotionToastPosition.bottom,
     ).show(context);
+    SemanticsService.announce(
+      sprintf(fullText, [sharingTime]),
+      TextDirection.ltr,
+    );
   }
 
   TextSpan _buildSharingTimeTextSpan(

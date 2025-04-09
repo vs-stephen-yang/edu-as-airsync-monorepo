@@ -15,7 +15,7 @@ class V3PresentDeviceListButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 32,
+      height: 48,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -36,9 +36,11 @@ class V3PresentDeviceListButton extends StatelessWidget {
             identifier: 'v3_qa_device_list_button_device_list',
             button: true,
             child: InkWell(
+              borderRadius: BorderRadius.circular(9999),
               onTap: onTap,
               child: Container(
                 height: 32,
+                // Android 要 48,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 clipBehavior: Clip.antiAlias,
