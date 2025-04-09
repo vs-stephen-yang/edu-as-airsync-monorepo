@@ -8,7 +8,7 @@ import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -65,6 +65,10 @@ class V3ShortcutsMenu extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   V3Focus(
+                    label: S
+                        .of(context)
+                        .v3_lbl_streaming_shortcut_cast_device_toggle,
+                    identifier: 'v3_qa_streaming_shortcut_cast_device_toggle',
                     child: SizedBox(
                       height: 27,
                       child: Row(
@@ -84,10 +88,10 @@ class V3ShortcutsMenu extends StatelessWidget {
                             return SizedBox(
                               height: 21,
                               child: IconButton(
-                                icon: Image(
-                                  image: Svg(channelProvider.isSenderMode
+                                icon: SvgPicture.asset(
+                                  channelProvider.isSenderMode
                                       ? 'assets/images/ic_switch_on.svg'
-                                      : 'assets/images/ic_switch_off.svg'),
+                                      : 'assets/images/ic_switch_off.svg',
                                 ),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
@@ -151,6 +155,11 @@ class V3ShortcutsMenu extends StatelessWidget {
                             ),
                           ),
                           V3Focus(
+                            label: S
+                                .of(context)
+                                .v3_lbl_streaming_shortcut_airplay_toggle,
+                            identifier:
+                                'v3_qa_streaming_shortcut_airplay_toggle',
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -172,11 +181,10 @@ class V3ShortcutsMenu extends StatelessWidget {
                                 SizedBox(
                                   height: 21,
                                   child: IconButton(
-                                    icon: Image(
-                                      image: Svg(mirrorStateProvider
-                                              .airplayEnabled
+                                    icon: SvgPicture.asset(
+                                      mirrorStateProvider.airplayEnabled
                                           ? 'assets/images/ic_switch_on.svg'
-                                          : 'assets/images/ic_switch_off.svg'),
+                                          : 'assets/images/ic_switch_off.svg',
                                     ),
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
@@ -203,6 +211,11 @@ class V3ShortcutsMenu extends StatelessWidget {
                             ),
                           ),
                           V3Focus(
+                            label: S
+                                .of(context)
+                                .v3_lbl_streaming_shortcut_google_cast_toggle,
+                            identifier:
+                                'v3_qa_streaming_shortcut_google_cast_toggle',
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -224,11 +237,10 @@ class V3ShortcutsMenu extends StatelessWidget {
                                 SizedBox(
                                   height: 21,
                                   child: IconButton(
-                                    icon: Image(
-                                      image: Svg(mirrorStateProvider
-                                              .googleCastEnabled
+                                    icon: SvgPicture.asset(
+                                      mirrorStateProvider.googleCastEnabled
                                           ? 'assets/images/ic_switch_on.svg'
-                                          : 'assets/images/ic_switch_off.svg'),
+                                          : 'assets/images/ic_switch_off.svg',
                                     ),
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
@@ -257,6 +269,11 @@ class V3ShortcutsMenu extends StatelessWidget {
                           ),
                           if (mirrorStateProvider.miracastSupport)
                             V3Focus(
+                              label: S
+                                  .of(context)
+                                  .v3_lbl_streaming_shortcut_miracast_toggle,
+                              identifier:
+                                  'v3_qa_streaming_shortcut_miracast_toggle',
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -279,11 +296,10 @@ class V3ShortcutsMenu extends StatelessWidget {
                                   SizedBox(
                                     height: 21,
                                     child: IconButton(
-                                      icon: Image(
-                                        image: Svg(mirrorStateProvider
-                                                .miracastEnabled
+                                      icon: SvgPicture.asset(
+                                        mirrorStateProvider.miracastEnabled
                                             ? 'assets/images/ic_switch_on.svg'
-                                            : 'assets/images/ic_switch_off.svg'),
+                                            : 'assets/images/ic_switch_off.svg',
                                       ),
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
@@ -320,14 +336,14 @@ class V3ShortcutsMenu extends StatelessWidget {
               left: 8,
               bottom: 8,
               child: V3Focus(
+                label: S.of(context).v3_lbl_close_streaming_shortcut_menu,
+                identifier: 'v3_qa_close_streaming_shortcut_menu',
                 child: SizedBox(
                   width: 33,
                   height: 33,
                   child: IconButton(
                     focusNode: primaryFocusNode,
-                    icon: const Image(
-                      image: Svg('assets/images/ic_menu_close.svg'),
-                    ),
+                    icon: SvgPicture.asset('assets/images/ic_menu_close.svg'),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                     onPressed: () {

@@ -75,6 +75,15 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 visible: !isCollapsed &&
                     HybridConnectionList.hybridSplitScreenCount.value > 1,
                 child: V3Focus(
+                  label: HybridConnectionList().enlargedScreenIndex.value ==
+                          widget.index
+                      ? S.of(context).v3_lbl_streaming_view_minimize
+                      : S.of(context).v3_lbl_streaming_view_expand,
+                  identifier:
+                      HybridConnectionList().enlargedScreenIndex.value ==
+                              widget.index
+                          ? 'v3_qa_streaming_view_minimize'
+                          : 'v3_qa_streaming_view_expand',
                   child: SizedBox(
                     width: 27,
                     height: 27,
@@ -137,6 +146,12 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                     var isMute = HybridConnectionList()
                         .getAudioDisableStateByIndex(widget.index);
                     return V3Focus(
+                      label: isMute
+                          ? S.of(context).v3_lbl_streaming_view_unmute
+                          : S.of(context).v3_lbl_streaming_view_mute,
+                      identifier: isMute
+                          ? 'v3_qa_streaming_view_unmute'
+                          : 'v3_qa_streaming_view_mute',
                       child: SizedBox(
                         width: 27,
                         height: 27,
@@ -167,6 +182,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
               Visibility(
                 visible: !isCollapsed,
                 child: V3Focus(
+                  label: S.of(context).v3_lbl_streaming_view_stop,
+                  identifier: 'v3_qa_streaming_view_stop',
                   child: SizedBox(
                     width: 27,
                     height: 27,
@@ -229,6 +246,12 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 ),
               ),
               V3Focus(
+                label: isCollapsed
+                    ? S.of(context).v3_lbl_streaming_view_function_expand
+                    : S.of(context).v3_lbl_streaming_view_function_minimize,
+                identifier: isCollapsed
+                    ? 'v3_qa_streaming_view_function_expend'
+                    : 'v3_qa_streaming_view_function_minimize',
                 child: SizedBox(
                   width: 27,
                   height: 27,

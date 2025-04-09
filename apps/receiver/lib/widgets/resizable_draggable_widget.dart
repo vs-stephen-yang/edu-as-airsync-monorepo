@@ -2,11 +2,12 @@ import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 
 class ResizableDraggableWidget extends StatefulWidget {
@@ -297,12 +298,24 @@ class ExpandedContentWidget extends StatelessWidget {
           Flexible(child: _buildText(context)),
           textPadding,
           gap,
-          // TODO Uncomment this line when frameware is ready
-          // V3Focus(child: _buildMuteButton(context, isMute)),
+          // TODO Uncomment this feature when firmware is ready
+          // V3Focus(
+          //   label: S.of(context).v3_lbl_resizable_mute,
+          //   identifier: 'v3_qa_resizable_mute',
+          //   child: _buildMuteButton(context, isMute),
+          // ),
           gap,
-          V3Focus(child: _buildStopButton(context)),
+          V3Focus(
+            label: S.of(context).v3_lbl_resizable_stop,
+            identifier: 'v3_qa_resizable_stop',
+            child: _buildStopButton(context),
+          ),
           gap,
-          V3Focus(child: _buildMinimizeButton(primaryFocusNode)),
+          V3Focus(
+            label: S.of(context).v3_lbl_resizable_minimize,
+            identifier: 'v3_qa_resizable_minimize',
+            child: _buildMinimizeButton(primaryFocusNode),
+          ),
           gap,
         ],
       ),
@@ -428,6 +441,8 @@ class CollapsedContentWidget extends StatelessWidget {
             color: context.tokens.color.vsdslColorSuccess),
         alignment: Alignment.center,
         child: V3Focus(
+          label: S.of(context).v3_lbl_resizable_expand,
+          identifier: 'v3_qa_resizable_expand',
           child: InkWell(
             focusNode: primaryFocusNode,
             onTap: onTap,

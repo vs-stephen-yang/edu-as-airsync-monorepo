@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
@@ -9,7 +10,7 @@ import 'package:display_flutter/screens/v3_participants_menu.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3FeatureSet extends StatefulWidget {
@@ -122,6 +123,9 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           top: 0,
                           bottom: isFullFeature ? 61.5 : 0,
                           child: V3Focus(
+                            label:
+                                S.of(context).v3_lbl_open_feature_set_moderator,
+                            identifier: 'v3_qa_open_feature_set_moderator',
                             borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(10),
                               bottomRight: Radius.circular(10),
@@ -136,9 +140,8 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                                     width: 27,
                                     height: 27,
                                     child: IconButton(
-                                      icon: const Image(
-                                        image: Svg(
-                                            'assets/images/ic_streaming_moderator_off.svg'),
+                                      icon: SvgPicture.asset(
+                                        'assets/images/ic_streaming_moderator_off.svg',
                                       ),
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
@@ -200,6 +203,10 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           right: 0,
                           bottom: 0,
                           child: V3Focus(
+                            label: S
+                                .of(context)
+                                .v3_lbl_open_feature_set_cast_device,
+                            identifier: 'v3_qa_open_feature_set_cast_device',
                             borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(10),
                               bottomRight: Radius.circular(10),
@@ -246,9 +253,8 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                                     width: 27,
                                     height: 27,
                                     child: IconButton(
-                                      icon: const Image(
-                                        image: Svg(
-                                            'assets/images/ic_streaming_device_list_off.svg'),
+                                      icon: SvgPicture.asset(
+                                        'assets/images/ic_streaming_device_list_off.svg',
                                       ),
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),

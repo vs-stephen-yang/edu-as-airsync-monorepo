@@ -341,138 +341,260 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "Screen sharing is about to end. Please restart the screen sharing if necessary.",
     ),
-        "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
-          "Close download sender app menu",
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Accept request",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Accept all requests",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Decline request",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Close cast device connection",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Disable touchback for cast device",
         ),
-        "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
-          "Close connection status dialog",
-        ),
-        "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
-          "Agree with EULA",
-        ),
-        "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
-          "Disagree with EULA",
-        ),
-        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
-          "Cancel exiting moderator mode",
-        ),
-        "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
-          "Confirm exiting moderator mode",
-        ),
-        "v3_lbl_internet_connection_only_error":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Enable touchback for cast device",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Close download sender app menu",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage("Close cast device list"),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Close moderator list",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage("Close Streaming Shortcut menu"),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Close connection status dialog",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
+      "Agree with EULA",
+    ),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Disagree with EULA",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancel exiting moderator mode",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Confirm exiting moderator mode",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Do not extend casting time",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Extend casting time",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Close group reject notification",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
           "Connectivity error，please check device network setting",
         ),
-        "v3_lbl_internet_connection_warning":
-            MessageLookupByLibrary.simpleMessage(
-          "Local connection only",
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Local connection only",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Select language",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Select %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancel dialog",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Confirm dialog",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Minimize quick connect menu",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage("Minimize Streaming QR Code menu"),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Toggle moderator mode",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Open download sender app menu",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Open cast device list",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Open moderator list",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Open Setting Menu",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Open Streaming QR Code Menu",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Open Streaming Shortcut Menu",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Cast device to this participant",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Close participant connection",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Disconnect this participant",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Close mirror participant connection",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Share to this participant\'s mirror",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Stop mirror participant\'s streaming",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Share to this participant\'s screen",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Stop participant\'s streaming",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Enable touchback for this participant",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Disable touchback for this participant",
         ),
-        "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
-          "Select language",
-        ),
-        "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
-          "Select %s",
-        ),
-        "v3_lbl_minimal_quick_connect_menu":
-            MessageLookupByLibrary.simpleMessage(
-          "Minimize quick connect menu",
-        ),
-        "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
-          "Toggle moderator mode",
-        ),
-        "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
-          "Open download sender app menu",
-        ),
-        "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
-          "Open Setting Menu",
-        ),
-        "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
-          "Open broadcast setting menu",
-        ),
-        "v3_lbl_settings_broadcast_boards":
-            MessageLookupByLibrary.simpleMessage(
-          "Open broadcast boards menu",
-        ),
-        "v3_lbl_settings_broadcast_devices":
-            MessageLookupByLibrary.simpleMessage(
-          "Open broadcast devices menu",
-        ),
-        "v3_lbl_settings_broadcast_to_display_group":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Expand presentation control",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimize presentation control",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Mute presentation",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Stop presentation",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Open broadcast setting menu",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Open broadcast boards menu",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Open broadcast devices menu",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
           "Open broadcast to display group menu",
         ),
-        "v3_lbl_settings_broadcast_to_display_group_item":
-            MessageLookupByLibrary.simpleMessage("Select %s"),
-        "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
-          "Open connectivity setting menu",
-        ),
-        "v3_lbl_settings_device_authorize_mode":
-            MessageLookupByLibrary.simpleMessage(
-                "Turn on/off authorization mode"),
-        "v3_lbl_settings_device_auto_fill_otp":
-            MessageLookupByLibrary.simpleMessage(
-                "Turn on/off auto fill OTP mode"),
-        "v3_lbl_settings_device_launch_on_startup":
-            MessageLookupByLibrary.simpleMessage(
-                "Turn on/off auto startup mode"),
-        "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
-          "Modify device name",
-        ),
-        "v3_lbl_settings_device_name_close":
-            MessageLookupByLibrary.simpleMessage(
-          "Close device name setting",
-        ),
-        "v3_lbl_settings_device_name_save":
-            MessageLookupByLibrary.simpleMessage(
-          "Save device name",
-        ),
-        "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
-          "Open device setting menu",
-        ),
-        "v3_lbl_settings_device_smart_scaling":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Select %s"),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Open connectivity setting menu",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage("Turn on/off authorization mode"),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage("Turn on/off auto fill OTP mode"),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage("Turn on/off auto startup mode"),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Modify device name",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Close device name setting",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Save device name",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Open device setting menu",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
           "Turn on/off smart scaling toggle",
         ),
-        "v3_lbl_settings_enter_device_name":
-            MessageLookupByLibrary.simpleMessage(
-          "Enter device name",
-        ),
-        "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
-          "Open screen broadcasting dropdown menu",
-        ),
-        "v3_lbl_settings_invite_group_item":
-            MessageLookupByLibrary.simpleMessage(
-          "Select %s",
-        ),
-        "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
-          "Open legal policy setting menu",
-        ),
-        "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
-          "Setting Menu is locked",
-        ),
-        "v3_lbl_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Enter device name",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Open screen broadcasting dropdown menu",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Select %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Open legal policy setting menu",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Setting Menu is locked",
+    ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
           "More information about broadcast to display group",
         ),
-        "v3_lbl_settings_show_display_code":
-            MessageLookupByLibrary.simpleMessage(
-          "Turn on/off display code toggle",
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Turn on/off display code toggle",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Open what\'s new setting menu",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Open mirroring setting menu",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay toggle"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage("Cast to devices toggle"),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Expand streaming features",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast toggle"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Streaming Shortcut Menu is locked",
         ),
-        "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
-          "Open what\'s new setting menu",
-        ),
-        "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
-          "Open mirroring setting menu",
-        ),
-        "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
-          "Close",
-        ),
-        "v3_main_internet_connection_only":
-            MessageLookupByLibrary.simpleMessage(
-          "Internet connection only。",
-        ),
-        "v3_main_internet_connection_only_error":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Collapse streaming features",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast toggle"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Expand streaming view",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("Expand streaming function"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Collapse streaming function"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Collapse streaming view",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Mute audio",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Stop streaming",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Unmute audio",
+    ),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Close",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Internet connection only。",
+    ),
+    "v3_main_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
           "Connectivity error，please check device network setting。",
         ),
     "v3_main_internet_connection_only_error_dialog_desc":

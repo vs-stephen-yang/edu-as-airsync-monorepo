@@ -8,7 +8,7 @@ import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class V3GroupRejectPrompt extends ConsumerWidget {
   const V3GroupRejectPrompt({super.key});
@@ -107,8 +107,10 @@ class V3GroupRejectPrompt extends ConsumerWidget {
                       child: Column(
                         children: [
                           SvgPicture.asset(
-                              'assets/images/ic_group_reject_alert.svg',
-                              height: titleBarHeight),
+                            'assets/images/ic_group_reject_alert.svg',
+                            excludeFromSemantics: true,
+                            height: titleBarHeight,
+                          ),
                           Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: requestPaddingHeight / 2,
@@ -175,11 +177,14 @@ class V3GroupRejectPrompt extends ConsumerWidget {
                       top: 10,
                       right: 10,
                       child: V3Focus(
+                        label: S.of(context).v3_lbl_group_reject_close,
+                        identifier: 'v3_qa_group_reject_close',
                         child: IconButton(
                           focusNode: primaryFocusNode,
                           onPressed: () => closeAllRejectPrompts(ref),
                           icon: SvgPicture.asset(
                             'assets/images/ic_group_reject_close.svg',
+                            excludeFromSemantics: true,
                             width: 26,
                             height: 26,
                           ),

@@ -11,7 +11,7 @@ import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
@@ -91,14 +91,15 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
       height: 34,
       child: Row(
         children: [
-          Image(
-            width: 32,
-            height: 32,
-            image: Svg(isCasting
+          SvgPicture.asset(
+            isCasting
                 ? 'assets/images/ic_participant_avatar_cast.svg'
                 : isReceiving
                     ? 'assets/images/ic_participant_avatar_receive.svg'
-                    : 'assets/images/ic_participant_avatar_wait.svg'),
+                    : 'assets/images/ic_participant_avatar_wait.svg',
+            excludeFromSemantics: true,
+            width: 32,
+            height: 32,
           ),
           Gap(context.tokens.spacing.vsdslSpacingSm.left),
           Expanded(
@@ -189,6 +190,8 @@ class ParticipantStandbyFeature extends StatelessWidget {
     return Row(
       children: [
         V3Focus(
+          label: S.of(context).v3_lbl_participant_share,
+          identifier: 'v3_qa_participant_share',
           child: SizedBox(
             width: isForMenuUse
                 ? rtcConnector.senderPlatform == 'web'
@@ -218,12 +221,14 @@ class ParticipantStandbyFeature extends StatelessWidget {
                   if (isForMenuUse) ...[
                     Gap(context.tokens.spacing.vsdslSpacingSm.left),
                     SizedBox(
-                      child: Image(
+                      child: SvgPicture.asset(
+                        'assets/images/ic_arrow_to_screen.svg',
+                        excludeFromSemantics: true,
                         width: 16,
                         height: 16,
-                        image:
-                            const Svg('assets/images/ic_arrow_to_screen.svg'),
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                        colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdslColorOnSurfaceInverse,
+                            BlendMode.srcIn),
                       ),
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
@@ -250,14 +255,17 @@ class ParticipantStandbyFeature extends StatelessWidget {
         Gap(context.tokens.spacing.vsdslSpacingSm.left),
         if (isForMenuUse && rtcConnector.senderPlatform != 'web') ...[
           V3Focus(
+            label: S.of(context).v3_lbl_participant_cast_device,
+            identifier: 'v3_qa_participant_cast_device',
             child: SizedBox(
               width: 27,
               height: 27,
               child: IconButton(
-                icon: const Image(
+                icon: SvgPicture.asset(
+                  'assets/images/ic_participant_cast_device.svg',
+                  excludeFromSemantics: true,
                   width: 16,
                   height: 16,
-                  image: Svg('assets/images/ic_participant_cast_device.svg'),
                 ),
                 style: IconButton.styleFrom(
                   elevation: 10.0,
@@ -281,12 +289,15 @@ class ParticipantStandbyFeature extends StatelessWidget {
           SizedBox(width: context.tokens.spacing.vsdslSpacingSm.left),
         ],
         V3Focus(
+          label: S.of(context).v3_lbl_participant_close,
+          identifier: 'v3_qa_participant_close',
           child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_participant_close.svg'),
+              icon: SvgPicture.asset(
+                'assets/images/ic_participant_close.svg',
+                excludeFromSemantics: true,
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,
@@ -398,12 +409,15 @@ class ParticipantStreamingFeature extends StatelessWidget {
     return Row(
       children: [
         V3Focus(
+          label: S.of(context).v3_lbl_participant_stop,
+          identifier: 'v3_qa_participant_stop',
           child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_participant_stop.svg'),
+              icon: SvgPicture.asset(
+                'assets/images/ic_participant_stop.svg',
+                excludeFromSemantics: true,
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,
@@ -462,6 +476,8 @@ class ParticipantReceivingFeature extends StatelessWidget {
     return Row(
       children: [
         V3Focus(
+          label: S.of(context).v3_lbl_participant_touch_back,
+          identifier: 'v3_qa_participant_touch_back',
           child: SizedBox(
             width: 104,
             height: 27,
@@ -486,12 +502,11 @@ class ParticipantReceivingFeature extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Gap(context.tokens.spacing.vsdslSpacingSm.left),
-                  const SizedBox(
+                  SvgPicture.asset(
+                    'assets/images/ic_finger_touch.svg',
+                    excludeFromSemantics: true,
                     width: 16,
                     height: 16,
-                    child: Image(
-                      image: Svg('assets/images/ic_finger_touch.svg'),
-                    ),
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   Expanded(
@@ -513,12 +528,15 @@ class ParticipantReceivingFeature extends StatelessWidget {
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.top),
         V3Focus(
+          label: S.of(context).v3_lbl_participant_disconnect,
+          identifier: 'v3_qa_participant_disconnect',
           child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_participant_stop.svg'),
+              icon: SvgPicture.asset(
+                'assets/images/ic_participant_stop.svg',
+                excludeFromSemantics: true,
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,
@@ -605,6 +623,8 @@ class ParticipantControllingFeature extends StatelessWidget {
     return Row(
       children: [
         V3Focus(
+          label: S.of(context).v3_lbl_participant_touch_back_disable,
+          identifier: 'v3_qa_participant_touch_back_disable',
           child: SizedBox(
             width: 104,
             height: 27,
@@ -626,12 +646,11 @@ class ParticipantControllingFeature extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Gap(context.tokens.spacing.vsdslSpacingSm.left),
-                  const SizedBox(
+                  SvgPicture.asset(
+                    'assets/images/ic_finger_disable.svg',
+                    excludeFromSemantics: true,
                     width: 16,
                     height: 16,
-                    child: Image(
-                      image: Svg('assets/images/ic_finger_disable.svg'),
-                    ),
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   Expanded(
@@ -653,12 +672,15 @@ class ParticipantControllingFeature extends StatelessWidget {
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.top),
         V3Focus(
+          label: S.of(context).v3_lbl_participant_disconnect,
+          identifier: 'v3_qa_participant_disconnect',
           child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_participant_stop.svg'),
+              icon: SvgPicture.asset(
+                'assets/images/ic_participant_stop.svg',
+                excludeFromSemantics: true,
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,

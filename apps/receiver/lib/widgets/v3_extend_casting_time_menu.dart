@@ -54,7 +54,7 @@ class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
           ]),
           builder: (BuildContext context, Widget? child) {
             if (V3ExtendCastingTimeMenu.showReamingTimeAlert.value) {
-              return const _V3ExtendSharingTimeMenu();
+              return const V3ExtendSharingTimeMenu();
             }
 
             return const SizedBox.shrink();
@@ -65,15 +65,14 @@ class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
   }
 }
 
-class _V3ExtendSharingTimeMenu extends StatefulWidget {
-  const _V3ExtendSharingTimeMenu({super.key});
+class V3ExtendSharingTimeMenu extends StatefulWidget {
+  const V3ExtendSharingTimeMenu({super.key});
 
   @override
-  State<_V3ExtendSharingTimeMenu> createState() =>
-      _V3ExtendSharingTimeMenuState();
+  State<StatefulWidget> createState() => _V3ExtendSharingTimeMenuState();
 }
 
-class _V3ExtendSharingTimeMenuState extends State<_V3ExtendSharingTimeMenu> {
+class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
   bool onlyCountdown = false;
 
   @override
@@ -263,6 +262,8 @@ class _ExtendButtons extends StatelessWidget {
             backgroundColor: context.tokens.color.vsdslColorOpacityNeutralSm,
             borderColor: context.tokens.color.vsdslColorOnSurfaceInverse,
             onPressed: onDoNotExtend,
+            semanticLabel: S.of(context).v3_lbl_extend_casting_do_not_extend,
+            identifier: 'v3_qa_extend_casting_do_not_extend',
           ),
           _buildButton(
             context: context,
@@ -278,6 +279,8 @@ class _ExtendButtons extends StatelessWidget {
                       S.of(context).v3_casting_time_extend_success_toast)
                   .show(context);
             },
+            semanticLabel: S.of(context).v3_lbl_extend_casting_extend,
+            identifier: 'v3_qa_extend_casting_extend',
           ),
         ],
       ),
@@ -292,8 +295,12 @@ class _ExtendButtons extends StatelessWidget {
     Color? textColor,
     Color? borderColor,
     required VoidCallback onPressed,
+    required String? semanticLabel,
+    required String? identifier,
   }) {
     return V3Focus(
+      label: semanticLabel,
+      identifier: identifier,
       child: SizedBox(
         width: width,
         height: 27,

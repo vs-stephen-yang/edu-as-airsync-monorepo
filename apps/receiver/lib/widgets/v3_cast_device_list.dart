@@ -4,7 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/v3_cast_device_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -84,10 +84,11 @@ class DeviceEmpty extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Image(
+        SvgPicture.asset(
+          'assets/images/ic_csat_device_empty.svg',
+          excludeFromSemantics: true,
           width: 126,
           height: 110,
-          image: Svg('assets/images/ic_csat_device_empty.svg'),
         ),
         const Gap(13),
         Text(

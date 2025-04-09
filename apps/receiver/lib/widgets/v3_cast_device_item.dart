@@ -5,7 +5,7 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -36,10 +36,11 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
       height: 37,
       child: Row(
         children: [
-          const Image(
+          SvgPicture.asset(
+            'assets/images/ic_cast_device.svg',
+            excludeFromSemantics: true,
             width: 32,
             height: 32,
-            image: Svg('assets/images/ic_cast_device.svg'),
           ),
           const Gap(5),
           Expanded(
@@ -86,6 +87,12 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
           // 以下按鈕部分，做個分類
           ...[
             V3Focus(
+              label: remoteScreenConnector.isTouchEnabled
+                  ? S.of(context).v3_lbl_cast_device_touchback_disable
+                  : S.of(context).v3_lbl_cast_device_touchback_enable,
+              identifier: remoteScreenConnector.isTouchEnabled
+                  ? 'v3_qa_cast_device_touchback_disable_${widget.index}'
+                  : 'v3_qa_cast_device_touchback_enable_${widget.index}',
               child: SizedBox(
                 width: (remoteScreenConnector.isTouchEnabled) ? 83 : 104,
                 height: 27,
@@ -102,14 +109,13 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                             remoteScreenConnector.isTouchEnabled);
                     setState(() {});
                   },
-                  icon: SizedBox(
+                  icon: SvgPicture.asset(
+                    remoteScreenConnector.isTouchEnabled
+                        ? 'assets/images/ic_finger_disable.svg'
+                        : 'assets/images/ic_finger_touch.svg',
+                    excludeFromSemantics: true,
                     width: 16,
                     height: 16,
-                    child: Image(
-                      image: Svg(remoteScreenConnector.isTouchEnabled
-                          ? 'assets/images/ic_finger_disable.svg'
-                          : 'assets/images/ic_finger_touch.svg'),
-                    ),
                   ),
                   label: Text(
                     remoteScreenConnector.isTouchEnabled
@@ -141,12 +147,15 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
             ),
             SizedBox(width: context.tokens.spacing.vsdslSpacingSm.top),
             V3Focus(
+              label: S.of(context).v3_lbl_cast_device_close,
+              identifier: 'v3_qa_cast_device_close',
               child: SizedBox(
                 width: 27,
                 height: 27,
                 child: IconButton(
-                  icon: const Image(
-                    image: Svg('assets/images/ic_participant_close.svg'),
+                  icon: SvgPicture.asset(
+                    'assets/images/ic_participant_close.svg',
+                    excludeFromSemantics: true,
                   ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),

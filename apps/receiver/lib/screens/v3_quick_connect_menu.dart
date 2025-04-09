@@ -8,7 +8,7 @@ import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
@@ -91,11 +91,15 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Image(
-                            image: const Svg('assets/images/ic_screen.svg'),
+                          SvgPicture.asset(
+                            'assets/images/ic_screen.svg',
+                            excludeFromSemantics: true,
                             width: 27,
                             height: 27,
-                            color: context.tokens.color.vsdslColorSurface600,
+                            colorFilter: ColorFilter.mode(
+                              context.tokens.color.vsdslColorSurface600,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(
@@ -137,9 +141,8 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Image(
-                                        image: Svg(
-                                            'assets/images/ic_local_connection_only.svg'),
+                                      SvgPicture.asset(
+                                        'assets/images/ic_local_connection_only.svg',
                                         width: 21,
                                         height: 21,
                                       ),
@@ -176,7 +179,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                       right: 13,
                       child: Container(
                         width: 485,
-                        height: 37,
+                        height: 48,
                         decoration: BoxDecoration(
                           borderRadius: context.tokens.radii.vsdslRadiusLg,
                           color: context.tokens.color.vsdslColorSurface200,
@@ -313,11 +316,11 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           alignment: Alignment.center,
                           child: Row(
                             children: [
-                              const Image(
+                              SvgPicture.asset(
+                                'assets/images/ic_split_screen_quick_menu.svg',
+                                excludeFromSemantics: true,
                                 width: 21,
                                 height: 21,
-                                image: Svg(
-                                    'assets/images/ic_split_screen_quick_menu.svg'),
                               ),
                               const Gap(3),
                               Text(
@@ -336,13 +339,16 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                       right: 13,
                       bottom: 13,
                       child: V3Focus(
+                        label:
+                            S.of(context).v3_lbl_minimal_streaming_qrcode_menu,
+                        identifier: 'v3_qa_minimal_streaming_qrcode_menu',
                         child: SizedBox(
                           width: 33,
                           height: 33,
                           child: IconButton(
                             focusNode: widget.primaryFocusNode,
-                            icon: const Image(
-                              image: Svg('assets/images/ic_menu_minimal.svg'),
+                            icon: SvgPicture.asset(
+                              'assets/images/ic_menu_minimal.svg',
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
