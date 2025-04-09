@@ -5,7 +5,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3NewSharingMenu extends StatefulWidget {
@@ -56,16 +56,15 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
                 backgroundColor: context.tokens.color.vsdslColorSurface800,
                 child: Stack(
                   children: [
-                    const Positioned(
+                    Positioned(
                       left: 0,
                       top: 16,
                       right: 0,
-                      child: SizedBox(
+                      child: SvgPicture.asset(
+                        'assets/images/ic_new_sharing_user.svg',
+                        excludeFromSemantics: true,
                         width: 27,
                         height: 27,
-                        child: Image(
-                          image: Svg('assets/images/ic_new_sharing_user.svg'),
-                        ),
                       ),
                     ),
                     Positioned(
@@ -108,9 +107,8 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
                           width: 27,
                           height: 27,
                           child: IconButton(
-                            icon: const Image(
-                              image:
-                                  Svg('assets/images/ic_new_sharing_close.svg'),
+                            icon: SvgPicture.asset(
+                              'assets/images/ic_new_sharing_close.svg',
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),

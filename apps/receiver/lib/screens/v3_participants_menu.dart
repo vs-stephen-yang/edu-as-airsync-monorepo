@@ -1,8 +1,9 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3ParticipantsMenu extends StatelessWidget {
@@ -47,14 +48,15 @@ class V3ParticipantsMenu extends StatelessWidget {
                       right: 5,
                       bottom: 5,
                       child: V3Focus(
+                        label: S.of(context).v3_lbl_close_feature_set_moderator,
+                        identifier: 'v3_qa_close_feature_set_moderator',
                         child: SizedBox(
                           width: 33,
                           height: 33,
                           child: IconButton(
                             focusNode: primaryFocusNode,
-                            icon: const Image(
-                              image:
-                                  Svg('assets/images/ic_menu_close_gray.svg'),
+                            icon: SvgPicture.asset(
+                              'assets/images/ic_menu_close_gray.svg',
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),

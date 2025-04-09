@@ -461,6 +461,12 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 V3Focus(
+                  label: isExpanded
+                      ? S.of(context).v3_lbl_streaming_shortcut_minimize
+                      : S.of(context).v3_lbl_streaming_shortcut_expand,
+                  identifier: isExpanded
+                      ? 'v3_qa_streaming_shortcut_minimize'
+                      : 'v3_qa_streaming_shortcut_expand',
                   child: Container(
                     width: 41,
                     height: 41,
@@ -486,10 +492,17 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                 ),
                 if (isExpanded) ...[
                   const Gap(8),
-                  V3Focus(
-                    child: provider.Consumer<SettingsProvider>(
-                        builder: (_, settingsProvider, __) {
-                      return Container(
+                  provider.Consumer<SettingsProvider>(
+                      builder: (_, settingsProvider, __) {
+                    final lock = settingsProvider.isSettingsLock;
+                    return V3Focus(
+                      label: lock
+                          ? S.of(context).v3_lbl_streaming_shortcut_menu_locked
+                          : S.of(context).v3_lbl_open_streaming_shortcut_menu,
+                      identifier: lock
+                          ? 'v3_qa_streaming_shortcut_menu_locked'
+                          : 'v3_qa_open_streaming_shortcut_menu',
+                      child: Container(
                         width: 41,
                         height: 41,
                         decoration: ShapeDecoration(
@@ -500,7 +513,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                         ),
                         child: IconButton(
                           icon: SvgPicture.asset(
-                            settingsProvider.isSettingsLock
+                            lock
                                 ? 'assets/images/ic_streaming_shortcut_locked.svg'
                                 : 'assets/images/ic_streaming_shortcut.svg',
                           ),
@@ -517,11 +530,13 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                             });
                           },
                         ),
-                      );
-                    }),
-                  ),
+                      ),
+                    );
+                  }),
                   const Gap(8),
                   V3Focus(
+                    label: S.of(context).v3_lbl_open_streaming_qrcode_menu,
+                    identifier: 'v3_qa_open_streaming_qrcode_menu',
                     child: Container(
                       width: 41,
                       height: 41,

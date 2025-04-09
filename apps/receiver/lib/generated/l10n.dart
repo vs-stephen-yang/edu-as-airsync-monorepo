@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -2286,6 +2285,476 @@ class S {
     return Intl.message(
       'Close connection status dialog',
       name: 'v3_lbl_connection_dialog_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decline request`
+  String get v3_lbl_authorize_prompt_decline {
+    return Intl.message(
+      'Decline request',
+      name: 'v3_lbl_authorize_prompt_decline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept request`
+  String get v3_lbl_authorize_prompt_accept {
+    return Intl.message(
+      'Accept request',
+      name: 'v3_lbl_authorize_prompt_accept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept all requests`
+  String get v3_lbl_authorize_prompt_accept_all {
+    return Intl.message(
+      'Accept all requests',
+      name: 'v3_lbl_authorize_prompt_accept_all',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collapse streaming function`
+  String get v3_lbl_streaming_view_function_minimize {
+    return Intl.message(
+      'Collapse streaming function',
+      name: 'v3_lbl_streaming_view_function_minimize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand streaming function`
+  String get v3_lbl_streaming_view_function_expand {
+    return Intl.message(
+      'Expand streaming function',
+      name: 'v3_lbl_streaming_view_function_expand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collapse streaming view`
+  String get v3_lbl_streaming_view_minimize {
+    return Intl.message(
+      'Collapse streaming view',
+      name: 'v3_lbl_streaming_view_minimize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand streaming view`
+  String get v3_lbl_streaming_view_expand {
+    return Intl.message(
+      'Expand streaming view',
+      name: 'v3_lbl_streaming_view_expand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mute audio`
+  String get v3_lbl_streaming_view_mute {
+    return Intl.message(
+      'Mute audio',
+      name: 'v3_lbl_streaming_view_mute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unmute audio`
+  String get v3_lbl_streaming_view_unmute {
+    return Intl.message(
+      'Unmute audio',
+      name: 'v3_lbl_streaming_view_unmute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop streaming`
+  String get v3_lbl_streaming_view_stop {
+    return Intl.message(
+      'Stop streaming',
+      name: 'v3_lbl_streaming_view_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collapse streaming features`
+  String get v3_lbl_streaming_shortcut_minimize {
+    return Intl.message(
+      'Collapse streaming features',
+      name: 'v3_lbl_streaming_shortcut_minimize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand streaming features`
+  String get v3_lbl_streaming_shortcut_expand {
+    return Intl.message(
+      'Expand streaming features',
+      name: 'v3_lbl_streaming_shortcut_expand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Streaming Shortcut Menu is locked`
+  String get v3_lbl_streaming_shortcut_menu_locked {
+    return Intl.message(
+      'Streaming Shortcut Menu is locked',
+      name: 'v3_lbl_streaming_shortcut_menu_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Streaming Shortcut Menu`
+  String get v3_lbl_open_streaming_shortcut_menu {
+    return Intl.message(
+      'Open Streaming Shortcut Menu',
+      name: 'v3_lbl_open_streaming_shortcut_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close Streaming Shortcut menu`
+  String get v3_lbl_close_streaming_shortcut_menu {
+    return Intl.message(
+      'Close Streaming Shortcut menu',
+      name: 'v3_lbl_close_streaming_shortcut_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast to devices toggle`
+  String get v3_lbl_streaming_shortcut_cast_device_toggle {
+    return Intl.message(
+      'Cast to devices toggle',
+      name: 'v3_lbl_streaming_shortcut_cast_device_toggle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirPlay toggle`
+  String get v3_lbl_streaming_shortcut_airplay_toggle {
+    return Intl.message(
+      'AirPlay toggle',
+      name: 'v3_lbl_streaming_shortcut_airplay_toggle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Cast toggle`
+  String get v3_lbl_streaming_shortcut_google_cast_toggle {
+    return Intl.message(
+      'Google Cast toggle',
+      name: 'v3_lbl_streaming_shortcut_google_cast_toggle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Miracast toggle`
+  String get v3_lbl_streaming_shortcut_miracast_toggle {
+    return Intl.message(
+      'Miracast toggle',
+      name: 'v3_lbl_streaming_shortcut_miracast_toggle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Streaming QR Code Menu`
+  String get v3_lbl_open_streaming_qrcode_menu {
+    return Intl.message(
+      'Open Streaming QR Code Menu',
+      name: 'v3_lbl_open_streaming_qrcode_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minimize Streaming QR Code menu`
+  String get v3_lbl_minimal_streaming_qrcode_menu {
+    return Intl.message(
+      'Minimize Streaming QR Code menu',
+      name: 'v3_lbl_minimal_streaming_qrcode_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open moderator list`
+  String get v3_lbl_open_feature_set_moderator {
+    return Intl.message(
+      'Open moderator list',
+      name: 'v3_lbl_open_feature_set_moderator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close moderator list`
+  String get v3_lbl_close_feature_set_moderator {
+    return Intl.message(
+      'Close moderator list',
+      name: 'v3_lbl_close_feature_set_moderator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share to this participant's screen`
+  String get v3_lbl_participant_share {
+    return Intl.message(
+      'Share to this participant\'s screen',
+      name: 'v3_lbl_participant_share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast device to this participant`
+  String get v3_lbl_participant_cast_device {
+    return Intl.message(
+      'Cast device to this participant',
+      name: 'v3_lbl_participant_cast_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close participant connection`
+  String get v3_lbl_participant_close {
+    return Intl.message(
+      'Close participant connection',
+      name: 'v3_lbl_participant_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop participant's streaming`
+  String get v3_lbl_participant_stop {
+    return Intl.message(
+      'Stop participant\'s streaming',
+      name: 'v3_lbl_participant_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable touchback for this participant`
+  String get v3_lbl_participant_touch_back {
+    return Intl.message(
+      'Enable touchback for this participant',
+      name: 'v3_lbl_participant_touch_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable touchback for this participant`
+  String get v3_lbl_participant_touch_back_disable {
+    return Intl.message(
+      'Disable touchback for this participant',
+      name: 'v3_lbl_participant_touch_back_disable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect this participant`
+  String get v3_lbl_participant_disconnect {
+    return Intl.message(
+      'Disconnect this participant',
+      name: 'v3_lbl_participant_disconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share to this participant's mirror`
+  String get v3_lbl_participant_mirror_share {
+    return Intl.message(
+      'Share to this participant\'s mirror',
+      name: 'v3_lbl_participant_mirror_share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close mirror participant connection`
+  String get v3_lbl_participant_mirror_close {
+    return Intl.message(
+      'Close mirror participant connection',
+      name: 'v3_lbl_participant_mirror_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop mirror participant's streaming`
+  String get v3_lbl_participant_mirror_stop {
+    return Intl.message(
+      'Stop mirror participant\'s streaming',
+      name: 'v3_lbl_participant_mirror_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open cast device list`
+  String get v3_lbl_open_feature_set_cast_device {
+    return Intl.message(
+      'Open cast device list',
+      name: 'v3_lbl_open_feature_set_cast_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close cast device list`
+  String get v3_lbl_close_feature_set_cast_device {
+    return Intl.message(
+      'Close cast device list',
+      name: 'v3_lbl_close_feature_set_cast_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable touchback for cast device`
+  String get v3_lbl_cast_device_touchback_enable {
+    return Intl.message(
+      'Enable touchback for cast device',
+      name: 'v3_lbl_cast_device_touchback_enable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable touchback for cast device`
+  String get v3_lbl_cast_device_touchback_disable {
+    return Intl.message(
+      'Disable touchback for cast device',
+      name: 'v3_lbl_cast_device_touchback_disable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close cast device connection`
+  String get v3_lbl_cast_device_close {
+    return Intl.message(
+      'Close cast device connection',
+      name: 'v3_lbl_cast_device_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel dialog`
+  String get v3_lbl_message_dialog_cancel {
+    return Intl.message(
+      'Cancel dialog',
+      name: 'v3_lbl_message_dialog_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm dialog`
+  String get v3_lbl_message_dialog_confirm {
+    return Intl.message(
+      'Confirm dialog',
+      name: 'v3_lbl_message_dialog_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close group reject notification`
+  String get v3_lbl_group_reject_close {
+    return Intl.message(
+      'Close group reject notification',
+      name: 'v3_lbl_group_reject_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not extend casting time`
+  String get v3_lbl_extend_casting_do_not_extend {
+    return Intl.message(
+      'Do not extend casting time',
+      name: 'v3_lbl_extend_casting_do_not_extend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extend casting time`
+  String get v3_lbl_extend_casting_extend {
+    return Intl.message(
+      'Extend casting time',
+      name: 'v3_lbl_extend_casting_extend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mute presentation`
+  String get v3_lbl_resizable_mute {
+    return Intl.message(
+      'Mute presentation',
+      name: 'v3_lbl_resizable_mute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop presentation`
+  String get v3_lbl_resizable_stop {
+    return Intl.message(
+      'Stop presentation',
+      name: 'v3_lbl_resizable_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minimize presentation control`
+  String get v3_lbl_resizable_minimize {
+    return Intl.message(
+      'Minimize presentation control',
+      name: 'v3_lbl_resizable_minimize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand presentation control`
+  String get v3_lbl_resizable_expand {
+    return Intl.message(
+      'Expand presentation control',
+      name: 'v3_lbl_resizable_expand',
       desc: '',
       args: [],
     );

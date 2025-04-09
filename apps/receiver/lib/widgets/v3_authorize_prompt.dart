@@ -9,7 +9,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -172,9 +172,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                 totalHeight =
                     containerPaddingHeight + pinCodeHeight + requestTotalHeight;
                 widgetList.addAll([
-                  const Image(
+                  SvgPicture.asset(
+                    'assets/images/ic_prompt_in_mirror.svg',
+                    excludeFromSemantics: true,
                     height: 53,
-                    image: Svg('assets/images/ic_prompt_in_mirror.svg'),
                   ),
                   SizedBox(
                     width: dialogWidth,
@@ -277,9 +278,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Image(
-                                    image: Svg(
-                                        'assets/images/ic_prompt_in_mirror.svg'),
+                                  SvgPicture.asset(
+                                    'assets/images/ic_prompt_in_mirror.svg',
+                                    excludeFromSemantics: true,
                                   ),
                                   Gap(context
                                       .tokens.spacing.vsdslSpacingSm.left),
@@ -297,6 +298,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   ),
                                   const Spacer(),
                                   V3Focus(
+                                    label: S
+                                        .of(context)
+                                        .v3_lbl_authorize_prompt_decline,
+                                    identifier:
+                                        'v3_qa_authorize_prompt_decline',
                                     child: SizedBox(
                                       width: 80,
                                       height: requestContainerHeight,
@@ -343,6 +349,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   Gap(context
                                       .tokens.spacing.vsdslSpacingSm.left),
                                   V3Focus(
+                                    label: S
+                                        .of(context)
+                                        .v3_lbl_authorize_prompt_accept,
+                                    identifier: 'v3_qa_authorize_prompt_accept',
                                     child: SizedBox(
                                       width: 80,
                                       height: 27,
@@ -390,6 +400,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   Gap(context
                                       .tokens.spacing.vsdslSpacingSm.left),
                                   V3Focus(
+                                    label: S
+                                        .of(context)
+                                        .v3_lbl_authorize_prompt_accept_all,
+                                    identifier:
+                                        'v3_qa_authorize_prompt_accept_all',
                                     child: SizedBox(
                                       width: 80,
                                       height: 27,
@@ -536,9 +551,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Image(
-                                image: Svg(
-                                    'assets/images/ic_prompt_in_webrtc.svg'),
+                              SvgPicture.asset(
+                                'assets/images/ic_prompt_in_webrtc.svg',
+                                excludeFromSemantics: true,
                               ),
                               Gap(context.tokens.spacing.vsdslSpacingSm.left),
                               AutoSizeText(
@@ -553,6 +568,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                               ),
                               const Spacer(),
                               V3Focus(
+                                label: S
+                                    .of(context)
+                                    .v3_lbl_authorize_prompt_decline,
+                                identifier: 'v3_qa_authorize_prompt_decline',
                                 child: SizedBox(
                                   width: 80,
                                   height: requestContainerHeight,
@@ -599,6 +618,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                               ),
                               Gap(context.tokens.spacing.vsdslSpacingSm.left),
                               V3Focus(
+                                label: S
+                                    .of(context)
+                                    .v3_lbl_authorize_prompt_accept,
+                                identifier: 'v3_qa_authorize_prompt_accept',
                                 child: SizedBox(
                                   width: 80,
                                   height: 27,
@@ -637,6 +660,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                               ),
                               Gap(context.tokens.spacing.vsdslSpacingSm.left),
                               V3Focus(
+                                label: S
+                                    .of(context)
+                                    .v3_lbl_authorize_prompt_accept_all,
+                                identifier: 'v3_qa_authorize_prompt_accept_all',
                                 child: SizedBox(
                                   width: 80,
                                   height: 27,

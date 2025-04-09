@@ -7,7 +7,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -51,12 +51,12 @@ class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
         height: 34,
         child: Row(
           children: [
-            Image(
+            SvgPicture.asset(
+              isCasting
+                  ? 'assets/images/ic_participant_avatar_cast.svg'
+                  : 'assets/images/ic_participant_avatar_wait.svg',
               width: 32,
               height: 32,
-              image: Svg(isCasting
-                  ? 'assets/images/ic_participant_avatar_cast.svg'
-                  : 'assets/images/ic_participant_avatar_wait.svg'),
             ),
             Gap(context.tokens.spacing.vsdslSpacingSm.left),
             Expanded(
@@ -118,6 +118,8 @@ class ParticipantStandbyFeature extends StatelessWidget {
     return Row(
       children: [
         V3Focus(
+          label: S.of(context).v3_lbl_participant_mirror_share,
+          identifier: 'v3_qa_participant_mirror_share',
           child: SizedBox(
             width: isForMenuUse ? 105 : 66,
             height: 27,
@@ -143,12 +145,14 @@ class ParticipantStandbyFeature extends StatelessWidget {
                   if (isForMenuUse) ...[
                     Gap(context.tokens.spacing.vsdslSpacingSm.left),
                     SizedBox(
-                      child: Image(
+                      child: SvgPicture.asset(
+                        'assets/images/ic_arrow_to_screen.svg',
                         width: 16,
                         height: 16,
-                        image:
-                            const Svg('assets/images/ic_arrow_to_screen.svg'),
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                        colorFilter: ColorFilter.mode(
+                          context.tokens.color.vsdslColorOnSurfaceInverse,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
@@ -174,12 +178,14 @@ class ParticipantStandbyFeature extends StatelessWidget {
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.left),
         V3Focus(
+          label: S.of(context).v3_lbl_participant_mirror_close,
+          identifier: 'v3_qa_participant_mirror_close',
           child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_participant_close.svg'),
+              icon: SvgPicture.asset(
+                'assets/images/ic_participant_close.svg',
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,
@@ -226,12 +232,14 @@ class ParticipantStreamingFeature extends StatelessWidget {
     return Row(
       children: [
         V3Focus(
+          label: S.of(context).v3_lbl_participant_mirror_stop,
+          identifier: 'v3_qa_participant_mirror_stop',
           child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_participant_stop.svg'),
+              icon: SvgPicture.asset(
+                'assets/images/ic_participant_stop.svg',
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,

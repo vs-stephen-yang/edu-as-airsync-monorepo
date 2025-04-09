@@ -1,9 +1,10 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class V3MessageDialog extends ConsumerWidget {
   const V3MessageDialog({super.key});
@@ -42,8 +43,9 @@ class V3MessageDialog extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (dialogState.showIcon ?? false) ...[
-                const Image(
-                  image: Svg('assets/images/ic_logo_airsync_icon.svg'),
+                SvgPicture.asset(
+                  'assets/images/ic_logo_airsync_icon.svg',
+                  excludeFromSemantics: true,
                   width: 66,
                   height: 66,
                 ),
@@ -78,6 +80,8 @@ class V3MessageDialog extends ConsumerWidget {
                 children: [
                   if (dialogState.cancelText != null)
                     V3Focus(
+                      label: S.of(context).v3_lbl_message_dialog_cancel,
+                      identifier: 'v3_qa_message_dialog_cancel',
                       child: ElevatedButton(
                         style: ButtonStyle(
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -121,6 +125,8 @@ class V3MessageDialog extends ConsumerWidget {
                   const SizedBox(width: 8),
                   if (dialogState.confirmText != null)
                     V3Focus(
+                      label: S.of(context).v3_lbl_message_dialog_confirm,
+                      identifier: 'v3_qa_message_dialog_confirm',
                       child: ElevatedButton(
                         style: ButtonStyle(
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
