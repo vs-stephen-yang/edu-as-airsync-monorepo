@@ -191,6 +191,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                   connection.mirrorId,
                                   stopCastEvent: true);
                             } else {
+                              connection.trackSessionEvent('stop_cast');
                               HybridConnectionList()
                                   .stopPresenterBy(widget.index);
                             }
