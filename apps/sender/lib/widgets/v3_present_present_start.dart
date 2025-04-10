@@ -15,6 +15,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_options_menu.dart';
@@ -203,40 +204,51 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                   ValueListenableBuilder(
                     valueListenable: presentingState,
                     builder: (BuildContext context, value, Widget? child) {
-                      return CircleAvatar(
-                        key: pauseButtonKey, // 使用之前添加的 GlobalKey
-                        backgroundColor: !value
-                            ? context.tokens.color.vsdswColorOnSurfaceInverse
-                            : context.tokens.color.vsdswColorSurface900,
-                        radius: kIsWeb ? 24 : 28,
-                        child: IconButton(
-                          onPressed: () async {
-                            if (needRelaunchBroadcastUploadExtension) {
-                              unawaited(WebRTCHelper().launchBroadcastUploadExtension());
-                            } else {
-                              // Toggle current state
-                              bool tempState = !presentingState.value;
-                              trackEvent(
-                                  tempState ? 'click_resume' : 'click_pause',
-                                  EventCategory.session);
+                      return V3Focus(
+                        label: !value
+                            ? S.current.v3_lbl_sharing_pause_on
+                            : S.current.v3_lbl_sharing_pause_off,
+                        identifier:
+                            'v3_qa_sharing_pause_${!value ? 'on' : 'off'}',
+                        button: true,
+                        child: CircleAvatar(
+                          key: pauseButtonKey, // 使用之前添加的 GlobalKey
+                          backgroundColor: !value
+                              ? context.tokens.color.vsdswColorOnSurfaceInverse
+                              : context.tokens.color.vsdswColorSurface900,
+                          radius: kIsWeb ? 24 : 28,
+                          child: InkWell(
+                            onTap: () async {
+                              if (needRelaunchBroadcastUploadExtension) {
+                                unawaited(WebRTCHelper()
+                                    .launchBroadcastUploadExtension());
+                              } else {
+                                // Toggle current state
+                                bool tempState = !presentingState.value;
+                                trackEvent(
+                                    tempState ? 'click_resume' : 'click_pause',
+                                    EventCategory.session);
 
-                              Rect? pauseBtnRec =
-                                  await getBtnRect(pauseButtonKey);
-                              Rect? stopBtnRect =
-                                  await getBtnRect(stopButtonKey);
+                                Rect? pauseBtnRec =
+                                    await getBtnRect(pauseButtonKey);
+                                Rect? stopBtnRect =
+                                    await getBtnRect(stopButtonKey);
 
-                              // Update state
-                              presentingState.value = tempState;
-                              unawaited(tempState
-                                  ? channelProvider.presentResume()
-                                  : channelProvider.presentPause(
-                                      pauseBtnRect: pauseBtnRec,
-                                      stopBtnRect: stopBtnRect));
-                            }
-                          },
-                          icon: SvgPicture.asset(!value
-                              ? 'assets/images/v3_ic_sharing_pause_on.svg'
-                              : 'assets/images/v3_ic_sharing_pause_off.svg'),
+                                // Update state
+                                presentingState.value = tempState;
+                                unawaited(tempState
+                                    ? channelProvider.presentResume()
+                                    : channelProvider.presentPause(
+                                        pauseBtnRect: pauseBtnRec,
+                                        stopBtnRect: stopBtnRect));
+                              }
+                            },
+                            child: ExcludeSemantics(
+                              child: SvgPicture.asset(!value
+                                  ? 'assets/images/v3_ic_sharing_pause_on.svg'
+                                  : 'assets/images/v3_ic_sharing_pause_off.svg'),
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -246,27 +258,35 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                       right: context.tokens.spacing.vsdswSpacingMd.left,
                     ),
                   ),
-                  CircleAvatar(
-                    backgroundColor: context.tokens.color.vsdswColorError,
-                    radius: kIsWeb ? 24 : 28,
-                    child: IconButton(
-                      key: stopButtonKey,
-                      onPressed: () {
-                        trackEvent('click_stop', EventCategory.session);
+                  V3Focus(
+                    label: S.current.v3_lbl_sharing_stop,
+                    identifier: 'v3_qa_sharing_stop',
+                    button: true,
+                    child: CircleAvatar(
+                      backgroundColor: context.tokens.color.vsdswColorError,
+                      radius: kIsWeb ? 24 : 28,
+                      child: InkWell(
+                        key: stopButtonKey,
+                        onTap: () {
+                          trackEvent('click_stop', EventCategory.session);
 
-                        channelProvider.presentStop();
-                        if (widget.isModeratorMode) {
-                          Provider.of<PresentStateProvider>(context,
-                                  listen: false)
-                              .presentModeratorWaitPage();
-                        } else {
-                          channelProvider.presentEnd();
-                        }
-                      },
-                      icon: Icon(
-                        Icons.stop,
-                        size: kIsWeb ? 24 : 28,
-                        color: context.tokens.color.vsdswColorOnSurfaceInverse,
+                          channelProvider.presentStop();
+                          if (widget.isModeratorMode) {
+                            Provider.of<PresentStateProvider>(context,
+                                    listen: false)
+                                .presentModeratorWaitPage();
+                          } else {
+                            channelProvider.presentEnd();
+                          }
+                        },
+                        child: ExcludeSemantics(
+                          child: Icon(
+                            Icons.stop,
+                            size: kIsWeb ? 24 : 28,
+                            color:
+                                context.tokens.color.vsdswColorOnSurfaceInverse,
+                          ),
+                        ),
                       ),
                     ),
                   ),

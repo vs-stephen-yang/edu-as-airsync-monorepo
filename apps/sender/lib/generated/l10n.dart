@@ -1964,6 +1964,126 @@ class S {
       args: [],
     );
   }
+
+  /// `Get the Mac App Store version`
+  String get v3_lbl_main_download_mac_store {
+    return Intl.message(
+      'Get the Mac App Store version',
+      name: 'v3_lbl_main_download_mac_store',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Sender App`
+  String get v3_lbl_main_download {
+    return Intl.message(
+      'Download Sender App',
+      name: 'v3_lbl_main_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_select_language {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_select_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change your language`
+  String get v3_lbl_change_language {
+    return Intl.message(
+      'Change your language',
+      name: 'v3_lbl_change_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get the Mac independent version`
+  String get v3_lbl_download_independent_version {
+    return Intl.message(
+      'Get the Mac independent version',
+      name: 'v3_lbl_download_independent_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get the Windows version`
+  String get v3_lbl_main_download_windows {
+    return Intl.message(
+      'Get the Windows version',
+      name: 'v3_lbl_main_download_windows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get the Mobile version`
+  String get v3_lbl_main_download_mobile {
+    return Intl.message(
+      'Get the Mobile version',
+      name: 'v3_lbl_main_download_mobile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get v3_lbl_main_privacy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'v3_lbl_main_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause on`
+  String get v3_lbl_sharing_pause_on {
+    return Intl.message(
+      'Pause on',
+      name: 'v3_lbl_sharing_pause_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause off`
+  String get v3_lbl_sharing_pause_off {
+    return Intl.message(
+      'Pause off',
+      name: 'v3_lbl_sharing_pause_off',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sharing stop`
+  String get v3_lbl_sharing_stop {
+    return Intl.message(
+      'Sharing stop',
+      name: 'v3_lbl_sharing_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `menu minimal`
+  String get v3_lbl_download_menu_minimal {
+    return Intl.message(
+      'menu minimal',
+      name: 'v3_lbl_download_menu_minimal',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

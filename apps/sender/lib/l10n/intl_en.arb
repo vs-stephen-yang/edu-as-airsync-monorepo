@@ -193,5 +193,17 @@
   "v3_lbl_main_moderator_action": "Summit Share",
   "v3_lbl_main_moderator_input_hint": "Type Your Name",
   "v3_lbl_main_display_code": "Type Display Code",
-  "v3_lbl_main_password": "Type Password"
+  "v3_lbl_main_password": "Type Password",
+  "v3_lbl_main_download_mac_store": "Get the Mac App Store version",
+  "v3_lbl_main_download": "Download Sender App",
+  "v3_lbl_select_language": "Select %s",
+  "v3_lbl_change_language": "Change your language",
+  "v3_lbl_download_independent_version": "Get the Mac independent version",
+  "v3_lbl_main_download_windows": "Get the Windows version",
+  "v3_lbl_main_download_mobile": "Get the Mobile version",
+  "v3_lbl_main_privacy": "Privacy Policy",
+  "v3_lbl_sharing_pause_on": "Pause on",
+  "v3_lbl_sharing_pause_off": "Pause off",
+  "v3_lbl_sharing_stop": "Sharing stop",
+  "v3_lbl_download_menu_minimal": "menu minimal"
 }

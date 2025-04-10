@@ -19,9 +19,13 @@ import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
+
+import 'V3_focus.dart';
 
 class V3WebMain extends StatelessWidget {
   const V3WebMain({
@@ -60,7 +64,10 @@ class V3WebMain extends StatelessWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        Image.asset('assets/images/ic_web_connection.png'),
+                        ExcludeSemantics(
+                          child: Image.asset(
+                              'assets/images/ic_web_connection.png'),
+                        ),
                       ],
                     ),
                   ),
@@ -78,43 +85,48 @@ class V3WebMain extends StatelessWidget {
                             children: [
                               const LanguageShowMenu(),
                               const SizedBox(width: 16),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 5.0,
-                                  shadowColor:
-                                      context.tokens.color.vsdswColorPrimary,
-                                  foregroundColor:
-                                      context.tokens.color.vsdswColorOnPrimary,
-                                  backgroundColor:
-                                      context.tokens.color.vsdswColorPrimary,
-                                  textStyle: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                ),
-                                onPressed: () {
-                                  scrollTo?.call();
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/images/v3_ic_web_main_download.svg',
-                                      width: 16,
-                                      height: 16,
-                                      colorFilter: ColorFilter.mode(
-                                        context
-                                            .tokens.color.vsdswColorOnPrimary,
-                                        BlendMode.srcIn,
-                                      ),
+                              V3Focus(
+                                label: S.current.v3_lbl_main_download,
+                                identifier: 'v3_qa_main_download',
+                                button: true,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 5.0,
+                                    shadowColor:
+                                        context.tokens.color.vsdswColorPrimary,
+                                    foregroundColor: context
+                                        .tokens.color.vsdswColorOnPrimary,
+                                    backgroundColor:
+                                        context.tokens.color.vsdswColorPrimary,
+                                    textStyle: const TextStyle(
+                                      fontSize: 14,
                                     ),
-                                    SizedBox(
-                                        width: context.tokens.spacing
-                                            .vsdswSpacing2xs.left),
-                                    AutoSizeText(
-                                        S.of(context).v3_main_download),
-                                  ],
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                  ),
+                                  onPressed: () {
+                                    scrollTo?.call();
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/images/v3_ic_web_main_download.svg',
+                                        width: 16,
+                                        height: 16,
+                                        colorFilter: ColorFilter.mode(
+                                          context
+                                              .tokens.color.vsdswColorOnPrimary,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          width: context.tokens.spacing
+                                              .vsdswSpacing2xs.left),
+                                      AutoSizeText(
+                                          S.of(context).v3_main_download),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -136,7 +148,9 @@ class V3WebMain extends StatelessWidget {
             Positioned(
               left: 40,
               top: 16,
-              child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
+              child: ExcludeSemantics(
+                child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
+              ),
             ),
           ],
           if (isWaiting) ...[
@@ -309,52 +323,28 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
     // Show the menu below the button
     String? newValue = await showMenu<String>(
       context: context,
-      position: position.shift(const Offset(0, 5)),
+      position: position,
+      constraints: const BoxConstraints(maxHeight: 120),
       color: context.tokens.color.vsdswColorSurface100,
-      items: [
-        PopupMenuItem(
-          padding: EdgeInsets.zero,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 120),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: prefLanguageProvider.localeMap.entries.map((entry) {
-                  return PopupMenuItem<String>(
-                    value: entry.key,
-                    height: 40,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: (entry.key == prefLanguageProvider.language)
-                            ? context.tokens.color.vsdswColorTertiary
-                            : context.tokens.color.vsdswColorSurface100,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
-                      child: Text(
-                        entry.key,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: (entry.key == prefLanguageProvider.language)
-                              ? context.tokens.color.vsdswColorOnSurfaceInverse
-                              : context.tokens.color.vsdswColorOnSurface,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+      items: prefLanguageProvider.localeMap.entries.map((entry) {
+        return V3PopupMenuItem<String>(
+          value: entry.key,
+          label: sprintf(S.current.v3_lbl_select_language, [entry.key]),
+          identifier: 'v3_qa_${entry.key}',
+          selected: (entry.key == prefLanguageProvider.language),
+          excludeSemantics: true,
+          child: Text(
+            entry.key,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: (entry.key == prefLanguageProvider.language)
+                  ? context.tokens.color.vsdswColorOnSurfaceInverse
+                  : context.tokens.color.vsdswColorOnSurface,
             ),
           ),
-        )
-      ],
+        );
+      }).toList(),
     );
 
     // If a new language was selected, update the state
@@ -370,54 +360,183 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
   Widget build(BuildContext context) {
     PrefLanguageProvider prefLanguageProvider =
         Provider.of<PrefLanguageProvider>(context, listen: false);
-    return GestureDetector(
-      onTap: () => _showCustomDropdown(context),
-      child: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: _menuOn
-            ? ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 1,
-                    color: context.tokens.color.vsdswColorSurface300,
+
+    return V3Focus(
+      label: S.current.v3_lbl_change_language,
+      identifier: 'v3_qa_change_language',
+      button: true,
+      child: InkWell(
+        onTap: () => _showCustomDropdown(context),
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: _menuOn
+              ? ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      color: context.tokens.color.vsdswColorSurface300,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                shadows: [
-                  BoxShadow(
-                    color: context.tokens.color.vsdswColorOutline,
-                    blurRadius: 0,
-                    offset: const Offset(0, 0),
-                    spreadRadius: 4,
-                  )
-                ],
-              )
-            : null,
-        child: Row(
-          children: [
-            Icon(
-              Icons.language,
-              size: 16,
-              color: context.tokens.color.vsdswColorOnSurface,
-            ),
-            const SizedBox(width: 8),
-            AutoSizeText(
-              prefLanguageProvider.language,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
+                  shadows: [
+                    BoxShadow(
+                      color: context.tokens.color.vsdswColorOutline,
+                      blurRadius: 0,
+                      offset: const Offset(0, 0),
+                      spreadRadius: 4,
+                    )
+                  ],
+                )
+              : null,
+          child: Row(
+            children: [
+              Icon(
+                Icons.language,
+                size: 16,
                 color: context.tokens.color.vsdswColorOnSurface,
               ),
+              const SizedBox(width: 8),
+              AutoSizeText(
+                prefLanguageProvider.language,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: context.tokens.color.vsdswColorOnSurface,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.keyboard_arrow_down_sharp,
+                size: 16,
+                color: context.tokens.color.vsdswColorOnSurface,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+const double _kMenuWidthStep = 56.0;
+const double _kMenuMinWidth = 2.0 * _kMenuWidthStep; // 112
+const double _kMenuMaxWidth = 5.0 * _kMenuWidthStep; // 280
+
+class V3PopupMenuItem<T> extends PopupMenuEntry<T> {
+  const V3PopupMenuItem({
+    super.key,
+    required this.value,
+    required this.label,
+    required this.identifier,
+    required this.child,
+    required this.selected,
+    double height = 40.0,
+    this.onTap,
+    this.excludeSemantics = true,
+    this.button = true,
+  }) : _itemHeight = height;
+
+  final T value;
+  final double _itemHeight;
+  final VoidCallback? onTap;
+  final Widget child;
+  final bool selected;
+  final String label;
+  final String identifier;
+  final bool excludeSemantics;
+  final bool button;
+
+  @override
+  double get height => _itemHeight;
+
+  @override
+  bool represents(T? value) => value == this.value;
+
+  @override
+  State<V3PopupMenuItem<T>> createState() => _V3PopupMenuItemState<T>();
+}
+
+class _V3PopupMenuItemState<T> extends State<V3PopupMenuItem<T>> {
+  bool _isHovered = false;
+  bool _isFocused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool openedWithLogicalKey =
+        HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Focus(
+        canRequestFocus: false,
+        onKeyEvent: (focusNode, event) {
+          if (event is KeyDownEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.enter ||
+                event.logicalKey == LogicalKeyboardKey.space) {
+              Navigator.pop<T>(context, widget.value);
+              widget.onTap?.call();
+            } else if (event.logicalKey == LogicalKeyboardKey.escape) {
+              Navigator.pop<T>(context);
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              focusNode.nextFocus();
+              return KeyEventResult.handled;
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+              focusNode.previousFocus();
+              return KeyEventResult.handled;
+            }
+          }
+
+          return KeyEventResult.ignored;
+        },
+        child: FocusableActionDetector(
+          autofocus: widget.selected && openedWithLogicalKey,
+          onShowHoverHighlight: (hovering) =>
+              setState(() => _isHovered = hovering),
+          onShowFocusHighlight: (focused) =>
+              setState(() => _isFocused = focused),
+          onFocusChange: (focused) => setState(() => _isFocused = focused),
+          child: Semantics(
+            label: widget.label,
+            identifier: widget.identifier,
+            button: widget.button,
+            onTap: () {
+              Navigator.pop<T>(context, widget.value);
+              widget.onTap?.call();
+            },
+            excludeSemantics: widget.excludeSemantics,
+            child: IntrinsicWidth(
+              stepWidth: _kMenuWidthStep,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: _kMenuMinWidth,
+                  maxWidth: _kMenuMaxWidth,
+                ),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 100),
+                  height: widget.height,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: _isHovered
+                        ? context.tokens.color.vsdswColorTertiary
+                            .withOpacity(0.5)
+                        : widget.selected
+                            ? context.tokens.color.vsdswColorTertiary
+                            : context.tokens.color.vsdswColorSurface100,
+                    border: Border.all(
+                      color: _isFocused
+                          ? context.tokens.color.vsdswColorPrimary
+                          : Colors.transparent,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: widget.child,
+                ),
+              ),
             ),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.keyboard_arrow_down_sharp,
-              size: 16,
-              color: context.tokens.color.vsdswColorOnSurface,
-            ),
-          ],
+          ),
         ),
       ),
     );
