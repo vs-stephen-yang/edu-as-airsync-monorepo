@@ -239,10 +239,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "End-User License Agreement",
     ),
+        "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage(
+          "Change your language",
+        ),
         "v3_lbl_device_list_button_device_list":
             MessageLookupByLibrary.simpleMessage("Device List"),
+        "v3_lbl_download_independent_version":
+            MessageLookupByLibrary.simpleMessage(
+          "Get the Mac independent version",
+        ),
+        "v3_lbl_download_menu_minimal": MessageLookupByLibrary.simpleMessage(
+          "menu minimal",
+        ),
         "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage(
           "Type Display Code",
+        ),
+        "v3_lbl_main_download": MessageLookupByLibrary.simpleMessage(
+          "Download Sender App",
+        ),
+        "v3_lbl_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
+          "Get the Mac App Store version",
+        ),
+        "v3_lbl_main_download_mobile": MessageLookupByLibrary.simpleMessage(
+          "Get the Mobile version",
+        ),
+        "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
+          "Get the Windows version",
         ),
         "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
           "Summit Share",
@@ -257,11 +279,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage(
           "Summit Next",
         ),
+        "v3_lbl_main_privacy": MessageLookupByLibrary.simpleMessage(
+          "Privacy Policy",
+        ),
         "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
           "Summit Connect",
         ),
+        "v3_lbl_select_language":
+            MessageLookupByLibrary.simpleMessage("Select %s"),
+        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
+          "Pause off",
+        ),
+        "v3_lbl_sharing_pause_on":
+            MessageLookupByLibrary.simpleMessage("Pause on"),
+        "v3_lbl_sharing_stop":
+            MessageLookupByLibrary.simpleMessage("Sharing stop"),
         "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
-      "Accessibility",
+          "Accessibility",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
       "Please wait for the host to approve your request.",

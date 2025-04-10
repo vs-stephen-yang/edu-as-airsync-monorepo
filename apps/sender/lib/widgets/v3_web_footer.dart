@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,11 +20,13 @@ class V3WebFooter extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Image.asset(
-              'assets/images/ic_wallpaper_web.png',
-              width: 1920,
-              // height: 160,
-              alignment: Alignment.bottomCenter,
+            child: ExcludeSemantics(
+              child: Image.asset(
+                'assets/images/ic_wallpaper_web.png',
+                width: 1920,
+                // height: 160,
+                alignment: Alignment.bottomCenter,
+              ),
             ),
           ),
           Positioned(
@@ -40,22 +43,29 @@ class V3WebFooter extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/images/ic_logo_viewsonic_web.png',
-                  width: 189,
-                  height: 31,
+                ExcludeSemantics(
+                  child: Image.asset(
+                    'assets/images/ic_logo_viewsonic_web.png',
+                    width: 189,
+                    height: 31,
+                  ),
                 ),
                 const SizedBox(height: 30),
-                TextButton(
-                  onPressed: () {
-                    launchUrl(Uri.parse(
-                        '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
-                  },
-                  child: AutoSizeText(
-                    S.of(context).v3_main_privacy,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: context.tokens.color.vsdswColorOnSurface,
+                V3Focus(
+                  label: S.current.v3_lbl_main_privacy,
+                  identifier: 'v3_qa_main_privacy',
+                  button: true,
+                  child: TextButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(
+                          '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
+                    },
+                    child: AutoSizeText(
+                      S.of(context).v3_main_privacy,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: context.tokens.color.vsdswColorOnSurface,
+                      ),
                     ),
                   ),
                 ),
