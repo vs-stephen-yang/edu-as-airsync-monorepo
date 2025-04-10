@@ -389,6 +389,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
           "Open broadcast setting menu",
         ),
+        "v3_lbl_settings_broadcast_boards":
+            MessageLookupByLibrary.simpleMessage(
+          "Open broadcast boards menu",
+        ),
+        "v3_lbl_settings_broadcast_devices":
+            MessageLookupByLibrary.simpleMessage(
+          "Open broadcast devices menu",
+        ),
+        "v3_lbl_settings_broadcast_to_display_group":
+            MessageLookupByLibrary.simpleMessage(
+          "Open broadcast to display group menu",
+        ),
+        "v3_lbl_settings_broadcast_to_display_group_item":
+            MessageLookupByLibrary.simpleMessage("Select %s"),
         "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
           "Open connectivity setting menu",
         ),
@@ -436,6 +450,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
           "Setting Menu is locked",
         ),
+        "v3_lbl_settings_only_when_casting_info":
+            MessageLookupByLibrary.simpleMessage(
+          "More information about broadcast to display group",
+        ),
         "v3_lbl_settings_show_display_code":
             MessageLookupByLibrary.simpleMessage(
           "Turn on/off display code toggle",
@@ -454,7 +472,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Internet connection only。",
         ),
         "v3_main_internet_connection_only_error":
-        MessageLookupByLibrary.simpleMessage(
+            MessageLookupByLibrary.simpleMessage(
           "Connectivity error，please check device network setting。",
         ),
     "v3_main_internet_connection_only_error_dialog_desc":

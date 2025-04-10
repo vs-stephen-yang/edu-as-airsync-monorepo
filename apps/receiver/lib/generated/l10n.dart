@@ -2490,6 +2490,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Open broadcast devices menu`
+  String get v3_lbl_settings_broadcast_devices {
+    return Intl.message(
+      'Open broadcast devices menu',
+      name: 'v3_lbl_settings_broadcast_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open broadcast boards menu`
+  String get v3_lbl_settings_broadcast_boards {
+    return Intl.message(
+      'Open broadcast boards menu',
+      name: 'v3_lbl_settings_broadcast_boards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open broadcast to display group menu`
+  String get v3_lbl_settings_broadcast_to_display_group {
+    return Intl.message(
+      'Open broadcast to display group menu',
+      name: 'v3_lbl_settings_broadcast_to_display_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_settings_broadcast_to_display_group_item {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_settings_broadcast_to_display_group_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `More information about broadcast to display group`
+  String get v3_lbl_settings_only_when_casting_info {
+    return Intl.message(
+      'More information about broadcast to display group',
+      name: 'v3_lbl_settings_only_when_casting_info',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
