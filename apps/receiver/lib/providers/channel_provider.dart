@@ -27,7 +27,7 @@ import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/ip_util.dart';
+import 'package:display_flutter/utility/device_info.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
@@ -331,7 +331,8 @@ class ChannelProvider extends ChangeNotifier {
     isNetworkConnected = true;
 
     // Get local IP address
-    final ipAddress = await getPreferredNetworkIpAddress();
+    final ipAddress = await findDeviceIpAddress();
+
     if (ipAddress == null || ipAddress.isEmpty) {
       // consider the device is not connected to any network while looking for the IP address
       if (_lastConnectivityResult == ConnectivityResult.none) {
