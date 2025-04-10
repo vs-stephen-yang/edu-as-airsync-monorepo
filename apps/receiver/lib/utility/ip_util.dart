@@ -65,14 +65,3 @@ bool isPrivateIp(String ipAddress) {
     return false;
   }
 }
-
-Future<String?> getPreferredNetworkIpAddress() async {
-  final interfaces =
-      await NetworkInterface.list(type: InternetAddressType.IPv4);
-
-  return findBestNetworkIp(
-    interfaces: interfaces,
-    filter: (networkInterface) => true,
-    priorityOrder: ['eth', 'wlan', 'wi', 'rmnet', 'wwan'],
-  );
-}
