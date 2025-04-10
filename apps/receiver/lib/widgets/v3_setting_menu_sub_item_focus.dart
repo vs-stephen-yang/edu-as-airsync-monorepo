@@ -7,9 +7,14 @@ class V3SettingMenuSubItemFocus extends StatelessWidget {
   final Widget child;
   final String? label;
   final String? identifier;
+  final bool excludeSemantics;
 
   const V3SettingMenuSubItemFocus(
-      {super.key, required this.child, this.label, this.identifier});
+      {super.key,
+      required this.child,
+      this.label,
+      this.identifier,
+      this.excludeSemantics = true});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +22,7 @@ class V3SettingMenuSubItemFocus extends StatelessWidget {
       return V3Focus(
         label: label,
         identifier: identifier,
+        excludeSemantics: excludeSemantics,
         onFocusMove: settingsProvider.onSubFocusMove,
         child: child,
       );

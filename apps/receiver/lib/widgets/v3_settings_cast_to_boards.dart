@@ -20,9 +20,10 @@ import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:sprintf/sprintf.dart';
 
 class V3SettingsCastToBoards extends ConsumerStatefulWidget {
   const V3SettingsCastToBoards({super.key});
@@ -143,10 +144,14 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Image(
-              width: 20,
-              height: 20,
-              image: Svg('assets/images/ic_settings_info.svg'),
+            Semantics(
+              label: S.of(context).v3_lbl_settings_only_when_casting_info,
+              identifier: "v3_qa_settings_only_when_casting_info",
+              child: SvgPicture.asset(
+                'assets/images/ic_settings_info.svg',
+                width: 20,
+                height: 20,
+              ),
             ),
             Gap(context.tokens.spacing.vsdslSpacingSm.right),
             Expanded(
@@ -439,20 +444,30 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       height: 26,
       margin: const EdgeInsets.only(right: 8, left: 8),
       child: V3SettingMenuListItemFocus(
+        label: sprintf(
+            S.current.v3_lbl_settings_broadcast_to_display_group_item,
+            [client.deviceName()]),
+        identifier: sprintf("v3_qa_settings_broadcast_to_display_group_item_%s",
+            [client.deviceName()]),
         onTap: () => toggleCheckbox(client),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            InkWell(
-              onTap: () => toggleCheckbox(client),
-              highlightColor: Colors.transparent,
-              child: SizedBox(
-                height: 26,
+            ExcludeFocus(
+              child: InkWell(
+                excludeFromSemantics: true,
+                onTap: () => toggleCheckbox(client),
+                highlightColor: Colors.transparent,
                 child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: ExcludeFocus(
+                  height: 26,
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
                     child: Checkbox(
+                      semanticLabel: sprintf(
+                          S.current
+                              .v3_lbl_settings_broadcast_to_display_group_item,
+                          [client.deviceName()]),
                       value: broadcastSelectedList
                           .any((element) => element.id() == client.id()),
                       activeColor: context.tokens.color.vsdslColorPrimary,
@@ -492,11 +507,11 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     return Row(
       children: [
         if (unavailable)
-          const SizedBox(
+          SizedBox(
             width: 20,
             height: 20,
-            child: Image(
-              image: Svg('assets/images/ic_device_unavailable.svg'),
+            child: SvgPicture.asset(
+              'assets/images/ic_device_unavailable.svg',
             ),
           ),
         Text(
@@ -549,6 +564,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     ChannelProvider channelProvider,
   ) {
     return V3SettingMenuItemToggleTile(
+      label: S.of(context).v3_lbl_settings_broadcast_to_display_group,
+      identifier: "v3_qa_settings_broadcast_to_display_group",
       title: S.of(context).v3_settings_broadcast_to_display_group,
       focusNode: provider.Provider.of<SettingsProvider>(context).subFocusNode,
       switchOn: groupNotifier.broadcastToGroup,
@@ -608,10 +625,10 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
           child: isBroadcast
               ? Row(
                   children: [
-                    const Image(
+                    SvgPicture.asset(
+                      'assets/images/ic_broadcast.svg',
                       width: 16,
                       height: 16,
-                      image: Svg('assets/images/ic_broadcast.svg'),
                     ),
                     SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
                     Text(

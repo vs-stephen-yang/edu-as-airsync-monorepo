@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class V3SettingsBroadcast extends StatelessWidget {
                   ),
                   SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
                   V3SettingMenuSubItemFocus(
+                    excludeSemantics: false,
                     child: CastToDevices(
                       settingsProvider: settingsProvider,
                       focusNode: settingsProvider.subFocusNode ?? FocusNode(),
@@ -41,6 +43,7 @@ class V3SettingsBroadcast extends StatelessWidget {
                   ),
                   SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
                   V3SettingMenuSubItemFocus(
+                      excludeSemantics: false,
                       child: CastToBoards(settingsProvider: settingsProvider)),
                 ],
               ),
@@ -125,34 +128,41 @@ class CastToDevices extends StatelessWidget {
                           return SizedBox(
                             width: 36,
                             height: 21,
-                            child: IconButton(
-                              focusNode: focusNode,
-                              icon: SvgPicture.asset(
-                                channelProvider.isSenderMode
-                                    ? 'assets/images/ic_switch_on.svg'
-                                    : 'assets/images/ic_switch_off.svg',
-                              ),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: settingsProvider.isBroadcastLock
-                                  ? null
-                                  : () async {
-                                      if (channelProvider.isSenderMode) {
-                                        await channelProvider.removeSender(
-                                            fromSender: true);
-                                      } else {
-                                        await channelProvider.startRemoteScreen(
-                                            fromSender: true);
-                                      }
+                            child: V3Focus(
+                              label: S
+                                  .of(context)
+                                  .v3_lbl_settings_broadcast_devices,
+                              identifier: 'v3_qa_settings_broadcast_devices',
+                              child: IconButton(
+                                focusNode: focusNode,
+                                icon: SvgPicture.asset(
+                                  channelProvider.isSenderMode
+                                      ? 'assets/images/ic_switch_on.svg'
+                                      : 'assets/images/ic_switch_off.svg',
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: settingsProvider.isBroadcastLock
+                                    ? null
+                                    : () async {
+                                        if (channelProvider.isSenderMode) {
+                                          await channelProvider.removeSender(
+                                              fromSender: true);
+                                        } else {
+                                          await channelProvider
+                                              .startRemoteScreen(
+                                                  fromSender: true);
+                                        }
 
-                                      trackEvent(
-                                        'click_cast_to_device',
-                                        EventCategory.setting,
-                                        target: channelProvider.isSenderMode
-                                            ? 'on'
-                                            : 'off',
-                                      );
-                                    },
+                                        trackEvent(
+                                    'click_cast_to_device',
+                                    EventCategory.setting,
+                                    target: channelProvider.isSenderMode
+                                        ? 'on'
+                                        : 'off',
+                                  );
+                                },
+                              ),
                             ),
                           );
                         },
@@ -199,10 +209,14 @@ class CastToBoards extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgPicture.asset(
-            'assets/images/ic_cast_to_boards.svg',
-            width: 43,
-            height: 43,
+          Semantics(
+            label: S.of(context).v3_lbl_settings_broadcast_boards,
+            identifier: 'v3_qa_settings_broadcast_boards',
+            child: SvgPicture.asset(
+              'assets/images/ic_cast_to_boards.svg',
+              width: 43,
+              height: 43,
+            ),
           ),
           SizedBox(
             width: context.tokens.spacing.vsdslSpacingXl.left,
@@ -226,17 +240,21 @@ class CastToBoards extends StatelessWidget {
                       SizedBox(
                         width: 21,
                         height: 21,
-                        child: InkWell(
-                          onTap: settingsProvider.isBroadcastLock
-                              ? null
-                              : () {
-                                  settingsProvider.setPage(
-                                      SettingPageState.broadcastBoards);
-                                },
-                          child: SvgPicture.asset(
-                            settingsProvider.isBroadcastLock
-                                ? 'assets/images/ic_arrow_right_lock.svg'
-                                : 'assets/images/ic_arrow_right.svg',
+                        child: Semantics(
+                          label: S.of(context).v3_lbl_settings_broadcast_boards,
+                          identifier: 'v3_qa_settings_broadcast_boards',
+                          child: InkWell(
+                            onTap: settingsProvider.isBroadcastLock
+                                ? null
+                                : () {
+                                    settingsProvider.setPage(
+                                        SettingPageState.broadcastBoards);
+                                  },
+                            child: SvgPicture.asset(
+                              settingsProvider.isBroadcastLock
+                                  ? 'assets/images/ic_arrow_right_lock.svg'
+                                  : 'assets/images/ic_arrow_right.svg',
+                            ),
                           ),
                         ),
                       ),

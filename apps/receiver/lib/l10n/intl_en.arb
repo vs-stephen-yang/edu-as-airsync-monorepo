@@ -227,7 +227,6 @@
   "v3_lbl_internet_connection_only_error": "Connectivity error，please check device network setting",
   "v3_lbl_connection_dialog_close": "Close connection status dialog",
   "v3_lbl_minimal_quick_connect_menu": "Minimize quick connect menu",
-  "v3_lbl_minimal_quick_connect_menu": "Minimize quick connect menu",
   "v3_lbl_settings_device_setting": "Open device setting menu",
   "v3_lbl_settings_broadcast": "Open broadcast setting menu",
   "v3_lbl_shortcuts_mirroring": "Open mirroring setting menu",
@@ -246,5 +245,10 @@
   "v3_lbl_settings_invite_group_item": "Select %s",
   "v3_lbl_settings_device_authorize_mode": "Turn on/off authorization mode",
   "v3_lbl_settings_device_launch_on_startup": "Turn on/off auto startup mode",
-  "v3_lbl_settings_device_auto_fill_otp": "Turn on/off auto fill OTP mode"
+  "v3_lbl_settings_device_auto_fill_otp": "Turn on/off auto fill OTP mode",
+  "v3_lbl_settings_broadcast_devices": "Open broadcast devices menu",
+  "v3_lbl_settings_broadcast_boards": "Open broadcast boards menu",
+  "v3_lbl_settings_broadcast_to_display_group": "Open broadcast to display group menu",
+  "v3_lbl_settings_broadcast_to_display_group_item": "Select %s",
+  "v3_lbl_settings_only_when_casting_info": "More information about broadcast to display group"
 }
