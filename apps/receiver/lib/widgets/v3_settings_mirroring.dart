@@ -40,6 +40,9 @@ class V3SettingsMirroring extends StatelessWidget {
             return Column(
               children: [
                 MirroringItem(
+                    label: S.current.v3_lbl_shortcuts_airplay,
+                    identifier: 'v3_qa_shortcuts_airplay',
+                    excludeSemantics: false,
                     isDisable: disable,
                     focusNode: settingsProvider.subFocusNode,
                     name: S.of(context).v3_shortcuts_airplay,
@@ -62,6 +65,7 @@ class V3SettingsMirroring extends StatelessWidget {
                     }),
                 if (mirrorStateProvider.airplayEnabled)
                   V3SettingMenuSubItemFocus(
+                    excludeSemantics: false,
                     child: Focus(
                       onKeyEvent: (node, event) {
                         if (event is KeyDownEvent &&
@@ -82,6 +86,11 @@ class V3SettingsMirroring extends StatelessWidget {
                               width: 20,
                               height: 20,
                               child: V3CustomCheckbox(
+                                label: S
+                                    .of(context)
+                                    .v3_lbl_settings_mirroring_require_passcode,
+                                identifier:
+                                    'v3_qa_settings_mirroring_require_passcode',
                                 isDisable: disable,
                                 value: mirrorStateProvider.airPlayCodeEnable,
                                 onChanged: (bool? value) {
@@ -109,6 +118,9 @@ class V3SettingsMirroring extends StatelessWidget {
                   ),
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
                 MirroringItem(
+                    label: S.current.v3_lbl_shortcuts_google_cast,
+                    identifier: 'v3_qa_shortcuts_google_cast',
+                    excludeSemantics: false,
                     isDisable: disable,
                     name: S.of(context).v3_shortcuts_google_cast,
                     mirrorEnabled: mirrorStateProvider.googleCastEnabled,
@@ -132,25 +144,29 @@ class V3SettingsMirroring extends StatelessWidget {
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
                 if (mirrorStateProvider.miracastSupport)
                   MirroringItem(
+                      label: S.current.v3_lbl_shortcuts_miracast,
+                      identifier: 'v3_qa_shortcuts_miracast',
+                      excludeSemantics: false,
                       isDisable: disable,
-                    name: S.of(context).v3_shortcuts_miracast,
-                    mirrorEnabled: mirrorStateProvider.miracastEnabled,
-                    callback: () {
-                      if (mirrorStateProvider.miracastEnabled) {
-                        mirrorStateProvider.stopMiracast();
-                        channelProvider.blockRtcConnection = false;
-                      } else {
-                        mirrorStateProvider.startMiracast();
-                        channelProvider.blockRtcConnection = true;
-                      }
+                      name: S.of(context).v3_shortcuts_miracast,
+                      mirrorEnabled: mirrorStateProvider.miracastEnabled,
+                      callback: () {
+                        if (mirrorStateProvider.miracastEnabled) {
+                          mirrorStateProvider.stopMiracast();
+                          channelProvider.blockRtcConnection = false;
+                        } else {
+                          mirrorStateProvider.startMiracast();
+                          channelProvider.blockRtcConnection = true;
+                        }
 
-                      trackEvent(
-                        'click_miracast',
-                        EventCategory.setting,
-                        target:
-                            mirrorStateProvider.miracastEnabled ? 'on' : 'off',
-                      );
-                    }),
+                        trackEvent(
+                          'click_miracast',
+                          EventCategory.setting,
+                          target: mirrorStateProvider.miracastEnabled
+                              ? 'on'
+                              : 'off',
+                        );
+                      }),
                 Container(
                   height: 1,
                   margin: EdgeInsets.only(
@@ -159,6 +175,7 @@ class V3SettingsMirroring extends StatelessWidget {
                   color: context.tokens.color.vsdslColorOutlineVariant,
                 ),
                 V3SettingMenuSubItemFocus(
+                  excludeSemantics: false,
                   child: SizedBox(
                     height: 26,
                     child: Row(
@@ -167,6 +184,11 @@ class V3SettingsMirroring extends StatelessWidget {
                           width: 20,
                           height: 20,
                           child: V3CustomCheckbox(
+                              label: S
+                                  .of(context)
+                                  .v3_lbl_settings_mirroring_auto_accept,
+                              identifier:
+                                  'v3_qa_settings_mirroring_auto_accept',
                               isDisable: disable,
                               value: !mirrorStateProvider.isMirrorConfirmation,
                               onChanged: (bool? value) {
@@ -225,6 +247,9 @@ class MirroringItem extends StatelessWidget {
     required this.mirrorEnabled,
     required this.callback,
     this.focusNode,
+    this.label,
+    this.identifier,
+    this.excludeSemantics = true,
   });
 
   final bool isDisable;
@@ -232,10 +257,16 @@ class MirroringItem extends StatelessWidget {
   final bool mirrorEnabled;
   final VoidCallback callback;
   final FocusNode? focusNode;
+  final String? label;
+  final String? identifier;
+  final bool excludeSemantics;
 
   @override
   Widget build(BuildContext context) {
     return V3SettingMenuSubItemFocus(
+      label: label,
+      identifier: identifier,
+      excludeSemantics: excludeSemantics,
       child: SizedBox(
         height: 26,
         child: Row(

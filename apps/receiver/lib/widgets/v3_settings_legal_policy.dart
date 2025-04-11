@@ -8,6 +8,7 @@ import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
 
 class V3SettingsLegalPolicy extends StatelessWidget {
   const V3SettingsLegalPolicy({super.key});
@@ -115,6 +116,10 @@ class V3SettingMenuListTile extends StatelessWidget {
                   ),
                   const Spacer(),
                   V3MenuNavigationIconButton(
+                    label: sprintf(
+                        S.of(context).v3_lbl_settings_open_source_license,
+                        [name]),
+                    identifier: "v3_qa_settings_open_source_license_$name",
                     focusNode: focusNode,
                     constraints: const BoxConstraints(
                       minWidth: 40.0,

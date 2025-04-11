@@ -27,6 +27,7 @@ class V3SettingsConnectivity extends StatelessWidget {
         title: S.of(context).v3_settings_connectivity_local,
         subtitle: S.of(context).v3_settings_connectivity_local_desc,
         subtitleIcon: SvgPicture.asset(
+          excludeFromSemantics: true,
           'assets/images/ic_settings_local_connection.svg',
           width: 22,
           height: 22,
@@ -44,6 +45,8 @@ class V3SettingsConnectivity extends StatelessWidget {
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isConnectivityLock,
         child: V3SettingsRadioGroup(
+          label: S.of(context).v3_lbl_settings_connectivity_item,
+          identifier: "v3_qa_settings_connectivity_item",
           hasSubFocusItem: true,
           focusOnInit: false,
           initSelectedValue: AppPreferences().connectivityType,

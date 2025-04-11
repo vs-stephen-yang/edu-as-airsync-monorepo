@@ -8,12 +8,16 @@ class V3CustomCheckbox extends StatelessWidget {
     required this.value,
     this.tristate = false,
     required this.onChanged,
+    this.label,
+    this.identifier,
   });
 
   final bool isDisable;
   final bool? value;
   final bool tristate;
   final ValueChanged<bool?> onChanged;
+  final String? label;
+  final String? identifier;
 
   @override
   Widget build(BuildContext context) {
@@ -33,26 +37,30 @@ class V3CustomCheckbox extends StatelessWidget {
       }
       return Colors.transparent;
     });
-    return Checkbox(
-      value: value,
-      tristate: tristate,
-      onChanged: isDisable ? null : onChanged,
-      side: BorderSide(color: colorOnPrimary, width: 2),
-      activeColor: colorPrimary,
-      checkColor: colorOnPrimary,
-      fillColor: colorFill,
-      overlayColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused)) {
-          return Colors.transparent;
-        }
-        if (states.contains(WidgetState.hovered)) {
-          return Colors.transparent;
-        }
-        if (states.contains(WidgetState.pressed)) {
-          return Colors.transparent;
-        }
-        return null; // 保留其他默认行为
-      }),
+    return Semantics(
+      label: label,
+      identifier: identifier,
+      child: Checkbox(
+        value: value,
+        tristate: tristate,
+        onChanged: isDisable ? null : onChanged,
+        side: BorderSide(color: colorOnPrimary, width: 2),
+        activeColor: colorPrimary,
+        checkColor: colorOnPrimary,
+        fillColor: colorFill,
+        overlayColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.focused)) {
+            return Colors.transparent;
+          }
+          if (states.contains(WidgetState.hovered)) {
+            return Colors.transparent;
+          }
+          if (states.contains(WidgetState.pressed)) {
+            return Colors.transparent;
+          }
+          return null; // 保留其他默认行为
+        }),
+      ),
     );
   }
 }

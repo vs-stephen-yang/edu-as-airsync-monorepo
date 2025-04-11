@@ -2,7 +2,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -19,10 +19,11 @@ class V3SettingsWhatsNew extends StatelessWidget {
             child: V3SettingMenuFocusSingleChildScrollView(
               primaryFocus: true,
               children: [
-                const Image(
+                SvgPicture.asset(
+                  semanticsLabel: S.of(context).v3_lbl_settings_whats_new_icon,
+                  'assets/images/ic_logo_airsync_icon.svg',
                   width: 53,
                   height: 53,
-                  image: Svg('assets/images/ic_logo_airsync_icon.svg'),
                 ),
                 const Gap(12),
                 Center(
