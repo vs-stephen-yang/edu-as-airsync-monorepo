@@ -184,6 +184,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                                 ),
                               ),
                               V3Focus(
+                                label: S.current.v3_lbl_settings_close_icon,
+                                identifier: "v3_qa_settings_close_icon",
                                 child: SizedBox(
                                   width: 33,
                                   height: 33,

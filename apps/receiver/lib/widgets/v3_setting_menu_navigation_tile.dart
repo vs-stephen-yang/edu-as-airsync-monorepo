@@ -27,6 +27,7 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
     return V3SettingMenuSubItemFocus(
       label: label,
       identifier: identifier,
+      excludeSemantics: false,
       child: SizedBox(
         height: 26,
         child: Row(
@@ -51,6 +52,8 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
               ),
             ),
             V3MenuNavigationIconButton(
+              label: label,
+              identifier: identifier,
               enabledIconPath: 'assets/images/ic_arrow_right.svg',
               disabledIconPath: 'assets/images/ic_arrow_right_lock.svg',
               disabled: disable,

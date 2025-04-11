@@ -69,10 +69,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
+              excludeSemantics: false,
               child: _buildInviteGroup(context, settingsProvider),
             ),
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
+              excludeSemantics: false,
               child: SizedBox(
                 child: _buildAutoFillOTP(context, settingsProvider),
               ),
@@ -90,6 +92,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             if (AppInstanceCreate().isInstalledInVBS200) ...[
               _buildDivider(context),
               V3SettingMenuSubItemFocus(
+                excludeSemantics: false,
                 child: SizedBox(
                   height: 26,
                   child: _buildLaunchOnStartup(context, settingsProvider),
@@ -98,6 +101,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ],
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
+              excludeSemantics: false,
               child: SizedBox(
                 child: _buildAuthorizeMode(context, settingsProvider),
               ),

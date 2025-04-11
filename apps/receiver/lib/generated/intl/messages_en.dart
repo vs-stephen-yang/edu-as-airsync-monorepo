@@ -487,7 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
           "Open broadcast setting menu",
-    ),
+        ),
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Open broadcast boards menu",
     ),
@@ -500,7 +500,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_settings_broadcast_to_display_group_item":
         MessageLookupByLibrary.simpleMessage("Select %s"),
-    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+          "Close settings menu",
+        ),
+        "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
       "Open connectivity setting menu",
     ),
         "v3_lbl_settings_connectivity_item":
@@ -508,8 +511,9 @@ class MessageLookup extends MessageLookupByLibrary {
           "Select %s",
         ),
         "v3_lbl_settings_device_authorize_mode":
-            MessageLookupByLibrary.simpleMessage("Turn on/off authorization mode"),
-    "v3_lbl_settings_device_auto_fill_otp":
+            MessageLookupByLibrary.simpleMessage(
+                "Turn on/off authorization mode"),
+        "v3_lbl_settings_device_auto_fill_otp":
         MessageLookupByLibrary.simpleMessage("Turn on/off auto fill OTP mode"),
     "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Turn on/off auto startup mode"),
@@ -560,7 +564,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_settings_show_display_code":
             MessageLookupByLibrary.simpleMessage(
           "Turn on/off display code toggle",
-    ),
+        ),
     "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "Open what\'s new setting menu",
     ),
@@ -578,7 +582,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
           "Open mirroring setting menu",
-    ),
+        ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay toggle"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":

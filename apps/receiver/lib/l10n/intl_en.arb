@@ -306,5 +306,6 @@
   "v3_lbl_settings_connectivity_item": "Select %s",
   "v3_lbl_settings_whats_new_icon": "what's new icon",
   "v3_lbl_settings_open_source_license": "Select %s",
-  "v3_lbl_settings_back_icon": "Back to previous page"
+  "v3_lbl_settings_back_icon": "Back to previous page",
+  "v3_lbl_settings_close_icon": "Close settings menu"
 }
