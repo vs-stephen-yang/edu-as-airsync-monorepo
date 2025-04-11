@@ -3100,6 +3100,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Close settings menu`
+  String get v3_lbl_settings_close_icon {
+    return Intl.message(
+      'Close settings menu',
+      name: 'v3_lbl_settings_close_icon',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
