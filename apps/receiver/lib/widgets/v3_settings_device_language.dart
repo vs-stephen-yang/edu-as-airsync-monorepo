@@ -37,6 +37,8 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
           bottom: 13,
           child: SingleChildScrollView(
             child: V3SettingsRadioGroup(
+              label: S.current.v3_lbl_main_language_title_item,
+              identifier: "v3_qa_main_language_title_item",
               hasSubFocusItem: true,
               focusOnInit: openedWithLogicalKey,
               initSelectedValue: languageProvider.language,

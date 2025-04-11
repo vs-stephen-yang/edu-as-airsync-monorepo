@@ -297,5 +297,14 @@
   "v3_lbl_settings_broadcast_boards": "Open broadcast boards menu",
   "v3_lbl_settings_broadcast_to_display_group": "Open broadcast to display group menu",
   "v3_lbl_settings_broadcast_to_display_group_item": "Select %s",
-  "v3_lbl_settings_only_when_casting_info": "More information about broadcast to display group"
+  "v3_lbl_settings_only_when_casting_info": "More information about broadcast to display group",
+  "v3_lbl_shortcuts_airplay": "Turn on/off AirPlay",
+  "v3_lbl_shortcuts_google_cast": "Turn on/off Google Cast",
+  "v3_lbl_shortcuts_miracast": "Turn on/off Miracast",
+  "v3_lbl_settings_mirroring_require_passcode": "Turn on/off require passcode",
+  "v3_lbl_settings_mirroring_auto_accept": "Turn on/off auto accept",
+  "v3_lbl_settings_connectivity_item": "Select %s",
+  "v3_lbl_settings_whats_new_icon": "what's new icon",
+  "v3_lbl_settings_open_source_license": "Select %s",
+  "v3_lbl_settings_back_icon": "Back to previous page"
 }

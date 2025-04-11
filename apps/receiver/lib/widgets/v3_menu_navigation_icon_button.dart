@@ -52,6 +52,7 @@ class V3MenuNavigationIconButton extends StatelessWidget {
           label: label,
           identifier: identifier,
           child: InkWell(
+            excludeFromSemantics: true,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             hoverColor: Colors.transparent,

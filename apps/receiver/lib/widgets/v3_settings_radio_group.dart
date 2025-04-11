@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
-import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +33,8 @@ class V3SettingsRadioGroup extends StatefulWidget {
     required this.onChanged,
     required this.hasSubFocusItem,
     required this.focusOnInit,
+    this.label,
+    this.identifier,
   });
 
   final String initSelectedValue;
@@ -41,6 +42,8 @@ class V3SettingsRadioGroup extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final bool hasSubFocusItem;
   final bool focusOnInit;
+  final String? label;
+  final String? identifier;
 
   @override
   V3SettingsRadioGroupState createState() => V3SettingsRadioGroupState();
@@ -71,9 +74,8 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
           return Column(
             children: [
               V3SettingMenuListItemFocus(
-                label: sprintf(
-                    S.current.v3_lbl_main_language_title_item, [key.title]),
-                identifier: "v3_qa_main_language_title_item_${key.title}",
+                label: sprintf(widget.label ?? '', [key.title]),
+                identifier: "${widget.identifier}_${key.title}",
                 focusNode:
                     (key == widget.radioList.first) && widget.hasSubFocusItem
                         ? settingsProvider.subFocusNode
@@ -96,6 +98,7 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                       Row(
                         children: [
                           SvgPicture.asset(
+                            excludeFromSemantics: true,
                             _selectedRadio == key.value
                                 ? settingsProvider.isConnectivityLock
                                     ? 'assets/images/ic_settings_radio_selected_lock.svg'

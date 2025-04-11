@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -3005,6 +3006,96 @@ class S {
     return Intl.message(
       'More information about broadcast to display group',
       name: 'v3_lbl_settings_only_when_casting_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off AirPlay`
+  String get v3_lbl_shortcuts_airplay {
+    return Intl.message(
+      'Turn on/off AirPlay',
+      name: 'v3_lbl_shortcuts_airplay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off Google Cast`
+  String get v3_lbl_shortcuts_google_cast {
+    return Intl.message(
+      'Turn on/off Google Cast',
+      name: 'v3_lbl_shortcuts_google_cast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off Miracast`
+  String get v3_lbl_shortcuts_miracast {
+    return Intl.message(
+      'Turn on/off Miracast',
+      name: 'v3_lbl_shortcuts_miracast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off require passcode`
+  String get v3_lbl_settings_mirroring_require_passcode {
+    return Intl.message(
+      'Turn on/off require passcode',
+      name: 'v3_lbl_settings_mirroring_require_passcode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off auto accept`
+  String get v3_lbl_settings_mirroring_auto_accept {
+    return Intl.message(
+      'Turn on/off auto accept',
+      name: 'v3_lbl_settings_mirroring_auto_accept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_settings_connectivity_item {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_settings_connectivity_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `what's new icon`
+  String get v3_lbl_settings_whats_new_icon {
+    return Intl.message(
+      'what\'s new icon',
+      name: 'v3_lbl_settings_whats_new_icon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_settings_open_source_license {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_settings_open_source_license',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back to previous page`
+  String get v3_lbl_settings_back_icon {
+    return Intl.message(
+      'Back to previous page',
+      name: 'v3_lbl_settings_back_icon',
       desc: '',
       args: [],
     );
