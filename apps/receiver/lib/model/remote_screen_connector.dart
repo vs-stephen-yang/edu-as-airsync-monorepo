@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
 
@@ -25,6 +27,7 @@ class RemoteScreenConnector {
   bool isTouchEnabled = false;
 
   Function(String message)? _signalHandler;
+  final Completer _signalHandlerCompleter = Completer();
 
   String get senderNameWithEllipsis {
     String result = senderName ?? '';
@@ -75,7 +78,7 @@ class RemoteScreenConnector {
   onStartRemoteScreen(
     StartRemoteScreenMessage message,
     List<RtcIceServer>? iceServers,
-  ) {
+  ) async {
     _sessionId = message.sessionId;
     // accept
     sendRemoteScreenState(RemoteScreenStatus.accepted);
@@ -89,12 +92,16 @@ class RemoteScreenConnector {
         iceServers: iceServers,
       ),
     );
+    await _signalHandlerCompleter.future;
     channel.send(remoteScreenInfoMessage);
     remotePresentationState = RemotePresentationState.streaming;
   }
 
   void registerSignalHandler(Function(String message)? handler) {
     _signalHandler = handler;
+    if (!_signalHandlerCompleter.isCompleted) {
+      _signalHandlerCompleter.complete();
+    }
   }
 
   void processSignalFromPeer(String message) {
