@@ -32,7 +32,12 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
   Future<void> setExpandedMode() async {
     var deviceType = await DeviceInfoVs.deviceType;
     bool isCDE = deviceType?.toString().startsWith('CDE') ?? false;
-    if (isCDE) _isExpandedMode = true;
+    bool isLED = deviceType?.toString().startsWith('dvLED') ?? false;
+    if (isCDE || isLED) {
+      setState(() {
+        _isExpandedMode = true;
+      });
+    }
   }
 
   @override
