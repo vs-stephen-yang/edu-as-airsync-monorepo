@@ -157,6 +157,10 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       _channels[dc.label!] = _createRemoteControlChannel(dc);
     };
 
+    _ionSfuClient!.onConnectionState = (RTCPeerConnectionState state) {
+      log.info('ionSfuClient onConnectionState: $state');
+    };
+
     await updateScreenSize();
     String? deviceType = await DeviceInfoVs.deviceType;
 
