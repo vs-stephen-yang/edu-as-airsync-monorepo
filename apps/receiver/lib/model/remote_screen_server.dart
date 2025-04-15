@@ -65,6 +65,7 @@ class RemoteControlChannel {
 
 class RemoteScreenServer extends FlutterIonSfuListener {
   Client? _ionSfuClient;
+  LocalStream? _localStream;
 
   final FlutterIonSfu _sfuServer = FlutterIonSfu();
   bool _sfuServerStarted = false;
@@ -136,30 +137,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     roomId = _generateRoomId();
     log.info('Start remote screen publisher for room $roomId');
 
-    final uuid = const Uuid().v4();
-    _ionSfuClient = await Client.create(
-      sid: roomId,
-      uid: uuid,
-      signal: ionSignal,
-    );
-
-    _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
-      if (dc.label == API_CHANNEL) {
-        return;
-      }
-      log.info("New data channel: ${dc.label} ${dc.id}");
-
-      if (dc.label == null) {
-        log.warning('Data channel has no label');
-        return;
-      }
-
-      _channels[dc.label!] = _createRemoteControlChannel(dc);
-    };
-
-    _ionSfuClient!.onConnectionState = (RTCPeerConnectionState state) {
-      log.info('ionSfuClient onConnectionState: $state');
-    };
+    await createIonSfuClient(ionSignal);
 
     await updateScreenSize();
     String? deviceType = await DeviceInfoVs.deviceType;
@@ -189,10 +167,51 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       return false;
     }
 
-    var localStream =
+    _localStream =
         await LocalStream.getDisplayMedia(constraints: constraints);
-    await _ionSfuClient?.publish(localStream);
+    await _ionSfuClient?.publish(_localStream!);
     return true;
+  }
+
+  Future<void> createIonSfuClient(JsonRPCSignal ionSignal) async {
+    if (_ionSfuClient != null) {
+      log.info('ionSfuClient close');
+      _ionSfuClient!.close();
+    }
+
+    final uuid = const Uuid().v4();
+    log.info('create ionSfuClient, uuid: $uuid');
+    _ionSfuClient = await Client.create(
+      sid: roomId,
+      uid: uuid,
+      signal: ionSignal,
+    );
+
+    _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
+      if (dc.label == API_CHANNEL) {
+        return;
+      }
+      log.info("New data channel: ${dc.label} ${dc.id}");
+
+      if (dc.label == null) {
+        log.warning('Data channel has no label');
+        return;
+      }
+
+      _channels[dc.label!] = _createRemoteControlChannel(dc);
+    };
+
+    _ionSfuClient!.onConnectionState = (RTCPeerConnectionState state) async {
+      log.info('ionSfuClient $uuid Connection state: ${state.name}');
+
+      switch (state) {
+        case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
+          log.info('ionSfuClient $uuid close');
+          _ionSfuClient!.close();
+          break;
+        default:
+      }
+    };
   }
 
   Future<bool> requestBackgroundPermission() async {
