@@ -482,12 +482,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
       "Stop presentation",
     ),
-        "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
-          "Back to previous page",
-        ),
-        "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
-          "Open broadcast setting menu",
-        ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Back to previous page",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Open broadcast setting menu",
+    ),
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Open broadcast boards menu",
     ),
@@ -500,20 +500,18 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_settings_broadcast_to_display_group_item":
         MessageLookupByLibrary.simpleMessage("Select %s"),
-        "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
-          "Close settings menu",
-        ),
-        "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Close settings menu",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
       "Open connectivity setting menu",
     ),
-        "v3_lbl_settings_connectivity_item":
-            MessageLookupByLibrary.simpleMessage(
-          "Select %s",
-        ),
-        "v3_lbl_settings_device_authorize_mode":
-            MessageLookupByLibrary.simpleMessage(
-                "Turn on/off authorization mode"),
-        "v3_lbl_settings_device_auto_fill_otp":
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Select %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage("Turn on/off authorization mode"),
+    "v3_lbl_settings_device_auto_fill_otp":
         MessageLookupByLibrary.simpleMessage("Turn on/off auto fill OTP mode"),
     "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Turn on/off auto startup mode"),
@@ -548,41 +546,38 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
       "Setting Menu is locked",
     ),
-        "v3_lbl_settings_mirroring_auto_accept":
-            MessageLookupByLibrary.simpleMessage("Turn on/off auto accept"),
-        "v3_lbl_settings_mirroring_require_passcode":
-            MessageLookupByLibrary.simpleMessage(
-                "Turn on/off require passcode"),
-        "v3_lbl_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage("Turn on/off auto accept"),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage("Turn on/off require passcode"),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
           "More information about broadcast to display group",
         ),
-        "v3_lbl_settings_open_source_license":
-            MessageLookupByLibrary.simpleMessage(
-          "Select %s",
-        ),
-        "v3_lbl_settings_show_display_code":
-            MessageLookupByLibrary.simpleMessage(
-          "Turn on/off display code toggle",
-        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Select %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Turn on/off display code toggle",
+    ),
     "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "Open what\'s new setting menu",
     ),
-        "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
-          "what\'s new icon",
-        ),
-        "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
-          "Turn on/off AirPlay",
-        ),
-        "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
-          "Turn on/off Google Cast",
-        ),
-        "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
-          "Turn on/off Miracast",
-        ),
-        "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
-          "Open mirroring setting menu",
-        ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "what\'s new icon",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Turn on/off AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Turn on/off Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Turn on/off Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Open mirroring setting menu",
+    ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay toggle"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
@@ -640,6 +635,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast unavailable now. Current Wi-Fi channel does not support screen casting.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Passcode",

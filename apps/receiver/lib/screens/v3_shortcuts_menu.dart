@@ -9,6 +9,7 @@ import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -267,7 +268,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                               ],
                             ),
                           ),
-                          if (mirrorStateProvider.miracastSupport)
+                          if (mirrorStateProvider.miracastSupport) ...[
                             V3Focus(
                               label: S
                                   .of(context)
@@ -296,10 +297,18 @@ class V3ShortcutsMenu extends StatelessWidget {
                                   SizedBox(
                                     height: 21,
                                     child: IconButton(
-                                      icon: SvgPicture.asset(
-                                        mirrorStateProvider.miracastEnabled
-                                            ? 'assets/images/ic_switch_on.svg'
-                                            : 'assets/images/ic_switch_off.svg',
+                                      icon: Opacity(
+                                        opacity: mirrorStateProvider
+                                                .isVB005AndDFSChannel
+                                            ? 0.32
+                                            : 1,
+                                        child: SvgPicture.asset(
+                                          mirrorStateProvider.miracastEnabled &&
+                                                  !mirrorStateProvider
+                                                      .isVB005AndDFSChannel
+                                              ? 'assets/images/ic_switch_on.svg'
+                                              : 'assets/images/ic_switch_off.svg',
+                                        ),
                                       ),
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
@@ -325,6 +334,42 @@ class V3ShortcutsMenu extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            if (mirrorStateProvider.isVB005AndDFSChannel)
+                              Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color:
+                                      context.tokens.color.vsdslColorSurface900,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: context.tokens.spacing.vsdslSpacingLg,
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/images/ic_toast_alert.svg',
+                                      width: 16,
+                                      height: 16,
+                                    ),
+                                    Gap(context
+                                        .tokens.spacing.vsdslSpacingLg.right),
+                                    SizedBox(
+                                      width: 200,
+                                      child: AutoSizeText(
+                                        S.of(context).v3_miracast_not_support,
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w400,
+                                          color: context
+                                              .tokens.color.vsdslColorWarning,
+                                        ),
+                                        minFontSize: 8,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ]
                         ],
                       );
                     },

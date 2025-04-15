@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
@@ -102,8 +103,13 @@ class V3MainInfo extends StatelessWidget {
         ),
         Positioned(
           left: 50,
-          bottom: 44,
+          bottom: 53,
           child: _buildInstructionRow(context),
+        ),
+        Positioned(
+          left: 50,
+          bottom: 32,
+          child: _buildMiracastInstructionRow(context),
         ),
         Positioned(
           bottom: isLandscape ? null : 40,
@@ -157,6 +163,42 @@ class V3MainInfo extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildMiracastInstructionRow(BuildContext context) {
+    return Consumer<MirrorStateProvider>(builder: (_, provider, __) {
+      return provider.isVB005AndDFSChannel
+          ? Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 35),
+                  child: SvgPicture.asset(
+                    'assets/images/ic_toast_alert.svg',
+                    excludeFromSemantics: true,
+                    width: 21,
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.tokens.color.vsdslColorWarning,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: AutoSizeText(
+                    S.of(context).v3_miracast_not_support,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      color: context.tokens.color.vsdslColorWarning,
+                    ),
+                    minFontSize: 9,
+                  ),
+                ),
+              ],
+            )
+          : const SizedBox.shrink();
+    });
   }
 
   ShapeDecoration _buildQrCodeDecoration(BuildContext context) {

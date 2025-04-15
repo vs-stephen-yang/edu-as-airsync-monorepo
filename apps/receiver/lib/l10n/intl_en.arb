@@ -307,5 +307,6 @@
   "v3_lbl_settings_whats_new_icon": "what's new icon",
   "v3_lbl_settings_open_source_license": "Select %s",
   "v3_lbl_settings_back_icon": "Back to previous page",
-  "v3_lbl_settings_close_icon": "Close settings menu"
+  "v3_lbl_settings_close_icon": "Close settings menu",
+  "v3_miracast_not_support": "Miracast unavailable now. Current Wi-Fi channel does not support screen casting."
 }

@@ -3110,6 +3110,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Miracast unavailable now. Current Wi-Fi channel does not support screen casting.`
+  String get v3_miracast_not_support {
+    return Intl.message(
+      'Miracast unavailable now. Current Wi-Fi channel does not support screen casting.',
+      name: 'v3_miracast_not_support',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
