@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.mvbcast.crosswalk.helper.WifiHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 import com.mvbcast.crosswalk.vsapi.VSApiHandler;
 
@@ -135,6 +136,18 @@ public class EulaActivity extends FlutterActivity {
                 }
             }
         });
+
+        new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_helper")
+                .setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("getFlavor")) {
+                        result.success(BuildConfig.FLAVOR_channel);
+                    } else if (call.method.equals("startVB005DFSChannelMonitor")) {
+                        WifiHelper.getInstance().initVB005DFSChannelMonitor(EulaActivity.this, binaryMessenger);
+                        result.success("N/A");
+                    } else {
+                        result.success("N/A");
+                    }
+                });
     }
 
     @Override
@@ -147,6 +160,7 @@ public class EulaActivity extends FlutterActivity {
             moveTaskToBack(true);
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        WifiHelper.getInstance().registerUsbReceiver(EulaActivity.this);
     }
 
     @Override
@@ -161,8 +175,17 @@ public class EulaActivity extends FlutterActivity {
             vsApiHandler.dispose();
         }
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
+        WifiHelper.getInstance().unregisterUsbReceiver(EulaActivity.this);
         super.onDestroy();
 //        System.exit(0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (WifiHelper.getInstance().onRequestPermissionsResult(this, requestCode, permissions, grantResults)) {
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void setSystemOTAEnableUI(boolean enableUI) {

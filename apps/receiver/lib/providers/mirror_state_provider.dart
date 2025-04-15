@@ -52,6 +52,10 @@ class MirrorStateProvider extends ChangeNotifier
 
   String get pinCode => _pinCode;
 
+  get isVB005AndDFSChannel => _isVB005AndDFSChannel;
+
+  bool _isVB005AndDFSChannel = false;
+
   final InstanceInfoProvider _instanceInfoProvider;
 
   FlutterMirror? _flutterMirrorPlugin;
@@ -355,7 +359,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startMiracast({bool updatePreference = true}) async {
-    if (!_miracastSupport) return;
+    if (!_miracastSupport || _isVB005AndDFSChannel) return;
 
     log.info('startMiracast');
     await _flutterMirrorPlugin?.startMiracast(_deviceName);
@@ -416,13 +420,36 @@ class MirrorStateProvider extends ChangeNotifier
   // region Private method
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> _initPlatformState() async {
-    var channel = const MethodChannel('com.mvbcast.crosswalk/app_update');
+    var channel = const MethodChannel('com.mvbcast.crosswalk/wifi_helper');
     String flavor = await channel.invokeMethod("getFlavor") ?? '';
     var deviceType = await DeviceInfoVs.deviceType ?? '';
     log.info('deviceType: $deviceType');
     log.info('flavor: $flavor');
     _miracastSupport =
         (flavor == 'ifp' && deviceType != 'dvLED') || (flavor == 'edla');
+
+    if (_miracastSupport) {
+      await channel.invokeMethod("startVB005DFSChannelMonitor");
+      const EventChannel('com.mvbcast.crosswalk/wifi_helper_vb005_dfs_channel')
+          .receiveBroadcastStream()
+          .listen((event) async {
+        if (event is bool) {
+          _isVB005AndDFSChannel = event;
+          notifyListeners();
+          if (_miracastEnabled) {
+            if (_isVB005AndDFSChannel) {
+              log.info('stop miracast feature (VB005 DFS Channel)');
+              await stopMiracast(updatePreference: false);
+            } else {
+              log.info('start miracast feature (VB005 DFS Channel)');
+              await startMiracast(updatePreference: false);
+            }
+          }
+        }
+      }, onError: (error) {
+        print('error: $error');
+      });
+    }
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
