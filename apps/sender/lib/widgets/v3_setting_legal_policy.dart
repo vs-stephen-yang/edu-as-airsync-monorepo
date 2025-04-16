@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -34,33 +35,39 @@ class V3SettingsLegalPolicy extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 40,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: context.tokens.spacing.vsdswSpacingXs.top,
-                horizontal: context.tokens.spacing.vsdswSpacingSm.left,
-              ),
-              child: Row(
-                children: [
-                  AutoSizeText(
-                    S.of(context).v3_setting_privacy_policy,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+          V3Focus(
+            label: S.of(context).v3_lbl_setting_privacy_policy,
+            identifier: 'v3_qa_setting_privacy_policy',
+            child: SizedBox(
+              height: WebRTC.platformIsMobile ? 44 : 40,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: context.tokens.spacing.vsdswSpacingXs.top,
+                  horizontal: context.tokens.spacing.vsdswSpacingSm.left,
+                ),
+                child: Row(
+                  children: [
+                    AutoSizeText(
+                      S.of(context).v3_setting_privacy_policy,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon:
-                        SvgPicture.asset('assets/images/v3_ic_arrow_right.svg'),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () {
-                      settingsProvider.setPage(SettingPageState.licenses);
-                    },
-                  )
-                ],
+                    const Spacer(),
+                    ExcludeSemantics(
+                      child: IconButton(
+                        icon: SvgPicture.asset(
+                            'assets/images/v3_ic_arrow_right.svg'),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          settingsProvider.setPage(SettingPageState.licenses);
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -102,43 +109,44 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                           (license) => !_hiddenLicenses.contains(license.name))
                       .toList();
                   final license = visibleLicenses[index];
-                  return SizedBox(
-                    width: 352,
-                    height: 40,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: context.tokens.spacing.vsdswSpacingXs.top,
-                          horizontal:
-                              context.tokens.spacing.vsdswSpacingSm.left),
-                      child: Row(
-                        children: [
-                          AutoSizeText(
-                            license.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                  return V3Focus(
+                    label: sprintf(S.of(context).v3_lbl_setting_legal_policy,
+                        [license.name]),
+                    identifier: sprintf(
+                        'v3_qa_setting_legal_policy %s', [license.name]),
+                    child: SizedBox(
+                      width: 352,
+                      height: WebRTC.platformIsMobile ? 44 : 40,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: context.tokens.spacing.vsdswSpacingXs.top,
+                            horizontal:
+                                context.tokens.spacing.vsdswSpacingSm.left),
+                        child: Row(
+                          children: [
+                            AutoSizeText(
+                              license.name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                          V3Focus(
-                            label: sprintf(
-                                S.of(context).v3_lbl_setting_legal_policy,
-                                [license.name]),
-                            identifier: sprintf('v3_qa_setting_legal_policy %s',
-                                [license.name]),
-                            child: IconButton(
-                              icon: SvgPicture.asset(
-                                  'assets/images/v3_ic_arrow_right.svg'),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                settingsProvider.setPage(
-                                    SettingPageState.licenses,
-                                    license: license);
-                              },
-                            ),
-                          )
-                        ],
+                            const Spacer(),
+                            ExcludeSemantics(
+                              child: IconButton(
+                                icon: SvgPicture.asset(
+                                    'assets/images/v3_ic_arrow_right.svg'),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  settingsProvider.setPage(
+                                      SettingPageState.licenses,
+                                      license: license);
+                                },
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   );

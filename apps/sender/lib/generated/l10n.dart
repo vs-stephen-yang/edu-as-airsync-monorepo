@@ -2449,6 +2449,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Privacy policy`
+  String get v3_lbl_setting_privacy_policy {
+    return Intl.message(
+      'Privacy policy',
+      name: 'v3_lbl_setting_privacy_policy',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

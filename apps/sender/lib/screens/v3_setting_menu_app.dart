@@ -69,36 +69,47 @@ class V3SettingMenuApp extends StatelessWidget {
                           left: 16,
                           top: 0,
                           bottom: 0,
-                          child: CircleAvatar(
-                            backgroundColor:
-                                context.tokens.color.vsdswColorSurface900,
-                            radius: 24,
-                            child: V3Focus(
-                              label: S.of(context).v3_lbl_setting_menu_back,
-                              identifier: 'v3_qa_setting_menu_back',
-                              child: IconButton(
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                icon: ExcludeSemantics(
-                                  child: SvgPicture.asset(
-                                    'assets/images/v3_ic_arrow_left.svg',
+                          child: Center(
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  context.tokens.color.vsdswColorSurface900,
+                              radius: 24,
+                              child: V3Focus(
+                                label: S.of(context).v3_lbl_setting_menu_back,
+                                identifier: 'v3_qa_setting_menu_back',
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () {
+                                    final settingsProvider =
+                                        Provider.of<SettingsProvider>(context,
+                                            listen: false);
+                                    if (settingsProvider.currentPage ==
+                                        SettingPageState.licenses) {
+                                      settingsProvider.setPage(
+                                          SettingPageState.legalPolicy);
+                                    } else {
+                                      settingsProvider
+                                          .setPage(SettingPageState.appHome);
+                                    }
+                                  },
+                                  child: SizedBox(
+                                    width: 48,
+                                    height: 48,
+                                    child: Center(
+                                      child: ExcludeSemantics(
+                                        child: SvgPicture.asset(
+                                          'assets/images/v3_ic_arrow_left.svg',
+                                          width: 24,
+                                          height: 24,
+                                          color: context.tokens.color
+                                              .vsdswColorNeutralInverse,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                color: context
-                                    .tokens.color.vsdswColorNeutralInverse,
-                                onPressed: () {
-                                  SettingsProvider settingsProvider =
-                                      Provider.of<SettingsProvider>(context,
-                                          listen: false);
-                                  if (settingsProvider.currentPage ==
-                                      SettingPageState.licenses) {
-                                    settingsProvider
-                                        .setPage(SettingPageState.legalPolicy);
-                                  } else {
-                                    settingsProvider
-                                        .setPage(SettingPageState.appHome);
-                                  }
-                                },
                               ),
                             ),
                           ),
@@ -107,27 +118,29 @@ class V3SettingMenuApp extends StatelessWidget {
                         top: 0,
                         right: 16,
                         bottom: 0,
-                        child: V3Focus(
-                          label: S.of(context).v3_lbl_setting_menu_close,
-                          identifier: 'v3_qa_setting_menu_close',
-                          child: CircleAvatar(
-                            backgroundColor:
-                                context.tokens.color.vsdswColorSurface900,
-                            radius: 24,
-                            child: InkWell(
-                              onTap: () {
-                                if (navService.canPop()) {
-                                  navService.goBack();
-                                }
-                              },
-                              borderRadius: BorderRadius.circular(24),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ExcludeSemantics(
-                                  child: SvgPicture.asset(
-                                    'assets/images/v3_ic_menu_close.svg',
-                                    color: context
-                                        .tokens.color.vsdswColorNeutralInverse,
+                        child: Center(
+                          child: V3Focus(
+                            label: S.of(context).v3_lbl_setting_menu_close,
+                            identifier: 'v3_qa_setting_menu_close',
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  context.tokens.color.vsdswColorSurface900,
+                              radius: 24,
+                              child: InkWell(
+                                onTap: () {
+                                  if (navService.canPop()) {
+                                    navService.goBack();
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(24),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ExcludeSemantics(
+                                    child: SvgPicture.asset(
+                                      'assets/images/v3_ic_menu_close.svg',
+                                      color: context.tokens.color
+                                          .vsdswColorNeutralInverse,
+                                    ),
                                   ),
                                 ),
                               ),

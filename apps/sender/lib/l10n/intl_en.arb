@@ -242,5 +242,6 @@
   "v3_lbl_setting_software_update_no_available": "No Update Available",
   "v3_lbl_setting_legal_policy": "View legal policy: %s",
   "v3_lbl_select_screen_source_name": "Screen source:  %s",
-  "v3_lbl_setting_select": "Select %s"
+  "v3_lbl_setting_select": "Select %s",
+  "v3_lbl_setting_privacy_policy": "Privacy policy"
 }

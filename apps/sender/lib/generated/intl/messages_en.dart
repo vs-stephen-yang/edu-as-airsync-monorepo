@@ -349,6 +349,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage(
           "Close settings menu",
         ),
+        "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
+          "Privacy policy",
+        ),
         "v3_lbl_setting_select":
             MessageLookupByLibrary.simpleMessage("Select %s"),
         "v3_lbl_setting_software_update_deny_action":
@@ -396,9 +399,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
           "Please wait for the host to approve your request.",
-    ),
-    "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-      "Network connectivity error.",
+        ),
+        "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
+          "Network connectivity error.",
     ),
     "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
       "AirSync instance is busy. Please try it later.",

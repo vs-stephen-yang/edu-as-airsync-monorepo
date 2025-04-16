@@ -18,7 +18,7 @@ class ResizableDraggableWidget extends StatefulWidget {
     required this.halfScreen,
     required this.text,
     required this.onStop,
-    this.height = 50,
+    this.height = 62,
   });
 
   @override
@@ -40,7 +40,7 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
       final textPainter = TextPainter(
         text: TextSpan(
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 18,
             fontWeight: FontWeight.w700,
             color: context.tokens.color.vsdswColorOnSuccess,
           ),
@@ -52,15 +52,16 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
       textPainter.layout();
 
       setState(() {
+        const iconSize = 26;
         final textWidth = textPainter.size.width;
 
         final gap = context.tokens.spacing.vsdswSpacingSm.right;
         final textPadding = context.tokens.spacing.vsdswSpacingXs.right;
         final textWithFullWidth =
-            textWidth + (26 * 3) + (gap * 3) + (textPadding * 2) + 8;
+            textWidth + (iconSize * 3) + (gap * 2) + (textPadding * 2) + 8;
         _width = math.min(textWithFullWidth, widget.halfScreen * 2);
         // 1 icon + 2 gaps
-        _collapsedWidth = 26 + (gap * 2);
+        _collapsedWidth = iconSize + (gap * 2);
 
         // initial position
         _currentX = widget.halfScreen - (_width / 2);
@@ -263,7 +264,7 @@ class ExpandedContentWidget extends StatelessWidget {
           Flexible(child: _buildText(context)),
           textPadding,
           _buildStopButton(context),
-          gap,
+          // gap,
           _buildMinimizeButton(),
           gap,
         ],
@@ -273,10 +274,15 @@ class ExpandedContentWidget extends StatelessWidget {
 
   Widget _buildIcon(String assetPath) {
     return Container(
-      width: 26,
-      height: 26,
       alignment: Alignment.center,
-      child: ExcludeSemantics(child: SvgPicture.asset(assetPath)),
+      child: ExcludeSemantics(
+        child: SvgPicture.asset(
+          assetPath,
+          height: 30,
+          width: 30,
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 
@@ -301,18 +307,20 @@ class ExpandedContentWidget extends StatelessWidget {
       child: InkWell(
         onTap: onStop,
         child: SizedBox(
-          width: 26,
-          height: 26,
-          child: CircleAvatar(
-            radius: 13,
-            backgroundColor: context.tokens.color.vsdswColorError,
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: context.tokens.color.vsdswColorSurface100,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(2),
+          width: 48,
+          height: 48,
+          child: Center(
+            child: CircleAvatar(
+              radius: 16,
+              backgroundColor: context.tokens.color.vsdswColorError,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: context.tokens.color.vsdswColorSurface100,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
           ),
@@ -327,7 +335,11 @@ class ExpandedContentWidget extends StatelessWidget {
       identifier: 'v3_qa_streaming_minimize_button',
       child: InkWell(
         onTap: onMinimize,
-        child: _buildIcon('assets/images/ic_minimize.svg'),
+        child: SizedBox(
+          height: 48,
+          width: 48,
+          child: _buildIcon('assets/images/ic_minimize.svg'),
+        ),
       ),
     );
   }
@@ -358,7 +370,7 @@ class CollapsedContentWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(right: gap, left: gap, bottom: 4),
       width: width,
-      height: height * 0.7,
+      height: 44,
       decoration: BoxDecoration(
         border: Border(left: borderSide, top: borderSide, right: borderSide),
         borderRadius: BorderRadius.only(

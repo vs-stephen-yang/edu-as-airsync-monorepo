@@ -38,13 +38,13 @@ class V3SettingMainList extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return SizedBox(
                 width: 204,
-                height: 40,
                 child: V3Focus(
                   label: sprintf(S.current.v3_lbl_setting_select,
                       [settings[index].itemTitle]),
                   identifier: 'v3_qa_setting_select_$index',
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(0, 44),
                       shadowColor: Colors.transparent,
                       foregroundColor:
                           context.tokens.color.vsdswColorOnSurfaceInverse,

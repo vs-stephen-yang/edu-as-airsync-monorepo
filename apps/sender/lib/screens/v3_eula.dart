@@ -100,7 +100,7 @@ class V3Eula extends StatelessWidget {
                         children: [
                           SizedBox(
                             width: 108,
-                            height: 40,
+                            height: 48,
                             child: TextButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor:
@@ -133,7 +133,7 @@ class V3Eula extends StatelessWidget {
                           const SizedBox(width: 8),
                           SizedBox(
                             width: 108,
-                            height: 40,
+                            height: 48,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 elevation: 5.0,
