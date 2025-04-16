@@ -8,14 +8,14 @@ class V3BackButton extends StatelessWidget {
     super.key,
     this.isDarkTheme = false,
     required this.onPressed,
-    required this.label,
+    this.label,
     required this.identifier,
   });
 
   final bool isDarkTheme;
   final VoidCallback? onPressed;
 
-  final String label;
+  final String? label;
   final String identifier;
 
   @override
