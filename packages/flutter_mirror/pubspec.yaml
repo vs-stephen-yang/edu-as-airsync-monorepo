@@ -15,7 +15,7 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth
       ref: release-0.7.0
-  permission_handler: ^10.4.3
+  permission_handler: ^12.0.0+1
 
 dev_dependencies:
   flutter_test:
