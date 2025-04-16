@@ -15,6 +15,7 @@ import 'package:flutter_golang_server/flutter_ion_sfu.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
+import 'package:synchronized/synchronized.dart';
 import 'package:uuid/uuid.dart';
 import 'package:window_size/window_size.dart';
 
@@ -66,6 +67,7 @@ class RemoteControlChannel {
 class RemoteScreenServer extends FlutterIonSfuListener {
   Client? _ionSfuClient;
   LocalStream? _localStream;
+  final _lock = Lock();
 
   final FlutterIonSfu _sfuServer = FlutterIonSfu();
   bool _sfuServerStarted = false;
@@ -129,70 +131,66 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   Future<bool> startRemoteScreenPublisher() async {
-    if (_ionSfuClient != null) {
-      return true;
-    }
+    return _lock.synchronized(() async {
+        if (_ionSfuClient != null) {
+          return true;
+        }
 
-    ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
+        ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
+        roomId = _generateRoomId();
+        log.info('Start remote screen publisher for room $roomId');
 
-    roomId = _generateRoomId();
-    log.info('Start remote screen publisher for room $roomId');
+        _ionSfuClient = await _createIonSfuClient();
 
-    await createIonSfuClient();
+        await updateScreenSize();
+        String? deviceType = await DeviceInfoVs.deviceType;
 
-    await updateScreenSize();
-    String? deviceType = await DeviceInfoVs.deviceType;
+        final captureResolution = getCaptureVideoResolution(
+          deviceType,
+          _screenWidth,
+          _screenHeight,
+        );
+        log.info(
+            'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
 
-    final captureResolution = getCaptureVideoResolution(
-      deviceType,
-      _screenWidth,
-      _screenHeight,
-    );
-    log.info(
-        'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+        var constraints = Constraints.defaults;
+        // Note: ion-sdk-flutter currently hard-code H264, so the settings here
+        // are ineffective.
+        constraints.codec = "h264";
+        constraints.simulcast = false;
+        constraints.audio = false;
+        constraints.resolution = captureResolution.name;
 
-    var constraints = Constraints.defaults;
-    // Note: ion-sdk-flutter currently hard-code H264, so the settings here
-    // are ineffective.
-    constraints.codec = "h264";
-    constraints.simulcast = false;
-    constraints.audio = false;
-    constraints.resolution = captureResolution.name;
+        bool capturePermission = await Helper.requestCapturePermission();
+        if (!capturePermission) {
+          return false;
+        }
+        bool backgroundPermission = await requestBackgroundPermission();
+        if (!backgroundPermission) {
+          return false;
+        }
 
-    bool capturePermission = await Helper.requestCapturePermission();
-    if (!capturePermission) {
-      return false;
-    }
-    bool backgroundPermission = await requestBackgroundPermission();
-    if (!backgroundPermission) {
-      return false;
-    }
-
-    _localStream =
+        _localStream =
         await LocalStream.getDisplayMedia(constraints: constraints);
-    await _ionSfuClient?.publish(_localStream!);
-    return true;
+        await _ionSfuClient?.publish(_localStream!);
+        return true;
+    });
   }
 
-  Future<void> createIonSfuClient() async {
+  Future<Client?> _createIonSfuClient() async {
     if (ionSignal == null) {
-      return;
-    }
-
-    if (_ionSfuClient != null) {
-      log.info('ionSfuClient close');
-      _ionSfuClient!.close();
+      return null;
     }
 
     final uuid = const Uuid().v4();
     log.info('create ionSfuClient, uuid: $uuid');
-    _ionSfuClient = await Client.create(
+    final client = await Client.create(
       sid: roomId,
       uid: uuid,
       signal: ionSignal!,
     );
 
-    _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
+    client.ondatachannel = (RTCDataChannel dc) {
       if (dc.label == API_CHANNEL) {
         return;
       }
@@ -206,21 +204,34 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       _channels[dc.label!] = _createRemoteControlChannel(dc);
     };
 
-    _ionSfuClient!.onConnectionState = (RTCPeerConnectionState state) async {
+    client.onConnectionState = (RTCPeerConnectionState state) async {
       log.info('ionSfuClient $uuid Connection state: ${state.name}');
-
-      switch (state) {
-        case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
-          log.info('ionSfuClient $uuid close');
-          _ionSfuClient!.close();
-          break;
-        default:
-      }
     };
 
-    if (_localStream != null) {
-      await _ionSfuClient?.publish(_localStream!);
-    }
+    return client;
+  }
+
+  void recreateIonSfuClient() async {
+    await _lock.synchronized(() async {
+      if (_ionSfuClient == null) {
+        return;
+      }
+
+      final client = await _createIonSfuClient();
+      if (client == null) {
+        return;
+      }
+
+      if (_localStream != null) {
+        await client.publish(_localStream!);
+        // ensure an uninterrupted transition between the old and new client
+        final oldClient = _ionSfuClient;
+        _ionSfuClient = client;
+        oldClient?.close();
+      } else {
+        client.close();
+      }
+    });
   }
 
   Future<bool> requestBackgroundPermission() async {
@@ -258,10 +269,15 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     return _ionSfuClient != null;
   }
 
-  void stopRemoteScreenPublisher() {
-    log.info('Stop remote screen publisher for room $roomId');
-    _ionSfuClient?.close();
-    _ionSfuClient = null;
+  void stopRemoteScreenPublisher() async {
+    await _lock.synchronized(() async {
+      if (_ionSfuClient != null) {
+        log.info('Stop remote screen publisher for room $roomId');
+        final client = _ionSfuClient;
+        _ionSfuClient = null;
+        client?.close();
+      }
+    });
   }
 
   void addConnector(RemoteScreenConnector connector) async {
