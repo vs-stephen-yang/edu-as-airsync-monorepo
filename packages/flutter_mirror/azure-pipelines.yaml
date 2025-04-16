@@ -35,7 +35,7 @@ jobs:
 
       - task: JavaToolInstaller@0
         inputs:
-          versionSpec: "11"
+          versionSpec: "17"
           jdkArchitectureOption: "x64"
           jdkSourceOption: "PreInstalled"
 
@@ -130,7 +130,7 @@ jobs:
       - task: JavaToolInstaller@0
         displayName: Install Java Tool
         inputs:
-          versionSpec: "11"
+          versionSpec: "17"
           jdkArchitectureOption: "x64"
           jdkSourceOption: "PreInstalled"
       # Analyze with ShiftLeft
