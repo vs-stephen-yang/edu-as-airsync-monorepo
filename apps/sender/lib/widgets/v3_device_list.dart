@@ -106,8 +106,10 @@ class _V3DeviceListState extends State<V3DeviceList> {
                       V3Focus(
                         identifier: 'v3_qa_device_list_close',
                         child: SizedBox(
-                          width: 28, // Android 要 48
-                          height: 28,
+                          width:
+                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
+                          height:
+                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
                           child: InkWell(
                             onTap: () {
                               _presentStateProvider.presentMainPage();
@@ -127,7 +129,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 ),
               ],
             ),
-            const Gap(22),
+            Gap((Platform.isAndroid || Platform.isIOS) ? 10 : 22),
             Divider(
               color: context.tokens.color.vsdswColorOutline,
             ),

@@ -27,7 +27,7 @@ class V3SettingLanguage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: languageList.keys.toList().map<Widget>((String key) {
               return Container(
-                height: 28, // Android 要 48
+                height: 48,
                 margin: EdgeInsets.only(
                   bottom: context.tokens.spacing.vsdswSpacingSm.bottom,
                 ),

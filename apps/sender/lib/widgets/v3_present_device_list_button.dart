@@ -36,55 +36,54 @@ class V3PresentDeviceListButton extends StatelessWidget {
             identifier: 'v3_qa_device_list_button_device_list',
             button: true,
             child: InkWell(
+              focusColor: Colors.transparent,
               borderRadius: BorderRadius.circular(9999),
               onTap: onTap,
               child: Container(
-                height: 32,
-                // Android 要 48,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: context.tokens.color.vsdswColorSurface600,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9999),
+                height: 48, // 實際觸控範圍（符合 WCAG）
+                alignment: Alignment.center,
+                child: Container(
+                  height: 32, // 實際看起來的按鈕高度
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: ShapeDecoration(
+                    color: context.tokens.color.vsdswColorSurface600,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: context.tokens.color.vsdswColorOpacityNeutralSm,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      )
+                    ],
                   ),
-                  shadows: [
-                    BoxShadow(
-                      color: context.tokens.color.vsdswColorOpacityNeutralSm,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ],
-                ),
-                child: ExcludeSemantics(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/ic_device_list_screen.svg',
                           width: 16,
                           height: 16,
                           colorFilter: ColorFilter.mode(
-                              context.tokens.color.vsdswColorOnPrimary,
-                              BlendMode.srcIn),
-                          'assets/images/ic_device_list_screen.svg'),
-                      const SizedBox(width: 4),
-                      Text(
-                        S.current.v3_device_list_button_device_list,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: context.tokens.color.vsdswColorOnPrimary,
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 0.09,
-                          letterSpacing: 0.28,
+                            context.tokens.color.vsdswColorOnPrimary,
+                            BlendMode.srcIn,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        Text(
+                          S.current.v3_device_list_button_device_list,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdswColorOnPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            height: 1.2,
+                            letterSpacing: 0.28,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

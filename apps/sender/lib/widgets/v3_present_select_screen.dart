@@ -183,7 +183,9 @@ class V3PresentSelectScreen extends StatelessWidget {
                   width: 138,
                   height: 120,
                   child: SvgPicture.asset(
-                      'assets/images/v3_ic_ios_start_sharing.svg'),
+                    'assets/images/v3_ic_ios_start_sharing.svg',
+                    excludeFromSemantics: true,
+                  ),
                 ),
                 Padding(padding: context.tokens.spacing.vsdswSpacingLg),
                 SizedBox(
