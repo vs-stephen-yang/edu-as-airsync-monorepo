@@ -80,6 +80,7 @@ dependencies:
   async: ^2.11.0
   clock: ^1.1.1
   ntp: ^2.0.0
+  synchronized: ^3.3.0
 
   # ViewSonic plug-in
   app_ota_flutter:

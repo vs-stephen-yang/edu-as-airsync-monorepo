@@ -346,7 +346,7 @@ class ChannelProvider extends ChangeNotifier {
 
     _channelServer.onIpAddressChange(ipAddress);
 
-    _remoteScreenServe.createIonSfuClient();
+    _remoteScreenServe.recreateIonSfuClient();
   }
 
   _onTunnelStatusChange(TunnelStatus status) {
