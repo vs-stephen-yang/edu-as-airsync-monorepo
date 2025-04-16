@@ -469,7 +469,7 @@ class ChannelProvider extends ChangeNotifier {
     _isShareMode = fromShare ?? _isShareMode;
     _isSenderMode = fromSender ?? _isSenderMode;
     _save();
-    final iceServers = await _getIceServers(ChannelMode.tunnel);
+    final iceServers = await _getIceServers();
 
     await _remoteScreenServe.startSfuServer(iceServers);
     bool result = await _remoteScreenServe.startRemoteScreenPublisher();
@@ -621,7 +621,7 @@ class ChannelProvider extends ChangeNotifier {
             sendPresentRejectMessage(channel);
             break;
           }
-          final iceServers = await _getIceServers(mode);
+          final iceServers = await _getIceServers();
           await rtcConnector.onStartPresent(
             message as StartPresentMessage,
             isModeratorMode,
@@ -674,7 +674,7 @@ class ChannelProvider extends ChangeNotifier {
             _remoteShareConnectors.add(remoteScreenConnector!);
 
             _remoteScreenServe.addConnector(remoteScreenConnector!);
-            final iceServers = await _getIceServers(mode);
+            final iceServers = await _getIceServers();
 
             await remoteScreenConnector?.onStartRemoteScreen(
               message as StartRemoteScreenMessage,
@@ -686,7 +686,7 @@ class ChannelProvider extends ChangeNotifier {
           }
 
           if (_isSenderMode) {
-            final iceServers = await _getIceServers(mode);
+            final iceServers = await _getIceServers();
 
             await remoteScreenConnector?.onStartRemoteScreen(
               message as StartRemoteScreenMessage,
@@ -980,8 +980,8 @@ class ChannelProvider extends ChangeNotifier {
     otp.value = generateOTP(Random());
   }
 
-  Future<List<RtcIceServer>?> _getIceServers(ChannelMode mode) async {
-    if (mode == ChannelMode.tunnel) {
+  Future<List<RtcIceServer>?> _getIceServers() async {
+    if (_shouldUseIceServers()) {
       return await getIceServers(
         appConfig.settings.baseApiUrl,
         AppInstanceCreate().displayInstanceID,
@@ -991,6 +991,13 @@ class ChannelProvider extends ChangeNotifier {
         RtcIceServer(['stun:${_instanceInfo.ipAddress}'])
       ];
     }
+  }
+
+  bool _shouldUseIceServers() {
+    final connectivityType = AppPreferences().connectivityType;
+
+    // Enable ICE servers when the connectivity type is not restricted to local networks.
+    return connectivityType != ConnectivityType.local.name;
   }
 
   bool groupActivated() {
@@ -1017,8 +1024,8 @@ class ChannelProvider extends ChangeNotifier {
       {bool anyCasting = false}) {
     log.info('Starting display group, anyCasting: $anyCasting');
 
-    // Specify ChannelMode.direct in the anonymous function
-    getIceServersForDirect() => _getIceServers(ChannelMode.direct);
+    // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
+    getIceServersForDirect() => Future.value(<RtcIceServer>[]);
 
     var mediator = DisplayGroupMediatorObject(
         _remoteScreenServe, _instanceInfo.ipAddress, getIceServersForDirect);
