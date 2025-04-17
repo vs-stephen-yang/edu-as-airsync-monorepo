@@ -213,7 +213,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                     color: context.tokens.color.vsdslColorOutlineVariant,
                   ),
                   Expanded(
-                    child: FocusScope(
+                    child: FocusTraversalGroup(
                       child: Builder(
                         builder: (context) {
                           final bool openedWithLogicalKey = HardwareKeyboard
