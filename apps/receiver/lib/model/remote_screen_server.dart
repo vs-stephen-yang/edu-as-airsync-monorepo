@@ -73,7 +73,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   bool _sfuServerStarted = false;
 
   int roomPort = 7000;
-  JsonRPCSignal? ionSignal;
+  JsonRPCSignal? _ionSignal;
 
   // roomId will be updated when starting the publisher
   String roomId = "default-room-id";
@@ -136,7 +136,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
           return true;
         }
 
-        ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
+        _ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
         roomId = _generateRoomId();
         log.info('Start remote screen publisher for room $roomId');
 
@@ -178,7 +178,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   Future<Client?> _createIonSfuClient() async {
-    if (ionSignal == null) {
+    if (_ionSignal == null) {
       return null;
     }
 
@@ -187,7 +187,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     final client = await Client.create(
       sid: roomId,
       uid: uuid,
-      signal: ionSignal!,
+      signal: _ionSignal!,
     );
 
     client.ondatachannel = (RTCDataChannel dc) {
