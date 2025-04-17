@@ -177,8 +177,8 @@ class V3Instruction extends StatelessWidget {
                                 ),
                               ),
                               V3Focus(
-                                label: S
-                                    .of(context).v3_lbl_open_download_app_menu,
+                                label:
+                                    S.of(context).v3_lbl_open_download_app_menu,
                                 identifier: 'v3_qa_open_download_app_menu',
                                 child: InkWell(
                                   child: Padding(
@@ -260,10 +260,13 @@ class V3Instruction extends StatelessWidget {
           padding: const EdgeInsets.only(left: 35),
           child: Consumer<InstanceInfoProvider>(
               builder: (_, instanceInfoProvider, __) {
-            return AutoSizeText(
-              _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
-              style: context.tokens.textStyle.airsyncFontDisplay.apply(
-                color: context.tokens.color.vsdslColorOnSurface,
+            return Semantics(
+              identifier: 'v3_qa_display_code',
+              child: AutoSizeText(
+                _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
+                style: context.tokens.textStyle.airsyncFontDisplay.apply(
+                  color: context.tokens.color.vsdslColorOnSurface,
+                ),
               ),
             );
           }),
@@ -300,10 +303,14 @@ class V3Instruction extends StatelessWidget {
                 return ValueListenableBuilder<String>(
                   valueListenable: channelProvider.otp,
                   builder: (_, otp, __) {
-                    return AutoSizeText(
-                      otp,
-                      style: context.tokens.textStyle.airsyncFontDisplay.apply(
-                        color: context.tokens.color.vsdslColorOnSurface,
+                    return Semantics(
+                      identifier: 'v3_qa_otp_code',
+                      child: AutoSizeText(
+                        otp,
+                        style:
+                            context.tokens.textStyle.airsyncFontDisplay.apply(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                        ),
                       ),
                     );
                   },
