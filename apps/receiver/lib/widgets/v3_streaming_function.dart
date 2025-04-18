@@ -7,12 +7,20 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
+import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_touchback_one_device_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mirror/bluetooth_touchback_status.dart';
+import 'package:flutter_mirror/mirror_type.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
+
+import 'focus_aware_builder.dart';
 
 class V3StreamingFunction extends StatefulWidget {
   const V3StreamingFunction({super.key, required this.index});
@@ -26,6 +34,7 @@ class V3StreamingFunction extends StatefulWidget {
 class _V3StreamingFunctionState extends State<V3StreamingFunction> {
   bool isCollapsed = false;
   Timer? autoCollapseTimer;
+  final LayerLink _layerLink = LayerLink();
 
   @override
   void initState() {
@@ -41,242 +50,376 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: isCollapsed ? EdgeInsets.zero : const EdgeInsets.only(bottom: 8),
-      child: ConstrainedBox(
-        constraints: BoxConstraints.tightFor(
-          width: isCollapsed
-              ? 37
-              : HybridConnectionList.hybridSplitScreenCount.value > 1
-                  ? 140
-                  : 106,
-          height: isCollapsed ? 22 : 43,
-        ),
-        child: Container(
-          padding: isCollapsed ? const EdgeInsets.only(top: 4) : null,
-          decoration: BoxDecoration(
-            color: context.tokens.color.vsdslColorOpacityNeutralXl
-                .withOpacity(0.48),
-            borderRadius: isCollapsed
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
-                  )
-                : context.tokens.radii.vsdslRadiusFull,
-          ),
-          child: Row(
-            mainAxisAlignment: isCollapsed
-                ? MainAxisAlignment.center
-                : MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              // Use Visibility Widget to Maintain Focus on the Correct Icon During Collapse/Expand.
-              Visibility(
-                visible: !isCollapsed &&
-                    HybridConnectionList.hybridSplitScreenCount.value > 1,
-                child: V3Focus(
-                  label: HybridConnectionList().enlargedScreenIndex.value ==
-                          widget.index
-                      ? S.of(context).v3_lbl_streaming_view_minimize
-                      : S.of(context).v3_lbl_streaming_view_expand,
-                  identifier:
-                      HybridConnectionList().enlargedScreenIndex.value ==
-                              widget.index
-                          ? 'v3_qa_streaming_view_minimize'
-                          : 'v3_qa_streaming_view_expand',
-                  child: SizedBox(
-                    width: 27,
-                    height: 27,
-                    child: IconButton(
-                      icon: SvgPicture.asset(
-                        HybridConnectionList().enlargedScreenIndex.value ==
-                                widget.index
-                            ? 'assets/images/ic_streaming_collapse.svg'
-                            : 'assets/images/ic_streaming_expand.svg',
-                      ),
-                      focusColor: Colors.transparent,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {
-                        _startAutoCollapseTimer();
-                        if (HybridConnectionList()
-                            .isMirrorRequest(widget.index)) {
-                          var mirrorConnection = HybridConnectionList()
-                              .getConnection<MirrorRequest>(widget.index);
-                          if (mirrorConnection.mirrorState ==
-                              MirrorState.mirroring) {
-                            _updateSizeForSelected(widget.index);
-                            mirrorConnection
-                                .trackSessionEvent('click_screen_size');
-                            return;
-                          }
-                        }
-                        var webrtcConnector = HybridConnectionList()
-                            .getConnection<RTCConnector>(widget.index);
-                        if (webrtcConnector.isChannelConnectAvailable()) {
-                          webrtcConnector
-                              .trackSessionEvent('click_screen_size');
+    final isMirrorRequest =
+        HybridConnectionList().isMirrorRequest(widget.index);
+    final isAirplay = isMirrorRequest &&
+        HybridConnectionList()
+                .getConnection<MirrorRequest>(widget.index)
+                .mirrorType ==
+            MirrorType.airplay;
 
-                          _updateSizeForSelected(widget.index);
-                        } else if (webrtcConnector.isChannelReconnect()) {
-                          webrtcConnector.clickButtonWhenReconnect = true;
-                          V3Toast().makeSplitScreenReconnectToast(
-                              context,
-                              S.of(context).main_feature_reconnecting_toast,
-                              widget.index,
-                              isWebRTC: false,
-                              state: webrtcConnector.reconnectChannelState);
-                        } else {
-                          V3Toast().makeSplitScreenReconnectToast(
-                              context,
-                              S.of(context).main_feature_reconnect_fail_toast,
-                              widget.index,
-                              isWebRTC: false,
-                              state: webrtcConnector.reconnectChannelState);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: !isCollapsed,
-                child: Consumer<MirrorStateProvider>(
-                  builder: (_, mirrorStateProvider, __) {
-                    var isMute = HybridConnectionList()
-                        .getAudioDisableStateByIndex(widget.index);
-                    return V3Focus(
-                      label: isMute
-                          ? S.of(context).v3_lbl_streaming_view_unmute
-                          : S.of(context).v3_lbl_streaming_view_mute,
-                      identifier: isMute
-                          ? 'v3_qa_streaming_view_unmute'
-                          : 'v3_qa_streaming_view_mute',
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: Padding(
+        padding:
+            isCollapsed ? EdgeInsets.zero : const EdgeInsets.only(bottom: 8),
+        child: ConstrainedBox(
+          constraints: BoxConstraints.tightFor(
+            width: isCollapsed
+                ? 37
+                : (HybridConnectionList.hybridSplitScreenCount.value > 1
+                        ? 140
+                        : 106) +
+                    (isAirplay ? 45 : 0), // 增加按鈕的空間
+            height: isCollapsed ? 22 : 43,
+          ),
+          child: Container(
+            padding: isCollapsed ? const EdgeInsets.only(top: 4) : null,
+            decoration: BoxDecoration(
+              color: context.tokens.color.vsdslColorOpacityNeutralXl
+                  .withOpacity(0.48),
+              borderRadius: isCollapsed
+                  ? const BorderRadius.only(
+                      topLeft: Radius.circular(50),
+                      topRight: Radius.circular(50),
+                    )
+                  : context.tokens.radii.vsdslRadiusFull,
+            ),
+            child: Row(
+              mainAxisAlignment: isCollapsed
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (isAirplay)
+                  Visibility(
+                    visible: !isCollapsed,
+                    child: V3Focus(
+                      label: S.current.v3_lbl_streaming_airplay_touchback,
+                      identifier: 'v3_qa_streaming_airplay_touchback',
                       child: SizedBox(
                         width: 27,
                         height: 27,
                         child: IconButton(
                           icon: SvgPicture.asset(
-                            isMute
-                                ? 'assets/images/ic_streaming_unmute.svg'
-                                : 'assets/images/ic_streaming_mute.svg',
+                            (HybridConnectionList()
+                                    .getConnection<MirrorRequest>(widget.index)
+                                    .touchBackState())
+                                ? 'assets/images/ic_streaming_airplay_touchback_enable.svg'
+                                : 'assets/images/ic_streaming_airplay_touchback_disable.svg',
                           ),
                           focusColor: Colors.transparent,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          onPressed: () {
-                            _startAutoCollapseTimer();
-
-                            setState(() {
-                              HybridConnectionList()
-                                  .updateAudioEnableStateByIndex(
-                                      widget.index, isMute, true);
-                            });
+                          onPressed: () async {
+                            mirrorStateProvider.bluetoothTouchbackIndex =
+                                widget.index;
+                            if (isMirrorRequest) {
+                              var connection = HybridConnectionList()
+                                  .getConnection<MirrorRequest>(widget.index);
+                              if (connection.mirrorState ==
+                                  MirrorState.mirroring) {
+                                if (connection.touchBackState()) {
+                                  final success =
+                                      await connection.disableTouchback();
+                                  log.info(
+                                      'disable bluetooth touchback $success');
+                                  V3BluetoothStatusNotification.showStatusAlert
+                                      .value = BluetoothProgress(percent: 0.0);
+                                  if (context.mounted) {
+                                    setState(() {
+                                      V3Toast().makeBluetoothStateToast(
+                                          context,
+                                          S.current
+                                              .v3_touchback_disable_message,
+                                          widget.index,
+                                          _layerLink);
+                                    });
+                                  }
+                                } else {
+                                  final success =
+                                      await connection.enableTouchback();
+                                  log.info(
+                                      'enable bluetooth touchback $success');
+                                  if (!success) {
+                                    _showTouchbackAlertDialog(
+                                        context, mirrorStateProvider);
+                                  }
+                                }
+                              }
+                            }
                           },
                         ),
                       ),
-                    );
-                  },
+                    ),
+                  ),
+                // Use Visibility Widget to Maintain Focus on the Correct Icon During Collapse/Expand.
+                Visibility(
+                  visible: !isCollapsed &&
+                      HybridConnectionList.hybridSplitScreenCount.value > 1,
+                  child: V3Focus(
+                    label: HybridConnectionList().enlargedScreenIndex.value ==
+                            widget.index
+                        ? S.of(context).v3_lbl_streaming_view_minimize
+                        : S.of(context).v3_lbl_streaming_view_expand,
+                    identifier:
+                        HybridConnectionList().enlargedScreenIndex.value ==
+                                widget.index
+                            ? 'v3_qa_streaming_view_minimize'
+                            : 'v3_qa_streaming_view_expand',
+                    child: SizedBox(
+                      width: 27,
+                      height: 27,
+                      child: IconButton(
+                        icon: SvgPicture.asset(
+                          HybridConnectionList().enlargedScreenIndex.value ==
+                                  widget.index
+                              ? 'assets/images/ic_streaming_collapse.svg'
+                              : 'assets/images/ic_streaming_expand.svg',
+                        ),
+                        focusColor: Colors.transparent,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          _startAutoCollapseTimer();
+                          if (isMirrorRequest) {
+                            var mirrorConnection = HybridConnectionList()
+                                .getConnection<MirrorRequest>(widget.index);
+                            if (mirrorConnection.mirrorState ==
+                                MirrorState.mirroring) {
+                              _updateSizeForSelected(widget.index);
+                              mirrorConnection
+                                  .trackSessionEvent('click_screen_size');
+                              return;
+                            }
+                          }
+                          var webrtcConnector = HybridConnectionList()
+                              .getConnection<RTCConnector>(widget.index);
+                          if (webrtcConnector.isChannelConnectAvailable()) {
+                            webrtcConnector
+                                .trackSessionEvent('click_screen_size');
+
+                            _updateSizeForSelected(widget.index);
+                          } else if (webrtcConnector.isChannelReconnect()) {
+                            webrtcConnector.clickButtonWhenReconnect = true;
+                            V3Toast().makeSplitScreenReconnectToast(
+                                context,
+                                S.of(context).main_feature_reconnecting_toast,
+                                widget.index,
+                                isWebRTC: false,
+                                state: webrtcConnector.reconnectChannelState);
+                          } else {
+                            V3Toast().makeSplitScreenReconnectToast(
+                                context,
+                                S.of(context).main_feature_reconnect_fail_toast,
+                                widget.index,
+                                isWebRTC: false,
+                                state: webrtcConnector.reconnectChannelState);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              Visibility(
-                visible: !isCollapsed,
-                child: V3Focus(
-                  label: S.of(context).v3_lbl_streaming_view_stop,
-                  identifier: 'v3_qa_streaming_view_stop',
+                Visibility(
+                  visible: !isCollapsed,
+                  child: Consumer<MirrorStateProvider>(
+                    builder: (_, mirrorStateProvider, __) {
+                      var isMute = HybridConnectionList()
+                          .getAudioDisableStateByIndex(widget.index);
+                      return V3Focus(
+                        label: isMute
+                            ? S.of(context).v3_lbl_streaming_view_unmute
+                            : S.of(context).v3_lbl_streaming_view_mute,
+                        identifier: isMute
+                            ? 'v3_qa_streaming_view_unmute'
+                            : 'v3_qa_streaming_view_mute',
+                        child: SizedBox(
+                          width: 27,
+                          height: 27,
+                          child: IconButton(
+                            icon: SvgPicture.asset(
+                              isMute
+                                  ? 'assets/images/ic_streaming_unmute.svg'
+                                  : 'assets/images/ic_streaming_mute.svg',
+                            ),
+                            focusColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              _startAutoCollapseTimer();
+
+                              setState(() {
+                                HybridConnectionList()
+                                    .updateAudioEnableStateByIndex(
+                                        widget.index, isMute, true);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Visibility(
+                  visible: !isCollapsed,
+                  child: V3Focus(
+                    label: S.of(context).v3_lbl_streaming_view_stop,
+                    identifier: 'v3_qa_streaming_view_stop',
+                    child: SizedBox(
+                      width: 27,
+                      height: 27,
+                      child: IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/images/ic_streaming_stop.svg',
+                        ),
+                        focusColor: Colors.transparent,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          if (isMirrorRequest) {
+                            var connection = HybridConnectionList()
+                                .getConnection<MirrorRequest>(widget.index);
+                            if (connection.mirrorState ==
+                                MirrorState.mirroring) {
+                              if (ChannelProvider.isModeratorMode) {
+                                mirrorStateProvider.setModeratorIdleMirrorId(
+                                    connection.mirrorId,
+                                    stopCastEvent: true);
+                              } else {
+                                connection.trackSessionEvent('stop_cast');
+                                HybridConnectionList()
+                                    .stopPresenterBy(widget.index);
+                              }
+                              return;
+                            }
+                          }
+                          RTCConnector webrtcConnector = HybridConnectionList()
+                              .getConnection<RTCConnector>(widget.index);
+                          if (webrtcConnector.isChannelReconnect()) {
+                            webrtcConnector.clickButtonWhenReconnect = true;
+                            V3Toast().makeSplitScreenReconnectToast(
+                                context,
+                                S.of(context).main_feature_reconnecting_toast,
+                                widget.index,
+                                isWebRTC: false,
+                                state: webrtcConnector.reconnectChannelState);
+                          } else {
+                            webrtcConnector.trackSessionEvent('stop_cast');
+
+                            if (ChannelProvider.isModeratorMode) {
+                              HybridConnectionList()
+                                  .stopPresenterBy(widget.index);
+                            } else {
+                              SplitScreenFunction.isMenuOnList.value.fillRange(
+                                  0,
+                                  SplitScreenFunction.isMenuOnList.value.length,
+                                  false);
+                              HybridConnectionList()
+                                  .removePresenterBy(widget.index);
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                V3Focus(
+                  label: isCollapsed
+                      ? S.of(context).v3_lbl_streaming_view_function_expand
+                      : S.of(context).v3_lbl_streaming_view_function_minimize,
+                  identifier: isCollapsed
+                      ? 'v3_qa_streaming_view_function_expend'
+                      : 'v3_qa_streaming_view_function_minimize',
                   child: SizedBox(
                     width: 27,
                     height: 27,
                     child: IconButton(
                       icon: SvgPicture.asset(
-                        'assets/images/ic_streaming_stop.svg',
+                        isCollapsed
+                            ? 'assets/images/ic_expend.svg'
+                            : 'assets/images/ic_minimize.svg',
+                        semanticsLabel: isCollapsed ? 'Expand' : 'Minimize',
                       ),
                       focusColor: Colors.transparent,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       onPressed: () {
-                        if (HybridConnectionList()
-                            .isMirrorRequest(widget.index)) {
-                          var connection = HybridConnectionList()
-                              .getConnection<MirrorRequest>(widget.index);
-                          if (connection.mirrorState == MirrorState.mirroring) {
-                            if (ChannelProvider.isModeratorMode) {
-                              final mirrorStateProvider =
-                                  Provider.of<MirrorStateProvider>(context,
-                                      listen: false);
-                              mirrorStateProvider.setModeratorIdleMirrorId(
-                                  connection.mirrorId,
-                                  stopCastEvent: true);
-                            } else {
-                              connection.trackSessionEvent('stop_cast');
-                              HybridConnectionList()
-                                  .stopPresenterBy(widget.index);
-                            }
-                            return;
-                          }
-                        }
-                        RTCConnector webrtcConnector = HybridConnectionList()
-                            .getConnection<RTCConnector>(widget.index);
-                        if (webrtcConnector.isChannelReconnect()) {
-                          webrtcConnector.clickButtonWhenReconnect = true;
-                          V3Toast().makeSplitScreenReconnectToast(
-                              context,
-                              S.of(context).main_feature_reconnecting_toast,
-                              widget.index,
-                              isWebRTC: false,
-                              state: webrtcConnector.reconnectChannelState);
+                        _toggleCollapse();
+                        if (isCollapsed) {
+                          autoCollapseTimer?.cancel();
                         } else {
-                          webrtcConnector.trackSessionEvent('stop_cast');
-
-                          if (ChannelProvider.isModeratorMode) {
-                            HybridConnectionList()
-                                .stopPresenterBy(widget.index);
-                          } else {
-                            SplitScreenFunction.isMenuOnList.value.fillRange(
-                                0,
-                                SplitScreenFunction.isMenuOnList.value.length,
-                                false);
-                            HybridConnectionList()
-                                .removePresenterBy(widget.index);
-                          }
+                          _startAutoCollapseTimer();
                         }
                       },
                     ),
                   ),
                 ),
-              ),
-              V3Focus(
-                label: isCollapsed
-                    ? S.of(context).v3_lbl_streaming_view_function_expand
-                    : S.of(context).v3_lbl_streaming_view_function_minimize,
-                identifier: isCollapsed
-                    ? 'v3_qa_streaming_view_function_expend'
-                    : 'v3_qa_streaming_view_function_minimize',
-                child: SizedBox(
-                  width: 27,
-                  height: 27,
-                  child: IconButton(
-                    icon: SvgPicture.asset(
-                      isCollapsed
-                          ? 'assets/images/ic_expend.svg'
-                          : 'assets/images/ic_minimize.svg',
-                      semanticsLabel: isCollapsed ? 'Expand' : 'Minimize',
-                    ),
-                    focusColor: Colors.transparent,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () {
-                      _toggleCollapse();
-                      if (isCollapsed) {
-                        autoCollapseTimer?.cancel();
-                      } else {
-                        _startAutoCollapseTimer();
+                if (isAirplay &&
+                    mirrorStateProvider.bluetoothTouchbackIndex == widget.index)
+                  ValueListenableBuilder(
+                    valueListenable:
+                        V3BluetoothStatusNotification.showStatusAlert,
+                    builder: (context, value, child) {
+                      final showToast =
+                          mirrorStateProvider.bluetoothTouchbackIndex ==
+                              widget.index;
+                      final status = value.status;
+                      if (showToast) {
+                        if (status == BluetoothTouchbackStatus.initialized) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            // setState用來更新按鈕狀態
+                            var connection = HybridConnectionList()
+                                .getConnection<MirrorRequest>(widget.index);
+                            setState(() {
+                              V3BluetoothStatusNotification.showStatusAlert
+                                  .value = BluetoothProgress(percent: 0.0);
+                              V3Toast().makeBluetoothStateToast(
+                                context,
+                                sprintf(S.current.v3_touchback_success_message,
+                                    [connection.deviceName]),
+                                widget.index,
+                                _layerLink,
+                                color: context.tokens.color.vsdslColorSuccess,
+                                icon: 'assets/images/ic_bluetooth_check.svg',
+                              );
+                            });
+                          });
+                        } else if (status ==
+                                BluetoothTouchbackStatus.adapterEnabledFailed ||
+                            status ==
+                                BluetoothTouchbackStatus.devicePairedFailed ||
+                            status ==
+                                BluetoothTouchbackStatus
+                                    .hidProfileServiceStartedFailed ||
+                            status ==
+                                BluetoothTouchbackStatus.hidDisconnected ||
+                            status ==
+                                BluetoothTouchbackStatus.deviceFoundFailed) {
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((_) async {
+                            V3BluetoothStatusNotification.showStatusAlert
+                                .value = BluetoothProgress(percent: 0.0);
+                            V3Toast().makeBluetoothStateToast(
+                              context,
+                              S.current.v3_touchback_fail_message,
+                              widget.index,
+                              _layerLink,
+                              color: context.tokens.color.vsdslColorError,
+                              icon: 'assets/images/ic_bluetooth_fail.svg',
+                            );
+                            await Future.delayed(const Duration(seconds: 2));
+                            await _disableAllTouchback();
+                          });
+                        }
                       }
+                      return const SizedBox.shrink();
                     },
                   ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -306,5 +449,43 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
     }
     HybridConnectionList().setSpecifiedSplitScreenWindowQuality(selection,
         HybridConnectionList().enlargedScreenIndex.value == selection);
+  }
+
+  _showTouchbackAlertDialog(
+      BuildContext context, MirrorStateProvider mirrorStateProvider) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return FocusAwareBuilder(
+          builder: (primaryFocusNode) => V3TouchbackAlert(
+            primaryFocusNode: primaryFocusNode,
+            deviceName: HybridConnectionList()
+                .getConnection<MirrorRequest>(widget.index)
+                .deviceName,
+            onConfirm: () async {
+              await _disableAllTouchback();
+              mirrorStateProvider.bluetoothTouchbackIndex = widget.index;
+              var connection = HybridConnectionList()
+                  .getConnection<MirrorRequest>(widget.index);
+              if (connection.mirrorState == MirrorState.mirroring) {
+                final success = await connection.enableTouchback();
+                log.info('change touchback device $success');
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _disableAllTouchback() async {
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
+      if (request.mirrorType == MirrorType.airplay) {
+        await request.disableTouchback();
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    }
   }
 }

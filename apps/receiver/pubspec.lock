@@ -547,8 +547,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.6.1"
-      resolved-ref: "8120b84006c874a659bfb35cdc6f420c580dfa75"
+      ref: final-bluetooth-hid
+      resolved-ref: "03f64574574e155f1e4d32c5b621682434507375"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror"
     source: git
     version: "0.0.1"

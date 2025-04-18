@@ -578,6 +578,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Open mirroring setting menu",
     ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "Airplay touchback",
+    ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay toggle"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
@@ -614,6 +617,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
       "Unmute audio",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancel dialog",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Confirm dialog",
     ),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "Close",
@@ -864,6 +873,43 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("Mirroring"),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "You can only touchback one device at one time.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback to %s？",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack is disabled.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Pairing failed. TouchBack is not activated. Please try again",
+    ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Device Finding"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Device Found Success"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Device Paired Success"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Device Pairing"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid Connected"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Hid Connecting"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Hid Profile Service Started Success",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage("Hid Profile Service Starting"),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Initialized"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Initializing"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "You can now control %s remotely from the IFP.",
+    ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Waiting for this participant to share their screen",
     ),
