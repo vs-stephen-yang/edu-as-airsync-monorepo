@@ -298,4 +298,80 @@ class V3Toast {
       mainColor: context.tokens.color.vsdslColorSuccess,
     );
   }
+
+  void makeBluetoothStateToast(
+      BuildContext context, String message, int index, LayerLink layerLink,
+      {Color? color, String? icon}) {
+    OverlayEntry toast = _buildSplitScreenBluetoothStateToast(
+        context, message, index, layerLink, color, icon);
+
+    Overlay.of(context).insert(toast);
+
+    Future.delayed(const Duration(seconds: 3), () {
+      toast.remove();
+    });
+  }
+
+  OverlayEntry _buildSplitScreenBluetoothStateToast(
+      BuildContext context,
+      String message,
+      int index,
+      LayerLink layerLink,
+      Color? color,
+      String? icon) {
+    RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    OverlayEntry toast = OverlayEntry(
+      builder: (BuildContext context) => Positioned(
+        left: 0,
+        top: 0,
+        child: CompositedTransformFollower(
+          link: layerLink,
+          showWhenUnlinked: false,
+          offset: Offset(0, icon == null ? -size.height : -size.height - 50),
+          targetAnchor: Alignment.topCenter,
+          followerAnchor: Alignment.topCenter,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                // Change the color of the Toast
+                color: context.tokens.color.vsdslColorSurface1000,
+                // Change the border radius of the Toast
+                borderRadius: context.tokens.radii.vsdslRadiusXl,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (icon != null)
+                    SizedBox(
+                      width: 16,
+                      child: Image(
+                        image: Svg(icon),
+                      ),
+                    ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                  ),
+                  Text(
+                    message,
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w400,
+                      color: color ?? Colors.white,
+                    ),
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return toast;
+  }
 }

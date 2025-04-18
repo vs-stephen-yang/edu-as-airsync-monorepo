@@ -17,6 +17,7 @@ import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
 import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
+import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_extend_casting_time_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
@@ -335,6 +336,11 @@ class _V3StreamingViewState extends ConsumerState {
             bottom: _isNewSharingOnScreen ? 164 : 54,
             right: 53,
             child: const V3ExtendCastingTimeMenu(),
+          ),
+          Positioned(
+            bottom: _isNewSharingOnScreen ? 164 : 54,
+            right: 53,
+            child: const V3BluetoothStatusNotification(),
           ),
         ],
       ),

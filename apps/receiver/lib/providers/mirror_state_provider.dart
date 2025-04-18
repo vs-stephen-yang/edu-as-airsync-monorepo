@@ -8,9 +8,12 @@ import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
+import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/bluetooth_touchback_listener.dart';
+import 'package:flutter_mirror/bluetooth_touchback_status.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
@@ -26,7 +29,7 @@ enum MirrorState {
 }
 
 class MirrorStateProvider extends ChangeNotifier
-    implements FlutterMirrorListener {
+    implements FlutterMirrorListener, BluetoothTouchbackListener {
   MirrorStateProvider(
     this._instanceInfoProvider,
   ) {
@@ -71,6 +74,7 @@ class MirrorStateProvider extends ChangeNotifier
   bool _sizeChanged = false;
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
+  int _bluetoothTouchbackIndex = 0;
   Map<MirrorType, bool> mirrorTypeState = {
     MirrorType.airplay: false,
     MirrorType.googlecast: false,
@@ -115,6 +119,12 @@ class MirrorStateProvider extends ChangeNotifier
       // restart when device name changed.
       await restartMirror();
     }
+  }
+
+  int get bluetoothTouchbackIndex => _bluetoothTouchbackIndex;
+
+  set bluetoothTouchbackIndex(int index) {
+    _bluetoothTouchbackIndex = index;
   }
 
   // region FlutterMirrorListener
@@ -454,7 +464,7 @@ class MirrorStateProvider extends ChangeNotifier
     // We also handle the message potentially returning null.
     try {
       _flutterMirrorPlugin?.registerListener(this);
-
+      _flutterMirrorPlugin?.registerBluetoothTouchBackListener(this);
       // Since quick decode is only effective in addressing latency issue with
       // WebRTC (web sender), and using quick decode with AirPlay and ChromeCast
       // results in decode failures, we have decided to apply quick decode
@@ -534,5 +544,72 @@ class MirrorStateProvider extends ChangeNotifier
   void onMirrorVideoFrameRate(String mirrorId, int fps) {
     // TODO add implementation
   }
+
 // endregion
+
+  @override
+  Future<void> onBluetoothTouchbackStatusChanged(
+      BluetoothTouchbackStatus status) async {
+    log.info('onBluetoothTouchbackStatusChanged: ${status.name}');
+    if (status == BluetoothTouchbackStatus.closedByUser ||
+        status == BluetoothTouchbackStatus.adapterEnabledFailed ||
+        status == BluetoothTouchbackStatus.devicePairedFailed ||
+        status == BluetoothTouchbackStatus.hidProfileServiceStartedFailed ||
+        status == BluetoothTouchbackStatus.hidDisconnected ||
+        status == BluetoothTouchbackStatus.deviceFoundFailed) {
+      for (MirrorRequest request
+          in HybridConnectionList().getMirrorMap().values) {
+        if (request.mirrorType == MirrorType.airplay) {
+          request.setTouchBackState(false);
+        }
+      }
+      V3BluetoothStatusNotification.showStatusAlert.value =
+          BluetoothProgress(status: status, percent: 0.0);
+      return;
+    }
+    // 各狀態的進度累加。
+    switch (status) {
+      case BluetoothTouchbackStatus.initializing:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.1);
+        break;
+      case BluetoothTouchbackStatus.hidProfileServiceStarting:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.2);
+        break;
+      case BluetoothTouchbackStatus.hidProfileServiceStartedSuccess:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.3);
+        break;
+      case BluetoothTouchbackStatus.deviceFinding:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.4);
+        break;
+      case BluetoothTouchbackStatus.deviceFoundSuccess:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.5);
+        break;
+      case BluetoothTouchbackStatus.devicePairing:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.6);
+        break;
+      case BluetoothTouchbackStatus.devicePairedSuccess:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.7);
+        break;
+      case BluetoothTouchbackStatus.hidConnecting:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.8);
+        break;
+      case BluetoothTouchbackStatus.hidConnected:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 0.9);
+        break;
+      case BluetoothTouchbackStatus.initialized:
+        V3BluetoothStatusNotification.showStatusAlert.value =
+            BluetoothProgress(status: status, percent: 1.0);
+        break;
+      default:
+    }
+  }
 }

@@ -3120,6 +3120,186 @@ class S {
       args: [],
     );
   }
+
+  /// `Airplay touchback`
+  String get v3_lbl_streaming_airplay_touchback {
+    return Intl.message(
+      'Airplay touchback',
+      name: 'v3_lbl_streaming_airplay_touchback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm dialog`
+  String get v3_lbl_touchback_one_device_confirm {
+    return Intl.message(
+      'Confirm dialog',
+      name: 'v3_lbl_touchback_one_device_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel dialog`
+  String get v3_lbl_touchback_one_device_cancel {
+    return Intl.message(
+      'Cancel dialog',
+      name: 'v3_lbl_touchback_one_device_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Touchback to %s？`
+  String get v3_touchback_alert_title {
+    return Intl.message(
+      'Touchback to %s？',
+      name: 'v3_touchback_alert_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can only touchback one device at one time.`
+  String get v3_touchback_alert_message {
+    return Intl.message(
+      'You can only touchback one device at one time.',
+      name: 'v3_touchback_alert_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pairing failed. TouchBack is not activated. Please try again`
+  String get v3_touchback_fail_message {
+    return Intl.message(
+      'Pairing failed. TouchBack is not activated. Please try again',
+      name: 'v3_touchback_fail_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can now control %s remotely from the IFP.`
+  String get v3_touchback_success_message {
+    return Intl.message(
+      'You can now control %s remotely from the IFP.',
+      name: 'v3_touchback_success_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TouchBack is disabled.`
+  String get v3_touchback_disable_message {
+    return Intl.message(
+      'TouchBack is disabled.',
+      name: 'v3_touchback_disable_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initializing`
+  String get v3_touchback_state_initializing_message {
+    return Intl.message(
+      'Initializing',
+      name: 'v3_touchback_state_initializing_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hid Profile Service Starting`
+  String get v3_touchback_state_hidProfileServiceStarting_message {
+    return Intl.message(
+      'Hid Profile Service Starting',
+      name: 'v3_touchback_state_hidProfileServiceStarting_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hid Profile Service Started Success`
+  String get v3_touchback_state_hidProfileServiceStartedSuccess_message {
+    return Intl.message(
+      'Hid Profile Service Started Success',
+      name: 'v3_touchback_state_hidProfileServiceStartedSuccess_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Finding`
+  String get v3_touchback_state_deviceFinding_message {
+    return Intl.message(
+      'Device Finding',
+      name: 'v3_touchback_state_deviceFinding_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Found Success`
+  String get v3_touchback_state_deviceFoundSuccess_message {
+    return Intl.message(
+      'Device Found Success',
+      name: 'v3_touchback_state_deviceFoundSuccess_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Pairing`
+  String get v3_touchback_state_devicePairing_message {
+    return Intl.message(
+      'Device Pairing',
+      name: 'v3_touchback_state_devicePairing_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Paired Success`
+  String get v3_touchback_state_devicePairedSuccess_message {
+    return Intl.message(
+      'Device Paired Success',
+      name: 'v3_touchback_state_devicePairedSuccess_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hid Connecting`
+  String get v3_touchback_state_hidConnecting_message {
+    return Intl.message(
+      'Hid Connecting',
+      name: 'v3_touchback_state_hidConnecting_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hid Connected`
+  String get v3_touchback_state_hidConnected_message {
+    return Intl.message(
+      'Hid Connected',
+      name: 'v3_touchback_state_hidConnected_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initialized`
+  String get v3_touchback_state_initialized_message {
+    return Intl.message(
+      'Initialized',
+      name: 'v3_touchback_state_initialized_message',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
