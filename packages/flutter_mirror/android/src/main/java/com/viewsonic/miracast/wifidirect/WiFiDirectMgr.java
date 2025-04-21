@@ -44,6 +44,11 @@ public class WiFiDirectMgr {
   private String sourceMacAddr_ = "";
   private String sourceDeviceName_ = "";
 
+  // see https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Wifi/framework/java/android/net/wifi/p2p/WifiP2pManager.java?q=setMiracastMode%20WiFiP2PManager
+  private static final int MIRACAST_DISABLED = 0;
+  private static final int MIRACAST_SOURCE   = 1;
+  private static final int MIRACAST_SINK     = 2;
+
   private static final Set<String> GROUP_OWNER_ADDRESS_KEYS = Set.of("groupOwnerAddress", "groupOwnerIpAddress");
 
   private class PeerInfo {
@@ -88,6 +93,7 @@ public class WiFiDirectMgr {
       @Override
       public void onSuccess() {
         Log.d(TAG, "Successfully enabled WFD.");
+        setMiracastMode(MIRACAST_SINK);
       }
 
       @Override
@@ -165,6 +171,7 @@ public class WiFiDirectMgr {
         });
       }
 
+      setMiracastMode(MIRACAST_DISABLED);
       wifiP2pManager_.removeGroup(channel_, null);
       context_.unregisterReceiver(broadcastReceiver_);
       isStart_ = false;
@@ -507,6 +514,17 @@ public class WiFiDirectMgr {
     } catch (Exception e) {
       e.printStackTrace();
       Log.e(TAG, "Failed to setEnableWFD: " + e.getLocalizedMessage());
+    }
+  }
+
+  private void setMiracastMode(int mode) {
+    try {
+      Log.d(TAG, "Setting Miracast mode to " + mode);
+      WifiP2pManager.class.getMethod("setMiracastMode", Integer.TYPE)
+        .invoke(wifiP2pManager_, Integer.valueOf(mode));
+      Log.d(TAG, "Successfully set Miracast mode: " + mode);
+    } catch (Throwable e) {
+      Log.e(TAG, "Throwable in setting Miracast mode: " + e.getMessage());
     }
   }
 
