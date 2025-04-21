@@ -140,11 +140,11 @@
       "type": "fontSizes"
     },
     "vsdslColorTertiary": {
-      "value": "#A7ADC0",
+      "value": "#636D8A",
       "type": "color"
     },
     "vsdslColorTertiaryVariant": {
-      "value": "#3C5AAA",
+      "value": "#3C455D",
       "type": "color"
     },
     "vsdslColorOnTertiary": {
@@ -276,25 +276,37 @@
       "type": "color"
     },
     "vsdslColorOnSurfaceVariant": {
-      "value": "#838CA6",
+      "value": "#636D8A",
       "type": "color"
     },
     "vsdslColorInfo": {
-      "value": "#838CA6",
+      "value": "#636D8A",
       "type": "color"
     },
     "vsdslColorSuccess": {
       "value": "#3AC9CC",
       "type": "color"
     },
+  "vsdslColorSuccessVariant": {
+    "value": "#2C9799",
+    "type": "color"
+  },
     "vsdslColorWarning": {
-      "value": "#FC9700",
+      "value": "#EC6200",
       "type": "color"
     },
+  "vsdslColorOnWarningVariant": {
+    "value": "#FFFFFF",
+    "type": "color"
+  },
     "vsdslColorError": {
-      "value": "#E34521",
+      "value": "#DB0025",
       "type": "color"
     },
+  "vsdslColorOnError": {
+    "value": "#FFFFFF",
+    "type": "color"
+  },
     "vsdslColorDisabled": {
       "value": "#EBEBEB",
       "type": "color"
