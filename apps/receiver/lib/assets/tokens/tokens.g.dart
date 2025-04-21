@@ -45,8 +45,14 @@ abstract class ColorTokens {
   Color get vsdslColorOnSurfaceVariant;
   Color get vsdslColorInfo;
   Color get vsdslColorSuccess;
+
+  Color get vsdslColorSuccessVariant;
   Color get vsdslColorWarning;
+
+  Color get vsdslColorOnWarningVariant;
   Color get vsdslColorError;
+
+  Color get vsdslColorOnError;
   Color get vsdslColorDisabled;
   Color get vsdslColorOnDisabled;
   Color get vsdslColorLink;
@@ -145,9 +151,9 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdslColorOnSecondary => const Color(0xFFFFFFFF);
   @override
-  Color get vsdslColorTertiary => const Color(0xFFA7ADC0);
+  Color get vsdslColorTertiary => const Color(0xFF636D8A);
   @override
-  Color get vsdslColorTertiaryVariant => const Color(0xFF3C5AAA);
+  Color get vsdslColorTertiaryVariant => const Color(0xFF3C455D);
   @override
   Color get vsdslColorOnTertiary => const Color(0xFFFFFFFF);
   @override
@@ -179,15 +185,24 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdslColorOnSurfaceInverse => const Color(0xFFFFFFFF);
   @override
-  Color get vsdslColorOnSurfaceVariant => const Color(0xFF838CA6);
+  Color get vsdslColorOnSurfaceVariant => const Color(0xFF636D8A);
   @override
-  Color get vsdslColorInfo => const Color(0xFF838CA6);
+  Color get vsdslColorInfo => const Color(0xFF636D8A);
   @override
   Color get vsdslColorSuccess => const Color(0xFF3AC9CC);
   @override
-  Color get vsdslColorWarning => const Color(0xFFFC9700);
+  Color get vsdslColorSuccessVariant => const Color(0xFF2C9799);
+
   @override
-  Color get vsdslColorError => const Color(0xFFE34521);
+  Color get vsdslColorWarning => const Color(0xFFEC6200);
+  @override
+  Color get vsdslColorOnWarningVariant => const Color(0xFFFFFFFF);
+
+  @override
+  Color get vsdslColorError => const Color(0xFFDB0025);
+
+  @override
+  Color get vsdslColorOnError => const Color(0xFFFFFFFF);
   @override
   Color get vsdslColorDisabled => const Color(0xFFEBEBEB);
   @override
