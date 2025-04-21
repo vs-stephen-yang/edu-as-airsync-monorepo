@@ -160,11 +160,11 @@
         "type": "fontSizes"
     },
     "vsdswColorTertiary": {
-      "value": "#838CA6",
+      "value": "#636D8A",
       "type": "color"
     },
     "vsdswColorTertiaryVariant": {
-      "value": "#636D8A",
+      "value": "#3C455D",
       "type": "color"
     },
     "vsdswColorOnTertiary": {
@@ -304,15 +304,15 @@
       "type": "color"
     },
     "vsdswColorOnSurfaceVariant": {
-      "value": "#838CA6",
+      "value": "#636D8A",
       "type": "color"
     },
     "vsdswColorInfo": {
-      "value": "#838CA6",
+      "value": "#636D8A",
       "type": "color"
     },
     "vsdswColorInfoVariant": {
-      "value": "#636D8A",
+      "value": "#3C455D",
       "type": "color"
     },
     "vsdswColorOnInfo": {
@@ -324,7 +324,7 @@
       "type": "color"
     },
     "vsdswColorSuccessVariant": {
-      "value": "#35B7BA",
+      "value": "#2C9799",
       "type": "color"
     },
     "vsdswColorOnSuccess": {
@@ -332,7 +332,7 @@
       "type": "color"
     },
     "vsdswColorWarning": {
-      "value": "#FC9700",
+      "value": "#EC6200",
       "type": "color"
     },
     "vsdswColorOnWarning": {
@@ -340,7 +340,7 @@
       "type": "color"
     },
     "vsdswColorError": {
-      "value": "#E34521",
+      "value": "#DB0025",
       "type": "color"
     },
     "vsdswColorOnError": {

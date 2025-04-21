@@ -159,9 +159,9 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdswColorOnSecondary => const Color(0xFFFFFFFF);
   @override
-  Color get vsdswColorTertiary => const Color(0xFF838CA6);
+  Color get vsdswColorTertiary => const Color(0xFF636D8A);
   @override
-  Color get vsdswColorTertiaryVariant => const Color(0xFF636D8A);
+  Color get vsdswColorTertiaryVariant => const Color(0xFF3C455D);
   @override
   Color get vsdswColorOnTertiary => const Color(0xFFFFFFFF);
   @override
@@ -199,25 +199,25 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdswColorOnSurfaceInverse => const Color(0xFFFFFFFF);
   @override
-  Color get vsdswColorOnSurfaceVariant => const Color(0xFF838CA6);
+  Color get vsdswColorOnSurfaceVariant => const Color(0xFF636D8A);
   @override
-  Color get vsdswColorInfo => const Color(0xFF838CA6);
+  Color get vsdswColorInfo => const Color(0xFF636D8A);
   @override
-  Color get vsdswColorInfoVariant => const Color(0xFF636D8A);
+  Color get vsdswColorInfoVariant => const Color(0xFF3C455D);
   @override
   Color get vsdswColorOnInfo => const Color(0xFF333333);
   @override
   Color get vsdswColorSuccess => const Color(0xFF3AC9CC);
   @override
-  Color get vsdswColorSuccessVariant => const Color(0xFF35B7BA);
+  Color get vsdswColorSuccessVariant => const Color(0xFF2C9799);
   @override
   Color get vsdswColorOnSuccess => const Color(0xFFFFFFFF);
   @override
-  Color get vsdswColorWarning => const Color(0xFFFC9700);
+  Color get vsdswColorWarning => const Color(0xFFEC6200);
   @override
   Color get vsdswColorOnWarning => const Color(0xFFFFFFFF);
   @override
-  Color get vsdswColorError => const Color(0xFFE34521);
+  Color get vsdswColorError => const Color(0xFFDB0025);
   @override
   Color get vsdswColorOnError => const Color(0xFFFFFFFF);
   @override
