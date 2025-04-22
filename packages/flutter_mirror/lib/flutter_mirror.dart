@@ -4,12 +4,18 @@ import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'bluetooth_touchback_listener.dart';
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 
 class FlutterMirror {
   void registerListener(FlutterMirrorListener listener) {
     return FlutterMirrorPlatform.instance.registerListener(listener);
+  }
+
+  void registerBluetoothTouchBackListener(BluetoothTouchbackListener listener) {
+    return FlutterMirrorPlatform.instance.
+      registerBluetoothTouchBackListener(listener);
   }
 
   Future<void> initialize(FlutterMirrorConfig config) async {

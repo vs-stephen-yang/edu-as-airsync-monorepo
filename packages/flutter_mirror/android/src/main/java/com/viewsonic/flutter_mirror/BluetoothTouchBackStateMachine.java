@@ -111,7 +111,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
   };
 
   public interface StateCallback {
-    void onStatus(Status status, boolean needUserAction);
+    void onStatus(BluetoothTouchBackStatus status, boolean needUserAction);
     void onError(Error error);
   }
 
@@ -120,28 +120,6 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     UNABLE_TO_START_FINDING_DEVICE,
   }
 
-  public enum Status {
-    TOUCHBACK_INITIALIZING,
-    TOUCHBACK_INITIALIZED,
-    BLUETOOTH_ADAPTER_ENABLING,
-    BLUETOOTH_ADAPTER_ENABLE_SUCCESS,
-    BLUETOOTH_ADAPTER_ENABLE_FAILED,
-    BLUETOOTH_ADAPTER_UNSUPPORTED,
-    BLUETOOTH_DEVICE_FINDING,
-    BLUETOOTH_DEVICE_FOUND_SUCCESS,
-    BLUETOOTH_DEVICE_FOUND_FAILED,
-    BLUETOOTH_DEVICE_PAIRING,
-    BLUETOOTH_DEVICE_PAIRED_SUCCESS,
-    BLUETOOTH_DEVICE_PAIRED_FAILED,
-    BLUETOOTH_DEVICE_UNPAIRED,
-    BLUETOOTH_HID_CONNECTING,
-    BLUETOOTH_HID_CONNECTED,
-    BLUETOOTH_HID_DISCONNECTING,
-    BLUETOOTH_HID_DISCONNECTED,
-    BLUETOOTH_HID_PROFILE_SERVICE_STARTING,
-    BLUETOOTH_HID_PROFILE_SERVICE_STARTED_SUCCESS,
-    BLUETOOTH_HID_PROFILE_SERVICE_STARTED_FAILED,
-  }
   private StateCallback statusCallback;
 
   BluetoothTouchBackStateMachine(String name, Context context, Activity activity, StateCallback callback, boolean debug) {
@@ -313,7 +291,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     public void enter() {
       super.enter();
       setTouchBackEnabled(true);
-      statusCallback.onStatus(Status.TOUCHBACK_INITIALIZED, false);
+      statusCallback.onStatus(BluetoothTouchBackStatus.TOUCHBACK_INITIALIZED, false);
     }
 
     @Override
@@ -341,7 +319,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     @Override
     public void enter() {
       super.enter();
-      statusCallback.onStatus(Status.TOUCHBACK_INITIALIZING, true);
+      statusCallback.onStatus(BluetoothTouchBackStatus.TOUCHBACK_INITIALIZING, true);
     }
 
     @Override
@@ -407,7 +385,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     public void enter() {
       super.enter();
 
-      statusCallback.onStatus(Status.BLUETOOTH_ADAPTER_ENABLING, false);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_ADAPTER_ENABLING, false);
       adapterController.startRequestBluetoothAdapterEnable(activity, callback);
     }
 
@@ -418,12 +396,12 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
       }
       switch (msg.what) {
         case EVENT_ON_BLUETOOTH_ADAPTER_ENABLED_SUCCESS:
-          statusCallback.onStatus(Status.BLUETOOTH_ADAPTER_ENABLE_SUCCESS, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_ADAPTER_ENABLED_SUCCESS, false);
           transitionTo(profileServiceStarting);
           return HANDLED;
 
         case EVENT_ON_BLUETOOTH_ADAPTER_ENABLED_FAILURE:
-          statusCallback.onStatus(Status.BLUETOOTH_ADAPTER_ENABLE_FAILED, true);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_ADAPTER_ENABLED_FAILED, true);
           transitionTo(adapterNotChecked);
           return HANDLED;
       }
@@ -435,7 +413,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     @Override
     public void enter() {
       super.enter();
-      statusCallback.onStatus(Status.BLUETOOTH_ADAPTER_UNSUPPORTED, true);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_ADAPTER_UNSUPPORTED, true);
     }
 
     @Override
@@ -507,7 +485,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
         hidDeviceController = new BluetoothHidDeviceController(
           context, adapterController.getBluetoothAdapter(), btHidDeviceControllerListener);
       }
-      statusCallback.onStatus(Status.BLUETOOTH_HID_PROFILE_SERVICE_STARTING, false);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_PROFILE_SERVICE_STARTING, false);
       hidDeviceController.stop();
       hidDeviceController.start();
     }
@@ -519,12 +497,12 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
       }
       switch (msg.what) {
         case EVENT_ON_BLUETOOTH_HID_PROFILE_REGISTERED:
-          statusCallback.onStatus(Status.BLUETOOTH_HID_PROFILE_SERVICE_STARTED_SUCCESS, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_PROFILE_SERVICE_STARTED_SUCCESS, false);
           transitionTo(remoteDeviceFinding);
           return HANDLED;
 
         case EVENT_ON_BLUETOOTH_HID_PROFILE_UNREGISTERED:
-          statusCallback.onStatus(Status.BLUETOOTH_HID_PROFILE_SERVICE_STARTED_FAILED, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_PROFILE_SERVICE_STARTED_FAILED, false);
           transitionTo(profileServiceStopped);
           return HANDLED;
       }
@@ -550,7 +528,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
 
         @Override
         public void onBluetoothDeviceFound(BluetoothDevice device) {
-          statusCallback.onStatus(Status.BLUETOOTH_DEVICE_FOUND_SUCCESS, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_FOUND_SUCCESS, false);
           remoteDevice = device;
           sendMessage(EVENT_ON_BLUETOOTH_DEVICE_FOUND);
         }
@@ -590,7 +568,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     }
 
     private void startFindingDevice() {
-      statusCallback.onStatus(Status.BLUETOOTH_DEVICE_FINDING, false);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_FINDING, false);
       if (!btDeviceFinder.startFindingDevice(device)) {
         statusCallback.onError(Error.UNABLE_TO_START_FINDING_DEVICE);
       }
@@ -607,7 +585,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     @Override
     public void enter() {
       super.enter();
-      statusCallback.onStatus(Status.BLUETOOTH_DEVICE_FOUND_FAILED, true);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_FOUND_FAILED, true);
     }
 
     @Override
@@ -628,7 +606,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     @Override
     public void enter() {
       super.enter();
-      statusCallback.onStatus(Status.BLUETOOTH_DEVICE_UNPAIRED, true);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_UNPAIRED, true);
     }
 
     @Override
@@ -666,7 +644,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
       super.enter();
 
       btDevicePairingHelper = new BluetoothDevicePairingHelper(context, remoteDevice);
-      statusCallback.onStatus(Status.BLUETOOTH_DEVICE_PAIRING, false);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_PAIRING, false);
       btDevicePairingHelper.startPairing(callback);
     }
 
@@ -700,7 +678,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     @Override
     public void enter() {
       super.enter();
-      statusCallback.onStatus(Status.BLUETOOTH_DEVICE_PAIRED_FAILED, true);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_PAIRED_FAILED, true);
     }
 
     @Override
@@ -725,7 +703,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
       super.enter();
 
       needReconnect = false;
-      statusCallback.onStatus(Status.BLUETOOTH_DEVICE_PAIRED_SUCCESS, false);
+      statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_DEVICE_PAIRED_SUCCESS, false);
       hidDeviceController.connect();
     }
 
@@ -745,21 +723,21 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
 
         case EVENT_ON_BLUETOOTH_HID_DEVICE_CONNECTING:
           // How long ??
-          statusCallback.onStatus(Status.BLUETOOTH_HID_CONNECTING, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_CONNECTING, false);
           return HANDLED;
 
         case EVENT_ON_BLUETOOTH_HID_DEVICE_CONNECTED:
-          statusCallback.onStatus(Status.BLUETOOTH_HID_CONNECTED, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_CONNECTED, false);
           startMonitoringBondState(remoteDevice); // monitor remote device bond state
           transitionTo(touchBackInitialized);
           return HANDLED;
 
         case EVENT_ON_BLUETOOTH_HID_DEVICE_DISCONNECTING:
-          statusCallback.onStatus(Status.BLUETOOTH_HID_DISCONNECTING, false);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_DISCONNECTING, false);
           return HANDLED;
 
         case EVENT_ON_BLUETOOTH_HID_DEVICE_DISCONNECTED:
-          statusCallback.onStatus(Status.BLUETOOTH_HID_DISCONNECTED, true);
+          statusCallback.onStatus(BluetoothTouchBackStatus.BLUETOOTH_HID_DISCONNECTED, true);
           needReconnect = true;
           return HANDLED;
       }
