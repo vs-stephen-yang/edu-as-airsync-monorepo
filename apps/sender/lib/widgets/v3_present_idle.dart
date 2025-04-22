@@ -20,6 +20,7 @@ import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,8 @@ class V3PresentIdle extends StatefulWidget {
   State<StatefulWidget> createState() => _V3PresentIdleState();
 }
 
-class _V3PresentIdleState extends State<V3PresentIdle> {
+class _V3PresentIdleState extends State<V3PresentIdle>
+    with WidgetsBindingObserver {
   final GlobalKey<V3PresentIdleTextFieldState> fieldKey = GlobalKey();
   final GlobalKey<V3PresentIdleButtonState> presentBtnKey = GlobalKey();
 
@@ -44,6 +46,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   bool isScreenFullDialogOnScreen = false;
   bool isModeratorExitedDialogOnScreen = false;
   bool isReceiverRemoteScreenBusyDialogOnScreen = false;
+  bool isKeyboardVisible = false;
 
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -53,12 +56,27 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
     super.initState();
     initDeepLinks();
     AppAnalytics.instance.setMode(null);
+    if (!kIsWeb && WebRTC.platformIsMobile) {
+      WidgetsBinding.instance.addObserver(this);
+    }
   }
 
   @override
   void dispose() {
     _linkSubscription?.cancel();
+    if (!kIsWeb && WebRTC.platformIsMobile) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding
+        .instance.platformDispatcher.views.first.viewInsets.bottom;
+    setState(() {
+      isKeyboardVisible = bottomInset > 0;
+    });
   }
 
   Future<void> initDeepLinks() async {
@@ -139,7 +157,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       }
     });
 
-    return Stack(
+    final widgetContent = Stack(
       fit: StackFit.expand,
       alignment: AlignmentDirectional.center,
       children: [
@@ -241,6 +259,21 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         ],
       ],
     );
+
+    if (isKeyboardVisible) {
+      return SingleChildScrollView(
+        reverse: true, // 讓畫面從下往上 scroll
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom, // 加上鍵盤高度
+        ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 640),
+          child: widgetContent,
+        ),
+      );
+    } else {
+      return widgetContent;
+    }
   }
 
   V3PresentIdleButton _nextButton(ChannelProvider channelProvider,
