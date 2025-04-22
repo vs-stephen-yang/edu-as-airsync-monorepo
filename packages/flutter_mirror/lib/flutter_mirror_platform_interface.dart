@@ -2,6 +2,7 @@ import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'bluetooth_touchback_listener.dart';
 import 'flutter_mirror_method_channel.dart';
 import 'flutter_mirror_listener.dart';
 
@@ -30,6 +31,11 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
 
   void registerListener(FlutterMirrorListener listener) {
     throw UnimplementedError('registerListener() has not been implemented.');
+  }
+
+  void registerBluetoothTouchBackListener(BluetoothTouchbackListener listener) {
+    throw UnimplementedError(
+        'registerBluetoothTouchBackListener() has not been implemented.');
   }
 
   Future<void> initialize(FlutterMirrorConfig config) async {

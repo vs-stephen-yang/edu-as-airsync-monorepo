@@ -39,6 +39,7 @@ public class FlutterMirrorPlugin implements
     ActivityAware,
     TexRegistry,
     MirrorListener,
+    BluetoothTouchBackListener,
     MethodCallHandler {
   private static final String TAG = "FlutterMirrorPlugin";
 
@@ -84,7 +85,7 @@ public class FlutterMirrorPlugin implements
   private Handler handler_ = new Handler(Looper.getMainLooper());
 
   private MirrorReceiver mirrorReceiver_;
-  private IBluetoothTouchBackController bluetoothTouchBackController_;
+  private BluetoothTouchBackController bluetoothTouchBackController_;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -105,7 +106,8 @@ public class FlutterMirrorPlugin implements
   public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
     Log.d(TAG, "FlutterMirrorPlugin::onAttachedToActivity()");
     activity_ = activityPluginBinding.getActivity();
-    bluetoothTouchBackController_ = new BluetoothTouchBackController(context_, activity_, false);
+
+    bluetoothTouchBackController_ = new BluetoothTouchBackController(context_, activity_, this, false);
     activityPluginBinding.addActivityResultListener(bluetoothTouchBackController_.getActivityResultListener());
     activityPluginBinding.addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
     activityPluginBinding.getActivity().registerActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
@@ -513,6 +515,7 @@ public class FlutterMirrorPlugin implements
     });
   }
 
+  @Override
   public void onCredentialsRequest(
       int year,
       int month,
@@ -527,6 +530,15 @@ public class FlutterMirrorPlugin implements
       arguments.put("day", day);
 
       channel_.invokeMethod("onCredentialsRequest", arguments);
+    });
+  }
+
+  @Override
+  public void onBluetoothTouchBackStatus(BluetoothTouchBackStatus status) {
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("status", status.ordinal());
+      channel_.invokeMethod("onBluetoothTouchbackStatusChanged", arguments);
     });
   }
 

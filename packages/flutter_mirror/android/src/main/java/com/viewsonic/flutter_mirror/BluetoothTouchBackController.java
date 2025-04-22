@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import io.flutter.plugin.common.PluginRegistry;
 
 public class BluetoothTouchBackController
-  implements IBluetoothTouchBackController, BluetoothTouchBackStateMachine.StateCallback  {
+  implements BluetoothTouchBackStateMachine.StateCallback  {
 
   private static final String TAG = "BTTouchBackController";
   private static final String SUPPORTED_MIRROR_TYPE = "airplay";
@@ -23,13 +23,15 @@ public class BluetoothTouchBackController
   private String activeMirrorId = null;
   private Context context;
   private Toast toast;
+  private BluetoothTouchBackListener listener;
 
-  public BluetoothTouchBackController(Context context, Activity activity, boolean debug) {
+  public BluetoothTouchBackController(
+    Context context, Activity activity, BluetoothTouchBackListener listener, boolean debug) {
     this.context = context;
     this.sm = BluetoothTouchBackStateMachine.createStateMachine(context, activity, this, debug);
+    this.listener = listener;
   }
 
-  @Override
   public boolean onMirrorStart(String mirrorId, String deviceName, String mirrorType) {
     if (!SUPPORTED_MIRROR_TYPE.equals(mirrorType)) {
       logDebug("Unsupported mirror type: " + mirrorType);
@@ -47,7 +49,6 @@ public class BluetoothTouchBackController
     return true;
   }
 
-  @Override
   public boolean onMirrorStop(String mirrorId) {
     if (activeMirrorId == null || !activeMirrorId.equals(mirrorId)) {
       return false;
@@ -59,7 +60,6 @@ public class BluetoothTouchBackController
     return true;
   }
 
-  @Override
   public boolean onMirrorTouch(String mirrorId, int touchId, boolean touch, double x, double y) {
      if (activeMirrorId != null && activeMirrorId.equals(mirrorId)) {
        sm.onMirrorTouch(touchId, touch, x, y);
@@ -68,17 +68,14 @@ public class BluetoothTouchBackController
      return false;
   }
 
-  @Override
   public PluginRegistry.ActivityResultListener getActivityResultListener() {
     return new ActivityResultListenerImpl(sm);
   }
 
-  @Override
   public PluginRegistry.RequestPermissionsResultListener getRequestPermissionsResultListener() {
     return new RequestPermissionsResultListenerImpl(sm);
   }
 
-  @Override
   public Application.ActivityLifecycleCallbacks getActivityLifecycleCallbacks() {
     return new ActivityLifecycleCallbacksImpl(sm);
   }
@@ -92,97 +89,98 @@ public class BluetoothTouchBackController
   }
 
   @Override
-  public void onStatus(BluetoothTouchBackStateMachine.Status status, boolean userActionRequired) {
-    String message;
-    switch (status) {
-      case TOUCHBACK_INITIALIZING:
-        message = "TouchBack initializing...";
-        break;
-      case BLUETOOTH_ADAPTER_ENABLING:
-        message = "Enabling Bluetooth adapter...";
-        break;
-      case BLUETOOTH_ADAPTER_ENABLE_SUCCESS:
-        message = "Bluetooth adapter enabled.";
-        break;
-      case BLUETOOTH_ADAPTER_ENABLE_FAILED:
-        message = "Enable Bluetooth adapter failed.";
-        break;
-      case BLUETOOTH_ADAPTER_UNSUPPORTED:
-        message = "Bluetooth adapter unavailable. Please insert Bluetooth Adapter. Then ";
-        break;
-      case BLUETOOTH_DEVICE_FINDING:
-        message = "Finding Bluetooth device...";
-        break;
-      case BLUETOOTH_DEVICE_FOUND_SUCCESS:
-        message = "Bluetooth device found successfully.";
-        break;
-      case BLUETOOTH_DEVICE_FOUND_FAILED:
-        message = "Device found failed. Please make sure your device's Bluetooth is on. Then";
-        break;
-      case BLUETOOTH_DEVICE_PAIRING:
-        message = "Pairing Bluetooth device...";
-        break;
-      case BLUETOOTH_DEVICE_PAIRED_SUCCESS:
-        message = "Bluetooth device paired successfully.";
-        break;
-      case BLUETOOTH_DEVICE_PAIRED_FAILED:
-        message = "Bluetooth Device pairing failed.";
-        break;
-      case BLUETOOTH_DEVICE_UNPAIRED:
-        message = "Bluetooth Device unpaired.";
-        break;
-      case BLUETOOTH_HID_CONNECTING:
-        message = "Connecting Bluetooth HID...";
-        break;
-      case BLUETOOTH_HID_CONNECTED:
-        message = "Bluetooth HID connected.";
-        break;
-      case BLUETOOTH_HID_DISCONNECTING:
-        message = "Disconnecting Bluetooth HID...";
-        break;
-      case BLUETOOTH_HID_DISCONNECTED:
-        message = "Bluetooth HID disconnected.";
-        break;
-      case BLUETOOTH_HID_PROFILE_SERVICE_STARTING:
-        message = "Starting Bluetooth HID profile service...";
-        break;
-      case TOUCHBACK_INITIALIZED:
-        message = "TouchBack initialized. You can now use TouchBack feature.";
-        break;
-      default:
-        message = "Unknown status";
-        break;
-    }
-    if (userActionRequired) {
-      message += " Touch screen to enable TouchBack feature.";
-    }
-
-    if (toast != null) {
-      toast.cancel();
-    }
-    toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-    toast.show();
+  public void onStatus(BluetoothTouchBackStatus status, boolean userActionRequired) {
+//    String message;
+//    switch (status) {
+//      case TOUCHBACK_INITIALIZING:
+//        message = "TouchBack initializing...";
+//        break;
+//      case BLUETOOTH_ADAPTER_ENABLING:
+//        message = "Enabling Bluetooth adapter...";
+//        break;
+//      case BLUETOOTH_ADAPTER_ENABLE_SUCCESS:
+//        message = "Bluetooth adapter enabled.";
+//        break;
+//      case BLUETOOTH_ADAPTER_ENABLE_FAILED:
+//        message = "Enable Bluetooth adapter failed.";
+//        break;
+//      case BLUETOOTH_ADAPTER_UNSUPPORTED:
+//        message = "Bluetooth adapter unavailable. Please insert Bluetooth Adapter. Then ";
+//        break;
+//      case BLUETOOTH_DEVICE_FINDING:
+//        message = "Finding Bluetooth device...";
+//        break;
+//      case BLUETOOTH_DEVICE_FOUND_SUCCESS:
+//        message = "Bluetooth device found successfully.";
+//        break;
+//      case BLUETOOTH_DEVICE_FOUND_FAILED:
+//        message = "Device found failed. Please make sure your device's Bluetooth is on. Then";
+//        break;
+//      case BLUETOOTH_DEVICE_PAIRING:
+//        message = "Pairing Bluetooth device...";
+//        break;
+//      case BLUETOOTH_DEVICE_PAIRED_SUCCESS:
+//        message = "Bluetooth device paired successfully.";
+//        break;
+//      case BLUETOOTH_DEVICE_PAIRED_FAILED:
+//        message = "Bluetooth Device pairing failed.";
+//        break;
+//      case BLUETOOTH_DEVICE_UNPAIRED:
+//        message = "Bluetooth Device unpaired.";
+//        break;
+//      case BLUETOOTH_HID_CONNECTING:
+//        message = "Connecting Bluetooth HID...";
+//        break;
+//      case BLUETOOTH_HID_CONNECTED:
+//        message = "Bluetooth HID connected.";
+//        break;
+//      case BLUETOOTH_HID_DISCONNECTING:
+//        message = "Disconnecting Bluetooth HID...";
+//        break;
+//      case BLUETOOTH_HID_DISCONNECTED:
+//        message = "Bluetooth HID disconnected.";
+//        break;
+//      case BLUETOOTH_HID_PROFILE_SERVICE_STARTING:
+//        message = "Starting Bluetooth HID profile service...";
+//        break;
+//      case TOUCHBACK_INITIALIZED:
+//        message = "TouchBack initialized. You can now use TouchBack feature.";
+//        break;
+//      default:
+//        message = "Unknown status";
+//        break;
+//    }
+//    if (userActionRequired) {
+//      message += " Touch screen to enable TouchBack feature.";
+//    }
+//
+//    if (toast != null) {
+//      toast.cancel();
+//    }
+//    toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+//    toast.show();
+    listener.onBluetoothTouchBackStatus(status);
   }
 
   @Override
   public void onError(BluetoothTouchBackStateMachine.Error error) {
-    String message;
-    switch (error) {
-      case DEVICE_NAME_NULL_OR_EMPTY:
-        message = "Device name is null or empty.";
-        break;
-      case UNABLE_TO_START_FINDING_DEVICE:
-        message = "Unable to start finding device.";
-        break;
-      default:
-        message = "Unknown error";
-        break;
-    }
-    if (toast != null) {
-      toast.cancel();
-    }
-    toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-    toast.show();
+//    String message;
+//    switch (error) {
+//      case DEVICE_NAME_NULL_OR_EMPTY:
+//        message = "Device name is null or empty.";
+//        break;
+//      case UNABLE_TO_START_FINDING_DEVICE:
+//        message = "Unable to start finding device.";
+//        break;
+//      default:
+//        message = "Unknown error";
+//        break;
+//    }
+//    if (toast != null) {
+//      toast.cancel();
+//    }
+//    toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+//    toast.show();
   }
 
   private static class ActivityResultListenerImpl implements PluginRegistry.ActivityResultListener {
