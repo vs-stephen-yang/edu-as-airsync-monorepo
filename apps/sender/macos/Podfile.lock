@@ -4,8 +4,6 @@ PODS:
   - auto_updater_macos (0.0.1):
     - FlutterMacOS
     - Sparkle
-  - bitsdojo_window_macos (0.0.1):
-    - FlutterMacOS
   - bonsoir_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -63,7 +61,6 @@ PODS:
 DEPENDENCIES:
   - app_links (from `Flutter/ephemeral/.symlinks/plugins/app_links/macos`)
   - auto_updater_macos (from `Flutter/ephemeral/.symlinks/plugins/auto_updater_macos/macos`)
-  - bitsdojo_window_macos (from `Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos`)
   - bonsoir_darwin (from `Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin`)
   - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos`)
   - desktop_multi_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_multi_window/macos`)
@@ -97,8 +94,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/app_links/macos
   auto_updater_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/auto_updater_macos/macos
-  bitsdojo_window_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos
   bonsoir_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin
   connectivity_plus:
@@ -151,6 +146,16 @@ SPEC CHECKSUMS:
   desktop_multi_window: 566489c048b501134f9d7fb6a2354c60a9126486
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
+  flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
+  flutter_virtual_display: 51ef646e212b562bcd3baa7306cf56b5f381e5e2
+  flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4
+  flutter_window_close: ee4a6b81ca6fafe93b7cba48b0a18976e3f48e39
+  app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
+  auto_updater_macos: 3e3462c418fe4e731917eacd8d28eef7af84086d
+  bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
+  connectivity_plus: 18d3c32514c886e046de60e9c13895109866c747
+  desktop_multi_window: 566489c048b501134f9d7fb6a2354c60a9126486
+  device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
   flutter_virtual_display: 51ef646e212b562bcd3baa7306cf56b5f381e5e2
   flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4

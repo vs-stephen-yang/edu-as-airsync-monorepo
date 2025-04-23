@@ -22,7 +22,7 @@ class V3SettingMenuDesktop extends StatelessWidget {
       ),
       alignment: Alignment.bottomLeft,
       backgroundColor: context.tokens.color.vsdswColorSurfaceInverse,
-      insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
+      insetPadding: const EdgeInsets.all(8),
       child: SizedBox(
         width: 660,
         height: 455,

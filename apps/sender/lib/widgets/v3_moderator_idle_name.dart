@@ -49,10 +49,11 @@ class V3ModeratorIdleName extends StatelessWidget {
                     ? 359
                     : 475,
             height: kIsWeb
-                ? 316
+                ? 320
                 : isMobile
                     ? 495
                     : 504,
+            margin: const EdgeInsets.all(8),
             decoration: (kIsWeb)
                 ? null
                 : BoxDecoration(

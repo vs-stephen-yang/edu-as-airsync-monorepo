@@ -64,8 +64,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
       ),
       child: Container(
         padding: const EdgeInsets.only(top: 22, left: 22, right: 22),
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        height: MediaQuery.of(context).size.height * 0.67,
+        margin: const EdgeInsets.all(8),
         decoration: ShapeDecoration(
           color: context.tokens.color.vsdswColorSurface100,
           shape: RoundedRectangleBorder(

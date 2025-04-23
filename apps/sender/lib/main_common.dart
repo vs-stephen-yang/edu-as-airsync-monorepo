@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:accessibility_tools/accessibility_tools.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:desktop_screenstate/desktop_screenstate.dart';
@@ -160,17 +159,22 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     }
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
-      doWhenWindowReady(() {
-        const Size initialSize = Size(1280, 720);
-        appWindow
-          ..alignment = Alignment.center
-          ..minSize = initialSize
-          ..size = initialSize
-          ..position = Offset.zero
-          ..show();
-      });
-
       await windowManager.ensureInitialized();
+
+      WindowOptions windowOptions = const WindowOptions(
+        size: Size(640, 480),
+        minimumSize: Size(640, 480),
+        center: true,
+        backgroundColor: Colors.transparent,
+        skipTaskbar: false,
+        titleBarStyle: TitleBarStyle.normal,
+        windowButtonVisibility: true,
+      );
+
+      await windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
     }
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
