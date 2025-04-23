@@ -60,7 +60,7 @@ class V3WebMain extends StatelessWidget {
                 if (isBigThan1024(context))
                   Container(
                     width: 460,
-                    color: const Color(0xFFEDEEF3),
+                    color: const Color(0xFFEDEEF3), // tokens沒有色號
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -173,15 +173,15 @@ class V3WebMain extends StatelessWidget {
       return (showUnsupportedMassage && !supportedBrowsers)
           ? Container(
               height: 48,
-              color: const Color(0xFFF67F00),
+              color: context.tokens.color.vsdswColorWarning,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     S.current.v3_main_web_nonsupport,
-                    style: const TextStyle(
-                      color: Color(0xFFFFFAEC),
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnWarning,
                       fontSize: 14,
                     ),
                   ),
@@ -199,8 +199,8 @@ class V3WebMain extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
                         S.current.v3_main_web_nonsupport_confirm,
-                        style: const TextStyle(
-                          color: Color(0xFFF67F00),
+                        style: TextStyle(
+                          color: context.tokens.color.vsdswColorWarning,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),

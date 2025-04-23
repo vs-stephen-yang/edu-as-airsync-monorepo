@@ -1,7 +1,7 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/svg.dart';
 
 class V3CustomTextFormField extends StatefulWidget {
   const V3CustomTextFormField({
@@ -54,7 +54,8 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
               : context.tokens.color.vsdswColorDisabled,
           hintText: widget.hintText,
           hintStyle: TextStyle(
-              fontSize: 12, color: context.tokens.color.vsdswColorOnDisabled),
+              fontSize: 12,
+              color: context.tokens.color.vsdswColorOnSurfaceVariant),
           counterText: '',
           border: OutlineInputBorder(
             borderRadius: context.tokens.radii.vsdswRadiusFull,
@@ -93,13 +94,13 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
   Row? _errorWidget(BuildContext context) {
     if (_errorText != null && _errorText!.isNotEmpty) {
       return Row(children: [
-        const SizedBox(
-            width: 16,
-            height: 16,
-            child: Image(
-                image: Svg('assets/images/v3_ic_display_code_error.svg'))),
+        SizedBox(
+          width: 16,
+          height: 16,
+          child: SvgPicture.asset('assets/images/v3_ic_display_code_error.svg'),
+        ),
         const Padding(
-          padding: EdgeInsets.only(right: 8),
+          padding: EdgeInsets.only(right: 4),
         ),
         Text(
           _errorText!,

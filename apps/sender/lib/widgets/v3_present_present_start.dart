@@ -153,7 +153,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     setDebugText();
 
     return Container(
-      color: Colors.black,
+      color: context.tokens.color.vsdswColorNeutral,
       child: Stack(
         fit: StackFit.expand,
         alignment: Alignment.center,
@@ -166,7 +166,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                   S.of(context).v3_main_presenting_message,
                   style: TextStyle(
                     fontSize: 16,
-                    color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                    color: context.tokens.color.vsdswColorOnSurfaceInverse,
                   ),
                 ),
                 SizedBox(height: context.tokens.spacing.vsdswSpacingMd.top),
