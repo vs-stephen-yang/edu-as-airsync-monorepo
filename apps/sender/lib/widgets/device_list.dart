@@ -213,8 +213,6 @@ class _DeviceListState extends State<DeviceList> {
         break;
       case ChannelConnectError.unknownError:
         break;
-      default:
-        break;
     }
   }
 

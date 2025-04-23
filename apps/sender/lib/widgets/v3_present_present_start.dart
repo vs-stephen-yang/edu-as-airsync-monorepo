@@ -463,16 +463,6 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
       }
     }
   }
-
-  _showOptionsMenuDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const V3OptionsMenu();
-      },
-    );
-  }
 }
 
 class AnnotationButton extends StatelessWidget {
