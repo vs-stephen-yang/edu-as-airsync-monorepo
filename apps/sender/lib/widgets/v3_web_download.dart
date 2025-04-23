@@ -223,7 +223,7 @@ class DownloadWidget extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, right: 16),
       margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.tokens.color.vsdswColorSurface100,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -345,8 +345,7 @@ class DownloadWidget extends StatelessWidget {
                                   S.current.v3_main_download_mac_store,
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: context
-                                        .tokens.color.vsdswColorOnSurface,
+                                    color: context.tokens.color.vsdswColorLink,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

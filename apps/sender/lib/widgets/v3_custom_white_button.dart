@@ -32,7 +32,7 @@ class V3CustomWhiteButton extends StatelessWidget {
               decoration: BoxDecoration(
                   color: context.tokens.color.vsdswColorSurface100,
                   border: Border.all(
-                    color: context.tokens.color.vsdswColorSecondary,
+                    color: context.tokens.color.vsdswColorPrimary,
                     width: 1,
                   ),
                   borderRadius: context.tokens.radii.vsdswRadiusFull,
@@ -41,7 +41,7 @@ class V3CustomWhiteButton extends StatelessWidget {
                       offset: const Offset(0.0, 8.0),
                       blurRadius: 16.0,
                       spreadRadius: 0.0,
-                      color: context.tokens.color.vsdswColorSecondary
+                      color: context.tokens.color.vsdswColorPrimary
                           .withOpacity(0.2),
                     ),
                   ]),
@@ -49,7 +49,7 @@ class V3CustomWhiteButton extends StatelessWidget {
                 child: Text(
                   text,
                   style: TextStyle(
-                    color: context.tokens.color.vsdswColorSecondary, // 文字顏色
+                    color: context.tokens.color.vsdswColorPrimary, // 文字顏色
                     fontSize: 16.0,
                   ),
                 ),
