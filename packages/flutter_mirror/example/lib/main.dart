@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_mirror/bluetooth_touchback_listener.dart';
-import 'package:flutter_mirror/bluetooth_touchback_status.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,8 +41,7 @@ class _Mirror {
   }
 }
 
-class _MyAppState extends State<MyApp>
-    implements FlutterMirrorListener, BluetoothTouchbackListener {
+class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   final _mirrors = <String, _Mirror>{};
 
   String _pin = "";
@@ -67,7 +63,6 @@ class _MyAppState extends State<MyApp>
 
     try {
       _plugin.registerListener(this);
-      _plugin.registerBluetoothTouchBackListener(this);
       await _plugin.initialize(const FlutterMirrorConfig({
         "VideoPath": 1024 // 52-1C for testing
       }));
@@ -152,22 +147,6 @@ class _MyAppState extends State<MyApp>
   @override
   void onMirrorVideoFrameRate(String mirrorId, int fps) {
     print('Video frame rate: $fps');
-  }
-
-  @override
-  void onBluetoothTouchbackStatusChanged(BluetoothTouchbackStatus status) {
-    if (status == BluetoothTouchbackStatus.initialized) {
-      print('Bluetooth touchback status: $status');
-    }
-    Fluttertoast.showToast(
-        msg: 'Bluetooth touchback status: $status',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
   }
 
   void _getWidgetInfo(_Mirror mirror) {

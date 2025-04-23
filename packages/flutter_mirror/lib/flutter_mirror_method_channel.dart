@@ -3,12 +3,10 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
-import 'package:flutter_mirror/bluetooth_touchback_status.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 
-import 'bluetooth_touchback_listener.dart';
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 import 'package:flutter_mirror/credential_store.dart';
@@ -19,8 +17,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('flutter_mirror');
-  FlutterMirrorListener? _mirrorListener;
-  BluetoothTouchbackListener? _bluetoothTouchbackListener;
+  FlutterMirrorListener? _listener;
 
   MethodChannelFlutterMirror() {
     // Register the handler for the method calls from the native side
@@ -142,12 +139,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
 
   @override
   void registerListener(FlutterMirrorListener listener) {
-    _mirrorListener = listener;
-  }
-
-  @override
-  void registerBluetoothTouchBackListener(BluetoothTouchbackListener listener) {
-    _bluetoothTouchbackListener = listener;
+    _listener = listener;
   }
 
   // Handle method calls from the native side
@@ -159,7 +151,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         String deviceName = call.arguments["deviceName"];
         String mirrorType = call.arguments["mirrorType"];
 
-        _mirrorListener?.onMirrorStart(
+        _listener?.onMirrorStart(
           mirrorId,
           textureId,
           deviceName,
@@ -168,23 +160,23 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
       } else if (call.method == 'onMirrorStop') {
         String mirrorId = call.arguments["mirrorId"];
 
-        _mirrorListener?.onMirrorStop(mirrorId);
+        _listener?.onMirrorStop(mirrorId);
       } else if (call.method == 'onMirrorVideoResize') {
         String mirrorId = call.arguments["mirrorId"];
         int width = call.arguments["width"];
         int height = call.arguments["height"];
 
-        _mirrorListener?.onMirrorVideoResize(mirrorId, width, height);
+        _listener?.onMirrorVideoResize(mirrorId, width, height);
       } else if (call.method == 'onMirrorVideoFrameRate') {
         String mirrorId = call.arguments["mirrorId"];
         int fps = call.arguments["fps"];
 
-        _mirrorListener?.onMirrorVideoFrameRate(mirrorId, fps);
+        _listener?.onMirrorVideoFrameRate(mirrorId, fps);
       } else if (call.method == 'onMirrorAuth') {
         String pin = call.arguments["pin"];
         int timeoutSec = call.arguments["timeoutSec"];
 
-        _mirrorListener?.onMirrorAuth(pin, timeoutSec);
+        _listener?.onMirrorAuth(pin, timeoutSec);
       } else if (call.method == 'onCredentialsRequest') {
         int year = call.arguments["year"];
         int month = call.arguments["month"];
@@ -192,16 +184,6 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
 
         final credentials = await CredentialsStore.load(year, month, day);
         await updateCredentials(credentials);
-      } else if (call.method == 'onBluetoothTouchbackStatusChanged') {
-        int statusCode = call.arguments["status"];
-        BluetoothTouchbackStatus? status = BluetoothTouchbackStatus.values[statusCode];
-        if (status != null) {
-          _bluetoothTouchbackListener?.onBluetoothTouchbackStatusChanged(status);
-        } else {
-          log("Unknown BluetoothTouchbackStatus: $statusCode");
-        }
-      } else {
-        log("Unknown method call from native: ${call.method}");
       }
     } catch (e) {
       log("Malformed method call from native: ${call.method}. $e");
