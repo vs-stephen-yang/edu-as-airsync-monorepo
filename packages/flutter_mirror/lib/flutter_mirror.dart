@@ -4,12 +4,18 @@ import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'bluetooth_touchback_listener.dart';
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 
 class FlutterMirror {
   void registerListener(FlutterMirrorListener listener) {
     return FlutterMirrorPlatform.instance.registerListener(listener);
+  }
+
+  void registerBluetoothTouchBackListener(BluetoothTouchbackListener listener) {
+    return FlutterMirrorPlatform.instance.
+      registerBluetoothTouchBackListener(listener);
   }
 
   Future<void> initialize(FlutterMirrorConfig config) async {
@@ -30,6 +36,28 @@ class FlutterMirror {
       log("nearbyWifiDevices permission status: $status");
       status = await Permission.nearbyWifiDevices.request();
       log("update nearbyWifiDevices permission status: $status");
+    }
+
+    // TBD: do we need to request bluetooth permissions when actually use it?
+    status = await Permission.bluetooth.status;
+    if (status != PermissionStatus.granted) {
+      log("bluetooth permission status: $status");
+      status = await Permission.bluetooth.request();
+      log("update bluetooth permission status: $status");
+    }
+
+    status = await Permission.bluetoothConnect.status;
+    if (status != PermissionStatus.granted) {
+      log("bluetoothConnect permission status: $status");
+      status = await Permission.bluetoothConnect.request();
+      log("update bluetoothConnect permission status: $status");
+    }
+
+    status = await Permission.bluetoothScan.status;
+    if (status != PermissionStatus.granted) {
+      log("bluetoothScan permission status: $status");
+      status = await Permission.bluetoothScan.request();
+      log("update bluetoothScan permission status: $status");
     }
 
     return;
@@ -81,6 +109,10 @@ class FlutterMirror {
 
   Future<void> enableAudio(String mirrorId, bool enable) {
     return FlutterMirrorPlatform.instance.enableAudio(mirrorId, enable);
+  }
+
+  Future<bool> enableTouchback(String mirrorId, bool enable) {
+    return FlutterMirrorPlatform.instance.enableTouchback(mirrorId, enable);
   }
 
   Future<void> onMirrorTouch(
