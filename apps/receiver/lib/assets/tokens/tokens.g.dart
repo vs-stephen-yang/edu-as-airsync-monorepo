@@ -45,13 +45,10 @@ abstract class ColorTokens {
   Color get vsdslColorOnSurfaceVariant;
   Color get vsdslColorInfo;
   Color get vsdslColorSuccess;
-
   Color get vsdslColorSuccessVariant;
   Color get vsdslColorWarning;
-
   Color get vsdslColorOnWarningVariant;
   Color get vsdslColorError;
-
   Color get vsdslColorOnError;
   Color get vsdslColorDisabled;
   Color get vsdslColorOnDisabled;
@@ -192,15 +189,12 @@ class DefaultColorTokens extends ColorTokens {
   Color get vsdslColorSuccess => const Color(0xFF3AC9CC);
   @override
   Color get vsdslColorSuccessVariant => const Color(0xFF2C9799);
-
   @override
   Color get vsdslColorWarning => const Color(0xFFEC6200);
   @override
   Color get vsdslColorOnWarningVariant => const Color(0xFFFFFFFF);
-
   @override
   Color get vsdslColorError => const Color(0xFFDB0025);
-
   @override
   Color get vsdslColorOnError => const Color(0xFFFFFFFF);
   @override
@@ -214,13 +208,13 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdslColorOutlineVariant => const Color(0xFF3C455D);
   @override
-  Color get vsdslColorOpacityPrimaryLg => const Color(0x7ADB0025);
+  Color get vsdslColorOpacityPrimaryLg => const Color(0x7A3C5AAA);
   @override
-  Color get vsdslColorOpacityPrimaryXl => const Color(0xA3DB0025);
+  Color get vsdslColorOpacityPrimaryXl => const Color(0xA33C5AAA);
   @override
-  Color get vsdslColorOpacitySecondaryLg => const Color(0x7A3C5AAA);
+  Color get vsdslColorOpacitySecondaryLg => const Color(0x7A5D80ED);
   @override
-  Color get vsdslColorOpacitySecondaryXl => const Color(0xA33C5AAA);
+  Color get vsdslColorOpacitySecondaryXl => const Color(0xA30380ED);
   @override
   Color get vsdslColorOpacityNeutralXs => const Color(0x29151C32);
   @override
@@ -387,7 +381,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 2.0),
     blurRadius: 4.0,
     spreadRadius: 0.0,
-    color: Color(0x7ADB0025),
+    color: Color(0x7A3C5AAA),
   ),
 ];
   @override
@@ -396,7 +390,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 4.0),
     blurRadius: 8.0,
     spreadRadius: 0.0,
-    color: Color(0x7ADB0025),
+    color: Color(0x7A3C5AAA),
   ),
 ];
   @override
@@ -405,7 +399,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 8.0),
     blurRadius: 16.0,
     spreadRadius: 0.0,
-    color: Color(0x7ADB0025),
+    color: Color(0x7A3C5AAA),
   ),
 ];
   @override
@@ -414,7 +408,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 16.0),
     blurRadius: 24.0,
     spreadRadius: 0.0,
-    color: Color(0x7ADB0025),
+    color: Color(0x7A3C5AAA),
   ),
 ];
   @override
@@ -423,7 +417,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 2.0),
     blurRadius: 4.0,
     spreadRadius: 0.0,
-    color: Color(0x7A3C5AAA),
+    color: Color(0x7A5D80ED),
   ),
 ];
   @override
@@ -432,7 +426,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 4.0),
     blurRadius: 8.0,
     spreadRadius: 0.0,
-    color: Color(0x7A3C5AAA),
+    color: Color(0x7A5D80ED),
   ),
 ];
   @override
@@ -441,7 +435,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 8.0),
     blurRadius: 16.0,
     spreadRadius: 0.0,
-    color: Color(0x7A3C5AAA),
+    color: Color(0x7A5D80ED),
   ),
 ];
   @override
@@ -450,7 +444,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 16.0),
     blurRadius: 24.0,
     spreadRadius: 0.0,
-    color: Color(0xA33C5AAA),
+    color: Color(0xA30380ED),
   ),
 ];
 }
