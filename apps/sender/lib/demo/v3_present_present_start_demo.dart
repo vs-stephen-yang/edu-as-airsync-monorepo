@@ -12,7 +12,6 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
-import 'package:display_cast_flutter/widgets/v3_options_menu.dart';
 import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
