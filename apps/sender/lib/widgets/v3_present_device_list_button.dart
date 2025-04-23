@@ -46,7 +46,7 @@ class V3PresentDeviceListButton extends StatelessWidget {
                   height: 32, // 實際看起來的按鈕高度
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: ShapeDecoration(
-                    color: context.tokens.color.vsdswColorSurface600,
+                    color: context.tokens.color.vsdswColorTertiary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(9999),
                     ),
@@ -67,7 +67,7 @@ class V3PresentDeviceListButton extends StatelessWidget {
                           width: 16,
                           height: 16,
                           colorFilter: ColorFilter.mode(
-                            context.tokens.color.vsdswColorOnPrimary,
+                            context.tokens.color.vsdswColorOnTertiary,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -75,7 +75,7 @@ class V3PresentDeviceListButton extends StatelessWidget {
                         Text(
                           S.current.v3_device_list_button_device_list,
                           style: TextStyle(
-                            color: context.tokens.color.vsdswColorOnPrimary,
+                            color: context.tokens.color.vsdswColorOnTertiary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             height: 1.2,

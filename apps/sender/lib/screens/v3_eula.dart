@@ -42,9 +42,9 @@ class V3Eula extends StatelessWidget {
                       child: AutoSizeText(
                         S.of(context).v3_eula_title,
                         style: TextStyle(
-                          color: context.tokens.color.vsdswColorOnSurface,
+                          color: context.tokens.color.vsdswColorOnInfo,
                           fontWeight: FontWeight.w600,
-                          fontSize: 21,
+                          fontSize: 20,
                         ),
                         maxLines: 1,
                       ),
@@ -77,9 +77,9 @@ class V3Eula extends StatelessWidget {
                                     content,
                                     style: TextStyle(
                                       color: context
-                                          .tokens.color.vsdswColorNeutral,
+                                          .tokens.color.vsdswColorOnSurface,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 12,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 ),
@@ -107,8 +107,8 @@ class V3Eula extends StatelessWidget {
                                     context.tokens.color.vsdswColorPrimary,
                                 backgroundColor: Colors.white,
                                 textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
                                 padding: EdgeInsets.zero,
                               ),
@@ -144,8 +144,8 @@ class V3Eula extends StatelessWidget {
                                 backgroundColor:
                                     context.tokens.color.vsdswColorPrimary,
                                 textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
                                 padding: EdgeInsets.zero,
                               ),
