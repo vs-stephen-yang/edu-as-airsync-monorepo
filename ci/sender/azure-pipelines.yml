@@ -10,7 +10,7 @@ schedules:
 
 variables:
   - name: Flutter.Version
-    value: "3.24.2"
+    value: "3.27.4"
   - name: Flutter.Bin
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: GRADLE_USER_HOME
