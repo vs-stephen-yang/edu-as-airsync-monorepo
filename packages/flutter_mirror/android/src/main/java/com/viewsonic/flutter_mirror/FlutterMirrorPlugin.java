@@ -2,6 +2,7 @@ package com.viewsonic.flutter_mirror;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -14,24 +15,22 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.view.TextureRegistry;
 import io.flutter.view.TextureRegistry.SurfaceTextureEntry;
-import io.flutter.plugin.common.EventChannel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.ExecutionException;
 
-import java.lang.InterruptedException;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 import android.os.Handler;
 import android.os.Looper;
+
 
 /** FlutterMirrorPlugin */
 @Keep
@@ -40,6 +39,7 @@ public class FlutterMirrorPlugin implements
     ActivityAware,
     TexRegistry,
     MirrorListener,
+    BluetoothTouchBackListener,
     MethodCallHandler {
   private static final String TAG = "FlutterMirrorPlugin";
 
@@ -85,6 +85,7 @@ public class FlutterMirrorPlugin implements
   private Handler handler_ = new Handler(Looper.getMainLooper());
 
   private MirrorReceiver mirrorReceiver_;
+  private BluetoothTouchBackController bluetoothTouchBackController_;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -100,10 +101,16 @@ public class FlutterMirrorPlugin implements
     channel_.setMethodCallHandler(this);
   }
 
+  @SuppressLint("NewApi")
   @Override
   public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
     Log.d(TAG, "FlutterMirrorPlugin::onAttachedToActivity()");
     activity_ = activityPluginBinding.getActivity();
+
+    bluetoothTouchBackController_ = new BluetoothTouchBackController(context_, activity_, this, false);
+    activityPluginBinding.addActivityResultListener(bluetoothTouchBackController_.getActivityResultListener());
+    activityPluginBinding.addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
+    activityPluginBinding.getActivity().registerActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
   }
 
   @Override
@@ -142,18 +149,31 @@ public class FlutterMirrorPlugin implements
       boolean touch = call.argument("touchDown");
       double x = call.argument("x");
       double y = call.argument("y");
-
-      if (mirrorReceiver_ == null) {
-        return;
-      }
-
-      mirrorReceiver_.onMirrorTouch(
+      if (mirrorReceiver_ != null) {
+        mirrorReceiver_.onMirrorTouch(
           mirrorId,
           touchId,
           touch,
           x,
           y);
+      }
+      if (bluetoothTouchBackController_ != null) {
+        bluetoothTouchBackController_.onMirrorTouch(
+          mirrorId,
+          touchId,
+          touch,
+          x,
+          y);
+      }
       result.success(new HashMap<>());
+    } else if (call.method.equals("enableTouchback")) {
+      String mirrorId = call.argument("mirrorId");
+      boolean enable = call.argument("enable");
+      boolean success = false;
+      if (bluetoothTouchBackController_ != null) {
+        success = bluetoothTouchBackController_.enableTouchback(mirrorId, enable);
+      }
+      result.success(success);
     } else if (call.method.equals("startMirrorReplay")) {
       String mirrorId = call.argument("mirrorId");
       String videoCodec = call.argument("videoCodec");
@@ -440,6 +460,10 @@ public class FlutterMirrorPlugin implements
       String mirrorType) {
     Log.d(TAG, "FlutterMirrorPlugin.onMirrorStart() " + mirrorId);
 
+    if (bluetoothTouchBackController_ != null) {
+      bluetoothTouchBackController_.onMirrorStart(mirrorId, deviceName, mirrorType);
+    }
+
     // Must run on the platform thread
     post(() -> {
       Map<String, Object> arguments = new HashMap<>();
@@ -454,6 +478,10 @@ public class FlutterMirrorPlugin implements
 
   public void onMirrorStop(String mirrorId) {
     Log.d(TAG, "FlutterMirrorPlugin.onMirrorStop() " + mirrorId);
+
+    if (bluetoothTouchBackController_ != null) {
+      bluetoothTouchBackController_.onMirrorStop(mirrorId);
+    }
 
     // Must run on the platform thread
     post(() -> {
@@ -491,6 +519,7 @@ public class FlutterMirrorPlugin implements
     });
   }
 
+  @Override
   public void onCredentialsRequest(
       int year,
       int month,
@@ -505,6 +534,15 @@ public class FlutterMirrorPlugin implements
       arguments.put("day", day);
 
       channel_.invokeMethod("onCredentialsRequest", arguments);
+    });
+  }
+
+  @Override
+  public void onBluetoothTouchBackStatus(BluetoothTouchBackStatus status) {
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("status", status.ordinal());
+      channel_.invokeMethod("onBluetoothTouchbackStatusChanged", arguments);
     });
   }
 

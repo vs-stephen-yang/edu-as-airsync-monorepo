@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_mirror/bluetooth_touchback_listener.dart';
+import 'package:flutter_mirror/bluetooth_touchback_status.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(const MyApp());
 }
 
@@ -24,6 +29,8 @@ class _Mirror {
   String mirrorId;
   int textureId;
   bool audioEnabled = false;
+  MirrorType mirrorType = MirrorType.airplay;
+  bool touchbackEnabled = false;
 
   double aspectRatio = 3 / 2;
   bool sizeChanged = false;
@@ -41,7 +48,8 @@ class _Mirror {
   }
 }
 
-class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
+class _MyAppState extends State<MyApp>
+    implements FlutterMirrorListener, BluetoothTouchbackListener {
   final _mirrors = <String, _Mirror>{};
 
   String _pin = "";
@@ -63,6 +71,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
 
     try {
       _plugin.registerListener(this);
+      _plugin.registerBluetoothTouchBackListener(this);
       await _plugin.initialize(const FlutterMirrorConfig({
         "VideoPath": 1024 // 52-1C for testing
       }));
@@ -113,7 +122,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       mirrorId,
       textureId,
     );
-
+    mirror.mirrorType = mirrorType;
     _mirrors[mirrorId] = mirror;
 
     // enable audio
@@ -149,26 +158,39 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     print('Video frame rate: $fps');
   }
 
+  @override
+  void onBluetoothTouchbackStatusChanged(BluetoothTouchbackStatus status) {
+    print('Bluetooth touchback status: $status');
+    Fluttertoast.showToast(
+        msg: 'Bluetooth touchback status: $status',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
+
   void _getWidgetInfo(_Mirror mirror) {
     final RenderBox renderBox =
         mirror.stickyKey.currentContext?.findRenderObject() as RenderBox;
     //stickyKey.currentContext?.size;
 
     mirror.videoWidgetSize = renderBox.size;
-    print(
-        'Video widget size: ${mirror.videoWidgetSize.width}, ${mirror.videoWidgetSize.height}');
+    // print(
+    //     'Video widget size: ${mirror.videoWidgetSize.width}, ${mirror.videoWidgetSize.height}');
 
     mirror.videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
-    print(
-        'Video widget fffset: ${mirror.videoWidgetOffset.dx}, ${mirror.videoWidgetOffset.dy}');
+    // print(
+    //     'Video widget fffset: ${mirror.videoWidgetOffset.dx}, ${mirror.videoWidgetOffset.dy}');
   }
 
   void _onTouchEvent(_Mirror mirror, PointerEvent event) {
-    if (mirror.sizeChanged) {
+    //if (mirror.sizeChanged) {
       _getWidgetInfo(mirror);
-
-      mirror.sizeChanged = false;
-    }
+      //mirror.sizeChanged = false;
+    //}
 
     _plugin.onMirrorTouch(
         mirror.mirrorId,
@@ -184,7 +206,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     // start airplay
     await _plugin.startAirplay(const AirplayConfig(
       name: "display-1",
-      security: AirplaySecurity.onscreenCode,
+      security: AirplaySecurity.none,
     ));
 
     // start googlecast
@@ -208,6 +230,26 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     _plugin.enableAudio(mirror.mirrorId, mirror.audioEnabled);
   }
 
+  Future<void> toggleTouchback(_Mirror mirror) async {
+    bool newTouchBackState = !mirror.touchbackEnabled;
+    bool success = await _plugin.enableTouchback(mirror.mirrorId, newTouchBackState);
+    if (success) {
+      setState(() {
+        mirror.touchbackEnabled = newTouchBackState;
+      });
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Failed to toggle touchback',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+  }
+
   void stopMirror(_Mirror mirror) {
     _mirrors.remove(mirror.mirrorId);
 
@@ -226,6 +268,13 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       child: const Text("Close"),
     );
 
+    final toggleEnableTouchback = ElevatedButton(
+        onPressed: () async {
+          toggleTouchback(mirror);
+        },
+        child: Text(mirror.touchbackEnabled ? "Disable Touchback" : "Enable Touchback")
+    );
+
     final toggleAudioButton = ElevatedButton(
       onPressed: () {
         toggleAudio(mirror);
@@ -239,6 +288,8 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
         children: [
           closeButton,
           toggleAudioButton,
+          if (mirror.mirrorType == MirrorType.airplay)
+            toggleEnableTouchback
         ],
       ),
     );
