@@ -414,8 +414,6 @@ class _V3DeviceListState extends State<V3DeviceList> {
         break;
       case ChannelConnectError.unknownError:
         break;
-      default:
-        break;
     }
   }
 

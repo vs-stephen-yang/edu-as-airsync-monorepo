@@ -972,11 +972,9 @@ class WebRTCConnector {
 
     final candidates = _rtcStatsPresenter?.getCandidates();
     if (candidates != null) {
-      final local = (candidates['local'] as List<RtcIceCandidate>?)
-          ?.map((e) => e.toJson())
+      final local = (candidates['local'])?.map((e) => e.toJson())
           .toList();
-      final remote = (candidates['remote'] as List<RtcIceCandidate>?)
-          ?.map((e) => e.toJson())
+      final remote = (candidates['remote'])?.map((e) => e.toJson())
           .toList();
 
       result['candidates'] = jsonEncode({
