@@ -292,6 +292,12 @@ class V3UpdateManager {
                       child: Text(
                         _dialogTittle(context, status),
                         textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdswColorOnSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                              context.tokens.textStyle.vsdswHeadingMd.fontSize,
+                        ),
                       ),
                     ),
                   ),
@@ -304,7 +310,14 @@ class V3UpdateManager {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_dialogDescription(context, status)),
+                    Text(
+                      _dialogDescription(context, status),
+                      style: TextStyle(
+                        color: context.tokens.color.vsdswColorOnSurface,
+                        fontWeight: FontWeight.w400,
+                        fontSize: context.tokens.textStyle.vsdswBodySm.fontSize,
+                      ),
+                    ),
                     const Spacer(),
                     const Divider(),
                   ],

@@ -54,8 +54,9 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
               : context.tokens.color.vsdswColorDisabled,
           hintText: widget.hintText,
           hintStyle: TextStyle(
-              fontSize: 12,
-              color: context.tokens.color.vsdswColorOnSurfaceVariant),
+            fontSize: 12,
+            color: context.tokens.color.vsdswColorOnSurfaceVariant,
+          ),
           counterText: '',
           border: OutlineInputBorder(
             borderRadius: context.tokens.radii.vsdswRadiusFull,
