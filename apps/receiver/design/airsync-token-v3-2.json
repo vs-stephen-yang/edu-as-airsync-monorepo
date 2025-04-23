@@ -328,19 +328,19 @@
       "type": "color"
     },
     "vsdslColorOpacityPrimaryLg": {
-      "value": "rgba(219,0,37,0.48)",
-      "type": "color"
-    },
-    "vsdslColorOpacityPrimaryXl": {
-      "value": "rgba(219,0,37,0.64)",
-      "type": "color"
-    },
-    "vsdslColorOpacitySecondaryLg": {
       "value": "rgba(60,90,170,0.48)",
       "type": "color"
     },
-    "vsdslColorOpacitySecondaryXl": {
+    "vsdslColorOpacityPrimaryXl": {
       "value": "rgba(60,90,170,0.64)",
+      "type": "color"
+    },
+    "vsdslColorOpacitySecondaryLg": {
+      "value": "rgba(93,128,237,0.48)",
+      "type": "color"
+    },
+    "vsdslColorOpacitySecondaryXl": {
+      "value": "rgba93,128,237,0.64)",
       "type": "color"
     },
     "vsdslColorOpacityNeutralXs": {
