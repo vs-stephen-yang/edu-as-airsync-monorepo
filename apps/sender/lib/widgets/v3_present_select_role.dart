@@ -68,7 +68,7 @@ class V3PresentSelectRole extends StatelessWidget {
                     context,
                     presentStateProvider,
                     channelProvider,
-                    const Size(360, 320),
+                    const Size(300, 300),
                     const Size(138, 120))),
       ],
     );

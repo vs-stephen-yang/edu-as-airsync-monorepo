@@ -58,8 +58,7 @@ class V3PresentSelectRoleDemo extends StatelessWidget {
                 children: _buildButtons(
                     context,
                     presentStateProvider,
-                    const Size(360, 320),
-                    const Size(138, 120))),
+                    const Size(300, 300), const Size(138, 120))),
       ],
     );
   }

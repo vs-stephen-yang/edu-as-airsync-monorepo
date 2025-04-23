@@ -24,7 +24,7 @@ class V3Eula extends StatelessWidget {
           children: [
             const V3Background(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.all(8),
               child: Container(
                 width: 546,
                 height: 504,

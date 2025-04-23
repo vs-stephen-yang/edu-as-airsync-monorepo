@@ -415,6 +415,13 @@ class SelectScreenDialog extends Dialog {
                         child: Builder(builder: (context) {
                           TabController tabController =
                               DefaultTabController.of(context);
+                          double bottomHeight = 48;
+                          if (platformIsDesktop && enableAudioCheckbox) {
+                            bottomHeight += 48;
+                            if (displayAudioDriverWarning) {
+                              bottomHeight += 48;
+                            }
+                          }
                           return Column(
                             children: <Widget>[
                               Container(
@@ -521,168 +528,182 @@ class SelectScreenDialog extends Dialog {
                                   ),
                                 ),
                               ),
+                              const Gap(10),
                               Container(
-                                width: double.infinity,
-                                height: 96,
-                                alignment: Alignment.centerRight,
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 33),
-                                child: Row(
-                                  children: <Widget>[
-                                    if (platformIsDesktop &&
-                                        enableAudioCheckbox)
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Gap(10),
-                                          SizedBox(
-                                            height: 48,
-                                            child: Row(
-                                              children: [
-                                                V3Focus(
-                                                  identifier:
-                                                      'v3_qa_select_screen_audio',
-                                                  child: Checkbox(
-                                                    semanticLabel: S
-                                                        .of(context)
-                                                        .v3_lbl_select_screen_audio,
-                                                    value: _systemAudio,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              2.0),
-                                                    ),
-                                                    side: WidgetStateBorderSide
-                                                        .resolveWith(
-                                                      (states) => BorderSide(
-                                                          width: 1.0,
-                                                          color: (!displayAudioDriverWarning)
-                                                              ? context
-                                                                  .tokens
-                                                                  .color
-                                                                  .vsdswColorPrimary
-                                                              : context
-                                                                  .tokens
-                                                                  .color
-                                                                  .vsdswColorDisabled),
-                                                    ),
-                                                    onChanged:
-                                                        (!displayAudioDriverWarning)
-                                                            ? (bool? value) {
-                                                                setState(() {
-                                                                  _systemAudio =
-                                                                      value!;
-                                                                });
-                                                              }
-                                                            : null,
+                                constraints:
+                                    BoxConstraints.expand(height: bottomHeight),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      if (platformIsDesktop &&
+                                          enableAudioCheckbox) ...[
+                                        SizedBox(
+                                          height: 48,
+                                          child: Row(
+                                            children: [
+                                              V3Focus(
+                                                identifier:
+                                                    'v3_qa_select_screen_audio',
+                                                child: Checkbox(
+                                                  semanticLabel: S
+                                                      .of(context)
+                                                      .v3_lbl_select_screen_audio,
+                                                  value: _systemAudio,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            2.0),
                                                   ),
-                                                ),
-                                                const Gap(8),
-                                                Text(
-                                                  S.current
-                                                      .v3_present_select_screen_share_audio,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: 'Inter',
-                                                      color: (!displayAudioDriverWarning)
-                                                          ? context.tokens.color
-                                                              .vsdswColorOnSurface
-                                                          : context.tokens.color
-                                                              .vsdswColorDisabled),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          if (displayAudioDriverWarning)
-                                            SizedBox(
-                                              child: MergeSemantics(
-                                                child: Row(
-                                                  children: [
-                                                    const Gap(8),
-                                                    SizedBox(
-                                                      width: 16,
-                                                      height: 16,
-                                                      child: SvgPicture.asset(
-                                                          'assets/images/v3_ic_audio_driver_warning.svg'),
-                                                    ),
-                                                    const Gap(8),
-                                                    Text(
-                                                      S.current
-                                                          .v3_present_select_screen_mac_audio_driver,
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontFamily: 'Inter',
-                                                          color: context
-                                                              .tokens
-                                                              .color
-                                                              .vsdswColorWarning),
-                                                    ),
-                                                  ],
+                                                  side: WidgetStateBorderSide
+                                                      .resolveWith(
+                                                    (states) => BorderSide(
+                                                        width: 1.0,
+                                                        color: (!displayAudioDriverWarning)
+                                                            ? context
+                                                                .tokens
+                                                                .color
+                                                                .vsdswColorPrimary
+                                                            : context
+                                                                .tokens
+                                                                .color
+                                                                .vsdswColorDisabled),
+                                                  ),
+                                                  onChanged:
+                                                      (!displayAudioDriverWarning)
+                                                          ? (bool? value) {
+                                                              setState(() {
+                                                                _systemAudio =
+                                                                    value!;
+                                                              });
+                                                            }
+                                                          : null,
                                                 ),
                                               ),
+                                              const Gap(8),
+                                              Text(
+                                                S.current
+                                                    .v3_present_select_screen_share_audio,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontFamily: 'Inter',
+                                                    color: (!displayAudioDriverWarning)
+                                                        ? context.tokens.color
+                                                            .vsdswColorOnSurface
+                                                        : context.tokens.color
+                                                            .vsdswColorDisabled),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (displayAudioDriverWarning)
+                                          SizedBox(
+                                            height: 48,
+                                            child: MergeSemantics(
+                                              child: Row(
+                                                children: [
+                                                  const Gap(8),
+                                                  SvgPicture.asset(
+                                                    width: 16,
+                                                    height: 16,
+                                                    'assets/images/v3_ic_audio_driver_warning.svg',
+                                                  ),
+                                                  const Gap(8),
+                                                  Text(
+                                                    S.current
+                                                        .v3_present_select_screen_mac_audio_driver,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontFamily: 'Inter',
+                                                        color: context
+                                                            .tokens
+                                                            .color
+                                                            .vsdswColorWarning),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                        ],
+                                          ),
+                                      ],
+                                      SizedBox(
+                                        height: 48,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            createButton(
+                                              label: S
+                                                  .of(context)
+                                                  .v3_lbl_select_screen_cancel,
+                                              identifier:
+                                                  'v3_qa_select_screen_cancel',
+                                              text: S
+                                                  .of(context)
+                                                  .present_select_screen_cancel,
+                                              textColor: context.tokens.color
+                                                  .vsdswColorSecondary,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              onPressed: () {
+                                                cancel();
+                                              },
+                                            ),
+                                            createButton(
+                                              label: S
+                                                  .of(context)
+                                                  .v3_lbl_select_screen_share,
+                                              identifier:
+                                                  'v3_qa_select_screen_share',
+                                              text: S.current
+                                                  .v3_main_select_role_share,
+                                              textColor: sourceSelected
+                                                  ? context.tokens.color
+                                                      .vsdswColorOnPrimary
+                                                  : context.tokens.color
+                                                      .vsdswColorOnDisabled,
+                                              backgroundColor: sourceSelected
+                                                  ? context.tokens.color
+                                                      .vsdswColorPrimary
+                                                  : context.tokens.color
+                                                      .vsdswColorDisabled,
+                                              onPressed: () {
+                                                if (!sourceSelected) {
+                                                  return;
+                                                }
+                                                ChannelProvider
+                                                    channelProvider = Provider
+                                                        .of<ChannelProvider>(
+                                                            context,
+                                                            listen: false);
+                                                if (channelProvider
+                                                    .isConnectAvailable()) {
+                                                  _ok(
+                                                      _selectedSource,
+                                                      _systemAudio,
+                                                      _isExtensionSelected);
+                                                } else {
+                                                  Toast.makeFeatureReconnectToast(
+                                                      channelProvider
+                                                          .reconnectState,
+                                                      channelProvider
+                                                                  .reconnectState ==
+                                                              ChannelReconnectState
+                                                                  .reconnecting
+                                                          ? S.current
+                                                              .main_feature_reconnecting_toast
+                                                          : S.current
+                                                              .main_feature_reconnect_fail_toast);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    const Spacer(),
-                                    createButton(
-                                      label: S
-                                          .of(context)
-                                          .v3_lbl_select_screen_cancel,
-                                      identifier: 'v3_qa_select_screen_cancel',
-                                      text: S
-                                          .of(context)
-                                          .present_select_screen_cancel,
-                                      textColor: context
-                                          .tokens.color.vsdswColorSecondary,
-                                      backgroundColor: Colors.transparent,
-                                      onPressed: () {
-                                        cancel();
-                                      },
-                                    ),
-                                    createButton(
-                                      label: S
-                                          .of(context)
-                                          .v3_lbl_select_screen_share,
-                                      identifier: 'v3_qa_select_screen_share',
-                                      text: S.current.v3_main_select_role_share,
-                                      textColor: sourceSelected
-                                          ? context
-                                              .tokens.color.vsdswColorOnPrimary
-                                          : context.tokens.color
-                                              .vsdswColorOnDisabled,
-                                      backgroundColor: sourceSelected
-                                          ? context
-                                              .tokens.color.vsdswColorPrimary
-                                          : context
-                                              .tokens.color.vsdswColorDisabled,
-                                      onPressed: () {
-                                        if (!sourceSelected) {
-                                          return;
-                                        }
-                                        ChannelProvider channelProvider =
-                                            Provider.of<ChannelProvider>(
-                                                context,
-                                                listen: false);
-                                        if (channelProvider
-                                            .isConnectAvailable()) {
-                                          _ok(_selectedSource, _systemAudio,
-                                              _isExtensionSelected);
-                                        } else {
-                                          Toast.makeFeatureReconnectToast(
-                                              channelProvider.reconnectState,
-                                              channelProvider.reconnectState ==
-                                                      ChannelReconnectState
-                                                          .reconnecting
-                                                  ? S.current
-                                                      .main_feature_reconnecting_toast
-                                                  : S.current
-                                                      .main_feature_reconnect_fail_toast);
-                                        }
-                                      },
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
