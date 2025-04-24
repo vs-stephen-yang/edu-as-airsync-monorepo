@@ -40,7 +40,7 @@ class V3PresentPresentStart extends StatefulWidget {
 }
 
 class _V3PresentPresentStartState extends State<V3PresentPresentStart>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, WindowListener {
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
   final GlobalKey pauseButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
   final GlobalKey stopButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
@@ -78,6 +78,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
 
+    windowManager.addListener(this); // 監聽視窗事件
   }
 
   void _initializeBroadcastUploadExtensionObserver() {
@@ -126,6 +127,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       WidgetsBinding.instance.removeObserver(this);
     }
+    windowManager.removeListener(this);
     super.dispose();
   }
 
