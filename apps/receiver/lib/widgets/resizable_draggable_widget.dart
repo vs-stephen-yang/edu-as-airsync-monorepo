@@ -345,33 +345,33 @@ class ExpandedContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMuteButton(BuildContext context, bool isMute) {
-    bool mute = isMute;
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return SizedBox(
-          width: 26,
-          height: 26,
-          child: IconButton(
-            icon: SvgPicture.asset(
-              mute
-                  ? 'assets/images/ic_group_mute.svg'
-                  : 'assets/images/ic_group_unmute.svg',
-              width: 26,
-              height: 26,
-            ),
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              setState(() {
-                mute = !mute;
-                onMute.call();
-              });
-            },
-          ),
-        );
-      },
-    );
-  }
+  // Widget _buildMuteButton(BuildContext context, bool isMute) {
+  //   bool mute = isMute;
+  //   return StatefulBuilder(
+  //     builder: (context, setState) {
+  //       return SizedBox(
+  //         width: 26,
+  //         height: 26,
+  //         child: IconButton(
+  //           icon: SvgPicture.asset(
+  //             mute
+  //                 ? 'assets/images/ic_group_mute.svg'
+  //                 : 'assets/images/ic_group_unmute.svg',
+  //             width: 26,
+  //             height: 26,
+  //           ),
+  //           padding: EdgeInsets.zero,
+  //           onPressed: () {
+  //             setState(() {
+  //               mute = !mute;
+  //               onMute.call();
+  //             });
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildStopButton(BuildContext context) {
     return InkWell(
