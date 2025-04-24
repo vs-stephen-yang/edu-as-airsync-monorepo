@@ -14,7 +14,7 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
@@ -24,4 +24,9 @@
 -keep class com.cloudwebrtc.webrtc.** { *; }
 -keep class org.webrtc.** { *; }
 ##---------------End: proguard configuration for Flutter WebRTC -------
+
+##---------------Begin: Sentry specific rules -------------------------
+-keep class io.sentry.** { *; }
+-dontwarn io.sentry.**
+##---------------End: Sentry specific rules ---------------------------
 
