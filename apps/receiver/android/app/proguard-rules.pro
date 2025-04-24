@@ -24,3 +24,21 @@
 -keep class org.webrtc.** { *; }
 ##---------------End: proguard configuration for WebRTC -------
 
+##---------------Begin: proguard configuration for Missing Classes ------
+# JUnit Jupiter
+-keep class org.apiguardian.api.** { *; }
+-dontwarn org.apiguardian.api.**
+
+# BouncyCastle
+-keep class org.bouncycastle.jsse.** { *; }
+-dontwarn org.bouncycastle.jsse.**
+
+# Conscrypt
+-keep class org.conscrypt.** { *; }
+-dontwarn org.conscrypt.**
+
+# OpenJSSE
+-keep class org.openjsse.** { *; }
+-dontwarn org.openjsse.**
+##---------------End: proguard configuration for Missing Classes -------
+
