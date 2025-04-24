@@ -28,7 +28,8 @@ class DevConfig implements ConfigSettings {
   String appStoreUrl = 'https://www.dev.airsync.net/download';
 
   @override
-  String appUpdateMacAppcastUrl = 'https://appconfig.dev.airsync.net/airsync-sender/mac_appcast.xml';
+  String appUpdateMacAppcastUrl =
+      'https://appconfig.dev.airsync.net/airsync-sender/mac_appcast_d.xml';
 
   @override
   bool appA11yDebug = true;
