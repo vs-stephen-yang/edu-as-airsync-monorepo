@@ -88,11 +88,13 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                           widget.onChanged(key.value);
                         });
                       },
-                child: Padding(
+                child: Container(
                   padding: EdgeInsets.only(
                     top: context.tokens.spacing.vsdslSpacingSm.bottom,
                     bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
                   ),
+                  alignment: Alignment.centerLeft,
+                  constraints: const BoxConstraints(minHeight: 48),
                   child: Column(
                     children: [
                       Row(
@@ -112,9 +114,10 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                           Gap(context.tokens.spacing.vsdslSpacingSm.right),
                           AutoSizeText(
                             key.title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Colors.white,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
                           )
                         ],
@@ -137,10 +140,9 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                                   style: TextStyle(
                                     fontSize: 9,
                                     color: context.tokens.color
-                                        .vsdslColorOnSurfaceVariant,
+                                        .vsdslColorOnSurfaceInverse,
                                     fontWeight: FontWeight.w400,
                                   ),
-                                  maxLines: 2,
                                 ),
                               ),
                             ],

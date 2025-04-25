@@ -73,8 +73,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
               children: [
                 Text(
                   S.of(context).v3_settings_device_name,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     fontSize: 12,
                   ),
                 ),
@@ -92,8 +92,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                           textAlign: TextAlign.right,
                           controller: _controller,
                           focusNode: widget.focusNode,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdslColorOnSurfaceInverse,
                             fontSize: 12,
                           ),
                           decoration: const InputDecoration(

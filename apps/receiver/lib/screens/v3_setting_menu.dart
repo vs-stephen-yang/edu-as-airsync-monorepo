@@ -77,10 +77,11 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                           top: 13,
                           child: AutoSizeText(
                             S.of(context).main_settings_title,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white),
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse),
                           ),
                         ),
                         Positioned(
@@ -176,8 +177,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                                       DateTime.now().year,
                                       AppConfig.of(context)?.appVersion ?? ''),
                                   style: TextStyle(
-                                    color: context
-                                        .tokens.color.vsdslColorSurface700,
+                                    color: context.tokens.color
+                                        .vsdslColorOnSurfaceInverse,
                                     fontSize: 9,
                                     fontWeight: FontWeight.w400,
                                   ),

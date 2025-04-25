@@ -155,13 +155,13 @@ class CastToDevices extends StatelessWidget {
                                         }
 
                                         trackEvent(
-                                    'click_cast_to_device',
-                                    EventCategory.setting,
-                                    target: channelProvider.isSenderMode
-                                        ? 'on'
-                                        : 'off',
-                                  );
-                                },
+                                          'click_cast_to_device',
+                                          EventCategory.setting,
+                                          target: channelProvider.isSenderMode
+                                              ? 'on'
+                                              : 'off',
+                                        );
+                                      },
                               ),
                             ),
                           );
@@ -177,7 +177,7 @@ class CastToDevices extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w400,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
                 ),
               ],
@@ -225,7 +225,6 @@ class CastToBoards extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(
-                  height: 27,
                   child: Row(
                     children: [
                       AutoSizeText(
@@ -238,8 +237,6 @@ class CastToBoards extends StatelessWidget {
                       ),
                       const Spacer(),
                       SizedBox(
-                        width: 21,
-                        height: 21,
                         child: Semantics(
                           label: S.of(context).v3_lbl_settings_broadcast_boards,
                           identifier: 'v3_qa_settings_broadcast_boards',
@@ -250,10 +247,16 @@ class CastToBoards extends StatelessWidget {
                                     settingsProvider.setPage(
                                         SettingPageState.broadcastBoards);
                                   },
-                            child: SvgPicture.asset(
-                              settingsProvider.isBroadcastLock
-                                  ? 'assets/images/ic_arrow_right_lock.svg'
-                                  : 'assets/images/ic_arrow_right.svg',
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  top: 13, bottom: 13, left: 26),
+                              child: SvgPicture.asset(
+                                settingsProvider.isBroadcastLock
+                                    ? 'assets/images/ic_arrow_right_lock.svg'
+                                    : 'assets/images/ic_arrow_right.svg',
+                                width: 22,
+                                height: 22,
+                              ),
                             ),
                           ),
                         ),
@@ -268,7 +271,7 @@ class CastToBoards extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w400,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
                 ),
               ],
