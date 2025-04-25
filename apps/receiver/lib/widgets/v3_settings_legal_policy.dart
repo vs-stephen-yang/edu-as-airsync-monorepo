@@ -50,8 +50,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
             height: 26,
             child: Text(
               S.of(context).v3_settings_open_source_license,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 fontSize: 12,
               ),
             ),
@@ -109,8 +109,8 @@ class V3SettingMenuListTile extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
                       fontSize: 12,
                     ),
                   ),

@@ -1,3 +1,4 @@
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
@@ -35,8 +36,8 @@ class V3SettingsLicense extends StatelessWidget {
               Text(
                 settingsProvider.license?.license ??
                     S.of(context).v3_settings_privacy_policy_description,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   fontSize: 12,
                 ),
               ),

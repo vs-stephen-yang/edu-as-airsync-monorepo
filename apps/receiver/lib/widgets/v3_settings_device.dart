@@ -118,7 +118,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       text,
       style: TextStyle(
         fontSize: 9,
-        color: context.tokens.color.vsdslColorOnSurfaceVariant,
+        color: context.tokens.color.vsdslColorOnSurfaceInverse,
         fontWeight: FontWeight.w400,
       ),
     );
@@ -179,12 +179,16 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
 
                         trackClickApprove();
                       },
-                child: AutoSizeText(
-                  S.of(context).v3_settings_device_authorize_mode,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: AutoSizeText(
+                    S.of(context).v3_settings_device_authorize_mode,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
                   ),
                 ),
               ),
@@ -238,9 +242,9 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                       },
                 child: AutoSizeText(
                   S.of(context).v3_settings_device_launch_on_startup,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
                 ),
               ),
@@ -307,11 +311,15 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                               : 'off',
                         );
                       },
-                child: AutoSizeText(
-                  S.of(context).v3_settings_device_auto_fill_otp,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: AutoSizeText(
+                    S.of(context).v3_settings_device_auto_fill_otp,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
                   ),
                 ),
               ),
@@ -329,8 +337,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         Expanded(
           child: Text(
             S.of(context).v3_settings_invite_group,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.tokens.color.vsdslColorOnSurfaceInverse,
               fontSize: 12,
             ),
           ),
@@ -563,7 +571,7 @@ class CustomDropdownState extends State<CustomDropdown> {
               color: Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  color: context.tokens.color.vsdslColorSurface100,
                   borderRadius: context.tokens.radii.vsdslRadiusSm,
                 ),
                 child: FocusScope(
@@ -609,7 +617,7 @@ class CustomDropdownState extends State<CustomDropdown> {
                                               ? context.tokens.color
                                                   .vsdslColorOnPrimary
                                               : context.tokens.color
-                                                  .vsdslColorOnSurface,
+                                                  .vsdslColorSurface100,
                                         ),
                                       ),
                                     ),
@@ -621,7 +629,7 @@ class CustomDropdownState extends State<CustomDropdown> {
                                             ? context.tokens.color
                                                 .vsdslColorOnSurfaceInverse
                                             : context.tokens.color
-                                                .vsdslColorOnSurface,
+                                                .vsdslColorSurface100,
                                       ),
                                   ],
                                 ),
@@ -684,7 +692,7 @@ class CustomDropdownState extends State<CustomDropdown> {
             decoration: BoxDecoration(
               color: _overlayEntry != null
                   ? context.tokens.color.vsdslColorSurface300
-                  : context.tokens.color.vsdslColorOnSurfaceInverse,
+                  : context.tokens.color.vsdslColorSurface100,
               borderRadius: context.tokens.radii.vsdslRadiusSm,
             ),
             child: Row(

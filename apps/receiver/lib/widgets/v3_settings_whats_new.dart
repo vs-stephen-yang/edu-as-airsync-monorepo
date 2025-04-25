@@ -1,3 +1,4 @@
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_focus_single_child_scroll_view.dart';
@@ -29,8 +30,8 @@ class V3SettingsWhatsNew extends StatelessWidget {
                 Center(
                   child: Text(
                     'v${AppConfig.of(context)?.appVersion ?? ''}',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
                       fontSize: 12,
                     ),
                   ),
@@ -40,7 +41,8 @@ class V3SettingsWhatsNew extends StatelessWidget {
                   sprintf(S.current.v3_settings_whats_new_content,
                       ['v${AppConfig.of(context)?.appVersion ?? ''}']),
                   textAlign: TextAlign.start,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
                   ),

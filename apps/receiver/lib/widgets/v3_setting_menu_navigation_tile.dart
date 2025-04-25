@@ -1,3 +1,4 @@
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +30,12 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
       identifier: identifier,
       excludeSemantics: false,
       child: SizedBox(
-        height: 26,
         child: Row(
           children: [
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 fontSize: 12,
               ),
             ),
@@ -43,13 +43,18 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
             InkWell(
               focusNode: focusNode,
               onTap: onTap,
-              child: Text(
-                trialling,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(disable ? 0.32 : 1),
-                  fontSize: 12,
+              child: Container(
+                alignment: Alignment.center,
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                child: Text(
+                  trialling,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse
+                        .withOpacity(disable ? 0.32 : 1),
+                    fontSize: 12,
+                  ),
                 ),
-              ),
+              )
             ),
             V3MenuNavigationIconButton(
               label: label,

@@ -159,10 +159,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                 hintText,
                 style: TextStyle(
                   fontSize: 9,
-                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
               ),
             ),
             Gap(context.tokens.spacing.vsdslSpacingSm.right),
@@ -441,7 +439,6 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     }
 
     return Container(
-      height: 26,
       margin: const EdgeInsets.only(right: 8, left: 8),
       child: V3SettingMenuListItemFocus(
         label: sprintf(
@@ -459,27 +456,24 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                 onTap: () => toggleCheckbox(client),
                 highlightColor: Colors.transparent,
                 child: SizedBox(
-                  height: 26,
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Checkbox(
-                      semanticLabel: sprintf(
-                          S.current
-                              .v3_lbl_settings_broadcast_to_display_group_item,
-                          [client.deviceName()]),
-                      value: broadcastSelectedList
-                          .any((element) => element.id() == client.id()),
-                      activeColor: context.tokens.color.vsdslColorPrimary,
-                      side: BorderSide(
-                          color: context.tokens.color.vsdslColorOnPrimary,
-                          width: 2),
-                      onChanged: (bool? value) {
-                        if (value != null) {
-                          toggleCheckbox(client, fromTouch: true);
-                        }
-                      },
-                    ),
+                  width: 48,
+                  height: 48,
+                  child: Checkbox(
+                    semanticLabel: sprintf(
+                        S.current
+                            .v3_lbl_settings_broadcast_to_display_group_item,
+                        [client.deviceName()]),
+                    value: broadcastSelectedList
+                        .any((element) => element.id() == client.id()),
+                    activeColor: context.tokens.color.vsdslColorPrimary,
+                    side: BorderSide(
+                        color: context.tokens.color.vsdslColorOnPrimary,
+                        width: 2),
+                    onChanged: (bool? value) {
+                      if (value != null) {
+                        toggleCheckbox(client, fromTouch: true);
+                      }
+                    },
                   ),
                 ),
               ),
@@ -520,9 +514,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
               : client.displayCode(),
           style: TextStyle(
               fontSize: 12,
-              color: unavailable
-                  ? context.tokens.color.vsdslColorOnSurfaceVariant
-                  : context.tokens.color.vsdslColorOnSurfaceInverse),
+              color: context.tokens.color.vsdslColorOnSurfaceInverse),
         ),
       ],
     );
@@ -636,7 +628,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                        color: context.tokens.color.vsdslColorOnPrimary,
                       ),
                     ),
                   ],
@@ -646,7 +638,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    color: context.tokens.color.vsdslColorOnPrimary,
                   ),
                   maxLines: 1,
                 ),

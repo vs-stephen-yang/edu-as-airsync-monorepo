@@ -81,41 +81,39 @@ class V3SettingsMirroring extends StatelessWidget {
                         }
                         return KeyEventResult.ignored;
                       },
-                      child: SizedBox(
-                        height: 26,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: V3CustomCheckbox(
-                                label: S
-                                    .of(context)
-                                    .v3_lbl_settings_mirroring_require_passcode,
-                                identifier:
-                                    'v3_qa_settings_mirroring_require_passcode',
-                                isDisable: disable,
-                                value: mirrorStateProvider.airPlayCodeEnable,
-                                onChanged: (bool? value) {
-                                  if (value != null) {
-                                    toggleAirPlayCode(value);
-                                  }
-                                },
-                              ),
-                            ),
-                            Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                            AutoSizeText(
-                              S
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: V3CustomCheckbox(
+                              label: S
                                   .of(context)
-                                  .v3_settings_mirroring_require_passcode,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: context.tokens.color.vsdslColorOnPrimary,
-                              ),
-                              maxLines: 1,
+                                  .v3_lbl_settings_mirroring_require_passcode,
+                              identifier:
+                                  'v3_qa_settings_mirroring_require_passcode',
+                              isDisable: disable,
+                              value: mirrorStateProvider.airPlayCodeEnable,
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  toggleAirPlayCode(value);
+                                }
+                              },
                             ),
-                          ],
-                        ),
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                          AutoSizeText(
+                            S
+                                .of(context)
+                                .v3_settings_mirroring_require_passcode,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                            ),
+                            maxLines: 1,
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -181,46 +179,42 @@ class V3SettingsMirroring extends StatelessWidget {
                 ),
                 V3SettingMenuSubItemFocus(
                   excludeSemantics: false,
-                  child: SizedBox(
-                    height: 26,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: V3CustomCheckbox(
-                              label: S
-                                  .of(context)
-                                  .v3_lbl_settings_mirroring_auto_accept,
-                              identifier:
-                                  'v3_qa_settings_mirroring_auto_accept',
-                              isDisable: disable,
-                              value: !mirrorStateProvider.isMirrorConfirmation,
-                              onChanged: (bool? value) {
-                                mirrorStateProvider.isMirrorConfirmation =
-                                    !mirrorStateProvider.isMirrorConfirmation;
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: V3CustomCheckbox(
+                            label: S
+                                .of(context)
+                                .v3_lbl_settings_mirroring_auto_accept,
+                            identifier: 'v3_qa_settings_mirroring_auto_accept',
+                            isDisable: disable,
+                            value: !mirrorStateProvider.isMirrorConfirmation,
+                            onChanged: (bool? value) {
+                              mirrorStateProvider.isMirrorConfirmation =
+                                  !mirrorStateProvider.isMirrorConfirmation;
 
-                                trackEvent(
-                                  'click_auto_accept',
-                                  EventCategory.setting,
-                                  target:
-                                      mirrorStateProvider.isMirrorConfirmation
-                                          ? 'on'
-                                          : 'off',
-                                );
-                              }),
+                              trackEvent(
+                                'click_auto_accept',
+                                EventCategory.setting,
+                                target: mirrorStateProvider.isMirrorConfirmation
+                                    ? 'on'
+                                    : 'off',
+                              );
+                            }),
+                      ),
+                      Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                      AutoSizeText(
+                        S.of(context).v3_settings_mirroring_auto_accept,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
                         ),
-                        Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                        AutoSizeText(
-                          S.of(context).v3_settings_mirroring_auto_accept,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: context.tokens.color.vsdslColorOnPrimary,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
+                        maxLines: 1,
+                      ),
+                    ],
                   ),
                 ),
                 Padding(
@@ -231,7 +225,7 @@ class V3SettingsMirroring extends StatelessWidget {
                     S.of(context).v3_settings_mirroring_auto_accept_desc,
                     style: TextStyle(
                       fontSize: 12,
-                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     ),
                   ),
                 ),
@@ -273,13 +267,13 @@ class MirroringItem extends StatelessWidget {
       identifier: identifier,
       excludeSemantics: excludeSemantics,
       child: SizedBox(
-        height: 26,
+        height: 48,
         child: Row(
           children: [
             Text(
               name,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 fontSize: 12,
               ),
             ),

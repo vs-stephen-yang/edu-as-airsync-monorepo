@@ -46,8 +46,8 @@ class V3MenuBackIconButton extends StatelessWidget {
                     right: context.tokens.spacing.vsdslSpacingXs.right)),
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 fontSize: 12,
               ),
             ),
