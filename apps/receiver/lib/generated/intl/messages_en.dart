@@ -439,6 +439,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
       "Open Streaming Shortcut Menu",
     ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Bring App to top",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Expand overlay menu",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimize overlay menu",
+    ),
     "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
       "Cast device to this participant",
     ),
@@ -496,9 +505,19 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
-          "Open broadcast to display group menu",
+          "Open broadcast to display group menu"
         ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Broadcast"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Select %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage("Confirm no device selected."),
     "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Select %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Save"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
         MessageLookupByLibrary.simpleMessage("Select %s"),
     "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
       "Close settings menu",

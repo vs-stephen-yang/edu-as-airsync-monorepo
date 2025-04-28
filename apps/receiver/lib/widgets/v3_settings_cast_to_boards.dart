@@ -166,25 +166,36 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             Gap(context.tokens.spacing.vsdslSpacingSm.right),
             broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
                 ? _customButton(
-                    context, S.of(context).v3_settings_device_name_save,
+                    context,
+                    S.of(context).v3_settings_device_name_save,
+                    label: S.current
+                        .v3_lbl_settings_broadcast_to_display_group_save,
+                    identifier:
+                        "v3_qa_settings_broadcast_to_display_group_save",
                     onClick: () {
-                    _trackEvent(
-                        'click_save_target', groupNotifier.selectedList);
+                      _trackEvent(
+                          'click_save_target', groupNotifier.selectedList);
 
-                    if (selectedListEmpty) {
-                      showDialogOverlay(
-                        onConfirm: () {},
-                      );
-                    } else {
-                      AppPreferences().setGroupSelectedList(
-                          groupNotifier.historySelectedList);
-                      settingsProvider.setPage(SettingPageState.deviceSetting);
-                    }
-                  })
+                      if (selectedListEmpty) {
+                        showDialogOverlay(
+                          onConfirm: () {},
+                        );
+                      } else {
+                        AppPreferences().setGroupSelectedList(
+                            groupNotifier.historySelectedList);
+                        settingsProvider
+                            .setPage(SettingPageState.deviceSetting);
+                      }
+                    },
+                  )
                 : _customButton(
                     context,
                     S.of(context).v3_settings_display_group_cast,
                     isBroadcast: true,
+                    label: S.current
+                        .v3_lbl_settings_broadcast_to_display_group_cast,
+                    identifier:
+                        "v3_qa_settings_broadcast_to_display_group_cast",
                     onClick: () {
                       if (selectedListEmpty) {
                         showDialogOverlay(
@@ -280,6 +291,10 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                   ),
                   const Gap(24),
                   V3Focus(
+                    label: S.current
+                        .v3_lbl_settings_broadcast_to_display_group_confirm,
+                    identifier:
+                        "v3_qa_settings_broadcast_to_display_group_confirm",
                     child: ElevatedButton(
                       focusNode: focusNode,
                       style: ButtonStyle(
@@ -355,6 +370,9 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
           _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
           if (isBroadcastingToGroup)
             V3SettingsRadioGroup(
+              label:
+                  S.of(context).v3_lbl_settings_broadcast_to_display_group_type,
+              identifier: "v3_qa_settings_broadcast_to_display_group_type",
               hasSubFocusItem: false,
               focusOnInit: false,
               initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
@@ -458,22 +476,27 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                 child: SizedBox(
                   width: 48,
                   height: 48,
-                  child: Checkbox(
-                    semanticLabel: sprintf(
+                  child: Semantics(
+                    label: sprintf(
                         S.current
-                            .v3_lbl_settings_broadcast_to_display_group_item,
+                            .v3_lbl_settings_broadcast_to_display_group_checkbox,
                         [client.deviceName()]),
-                    value: broadcastSelectedList
-                        .any((element) => element.id() == client.id()),
-                    activeColor: context.tokens.color.vsdslColorPrimary,
-                    side: BorderSide(
-                        color: context.tokens.color.vsdslColorOnPrimary,
-                        width: 2),
-                    onChanged: (bool? value) {
-                      if (value != null) {
-                        toggleCheckbox(client, fromTouch: true);
-                      }
-                    },
+                    identifier: sprintf(
+                        "v3_qa_settings_broadcast_to_display_group_checkbox_%s",
+                        [client.deviceName()]),
+                    child: Checkbox(
+                      value: broadcastSelectedList
+                          .any((element) => element.id() == client.id()),
+                      activeColor: context.tokens.color.vsdslColorPrimary,
+                      side: BorderSide(
+                          color: context.tokens.color.vsdslColorOnPrimary,
+                          width: 2),
+                      onChanged: (bool? value) {
+                        if (value != null) {
+                          toggleCheckbox(client, fromTouch: true);
+                        }
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -596,10 +619,14 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     String text, {
     required VoidCallback onClick,
     bool isBroadcast = false,
+    String? label,
+    String? identifier,
   }) {
     return SizedBox(
       height: 26,
       child: V3SettingMenuSubItemFocus(
+        label: label,
+        identifier: identifier,
         child: ElevatedButton(
           onPressed: onClick,
           style: ElevatedButton.styleFrom(

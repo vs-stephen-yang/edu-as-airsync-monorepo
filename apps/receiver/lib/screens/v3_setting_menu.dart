@@ -176,6 +176,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                                   S.of(context).v3_settings_version(
                                       DateTime.now().year,
                                       AppConfig.of(context)?.appVersion ?? ''),
+                                  semanticsLabel: "v3_qa_settings_version_text",
                                   style: TextStyle(
                                     color: context.tokens.color
                                         .vsdslColorOnSurfaceInverse,

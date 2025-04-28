@@ -3300,6 +3300,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Bring App to top`
+  String get v3_lbl_overlay_bring_app_to_top {
+    return Intl.message(
+      'Bring App to top',
+      name: 'v3_lbl_overlay_bring_app_to_top',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand overlay menu`
+  String get v3_lbl_overlay_menu_expand {
+    return Intl.message(
+      'Expand overlay menu',
+      name: 'v3_lbl_overlay_menu_expand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minimize overlay menu`
+  String get v3_lbl_overlay_menu_minimize {
+    return Intl.message(
+      'Minimize overlay menu',
+      name: 'v3_lbl_overlay_menu_minimize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_settings_broadcast_to_display_group_type {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_settings_broadcast_to_display_group_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select %s`
+  String get v3_lbl_settings_broadcast_to_display_group_checkbox {
+    return Intl.message(
+      'Select %s',
+      name: 'v3_lbl_settings_broadcast_to_display_group_checkbox',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get v3_lbl_settings_broadcast_to_display_group_save {
+    return Intl.message(
+      'Save',
+      name: 'v3_lbl_settings_broadcast_to_display_group_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Broadcast`
+  String get v3_lbl_settings_broadcast_to_display_group_cast {
+    return Intl.message(
+      'Broadcast',
+      name: 'v3_lbl_settings_broadcast_to_display_group_cast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm no device selected.`
+  String get v3_lbl_settings_broadcast_to_display_group_confirm {
+    return Intl.message(
+      'Confirm no device selected.',
+      name: 'v3_lbl_settings_broadcast_to_display_group_confirm',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
