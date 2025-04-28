@@ -4,9 +4,10 @@ import 'package:android_window/android_window.dart';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3OverlayTab extends StatefulWidget {
@@ -63,92 +64,120 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
           color: context.tokens.color.vsdslColorOpacityNeutralXl,
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 11),
           child: _isExpandedMode
-              ? GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    AndroidWindow.launchApp();
-                  },
-                  child: Row(
-                    children: [
-                      Image(
-                        width: 7,
-                        height: 14,
-                        image:
-                            const Svg('assets/images/ic_overlay_tab_dots.svg'),
-                        color: context.tokens.color.vsdslColorNeutralInverse,
-                      ),
-                      const SizedBox(width: 13),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          setState(() {
-                            _isExpandedMode = false;
-                          });
-                        },
-                        child: const Image(
-                          width: 26,
-                          height: 26,
-                          image: Svg('assets/images/ic_overlay_tab_opened.svg'),
+              ? Semantics(
+                  label: S.of(context).v3_lbl_overlay_bring_app_to_top,
+                  identifier: 'v3_qa_overlay_bring_app_to_top',
+                  button: true,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      AndroidWindow.launchApp();
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/ic_overlay_tab_dots.svg',
+                          width: 7,
+                          height: 14,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdslColorNeutralInverse,
+                            BlendMode.srcIn,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Image(
-                        width: 16,
-                        height: 16,
-                        image: const Svg('assets/images/ic_screen.svg'),
-                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        _deviceName,
-                        style: textStyle,
-                      ),
-                      const SizedBox(width: 8),
-                      Image(
-                        width: 16,
-                        height: 16,
-                        image: const Svg('assets/images/ic_qrcode.svg'),
-                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        _getDisplayCodeVisualIdentity(_displayCode),
-                        style: textStyle,
-                      ),
-                      const SizedBox(width: 8),
-                      Image(
-                        width: 16,
-                        height: 16,
-                        image: const Svg('assets/images/ic_otp.svg'),
-                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        _otp,
-                        style: textStyle,
-                      ),
-                      const SizedBox(width: 13),
-                      Image(
-                        width: 7,
-                        height: 14,
-                        image:
-                            const Svg('assets/images/ic_overlay_tab_dots.svg'),
-                        color: context.tokens.color.vsdslColorNeutralInverse,
-                      ),
-                    ],
+                        const SizedBox(width: 13),
+                        Semantics(
+                          label: S.of(context).v3_lbl_overlay_menu_minimize,
+                          identifier: 'v3_qa_overlay_menu_minimize',
+                          button: true,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              setState(() {
+                                _isExpandedMode = false;
+                              });
+                            },
+                            child: SvgPicture.asset(
+                              'assets/images/ic_overlay_tab_opened.svg',
+                              width: 26,
+                              height: 26,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SvgPicture.asset(
+                          'assets/images/ic_screen.svg',
+                          width: 16,
+                          height: 16,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdslColorOnSurfaceVariant,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          _deviceName,
+                          style: textStyle,
+                        ),
+                        const SizedBox(width: 8),
+                        SvgPicture.asset(
+                          'assets/images/ic_qrcode.svg',
+                          width: 16,
+                          height: 16,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdslColorOnSurfaceVariant,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          _getDisplayCodeVisualIdentity(_displayCode),
+                          style: textStyle,
+                        ),
+                        const SizedBox(width: 8),
+                        SvgPicture.asset(
+                          'assets/images/ic_otp.svg',
+                          width: 16,
+                          height: 16,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdslColorOnSurfaceVariant,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          _otp,
+                          style: textStyle,
+                        ),
+                        const SizedBox(width: 13),
+                        SvgPicture.asset(
+                          'assets/images/ic_overlay_tab_dots.svg',
+                          width: 7,
+                          height: 14,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdslColorNeutralInverse,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
-              : GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    setState(() {
-                      _isExpandedMode = true;
-                    });
-                  },
-                  child: const Image(
-                    width: 26,
-                    height: 26,
-                    image: Svg('assets/images/ic_overlay_tab_closed.svg'),
+              : Semantics(
+                  label: S.of(context).v3_lbl_overlay_menu_expand,
+                  identifier: 'v3_qa_overlay_menu_expand',
+                  button: true,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      setState(() {
+                        _isExpandedMode = true;
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      'assets/images/ic_overlay_tab_closed.svg',
+                      width: 26,
+                      height: 26,
+                    ),
                   ),
                 ),
         ),

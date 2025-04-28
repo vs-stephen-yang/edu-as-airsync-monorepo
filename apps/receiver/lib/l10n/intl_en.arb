@@ -326,5 +326,13 @@
   "v3_touchback_state_devicePairedSuccess_message": "Device Paired Success",
   "v3_touchback_state_hidConnecting_message": "Hid Connecting",
   "v3_touchback_state_hidConnected_message": "Hid Connected",
-  "v3_touchback_state_initialized_message": "Initialized"
+  "v3_touchback_state_initialized_message": "Initialized",
+  "v3_lbl_overlay_bring_app_to_top": "Bring App to top",
+  "v3_lbl_overlay_menu_expand": "Expand overlay menu",
+  "v3_lbl_overlay_menu_minimize": "Minimize overlay menu",
+  "v3_lbl_settings_broadcast_to_display_group_type": "Select %s",
+  "v3_lbl_settings_broadcast_to_display_group_checkbox": "Select %s",
+  "v3_lbl_settings_broadcast_to_display_group_save": "Save",
+  "v3_lbl_settings_broadcast_to_display_group_cast": "Broadcast",
+  "v3_lbl_settings_broadcast_to_display_group_confirm": "Confirm no device selected."
 }
