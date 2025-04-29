@@ -70,7 +70,7 @@ class V3ParticipantList extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdslColorSurface400,
+                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
                 ),
               ),
             ],

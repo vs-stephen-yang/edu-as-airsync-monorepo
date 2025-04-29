@@ -84,8 +84,8 @@ class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
                         fontSize: 9,
                         fontWeight: FontWeight.w600,
                         color: (isCasting)
-                            ? context.tokens.color.vsdslColorSecondary
-                            : context.tokens.color.vsdslColorSuccess,
+                            ? context.tokens.color.vsdslColorSecondaryVariant
+                            : context.tokens.color.vsdslColorSuccessVariant,
                       ),
                       textAlign: TextAlign.center,
                       minFontSize: 8,

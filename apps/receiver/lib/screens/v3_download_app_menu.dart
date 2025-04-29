@@ -89,7 +89,7 @@ class PortraitWidget extends StatelessWidget {
                   S.current.v3_download_app_for_desktop_desc,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: context.tokens.color.vsdslColorNeutral,
+                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
                     fontSize: 21,
                     fontWeight: FontWeight.w500,
                   ),
@@ -160,7 +160,7 @@ class PortraitWidget extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: context.tokens.color.vsdslColorOnSurface,
-                          fontSize: 17,
+                          fontSize: 19,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -182,7 +182,7 @@ class PortraitWidget extends StatelessWidget {
                       S.current.v3_download_app_desktop_hint,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: context.tokens.color.vsdslColorSurface800,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                         fontSize: 12,
                       ),
                     ),
@@ -195,7 +195,7 @@ class PortraitWidget extends StatelessWidget {
                       'Install MacOS via App Store',
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        color: context.tokens.color.vsdslColorSurface800,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                         fontSize: 21,
                         fontWeight: FontWeight.w600,
                       ),
@@ -246,7 +246,7 @@ class PortraitWidget extends StatelessWidget {
                       S.current.v3_download_app_desktop_store_hint,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: context.tokens.color.vsdslColorSurface800,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                         fontSize: 12,
                       ),
                     ),
@@ -295,7 +295,7 @@ class PortraitWidget extends StatelessWidget {
                   S.current.v3_download_app_for_mobile_desc,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: context.tokens.color.vsdslColorNeutral,
+                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
                     fontSize: 21,
                     fontWeight: FontWeight.w500,
                   ),
@@ -424,7 +424,7 @@ class LandscapeWidget extends StatelessWidget {
                     S.current.v3_download_app_for_desktop_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: context.tokens.color.vsdslColorNeutral,
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
                       fontSize: 21,
                       fontWeight: FontWeight.w500,
                     ),
@@ -492,10 +492,8 @@ class LandscapeWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Stack(
+                      alignment: Alignment.centerLeft,
                       children: [
                         Text(
                           AppConfig.of(context)!.settings.appStoreUrl,
@@ -506,12 +504,14 @@ class LandscapeWidget extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(width: 9),
-                        SvgPicture.asset(
-                          'assets/images/ic_store_magnifier.svg',
-                          excludeFromSemantics: true,
-                          width: 33,
-                          height: 33,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: SvgPicture.asset(
+                            'assets/images/ic_store_magnifier.svg',
+                            excludeFromSemantics: true,
+                            width: 33,
+                            height: 33,
+                          ),
                         ),
                       ],
                     ),
@@ -523,7 +523,7 @@ class LandscapeWidget extends StatelessWidget {
                       S.current.v3_download_app_desktop_hint,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: context.tokens.color.vsdslColorSurface800,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                         fontSize: 12,
                       ),
                     ),
@@ -555,10 +555,8 @@ class LandscapeWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Stack(
+                      alignment: Alignment.centerLeft,
                       children: [
                         Text(
                           '${AppConfig.of(context)!.settings.appStoreUrl}?r',
@@ -569,12 +567,14 @@ class LandscapeWidget extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(width: 9),
-                        SvgPicture.asset(
-                          'assets/images/ic_store_magnifier.svg',
-                          excludeFromSemantics: true,
-                          width: 33,
-                          height: 33,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: SvgPicture.asset(
+                            'assets/images/ic_store_magnifier.svg',
+                            excludeFromSemantics: true,
+                            width: 33,
+                            height: 33,
+                          ),
                         ),
                       ],
                     ),
@@ -586,7 +586,7 @@ class LandscapeWidget extends StatelessWidget {
                       S.current.v3_download_app_desktop_store_hint,
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: context.tokens.color.vsdslColorSurface800,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                         fontSize: 12,
                       ),
                     ),
@@ -618,7 +618,7 @@ class LandscapeWidget extends StatelessWidget {
                     S.current.v3_download_app_for_mobile_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: context.tokens.color.vsdslColorNeutral,
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
                       fontSize: 21,
                       fontWeight: FontWeight.w500,
                     ),

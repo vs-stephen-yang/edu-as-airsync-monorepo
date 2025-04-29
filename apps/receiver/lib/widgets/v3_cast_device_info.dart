@@ -30,7 +30,7 @@ class V3CastDeviceInfo extends StatelessWidget {
               color: context.tokens.color.vsdslColorOutline,
             ),
           ),
-          color: context.tokens.color.vsdslColorSurface100.withOpacity(0.64),
+          color: context.tokens.color.vsdslColorSurface100,
         ),
         child: Consumer<ConnectivityProvider>(
           builder: (_, connectivityProvider, __) {
@@ -94,7 +94,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: context.tokens.color
-                                                    .vsdslColorSurface500),
+                                                    .vsdslColorOnSurfaceVariant),
                                           ),
                                         ),
                                         Expanded(

@@ -378,7 +378,7 @@ class V3ShortcutsMenu extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: 8,
+              right: 8,
               bottom: 8,
               child: V3Focus(
                 label: S.of(context).v3_lbl_close_streaming_shortcut_menu,

@@ -32,7 +32,12 @@ class V3QrCodeQuickConnect extends StatelessWidget {
       children.add(title);
       children.add(space);
     }
-    children.add(const V3QrCodeImage(isShowBackground: true));
+    children.add(
+      V3QrCodeImage(
+        isShowBackground: true,
+        size: size,
+      ),
+    );
 
     return Container(
       alignment: Alignment.center,

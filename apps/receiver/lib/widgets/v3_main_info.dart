@@ -52,7 +52,7 @@ class V3MainInfo extends StatelessWidget {
           color: context.tokens.color.vsdslColorOutline,
         ),
       ),
-      color: context.tokens.color.vsdslColorSurface100.withOpacity(0.64),
+      color: context.tokens.color.vsdslColorSurface100.withOpacity(0.84),
     );
   }
 
@@ -137,7 +137,7 @@ class V3MainInfo extends StatelessWidget {
             width: 21,
             height: 21,
             colorFilter: ColorFilter.mode(
-              context.tokens.color.vsdslColorSurface600,
+              context.tokens.color.vsdslColorOnSurfaceVariant,
               BlendMode.srcIn,
             ),
           ),
@@ -150,14 +150,14 @@ class V3MainInfo extends StatelessWidget {
               formatTexts: ['AirPlay, Google Cast', 'Miracast'],
               formatStyle: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: context.tokens.color.vsdslColorSurface600,
+                fontWeight: FontWeight.w400, // 最新的設計沒有粗體
+                color: context.tokens.color.vsdslColorOnSurfaceVariant,
               ),
             ),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w400,
-              color: context.tokens.color.vsdslColorSurface600,
+              color: context.tokens.color.vsdslColorOnSurfaceVariant,
             ),
           ),
         ),
