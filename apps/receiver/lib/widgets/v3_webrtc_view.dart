@@ -280,7 +280,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
                       ),
                     ),
                     const SizedBox(

@@ -270,10 +270,12 @@ class _V3StreamingViewState extends ConsumerState {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        SvgPicture.asset(
-                                          'assets/images/ic_split_screen_waiting.svg',
-                                          width: 92,
-                                          height: 80,
+                                        ExcludeSemantics(
+                                          child: SvgPicture.asset(
+                                            'assets/images/ic_split_screen_waiting.svg',
+                                            width: 92,
+                                            height: 80,
+                                          ),
                                         ),
                                         AutoSizeText(
                                           S.of(context).v3_waiting_join,
@@ -281,7 +283,7 @@ class _V3StreamingViewState extends ConsumerState {
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                             color: context.tokens.color
-                                                .vsdslColorSurface800,
+                                                .vsdslColorOnSurfaceInverse,
                                           ),
                                         ),
                                       ],
@@ -513,7 +515,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                         height: 41,
                         decoration: ShapeDecoration(
                           color: _showShortcut
-                              ? context.tokens.color.vsdslColorSecondary
+                              ? context.tokens.color.vsdslColorSurface900
                               : context.tokens.color.vsdslColorSurface800,
                           shape: const OvalBorder(),
                         ),
@@ -522,6 +524,13 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                             lock
                                 ? 'assets/images/ic_streaming_shortcut_locked.svg'
                                 : 'assets/images/ic_streaming_shortcut.svg',
+                            colorFilter: _showShortcut
+                                ? ColorFilter.mode(
+                                    context.tokens.color
+                                        .vsdslColorOnSurfaceVariant,
+                                    BlendMode.srcIn,
+                                  )
+                                : null,
                           ),
                           focusColor: Colors.transparent,
                           padding: EdgeInsets.zero,
@@ -548,13 +557,20 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                       height: 41,
                       decoration: ShapeDecoration(
                         color: _showQuickConnect
-                            ? context.tokens.color.vsdslColorSecondary
+                            ? context.tokens.color.vsdslColorSurface900
                             : context.tokens.color.vsdslColorSurface800,
                         shape: const OvalBorder(),
                       ),
                       child: IconButton(
                         icon: SvgPicture.asset(
                           'assets/images/ic_streaming_qrcode.svg',
+                          colorFilter: _showQuickConnect
+                              ? ColorFilter.mode(
+                                  context
+                                      .tokens.color.vsdslColorOnSurfaceVariant,
+                                  BlendMode.srcIn,
+                                )
+                              : null,
                         ),
                         focusColor: Colors.transparent,
                         padding: EdgeInsets.zero,

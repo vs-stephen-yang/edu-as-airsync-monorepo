@@ -255,7 +255,6 @@ class V3Instruction extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
         Padding(
           padding: const EdgeInsets.only(left: 35),
           child: Consumer<InstanceInfoProvider>(

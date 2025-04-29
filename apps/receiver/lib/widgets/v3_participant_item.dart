@@ -129,8 +129,8 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
                       color: (isWaiting)
                           ? context.tokens.color.vsdslColorSurface400
                           : (isCasting)
-                              ? context.tokens.color.vsdslColorSecondary
-                              : context.tokens.color.vsdslColorSuccess,
+                              ? context.tokens.color.vsdslColorSecondaryVariant
+                              : context.tokens.color.vsdslColorSuccessVariant,
                     ),
                     textAlign: TextAlign.center,
                     minFontSize: 8,

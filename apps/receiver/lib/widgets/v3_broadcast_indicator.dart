@@ -27,7 +27,6 @@ class _V3BroadcastIndicatorState extends ConsumerState {
       children: [
         if (isBroadcastingToGroup) ...[
           SizedBox(
-            height: 24,
             // TODO implement dialog then remove.
             child: ExcludeFocus(
               child: ElevatedButton(
@@ -60,7 +59,8 @@ class _V3BroadcastIndicatorState extends ConsumerState {
                           ? _highlightColor
                           : context.tokens.color.vsdslColorOnSurface,
                     ),
-                    SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
+                    SizedBox(
+                        width: context.tokens.spacing.vsdslSpacingXs.left),
                     Text(
                       S.of(context).v3_broadcast_indicator,
                       style: TextStyle(

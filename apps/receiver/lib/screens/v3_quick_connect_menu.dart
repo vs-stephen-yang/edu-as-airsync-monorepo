@@ -112,7 +112,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                     fontSize: 19,
                                     fontWeight: FontWeight.w700,
                                     color: context
-                                        .tokens.color.vsdslColorSurface600,
+                                        .tokens.color.vsdslColorOnSurfaceVariant,
                                     letterSpacing: -0.48,
                                   ),
                                 );
@@ -327,7 +327,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                 S.current.v3_quick_connect_menu_bottom_msg,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: context.tokens.color.vsdslColorInfo,
+                                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -348,7 +348,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           child: IconButton(
                             focusNode: widget.primaryFocusNode,
                             icon: SvgPicture.asset(
-                              'assets/images/ic_menu_minimal.svg',
+                              'assets/images/ic_menu_close_gray.svg',
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),

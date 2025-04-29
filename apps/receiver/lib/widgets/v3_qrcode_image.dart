@@ -53,7 +53,7 @@ class V3QrCodeImage extends StatelessWidget {
                   size: isShowBackground
                       ? isStringOnTop
                           ? size - 35
-                          : size - 32
+                          : size - 40
                       : size,
                 );
               },

@@ -93,7 +93,7 @@ class _V3SettingsPasswordContentState extends State<V3SettingsPasswordContent> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: context.tokens.color.vsdslColorNeutral,
+                color: context.tokens.color.vsdslColorOnSurface,
               ),
             ),
           ],
@@ -166,8 +166,8 @@ class _V3SettingsPasswordContentState extends State<V3SettingsPasswordContent> {
               child: V3Focus(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    foregroundColor: context.tokens.color.vsdslColorSurface1000,
-                    backgroundColor: Colors.white,
+                    foregroundColor: context.tokens.color.vsdslColorTertiary,
+                    backgroundColor: Colors.transparent,
                     // remove onFocused color, this is also ripple color
                     overlayColor: Colors.transparent,
                     textStyle: const TextStyle(
@@ -195,7 +195,7 @@ class _V3SettingsPasswordContentState extends State<V3SettingsPasswordContent> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: context.tokens.color.vsdslColorPrimary,
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.tokens.color.vsdslColorSurface100,
                     // remove onFocused color, this is also ripple color
                     overlayColor: Colors.transparent,
                     side: BorderSide(

@@ -59,22 +59,13 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                 ),
                 SizedBox(width: context.tokens.spacing.vsdslSpacingXs.top),
                 Container(
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: context.tokens.radii.vsdslRadiusSm,
-                      side: BorderSide(
-                        width: 1,
-                        color: context.tokens.color.vsdslColorSuccess,
-                      ),
-                    ),
-                  ),
                   padding: context.tokens.spacing.vsdslSpacingXs,
                   child: AutoSizeText(
                     status,
                     style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorSuccess,
+                      color: context.tokens.color.vsdslColorSuccessVariant,
                     ),
                     maxLines: 1,
                     minFontSize: 8,

@@ -173,7 +173,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     containerPaddingHeight + pinCodeHeight + requestTotalHeight;
                 widgetList.addAll([
                   SvgPicture.asset(
-                    'assets/images/ic_prompt_in_mirror.svg',
+                    'assets/images/ic_prompt_arrow.svg',
                     excludeFromSemantics: true,
                     height: 53,
                   ),

@@ -95,7 +95,7 @@ class DeviceEmpty extends StatelessWidget {
           S.current.v3_cast_to_device_list_msg,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: context.tokens.color.vsdslColorSurface400,
+            color: context.tokens.color.vsdslColorOnSurfaceVariant,
             fontSize: 12,
           ),
         ),
