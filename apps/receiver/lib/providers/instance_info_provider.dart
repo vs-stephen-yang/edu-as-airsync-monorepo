@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 
 class InstanceInfoProvider extends ChangeNotifier {
@@ -14,11 +12,9 @@ class InstanceInfoProvider extends ChangeNotifier {
   String _instanceName = '';
   String _displayCode = '';
 
-  String _deviceName = '';
-
   String _ipAddress = '';
 
-  String get deviceName => _deviceName;
+  String get deviceName => _instanceName;
 
   String get displayCode => _displayCode;
 
@@ -28,31 +24,18 @@ class InstanceInfoProvider extends ChangeNotifier {
 
   set displayCode(String displayCode) {
     _displayCode = displayCode;
-
-    _updateDeviceName();
     notifyListeners();
   }
 
   set instanceName(String instanceName) {
     _instanceName = instanceName;
 
-    _updateDeviceName();
     notifyListeners();
   }
 
   set ipAddress(String? ipAddress) {
     if (ipAddress != null) _ipAddress = ipAddress;
     notifyListeners();
-  }
-
-  String _formatDeviceName() {
-    final suffix = _displayCode.substring(max(_displayCode.length - 5, 0));
-
-    return '$_instanceName-$suffix';
-  }
-
-  _updateDeviceName() {
-    _deviceName = _formatDeviceName();
   }
 
   _formatDisplayCodeWithDash(String displayCode) {

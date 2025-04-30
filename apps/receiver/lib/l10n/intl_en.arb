@@ -107,6 +107,7 @@
   "v3_settings_whats_new": "What's new",
   "v3_settings_device_name": "Device Name",
   "v3_settings_device_name_save": "Save",
+  "v3_settings_device_name_empty_error": "Device name cannot be empty",
   "v3_settings_device_show_display_code": "Show display code on top",
   "v3_settings_device_show_display_code_desc": "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.",
   "v3_settings_invite_group": "If invited to a display group",

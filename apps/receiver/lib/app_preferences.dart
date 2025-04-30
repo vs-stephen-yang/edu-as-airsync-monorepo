@@ -21,7 +21,7 @@ class AppPreferences {
   }
 
   bool _showEULA = true;
-  String _instanceName = 'AirSync';
+  String _instanceName = '';
   String _entityId = '';
   String _moderatorId = '';
 
@@ -43,7 +43,7 @@ class AppPreferences {
     if (showEULA != null) {
       _showEULA = showEULA;
     }
-    if (instanceName != null) {
+    if (instanceName != null && instanceName.isNotEmpty) {
       _instanceName = instanceName;
     }
     if (entityId != null) {
@@ -66,9 +66,40 @@ class AppPreferences {
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _showEULA = prefs.getBool('app_showEULA') ?? true;
-    _instanceName = prefs.getString('app_instanceName') ?? 'AirSync';
+
+    _instanceName = prefs.getString('app_instanceName') ?? '';
+
+    final hadOverride = await hadOverrideDeviceName();
+    if (_instanceName.isEmpty || !hadOverride) {
+      _instanceName = await generateDefaultDeviceName();
+      await prefs.setString('app_instanceName', _instanceName);
+
+      /// When user change device name, we need to set the flag to true
+      await prefs.setBool('override_device_name', true);
+    }
+
     _entityId = prefs.getString('app_entityId') ?? '';
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
+  }
+
+  /// Due to old version of the app is using 'AirSync' as default device name
+  /// We need to use a flag to is using AirSync as default device name, but when user decide to change the device name as 'AirSync', should not be able to override it
+  Future<bool> hadOverrideDeviceName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? override = prefs.getBool('override_device_name');
+    if (override ?? false) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<String> generateDefaultDeviceName() async {
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final uniqueId = timestamp.substring(timestamp.length - 5);
+
+    return 'AirSync$uniqueId';
   }
 
   Future<void> reloadPreferences() async {
