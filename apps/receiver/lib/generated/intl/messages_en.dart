@@ -795,7 +795,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Device Name",
     ),
-    "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+        "v3_settings_device_name_empty_error":
+            MessageLookupByLibrary.simpleMessage("Device name cannot be empty"),
+        "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Save",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(

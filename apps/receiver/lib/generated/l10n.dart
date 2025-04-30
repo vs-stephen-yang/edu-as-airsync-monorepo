@@ -1111,6 +1111,16 @@ class S {
     );
   }
 
+  /// `Device name cannot be empty`
+  String get v3_settings_device_name_empty_error {
+    return Intl.message(
+      'Device name cannot be empty',
+      name: 'v3_settings_device_name_empty_error',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Show display code on top`
   String get v3_settings_device_show_display_code {
     return Intl.message(
