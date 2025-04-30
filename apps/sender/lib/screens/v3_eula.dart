@@ -102,15 +102,16 @@ class V3Eula extends StatelessWidget {
                             width: 108,
                             height: 48,
                             child: TextButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor:
-                                    context.tokens.color.vsdswColorPrimary,
-                                backgroundColor: Colors.white,
-                                textStyle: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                              style: TextButton.styleFrom(
+                                side: BorderSide(
+                                    color:
+                                        context.tokens.color.vsdswColorPrimary,
+                                    width: 1),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(25),
+                                  ),
                                 ),
-                                padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
                                 trackEvent('click_eula', EventCategory.system,
@@ -126,8 +127,14 @@ class V3Eula extends StatelessWidget {
                                   SystemNavigator.pop();
                                 }
                               },
-                              child:
-                                  AutoSizeText(S.of(context).v3_eula_disagree),
+                              child: AutoSizeText(
+                                S.of(context).v3_eula_disagree,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: context.tokens.color.vsdswColorPrimary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -139,8 +146,8 @@ class V3Eula extends StatelessWidget {
                                 elevation: 5.0,
                                 shadowColor:
                                     context.tokens.color.vsdswColorPrimary,
-                                foregroundColor: context
-                                    .tokens.color.vsdswColorOnSurfaceInverse,
+                                foregroundColor:
+                                    context.tokens.color.vsdswColorOnPrimary,
                                 backgroundColor:
                                     context.tokens.color.vsdswColorPrimary,
                                 textStyle: const TextStyle(

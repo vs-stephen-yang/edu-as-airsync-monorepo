@@ -145,7 +145,7 @@ class SettingMenu extends StatelessWidget {
                 borderRadius: context.tokens.radii.vsdswRadiusFull,
                 border: Border.all(
                   width: 1,
-                  color: context.tokens.color.vsdswColorNeutral,
+                  color: context.tokens.color.vsdswColorOpacityNeutralMd,
                 ),
                 boxShadow: const [
                   BoxShadow(

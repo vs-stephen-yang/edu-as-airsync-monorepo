@@ -104,7 +104,7 @@ class V3SettingMenuApp extends StatelessWidget {
                                           width: 24,
                                           height: 24,
                                           color: context.tokens.color
-                                              .vsdswColorNeutralInverse,
+                                              .vsdswColorOnTertiary,
                                         ),
                                       ),
                                     ),

@@ -58,7 +58,8 @@ class V3ModeratorIdleName extends StatelessWidget {
                 ? null
                 : BoxDecoration(
                     color: context.tokens.color.vsdswColorSurface100,
-                    border: Border.all(color: Colors.white),
+                    border: Border.all(
+                        color: context.tokens.color.vsdswColorSurface100),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
                   ),

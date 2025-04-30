@@ -217,8 +217,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
               shadows: [
                 BoxShadow(
                   color: enable
-                      ? const Color(0x515D80ED)
-                      : const Color(0x28151C32),
+                      ? context.tokens.color.vsdswColorOpacityNeutralLg
+                      : const Color(0x28151C32), // token沒有顏色
                   blurRadius: 24,
                   offset: const Offset(0, 16),
                   spreadRadius: 0,
@@ -248,7 +248,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
     final onSelected = _connectService == airSyncBonsoirService;
     final style = TextStyle(
       color: onSelected
-          ? context.tokens.color.vsdswColorOnSurfaceInverse
+          ? context.tokens.color.vsdswColorOnPrimary
           : context.tokens.color.vsdswColorOnSurface,
       fontSize: 16,
       fontFamily: 'Inter',
@@ -260,7 +260,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: ShapeDecoration(
         color: _connectService == airSyncBonsoirService
-            ? context.tokens.color.vsdswColorSecondary
+            ? context.tokens.color.vsdswColorPrimary
             : null,
         shape: RoundedRectangleBorder(
           borderRadius: context.tokens.radii.vsdswRadiusLg,
@@ -321,7 +321,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: ShapeDecoration(
-        color: onSelected ? context.tokens.color.vsdswColorSecondary : null,
+        color: onSelected ? context.tokens.color.vsdswColorPrimary : null,
         shape: RoundedRectangleBorder(
           borderRadius: context.tokens.radii.vsdswRadiusXl,
         ),
@@ -352,7 +352,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                     airSyncBonsoirService.name,
                     style: TextStyle(
                       color: onSelected
-                          ? context.tokens.color.vsdswColorOnSurfaceInverse
+                          ? context.tokens.color.vsdswColorOnPrimary
                           : context.tokens.color.vsdswColorOnSurface,
                       fontSize: 16,
                       fontFamily: 'Inter',
@@ -368,9 +368,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
                     airSyncBonsoirService.displayCode,
                     style: TextStyle(
                       color: onSelected
-                          ? context.tokens.color.vsdswColorNeutralInverse
-                              .withOpacity(0.319)
-                          : context.tokens.color.vsdswColorOpacityNeutralLg,
+                          ? context.tokens.color.vsdswColorOnPrimary
+                          : context.tokens.color.vsdswColorOnSurface,
                       fontSize: 16,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w500,
@@ -481,9 +480,9 @@ class DialogView extends Dialog {
           shape: RoundedRectangleBorder(
             borderRadius: context.tokens.radii.vsdswRadius2xl,
           ),
-          shadows: const [
+          shadows: [
             BoxShadow(
-              color: Color(0x28151C32),
+              color: context.tokens.color.vsdswColorOpacityNeutralMd,
               blurRadius: 16,
               offset: Offset(0, 8),
               spreadRadius: 0,
@@ -609,7 +608,7 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
                 shadows: [
                   BoxShadow(
                     color: widget.errorMessage == null
-                        ? const Color(0xFFE9EAF0)
+                        ? context.tokens.color.vsdswColorSurface200
                         : const Color(0xFFFFD9DF),
                     blurRadius: 0,
                     offset: const Offset(0, 0),
@@ -714,8 +713,8 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
               shadows: [
                 BoxShadow(
                   color: enable
-                      ? const Color(0x515D80ED)
-                      : const Color(0x28151C32),
+                      ? context.tokens.color.vsdswColorOpacityPrimaryLg
+                      : context.tokens.color.vsdswColorOpacityNeutralMd,
                   blurRadius: 24,
                   offset: const Offset(0, 16),
                   spreadRadius: 0,

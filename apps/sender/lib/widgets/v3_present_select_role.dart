@@ -175,7 +175,7 @@ class RoleButton extends StatelessWidget {
           height: buttonSize.height,
           decoration: BoxDecoration(
             color: context.tokens.color.vsdswColorSurface100,
-            border: Border.all(color: Colors.white),
+            border: Border.all(color: context.tokens.color.vsdswColorOutline),
             borderRadius: BorderRadius.circular(24),
             boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
           ),

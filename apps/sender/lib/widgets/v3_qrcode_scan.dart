@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
@@ -59,7 +60,8 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
               height: 36,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: ShapeDecoration(
-                color: const Color(0xA3151C32),
+                color:
+                    context.tokens.color.vsdswColorSurface1000.withAlpha(163),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
               ),
@@ -71,8 +73,8 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
                   Text(
                     S.current.v3_scan_qr_reminder,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorNeutralInverse,
                       fontSize: 16,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w400,
