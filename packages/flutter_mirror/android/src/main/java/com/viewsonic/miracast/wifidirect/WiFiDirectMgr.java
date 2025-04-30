@@ -44,10 +44,11 @@ public class WiFiDirectMgr {
   private String sourceMacAddr_ = "";
   private String sourceDeviceName_ = "";
 
-  // see https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Wifi/framework/java/android/net/wifi/p2p/WifiP2pManager.java?q=setMiracastMode%20WiFiP2PManager
+  // see
+  // https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Wifi/framework/java/android/net/wifi/p2p/WifiP2pManager.java?q=setMiracastMode%20WiFiP2PManager
   private static final int MIRACAST_DISABLED = 0;
-  private static final int MIRACAST_SOURCE   = 1;
-  private static final int MIRACAST_SINK     = 2;
+  private static final int MIRACAST_SOURCE = 1;
+  private static final int MIRACAST_SINK = 2;
 
   private static final Set<String> GROUP_OWNER_ADDRESS_KEYS = Set.of("groupOwnerAddress", "groupOwnerIpAddress");
 
@@ -264,56 +265,57 @@ public class WiFiDirectMgr {
   private final GroupInfoListener groupInfoListener_ = new GroupInfoListener() {
     @Override
     public void onGroupInfoAvailable(WifiP2pGroup group) {
-      if (group != null) {
-        String groupInfoStr = group.toString();
-        p2pInterfaceName_ = group.getInterface();
-        int clientNum = group.getClientList().size();
-        Log.d(TAG, "\n====== Group info: ======\n"
-            + groupInfoStr + "\n================== Client num:" + clientNum);
+      if (group == null) {
+        return;
+      }
+      String groupInfoStr = group.toString();
+      p2pInterfaceName_ = group.getInterface();
+      int clientNum = group.getClientList().size();
+      Log.d(TAG, "\n====== Group info: ======\n"
+          + groupInfoStr + "\n================== Client num:" + clientNum);
 
-        if (clientNum > groupClientNum_) {
-          setGroupInfo(groupInfoStr);
-          // get last client in getClientList
-          WifiP2pDevice client = null;
-          for (WifiP2pDevice device : group.getClientList()) {
-            client = device;
+      if (clientNum > groupClientNum_) {
+        setGroupInfo(groupInfoStr);
+        // get last client in getClientList
+        WifiP2pDevice client = null;
+        for (WifiP2pDevice device : group.getClientList()) {
+          client = device;
+        }
+
+        if (client == null) {
+          Log.e(TAG, "client is null");
+          return;
+        }
+
+        sourceMacAddr_ = client.deviceAddress;
+        sourceDeviceName_ = client.deviceName;
+
+        Log.d(TAG, "sourceMacAddr:" + sourceMacAddr_ + ", sourceDeviceName:" + sourceDeviceName_);
+
+        Log.d(TAG, "peer connected - " + sourceDeviceName_ + " - " + sourceMacAddr_);
+        wifiP2pManager_.requestConnectionInfo(channel_, connectionInfoListener_);
+      } else if (clientNum < groupClientNum_) {
+        /*
+         * compare peerInfo.macAddr_ in peerInfos and client.deviceAddress in
+         * getClientList to find out which peer is disconnected
+         */
+        List<WifiP2pDevice> clientList = new ArrayList<>(group.getClientList());
+        for (PeerInfo peerInfo : peerInfos_) {
+          boolean isClientExist = false;
+          for (WifiP2pDevice client : clientList) {
+            if (peerInfo.macAddr_.equals(client.deviceAddress)) {
+              isClientExist = true;
+              break;
+            }
           }
 
-          if (client == null) {
-            Log.e(TAG, "client is null");
-            return;
-          }
-
-          sourceMacAddr_ = client.deviceAddress;
-          sourceDeviceName_ = client.deviceName;
-
-          Log.d(TAG, "sourceMacAddr:" + sourceMacAddr_ + ", sourceDeviceName:" + sourceDeviceName_);
-
-          Log.d(TAG, "peer connected - " + sourceDeviceName_ + " - " + sourceMacAddr_);
-          wifiP2pManager_.requestConnectionInfo(channel_, connectionInfoListener_);
-        } else if (clientNum < groupClientNum_) {
-          /*
-           * compare peerInfo.macAddr_ in peerInfos and client.deviceAddress in
-           * getClientList to find out which peer is disconnected
-           */
-          List<WifiP2pDevice> clientList = new ArrayList<>(group.getClientList());
-          for (PeerInfo peerInfo : peerInfos_) {
-            boolean isClientExist = false;
-            for (WifiP2pDevice client : clientList) {
-              if (peerInfo.macAddr_.equals(client.deviceAddress)) {
-                isClientExist = true;
-                break;
-              }
-            }
-
-            if (!isClientExist) {
-              Log.d(TAG, "peer disconnected - " + peerInfo.deviceName_ + " - " + peerInfo.macAddr_);
-              listener_.onPeerDisconnected(peerInfo.ip_);
-            }
+          if (!isClientExist) {
+            Log.d(TAG, "peer disconnected - " + peerInfo.deviceName_ + " - " + peerInfo.macAddr_);
+            listener_.onPeerDisconnected(peerInfo.ip_);
           }
         }
-        groupClientNum_ = clientNum;
       }
+      groupClientNum_ = clientNum;
     }
   };
 
@@ -521,7 +523,7 @@ public class WiFiDirectMgr {
     try {
       Log.d(TAG, "Setting Miracast mode to " + mode);
       WifiP2pManager.class.getMethod("setMiracastMode", Integer.TYPE)
-        .invoke(wifiP2pManager_, Integer.valueOf(mode));
+          .invoke(wifiP2pManager_, Integer.valueOf(mode));
       Log.d(TAG, "Successfully set Miracast mode: " + mode);
     } catch (Throwable e) {
       Log.e(TAG, "Throwable in setting Miracast mode: " + e.getMessage());
