@@ -76,10 +76,11 @@ class WebRTCConnector {
   bool _streamPublished = false;
   ChangePresentQuality? _pendingChangePresentQuality;
 
+  static const bool unlockRatio16_9 = true;
   double _screenWidth = 1920.0;
-  double _screenHeight = 1080.0;
+  double _screenHeight = unlockRatio16_9? 1536.0 : 1080.0;
   static const int _maxTrackWidth = 1920;
-  static const int _maxTrackHeight = 1080;
+  static const int _maxTrackHeight = unlockRatio16_9? 1536 : 1080;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
 
