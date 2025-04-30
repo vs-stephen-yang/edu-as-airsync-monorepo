@@ -23,6 +23,7 @@ import java.util.concurrent.FutureTask;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.os.Build;
@@ -80,6 +81,7 @@ public class FlutterMirrorPlugin implements
   private BinaryMessenger messenger_;
   private Context context_;
   private Activity activity_;
+  private Application application_;
 
   private HashMap<Long, Texture> textures_ = new HashMap<Long, Texture>();
   private Handler handler_ = new Handler(Looper.getMainLooper());
@@ -106,11 +108,14 @@ public class FlutterMirrorPlugin implements
   public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
     Log.d(TAG, "FlutterMirrorPlugin::onAttachedToActivity()");
     activity_ = activityPluginBinding.getActivity();
+    application_ = activity_.getApplication();
 
     bluetoothTouchBackController_ = new BluetoothTouchBackController(context_, activity_, this, false);
     activityPluginBinding.addActivityResultListener(bluetoothTouchBackController_.getActivityResultListener());
     activityPluginBinding.addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
-    activityPluginBinding.getActivity().registerActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
+
+    // Correct way to register lifecycle callbacks
+    application_.registerActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
   }
 
   @Override
@@ -122,7 +127,12 @@ public class FlutterMirrorPlugin implements
   @Override
   public void onDetachedFromActivity() {
     Log.d(TAG, "FlutterMirrorPlugin::onDetachedFromActivity()");
+    if (application_ != null && bluetoothTouchBackController_ != null) {
+      application_.unregisterActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
+    }
     activity_ = null;
+    application_ = null;
+    bluetoothTouchBackController_ = null;
   }
 
   @Override
