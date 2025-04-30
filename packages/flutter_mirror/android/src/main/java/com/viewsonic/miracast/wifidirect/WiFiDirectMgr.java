@@ -89,6 +89,19 @@ public class WiFiDirectMgr {
     intentFilter_.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
     context_.registerReceiver(broadcastReceiver_, intentFilter_, null, null);
 
+    Log.d(TAG, "setP2pDeviceName");
+    setP2pDeviceName(wifiP2pManager_, channel_, getReceiverName(), new ActionListener() {
+      @Override
+      public void onSuccess() {
+        Log.d(TAG, "Successfully set P2pDeviceName:" + getReceiverName());
+      }
+
+      @Override
+      public void onFailure(int reason) {
+        Log.e(TAG, "Failed to set P2pDeviceName with reason " + reason + ".");
+      }
+    });
+
     Log.d(TAG, "setEnableWFD");
     setEnableWFD(wifiP2pManager_, channel_, true, new ActionListener() {
       @Override
@@ -100,19 +113,6 @@ public class WiFiDirectMgr {
       @Override
       public void onFailure(int reason) {
         Log.e(TAG, "Failed to enable WFD with reason " + reason + ".");
-      }
-    });
-
-    Log.d(TAG, "setP2pDeviceName");
-    setP2pDeviceName(wifiP2pManager_, channel_, getReceiverName(), new ActionListener() {
-      @Override
-      public void onSuccess() {
-        Log.d(TAG, "Successfully set P2pDeviceName:" + getReceiverName());
-      }
-
-      @Override
-      public void onFailure(int reason) {
-        Log.e(TAG, "Failed to set P2pDeviceName with reason " + reason + ".");
       }
     });
 
