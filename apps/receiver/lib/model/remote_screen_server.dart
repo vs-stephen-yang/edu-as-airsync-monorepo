@@ -20,7 +20,7 @@ import 'package:uuid/uuid.dart';
 import 'package:window_size/window_size.dart';
 
 const defaultScreenWidth = 1920.0;
-const defaultScreenHeight = 1080.0;
+const defaultScreenHeight = 1536.0;
 const int roomIdLength = 8;
 
 class RemoteControlChannel {

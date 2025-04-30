@@ -482,7 +482,7 @@ class RTCConnector {
   }
 
   int getFullHeight(int attenderCount) {
-    int fullHeight = 1080;
+    int fullHeight = 1536;
 
     // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
     if (RTCConnector.isMtk9950Model(_deviceType) &&
