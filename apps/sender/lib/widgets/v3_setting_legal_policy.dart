@@ -49,8 +49,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                   children: [
                     AutoSizeText(
                       S.of(context).v3_setting_privacy_policy,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdswColorOnSurfaceInverse,
                         fontSize: 14,
                       ),
                     ),
@@ -88,8 +88,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
               ),
               child: AutoSizeText(
                 S.of(context).v3_setting_open_source_license,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.tokens.color.vsdswColorOnSurfaceInverse,
                   fontSize: 14,
                 ),
               ),
@@ -126,8 +126,9 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                           children: [
                             AutoSizeText(
                               license.name,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: context
+                                    .tokens.color.vsdswColorOnSurfaceInverse,
                                 fontSize: 14,
                               ),
                             ),

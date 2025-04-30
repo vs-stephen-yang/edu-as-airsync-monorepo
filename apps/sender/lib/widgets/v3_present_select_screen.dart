@@ -388,7 +388,8 @@ class SelectScreenDialog extends Dialog {
                             child: Icon(
                               Icons.close,
                               size: 20,
-                              color: context.tokens.color.vsdswColorOnSurface,
+                              color:
+                                  context.tokens.color.vsdswColorSurfaceInverse,
                               semanticLabel:
                                   S.of(context).v3_lbl_select_screen_close,
                             ),
@@ -507,13 +508,14 @@ class SelectScreenDialog extends Dialog {
                                   unselectedLabelColor:
                                       context.tokens.color.vsdswColorOnSurface,
                                   indicatorColor:
-                                      context.tokens.color.vsdswColorSecondary,
+                                      context.tokens.color.vsdswColorPrimary,
                                 ),
                               ),
                               const Gap(8),
                               Expanded(
                                 child: Container(
-                                  color: const Color(0x14151C32),
+                                  color:
+                                      context.tokens.color.vsdswColorSurface200,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 64),
                                   child: TabBarView(
@@ -644,9 +646,11 @@ class SelectScreenDialog extends Dialog {
                                                   .of(context)
                                                   .present_select_screen_cancel,
                                               textColor: context.tokens.color
-                                                  .vsdswColorSecondary,
+                                                  .vsdswColorPrimary,
                                               backgroundColor:
                                                   Colors.transparent,
+                                              borderColor: context.tokens.color
+                                                  .vsdswColorSecondary,
                                               onPressed: () {
                                                 cancel();
                                               },
@@ -727,14 +731,30 @@ class SelectScreenDialog extends Dialog {
       alignment: Alignment.center,
       width: 338.67,
       height: 48,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          fontFamily: 'Inter',
-          color: enable ? null : context.tokens.color.vsdswColorOnDisabled,
-          fontWeight: FontWeight.w500,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'Inter',
+              color: enable
+                  ? context.tokens.color.vsdswColorOnSurface
+                  : context.tokens.color.vsdswColorOnDisabled,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const Gap(4),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: context.tokens.color.vsdswColorTertiary,
+              borderRadius: BorderRadius.all(Radius.circular(18.0)),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -745,7 +765,8 @@ class SelectScreenDialog extends Dialog {
       required String text,
       required Color textColor,
       required Color backgroundColor,
-      required GestureTapCallback onPressed}) {
+      required GestureTapCallback onPressed,
+      Color? borderColor}) {
     return V3Focus(
       identifier: identifier,
       label: label,
@@ -756,22 +777,28 @@ class SelectScreenDialog extends Dialog {
           width: 240,
           height: 48,
           clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: backgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(9999),
-            ),
-            shadows: backgroundColor != Colors.transparent
-                ? [
-                    BoxShadow(
-                      color: backgroundColor.withOpacity(0.31),
-                      blurRadius: 24,
-                      offset: const Offset(0, 16),
-                      spreadRadius: 0,
-                    )
-                  ]
-                : null,
-          ),
+          decoration: borderColor == null
+              ? ShapeDecoration(
+                  color: backgroundColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(9999),
+                  ),
+                  shadows: backgroundColor != Colors.transparent
+                      ? [
+                          BoxShadow(
+                            color: backgroundColor.withOpacity(0.31),
+                            blurRadius: 24,
+                            offset: const Offset(0, 16),
+                            spreadRadius: 0,
+                          )
+                        ]
+                      : null,
+                )
+              : BoxDecoration(
+                  border: Border.all(color: borderColor, width: 1.0),
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(9999),
+                ),
           child: Text(
             text,
             style: TextStyle(color: textColor),
@@ -945,7 +972,7 @@ class ScreenExtensionPage extends StatelessWidget {
           S.current.v3_present_select_screen_extension_desc,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: context.tokens.color.vsdswColorTertiary.withOpacity(0.64),
+            color: context.tokens.color.vsdswColorOnSurface,
             fontSize: 20,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
@@ -958,7 +985,7 @@ class ScreenExtensionPage extends StatelessWidget {
             S.current.v3_present_select_screen_extension_desc2,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: context.tokens.color.vsdswColorTertiary.withOpacity(0.64),
+              color: context.tokens.color.vsdswColorOnSurface,
               fontSize: 16,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
@@ -1043,7 +1070,7 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
                     ? BoxDecoration(
                         border: Border.all(
                             width: 4,
-                            color: context.tokens.color.vsdswColorSecondary),
+                            color: context.tokens.color.vsdswColorPrimary),
                         borderRadius: context.tokens.radii.vsdswRadiusLg,
                       )
                     : null,

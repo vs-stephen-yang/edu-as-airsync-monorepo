@@ -21,7 +21,7 @@ class V3SettingMenuDesktop extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       alignment: Alignment.bottomLeft,
-      backgroundColor: context.tokens.color.vsdswColorSurfaceInverse,
+      backgroundColor: context.tokens.color.vsdswColorSurface1000,
       insetPadding: const EdgeInsets.all(8),
       child: SizedBox(
         width: 660,
@@ -48,7 +48,7 @@ class V3SettingMenuDesktop extends StatelessWidget {
                       button: true,
                       child: CircleAvatar(
                         backgroundColor:
-                            context.tokens.color.vsdswColorSurface900,
+                            context.tokens.color.vsdswColorTertiary,
                         radius: 24,
                         child: InkWell(
                           onTap: () {

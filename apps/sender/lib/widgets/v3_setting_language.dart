@@ -63,10 +63,11 @@ class V3SettingLanguage extends StatelessWidget {
                             ),
                             AutoSizeText(
                               key,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.white,
+                                color: context
+                                    .tokens.color.vsdswColorOnSurfaceInverse,
                               ),
                             )
                           ],

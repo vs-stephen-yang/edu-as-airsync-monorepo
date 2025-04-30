@@ -38,8 +38,8 @@ class V3SettingLicense extends StatelessWidget {
                   AutoSizeText(
                     settingsProvider.license?.name ??
                         S.of(context).v3_setting_privacy_policy,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnSurfaceInverse,
                       fontSize: 14,
                     ),
                   ),
@@ -54,8 +54,8 @@ class V3SettingLicense extends StatelessWidget {
             child: Text(
               settingsProvider.license?.license ??
                   S.of(context).v3_setting_privacy_policy_description,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.tokens.color.vsdswColorOnSurfaceInverse,
                 fontSize: 12,
               ),
             ),
