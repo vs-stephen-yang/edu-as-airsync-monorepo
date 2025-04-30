@@ -5,7 +5,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 
 const _defaultScreenWidth = 1920.0;
-const _defaultScreenHeight = 1080.0;
+const _defaultScreenHeight = 1536.0;
 const _maxEventId = 255;
 const _eventExpiredTime = 4000; //ms
 
