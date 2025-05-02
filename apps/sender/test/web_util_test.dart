@@ -19,10 +19,11 @@ void main() {
 
       // Act
       final result = filterValidHashes(certs, now);
+      final hashes = result['hashes'] as List<String>;
 
       // Assert
-      expect(result, contains("ABC123"));
-      expect(result, contains("DEF456"));
+      expect(hashes, contains("ABC123"));
+      expect(hashes, contains("DEF456"));
     });
 
     test('should return an empty list if all certificates are expired', () {
@@ -37,12 +38,14 @@ void main() {
 
       // Act
       final result = filterValidHashes(certs, now);
+      final hashes = result['hashes'] as List<String>;
 
       // Assert
-      expect(result, isEmpty);
+      expect(hashes, isEmpty);
     });
 
-    test('should return an empty list if all certificates are in the future', () {
+    test('should return an empty list if all certificates are in the future',
+        () {
       // Arrange
       final now = DateTime.now().toUtc();
       final certs = [
@@ -54,9 +57,10 @@ void main() {
 
       // Act
       final result = filterValidHashes(certs, now);
+      final hashes = result['hashes'] as List<String>;
 
       // Assert
-      expect(result, isEmpty);
+      expect(hashes, isEmpty);
     });
 
     test('should handle trimmed and formatted hashes correctly', () {
@@ -71,9 +75,10 @@ void main() {
 
       // Act
       final result = filterValidHashes(certs, now);
+      final hashes = result['hashes'] as List<String>;
 
       // Assert
-      expect(result, contains("A1B2C3"));
+      expect(hashes, contains("A1B2C3"));
     });
 
     test('should return multiple valid hashes when within the date range', () {
@@ -89,19 +94,22 @@ void main() {
           "hash": "HASH2"
         },
         {
-          "date": now.subtract(const Duration(days: 15)).toIso8601String(), // Expired
+          "date": now
+              .subtract(const Duration(days: 15))
+              .toIso8601String(), // Expired
           "hash": "EXPIRED"
         }
       ];
 
       // Act
       final result = filterValidHashes(certs, now);
+      final hashes = result['hashes'] as List<String>;
 
       // Assert
       expect(result.length, equals(2));
-      expect(result, contains("HASH1"));
-      expect(result, contains("HASH2"));
-      expect(result, isNot(contains("EXPIRED")));
+      expect(hashes, contains("HASH1"));
+      expect(hashes, contains("HASH2"));
+      expect(hashes, isNot(contains("EXPIRED")));
     });
   });
 }
