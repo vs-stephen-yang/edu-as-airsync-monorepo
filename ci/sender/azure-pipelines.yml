@@ -65,6 +65,11 @@ jobs:
         displayName: Run lint checks
         workingDirectory: "$(Build.SourcesDirectory)"
 
+      # test
+      - script: $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
+        displayName: Run test
+        workingDirectory: "$(Build.SourcesDirectory)"
+
       # build prod
       - script: $(Flutter.Bin) build $(buildCommand) --no-pub $(extraBuildOptions) -t ./lib/main_production.dart
         displayName: Build prod
