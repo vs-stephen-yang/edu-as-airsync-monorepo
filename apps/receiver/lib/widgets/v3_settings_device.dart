@@ -616,8 +616,11 @@ class CustomDropdownState extends State<CustomDropdown> {
                                           color: hasFocus
                                               ? context.tokens.color
                                                   .vsdslColorOnPrimary
-                                              : context.tokens.color
-                                                  .vsdslColorSurface100,
+                                              : (isSelected)
+                                                  ? context.tokens.color
+                                                      .vsdslColorSurface100
+                                                  : context.tokens.color
+                                                      .vsdslColorOnSurface,
                                         ),
                                       ),
                                     ),
