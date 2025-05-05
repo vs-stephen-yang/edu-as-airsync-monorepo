@@ -76,13 +76,14 @@ class WebRTCConnector {
   bool _streamPublished = false;
   ChangePresentQuality? _pendingChangePresentQuality;
 
-  static const bool unlockRatio16_9 = true;
   double _screenWidth = 1920.0;
-  double _screenHeight = unlockRatio16_9? 1536.0 : 1080.0;
+  double _screenHeight = 1536.0;
   static const int _maxTrackWidth = 1920;
-  static const int _maxTrackHeight = unlockRatio16_9? 1536 : 1080;
+  static const int _maxTrackHeight = 1536;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
+  int? _publishWidth;
+  int? _publishHeight;
 
   static const double _defaultMinFrameRate = 30.0;
   static const double _defaultFrameRate = 30.0;
@@ -758,7 +759,14 @@ class WebRTCConnector {
     var params = sender.parameters;
     if (params.encodings != null) {
       for (var encoding in params.encodings!) {
-        encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
+        final width = _publishWidth ?? 1920;
+        final height = _publishHeight ?? 1080;
+        final scaleW = width / 1920.0;
+        final scaleH = height / 1080.0;
+        final supportMaxScreenRatio = 5.0 / 4.0;  // A common screen aspect ratio with the greatest height at the same width is 5:4.
+        final screenScale = (scaleW * scaleH).clamp(1.0, supportMaxScreenRatio);
+
+        encoding.maxBitrate = (preset.parameters.maxBitrateKbps * 1000 * screenScale).toInt();
 
         // On Android, because ScreenCapture cannot specify the capture frame rate,
         // WebRTC internally controls the frame rate fed to the encoder through the encoding settings.
@@ -966,6 +974,12 @@ class WebRTCConnector {
     _videoOutboundStatsHistory.add(stats);
 
     onVideoStatsReport?.call(stats);
+
+    if (_publishWidth != stats.frameWidth! || _publishHeight != stats.frameHeight!) {
+      _publishWidth = stats.frameWidth!;
+      _publishHeight = stats.frameHeight!;
+      _updateEncodingParameters();
+    }
   }
 
   Map<String, String> getIceInfo() {
