@@ -226,139 +226,142 @@ class DownloadWidget extends StatelessWidget {
         color: context.tokens.color.vsdswColorSurface100,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          ExcludeSemantics(
-            child: SvgPicture.asset(leadingSvg),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+          Row(
             children: [
-              AutoSizeText(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: context.tokens.color.vsdswColorOnSurface,
-                ),
+              ExcludeSemantics(
+                child: SvgPicture.asset(leadingSvg),
               ),
-              AutoSizeText(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdswColorOnSurfaceVariant,
-                ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AutoSizeText(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: context.tokens.color.vsdswColorOnSurface,
+                    ),
+                  ),
+                  AutoSizeText(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (isMac) ...[
+                      ExcludeSemantics(
+                        child: SvgPicture.asset(
+                            'assets/images/v3_ic_web_download_thumb.svg'),
+                      ),
+                      const Gap(4),
+                      Text(
+                        maxLines: 2,
+                        S.current.v3_main_download_mac_pkg_label,
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorPrimary,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const Gap(13),
+                    ] else
+                      const Spacer(),
+                    // 這邊 label不會唸，需要加到下一層
+                    V3Focus(
+                      label: label,
+                      identifier: identifier,
+                      button: true,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 5.0,
+                          foregroundColor:
+                              context.tokens.color.vsdswColorOnSurface,
+                          backgroundColor:
+                              context.tokens.color.vsdswColorSurface100,
+                          side: BorderSide(
+                            color: context.tokens.color.vsdswColorSurface300,
+                            width: 1,
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        onPressed: onClick,
+                        child: Semantics(
+                          label: label,
+                          child: ExcludeSemantics(
+                            child: AutoSizeText(action),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(5),
+                  ],
+                ),
+              ),
+              if (isMac) ...[
+                const Gap(12),
+                Container(
+                  height: 1,
+                  width: 250,
+                  color: context.tokens.color.vsdswColorOutline,
+                ),
+                const Gap(12),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (isMac) ...[
-                        ExcludeSemantics(
-                          child: SvgPicture.asset(
-                              'assets/images/v3_ic_web_download_thumb.svg'),
-                        ),
-                        const Gap(4),
-                        Text(
-                          maxLines: 2,
-                          S.current.v3_main_download_mac_pkg_label,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: context.tokens.color.vsdswColorPrimary,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const Gap(13),
-                      ] else
-                        const Spacer(),
-                      // 這邊 label不會唸，需要加到下一層
-                      V3Focus(
-                        label: label,
-                        identifier: identifier,
-                        button: true,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            foregroundColor:
-                                context.tokens.color.vsdswColorOnSurface,
-                            backgroundColor:
-                                context.tokens.color.vsdswColorSurface100,
-                            side: BorderSide(
-                              color: context.tokens.color.vsdswColorSurface300,
-                              width: 1,
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          onPressed: onClick,
-                          child: Semantics(
-                            label: label,
-                            child: ExcludeSemantics(
-                              child: AutoSizeText(action),
-                            ),
-                          ),
-                        ),
+                      Text(
+                        S.current.v3_main_download_mac_store_label,
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorOnSurface),
                       ),
                       const Gap(5),
-                    ],
-                  ),
-                ),
-                if (isMac) ...[
-                  const Gap(12),
-                  Container(
-                    height: 1,
-                    color: context.tokens.color.vsdswColorOutline,
-                  ),
-                  const Gap(12),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          S.current.v3_main_download_mac_store_label,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: context.tokens.color.vsdswColorOnSurface),
-                        ),
-                        const Gap(5),
-                        V3Focus(
-                          label: labelSecond ?? '',
-                          identifier: identifierSecond ?? '',
-                          button: true,
-                          child: InkWell(
-                            onTap: onClick2,
-                            child: SizedBox(
-                              height: 28,
-                              child: ExcludeSemantics(
-                                child: Text(
-                                  S.current.v3_main_download_mac_store,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: context.tokens.color.vsdswColorLink,
-                                    decoration: TextDecoration.underline,
-                                  ),
+                      V3Focus(
+                        label: labelSecond ?? '',
+                        identifier: identifierSecond ?? '',
+                        button: true,
+                        child: InkWell(
+                          onTap: onClick2,
+                          child: SizedBox(
+                            height: 28,
+                            child: ExcludeSemantics(
+                              child: Text(
+                                S.current.v3_main_download_mac_store,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: context.tokens.color.vsdswColorLink,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ],
-            ),
+            ],
           ),
         ],
       ),
