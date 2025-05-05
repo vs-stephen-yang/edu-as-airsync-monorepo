@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/v3_accessibility.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_cast_to_boards.dart';
@@ -103,9 +104,21 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
                               _SubTittleButton(
+                                label: S.current.v3_lbl_settings_accessibility,
+                                identifier: "v3_qa_settings_accessibility",
+                                index: 1,
+                                state: SettingPageState.accessibility,
+                                text: S.of(context).v3_settings_accessibility,
+                                locked: false,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.accessibility),
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              _SubTittleButton(
                                 label: S.current.v3_lbl_settings_broadcast,
                                 identifier: "v3_qa_settings_broadcast",
-                                index: 1,
+                                index: 2,
                                 state: SettingPageState.broadcast,
                                 text: S.of(context).v3_settings_broadcast,
                                 locked: settingsProvider.isBroadcastLock,
@@ -117,7 +130,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               _SubTittleButton(
                                 label: S.current.v3_lbl_shortcuts_mirroring,
                                 identifier: "v3_qa_shortcuts_mirroring",
-                                index: 2,
+                                index: 3,
                                 state: SettingPageState.mirroring,
                                 text: S.of(context).v3_shortcuts_mirroring,
                                 locked: settingsProvider.isMirroringLock,
@@ -129,7 +142,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               _SubTittleButton(
                                 label: S.current.v3_lbl_settings_connectivity,
                                 identifier: "v3_qa_settings_connectivity",
-                                index: 3,
+                                index: 4,
                                 state: SettingPageState.connectivity,
                                 text: S.of(context).v3_settings_connectivity,
                                 locked: settingsProvider.isConnectivityLock,
@@ -141,7 +154,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               _SubTittleButton(
                                 label: S.current.v3_lbl_settings_whats_new,
                                 identifier: "v3_qa_settings_whats_new",
-                                index: 4,
+                                index: 5,
                                 state: SettingPageState.whatsNew,
                                 text: S.of(context).v3_settings_whats_new,
                                 locked: false,
@@ -153,7 +166,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               _SubTittleButton(
                                 label: S.current.v3_lbl_settings_legal_policy,
                                 identifier: "v3_qa_settings_legal_policy",
-                                index: 5,
+                                index: 6,
                                 state: SettingPageState.legalPolicy,
                                 text: S.of(context).v3_settings_legal_policy,
                                 locked: false,
@@ -234,6 +247,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                           switch (settingsProvider.currentPage) {
                             case SettingPageState.deviceSetting:
                               return const V3SettingsDevice();
+                            case SettingPageState.accessibility:
+                              return const V3Accessibility();
                             case SettingPageState.deviceName:
                               return V3SettingsDeviceName(
                                   focusNode: settingsProvider.subFocusNode ??

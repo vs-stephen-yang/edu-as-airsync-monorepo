@@ -19,20 +19,17 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(
-      _current != null,
-      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
-    );
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -45,10 +42,8 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -98,7 +93,12 @@ class S {
 
   /// `AirSync EULA`
   String get eula_title {
-    return Intl.message('AirSync EULA', name: 'eula_title', desc: '', args: []);
+    return Intl.message(
+      'AirSync EULA',
+      name: 'eula_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `I Disagree`
@@ -113,7 +113,12 @@ class S {
 
   /// `I Agree`
   String get eula_agree {
-    return Intl.message('I Agree', name: 'eula_agree', desc: '', args: []);
+    return Intl.message(
+      'I Agree',
+      name: 'eula_agree',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `%02d min : %02d sec`
@@ -348,17 +353,32 @@ class S {
 
   /// `CANCEL`
   String get moderator_cancel {
-    return Intl.message('CANCEL', name: 'moderator_cancel', desc: '', args: []);
+    return Intl.message(
+      'CANCEL',
+      name: 'moderator_cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `EXIT`
   String get moderator_exit {
-    return Intl.message('EXIT', name: 'moderator_exit', desc: '', args: []);
+    return Intl.message(
+      'EXIT',
+      name: 'moderator_exit',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `REMOVE`
   String get moderator_remove {
-    return Intl.message('REMOVE', name: 'moderator_remove', desc: '', args: []);
+    return Intl.message(
+      'REMOVE',
+      name: 'moderator_remove',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.`
@@ -1553,7 +1573,12 @@ class S {
 
   /// `Agree`
   String get v3_eula_agree {
-    return Intl.message('Agree', name: 'v3_eula_agree', desc: '', args: []);
+    return Intl.message(
+      'Agree',
+      name: 'v3_eula_agree',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Disagree`
@@ -1621,6 +1646,16 @@ class S {
     return Intl.message(
       'Receiving + Touchback',
       name: 'v3_participant_item_controlling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accessibility`
+  String get v3_settings_accessibility {
+    return Intl.message(
+      'Accessibility',
+      name: 'v3_settings_accessibility',
       desc: '',
       args: [],
     );
@@ -1738,7 +1773,12 @@ class S {
 
   /// `OR`
   String get v3_download_app_or {
-    return Intl.message('OR', name: 'v3_download_app_or', desc: '', args: []);
+    return Intl.message(
+      'OR',
+      name: 'v3_download_app_or',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Disable Mirroring for Moderator Mode`
@@ -3388,6 +3428,66 @@ class S {
       name: 'v3_lbl_settings_broadcast_to_display_group_confirm',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Accessibility`
+  String get v3_lbl_settings_accessibility {
+    return Intl.message(
+      'Accessibility',
+      name: 'v3_lbl_settings_accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resize text size`
+  String get v3_settings_resize_text_size {
+    return Intl.message(
+      'Resize text size',
+      name: 'v3_settings_resize_text_size',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resize text size`
+  String get v3_lbl_settings_resize_text_size {
+    return Intl.message(
+      'Resize text size',
+      name: 'v3_lbl_settings_resize_text_size',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Normal({scale})`
+  String v3_settings_resize_text_size_normal(Object scale) {
+    return Intl.message(
+      'Normal($scale)',
+      name: 'v3_settings_resize_text_size_normal',
+      desc: '',
+      args: [scale],
+    );
+  }
+
+  /// `Large({scale})`
+  String v3_settings_resize_text_size_large(Object scale) {
+    return Intl.message(
+      'Large($scale)',
+      name: 'v3_settings_resize_text_size_large',
+      desc: '',
+      args: [scale],
+    );
+  }
+
+  /// `XLarge({scale})`
+  String v3_settings_resize_text_size_extra_large(Object scale) {
+    return Intl.message(
+      'XLarge($scale)',
+      name: 'v3_settings_resize_text_size_extra_large',
+      desc: '',
+      args: [scale],
     );
   }
 }

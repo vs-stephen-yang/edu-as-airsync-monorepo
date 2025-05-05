@@ -7,6 +7,7 @@ enum SettingPageState {
   deviceSetting,
   deviceName,
   deviceLanguage,
+  accessibility,
   broadcast,
   broadcastBoards,
   mirroring,
@@ -17,6 +18,7 @@ enum SettingPageState {
 
   static List<SettingPageState> get mainPages => [
         SettingPageState.deviceSetting,
+        SettingPageState.accessibility,
         SettingPageState.broadcast,
         SettingPageState.mirroring,
         SettingPageState.connectivity,
@@ -131,6 +133,7 @@ class SettingsProvider with ChangeNotifier {
   setPage(SettingPageState state, {Package? license}) {
     switch (state) {
       case SettingPageState.deviceSetting:
+      case SettingPageState.accessibility:
       case SettingPageState.broadcast:
       case SettingPageState.mirroring:
       case SettingPageState.connectivity:
