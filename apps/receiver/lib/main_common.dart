@@ -18,6 +18,7 @@ import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/providers/text_scale_provider.dart';
 import 'package:display_flutter/screens/v3_eula.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -152,6 +153,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => TextScaleProvider()),
         ChangeNotifierProvider.value(value: InstanceInfoProvider()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
@@ -175,40 +177,47 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       child: Consumer<PrefLanguageProvider>(
         builder: (_, prefLanguageProvider, __) {
           return MaterialApp(
-            localizationsDelegates: const [
-              S.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              DefaultMaterialLocalizations.delegate,
-            ],
-            //add
-            supportedLocales: S.delegate.supportedLocales,
-            locale: prefLanguageProvider.locale,
-            title: 'AirSync',
-            debugShowCheckedModeBanner: false,
-            theme: createThemeData(context),
-            initialRoute: AppPreferences().showEULA &&
-                    !AppInstanceCreate().isInstalledInVBS100
-                ? '/v3Eula'
-                : '/v3Home',
-            navigatorKey: NavigationService.navigationKey,
-            routes: {
-              // for "navService.popUntil('/v3Home')"
-              '/v3Home': (context) => const AppOTADialog(child: V3Home()),
-              '/v3Eula': (context) => AppOTADialog(
-                  child: FocusAwareBuilder(
-                      builder: (primaryFocusNode) =>
-                          V3Eula(primaryFocusNode: primaryFocusNode))),
-            },
-            builder: (context, child) {
-              var c = child!;
-              if (AppConfig.of(context)!.settings.appA11yDebug == true) {
-                c = AccessibilityTools(child: child);
-              }
-              return c;
-            },
-          );
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                DefaultMaterialLocalizations.delegate,
+              ],
+              //add
+              supportedLocales: S.delegate.supportedLocales,
+              locale: prefLanguageProvider.locale,
+              title: 'AirSync',
+              debugShowCheckedModeBanner: false,
+              theme: createThemeData(context),
+              initialRoute: AppPreferences().showEULA &&
+                      !AppInstanceCreate().isInstalledInVBS100
+                  ? '/v3Eula'
+                  : '/v3Home',
+              navigatorKey: NavigationService.navigationKey,
+              routes: {
+                // for "navService.popUntil('/v3Home')"
+                '/v3Home': (context) => const AppOTADialog(child: V3Home()),
+                '/v3Eula': (context) => AppOTADialog(
+                    child: FocusAwareBuilder(
+                        builder: (primaryFocusNode) =>
+                            V3Eula(primaryFocusNode: primaryFocusNode))),
+              },
+              builder: (context, child) {
+                return Consumer<TextScaleProvider>(
+                  builder: (context, textScaleProvider, __) {
+                    Widget c = MediaQuery(
+                        data: MediaQuery.of(context).copyWith(
+                            textScaler:
+                                TextScaler.linear(textScaleProvider.scale)),
+                        child: child!);
+                    if (AppConfig.of(context)!.settings.appA11yDebug == true) {
+                      c = AccessibilityTools(child: c);
+                    }
+                    return c;
+                  },
+                );
+              });
         },
       ),
     );
