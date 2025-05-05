@@ -221,6 +221,14 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             if (_dropDownMenuEntry != null && _dropDownMenuEntry!.mounted) {
               _dropDownMenuEntry?.remove();
             }
+
+            widget.onFieldChanged(
+              V3FieldResult(
+                  enable: false,
+                  isDisplayCodeSelectedFromHistory: false,
+                  displayCode: '',
+                  password: ''),
+            );
             return;
           }
         }
