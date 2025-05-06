@@ -169,6 +169,9 @@ android {
         // see: https://issuetracker.google.com/issues/299314630?pli=1
         resources.excludes.add("META-INF/LICENSE.md")
         resources.excludes.add("META-INF/LICENSE-notice.md")
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     buildFeatures {
