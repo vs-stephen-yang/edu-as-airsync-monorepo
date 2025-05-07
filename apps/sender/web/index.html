@@ -23,8 +23,12 @@
 
   <meta http-equiv="Content-Security-Policy" content="
           script-src 'self' 'nonce-flutter-init' 'wasm-unsafe-eval'; 
-          style-src 'unsafe-inline'; 
-          object-src 'none'; 
+          style-src 'self'
+          'sha256-lqY1z1jZBRwzSDzqmC1KrNLwTEQn5zyMIV0KJLIr+Ys='
+          'sha256-zDudSZ1QIxb4NBLFkJxjz60o8wfeebMVes57tfLshz0='
+          'sha256-Hcn+KfZJN1e7dqySjsmRhOqvK9vlxUF2BM4w7jfIJaE='
+          'sha256-5Kh4U+mrZKxSbfNel5YEvkxCByeWhRSNJAjrMJe0/Kg=';
+          object-src 'none';
           base-uri 'self';
           form-action 'none';
         ">
