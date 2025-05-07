@@ -759,14 +759,11 @@ class WebRTCConnector {
     var params = sender.parameters;
     if (params.encodings != null) {
       for (var encoding in params.encodings!) {
-        final width = _publishWidth ?? 1920;
-        final height = _publishHeight ?? 1080;
-        final scaleW = width / 1920.0;
-        final scaleH = height / 1080.0;
-        final supportMaxScreenRatio = 5.0 / 4.0;  // A common screen aspect ratio with the greatest height at the same width is 5:4.
-        final screenScale = (scaleW * scaleH).clamp(1.0, supportMaxScreenRatio);
-
-        encoding.maxBitrate = (preset.parameters.maxBitrateKbps * 1000 * screenScale).toInt();
+        encoding.maxBitrate = _calculateBitrateWithScreenScaling(
+          actualWidth: _publishWidth!.toDouble(),
+          actualHeight: _publishHeight!.toDouble(),
+          baseBitrateKbps: preset.parameters.maxBitrateKbps.toInt(),
+        );
 
         // On Android, because ScreenCapture cannot specify the capture frame rate,
         // WebRTC internally controls the frame rate fed to the encoder through the encoding settings.
@@ -791,6 +788,20 @@ class WebRTCConnector {
       }
     }
     return await sender.setParameters(params);
+  }
+
+  int _calculateBitrateWithScreenScaling({
+    required double actualWidth,
+    required double actualHeight,
+    required int baseBitrateKbps,
+    double baseWidth = 1920,
+    double baseHeight = 1080,
+  }) {
+    final scaleW = actualWidth / baseWidth;
+    final scaleH = actualHeight / baseHeight;
+    final supportMaxScreenRatio = 5.0 / 4.0;    // A common screen aspect ratio with the greatest height at the same width is 5:4.
+    final scaleBitrate = (scaleW * scaleH).clamp(1.0, supportMaxScreenRatio);
+    return (baseBitrateKbps * 1000 * scaleBitrate).toInt();
   }
 
   Future<bool> updateEncodingPreset(Preset preset) async {
