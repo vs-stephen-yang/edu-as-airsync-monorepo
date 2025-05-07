@@ -81,6 +81,9 @@ android {
 
     packagingOptions {
         pickFirst '**/liblog.so'
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     buildFeatures {
