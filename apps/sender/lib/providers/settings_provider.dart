@@ -6,12 +6,13 @@ enum SettingPageState {
   // Due to selection highlight mechanism.
   // This enum sequence need match _addSettingsToList() sequence.
   language(0),
-  legalPolicy(1),
-  knowledgeBase(2),
-  checkForUpdates(3),
+  accessibility(1),
+  legalPolicy(2),
+  knowledgeBase(3),
+  checkForUpdates(4),
   // add main page above
   // add sub page below
-  licenses(4),
+  licenses(5),
   // add new item above.
   appHome(9999); // last item
   // DO NOT add item below.
@@ -42,6 +43,7 @@ class SettingsProvider with ChangeNotifier {
       case SettingPageState.legalPolicy:
       case SettingPageState.knowledgeBase:
       case SettingPageState.checkForUpdates:
+      case SettingPageState.accessibility:
         _currentTittlePage = state;
       default:
         break;

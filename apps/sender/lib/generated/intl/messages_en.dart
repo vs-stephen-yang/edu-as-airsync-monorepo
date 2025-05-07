@@ -239,169 +239,160 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "End-User License Agreement",
     ),
-        "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage(
-          "Change your language",
-        ),
-        "v3_lbl_device_list_button_device_list":
-            MessageLookupByLibrary.simpleMessage("Device List"),
-        "v3_lbl_device_list_close": MessageLookupByLibrary.simpleMessage(
-          "Close device list",
-        ),
-        "v3_lbl_device_list_next": MessageLookupByLibrary.simpleMessage("Next"),
-        "v3_lbl_download_independent_version":
-            MessageLookupByLibrary.simpleMessage(
-          "Get the Mac independent version",
-        ),
-        "v3_lbl_download_menu_minimal": MessageLookupByLibrary.simpleMessage(
-          "menu minimal",
-        ),
-        "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage(
-          "Type Display Code",
-        ),
-        "v3_lbl_main_display_code_remove": MessageLookupByLibrary.simpleMessage(
-          "Clear display code",
-        ),
-        "v3_lbl_main_download": MessageLookupByLibrary.simpleMessage(
-          "Download Sender App",
-        ),
-        "v3_lbl_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
-          "Get the Mac App Store version",
-        ),
-        "v3_lbl_main_download_mobile": MessageLookupByLibrary.simpleMessage(
-          "Get the Mobile version",
-        ),
-        "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
-          "Get the Windows version",
-        ),
-        "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
-          "Summit Share",
-        ),
-        "v3_lbl_main_moderator_input_hint":
-            MessageLookupByLibrary.simpleMessage(
-          "Type Your Name",
-        ),
-        "v3_lbl_main_password": MessageLookupByLibrary.simpleMessage(
-          "Type Password",
-        ),
-        "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage(
-          "Summit Next",
-        ),
-        "v3_lbl_main_privacy": MessageLookupByLibrary.simpleMessage(
-          "Privacy Policy",
-        ),
-        "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
-          "Summit Connect",
-        ),
-        "v3_lbl_moderator_back":
-            MessageLookupByLibrary.simpleMessage("Go back"),
-        "v3_lbl_moderator_disconnect": MessageLookupByLibrary.simpleMessage(
-          "Disconnect",
-        ),
-        "v3_lbl_present_idle_audio_driver_warning_close":
-            MessageLookupByLibrary.simpleMessage("Close audio driver warning"),
-        "v3_lbl_present_idle_audio_driver_warning_download":
-            MessageLookupByLibrary.simpleMessage("Download audio driver"),
-        "v3_lbl_qr_close": MessageLookupByLibrary.simpleMessage(
-          "Close QR code scanner",
-        ),
-        "v3_lbl_qr_code": MessageLookupByLibrary.simpleMessage(
-          "Open QR code scanner",
-        ),
-        "v3_lbl_select_language":
-            MessageLookupByLibrary.simpleMessage("Select %s"),
-        "v3_lbl_select_role_receive": MessageLookupByLibrary.simpleMessage(
-          "Receive screen",
-        ),
-        "v3_lbl_select_role_share": MessageLookupByLibrary.simpleMessage(
-          "Share screen",
-        ),
-        "v3_lbl_select_screen_audio": MessageLookupByLibrary.simpleMessage(
-          "Share computer audio",
-        ),
-        "v3_lbl_select_screen_cancel": MessageLookupByLibrary.simpleMessage(
-          "Cancel sharing",
-        ),
-        "v3_lbl_select_screen_close": MessageLookupByLibrary.simpleMessage(
-          "Close screen selection",
-        ),
-        "v3_lbl_select_screen_ios_back": MessageLookupByLibrary.simpleMessage(
-          "Go back",
-        ),
-        "v3_lbl_select_screen_ios_start_sharing":
-            MessageLookupByLibrary.simpleMessage("Start sharing"),
-        "v3_lbl_select_screen_share": MessageLookupByLibrary.simpleMessage(
-          "Share screen",
-        ),
-        "v3_lbl_select_screen_source_name":
-            MessageLookupByLibrary.simpleMessage(
-          "Screen source:  %s",
-        ),
-        "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("Settings"),
-        "v3_lbl_setting_language_select": MessageLookupByLibrary.simpleMessage(
-          "Select language: %s",
-        ),
-        "v3_lbl_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
-          "View legal policy: %s",
-        ),
-        "v3_lbl_setting_menu_back": MessageLookupByLibrary.simpleMessage(
-          "Back to previous menu",
-        ),
-        "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage(
-          "Close settings menu",
-        ),
-        "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
-          "Privacy policy",
-        ),
-        "v3_lbl_setting_select":
-            MessageLookupByLibrary.simpleMessage("Select %s"),
-        "v3_lbl_setting_software_update_deny_action":
-            MessageLookupByLibrary.simpleMessage("Later"),
-        "v3_lbl_setting_software_update_fail_close":
-            MessageLookupByLibrary.simpleMessage("Close update error dialog"),
-        "v3_lbl_setting_software_update_fail_ok":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_lbl_setting_software_update_no_available":
-            MessageLookupByLibrary.simpleMessage("No Update Available"),
-        "v3_lbl_setting_software_update_no_available_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_lbl_setting_software_update_now_action":
-            MessageLookupByLibrary.simpleMessage("Update Now"),
-        "v3_lbl_setting_software_update_positive_action":
-            MessageLookupByLibrary.simpleMessage("Update"),
-        "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
-          "Close update dialog",
-        ),
-        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
-          "Pause off",
-        ),
-        "v3_lbl_sharing_pause_on":
-            MessageLookupByLibrary.simpleMessage("Pause on"),
-        "v3_lbl_sharing_stop":
-            MessageLookupByLibrary.simpleMessage("Sharing stop"),
-        "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
-          "Expand streaming controls",
-        ),
-        "v3_lbl_streaming_minimize_button":
-            MessageLookupByLibrary.simpleMessage(
-          "Minimize streaming controls",
-        ),
-        "v3_lbl_streaming_stop_button": MessageLookupByLibrary.simpleMessage(
-          "Stop streaming",
-        ),
-        "v3_lbl_touch_back_off": MessageLookupByLibrary.simpleMessage(
-          "Disable touchback",
-        ),
-        "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
-          "Enable touchback",
-        ),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
-          "Accessibility",
-        ),
-        "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
-          "Please wait for the host to approve your request.",
-        ),
-        "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-          "Network connectivity error.",
+    "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage(
+      "Change your language",
+    ),
+    "v3_lbl_device_list_button_device_list":
+        MessageLookupByLibrary.simpleMessage("Device List"),
+    "v3_lbl_device_list_close": MessageLookupByLibrary.simpleMessage(
+      "Close device list",
+    ),
+    "v3_lbl_device_list_next": MessageLookupByLibrary.simpleMessage("Next"),
+    "v3_lbl_download_independent_version": MessageLookupByLibrary.simpleMessage(
+      "Get the Mac independent version",
+    ),
+    "v3_lbl_download_menu_minimal": MessageLookupByLibrary.simpleMessage(
+      "menu minimal",
+    ),
+    "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage(
+      "Type Display Code",
+    ),
+    "v3_lbl_main_display_code_remove": MessageLookupByLibrary.simpleMessage(
+      "Clear display code",
+    ),
+    "v3_lbl_main_download": MessageLookupByLibrary.simpleMessage(
+      "Download Sender App",
+    ),
+    "v3_lbl_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
+      "Get the Mac App Store version",
+    ),
+    "v3_lbl_main_download_mobile": MessageLookupByLibrary.simpleMessage(
+      "Get the Mobile version",
+    ),
+    "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
+      "Get the Windows version",
+    ),
+    "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
+      "Summit Share",
+    ),
+    "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
+      "Type Your Name",
+    ),
+    "v3_lbl_main_password": MessageLookupByLibrary.simpleMessage(
+      "Type Password",
+    ),
+    "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage(
+      "Summit Next",
+    ),
+    "v3_lbl_main_privacy": MessageLookupByLibrary.simpleMessage(
+      "Privacy Policy",
+    ),
+    "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
+      "Summit Connect",
+    ),
+    "v3_lbl_moderator_back": MessageLookupByLibrary.simpleMessage("Go back"),
+    "v3_lbl_moderator_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Disconnect",
+    ),
+    "v3_lbl_present_idle_audio_driver_warning_close":
+        MessageLookupByLibrary.simpleMessage("Close audio driver warning"),
+    "v3_lbl_present_idle_audio_driver_warning_download":
+        MessageLookupByLibrary.simpleMessage("Download audio driver"),
+    "v3_lbl_qr_close": MessageLookupByLibrary.simpleMessage(
+      "Close QR code scanner",
+    ),
+    "v3_lbl_qr_code": MessageLookupByLibrary.simpleMessage(
+      "Open QR code scanner",
+    ),
+    "v3_lbl_select_language": MessageLookupByLibrary.simpleMessage("Select %s"),
+    "v3_lbl_select_role_receive": MessageLookupByLibrary.simpleMessage(
+      "Receive screen",
+    ),
+    "v3_lbl_select_role_share": MessageLookupByLibrary.simpleMessage(
+      "Share screen",
+    ),
+    "v3_lbl_select_screen_audio": MessageLookupByLibrary.simpleMessage(
+      "Share computer audio",
+    ),
+    "v3_lbl_select_screen_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancel sharing",
+    ),
+    "v3_lbl_select_screen_close": MessageLookupByLibrary.simpleMessage(
+      "Close screen selection",
+    ),
+    "v3_lbl_select_screen_ios_back": MessageLookupByLibrary.simpleMessage(
+      "Go back",
+    ),
+    "v3_lbl_select_screen_ios_start_sharing":
+        MessageLookupByLibrary.simpleMessage("Start sharing"),
+    "v3_lbl_select_screen_share": MessageLookupByLibrary.simpleMessage(
+      "Share screen",
+    ),
+    "v3_lbl_select_screen_source_name": MessageLookupByLibrary.simpleMessage(
+      "Screen source:  %s",
+    ),
+    "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("Settings"),
+    "v3_lbl_setting_language_select": MessageLookupByLibrary.simpleMessage(
+      "Select language: %s",
+    ),
+    "v3_lbl_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "View legal policy: %s",
+    ),
+    "v3_lbl_setting_menu_back": MessageLookupByLibrary.simpleMessage(
+      "Back to previous menu",
+    ),
+    "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage(
+      "Close settings menu",
+    ),
+    "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
+      "Privacy policy",
+    ),
+    "v3_lbl_setting_select": MessageLookupByLibrary.simpleMessage("Select %s"),
+    "v3_lbl_setting_software_update_deny_action":
+        MessageLookupByLibrary.simpleMessage("Later"),
+    "v3_lbl_setting_software_update_fail_close":
+        MessageLookupByLibrary.simpleMessage("Close update error dialog"),
+    "v3_lbl_setting_software_update_fail_ok":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_lbl_setting_software_update_no_available":
+        MessageLookupByLibrary.simpleMessage("No Update Available"),
+    "v3_lbl_setting_software_update_no_available_action":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_lbl_setting_software_update_now_action":
+        MessageLookupByLibrary.simpleMessage("Update Now"),
+    "v3_lbl_setting_software_update_positive_action":
+        MessageLookupByLibrary.simpleMessage("Update"),
+    "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
+      "Close update dialog",
+    ),
+    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
+      "Pause off",
+    ),
+    "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("Pause on"),
+    "v3_lbl_sharing_stop": MessageLookupByLibrary.simpleMessage("Sharing stop"),
+    "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
+      "Expand streaming controls",
+    ),
+    "v3_lbl_streaming_minimize_button": MessageLookupByLibrary.simpleMessage(
+      "Minimize streaming controls",
+    ),
+    "v3_lbl_streaming_stop_button": MessageLookupByLibrary.simpleMessage(
+      "Stop streaming",
+    ),
+    "v3_lbl_touch_back_off": MessageLookupByLibrary.simpleMessage(
+      "Disable touchback",
+    ),
+    "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
+      "Enable touchback",
+    ),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Accessibility",
+    ),
+    "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
+      "Please wait for the host to approve your request.",
+    ),
+    "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
+      "Network connectivity error.",
     ),
     "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
       "AirSync instance is busy. Please try it later.",
@@ -620,6 +611,19 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_select_screen_ios_start_sharing": MessageLookupByLibrary.simpleMessage(
       "Start sharing",
+    ),
+    "v3_setting_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Accessibility",
+    ),
+    "v3_setting_accessibility_size_large": MessageLookupByLibrary.simpleMessage(
+      "Large",
+    ),
+    "v3_setting_accessibility_size_normal":
+        MessageLookupByLibrary.simpleMessage("Normal"),
+    "v3_setting_accessibility_size_xlarge":
+        MessageLookupByLibrary.simpleMessage("XLarge"),
+    "v3_setting_accessibility_text_size": MessageLookupByLibrary.simpleMessage(
+      "Text Size",
     ),
     "v3_setting_app_version": m2,
     "v3_setting_app_version_independent": m3,

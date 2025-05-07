@@ -29,9 +29,10 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -2455,6 +2456,56 @@ class S {
     return Intl.message(
       'Privacy policy',
       name: 'v3_lbl_setting_privacy_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text Size`
+  String get v3_setting_accessibility_text_size {
+    return Intl.message(
+      'Text Size',
+      name: 'v3_setting_accessibility_text_size',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accessibility`
+  String get v3_setting_accessibility {
+    return Intl.message(
+      'Accessibility',
+      name: 'v3_setting_accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Normal`
+  String get v3_setting_accessibility_size_normal {
+    return Intl.message(
+      'Normal',
+      name: 'v3_setting_accessibility_size_normal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Large`
+  String get v3_setting_accessibility_size_large {
+    return Intl.message(
+      'Large',
+      name: 'v3_setting_accessibility_size_large',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XLarge`
+  String get v3_setting_accessibility_size_xlarge {
+    return Intl.message(
+      'XLarge',
+      name: 'v3_setting_accessibility_size_xlarge',
       desc: '',
       args: [],
     );
