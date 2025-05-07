@@ -70,7 +70,10 @@ class AppPreferences {
     _instanceName = prefs.getString('app_instanceName') ?? '';
 
     final hadOverride = await hadOverrideDeviceName();
-    if (_instanceName.isEmpty || !hadOverride) {
+
+    /// Due to old version of the app is using 'AirSync' as default device name
+    /// We need to use a flag to is using AirSync as default device name, but when user decide to change the device name as 'AirSync', should not be able to override it
+    if ((_instanceName == 'AirSync' && !hadOverride) || instanceName.isEmpty) {
       _instanceName = await generateDefaultDeviceName();
       await prefs.setString('app_instanceName', _instanceName);
 
