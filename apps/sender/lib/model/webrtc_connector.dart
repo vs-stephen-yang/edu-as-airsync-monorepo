@@ -82,8 +82,8 @@ class WebRTCConnector {
   static const int _maxTrackHeight = 1536;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
-  int? _actualWidth;
-  int? _actualHeight;
+  int _actualWidth = 1920;
+  int _actualHeight = 1080;
 
   static const double _defaultMinFrameRate = 30.0;
   static const double _defaultFrameRate = 30.0;
@@ -760,8 +760,8 @@ class WebRTCConnector {
     if (params.encodings != null) {
       for (var encoding in params.encodings!) {
         encoding.maxBitrate = _calculateBitrateWithScreenScaling(
-          actualWidth: _actualWidth!.toDouble(),
-          actualHeight: _actualHeight!.toDouble(),
+          actualWidth: _actualWidth.toDouble(),
+          actualHeight: _actualHeight.toDouble(),
           baseBitrateKbps: preset.parameters.maxBitrateKbps.toInt(),
         );
 
@@ -986,9 +986,12 @@ class WebRTCConnector {
 
     onVideoStatsReport?.call(stats);
 
-    if (_actualWidth != stats.frameWidth || _actualHeight != stats.frameHeight) {
-      _actualWidth = stats.frameWidth;
-      _actualHeight = stats.frameHeight;
+    final isWidthChanged = stats.frameWidth != null && _actualWidth != stats.frameWidth;
+    final isHeightChanged = stats.frameHeight != null && _actualHeight != stats.frameHeight;
+
+    if (isWidthChanged || isHeightChanged) {
+      _actualWidth = stats.frameWidth!;
+      _actualHeight = stats.frameHeight!;
       _updateEncodingParameters();
     }
   }
