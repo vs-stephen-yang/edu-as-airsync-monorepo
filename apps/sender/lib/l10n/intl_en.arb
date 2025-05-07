@@ -243,5 +243,10 @@
   "v3_lbl_setting_legal_policy": "View legal policy: %s",
   "v3_lbl_select_screen_source_name": "Screen source:  %s",
   "v3_lbl_setting_select": "Select %s",
-  "v3_lbl_setting_privacy_policy": "Privacy policy"
+  "v3_lbl_setting_privacy_policy": "Privacy policy",
+  "v3_setting_accessibility_text_size":"Text Size",
+  "v3_setting_accessibility": "Accessibility",
+  "v3_setting_accessibility_size_normal": "Normal",
+  "v3_setting_accessibility_size_large": "Large",
+  "v3_setting_accessibility_size_xlarge": "XLarge"
 }

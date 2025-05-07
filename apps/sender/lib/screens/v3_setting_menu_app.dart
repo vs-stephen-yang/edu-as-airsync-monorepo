@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_setting_accessibility.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_language.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_legal_policy.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_license.dart';
@@ -38,6 +39,10 @@ class V3SettingMenuApp extends StatelessWidget {
                 submenuTitle = settingsProvider.license?.name ??
                     S.of(context).v3_setting_privacy_policy;
                 submenuWidget = const V3SettingLicense(isAppMode: true);
+                break;
+              case SettingPageState.accessibility:
+                submenuTitle = S.of(context).v3_setting_accessibility;
+                submenuWidget = const V3SettingAccessibility(isAppMode: true);
                 break;
               default:
                 submenuTitle = S.of(context).v3_setting_title;

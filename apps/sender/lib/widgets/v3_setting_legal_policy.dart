@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/oss_licenses.dart';
+import 'package:display_cast_flutter/providers/pref_text_scale_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
   Widget build(BuildContext context) {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
+    double textScale =
+        Provider.of<TextScaleProvider>(context, listen: false).textSize.value;
     return Padding(
       padding: EdgeInsets.only(
         left: isAppMode ? 16 : 24,
@@ -39,7 +42,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
             label: S.of(context).v3_lbl_setting_privacy_policy,
             identifier: 'v3_qa_setting_privacy_policy',
             child: SizedBox(
-              height: WebRTC.platformIsMobile ? 44 : 40,
+              height: (WebRTC.platformIsMobile ? 44 : 40) * textScale,
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: context.tokens.spacing.vsdswSpacingXs.top,
@@ -80,7 +83,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
           ),
           SizedBox(
             width: 376,
-            height: 40,
+            height: 40 * textScale,
             child: Padding(
               padding: EdgeInsets.symmetric(
                 vertical: context.tokens.spacing.vsdswSpacingXs.top,
@@ -116,7 +119,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                         'v3_qa_setting_legal_policy %s', [license.name]),
                     child: SizedBox(
                       width: 352,
-                      height: WebRTC.platformIsMobile ? 44 : 40,
+                      height: (WebRTC.platformIsMobile ? 44 : 40) * textScale,
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: context.tokens.spacing.vsdswSpacingXs.top,

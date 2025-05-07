@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/providers/pref_text_scale_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
@@ -222,6 +223,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: DeviceListProvider()),
         ChangeNotifierProvider.value(value: SettingsProvider()),
         ChangeNotifierProvider.value(value: AnnotationModel()),
+        ChangeNotifierProvider(create: (_) => TextScaleProvider()),
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (context, languageModel, child) {
@@ -229,12 +231,22 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'AirSync Sender',
             debugShowCheckedModeBanner: false,
-            builder: (_, c) {
-              if (AppConfig.of(context)?.settings.appA11yDebug ?? false) {
-                return AccessibilityTools(child: c);
-              }
+            builder: (context, child) {
+              return Consumer<TextScaleProvider>(
+                builder: (context, textSizeProvider, __) {
+                  Widget c = MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                          textScaler: TextScaler.linear(
+                              textSizeProvider.textSize.value)),
+                      child: child!);
 
-              return c!;
+                  if (AppConfig.of(context)?.settings.appA11yDebug ?? false) {
+                    return AccessibilityTools(child: c);
+                  }
+
+                  return c;
+                },
+              );
             },
             localizationsDelegates: const [
               S.delegate,

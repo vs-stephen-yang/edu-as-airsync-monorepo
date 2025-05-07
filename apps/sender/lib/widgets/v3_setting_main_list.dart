@@ -137,6 +137,15 @@ class V3SettingMainList extends StatelessWidget {
     );
     list.add(
       SettingsItems(
+        S.of(context).v3_setting_accessibility,
+        SvgPicture.asset('assets/images/v3_ic_arrow_right.svg'),
+        () {
+          settingsProvider.setPage(SettingPageState.accessibility);
+        },
+      ),
+    );
+    list.add(
+      SettingsItems(
         S.of(context).v3_setting_legal_policy,
         SvgPicture.asset('assets/images/v3_ic_arrow_right.svg'),
         () {
