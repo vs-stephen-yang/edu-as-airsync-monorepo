@@ -19,7 +19,7 @@ IonResolutionType getCaptureVideoResolution(
     return resolutionType;
   }
 
-  const fullHd = 1536.0;
+  const fullHd = 1080.0;
 
   if (screenHeight / 2 >= fullHd) {
     return IonResolutionType.fhd;
