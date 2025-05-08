@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -146,6 +147,53 @@ public class EulaActivity extends FlutterActivity {
                         result.success("N/A");
                     } else {
                         result.success("N/A");
+                    }
+                });
+
+        new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_status")
+                .setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("isWifiEnabled")) {
+                        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                        boolean isEnabled = wifiManager.isWifiEnabled();
+                        result.success(isEnabled);
+                    } else {
+                        result.success(false);
+                    }
+                });
+
+        // 添加 WiFi 狀態變化的 EventChannel
+        new io.flutter.plugin.common.EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_status_events")
+                .setStreamHandler(new io.flutter.plugin.common.EventChannel.StreamHandler() {
+                    private BroadcastReceiver wifiStateReceiver;
+
+                    @Override
+                    public void onListen(Object arguments, io.flutter.plugin.common.EventChannel.EventSink events) {
+                        wifiStateReceiver = new BroadcastReceiver() {
+                            @Override
+                            public void onReceive(Context context, Intent intent) {
+                                if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+                                    int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+                                    switch (wifiState) {
+                                        case WifiManager.WIFI_STATE_ENABLED:
+                                            events.success(true);
+                                            break;
+                                        case WifiManager.WIFI_STATE_DISABLED:
+                                            events.success(false);
+                                            break;
+                                    }
+                                }
+                            }
+                        };
+                        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+                        registerReceiver(wifiStateReceiver, intentFilter);
+                    }
+
+                    @Override
+                    public void onCancel(Object arguments) {
+                        if (wifiStateReceiver != null) {
+                            unregisterReceiver(wifiStateReceiver);
+                            wifiStateReceiver = null;
+                        }
                     }
                 });
     }

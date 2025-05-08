@@ -396,6 +396,16 @@ class MirrorStateProvider extends ChangeNotifier
     notifyListeners();
   }
 
+  Future<void> restartMiracast() async {
+    log.info('restartMiracast');
+    if (!HybridConnectionList().isMirroring()) {
+      if (_miracastEnabled) {
+        await stopMiracast(updatePreference: false);
+        await startMiracast(updatePreference: false);
+      }
+    }
+  }
+
   Future<void> restartMirror() async {
     log.info('restartMirror');
     if (!HybridConnectionList().isMirroring()) {

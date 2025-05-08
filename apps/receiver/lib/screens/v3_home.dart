@@ -7,6 +7,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/wifi_status_util.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
@@ -34,6 +35,8 @@ class V3Home extends StatefulWidget {
 class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
+  late StreamSubscription _wifiStatusSubscription;
+  bool _lastWifiStatus = false;
 
   @override
   void initState() {
@@ -41,10 +44,28 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     AppOverlayTab().setupOverlayTabHandler(context);
     Provider.of<ChannelProvider>(context, listen: false).startChannelProvider();
-    Provider.of<MirrorStateProvider>(context, listen: false)
-        .startMirrorStartProvider();
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    mirrorStateProvider.startMirrorStartProvider();
+
     setProviderContainer();
     AppManagerConfig().startHandleManagerUpdateRequest(context);
+    WifiStatusUtil().initialize();
+
+    // 獲取當前 WiFi 狀態
+    WifiStatusUtil.isWifiEnabled().then((value) {
+      _lastWifiStatus = value;
+    });
+
+    // 監聽 WiFi 狀態變化
+    _wifiStatusSubscription =
+        WifiStatusUtil().wifiStatusStream.listen((isEnabled) {
+      // reopen
+      if (isEnabled && !_lastWifiStatus) {
+        mirrorStateProvider.restartMiracast();
+      }
+      _lastWifiStatus = isEnabled;
+    });
   }
 
   void setProviderContainer() {
@@ -56,6 +77,8 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _wifiStatusSubscription.cancel();
+    WifiStatusUtil().dispose();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     AppManagerConfig().stopHandleManagerUpdateRequest();
