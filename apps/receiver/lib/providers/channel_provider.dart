@@ -185,6 +185,8 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get tunnelActivated => _channelServer.isTunnelAvailable;
+
   Stream<bool> get tunnelActivatedStream =>
       _channelServer.tunnelActivatedController.stream;
 
