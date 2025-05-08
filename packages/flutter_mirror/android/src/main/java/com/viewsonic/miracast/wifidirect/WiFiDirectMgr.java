@@ -24,6 +24,7 @@ import com.viewsonic.miracast.utils.ARPUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -248,19 +249,15 @@ public class WiFiDirectMgr {
     }
   }
 
-  private final PeerListListener peerListListener_ = new PeerListListener() {
-    @Override
-    public void onPeersAvailable(WifiP2pDeviceList peers) {
-      List<WifiP2pDevice> peerList = new ArrayList<>(peers.getDeviceList());
-      Log.d(TAG, peerList.size() + " device(s) found");
-      for (WifiP2pDevice peer : peerList) {
-        Log.d(TAG, String.format("peer: %s - %s - status: %d",
-            peer.deviceName,
-            peer.deviceAddress,
-            peer.status));
-      }
+  private void processPeerListChanged(final Collection<WifiP2pDevice> peerList) {
+    Log.d(TAG, peerList.size() + " device(s) found");
+    for (WifiP2pDevice peer : peerList) {
+      Log.d(TAG, String.format("peer: %s - %s - status: %d",
+          peer.deviceName,
+          peer.deviceAddress,
+          peer.status));
     }
-  };
+  }
 
   private final GroupInfoListener groupInfoListener_ = new GroupInfoListener() {
     @Override
@@ -456,9 +453,11 @@ public class WiFiDirectMgr {
       } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
         // The peer list has changed.
         Log.d(TAG, "onReceive: WIFI_P2P_PEERS_CHANGED_ACTION");
-        if (null != wifiP2pManager_) {
-          wifiP2pManager_.requestPeers(channel_, peerListListener_);
+        WifiP2pDeviceList wifiP2pDeviceList = intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
+        if (wifiP2pDeviceList == null || wifiP2pDeviceList.getDeviceList() == null) {
+          return;
         }
+        processPeerListChanged(wifiP2pDeviceList.getDeviceList());
       } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
         // Connection state changed! We should probably do something about that.
         NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
