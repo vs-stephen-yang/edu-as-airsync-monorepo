@@ -493,6 +493,10 @@ public class WiFiDirectMgr {
         Method mtdSetSessionAvailable = clsWifiP2pWfdInfo.getMethod("setSessionAvailable", boolean.class);
         mtdSetSessionAvailable.invoke(wifiP2pWfdInfo, enable);
 
+        // wifiP2pWfdInfo.setControlPort(DEFALUT_SOURCE_PORT);
+        Method mtdSetControlPort = clsWifiP2pWfdInfo.getMethod("setControlPort", int.class);
+        mtdSetControlPort.invoke(wifiP2pWfdInfo, DEFALUT_SOURCE_PORT);
+
         // wifiP2pWfdInfo.setMaxThroughput(MAX_THROUGHPUT);
         Method mtdSetMaxThroughput = clsWifiP2pWfdInfo.getMethod("setMaxThroughput", int.class);
         mtdSetMaxThroughput.invoke(wifiP2pWfdInfo, 20);
@@ -503,6 +507,7 @@ public class WiFiDirectMgr {
         wifiP2pWfdInfo.setEnabled(enable);
         wifiP2pWfdInfo.setDeviceType(WifiP2pWfdInfo.DEVICE_TYPE_PRIMARY_SINK);
         wifiP2pWfdInfo.setSessionAvailable(enable);
+        wifiP2pWfdInfo.setControlPort(DEFALUT_SOURCE_PORT);
         wifiP2pWfdInfo.setMaxThroughput(20);
         setWfdMethodName = "setWfdInfo";
       }
