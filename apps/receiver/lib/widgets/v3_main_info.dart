@@ -8,9 +8,7 @@ import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +58,14 @@ class V3MainInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _buildStackContent(context, isLandscape: true),
+          child: Scrollbar(
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: 480, // 使用與外層容器相同的高度
+                child: _buildStackContent(context, isLandscape: true),
+              ),
+            ),
+          ),
         ),
         Container(
           width: 1,
@@ -95,20 +100,27 @@ class V3MainInfo extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        const Positioned(
+        Positioned(
           left: 53,
-          top: 26,
-          bottom: 76,
-          child: V3Instruction(isCastToDevice: false),
+          top: 25,
+          bottom: 80,
+          right: isLandscape ? 230 : 50,
+          // 為右側的 QR 碼留出空間
+          child: Scrollbar(
+            thumbVisibility: true, // 滾動條始終可見
+            child: SingleChildScrollView(
+              child: const V3Instruction(isCastToDevice: false),
+            ),
+          ),
         ),
         Positioned(
           left: 50,
-          bottom: 53,
+          bottom: 50, // 增加底部距離，為 _buildMiracastInstructionRow 留出更多空間
           child: _buildInstructionRow(context),
         ),
         Positioned(
           left: 50,
-          bottom: 32,
+          bottom: 6,
           child: _buildMiracastInstructionRow(context),
         ),
         Positioned(
@@ -117,7 +129,7 @@ class V3MainInfo extends StatelessWidget {
           right: isLandscape ? 42 : 29,
           child: Container(
             width: 171,
-            height: 229,
+            height: 245, // 增加高度從 229 到 245，以容納 QR 碼
             decoration: _buildQrCodeDecoration(context),
             child: const V3QrCodeQuickConnect(),
           ),
@@ -169,6 +181,7 @@ class V3MainInfo extends StatelessWidget {
     return Consumer<MirrorStateProvider>(builder: (_, provider, __) {
       return provider.isVB005AndDFSChannel
           ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start, // 保持頂部對齊
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 35),
@@ -185,14 +198,19 @@ class V3MainInfo extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 5),
-                  child: AutoSizeText(
-                    S.of(context).v3_miracast_not_support,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                      color: context.tokens.color.vsdslColorWarning,
+                  child: SizedBox(
+                    width: 700, // 設置一個固定的寬度
+                    child: AutoSizeText(
+                      S.of(context).v3_miracast_not_support,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                        color: context.tokens.color.vsdslColorWarning,
+                      ),
+                      minFontSize: 9,
+                      maxLines: 2, // 允許最多兩行
+                      overflow: TextOverflow.ellipsis, // 如果超過兩行，使用省略號
                     ),
-                    minFontSize: 9,
                   ),
                 ),
               ],
