@@ -30,3 +30,6 @@ migrate_working_dir/
 build/
 example/MVBA_PlatForm.jks
 example/keystore.properties
+
+# FVM Version Cache
+.fvm/
