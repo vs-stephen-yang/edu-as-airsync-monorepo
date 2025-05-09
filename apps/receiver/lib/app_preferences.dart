@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
@@ -18,6 +20,7 @@ class AppPreferences {
     await _instance.loadInvitedToGroupSelectedItem();
     await _instance.loadSelectedConnectivityType();
     await _instance._loadGroupSelectedList();
+    await _instance.loadTextSizeOption();
   }
 
   bool _showEULA = true;
@@ -168,6 +171,37 @@ class AppPreferences {
     String type = prefs.getString('app_settings_connectivity_type') ??
         ConnectivityType.both.name;
     connectivityTypeNotifier.value = type;
+  }
+
+  /// 文字縮放相關功能
+  ValueNotifier<int> textSizeOptionNotifier =
+      ValueNotifier<int>(ResizeTextSizeOption.normal.value);
+
+  ResizeTextSizeOption get textSizeOption =>
+      ResizeTextSizeOption.fromValue(textSizeOptionNotifier.value);
+
+  double get textScale {
+    switch (textSizeOption) {
+      case ResizeTextSizeOption.normal:
+        return 1.0;
+      case ResizeTextSizeOption.large:
+        return 1.5;
+      case ResizeTextSizeOption.xlarge:
+        return 2.0;
+    }
+  }
+
+  Future<void> setTextSizeOption(ResizeTextSizeOption option) async {
+    textSizeOptionNotifier.value = option.value;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('app_text_size_option', option.value);
+  }
+
+  Future<void> loadTextSizeOption() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int value = prefs.getInt('app_text_size_option') ??
+        ResizeTextSizeOption.normal.value;
+    textSizeOptionNotifier.value = value;
   }
 }
 
