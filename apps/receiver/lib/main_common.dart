@@ -18,7 +18,6 @@ import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/providers/text_scale_provider.dart';
 import 'package:display_flutter/screens/v3_eula.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -153,7 +152,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TextScaleProvider()),
         ChangeNotifierProvider.value(value: InstanceInfoProvider()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
@@ -204,12 +202,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                             V3Eula(primaryFocusNode: primaryFocusNode))),
               },
               builder: (context, child) {
-                return Consumer<TextScaleProvider>(
-                  builder: (context, textScaleProvider, __) {
+                return ValueListenableBuilder(
+                  valueListenable: AppPreferences().textSizeOptionNotifier,
+                  builder: (context, _, __) {
                     Widget c = MediaQuery(
                         data: MediaQuery.of(context).copyWith(
                             textScaler:
-                                TextScaler.linear(textScaleProvider.scale)),
+                                TextScaler.linear(AppPreferences().textScale)),
                         child: child!);
                     if (AppConfig.of(context)!.settings.appA11yDebug == true) {
                       c = AccessibilityTools(child: c);

@@ -38,25 +38,3 @@ enum ResizeTextSizeOption {
     return ResizeTextSizeOption._resizeTextSizeMap(context)[this]!;
   }
 }
-
-class TextScaleProvider extends ChangeNotifier {
-  ResizeTextSizeOption _textSizeOption = ResizeTextSizeOption.normal;
-
-  ResizeTextSizeOption get textSizeOption => _textSizeOption;
-
-  double get scale {
-    switch (_textSizeOption) {
-      case ResizeTextSizeOption.normal:
-        return 1.0;
-      case ResizeTextSizeOption.large:
-        return 1.5;
-      case ResizeTextSizeOption.xlarge:
-        return 2.0;
-    }
-  }
-
-  void updateScale(ResizeTextSizeOption option) {
-    _textSizeOption = option;
-    notifyListeners();
-  }
-}

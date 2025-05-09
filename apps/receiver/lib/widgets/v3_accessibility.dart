@@ -1,7 +1,8 @@
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/providers/text_scale_provider.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter/material.dart';
@@ -40,28 +41,32 @@ class V3Accessibility extends StatelessWidget {
         ),
         SizedBox(
           width: 105,
-          child: CustomDropdown(
-            isDisable: settingsProvider.isDeviceSettingLock,
-            options: ResizeTextSizeOption.values
-                .map((e) =>
-                    ResizeTextSizeOption.resizeTextSizeItems(context)[e.value])
-                .toList(),
-            selectedValue: Provider.of<TextScaleProvider>(context, listen: true)
-                .textSizeOption
-                .rawValue(context),
-            onChange: (String? value) {
-              final textSizeOption = ResizeTextSizeOption.values.firstWhere(
-                (e) =>
-                    ResizeTextSizeOption.resizeTextSizeItems(
-                        context)[e.value] ==
-                    value,
-                orElse: () => ResizeTextSizeOption.normal,
-              );
+          child: ValueListenableBuilder(
+              valueListenable: AppPreferences().textSizeOptionNotifier,
+              builder: (context, textSizeOptionValue, _) {
+                final textSizeOption =
+                    ResizeTextSizeOption.fromValue(textSizeOptionValue);
+                return CustomDropdown(
+                  isDisable: settingsProvider.isDeviceSettingLock,
+                  options: ResizeTextSizeOption.values
+                      .map((e) => ResizeTextSizeOption.resizeTextSizeItems(
+                          context)[e.value])
+                      .toList(),
+                  selectedValue: textSizeOption.rawValue(context),
+                  onChange: (String? value) {
+                    final newTextSizeOption =
+                        ResizeTextSizeOption.values.firstWhere(
+                      (e) =>
+                          ResizeTextSizeOption.resizeTextSizeItems(
+                              context)[e.value] ==
+                          value,
+                      orElse: () => ResizeTextSizeOption.normal,
+                    );
 
-              Provider.of<TextScaleProvider>(context, listen: false)
-                  .updateScale(textSizeOption);
-            },
-          ),
+                    AppPreferences().setTextSizeOption(newTextSizeOption);
+                  },
+                );
+              }),
         ),
       ],
     );
