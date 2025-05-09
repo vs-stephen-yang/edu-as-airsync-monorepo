@@ -168,21 +168,25 @@ class RtcStatsParser {
           _previousVideoOutboundStats!.totalEncodedBytesTarget?.toDouble());
 
       // Calculate averages
-      encodeTimeAvgMs = _avg(
-            totalEncodeTime,
-            _previousVideoOutboundStats!.totalEncodeTime,
-            framesEncoded,
-            _previousVideoOutboundStats!.framesEncoded,
-          ) *
-          1000; // Convert to ms;
+      var encodeTimeAvg = _avg(
+        totalEncodeTime,
+        _previousVideoOutboundStats!.totalEncodeTime,
+        framesEncoded,
+        _previousVideoOutboundStats!.framesEncoded,
+      );
+      if (encodeTimeAvg != null) {
+        encodeTimeAvgMs = encodeTimeAvg * 1000; // Convert to ms;
+      }
 
-      packetSendDelayAvgMs = _avg(
-            totalPacketSendDelay,
-            _previousVideoOutboundStats!.totalPacketSendDelay,
-            packetsSent,
-            _previousVideoOutboundStats!.packetsSent,
-          ) *
-          1000; // Convert to ms;
+      var packetSendDelayAvg = _avg(
+        totalPacketSendDelay,
+        _previousVideoOutboundStats!.totalPacketSendDelay,
+        packetsSent,
+        _previousVideoOutboundStats!.packetsSent,
+      );
+      if (packetSendDelayAvg != null) {
+        packetSendDelayAvgMs = packetSendDelayAvg * 1000; // Convert to ms;
+      }
 
       qpSumAvg = _avg(
         qpSum,
