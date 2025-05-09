@@ -47,7 +47,8 @@ abstract class ColorTokens {
   Color get vsdslColorSuccess;
   Color get vsdslColorSuccessVariant;
   Color get vsdslColorWarning;
-  Color get vsdslColorOnWarningVariant;
+
+  Color get vsdslColorOnWarning;
   Color get vsdslColorError;
   Color get vsdslColorOnError;
   Color get vsdslColorDisabled;
@@ -192,7 +193,7 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdslColorWarning => const Color(0xFFEC6200);
   @override
-  Color get vsdslColorOnWarningVariant => const Color(0xFFFFFFFF);
+  Color get vsdslColorOnWarning => const Color(0xFFFFFFFF);
   @override
   Color get vsdslColorError => const Color(0xFFDB0025);
   @override

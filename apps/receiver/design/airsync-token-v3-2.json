@@ -295,7 +295,7 @@
       "value": "#EC6200",
       "type": "color"
     },
-  "vsdslColorOnWarningVariant": {
+  "vsdslColorOnWarning": {
     "value": "#FFFFFF",
     "type": "color"
   },
