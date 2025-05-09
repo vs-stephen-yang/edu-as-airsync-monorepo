@@ -307,7 +307,8 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
               key: key,
               imgPath: 'assets/images/ic_local_connection_only_warning.svg',
               message: S.of(context).v3_settings_local_connection_only,
-              color: context.tokens.color.vsdslColorWarning,
+              textColor: context.tokens.color.vsdslColorOnWarning,
+              backgroundColor: context.tokens.color.vsdslColorWarning,
             ),
           ),
         );
@@ -316,7 +317,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
         return _ConnectionStatusWidget(
           imgPath: 'assets/images/ic_internet_connection_only.svg',
           message: S.of(context).v3_main_internet_connection_only,
-          color: context.tokens.color.vsdslColorSurface600,
+          textColor: context.tokens.color.vsdslColorOnSurface,
         );
 
       case ConnectionStatusState.internetTunnelOff:
@@ -334,7 +335,8 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
               key: key,
               imgPath: 'assets/images/ic_internet_connection_only_error.svg',
               message: S.of(context).v3_main_internet_connection_only_error,
-              color: context.tokens.color.vsdslColorError,
+              textColor: context.tokens.color.vsdslColorOnError,
+              backgroundColor: context.tokens.color.vsdslColorError,
             ),
           ),
         );
@@ -343,6 +345,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
         return _ConnectionStatusWidget(
           imgPath: 'assets/images/ic_local_connection_only.svg',
           message: S.of(context).v3_settings_local_connection_only,
+          textColor: context.tokens.color.vsdslColorOnSurface,
         );
     }
   }
@@ -351,20 +354,22 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
 class _ConnectionStatusWidget extends StatelessWidget {
   final String message;
   final String imgPath;
-  final Color? color;
+  final Color? textColor;
+  final Color? backgroundColor;
 
   const _ConnectionStatusWidget({
     super.key,
     required this.message,
     required this.imgPath,
-    this.color,
+    this.textColor,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: ShapeDecoration(
-        color: context.tokens.color.vsdslColorSurface200,
+        color: backgroundColor ?? context.tokens.color.vsdslColorSurface200,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(9999),
         ),
@@ -382,7 +387,7 @@ class _ConnectionStatusWidget extends StatelessWidget {
             width: 21,
             height: 21,
             colorFilter: ColorFilter.mode(
-              color ?? context.tokens.color.vsdslColorSurface600,
+              textColor ?? context.tokens.color.vsdslColorSurface600,
               BlendMode.srcIn,
             ),
           ),
@@ -393,7 +398,7 @@ class _ConnectionStatusWidget extends StatelessWidget {
             child: AutoSizeText(
               message,
               style: context.tokens.textStyle.airsyncFontSubtitle600.apply(
-                color: color ?? context.tokens.color.vsdslColorSurface600,
+                color: textColor ?? context.tokens.color.vsdslColorSurface600,
               ),
             ),
           ),
