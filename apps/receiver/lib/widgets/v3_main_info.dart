@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
@@ -97,44 +99,61 @@ class V3MainInfo extends StatelessWidget {
   }
 
   Widget _buildStackContent(BuildContext context, {required bool isLandscape}) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Positioned(
-          left: 53,
-          top: 25,
-          bottom: 80,
-          right: isLandscape ? 230 : 50,
-          // 為右側的 QR 碼留出空間
-          child: Scrollbar(
-            thumbVisibility: true, // 滾動條始終可見
-            child: SingleChildScrollView(
-              child: const V3Instruction(isCastToDevice: false),
+    print(
+        'zz AppPreferences().textSizeOption: ${AppPreferences().textSizeOption} isLandscape: $isLandscape');
+
+    // 創建 ScrollController
+    final ScrollController scrollController = ScrollController();
+
+    return ValueListenableBuilder<int>(
+      valueListenable: AppPreferences().textSizeOptionNotifier,
+      builder: (context, value, child) {
+        final textSizeOption = ResizeTextSizeOption.fromValue(value);
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned(
+              left: 53,
+              top: 25,
+              bottom: 80,
+              right: isLandscape ? 230 : 50,
+              // 為右側的 QR 碼留出空間
+              child: Scrollbar(
+                controller: scrollController, // 使用 ScrollController
+                thumbVisibility: true, // 滾動條始終可見
+                child: SingleChildScrollView(
+                  controller: scrollController, // 使用相同的 ScrollController
+                  child: const V3Instruction(isCastToDevice: false),
+                ),
+              ),
             ),
-          ),
-        ),
-        Positioned(
-          left: 50,
-          bottom: 50, // 增加底部距離，為 _buildMiracastInstructionRow 留出更多空間
-          child: _buildInstructionRow(context),
-        ),
-        Positioned(
-          left: 50,
-          bottom: 6,
-          child: _buildMiracastInstructionRow(context),
-        ),
-        Positioned(
-          bottom: isLandscape ? null : 40,
-          top: isLandscape ? 150 : null,
-          right: isLandscape ? 42 : 29,
-          child: Container(
-            width: 171,
-            height: 245, // 增加高度從 229 到 245，以容納 QR 碼
-            decoration: _buildQrCodeDecoration(context),
-            child: const V3QrCodeQuickConnect(),
-          ),
-        ),
-      ],
+            Positioned(
+              left: 50,
+              bottom: 50, // 增加底部距離，為 _buildMiracastInstructionRow 留出更多空間
+              child: _buildInstructionRow(context),
+            ),
+            Positioned(
+              left: 50,
+              bottom: 6,
+              child: _buildMiracastInstructionRow(context),
+            ),
+            if (isLandscape ||
+                (!isLandscape && textSizeOption == ResizeTextSizeOption.normal))
+              Positioned(
+                bottom: isLandscape ? null : 40,
+                top: isLandscape ? 150 : null,
+                right: isLandscape ? 42 : 29,
+                child: Container(
+                  width: 171,
+                  height: 245, // 增加高度從 229 到 245，以容納 QR 碼
+                  decoration: _buildQrCodeDecoration(context),
+                  child: const V3QrCodeQuickConnect(),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 

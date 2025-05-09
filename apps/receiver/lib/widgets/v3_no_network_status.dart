@@ -11,7 +11,7 @@ class V3NoNetworkStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 540,
-      height: 174,
+      height: 220,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -26,6 +26,14 @@ class V3ParticipantsView extends StatefulWidget {
 class _V3ParticipantsView extends State<V3ParticipantsView> {
   final GlobalKey _containerKey = GlobalKey();
   bool isShowDialogMenu = false;
+  final ScrollController _scrollController =
+      ScrollController(); // 添加 ScrollController
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // 釋放資源
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +60,10 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
             identifier: 'v3_qa_moderator_toggle',
             child: Container(
               width: 270,
-              height: 53,
+              // 恢復固定寬度
+              constraints: const BoxConstraints(
+                minHeight: 53, // 保持最小高度
+              ),
               padding: const EdgeInsets.all(16),
               decoration: const ShapeDecoration(
                 shape: RoundedRectangleBorder(
@@ -65,15 +76,19 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
               ),
               child: Row(
                 children: [
-                  AutoSizeText(
-                    S.of(context).v3_moderator_mode,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                  Expanded(
+                    child: AutoSizeText(
+                      S.of(context).v3_moderator_mode,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1, // 限制為單行
+                      overflow: TextOverflow.ellipsis, // 溢出時顯示省略號
                     ),
                   ),
-                  const Spacer(),
+                  // const Spacer(),
                   Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
                     return SizedBox(
                       width: 37,
