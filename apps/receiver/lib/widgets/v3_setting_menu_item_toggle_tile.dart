@@ -33,18 +33,25 @@ class V3SettingMenuItemToggleTile extends StatelessWidget {
         highlightColor: Colors.transparent,
         focusNode: focusNode,
         onTap: onTap,
-        child: SizedBox(
-          height: 26,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 26),
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                  fontSize: 12,
+              // 使用 Expanded 來處理文字溢出
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    fontSize: 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 5,
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               SizedBox(
                 height: 21,
                 width: 38,

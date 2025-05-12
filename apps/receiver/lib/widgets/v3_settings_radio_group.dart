@@ -112,12 +112,14 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                             height: 20,
                           ),
                           Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                          AutoSizeText(
-                            key.title,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                          Expanded(
+                            child: Text(
+                              key.title,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
                           )
                         ],

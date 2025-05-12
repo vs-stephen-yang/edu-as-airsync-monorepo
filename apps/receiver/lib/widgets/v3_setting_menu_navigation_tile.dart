@@ -31,30 +31,43 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
       excludeSemantics: false,
       child: SizedBox(
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                fontSize: 12,
+            Expanded(
+              flex: 1,
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  fontSize: 12,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 5,
               ),
             ),
-            const Spacer(),
-            InkWell(
-              focusNode: focusNode,
-              onTap: onTap,
-              child: Container(
-                alignment: Alignment.center,
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                child: Text(
-                  trialling,
-                  style: TextStyle(
-                    color: context.tokens.color.vsdslColorOnSurfaceInverse
-                        .withOpacity(disable ? 0.32 : 1),
-                    fontSize: 12,
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 1,
+              child: InkWell(
+                focusNode: focusNode,
+                onTap: onTap,
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  constraints: const BoxConstraints(minHeight: 48),
+                  padding: const EdgeInsets.symmetric(vertical: 4), // 添加垂直內邊距
+                  child: Text(
+                    trialling,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse
+                          .withValues(alpha: disable ? 0.32 : 1),
+                      fontSize: 12,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2, // 允許顯示最多兩行
+                    textAlign: TextAlign.right, // 確保文字右對齊
                   ),
                 ),
-              )
+              ),
             ),
             V3MenuNavigationIconButton(
               label: label,

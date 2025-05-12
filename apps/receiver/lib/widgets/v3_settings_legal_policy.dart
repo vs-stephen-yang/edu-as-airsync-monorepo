@@ -46,8 +46,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                 bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
             color: context.tokens.color.vsdslColorOutlineVariant,
           ),
-          SizedBox(
-            height: 26,
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 26),
             child: Text(
               S.of(context).v3_settings_open_source_license,
               style: TextStyle(
@@ -57,27 +57,33 @@ class V3SettingsLegalPolicy extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Scrollbar(
-              thumbVisibility: true,
-              child: ListView.builder(
-                itemCount: dependencies
-                    .where((license) => !_hiddenLicenses.contains(license.name))
-                    .length,
-                itemBuilder: (context, index) {
-                  final visibleLicenses = dependencies
+            child: Builder(builder: (context) {
+              final sc = ScrollController();
+              return Scrollbar(
+                controller: sc,
+                thumbVisibility: true,
+                child: ListView.builder(
+                  controller: sc,
+                  itemCount: dependencies
                       .where(
                           (license) => !_hiddenLicenses.contains(license.name))
-                      .toList();
-                  final license = visibleLicenses[index];
-                  return V3SettingMenuListTile(
-                      name: license.name,
-                      onTap: () {
-                        settingsProvider.setPage(SettingPageState.licenses,
-                            license: license);
-                      });
-                },
-              ),
-            ),
+                      .length,
+                  itemBuilder: (context, index) {
+                    final visibleLicenses = dependencies
+                        .where((license) =>
+                            !_hiddenLicenses.contains(license.name))
+                        .toList();
+                    final license = visibleLicenses[index];
+                    return V3SettingMenuListTile(
+                        name: license.name,
+                        onTap: () {
+                          settingsProvider.setPage(SettingPageState.licenses,
+                              license: license);
+                        });
+                  },
+                ),
+              );
+            }),
           ),
         ],
       ),
@@ -99,42 +105,40 @@ class V3SettingMenuListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 26,
-      child: Row(
-        children: [
-          Expanded(
-            child: V3SettingMenuListItemFocus(
-              child: Row(
-                children: [
-                  Text(
+    return Row(
+      children: [
+        Expanded(
+          child: V3SettingMenuListItemFocus(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
                     name,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurfaceInverse,
                       fontSize: 12,
                     ),
                   ),
-                  const Spacer(),
-                  V3MenuNavigationIconButton(
-                    label: sprintf(
-                        S.of(context).v3_lbl_settings_open_source_license,
-                        [name]),
-                    identifier: "v3_qa_settings_open_source_license_$name",
-                    focusNode: focusNode,
-                    constraints: const BoxConstraints(
-                      minWidth: 40.0,
-                      minHeight: 48.0,
-                    ),
-                    enabledIconPath: 'assets/images/ic_arrow_right.svg',
-                    onPressed: onTap,
+                ),
+                V3MenuNavigationIconButton(
+                  label: sprintf(
+                      S.of(context).v3_lbl_settings_open_source_license,
+                      [name]),
+                  identifier: "v3_qa_settings_open_source_license_$name",
+                  focusNode: focusNode,
+                  constraints: const BoxConstraints(
+                    minWidth: 40.0,
+                    minHeight: 48.0,
                   ),
-                ],
-              ),
+                  enabledIconPath: 'assets/images/ic_arrow_right.svg',
+                  onPressed: onTap,
+                ),
+              ],
             ),
           ),
-          const Gap(8),
-        ],
-      ),
+        ),
+        const Gap(8),
+      ],
     );
   }
 }

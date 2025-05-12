@@ -85,23 +85,30 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 44,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          S.of(context).v3_settings_device_name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            height: 1.5,
-                            fontSize: 12,
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minHeight: 44,
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            S.of(context).v3_settings_device_name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              height: 1.5,
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
                           ),
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    SizedBox(
-                      width: 200,
+                    Spacer(),
+                    Expanded(
+                      flex: 2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -125,6 +132,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                                   decoration: InputDecoration(
                                     border: InputBorder.none, // 去掉底線
                                   ),
+                                  maxLines: 2,
+                                  minLines: 1,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
                                         RegExp('[a-zA-Z0-9]')),
@@ -271,12 +280,18 @@ class _SaveButton extends StatelessWidget {
                   }
                 : null,
             child: Container(
-              width: 80,
-              height: 26,
+              constraints: const BoxConstraints(
+                minWidth: 80,
+                minHeight: 26,
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: context.tokens.color.vsdslColorPrimary
-                    .withOpacity(enable ? 1 : disableOpacity),
+                    .withValues(alpha: enable ? 1 : disableOpacity),
                 borderRadius: BorderRadius.circular(
                     context.tokens.spacing.vsdslSpacing2xl.top),
               ),
@@ -285,9 +300,10 @@ class _SaveButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   color: context.tokens.color.vsdslColorOnPrimary
-                      .withOpacity(enable ? 1 : disableOpacity),
+                      .withValues(alpha: enable ? 1 : disableOpacity),
                 ),
-                maxLines: 1,
+                textAlign: TextAlign.center,
+                minFontSize: 8, // 允許字體縮小到最小 8 號
               ),
             ),
           ),

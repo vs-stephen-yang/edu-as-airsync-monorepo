@@ -607,6 +607,7 @@ class CustomDropdownState extends State<CustomDropdown> {
                                       context.tokens.radii.vsdslRadiusSm,
                                 ),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: Text(
@@ -622,6 +623,8 @@ class CustomDropdownState extends State<CustomDropdown> {
                                                   : context.tokens.color
                                                       .vsdslColorOnSurface,
                                         ),
+                                        maxLines: 5,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     if (isSelected)
@@ -704,7 +707,7 @@ class CustomDropdownState extends State<CustomDropdown> {
                 Expanded(
                   child: Text(
                     widget.selectedValue,
-                    maxLines: 1,
+                    maxLines: 5,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 9,
