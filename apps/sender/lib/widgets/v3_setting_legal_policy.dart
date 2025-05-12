@@ -127,15 +127,16 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                                 context.tokens.spacing.vsdswSpacingSm.left),
                         child: Row(
                           children: [
-                            AutoSizeText(
-                              license.name,
-                              style: TextStyle(
-                                color: context
-                                    .tokens.color.vsdswColorOnSurfaceInverse,
-                                fontSize: 14,
+                            Expanded(
+                              child: AutoSizeText(
+                                license.name,
+                                style: TextStyle(
+                                  color: context
+                                      .tokens.color.vsdswColorOnSurfaceInverse,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            const Spacer(),
                             ExcludeSemantics(
                               child: IconButton(
                                 icon: SvgPicture.asset(

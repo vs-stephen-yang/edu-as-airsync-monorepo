@@ -16,10 +16,9 @@ class V3PresentDeviceListButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 48,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Wrap(
+        spacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(
             S.current.v3_device_list_button_text,
@@ -30,25 +29,24 @@ class V3PresentDeviceListButton extends StatelessWidget {
               fontFamily: 'Inter',
             ),
           ),
-          const SizedBox(width: 8),
           V3Focus(
             label: S.current.v3_lbl_device_list_button_device_list,
             identifier: 'v3_qa_device_list_button_device_list',
             button: true,
             child: InkWell(
               focusColor: Colors.transparent,
-              borderRadius: BorderRadius.circular(9999),
+              borderRadius: BorderRadius.circular(20),
               onTap: onTap,
               child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8),
                 height: 48, // 實際觸控範圍（符合 WCAG）
-                alignment: Alignment.center,
                 child: Container(
                   height: 32, // 實際看起來的按鈕高度
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: ShapeDecoration(
                     color: context.tokens.color.vsdswColorTertiary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9999),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     shadows: [
                       BoxShadow(

@@ -959,40 +959,41 @@ class ScreenExtensionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: 286,
-          height: 185,
-          child: Lottie.asset('assets/lottie_files/screen_extension.json'),
-        ),
-        const Gap(32),
-        Text(
-          S.current.v3_present_select_screen_extension_desc,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: context.tokens.color.vsdswColorOnSurface,
-            fontSize: 20,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 286,
+            height: 185,
+            child: Lottie.asset('assets/lottie_files/screen_extension.json'),
           ),
-        ),
-        const Gap(8),
-        SizedBox(
-          width: 600,
-          child: Text(
-            S.current.v3_present_select_screen_extension_desc2,
+          const Gap(32),
+          Text(
+            S.current.v3_present_select_screen_extension_desc,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: context.tokens.color.vsdswColorOnSurface,
-              fontSize: 16,
+              fontSize: 20,
               fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w500,
             ),
           ),
-        ),
-      ],
+          const Gap(8),
+          SizedBox(
+            child: Text(
+              S.current.v3_present_select_screen_extension_desc2,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: context.tokens.color.vsdswColorOnSurface,
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

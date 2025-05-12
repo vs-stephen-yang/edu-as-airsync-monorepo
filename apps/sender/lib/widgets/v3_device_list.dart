@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
+import 'package:display_cast_flutter/providers/pref_text_scale_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -145,10 +146,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
                             '${airSyncBonsoirService.name} ${airSyncBonsoirService.displayCode}',
                         identifier: 'v3_qa_device_list_item_$index',
                         child: InkWell(
-                          child: isMobile()
-                              ? buildMobileItem(airSyncBonsoirService, context)
-                              : buildDeskTopItem(
-                                  airSyncBonsoirService, context),
+                          child:
+                              buildMobileItem(airSyncBonsoirService, context),
                           onTap: () {
                             setState(() {
                               _connectService = airSyncBonsoirService;
@@ -317,8 +316,10 @@ class _V3DeviceListState extends State<V3DeviceList> {
   Widget buildMobileItem(
       AirSyncBonsoirService airSyncBonsoirService, BuildContext context) {
     final onSelected = _connectService == airSyncBonsoirService;
+    double textScale =
+        Provider.of<TextScaleProvider>(context, listen: false).textSize.value;
     return Container(
-      height: 72,
+      height: 72 * textScale,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: ShapeDecoration(
         color: onSelected ? context.tokens.color.vsdswColorPrimary : null,
