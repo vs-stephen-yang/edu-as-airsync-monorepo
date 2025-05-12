@@ -20,6 +20,8 @@ class V3QrCodeQuickConnect extends StatelessWidget {
         fontWeight: FontWeight.w600,
         fontSize: isStringOnTop ? 21 : 14,
       ),
+      maxLines: 2, // 允許最多兩行
+      textAlign: TextAlign.center, // 文本居中
     );
 
     Widget space = SizedBox(

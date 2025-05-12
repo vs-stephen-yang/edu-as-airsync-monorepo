@@ -99,8 +99,6 @@ class V3MainInfo extends StatelessWidget {
   }
 
   Widget _buildStackContent(BuildContext context, {required bool isLandscape}) {
-    print(
-        'zz AppPreferences().textSizeOption: ${AppPreferences().textSizeOption} isLandscape: $isLandscape');
 
     // 創建 ScrollController
     final ScrollController scrollController = ScrollController();
@@ -142,11 +140,11 @@ class V3MainInfo extends StatelessWidget {
                 (!isLandscape && textSizeOption == ResizeTextSizeOption.normal))
               Positioned(
                 bottom: isLandscape ? null : 40,
-                top: isLandscape ? 150 : null,
+                top: isLandscape ? 110 : null,
                 right: isLandscape ? 42 : 29,
                 child: Container(
                   width: 171,
-                  height: 245, // 增加高度從 229 到 245，以容納 QR 碼
+                  height: 285, // 增加高度從 229 到 245，以容納 QR 碼
                   decoration: _buildQrCodeDecoration(context),
                   child: const V3QrCodeQuickConnect(),
                 ),

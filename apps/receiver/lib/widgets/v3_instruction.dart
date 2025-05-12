@@ -85,7 +85,11 @@ class V3Instruction extends StatelessWidget {
               }),
         ],
         if (!isQuickConnect && !isCastToDevice) ...[
-          Row(
+          Wrap(
+            // 使用 Wrap 代替 Row，它會在空間不足時自動換行
+            spacing: 10, // 水平間距
+            runSpacing: 10, // 垂直間距（行之間）
+            crossAxisAlignment: WrapCrossAlignment.center, // 垂直居中對齊
             children: [
               AutoSizeText(
                 S.of(context).v3_instruction_share_screen,
@@ -93,14 +97,14 @@ class V3Instruction extends StatelessWidget {
                     color: context.tokens.color.vsdslColorOnSurface,
                     fontWeightDelta: FontWeight.w700.value),
               ),
-              Gap(context.tokens.spacing.vsdslSpacing3xl.right),
+              Gap(context.tokens.spacing.vsdslSpacingSm.right), // 減小間距
               const ConnectionStatus(),
             ],
           ),
           SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
         ],
         Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SvgPicture.asset(
@@ -109,9 +113,8 @@ class V3Instruction extends StatelessWidget {
               height: 27,
               width: 27,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: context.tokens.spacing.vsdslSpacingMd.left),
+            Expanded(
+              // 添加 Expanded 來確保內容不會溢出
               child: Consumer<ConnectivityProvider>(
                   builder: (_, connectivityProvider, __) {
                 return FutureBuilder(
@@ -124,6 +127,7 @@ class V3Instruction extends StatelessWidget {
                     String airsync =
                         AppConfig.of(context)?.settings.airSyncUrl ?? '';
                     return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText.rich(
@@ -155,9 +159,13 @@ class V3Instruction extends StatelessWidget {
                               context.tokens.textStyle.airsyncFontTitle.apply(
                             color: context.tokens.color.vsdslColorOnSurface,
                           ),
+                          // maxLines: 6,
                         ),
                         if (isInternet && !isCastToDevice)
-                          Row(
+                          Wrap(
+                            // 使用 Wrap 代替 Row，它會在空間不足時自動換行
+                            spacing: 8, // 水平間距
+                            runSpacing: 8, // 垂直間距
                             children: [
                               AutoSizeText.rich(
                                 _buildTextSpan(
@@ -177,6 +185,7 @@ class V3Instruction extends StatelessWidget {
                                   color:
                                       context.tokens.color.vsdslColorOnSurface,
                                 ),
+                                // maxLines: 6,
                               ),
                               V3Focus(
                                 label:
@@ -196,6 +205,8 @@ class V3Instruction extends StatelessWidget {
                                         ),
                                       ),
                                       child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        // 設置為最小尺寸
                                         children: [
                                           SvgPicture.asset(
                                             'assets/images/ic_download_sender.svg',
@@ -204,15 +215,22 @@ class V3Instruction extends StatelessWidget {
                                             height: 23,
                                           ),
                                           const Gap(5),
-                                          Text(
-                                            S.current.v3_download_app_title,
+                                          Flexible(
+                                            // 添加 Flexible 讓文本可以縮小
+                                            child: AutoSizeText(
+                                              S.current.v3_download_app_title,
                                             style: context.tokens.textStyle
                                                 .airsyncFontTitle
                                                 .apply(
-                                                    color: context.tokens.color
-                                                        .vsdslColorOnSurface,
+                                                      color: context
+                                                          .tokens
+                                                          .color
+                                                          .vsdslColorOnSurface,
                                                     fontWeightDelta:
-                                                        FontWeight.w700.value),
+                                                          FontWeight
+                                                              .w700.value),
+                                              minFontSize: 12, // 設置最小字體大小
+                                            ),
                                           )
                                         ],
                                       ),
@@ -232,7 +250,7 @@ class V3Instruction extends StatelessWidget {
                   },
                 );
               }),
-            ),
+            )
           ],
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
@@ -245,13 +263,17 @@ class V3Instruction extends StatelessWidget {
               height: 27,
               width: 27,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: context.tokens.spacing.vsdslSpacingMd.left),
-              child: AutoSizeText(
-                S.of(context).v3_instruction2,
-                style: context.tokens.textStyle.airsyncFontTitle.apply(
-                  color: context.tokens.color.vsdslColorOnSurface,
+            Expanded(
+              // 添加 Expanded 來確保內容不會溢出
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingMd.left),
+                child: AutoSizeText(
+                  S.of(context).v3_instruction2,
+                  style: context.tokens.textStyle.airsyncFontTitle.apply(
+                    color: context.tokens.color.vsdslColorOnSurface,
+                  ),
+                  maxLines: 6,
                 ),
               ),
             ),
@@ -275,6 +297,8 @@ class V3Instruction extends StatelessWidget {
         SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
         Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SvgPicture.asset(
               'assets/images/ic_item3.svg',
@@ -282,13 +306,16 @@ class V3Instruction extends StatelessWidget {
               height: 27,
               width: 27,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: context.tokens.spacing.vsdslSpacingMd.left),
-              child: AutoSizeText(
-                S.of(context).v3_instruction3,
-                style: context.tokens.textStyle.airsyncFontTitle.apply(
-                  color: context.tokens.color.vsdslColorOnSurface,
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingMd.left),
+                child: AutoSizeText(
+                  S.of(context).v3_instruction3,
+                  style: context.tokens.textStyle.airsyncFontTitle.apply(
+                    color: context.tokens.color.vsdslColorOnSurface,
+                  ),
+                  maxLines: 2,
                 ),
               ),
             ),
@@ -370,7 +397,7 @@ class V3Instruction extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: const V3QrCodeQuickConnect(),
+                child: const V3QrCodeQuickConnect(), // 減小 QR 碼的大小
               );
             } else {
               return const SizedBox.shrink();

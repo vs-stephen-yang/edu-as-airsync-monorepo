@@ -11,7 +11,7 @@ class V3NoNetworkStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 540,
-      height: 220,
+      height: 280,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -32,6 +32,7 @@ class V3NoNetworkStatus extends StatelessWidget {
               color: context.tokens.color.vsdslColorOnSurfaceVariant,
             ),
             textAlign: TextAlign.center,
+            maxLines: 5,
           ),
         ],
       ),
