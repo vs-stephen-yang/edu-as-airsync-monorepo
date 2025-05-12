@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -102,16 +101,17 @@ class V3SettingsMirroring extends StatelessWidget {
                             ),
                           ),
                           Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                          AutoSizeText(
-                            S
-                                .of(context)
-                                .v3_settings_mirroring_require_passcode,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                          Flexible(
+                            child: Text(
+                              S
+                                  .of(context)
+                                  .v3_settings_mirroring_require_passcode,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
-                            maxLines: 1,
                           ),
                         ],
                       ),
@@ -205,14 +205,15 @@ class V3SettingsMirroring extends StatelessWidget {
                             }),
                       ),
                       Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                      AutoSizeText(
-                        S.of(context).v3_settings_mirroring_auto_accept,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                      Flexible(
+                        child: Text(
+                          S.of(context).v3_settings_mirroring_auto_accept,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                          ),
                         ),
-                        maxLines: 1,
                       ),
                     ],
                   ),
@@ -221,7 +222,7 @@ class V3SettingsMirroring extends StatelessWidget {
                   padding: EdgeInsets.only(
                       bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
                       left: 20 + context.tokens.spacing.vsdslSpacingSm.right),
-                  child: AutoSizeText(
+                  child: Text(
                     S.of(context).v3_settings_mirroring_auto_accept_desc,
                     style: TextStyle(
                       fontSize: 12,
@@ -269,15 +270,18 @@ class MirroringItem extends StatelessWidget {
       child: SizedBox(
         height: 48,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              name,
-              style: TextStyle(
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                fontSize: 12,
+            Expanded(
+              flex: 1,
+              child: Text(
+                name,
+                style: TextStyle(
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  fontSize: 12,
+                ),
               ),
             ),
-            const Spacer(),
             InkWell(
               focusNode: focusNode,
               onTap: isDisable ? null : callback,

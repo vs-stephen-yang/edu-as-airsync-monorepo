@@ -5,6 +5,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
@@ -82,19 +83,21 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         Positioned(
             left: 0, top: 0, child: _buildTittle(settingsProvider, context)),
         Positioned(
-            left: 13,
-            top: 57,
-            right: 13,
-            child: _buildContent(context, groupNotifier, isBroadcastingToGroup,
-                channelProvider)),
-        if (isBroadcastingToGroup)
-          Positioned(
-            left: 13,
-            right: 13,
-            bottom: 13,
-            child: _buildHintAndActionButton(context, broadcastType,
-                settingsProvider, channelProvider, groupNotifier),
-          )
+          left: 13,
+          top: 57,
+          right: 13,
+          bottom: 13,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildContent(context, groupNotifier, isBroadcastingToGroup,
+                  channelProvider),
+              if (isBroadcastingToGroup)
+                _buildHintAndActionButton(context, broadcastType,
+                    settingsProvider, channelProvider, groupNotifier)
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -125,7 +128,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     );
   }
 
-  SizedBox _buildHintAndActionButton(
+  Widget _buildHintAndActionButton(
       BuildContext context,
       BroadcastGroupLaunchType broadcastType,
       SettingsProvider settingsProvider,
@@ -138,79 +141,85 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             ? S.of(context).v3_settings_only_when_casting_info
             : S.of(context).v3_settings_all_the_time_info;
 
-    return SizedBox(
-      height: 30,
-      child: IntrinsicHeight(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Semantics(
-              label: S.of(context).v3_lbl_settings_only_when_casting_info,
-              identifier: "v3_qa_settings_only_when_casting_info",
-              child: SvgPicture.asset(
-                'assets/images/ic_settings_info.svg',
-                width: 20,
-                height: 20,
-              ),
-            ),
-            Gap(context.tokens.spacing.vsdslSpacingSm.right),
-            Expanded(
-              child: Text(
-                hintText,
-                style: TextStyle(
-                  fontSize: 9,
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                ),
-              ),
-            ),
-            Gap(context.tokens.spacing.vsdslSpacingSm.right),
-            broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
-                ? _customButton(
-                    context,
-                    S.of(context).v3_settings_device_name_save,
-                    label: S.current
-                        .v3_lbl_settings_broadcast_to_display_group_save,
-                    identifier:
-                        "v3_qa_settings_broadcast_to_display_group_save",
-                    onClick: () {
-                      _trackEvent(
-                          'click_save_target', groupNotifier.selectedList);
-
-                      if (selectedListEmpty) {
-                        showDialogOverlay(
-                          onConfirm: () {},
-                        );
-                      } else {
-                        AppPreferences().setGroupSelectedList(
-                            groupNotifier.historySelectedList);
-                        settingsProvider
-                            .setPage(SettingPageState.deviceSetting);
-                      }
-                    },
-                  )
-                : _customButton(
-                    context,
-                    S.of(context).v3_settings_display_group_cast,
-                    isBroadcast: true,
-                    label: S.current
-                        .v3_lbl_settings_broadcast_to_display_group_cast,
-                    identifier:
-                        "v3_qa_settings_broadcast_to_display_group_cast",
-                    onClick: () {
-                      if (selectedListEmpty) {
-                        showDialogOverlay(
-                          onConfirm: () {},
-                        );
-                      } else {
-                        startDisplayGroup(groupNotifier, channelProvider);
-                        _trackEvent(
-                            'click_broadcast', groupNotifier.selectedList);
-                      }
-                    },
+    return Column(
+      children: [
+        _buildDivider(context),
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: 30),
+          child: IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Semantics(
+                  label: S.of(context).v3_lbl_settings_only_when_casting_info,
+                  identifier: "v3_qa_settings_only_when_casting_info",
+                  child: SvgPicture.asset(
+                    'assets/images/ic_settings_info.svg',
+                    width: 20,
+                    height: 20,
                   ),
-          ],
+                ),
+                Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                Expanded(
+                  child: Text(
+                    hintText,
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
+                  ),
+                ),
+                Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
+                    ? _customButton(
+                        context,
+                        S.of(context).v3_settings_device_name_save,
+                        label: S.current
+                            .v3_lbl_settings_broadcast_to_display_group_save,
+                        identifier:
+                            "v3_qa_settings_broadcast_to_display_group_save",
+                        onClick: () {
+                          _trackEvent(
+                              'click_save_target', groupNotifier.selectedList);
+
+                          if (selectedListEmpty) {
+                            showDialogOverlay(
+                              onConfirm: () {},
+                            );
+                          } else {
+                            AppPreferences().setGroupSelectedList(
+                                groupNotifier.historySelectedList);
+                            settingsProvider
+                                .setPage(SettingPageState.deviceSetting);
+                          }
+                        },
+                      )
+                    : _customButton(
+                        context,
+                        S.of(context).v3_settings_display_group_cast,
+                        isBroadcast: true,
+                        label: S.current
+                            .v3_lbl_settings_broadcast_to_display_group_cast,
+                        identifier:
+                            "v3_qa_settings_broadcast_to_display_group_cast",
+                        onClick: () {
+                          if (selectedListEmpty) {
+                            showDialogOverlay(
+                              onConfirm: () {},
+                            );
+                          } else {
+                            startDisplayGroup(groupNotifier, channelProvider);
+                            _trackEvent(
+                                'click_broadcast', groupNotifier.selectedList);
+                          }
+                        },
+                      ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -257,7 +266,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
           child: Container(
             width: double.infinity,
             height: double.infinity,
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             alignment: Alignment.center,
             child: Container(
               width: 350,
@@ -348,7 +357,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     });
   }
 
-  SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,
+  Widget _buildContent(BuildContext context, GroupProvider groupNotifier,
       bool isBroadcastingToGroup, ChannelProvider channelProvider) {
     List<V3SettingsRadioGroupItem> radioItems = [
       V3SettingsRadioGroupItem(
@@ -362,50 +371,84 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         divider: false,
       ),
     ];
-    return SizedBox(
-      height: 293,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
-          if (isBroadcastingToGroup)
-            V3SettingsRadioGroup(
-              label:
-                  S.of(context).v3_lbl_settings_broadcast_to_display_group_type,
-              identifier: "v3_qa_settings_broadcast_to_display_group_type",
-              hasSubFocusItem: false,
-              focusOnInit: false,
-              initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
-              radioList: radioItems,
-              onChanged: (value) {
-                int index =
-                    radioItems.indexWhere((item) => item.value == value);
-                if (index != -1) {
-                  BroadcastGroupLaunchType type =
-                      BroadcastGroupLaunchType.values[index];
-                  trackEvent(
-                    'click_cast_to_board_setting',
-                    EventCategory.setting,
-                    target: type.name,
-                  );
 
-                  groupNotifier.setBroadcastGroupLaunchType(type);
-                } else {
-                  log('BroadcastGroupLaunchType not found');
-                }
-              },
-            ),
-          _buildDivider(context,
-              margin: EdgeInsets.only(
-                  top: isBroadcastingToGroup ? 0 : 8,
-                  bottom: context.tokens.spacing.vsdslSpacingMd.bottom)),
-          _buildListHeader(context, groupNotifier, isBroadcastingToGroup),
-          _buildListContent(
-              groupNotifier, isBroadcastingToGroup, channelProvider),
-          _buildDivider(context),
-        ],
-      ),
-    );
+    final clientList = ref.watch(groupProvider
+        .select((state) => [...state.selectedList, ...state.clients]));
+
+    // 提取共同的內容部分為一個方法，返回 Widget 列表而不是單個 Widget
+    List<Widget> buildContentWidgets() {
+      return [
+        _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
+        if (isBroadcastingToGroup)
+          V3SettingsRadioGroup(
+            label:
+                S.of(context).v3_lbl_settings_broadcast_to_display_group_type,
+            identifier: "v3_qa_settings_broadcast_to_display_group_type",
+            hasSubFocusItem: false,
+            focusOnInit: false,
+            initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
+            radioList: radioItems,
+            onChanged: (value) {
+              int index = radioItems.indexWhere((item) => item.value == value);
+              if (index != -1) {
+                BroadcastGroupLaunchType type =
+                    BroadcastGroupLaunchType.values[index];
+                trackEvent(
+                  'click_cast_to_board_setting',
+                  EventCategory.setting,
+                  target: type.name,
+                );
+
+                groupNotifier.setBroadcastGroupLaunchType(type);
+              } else {
+                log('BroadcastGroupLaunchType not found');
+              }
+            },
+          ),
+        _buildDivider(context,
+            margin: EdgeInsets.only(
+                top: isBroadcastingToGroup ? 0 : 8,
+                bottom: context.tokens.spacing.vsdslSpacingMd.bottom)),
+        _buildListHeader(context, groupNotifier, isBroadcastingToGroup),
+      ];
+    }
+
+    final isNormal =
+        AppPreferences().textSizeOption == ResizeTextSizeOption.normal;
+    if (isNormal) {
+      return SizedBox(
+        height: 293,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...buildContentWidgets(),
+            _buildListContent(
+                groupNotifier, isBroadcastingToGroup, channelProvider),
+          ],
+        ),
+      );
+    } else {
+      return Expanded(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...buildContentWidgets(),
+              if (isBroadcastingToGroup)
+                Column(
+                  children: clientList
+                      .map((client) => Opacity(
+                            opacity: isBroadcastingToGroup ? 1.0 : 0.3,
+                            child: _buildListTIle(client, context,
+                                groupNotifier, channelProvider),
+                          ))
+                      .toList(),
+                )
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Expanded _buildListContent(GroupProvider groupNotifier,
@@ -504,14 +547,19 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             Padding(
                 padding: EdgeInsets.only(
                     right: context.tokens.spacing.vsdslSpacingSm.right)),
-            Text(
-              client.deviceName(),
-              style: TextStyle(
-                  fontSize: 12,
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse),
+            Expanded(
+              flex: 2,
+              child: Text(
+                client.deviceName(),
+                style: TextStyle(
+                    fontSize: 12,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse),
+              ),
             ),
-            const Spacer(),
-            displayCodeWidget(client, context)
+            Expanded(
+              flex: 1,
+              child: displayCodeWidget(client, context),
+            )
           ],
         ),
       ),
@@ -531,13 +579,16 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
               'assets/images/ic_device_unavailable.svg',
             ),
           ),
-        Text(
-          unavailable
-              ? S.current.v3_settings_device_unavailable
-              : client.displayCode(),
-          style: TextStyle(
+        Flexible(
+          child: Text(
+            unavailable
+                ? S.current.v3_settings_device_unavailable
+                : client.displayCode(),
+            style: TextStyle(
               fontSize: 12,
-              color: context.tokens.color.vsdslColorOnSurfaceInverse),
+              color: context.tokens.color.vsdslColorOnSurfaceInverse,
+            ),
+          ),
         ),
       ],
     );
@@ -622,54 +673,53 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     String? label,
     String? identifier,
   }) {
-    return SizedBox(
-      height: 26,
-      child: V3SettingMenuSubItemFocus(
-        label: label,
-        identifier: identifier,
-        child: ElevatedButton(
-          onPressed: onClick,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: context.tokens.color.vsdslColorPrimary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  context.tokens.spacing.vsdslSpacing2xl.top),
-            ),
-            padding: isBroadcast
-                ? EdgeInsets.symmetric(
-                    horizontal: context.tokens.spacing.vsdslSpacingLg.left,
-                  )
-                : null,
+    return V3SettingMenuSubItemFocus(
+      label: label,
+      identifier: identifier,
+      child: ElevatedButton(
+        onPressed: onClick,
+        style: ElevatedButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minimumSize: const Size(0, 26),
+          backgroundColor: context.tokens.color.vsdslColorPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                context.tokens.spacing.vsdslSpacing2xl.top),
           ),
-          child: isBroadcast
-              ? Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/ic_broadcast.svg',
-                      width: 16,
-                      height: 16,
-                    ),
-                    SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnPrimary,
-                      ),
-                    ),
-                  ],
+          padding: isBroadcast
+              ? EdgeInsets.symmetric(
+                  horizontal: context.tokens.spacing.vsdslSpacingLg.left,
                 )
-              : Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnPrimary,
-                  ),
-                  maxLines: 1,
-                ),
+              : null,
         ),
+        child: isBroadcast
+            ? Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/ic_broadcast.svg',
+                    width: 16,
+                    height: 16,
+                  ),
+                  SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnPrimary,
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: context.tokens.color.vsdslColorOnPrimary,
+                ),
+                maxLines: 1,
+              ),
       ),
     );
   }

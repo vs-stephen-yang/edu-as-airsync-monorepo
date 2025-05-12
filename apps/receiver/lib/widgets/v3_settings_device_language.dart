@@ -35,26 +35,38 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
           left: 13,
           right: 13,
           bottom: 13,
-          child: SingleChildScrollView(
-            child: V3SettingsRadioGroup(
-              label: S.current.v3_lbl_main_language_title_item,
-              identifier: "v3_qa_main_language_title_item",
-              hasSubFocusItem: true,
-              focusOnInit: openedWithLogicalKey,
-              initSelectedValue: languageProvider.language,
-              radioList: languageProvider.localeMap.keys.map((key) {
-                return V3SettingsRadioGroupItem(
-                  value: key, // use key as value to set newValue
-                  title: key, // use key as title
-                  divider: false,
-                );
-              }).toList(),
-              onChanged: (value) {
-                trackEvent('click_language', EventCategory.setting);
-
-                languageProvider.setLanguage(value);
-              },
-            ),
+          child: Builder(
+            builder: (context) {
+              final ScrollController scrollController = ScrollController();
+              return Scrollbar(
+                controller: scrollController,
+                thumbVisibility: true,
+                thickness: 4,
+                radius: const Radius.circular(10),
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.only(right: 8), // 為滾動條留出空間
+                  child: V3SettingsRadioGroup(
+                    label: S.current.v3_lbl_main_language_title_item,
+                    identifier: "v3_qa_main_language_title_item",
+                    hasSubFocusItem: true,
+                    focusOnInit: openedWithLogicalKey,
+                    initSelectedValue: languageProvider.language,
+                    radioList: languageProvider.localeMap.keys.map((key) {
+                      return V3SettingsRadioGroupItem(
+                        value: key, // use key as value to set newValue
+                        title: key, // use key as title
+                        divider: false,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      trackEvent('click_language', EventCategory.setting);
+                      languageProvider.setLanguage(value);
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ],

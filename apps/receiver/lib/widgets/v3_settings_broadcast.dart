@@ -110,19 +110,20 @@ class CastToDevices extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                SizedBox(
-                  height: 27,
+                ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: 27),
                   child: Row(
                     children: [
-                      AutoSizeText(
-                        S.of(context).v3_settings_broadcast_devices,
-                        style: TextStyle(
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
-                          fontSize: 12,
+                      Expanded(
+                        child: Text(
+                          S.of(context).v3_settings_broadcast_devices,
+                          style: TextStyle(
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       Consumer<ChannelProvider>(
                         builder: (_, channelProvider, __) {
                           return SizedBox(
@@ -227,15 +228,16 @@ class CastToBoards extends StatelessWidget {
                 SizedBox(
                   child: Row(
                     children: [
-                      AutoSizeText(
-                        S.of(context).v3_settings_broadcast_boards,
-                        style: TextStyle(
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
-                          fontSize: 12,
+                      Expanded(
+                        child: Text(
+                          S.of(context).v3_settings_broadcast_boards,
+                          style: TextStyle(
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       SizedBox(
                         child: Semantics(
                           label: S.of(context).v3_lbl_settings_broadcast_boards,

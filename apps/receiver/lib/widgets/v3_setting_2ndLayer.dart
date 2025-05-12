@@ -32,8 +32,22 @@ class V3Setting2ndLayer extends StatelessWidget {
               (isDisable ? 67 : 0),
           child: disableScroll
               ? child
-              : SingleChildScrollView(
-                  child: child,
+              : Builder(
+                  builder: (context) {
+                    final ScrollController scrollController =
+                        ScrollController();
+                    return Scrollbar(
+                      controller: scrollController,
+                      thumbVisibility: true,
+                      thickness: 4,
+                      radius: const Radius.circular(10),
+                      child: SingleChildScrollView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.only(right: 8),
+                        child: child,
+                      ),
+                    );
+                  },
                 ),
         ),
         if (isDisableFromNotSupport)
