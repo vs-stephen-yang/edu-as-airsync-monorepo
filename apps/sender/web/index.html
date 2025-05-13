@@ -22,15 +22,21 @@
   <meta name="description" content="AirSync Sender for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]">
 
   <meta http-equiv="Content-Security-Policy" content="
-          script-src 'self' 'nonce-flutter-init' 'wasm-unsafe-eval'; 
+          default-src 'none';
+          script-src 'self' 'nonce-flutter-init' 'wasm-unsafe-eval';
           style-src 'self'
           'sha256-lqY1z1jZBRwzSDzqmC1KrNLwTEQn5zyMIV0KJLIr+Ys='
           'sha256-zDudSZ1QIxb4NBLFkJxjz60o8wfeebMVes57tfLshz0='
           'sha256-Hcn+KfZJN1e7dqySjsmRhOqvK9vlxUF2BM4w7jfIJaE='
           'sha256-5Kh4U+mrZKxSbfNel5YEvkxCByeWhRSNJAjrMJe0/Kg=';
+          img-src 'self' data:;
+          font-src 'self';
+          connect-src 'self' https: wss:;
+          manifest-src 'self';
           object-src 'none';
           base-uri 'self';
           form-action 'none';
+          frame-ancestors 'none';
         ">
 
   <!-- iOS meta tags & icons -->
