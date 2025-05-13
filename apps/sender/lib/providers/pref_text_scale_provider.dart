@@ -14,6 +14,14 @@ class TextScaleProvider extends ChangeNotifier {
 
   TextSizeOption get textSize => _textSize ?? _getDefaultTextSizeOption();
 
+  TextScaler? get platformTextScale {
+    if (kIsWeb) {
+      return null;
+    }
+
+    return TextScaler.linear(textSize.value);
+  }
+
   setTextSize(TextSizeOption textSize) {
     _textSize = textSize;
     _save();
