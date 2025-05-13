@@ -236,8 +236,7 @@ class MyApp extends StatelessWidget {
                 builder: (context, textSizeProvider, __) {
                   Widget c = MediaQuery(
                       data: MediaQuery.of(context).copyWith(
-                          textScaler: TextScaler.linear(
-                              textSizeProvider.textSize.value)),
+                          textScaler: textSizeProvider.platformTextScale),
                       child: child!);
 
                   if (AppConfig.of(context)?.settings.appA11yDebug ?? false) {
