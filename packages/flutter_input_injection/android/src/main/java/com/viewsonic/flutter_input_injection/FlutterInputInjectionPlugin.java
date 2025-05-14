@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -136,6 +137,14 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
       initialize(parseInputInjectionMethod(inputInjectionMethod));
 
       result.success(true);
+    } else if (call.method.equals("isAccessibilityEnabled")) {
+      boolean enabled = isAccessibilityServiceEnabled(context);
+      result.success(enabled);
+    } else if (call.method.equals("openAccessibilitySettings")) {
+      Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(intent);
+      result.success(null);
     } else if (call.method.equals("sendTouch")) {
       int action = call.argument("action");
       int id = call.argument("id");
@@ -202,5 +211,37 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
     Log.d(TAG, "FlutterInputInjectionPlugin::onDetachedFromEngine()");
 
     channel.setMethodCallHandler(null);
+  }
+
+  private boolean isAccessibilityServiceEnabled(Context context) {
+    int accessibilityEnabled = 0;
+    final String service = "com.viewsonic.display.cast/com.viewsonic.flutter_input_injection.GestureDispatchService";
+    try {
+      accessibilityEnabled = Settings.Secure.getInt(
+        context.getContentResolver(),
+        Settings.Secure.ACCESSIBILITY_ENABLED);
+    } catch (Settings.SettingNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    TextUtils.SimpleStringSplitter colonSplitter =
+      new TextUtils.SimpleStringSplitter(':');
+
+    if (accessibilityEnabled == 1) {
+      String settingValue = Settings.Secure.getString(
+        context.getContentResolver(),
+        Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+
+      if (settingValue != null) {
+        colonSplitter.setString(settingValue);
+        while (colonSplitter.hasNext()) {
+          String componentName = colonSplitter.next();
+          if (componentName.equalsIgnoreCase(service)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 }

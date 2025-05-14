@@ -40,6 +40,14 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  Future<bool> isAccessibilityServiceEnabled() {
+    throw UnimplementedError('isAccessibilityServiceEnabled() has not been implemented.');
+  }
+
+  Future<void> openAccessibilitySettings() async {
+    throw UnimplementedError('openAccessibilitySettings() has not been implemented.');
+  }
+
   Future<void> sendTouch(int action, int id, int x, int y) {
     throw UnimplementedError('sendTouch() has not been implemented.');
   }

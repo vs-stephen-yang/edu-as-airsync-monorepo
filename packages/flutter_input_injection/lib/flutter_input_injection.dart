@@ -20,6 +20,14 @@ class FlutterInputInjection {
     );
   }
 
+  Future<bool> isAccessibilityServiceEnabled() {
+    return FlutterInputInjectionPlatform.instance.isAccessibilityServiceEnabled();
+  }
+
+  Future<void> openAccessibilitySettings() {
+    return FlutterInputInjectionPlatform.instance.openAccessibilitySettings();
+  }
+
   // Injects a touch event to the system
   Future<void> sendTouch(int action, int id, int x, int y) {
     return FlutterInputInjectionPlatform.instance.sendTouch(action, id, x, y);
