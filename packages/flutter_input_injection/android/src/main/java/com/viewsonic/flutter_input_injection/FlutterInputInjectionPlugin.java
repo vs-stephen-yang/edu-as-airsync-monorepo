@@ -157,6 +157,33 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
       }
 
       result.success(true);
+    } else if (call.method.equals("sendNormalizedTouch")) {
+      Display display = windowManager.getDefaultDisplay();
+      Point displaySize = new Point();
+      display.getRealSize(displaySize);
+
+      int action = call.argument("action");
+      int id = call.argument("id");
+      double x = call.argument("x");
+      double y = call.argument("y");
+      int nX = (int)(x * displaySize.x);
+      int nY = (int)(y * displaySize.y);
+
+      switch (action) {
+        case 0:
+          inputInjector.InjectTouchStart(id, nX, nY);
+          break;
+        case 1:
+          inputInjector.InjectTouchMove(id, nX, nY);
+          break;
+        case 2:
+          inputInjector.InjectTouchEnd(id);
+          break;
+        default:
+          break;
+      }
+
+      result.success(true);
     } else if (call.method.equals("sendKey")) {
       int usbKeyCode = call.argument("usbKeyCode");
       boolean pressed = call.argument("pressed");
