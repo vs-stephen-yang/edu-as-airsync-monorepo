@@ -24,6 +24,23 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
   }
 
   @override
+  Future<bool> isAccessibilityServiceEnabled() async {
+    final enabled =
+        await methodChannel.invokeMethod<bool>('isAccessibilityEnabled') ??
+            false;
+    return enabled;
+  }
+
+  @override
+  Future<void> openAccessibilitySettings() async {
+    try {
+      await methodChannel.invokeMethod('openAccessibilitySettings');
+    } on PlatformException catch (e) {
+      print("Failed to open accessibility settings: ${e.message}");
+    }
+  }
+
+  @override
   Future<void> sendTouch(int action, int id, int x, int y) async {
     await methodChannel.invokeMethod<void>('sendTouch', {
       'action': action,
