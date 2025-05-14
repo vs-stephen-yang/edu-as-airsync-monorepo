@@ -26,6 +26,8 @@ public class BluetoothHidDeviceController {
   private BluetoothDevice bluetoothDevice;
   private BluetoothHidDevice bluetoothHidDevice;
 
+  private boolean getProfileProxySuccess = false;
+
   public enum Error {
     REGISTER_FAILED,
   }
@@ -118,9 +120,13 @@ public class BluetoothHidDeviceController {
         Log.d(TAG, "@@@ HID Profile onServiceDisconnected");
         // bluetoothHidDevice is no longer valid, so we don't need to disconnect() or unregisterApp().
         // Also, we don't need to call closeProfileProxy() because it's called by the system.
-//        bluetoothHidDevice.unregisterApp();
-//        bluetoothHidDevice = null;
-//        isRegistered = false;
+        isRegistered = false;
+        getProfileProxySuccess = false;
+        if (bluetoothHidDevice != null) {
+          bluetoothHidDevice.unregisterApp(); // MUST BE CALLED, OTHERWISE registerApp will fail next time
+          bluetoothHidDevice = null;
+        }
+        bluetoothAdapter.closeProfileProxy(BluetoothProfile.HID_DEVICE, (BluetoothProfile) bluetoothHidDevice);
         listener.onBluetoothHidProfileAppRegisteredChanged(false);
       }
     }
@@ -134,19 +140,28 @@ public class BluetoothHidDeviceController {
 
   @SuppressLint("NewApi")
   public boolean start() {
-    boolean success = bluetoothAdapter.getProfileProxy(context, profileListener, BluetoothProfile.HID_DEVICE);
-    Log.d(TAG, "BluetoothHidDeviceController start " + (success ? "succeeded" : "failed"));
-    return success;
+    // 重復使用HID Profile，因某些型號的ifp使用一次後就需要重啟藍牙
+    if (!getProfileProxySuccess) {
+      boolean success = bluetoothAdapter.getProfileProxy(context, profileListener, BluetoothProfile.HID_DEVICE);
+      getProfileProxySuccess = success;
+      Log.d(TAG, "BluetoothHidDeviceController start " + (success ? "succeeded" : "failed"));
+      return success;
+    } else {
+      listener.onBluetoothHidProfileAppRegisteredChanged(isRegistered);
+    }
+    return false;
   }
 
   @SuppressLint("NewApi")
   public void stop() {
-    if (bluetoothHidDevice != null) {
-      Log.e("ken","unregisterApp");
+    // 重復使用HID Profile，這邊不釋放，只斷線裝置
+    if (!getProfileProxySuccess && bluetoothHidDevice != null) {
       isRegistered = false;
       bluetoothHidDevice.unregisterApp(); // MUST BE CALLED, OTHERWISE registerApp will fail next time
       bluetoothHidDevice = null;
       bluetoothAdapter.closeProfileProxy(BluetoothProfile.HID_DEVICE, (BluetoothProfile) bluetoothHidDevice);
+    } else {
+      disconnect();
     }
   }
 

@@ -227,7 +227,11 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
     if (enable) {
       sendMessage(EVENT_ON_USER_ENABLE_TOUCH);
     } else {
-      sendMessage(EVENT_ON_USER_DISABLE_TOUCH);
+      if (isState(remoteDeviceFinding)) {
+        sendMessage(EVENT_ON_BLUETOOTH_DEVICE_NOT_FOUND);
+      } else {
+        sendMessage(EVENT_ON_USER_DISABLE_TOUCH);
+      }
     }
   }
 
@@ -334,8 +338,7 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
             statusCallback.onStatus(BluetoothTouchBackStatus.TOUCHBACK_CLOSED_BY_USER, false);
             transitionTo(touchBackNotInitialized);
           }
-          // ken
-          Log.e("ken","EVENT_ON_USER_DISABLE_TOUCH");
+          //disable touch需執行stop()
           hidDeviceController.stop();
           return HANDLED;
 
