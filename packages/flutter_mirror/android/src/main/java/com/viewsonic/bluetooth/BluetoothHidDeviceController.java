@@ -118,8 +118,9 @@ public class BluetoothHidDeviceController {
         Log.d(TAG, "@@@ HID Profile onServiceDisconnected");
         // bluetoothHidDevice is no longer valid, so we don't need to disconnect() or unregisterApp().
         // Also, we don't need to call closeProfileProxy() because it's called by the system.
-        bluetoothHidDevice = null;
-        isRegistered = false;
+//        bluetoothHidDevice.unregisterApp();
+//        bluetoothHidDevice = null;
+//        isRegistered = false;
         listener.onBluetoothHidProfileAppRegisteredChanged(false);
       }
     }
@@ -140,8 +141,11 @@ public class BluetoothHidDeviceController {
 
   @SuppressLint("NewApi")
   public void stop() {
-    if (isRegistered && bluetoothHidDevice != null) {
+    if (bluetoothHidDevice != null) {
+      Log.e("ken","unregisterApp");
+      isRegistered = false;
       bluetoothHidDevice.unregisterApp(); // MUST BE CALLED, OTHERWISE registerApp will fail next time
+      bluetoothHidDevice = null;
       bluetoothAdapter.closeProfileProxy(BluetoothProfile.HID_DEVICE, (BluetoothProfile) bluetoothHidDevice);
     }
   }

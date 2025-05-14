@@ -334,6 +334,9 @@ public class BluetoothTouchBackStateMachine extends StateMachine {
             statusCallback.onStatus(BluetoothTouchBackStatus.TOUCHBACK_CLOSED_BY_USER, false);
             transitionTo(touchBackNotInitialized);
           }
+          // ken
+          Log.e("ken","EVENT_ON_USER_DISABLE_TOUCH");
+          hidDeviceController.stop();
           return HANDLED;
 
         case EVENT_ON_AIRPLAY_STREAMING_STOPPED:
