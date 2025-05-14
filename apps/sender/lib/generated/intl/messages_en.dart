@@ -595,6 +595,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
       "Allow touchback",
     ),
+    "v3_present_touch_back_dialog_allow":
+        MessageLookupByLibrary.simpleMessage(
+      "Allow",
+    ),
+    "v3_present_touch_back_dialog_description":
+        MessageLookupByLibrary.simpleMessage(
+      "When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.",
+    ),
+    "v3_present_touch_back_dialog_not_now":
+        MessageLookupByLibrary.simpleMessage("Not now"),
+    "v3_present_touch_back_dialog_title":
+        MessageLookupByLibrary.simpleMessage(
+      "Allow to Touchback",
+    ),
     "v3_receiver_remote_screen_busy_action":
         MessageLookupByLibrary.simpleMessage("OK"),
     "v3_receiver_remote_screen_busy_description":

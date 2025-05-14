@@ -17,7 +17,6 @@ import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
-import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
 import 'package:display_cast_flutter/widgets/v3_touch_back_button.dart';
 import 'package:flutter/foundation.dart';
@@ -41,7 +40,8 @@ class V3PresentPresentStart extends StatefulWidget {
 
 class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     with WidgetsBindingObserver, WindowListener {
-  final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
+  static const MethodChannel _channel =
+      MethodChannel('com.viewsonic.display.cast/system_ui_insets');
   final GlobalKey pauseButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
   final GlobalKey stopButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
 
@@ -342,7 +342,6 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           //     ),
           //   ),
           // ),
-          // todo: move quality to setting menu and touch back to below item!!
           if (WebRTCHelper().showTouchBack())
             const Positioned(bottom: 8, child: V3TouchBackButton()),
         ],
@@ -351,18 +350,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
   }
 
   Future<Rect?> getBtnRect(GlobalKey widgetKey) async {
-    Offset? widgetPositionInScreen, widgetPositionInApp;
-    double windowBar = 0;
-    Rect? widgetRect;
+    if (kIsWeb) return null;
 
+    Rect? widgetRect;
     final RenderBox? renderBox =
         widgetKey.currentContext?.findRenderObject() as RenderBox?;
 
     if (renderBox != null) {
-      widgetPositionInApp = renderBox.localToGlobal(Offset.zero);
+      Offset widgetPositionInApp = renderBox.localToGlobal(Offset.zero);
 
-      if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
+      if (Platform.isWindows || Platform.isMacOS) {
         final window = await getCurrentScreen();
+        double windowBar = 0;
 
         if (window != null) {
           if (Platform.isMacOS) {
@@ -376,13 +375,21 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         final Offset windowPosition =
             Offset(windowBounds.left, windowBounds.top);
 
-        widgetPositionInScreen = widgetPositionInApp + windowPosition;
+        Offset widgetPositionInScreen = widgetPositionInApp + windowPosition;
         widgetRect = Rect.fromLTWH(
           widgetPositionInScreen.dx * (window?.scaleFactor ?? 1),
           widgetPositionInScreen.dy * (window?.scaleFactor ?? 1),
           renderBox.size.width,
           renderBox.size.height + windowBar / 2,
         );
+      } else if (Platform.isAndroid) {
+        double insetLeft =
+            await _channel.invokeMethod('getNavigationBarLeftInset');
+        insetLeft /=
+            PlatformDispatcher.instance.displays.first.devicePixelRatio;
+        final Offset offsetNavigation = Offset(insetLeft, 0);
+        Offset widgetPositionInScreen = widgetPositionInApp + offsetNavigation;
+        widgetRect = widgetPositionInScreen & renderBox.size;
       }
     }
     return widgetRect;

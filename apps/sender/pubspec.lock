@@ -563,8 +563,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.10.0"
-      resolved-ref: "9e2d650dbbb3a34fbb48b64360cbcb3a9b87b82b"
+      ref: "release-0.11.0"
+      resolved-ref: "1edabe713fffedd84c37c93ee9559c1e0f9ad568"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection"
     source: git
     version: "0.0.1"

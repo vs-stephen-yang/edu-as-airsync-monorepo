@@ -2510,6 +2510,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Allow to Touchback`
+  String get v3_present_touch_back_dialog_title {
+    return Intl.message(
+      'Allow to Touchback',
+      name: 'v3_present_touch_back_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.`
+  String get v3_present_touch_back_dialog_description {
+    return Intl.message(
+      'When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.',
+      name: 'v3_present_touch_back_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not now`
+  String get v3_present_touch_back_dialog_not_now {
+    return Intl.message(
+      'Not now',
+      name: 'v3_present_touch_back_dialog_not_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow`
+  String get v3_present_touch_back_dialog_allow {
+    return Intl.message(
+      'Allow',
+      name: 'v3_present_touch_back_dialog_allow',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
