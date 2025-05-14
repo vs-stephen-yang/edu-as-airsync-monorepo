@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+
 import 'log.dart';
 
 class WebRTCHelper {
@@ -116,16 +117,25 @@ class WebRTCHelper {
   }
 
   setTouchBack(bool touchBack) {
-    webRTCConnector!.touchBack = touchBack;
+    webRTCConnector?.touchBack = touchBack;
   }
 
   bool getTouchBack() {
-    return webRTCConnector!.touchBack;
+    return webRTCConnector?.touchBack ?? false;
   }
 
   bool showTouchBack() {
-    return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) &&
-        (_isScreenType);
+    return WebRTC.platformIsAndroid ||
+        ((WebRTC.platformIsWindows || WebRTC.platformIsMacOS) &&
+            (_isScreenType));
+  }
+
+  Future<bool> isAccessibilityServiceAllowed() async {
+    return await webRTCConnector?.isAccessibilityServiceAllowed() ?? false;
+  }
+
+  Future<void> openAccessibilitySettings() async {
+    await webRTCConnector?.openAccessibilitySettings();
   }
 
   setReconnectState(ChannelReconnectState state) {

@@ -14,6 +14,7 @@ import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
+import 'package:display_cast_flutter/utilities/bounded_list.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/list_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -23,10 +24,10 @@ import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_cast_flutter/utilities/web_browser_detect.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
-import 'package:display_cast_flutter/utilities/bounded_list.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
+import 'package:flutter_input_injection/flutter_input_injection_platform_interface.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
@@ -41,7 +42,12 @@ class WebRTCConnector {
     required this.onStopPresent,
     required this.onTouchEvenWhenPaused,
     required this.reconnectStateNotifier,
-  });
+  }) {
+    if (!kIsWeb && Platform.isAndroid) {
+      _flutterInputInjectionPlugin.initialize(
+          inputInjectionMethod: InputInjectionMethod.accessibilityService);
+    }
+  }
 
   final List<StreamSubscription> subscriptions = [];
 
@@ -935,6 +941,14 @@ class WebRTCConnector {
   }
 
   //endregion
+
+  Future<bool> isAccessibilityServiceAllowed() async {
+    return await _flutterInputInjectionPlugin.isAccessibilityServiceEnabled();
+  }
+
+  Future<void> openAccessibilitySettings() async {
+    await _flutterInputInjectionPlugin.openAccessibilitySettings();
+  }
 
   bool _isTouchBackAllowed() {
     return !kIsWeb &&

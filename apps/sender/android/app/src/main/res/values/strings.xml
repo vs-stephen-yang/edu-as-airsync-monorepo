@@ -1,0 +1,4 @@
+<resources>
+    <string name="accessibility_service_label">AirSync Sender</string>
+    <string name="accessibility_service_description">AirSync Sender requires accessibility setting permission for the following features: Your device is cast to a specified panel on which you can control your device. Using this AirSync Sender feature without collecting uer information.</string>
+</resources>
