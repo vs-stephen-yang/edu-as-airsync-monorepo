@@ -28,12 +28,14 @@ class V3SettingMainList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
             List<SettingsItems> settings =
                 _addSettingsToList(context, settingsProvider);
             return ListView.separated(
+              physics: ClampingScrollPhysics(),
               itemCount: settings.length,
               itemBuilder: (BuildContext context, int index) {
                 return SizedBox(
@@ -112,6 +114,7 @@ class V3SettingMainList extends StatelessWidget {
               : S.of(context).v3_setting_app_version(
                   DateTime.now().year, AppConfig.of(context)?.appVersion),
           minFontSize: 9,
+          textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: isAppMode ? 14 : 10,
             fontWeight: FontWeight.w400,

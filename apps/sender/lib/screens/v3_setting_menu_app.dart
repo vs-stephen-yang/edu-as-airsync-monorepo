@@ -55,102 +55,99 @@ class V3SettingMenuApp extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 100,
-                    child: Stack(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Center(
-                          child: AutoSizeText(
-                            submenuTitle,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: context
-                                  .tokens.color.vsdswColorOnSurfaceInverse,
-                            ),
-                          ),
-                        ),
-                        if (settingsProvider.currentPage !=
-                            SettingPageState.appHome)
-                          Positioned(
-                            left: 16,
-                            top: 0,
-                            bottom: 0,
-                            child: Center(
-                              child: CircleAvatar(
-                                backgroundColor:
-                                    context.tokens.color.vsdswColorSurface900,
-                                radius: 24,
-                                child: V3Focus(
-                                  label: S.of(context).v3_lbl_setting_menu_back,
-                                  identifier: 'v3_qa_setting_menu_back',
-                                  child: InkWell(
-                                    customBorder: const CircleBorder(),
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () {
-                                      final settingsProvider =
-                                          Provider.of<SettingsProvider>(context,
-                                              listen: false);
-                                      if (settingsProvider.currentPage ==
-                                          SettingPageState.licenses) {
-                                        settingsProvider.setPage(
-                                            SettingPageState.legalPolicy);
-                                      } else {
-                                        settingsProvider
-                                            .setPage(SettingPageState.appHome);
-                                      }
-                                    },
-                                    child: SizedBox(
-                                      width: 48,
-                                      height: 48,
-                                      child: Center(
-                                        child: ExcludeSemantics(
-                                          child: SvgPicture.asset(
-                                            'assets/images/v3_ic_arrow_left.svg',
-                                            width: 24,
-                                            height: 24,
-                                            colorFilter: ColorFilter.mode(
-                                                context.tokens.color
-                                                    .vsdswColorOnTertiary,
-                                                BlendMode.srcIn),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: (settingsProvider.currentPage !=
+                                  SettingPageState.appHome)
+                              ? CircleAvatar(
+                                  backgroundColor:
+                                      context.tokens.color.vsdswColorSurface900,
+                                  radius: 24,
+                                  child: V3Focus(
+                                    label:
+                                        S.of(context).v3_lbl_setting_menu_back,
+                                    identifier: 'v3_qa_setting_menu_back',
+                                    child: InkWell(
+                                      customBorder: const CircleBorder(),
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () {
+                                        final settingsProvider =
+                                            Provider.of<SettingsProvider>(
+                                                context,
+                                                listen: false);
+                                        if (settingsProvider.currentPage ==
+                                            SettingPageState.licenses) {
+                                          settingsProvider.setPage(
+                                              SettingPageState.legalPolicy);
+                                        } else {
+                                          settingsProvider.setPage(
+                                              SettingPageState.appHome);
+                                        }
+                                      },
+                                      child: SizedBox(
+                                        width: 48,
+                                        height: 48,
+                                        child: Center(
+                                          child: ExcludeSemantics(
+                                            child: SvgPicture.asset(
+                                              'assets/images/v3_ic_arrow_left.svg',
+                                              width: 24,
+                                              height: 24,
+                                              colorFilter: ColorFilter.mode(
+                                                  context.tokens.color
+                                                      .vsdswColorOnTertiary,
+                                                  BlendMode.srcIn),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
+                                )
+                              : SizedBox(width: 48, height: 48),
+                        ),
+                        Expanded(
+                          child: AutoSizeText(
+                            submenuTitle,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: context
+                                  .tokens.color.vsdswColorOnSurfaceInverse,
                             ),
+                            maxFontSize: 20,
+                            minFontSize: 10,
                           ),
-                        Positioned(
-                          top: 0,
-                          right: 16,
-                          bottom: 0,
-                          child: Center(
-                            child: V3Focus(
-                              label: S.of(context).v3_lbl_setting_menu_close,
-                              identifier: 'v3_qa_setting_menu_close',
-                              child: CircleAvatar(
-                                backgroundColor:
-                                    context.tokens.color.vsdswColorSurface900,
-                                radius: 24,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (navService.canPop()) {
-                                      navService.goBack();
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(24),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ExcludeSemantics(
-                                      child: SvgPicture.asset(
-                                        'assets/images/v3_ic_menu_close.svg',
-                                        colorFilter: ColorFilter.mode(
-                                            context.tokens.color
-                                                .vsdswColorNeutralInverse,
-                                            BlendMode.srcIn),
-                                      ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: V3Focus(
+                            label: S.of(context).v3_lbl_setting_menu_close,
+                            identifier: 'v3_qa_setting_menu_close',
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  context.tokens.color.vsdswColorSurface900,
+                              radius: 24,
+                              child: InkWell(
+                                onTap: () {
+                                  if (navService.canPop()) {
+                                    navService.goBack();
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(24),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ExcludeSemantics(
+                                    child: SvgPicture.asset(
+                                      'assets/images/v3_ic_menu_close.svg',
+                                      colorFilter: ColorFilter.mode(
+                                          context.tokens.color
+                                              .vsdswColorNeutralInverse,
+                                          BlendMode.srcIn),
                                     ),
                                   ),
                                 ),

@@ -105,160 +105,168 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
-    return Padding(
-      padding:
-          kIsWeb ? EdgeInsets.zero : const EdgeInsets.only(left: 24, right: 24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment:
-            kIsWeb ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-        children: [
-          if (kIsWeb) ...[
-            AutoSizeText(
-              S.of(context).v3_main_moderator_title,
-              style: TextStyle(
-                fontSize: 32,
-                color: context.tokens.color.vsdswColorOnSurface,
-                fontWeight: FontWeight.w700,
-                // height: 0.04,
-                letterSpacing: -0.32,
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(bottom: 8)),
-            AutoSizeText(
-              S.of(context).v3_main_moderator_subtitle,
-              style: TextStyle(
-                fontSize: 18,
-                color: context.tokens.color.vsdswColorOnSurfaceVariant,
-                fontWeight: FontWeight.w400,
-                // height: 0.10,
-                letterSpacing: -0.18,
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 40)),
-          ],
-          if (!kIsWeb) ...[
-            SizedBox(
-              width: 138,
-              height: 120,
-              child: SvgPicture.asset(
-                channelProvider.currentRole == JoinIntentType.remoteScreen
-                    ? 'assets/images/v3_ic_select_receive.svg'
-                    : 'assets/images/v3_ic_select_share.svg',
-                excludeFromSemantics: true,
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(bottom: 24)),
-            AutoSizeText(
-              channelProvider.currentRole == JoinIntentType.remoteScreen
-                  ? S.of(context).v3_main_receive_app_title
-                  : S.of(context).v3_main_moderator_app_title,
-              style: TextStyle(
-                color: context.tokens.color.vsdswColorOnSurface,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(bottom: 8)),
-            AutoSizeText(
-              channelProvider.currentRole == JoinIntentType.remoteScreen
-                  ? S.of(context).v3_main_receive_app_subtitle
-                  : S.of(context).v3_main_moderator_app_subtitle,
-              textAlign: kIsWeb ? TextAlign.left : TextAlign.center,
-              style: TextStyle(
-                color: context.tokens.color.vsdswColorOnSurface,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                letterSpacing: -0.16,
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(bottom: 40)),
-          ],
-          SizedBox(
-            width: kIsWeb ? 400 : 300,
-            height: 84,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 56,
-                  child: V3CustomTextFormField(
-                    label: S.of(context).v3_lbl_main_moderator_input_hint,
-                    identifier: 'v3_qa_main_moderator_input_hint',
-                    key: nameKey,
-                    controller: _nameController,
-                    focusNode: _nameFocusNode,
-                    hintText: S.of(context).v3_main_moderator_input_hint,
-                    maxTextLength: 20,
-                    inputFormatter: const [],
-                    onFieldChanged: (text) {
-                      if (text.isNotEmpty) {
-                        buttonKey.currentState!.setEnable(true);
-                      } else {
-                        buttonKey.currentState!.setEnable(false);
-                      }
-                      setState(() {});
-                    },
-                    onFieldSubmitted: (String value) async {
-                      if (buttonKey.currentState!.isButtonEnabled) {
-                        await _clickPresent();
-                      }
-                    },
-                  ),
+    return Center(
+      child: SingleChildScrollView(
+        padding: kIsWeb
+            ? EdgeInsets.zero
+            : const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment:
+              kIsWeb ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            if (kIsWeb) ...[
+              AutoSizeText(
+                S.of(context).v3_main_moderator_title,
+                style: TextStyle(
+                  fontSize: 32,
+                  color: context.tokens.color.vsdswColorOnSurface,
+                  fontWeight: FontWeight.w700,
+                  // height: 0.04,
+                  letterSpacing: -0.32,
                 ),
-                const Padding(padding: EdgeInsets.only(bottom: 10)),
-                MergeSemantics(
-                  child: Row(
-                    children: [
-                      SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: SvgPicture.asset(
-                            'assets/images/v3_ic_error_black.svg',
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left:
-                                  context.tokens.spacing.vsdswSpacing2xs.left)),
-                      AutoSizeText(
-                        S.of(context).v3_main_moderator_input_limit,
-                        style: TextStyle(
-                          color: context.tokens.color.vsdswColorOnSurface,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 8)),
+              AutoSizeText(
+                S.of(context).v3_main_moderator_subtitle,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                  fontWeight: FontWeight.w400,
+                  // height: 0.10,
+                  letterSpacing: -0.18,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(top: 40)),
+            ],
+            if (!kIsWeb) ...[
+              SizedBox(
+                width: 138,
+                height: 120,
+                child: SvgPicture.asset(
+                  channelProvider.currentRole == JoinIntentType.remoteScreen
+                      ? 'assets/images/v3_ic_select_receive.svg'
+                      : 'assets/images/v3_ic_select_share.svg',
+                  excludeFromSemantics: true,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 24)),
+              AutoSizeText(
+                channelProvider.currentRole == JoinIntentType.remoteScreen
+                    ? S.of(context).v3_main_receive_app_title
+                    : S.of(context).v3_main_moderator_app_title,
+                style: TextStyle(
+                  color: context.tokens.color.vsdswColorOnSurface,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 8)),
+              AutoSizeText(
+                channelProvider.currentRole == JoinIntentType.remoteScreen
+                    ? S.of(context).v3_main_receive_app_subtitle
+                    : S.of(context).v3_main_moderator_app_subtitle,
+                textAlign: kIsWeb ? TextAlign.left : TextAlign.center,
+                style: TextStyle(
+                  color: context.tokens.color.vsdswColorOnSurface,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: -0.16,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 40)),
+            ],
+            ConstrainedBox(
+              constraints: BoxConstraints(minHeight: 84),
+              child: SizedBox(
+                width: kIsWeb ? 400 : 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 56,
+                      child: V3CustomTextFormField(
+                        label: S.of(context).v3_lbl_main_moderator_input_hint,
+                        identifier: 'v3_qa_main_moderator_input_hint',
+                        key: nameKey,
+                        controller: _nameController,
+                        focusNode: _nameFocusNode,
+                        hintText: S.of(context).v3_main_moderator_input_hint,
+                        maxTextLength: 20,
+                        inputFormatter: const [],
+                        onFieldChanged: (text) {
+                          if (text.isNotEmpty) {
+                            buttonKey.currentState!.setEnable(true);
+                          } else {
+                            buttonKey.currentState!.setEnable(false);
+                          }
+                          setState(() {});
+                        },
+                        onFieldSubmitted: (String value) async {
+                          if (buttonKey.currentState!.isButtonEnabled) {
+                            await _clickPresent();
+                          }
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(bottom: 10)),
+                    MergeSemantics(
+                      child: Row(
+                        children: [
+                          SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: SvgPicture.asset(
+                                'assets/images/v3_ic_error_black.svg',
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: context
+                                      .tokens.spacing.vsdswSpacing2xs.left)),
+                          Expanded(
+                            child: AutoSizeText(
+                              S.of(context).v3_main_moderator_input_limit,
+                              style: TextStyle(
+                                color: context.tokens.color.vsdswColorOnSurface,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-          Padding(
-              padding: EdgeInsets.only(
-                  bottom: kIsWeb
-                      ? context.tokens.spacing.vsdswSpacing5xl.bottom
-                      : context.tokens.spacing.vsdswSpacingSm.bottom)),
-          V3PresentIdleButton(
-            buttonIdentifier:
-                channelProvider.currentRole == JoinIntentType.remoteScreen
-                    ? 'v3_qa_main_receive_app_action'
-                    : 'v3_qa_main_moderator_action',
-            buttonLabel:
-                channelProvider.currentRole == JoinIntentType.remoteScreen
-                    ? S.of(context).v3_lbl_main_receive_app_action
-                    : S.of(context).v3_lbl_main_moderator_action,
-            key: buttonKey,
-            fixedSize: const Size(kIsWeb ? 240 : 300, 48),
-            buttonText:
-                channelProvider.currentRole == JoinIntentType.remoteScreen
-                    ? S.of(context).v3_main_receive_app_action
-                    : S.of(context).v3_main_moderator_action,
-            onPressed: () async {
-              await _clickPresent();
-            },
-          )
-        ],
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: kIsWeb
+                        ? context.tokens.spacing.vsdswSpacing5xl.bottom
+                        : context.tokens.spacing.vsdswSpacingSm.bottom)),
+            V3PresentIdleButton(
+              buttonIdentifier:
+                  channelProvider.currentRole == JoinIntentType.remoteScreen
+                      ? 'v3_qa_main_receive_app_action'
+                      : 'v3_qa_main_moderator_action',
+              buttonLabel:
+                  channelProvider.currentRole == JoinIntentType.remoteScreen
+                      ? S.of(context).v3_lbl_main_receive_app_action
+                      : S.of(context).v3_lbl_main_moderator_action,
+              key: buttonKey,
+              fixedSize: const Size(kIsWeb ? 240 : 300, 48),
+              buttonText:
+                  channelProvider.currentRole == JoinIntentType.remoteScreen
+                      ? S.of(context).v3_main_receive_app_action
+                      : S.of(context).v3_main_moderator_action,
+              onPressed: () async {
+                await _clickPresent();
+              },
+            )
+          ],
+        ),
       ),
     );
   }

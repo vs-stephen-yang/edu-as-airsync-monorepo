@@ -85,21 +85,22 @@ class _V3DeviceListState extends State<V3DeviceList> {
           children: [
             Row(
               children: [
-                const Spacer(
-                  flex: 1,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: Text(
-                    S.of(context).main_device_list,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: context.tokens.color.vsdswColorOnSurface,
-                      fontSize: 20,
+                const Spacer(flex: 1),
+                Expanded(
+                  flex: 2,
+                  child: Center(
+                    child: Text(
+                      S.of(context).main_device_list,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: context.tokens.color.vsdswColorOnSurface,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
+                  flex: 1,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
