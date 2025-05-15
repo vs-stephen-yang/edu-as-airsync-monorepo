@@ -161,9 +161,8 @@ class _SizeDropdownState extends State<SizeDropdown> {
                             option.name,
                             style: TextStyle(
                               color: isSelected
-                                  ? context
-                                      .tokens.color.vsdswColorOnSurfaceInverse
-                                  : context.tokens.color.vsdswColorOnDisabled,
+                                  ? context.tokens.color.vsdswColorSurface100
+                                  : context.tokens.color.vsdswColorNeutral,
                             ),
                           ),
                         ),

@@ -31,18 +31,21 @@ class V3SettingMenuDesktop extends StatelessWidget {
           children: [
             SizedBox(
               width: 235,
-              child: Stack(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 24,
-                      horizontal: 16,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 24,
+                        left: 16,
+                        right: 16,
+                      ),
+                      child: V3SettingMainList(isAppMode: false),
                     ),
-                    child: V3SettingMainList(isAppMode: false),
                   ),
-                  Positioned(
-                    left: 16,
-                    bottom: 16,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, bottom: 16),
                     child: V3Focus(
                       label: S.of(context).v3_lbl_setting_menu_close,
                       identifier: 'v3_qa_setting_menu_close',

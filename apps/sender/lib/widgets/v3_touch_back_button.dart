@@ -25,8 +25,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: 299,
-      height: 66,
+      constraints: BoxConstraints(minHeight: 66),
       decoration: BoxDecoration(
         color: context.tokens.color.vsdswColorSurface900,
         borderRadius: context.tokens.radii.vsdswRadiusFull,

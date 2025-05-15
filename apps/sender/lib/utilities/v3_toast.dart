@@ -19,8 +19,9 @@ class V3Toast {
   void makeSharingTimeToast(
       BuildContext context, String fullText, String sharingTime) {
     MotionToast(
-      width: 320,
-      height: 78,
+      position: MotionToastPosition.bottom,
+      animationType: AnimationType.fromBottom,
+      constraints: BoxConstraints(minHeight: 78, minWidth: 320, maxHeight: 150),
       primaryColor: context.tokens.color.vsdswColorNeutral,
       secondaryColor: context.tokens.color.vsdswColorNeutralInverse,
       contentPadding: EdgeInsets.symmetric(
@@ -39,21 +40,22 @@ class V3Toast {
           SizedBox(width: context.tokens.spacing.vsdswSpacingXs.left),
           SizedBox(
             width: 246,
-            height: 54,
             child: AutoSizeText.rich(
               _buildSharingTimeTextSpan(
                 fullText: fullText,
                 sharingTime: sharingTime,
                 formatTexts: ['%s'],
                 formatStyle: TextStyle(
-                  fontSize: 16,
+                  // fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: context.tokens.color.vsdswColorSecondary,
                 ),
               ),
+              maxFontSize: 16,
+              minFontSize: 5,
               maxLines: 2,
               style: TextStyle(
-                fontSize: 16,
+                // fontSize: 16,
                 color: context.tokens.color.vsdswColorNeutralInverse,
               ),
             ),
@@ -62,7 +64,6 @@ class V3Toast {
       ),
       displaySideBar: false,
       enableAnimation: false,
-      position: MotionToastPosition.bottom,
     ).show(context);
     SemanticsService.announce(
       sprintf(fullText, [sharingTime]),

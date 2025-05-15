@@ -259,24 +259,28 @@ class ExpandedContentWidget extends StatelessWidget {
       child: Row(
         children: [
           gap,
-          _buildIcon('assets/images/ic_drag.svg'),
+          _buildIcon('assets/images/ic_drag.svg', context),
           textPadding,
           Flexible(child: _buildText(context)),
           textPadding,
           _buildStopButton(context),
           // gap,
-          _buildMinimizeButton(),
+          _buildMinimizeButton(context),
           gap,
         ],
       ),
     );
   }
 
-  Widget _buildIcon(String assetPath) {
+  Widget _buildIcon(String assetPath, BuildContext context) {
     return Container(
       alignment: Alignment.center,
       child: ExcludeSemantics(
         child: SvgPicture.asset(
+          colorFilter: ColorFilter.mode(
+            context.tokens.color.vsdswColorOpacityNeutralXl,
+            BlendMode.srcIn,
+          ),
           assetPath,
           height: 30,
           width: 30,
@@ -292,7 +296,7 @@ class ExpandedContentWidget extends StatelessWidget {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w700,
-        color: context.tokens.color.vsdswColorOnSuccess,
+        color: context.tokens.color.vsdswColorOnSurface,
       ),
       maxLines: 1,
       minFontSize: 5,
@@ -329,7 +333,7 @@ class ExpandedContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMinimizeButton() {
+  Widget _buildMinimizeButton(BuildContext context) {
     return V3Focus(
       label: S.current.v3_lbl_streaming_minimize_button,
       identifier: 'v3_qa_streaming_minimize_button',
@@ -338,7 +342,7 @@ class ExpandedContentWidget extends StatelessWidget {
         child: SizedBox(
           height: 48,
           width: 48,
-          child: _buildIcon('assets/images/ic_minimize.svg'),
+          child: _buildIcon('assets/images/ic_minimize.svg', context),
         ),
       ),
     );
@@ -378,11 +382,17 @@ class CollapsedContentWidget extends StatelessWidget {
           topRight: parentContext.tokens.radii.vsdswRadiusXl.topRight,
         ),
         color: parentContext.tokens.color.vsdswColorSuccess
-            .withOpacity(isDragging ? 1.0 : 0.3),
+            .withValues(alpha: isDragging ? 1.0 : 0.3),
       ),
       alignment: Alignment.center,
       child: ExcludeSemantics(
-          child: SvgPicture.asset('assets/images/ic_expend.svg')),
+          child: SvgPicture.asset(
+        'assets/images/ic_expend.svg',
+        colorFilter: ColorFilter.mode(
+          context.tokens.color.vsdswColorOpacityNeutralXl,
+          BlendMode.srcIn,
+        ),
+      )),
     );
   }
 }

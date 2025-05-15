@@ -57,7 +57,7 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
           children: [
             const Spacer(),
             Container(
-              height: 36,
+              constraints: BoxConstraints(minHeight: 36),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: ShapeDecoration(
                 color:
@@ -70,16 +70,17 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    S.current.v3_scan_qr_reminder,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: context.tokens.color.vsdswColorNeutralInverse,
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      height: 0.11,
-                      letterSpacing: -0.16,
+                  Flexible(
+                    child: Text(
+                      S.current.v3_scan_qr_reminder,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdswColorNeutralInverse,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.16,
+                      ),
                     ),
                   ),
                 ],
