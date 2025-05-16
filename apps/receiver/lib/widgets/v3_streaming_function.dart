@@ -122,12 +122,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                               if (connection.mirrorState ==
                                   MirrorState.mirroring) {
                                 if (connection.touchBackState()) {
-                                  final success =
-                                      await connection.disableTouchback();
-                                  log.info(
-                                      'disable bluetooth touchback $success');
-                                  V3BluetoothStatusNotification.showStatusAlert
-                                      .value = BluetoothProgress(percent: 0.0);
+                                  await _disableAllTouchback();
                                   if (context.mounted) {
                                     setState(() {
                                       V3Toast().makeBluetoothStateToast(
@@ -141,12 +136,17 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                 } else {
                                   final success =
                                       await connection.enableTouchback();
+                                  // 更新尺寸
+                                  mirrorStateProvider.onWidgetSizeChanged();
                                   log.info(
                                       'enable bluetooth touchback $success');
-                                  if (!success) {
-                                    _showTouchbackAlertDialog(
-                                        context, mirrorStateProvider);
-                                  }
+                                  // 更新按鈕狀態
+                                  setState(() {
+                                    if (!success) {
+                                      _showTouchbackAlertDialog(
+                                          context, mirrorStateProvider);
+                                    }
+                                  });
                                 }
                               }
                             }
@@ -400,8 +400,6 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                 BluetoothTouchbackStatus.deviceFoundFailed) {
                           WidgetsBinding.instance
                               .addPostFrameCallback((_) async {
-                            V3BluetoothStatusNotification.showStatusAlert
-                                .value = BluetoothProgress(percent: 0.0);
                             V3Toast().makeBluetoothStateToast(
                               context,
                               S.current.v3_touchback_fail_message,
@@ -410,7 +408,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                               color: context.tokens.color.vsdslColorError,
                               icon: 'assets/images/ic_bluetooth_fail.svg',
                             );
-                            await Future.delayed(const Duration(seconds: 2));
+                            await Future.delayed(const Duration(seconds: 1));
                             await _disableAllTouchback();
                           });
                         }
@@ -469,8 +467,10 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
               var connection = HybridConnectionList()
                   .getConnection<MirrorRequest>(widget.index);
               if (connection.mirrorState == MirrorState.mirroring) {
-                final success = await connection.enableTouchback();
-                log.info('change touchback device $success');
+                setState(() async {
+                  final success = await connection.enableTouchback();
+                  log.info('change touchback device $success');
+                });
               }
             },
           ),
@@ -480,11 +480,14 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
   }
 
   Future<void> _disableAllTouchback() async {
+    V3BluetoothStatusNotification.showStatusAlert.value =
+        BluetoothProgress(percent: 0.0);
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.airplay) {
-        await request.disableTouchback();
-        await Future.delayed(const Duration(seconds: 1));
+        final success = await request.disableTouchback();
+        log.info('disable bluetooth touchback $success');
+        await Future.delayed(const Duration(milliseconds: 200));
       }
     }
   }
