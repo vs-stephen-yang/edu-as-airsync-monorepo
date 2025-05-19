@@ -33,7 +33,6 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
     }
     return Container(
       alignment: Alignment.center,
-      height: 37,
       child: Row(
         children: [
           SvgPicture.asset(
@@ -44,125 +43,126 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
           ),
           const Gap(5),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
               children: [
-                AutoSizeText(
-                  remoteScreenConnector.senderName ?? '',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnSurface,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(width: context.tokens.spacing.vsdslSpacingXs.top),
-                Container(
-                  padding: context.tokens.spacing.vsdslSpacingXs,
-                  child: AutoSizeText(
-                    status,
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorSuccessVariant,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AutoSizeText(
+                      remoteScreenConnector.senderName ?? '',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurface,
+                      ),
                     ),
-                    maxLines: 1,
-                    minFontSize: 8,
+                    SizedBox(width: context.tokens.spacing.vsdslSpacingXs.top),
+                    Container(
+                      padding: context.tokens.spacing.vsdslSpacingXs,
+                      child: AutoSizeText(
+                        status,
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                          color: context.tokens.color.vsdslColorSuccessVariant,
+                        ),
+                        minFontSize: 8,
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(16),
+                V3Focus(
+                  label: remoteScreenConnector.isTouchEnabled
+                      ? S.of(context).v3_lbl_cast_device_touchback_disable
+                      : S.of(context).v3_lbl_cast_device_touchback_enable,
+                  identifier: remoteScreenConnector.isTouchEnabled
+                      ? 'v3_qa_cast_device_touchback_disable_${widget.index}'
+                      : 'v3_qa_cast_device_touchback_enable_${widget.index}',
+                  child: SizedBox(
+                    // width: (remoteScreenConnector.isTouchEnabled) ? 83 : 104,
+                    height: 27,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        if (remoteScreenConnector.isTouchEnabled) {
+                          remoteScreenConnector.isTouchEnabled = false;
+                        } else {
+                          remoteScreenConnector.isTouchEnabled = true;
+                        }
+                        channelProvider.remoteScreenServe
+                            .enableRemoteControlBySessionId(
+                                remoteScreenConnector.sessionId!,
+                                remoteScreenConnector.isTouchEnabled);
+                        setState(() {});
+                      },
+                      icon: SvgPicture.asset(
+                        remoteScreenConnector.isTouchEnabled
+                            ? 'assets/images/ic_finger_disable.svg'
+                            : 'assets/images/ic_finger_touch.svg',
+                        excludeFromSemantics: true,
+                        width: 16,
+                        height: 16,
+                      ),
+                      label: Text(
+                        remoteScreenConnector.isTouchEnabled
+                            ? S.of(context).v3_cast_to_device_touch_back_disable
+                            : S.of(context).v3_cast_to_device_touch_back,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: remoteScreenConnector.isTouchEnabled
+                              ? context.tokens.color.vsdslColorError
+                              : context.tokens.color.vsdslColorOnSurface,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor:
+                            context.tokens.color.vsdslColorOnSurfaceInverse,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: context.tokens.radii.vsdslRadiusFull,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                context.tokens.spacing.vsdslSpacingSm.left),
+                        shadowColor: context.tokens.color.vsdslColorNeutral,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const Gap(16),
-          // 以下按鈕部分，做個分類
-          ...[
-            V3Focus(
-              label: remoteScreenConnector.isTouchEnabled
-                  ? S.of(context).v3_lbl_cast_device_touchback_disable
-                  : S.of(context).v3_lbl_cast_device_touchback_enable,
-              identifier: remoteScreenConnector.isTouchEnabled
-                  ? 'v3_qa_cast_device_touchback_disable_${widget.index}'
-                  : 'v3_qa_cast_device_touchback_enable_${widget.index}',
-              child: SizedBox(
-                width: (remoteScreenConnector.isTouchEnabled) ? 83 : 104,
-                height: 27,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (remoteScreenConnector.isTouchEnabled) {
-                      remoteScreenConnector.isTouchEnabled = false;
-                    } else {
-                      remoteScreenConnector.isTouchEnabled = true;
-                    }
-                    channelProvider.remoteScreenServe
-                        .enableRemoteControlBySessionId(
-                            remoteScreenConnector.sessionId!,
-                            remoteScreenConnector.isTouchEnabled);
-                    setState(() {});
-                  },
-                  icon: SvgPicture.asset(
-                    remoteScreenConnector.isTouchEnabled
-                        ? 'assets/images/ic_finger_disable.svg'
-                        : 'assets/images/ic_finger_touch.svg',
-                    excludeFromSemantics: true,
-                    width: 16,
-                    height: 16,
-                  ),
-                  label: Text(
-                    remoteScreenConnector.isTouchEnabled
-                        ? S.of(context).v3_cast_to_device_touch_back_disable
-                        : S.of(context).v3_cast_to_device_touch_back,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: remoteScreenConnector.isTouchEnabled
-                          ? context.tokens.color.vsdslColorError
-                          : context.tokens.color.vsdslColorOnSurface,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 5,
-                    backgroundColor:
-                        context.tokens.color.vsdslColorOnSurfaceInverse,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: context.tokens.radii.vsdslRadiusFull,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: context.tokens.spacing.vsdslSpacingSm.left),
-                    shadowColor: context.tokens.color.vsdslColorNeutral,
-                  ),
+          SizedBox(width: context.tokens.spacing.vsdslSpacingSm.top),
+          V3Focus(
+            label: S.of(context).v3_lbl_cast_device_close,
+            identifier: 'v3_qa_cast_device_close',
+            child: SizedBox(
+              width: 27,
+              height: 27,
+              child: IconButton(
+                icon: SvgPicture.asset(
+                  'assets/images/ic_participant_close.svg',
+                  excludeFromSemantics: true,
                 ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  if (remoteScreenConnector.remotePresentationState ==
+                      RemotePresentationState.streaming) {
+                    channelProvider.removeSender(
+                      fromSender: true,
+                      remoteScreenConnector: remoteScreenConnector,
+                    );
+                  }
+                },
               ),
             ),
-            SizedBox(width: context.tokens.spacing.vsdslSpacingSm.top),
-            V3Focus(
-              label: S.of(context).v3_lbl_cast_device_close,
-              identifier: 'v3_qa_cast_device_close',
-              child: SizedBox(
-                width: 27,
-                height: 27,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/images/ic_participant_close.svg',
-                    excludeFromSemantics: true,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    if (remoteScreenConnector.remotePresentationState ==
-                        RemotePresentationState.streaming) {
-                      channelProvider.removeSender(
-                        fromSender: true,
-                        remoteScreenConnector: remoteScreenConnector,
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
+          ),
         ],
       ),
     );
