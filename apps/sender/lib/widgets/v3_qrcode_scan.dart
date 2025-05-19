@@ -75,7 +75,7 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
                       S.current.v3_scan_qr_reminder,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: context.tokens.color.vsdswColorNeutralInverse,
+                        color: context.tokens.color.vsdswColorOnSurfaceInverse,
                         fontSize: 16,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
