@@ -15,9 +15,9 @@ class _V3CastDevicesViewState extends State<V3CastDevicesView> {
       alignment: Alignment.center,
       children: [
         Positioned(
-          left: 36,
+          left: 30,
           top: 25,
-          right: 36,
+          right: 30,
           bottom: 30,
           child: V3CastDeviceList(),
         ),
