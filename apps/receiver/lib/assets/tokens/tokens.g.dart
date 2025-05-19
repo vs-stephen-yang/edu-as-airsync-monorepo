@@ -46,9 +46,11 @@ abstract class ColorTokens {
   Color get vsdslColorInfo;
   Color get vsdslColorSuccess;
   Color get vsdslColorSuccessVariant;
+
+  Color get vsdslColorOnSuccess;
   Color get vsdslColorWarning;
 
-  Color get vsdslColorOnWarning;
+  Color get vsdslColorOnWarningVariant;
   Color get vsdslColorError;
   Color get vsdslColorOnError;
   Color get vsdslColorDisabled;
@@ -191,21 +193,24 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdslColorSuccessVariant => const Color(0xFF2C9799);
   @override
+  Color get vsdslColorOnSuccess => const Color(0xFF2A2A2A);
+
+  @override
   Color get vsdslColorWarning => const Color(0xFFEC6200);
   @override
-  Color get vsdslColorOnWarning => const Color(0xFFFFFFFF);
+  Color get vsdslColorOnWarningVariant => const Color(0xFFFFFFFF);
   @override
-  Color get vsdslColorError => const Color(0xFFDB0025);
+  Color get vsdslColorError => const Color(0xFFF67F00);
   @override
   Color get vsdslColorOnError => const Color(0xFFFFFFFF);
   @override
   Color get vsdslColorDisabled => const Color(0xFFEBEBEB);
   @override
-  Color get vsdslColorOnDisabled => const Color(0xFFCFCFCF);
+  Color get vsdslColorOnDisabled => const Color(0xFFB2B2B2);
   @override
   Color get vsdslColorLink => const Color(0xFF3C5AAA);
   @override
-  Color get vsdslColorOutline => const Color(0xFFE9EAF0);
+  Color get vsdslColorOutline => const Color(0xFFD3D6E1);
   @override
   Color get vsdslColorOutlineVariant => const Color(0xFF3C455D);
   @override
