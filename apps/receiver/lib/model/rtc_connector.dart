@@ -52,6 +52,8 @@ class RTCConnector {
   bool isAudioEnabled = false;
   bool isModeratorShare = false;
 
+  bool forceTestMtk9950 = true; //RTCConnector.isMtk9950Model(_deviceType)
+
   ValueNotifier<ReconnectState> reconnectRtcStateNotifier =
       ValueNotifier<ReconnectState>(ReconnectState.idle);
 
@@ -485,11 +487,17 @@ class RTCConnector {
     int fullHeight = 1536;
 
     // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
-    if (RTCConnector.isMtk9950Model(_deviceType) &&
+    // if (RTCConnector.isMtk9950Model(_deviceType) &&
+    //     attenderCount > 1 &&
+    //     senderPlatform != null &&
+    //     senderPlatform == "ios") {
+    //   fullHeight = 720;
+    // }
+
+    if (/*RTCConnector.isMtk9950Model(_deviceType)*/ forceTestMtk9950 &&
         attenderCount > 1 &&
-        senderPlatform != null &&
-        senderPlatform == "ios") {
-      fullHeight = 720;
+        senderPlatform != null) {
+        fullHeight = 1080;
     }
 
     return fullHeight;
@@ -500,8 +508,10 @@ class RTCConnector {
     var message = ChangePresentQuality(sessionId);
 
     message.constraints = PresentQualityConstraints(
+        // isMtk9950Model: isMtk9950Model(_deviceType),
         frameRate: isFullFrameRate ? 30 : 0,
-        height: isFullHeight ? getFullHeight(attendeeCount) : 540);
+        height: isFullHeight ? getFullHeight(attendeeCount) : 540,
+        isMtk9950: /*(RTCConnector.isMtk9950Model(_deviceType) forceTestMtk9950 ) ? true :*/ true /*RTCConnector.isMtk9950Model(_deviceType) */);
 
     log.info(
         '[$clientId] Changing present quality. height:${message.constraints?.height}');
