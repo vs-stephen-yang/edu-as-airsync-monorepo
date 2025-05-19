@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
@@ -49,8 +50,8 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final textPainter = TextPainter(
         text: TextSpan(
-          style: const TextStyle(
-            fontSize: 12,
+          style: TextStyle(
+            fontSize: 12 * AppPreferences().textScale,
             fontWeight: FontWeight.bold,
           ),
           text: widget.text,
