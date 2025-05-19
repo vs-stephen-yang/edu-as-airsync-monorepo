@@ -80,7 +80,7 @@ class WebRTCConnector {
 
   // change present quality
   bool _streamPublished = false;
-  ChangePresentQuality? _pendingChangePresentQuality;
+  ChangePresentQuality? _pendingChangePresentQuality, _lastChangePresentQualityMsg;
 
   double _screenWidth = 1920.0;
   double _screenHeight = 1536.0;
@@ -90,6 +90,7 @@ class WebRTCConnector {
   int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
   int _actualHeight = 1080;
+  bool _isMtk9950 = false;
 
   static const double _defaultMinFrameRate = 30.0;
   static const double _defaultFrameRate = 30.0;
@@ -821,6 +822,8 @@ class WebRTCConnector {
     log.info(
         "Received quality change request. height:${msg.constraints?.height}");
 
+    _lastChangePresentQualityMsg = msg;
+
     if (!_streamPublished) {
       _pendingChangePresentQuality = msg;
       return;
@@ -831,14 +834,17 @@ class WebRTCConnector {
       return;
     }
 
-    if (constraints.height == _trackHeight) return;
+    _isMtk9950 = constraints.isMtk9950;
+    print('[UG] isMtk9950:$_isMtk9950, constraints.height: ${constraints.height}, _trackHeight: $_trackHeight');
+    if ((constraints.height == _trackHeight) && !_isMtk9950) return;
 
     if (constraints.height! > _maxTrackHeight) {
       // make sure the width/height is not greater than the max width
       _trackWidth = _maxTrackWidth;
       _trackHeight = _maxTrackHeight;
     } else {
-      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
+      // constraint height 540 means split screen; 1080 means full screen with multiple streams in MTK9950 workaround
+      _trackWidth = (constraints.height! > 540) ? _maxTrackWidth : _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
       _trackHeight = constraints.height!;
     }
     _idealTrackFrameRate = constraints.frameRate!.toDouble();
@@ -1007,6 +1013,9 @@ class WebRTCConnector {
       _actualWidth = stats.frameWidth!;
       _actualHeight = stats.frameHeight!;
       _updateEncodingParameters();
+      if (_isMtk9950) {
+        changePresentQuality(_lastChangePresentQualityMsg!);
+      }
     }
   }
 
