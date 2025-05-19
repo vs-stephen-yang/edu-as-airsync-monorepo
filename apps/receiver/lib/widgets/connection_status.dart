@@ -307,7 +307,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
               key: key,
               imgPath: 'assets/images/ic_local_connection_only_warning.svg',
               message: S.of(context).v3_settings_local_connection_only,
-              textColor: context.tokens.color.vsdslColorOnWarning,
+              textColor: context.tokens.color.vsdslColorOnWarningVariant,
               backgroundColor: context.tokens.color.vsdslColorWarning,
             ),
           ),

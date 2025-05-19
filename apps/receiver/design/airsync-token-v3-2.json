@@ -291,16 +291,20 @@
     "value": "#2C9799",
     "type": "color"
   },
+  "vsdslColorOnSuccess": {
+    "value": "#2A2A2A",
+    "type": "color"
+  },
     "vsdslColorWarning": {
       "value": "#EC6200",
       "type": "color"
     },
-  "vsdslColorOnWarning": {
+  "vsdslColorOnWarningVariant": {
     "value": "#FFFFFF",
     "type": "color"
   },
     "vsdslColorError": {
-      "value": "#DB0025",
+      "value": "#F67F00",
       "type": "color"
     },
   "vsdslColorOnError": {
@@ -312,7 +316,7 @@
       "type": "color"
     },
     "vsdslColorOnDisabled": {
-      "value": "#CFCFCF",
+      "value": "#B2B2B2",
       "type": "color"
     },
     "vsdslColorLink": {
@@ -320,7 +324,7 @@
       "type": "color"
     },
     "vsdslColorOutline": {
-      "value": "#E9EAF0",
+      "value": "#D3D6E1",
       "type": "color"
     },
     "vsdslColorOutlineVariant": {
