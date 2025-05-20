@@ -112,14 +112,14 @@ class V3MainInfo extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Positioned(
-              left: 53,
-              top: 25,
+              top: 0,
               bottom: 80,
+              left: 53,
               right: isLandscape ? 230 : 50,
               // 為右側的 QR 碼留出空間
               child: Scrollbar(
                 controller: scrollController, // 使用 ScrollController
-                thumbVisibility: true, // 滾動條始終可見
+                thumbVisibility: AppPreferences().textScale != 1,
                 child: SingleChildScrollView(
                   controller: scrollController, // 使用相同的 ScrollController
                   child: const V3Instruction(isCastToDevice: false),

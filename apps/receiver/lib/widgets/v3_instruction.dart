@@ -219,14 +219,14 @@ class V3Instruction extends StatelessWidget {
                                             // 添加 Flexible 讓文本可以縮小
                                             child: AutoSizeText(
                                               S.current.v3_download_app_title,
-                                            style: context.tokens.textStyle
-                                                .airsyncFontTitle
-                                                .apply(
+                                              style: context.tokens.textStyle
+                                                  .airsyncFontTitle
+                                                  .apply(
                                                       color: context
                                                           .tokens
                                                           .color
                                                           .vsdslColorOnSurface,
-                                                    fontWeightDelta:
+                                                      fontWeightDelta:
                                                           FontWeight
                                                               .w700.value),
                                               minFontSize: 12, // 設置最小字體大小
