@@ -37,113 +37,109 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Container(
       key: _containerKey,
-      alignment: Alignment.center,
-      children: [
-        Positioned(
-          left: 13,
-          top: 27,
-          right: 13,
-          bottom: 13,
-          child: Container(
-            padding: widget.isLandscape
-                ? EdgeInsets.zero
-                : const EdgeInsets.only(left: 20, right: 20),
-            child: const V3ParticipantList(),
-          ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topRight:
+              widget.isLandscape ? const Radius.circular(30) : Radius.zero,
+          bottomRight: const Radius.circular(30),
+          bottomLeft:
+              !widget.isLandscape ? const Radius.circular(30) : Radius.zero,
         ),
-        Positioned(
-          bottom: widget.isLandscape ? 20 : 40,
-          child: V3Focus(
-            label: S.of(context).v3_lbl_moderator_toggle,
-            identifier: 'v3_qa_moderator_toggle',
-            child: Container(
-              width: 270,
-              // 恢復固定寬度
-              constraints: const BoxConstraints(
-                minHeight: 53, // 保持最小高度
+        color: isShowDialogMenu
+            ? context.tokens.color.vsdslColorSurface1000.withValues(alpha: 0.16)
+            : Colors.transparent,
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 13,
+                top: 27,
+                right: 13,
+                bottom: 13,
               ),
-              padding: const EdgeInsets.all(16),
-              decoration: const ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(9999)),
-                  side: BorderSide(
-                    width: 1,
-                    color: Color(0xFFE9EAF0),
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: AutoSizeText(
-                      S.of(context).v3_moderator_mode,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      maxLines: 2,
-                    ),
-                  ),
-                  // const Spacer(),
-                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-                    return SizedBox(
-                      width: 37,
-                      height: 21,
-                      child: IconButton(
-                        icon: SvgPicture.asset(
-                          ChannelProvider.isModeratorMode
-                              ? 'assets/images/ic_switch_on.svg'
-                              : 'assets/images/ic_switch_off.svg',
-                          excludeFromSemantics: true,
-                        ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () async {
-                          if (ChannelProvider.isModeratorMode) {
-                            _callLogOutDialog(context);
-                          } else {
-                            trackEvent(
-                              'click_moderator',
-                              EventCategory.menu,
-                              target: 'on',
-                            );
-
-                            channelProvider.setModeratorMode(true);
-                          }
-                        },
-                      ),
-                    );
-                  }),
-                ],
+              child: Container(
+                padding: widget.isLandscape
+                    ? EdgeInsets.zero
+                    : const EdgeInsets.only(left: 20, right: 20),
+                child: const V3ParticipantList(),
               ),
             ),
           ),
-        ),
-        IgnorePointer(
-          child: LayoutBuilder(builder: (context, constraints) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: widget.isLandscape
-                      ? const Radius.circular(30)
-                      : Radius.zero,
-                  bottomRight: const Radius.circular(30),
-                  bottomLeft: !widget.isLandscape
-                      ? const Radius.circular(30)
-                      : Radius.zero,
+          Padding(
+            padding: EdgeInsets.only(bottom: widget.isLandscape ? 20 : 40),
+            child: V3Focus(
+              label: S.of(context).v3_lbl_moderator_toggle,
+              identifier: 'v3_qa_moderator_toggle',
+              child: Container(
+                width: 270,
+                // 恢復固定寬度
+                constraints: const BoxConstraints(
+                  minHeight: 53, // 保持最小高度
                 ),
-                color: isShowDialogMenu
-                    ? context.tokens.color.vsdslColorSurface1000
-                        .withOpacity(0.16)
-                    : Colors.transparent,
+                padding: const EdgeInsets.all(16),
+                decoration: const ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(9999)),
+                    side: BorderSide(
+                      width: 1,
+                      color: Color(0xFFE9EAF0),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AutoSizeText(
+                        S.of(context).v3_moderator_mode,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                        maxLines: 2,
+                      ),
+                    ),
+                    Consumer<ChannelProvider>(
+                        builder: (_, channelProvider, __) {
+                      return SizedBox(
+                        width: 37,
+                        height: 21,
+                        child: IconButton(
+                          icon: SvgPicture.asset(
+                            ChannelProvider.isModeratorMode
+                                ? 'assets/images/ic_switch_on.svg'
+                                : 'assets/images/ic_switch_off.svg',
+                            excludeFromSemantics: true,
+                          ),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () async {
+                            if (ChannelProvider.isModeratorMode) {
+                              _callLogOutDialog(context);
+                            } else {
+                              trackEvent(
+                                'click_moderator',
+                                EventCategory.menu,
+                                target: 'on',
+                              );
+
+                              channelProvider.setModeratorMode(true);
+                                }
+                              },
+                            ),
+                          );
+                        }),
+                  ],
+                ),
               ),
-            );
-          }),
-        ),
-      ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
