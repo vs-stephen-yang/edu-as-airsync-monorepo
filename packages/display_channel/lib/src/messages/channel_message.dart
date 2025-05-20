@@ -626,17 +626,24 @@ class PresentRejectedMessage extends ChannelMessage {
 class PresentQualityConstraints {
   int? frameRate;
   int? height;
+  int decLimitHeight;
 
-  PresentQualityConstraints({this.frameRate, this.height});
+  PresentQualityConstraints({
+    this.frameRate,
+    this.height,
+    int? decLimitHeight,
+  }) : decLimitHeight = decLimitHeight ?? 0;
 
   PresentQualityConstraints.fromJson(Map<String, dynamic> json)
       : frameRate = json['frameRate'] as int?,
-        height = json['height'] as int?;
+        height = json['height'] as int?,
+        decLimitHeight = json['decLimitHeight'] as int? ?? 0;
 
   Map<String, dynamic> toJson() => {
-        'frameRate': frameRate,
-        'height': height,
-      };
+    'frameRate': frameRate,
+    'height': height,
+    'decLimitHeight': decLimitHeight,
+  };
 }
 
 class ChangePresentQuality extends ChannelMessage {
