@@ -339,8 +339,7 @@
   "v3_lbl_settings_broadcast_to_display_group_confirm": "Confirm no device selected.",
   "v3_lbl_settings_accessibility": "Accessibility",
   "v3_settings_resize_text_size": "Resize text size",
-  "v3_lbl_settings_resize_text_size": "Resize text size",
-  "v3_settings_resize_text_size_normal": "Normal({scale})",
-  "v3_settings_resize_text_size_large": "Large({scale})",
-  "v3_settings_resize_text_size_extra_large": "XLarge({scale})"
+  "v3_settings_resize_text_size_normal": "Normal",
+  "v3_settings_resize_text_size_large": "Large",
+  "v3_settings_resize_text_size_extra_large": "XLarge"
 }
