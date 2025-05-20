@@ -82,7 +82,6 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                       ? 'v3_qa_cast_device_touchback_disable_${widget.index}'
                       : 'v3_qa_cast_device_touchback_enable_${widget.index}',
                   child: SizedBox(
-                    // width: (remoteScreenConnector.isTouchEnabled) ? 83 : 104,
                     height: 27,
                     child: ElevatedButton.icon(
                       onPressed: () {

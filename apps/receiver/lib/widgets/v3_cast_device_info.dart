@@ -137,47 +137,57 @@ class V3CastDeviceInfo extends StatelessWidget {
                           ],
                         ),
                       if (!isLandscape) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 35),
-                          child: Column(
-                            children: [
-                              const V3Instruction(isCastToDevice: true),
-                              const Gap(8),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 1.5,
-                                      color: context
-                                          .tokens.color.vsdslColorOutline,
+                        Expanded(
+                          flex: 16,
+                          child: Scrollbar(
+                            child: SingleChildScrollView(
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 35),
+                                child: Column(
+                                  children: [
+                                    const V3Instruction(isCastToDevice: true),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            height: 1.5,
+                                            color: context
+                                                .tokens.color.vsdslColorOutline,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 50,
+                                          child: Text(
+                                            S
+                                                .of(context)
+                                                .v3_cast_to_device_menu_or,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: context.tokens.color
+                                                    .vsdslColorSurface500),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            height: 1.5,
+                                            color: context
+                                                .tokens.color.vsdslColorOutline,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 50,
-                                    child: Text(
-                                      S.of(context).v3_cast_to_device_menu_or,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: context.tokens.color
-                                              .vsdslColorSurface500),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 1.5,
-                                      color: context
-                                          .tokens.color.vsdslColorOutline,
-                                    ),
-                                  ),
-                                ],
+                                    const Gap(17),
+                                    const V3QrCodeInstruction(
+                                        widthExpand: true),
+                                  ],
+                                ),
                               ),
-                              const Gap(17),
-                              const V3QrCodeInstruction(widthExpand: true),
-                            ],
+                            ),
                           ),
                         ),
-                        const Gap(29),
                         Expanded(
+                          flex: 13,
                           child: Container(
                             decoration: ShapeDecoration(
                               shape: const RoundedRectangleBorder(
