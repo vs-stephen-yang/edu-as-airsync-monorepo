@@ -33,6 +33,7 @@ class V3CastDeviceInfo extends StatelessWidget {
         ),
         child: Consumer<ConnectivityProvider>(
           builder: (_, connectivityProvider, __) {
+            final ScrollController scrollController = ScrollController();
             return connectivityProvider.connectionStatus ==
                     ConnectivityResult.none
                 ? const V3NoNetworkStatus()
@@ -68,7 +69,9 @@ class V3CastDeviceInfo extends StatelessWidget {
                                   height: 525,
                                   padding: EdgeInsets.symmetric(horizontal: 20),
                                   child: Scrollbar(
+                                    controller: scrollController,
                                     child: SingleChildScrollView(
+                                      controller: scrollController,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -140,7 +143,9 @@ class V3CastDeviceInfo extends StatelessWidget {
                         Expanded(
                           flex: 16,
                           child: Scrollbar(
+                            controller: scrollController,
                             child: SingleChildScrollView(
+                              controller: scrollController,
                               child: Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 35),
@@ -218,6 +223,7 @@ class V3QrCodeInstruction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
     return Container(
       width: widthExpand ? null : 420,
       height: 160,
@@ -240,7 +246,9 @@ class V3QrCodeInstruction extends StatelessWidget {
           const SizedBox(width: 20),
           Expanded(
             child: Scrollbar(
+              controller: scrollController,
               child: SingleChildScrollView(
+                controller: scrollController,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
