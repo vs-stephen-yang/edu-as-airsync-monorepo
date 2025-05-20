@@ -384,7 +384,9 @@ class V3Instruction extends StatelessWidget {
                 MediaQuery.of(context).size.height;
 
             // 根據條件決定是否顯示 QR 碼
-            if (!isLandscape && textSizeOption != ResizeTextSizeOption.normal) {
+            if (!isLandscape &&
+                textSizeOption != ResizeTextSizeOption.normal &&
+                !isQuickConnect) {
               return Container(
                 width: 171,
                 height: 245,

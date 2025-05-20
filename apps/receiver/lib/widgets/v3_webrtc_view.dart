@@ -206,14 +206,11 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
             IgnorePointer(
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                child: Wrap(
                   children: [
                     Container(
-                      height: 24,
                       padding: const EdgeInsets.only(
                           left: 8, top: 1, right: 8, bottom: 5),
-                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(10),
@@ -227,7 +224,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                             fontWeight: FontWeight.w400,
                             color: context
                                 .tokens.color.vsdslColorOnSurfaceInverse),
-                        maxLines: 1,
+                        // maxLines: 1,
                       ),
                     )
                   ],

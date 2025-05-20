@@ -159,25 +159,30 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                                 Positioned(
                                   right: 0,
                                   top: 0,
-                                  child: Container(
-                                    width: 16,
-                                    height: 16,
+                                  child:
+                                      // needs to be circle
+                                      Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 16,
+                                      minHeight: 16,
+                                    ),
                                     decoration: const BoxDecoration(
                                       color: Color(0xFF5D80ED),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
+                                      shape: BoxShape.circle,
                                     ),
-                                    padding: EdgeInsets.zero,
-                                    child: AutoSizeText(
-                                      HybridConnectionList()
-                                          .getConnectionCount()
-                                          .toString(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w500,
-                                        color: context.tokens.color
-                                            .vsdslColorOnSurfaceInverse,
+                                    padding: const EdgeInsets.all(2),
+                                    child: Center(
+                                      child: AutoSizeText(
+                                        HybridConnectionList()
+                                            .getConnectionCount()
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w500,
+                                          color: context.tokens.color
+                                              .vsdslColorOnSurfaceInverse,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -219,28 +224,31 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                                     right: 0,
                                     top: 0,
                                     child: Container(
-                                      width: 16,
-                                      height: 16,
+                                      constraints: const BoxConstraints(
+                                        minWidth: 16,
+                                        minHeight: 16,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: (channelProvider
                                                 .remoteScreenConnectionFull)
                                             ? context
                                                 .tokens.color.vsdslColorError
                                             : const Color(0xFF5D80ED),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
+                                        shape: BoxShape.circle,
                                       ),
-                                      padding: EdgeInsets.zero,
-                                      child: AutoSizeText(
-                                        channelProvider
-                                            .remoteScreenConnectors.length
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                          color: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
+                                      padding: const EdgeInsets.all(2),
+                                      child: Center(
+                                        child: AutoSizeText(
+                                          channelProvider
+                                              .remoteScreenConnectors.length
+                                              .toString(),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                            color: context.tokens.color
+                                                .vsdslColorOnSurfaceInverse,
+                                          ),
                                         ),
                                       ),
                                     ),

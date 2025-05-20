@@ -58,33 +58,43 @@ class V3CustomDialog extends StatelessWidget {
                 shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
                 child: Column(
                   children: [
-                    const SizedBox(height: 27),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: AutoSizeText(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: context.tokens.color.vsdslColorNeutral,
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 27),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: AutoSizeText(
+                                title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.tokens.color.vsdslColorNeutral,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 13),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 13),
+                              child: AutoSizeText(
+                                content,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: context.tokens.color.vsdslColorNeutral,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20), // 底部間距
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 13),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 13),
-                      child: AutoSizeText(
-                        content,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: context.tokens.color.vsdslColorNeutral,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 13, right: 13, bottom: 20),
