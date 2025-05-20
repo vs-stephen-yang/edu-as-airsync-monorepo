@@ -269,6 +269,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                               color: context
                                   .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
+                            maxLines: 3,
                           ),
                         ],
                       ),

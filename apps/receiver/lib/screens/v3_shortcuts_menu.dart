@@ -70,12 +70,11 @@ class V3ShortcutsMenu extends StatelessWidget {
                         .of(context)
                         .v3_lbl_streaming_shortcut_cast_device_toggle,
                     identifier: 'v3_qa_streaming_shortcut_cast_device_toggle',
-                    child: SizedBox(
-                      height: 27,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          AutoSizeText(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: AutoSizeText(
                             S.of(context).v3_shortcuts_cast_device,
                             style: TextStyle(
                               fontSize: 12,
@@ -83,45 +82,47 @@ class V3ShortcutsMenu extends StatelessWidget {
                               color: context
                                   .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
+                            maxLines: 3,
                           ),
-                          Consumer<ChannelProvider>(
-                              builder: (_, channelProvider, __) {
-                            return SizedBox(
-                              height: 21,
-                              child: IconButton(
-                                icon: SvgPicture.asset(
-                                  channelProvider.isSenderMode
-                                      ? 'assets/images/ic_switch_on.svg'
-                                      : 'assets/images/ic_switch_off.svg',
-                                ),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  if (channelProvider.isSenderMode) {
-                                    channelProvider.removeSender(
-                                        fromSender: true);
-                                  } else {
-                                    V3CastDevicesMenu.fromShortcut = true;
-                                    channelProvider.startRemoteScreen(
-                                        fromSender: true);
-                                    if (navService.canPop()) {
-                                      navService.goBack();
-                                    }
-                                  }
-
-                                  trackEvent(
-                                    'click_cast_to_device',
-                                    EventCategory.quickMenu,
-                                    target: channelProvider.isSenderMode
-                                        ? 'on'
-                                        : 'off',
-                                  );
-                                },
+                        ),
+                        Consumer<ChannelProvider>(
+                            builder: (_, channelProvider, __) {
+                          return SizedBox(
+                            height: 21,
+                            width: 37,
+                            child: IconButton(
+                              icon: SvgPicture.asset(
+                                channelProvider.isSenderMode
+                                    ? 'assets/images/ic_switch_on.svg'
+                                    : 'assets/images/ic_switch_off.svg',
                               ),
-                            );
-                          }),
-                        ],
-                      ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                if (channelProvider.isSenderMode) {
+                                  channelProvider.removeSender(
+                                      fromSender: true);
+                                } else {
+                                  V3CastDevicesMenu.fromShortcut = true;
+                                  channelProvider.startRemoteScreen(
+                                      fromSender: true);
+                                  if (navService.canPop()) {
+                                    navService.goBack();
+                                  }
+                                }
+
+                                trackEvent(
+                                      'click_cast_to_device',
+                                      EventCategory.quickMenu,
+                                      target: channelProvider.isSenderMode
+                                          ? 'on'
+                                          : 'off',
+                                    );
+                                  },
+                                ),
+                              );
+                            }),
+                      ],
                     ),
                   ),
                   SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),

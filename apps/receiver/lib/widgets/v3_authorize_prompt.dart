@@ -203,7 +203,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
-        var dialogWidth = 628.0;
+        var dialogWidth =
+            MediaQuery.of(context).textScaleFactor > 1.0 ? 628.0 : 700.0;
         dialogContextList.add(dialogContext);
         return PopScope(
           // Using canPop=false to block back key return,
@@ -252,7 +253,12 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     var requestDividerHeight = 2.0;
                     // mirror request height and spacing height
                     var requestTotalHeight = 0.0;
-                    var requestContainerHeight = 27.0;
+                    var requestContainerHeight =
+                        MediaQuery.of(context).textScaleFactor > 1.0
+                            ? 60.0
+                            : 30.0;
+                    var requestMaxLine =
+                        MediaQuery.of(context).textScaleFactor > 1.0 ? 2 : 1;
                     var requestPaddingHeight =
                         context.tokens.spacing.vsdslSpacingLg.vertical;
                     if (mirrorRequestIdles.isNotEmpty) {
@@ -386,32 +392,46 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       SvgPicture.asset(
                                         'assets/images/ic_prompt_in_mirror.svg',
                                         excludeFromSemantics: true,
+                                        width: 21,
+                                        height: 21,
                                       ),
                                       Gap(context
                                           .tokens.spacing.vsdslSpacingSm.left),
-                                      AutoSizeText(
-                                        sprintf(
-                                            S.current.main_mirror_from_client, [
-                                          mirrorRequestIdles
-                                              .toList()[index]
-                                              .deviceName
-                                        ]),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
+                                      Expanded(
+                                        // 添加 Expanded 包装 Text
+                                        child: SingleChildScrollView(
+                                          child: Text(
+                                            sprintf(
+                                                S.current
+                                                    .main_mirror_from_client,
+                                                [
+                                                  mirrorRequestIdles
+                                                      .toList()[index]
+                                                      .deviceName
+                                                ]),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: context.tokens.color
+                                                  .vsdslColorOnSurfaceInverse,
+                                            ),
+                                            maxLines:
+                                                requestMaxLine, // 限制最多显示两行
+                                          ),
                                         ),
                                       ),
-                                      const Spacer(),
+                                      Gap(context
+                                          .tokens.spacing.vsdslSpacingSm.left),
                                       V3Focus(
                                         label: S
                                             .of(context)
                                             .v3_lbl_authorize_prompt_decline,
                                         identifier:
                                             'v3_qa_authorize_prompt_decline',
-                                        child: SizedBox(
-                                          width: 80,
-                                          height: requestContainerHeight,
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            minWidth: 80,
+                                            minHeight: requestContainerHeight,
+                                          ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               foregroundColor: context
@@ -468,9 +488,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                             .v3_lbl_authorize_prompt_accept,
                                         identifier:
                                             'v3_qa_authorize_prompt_accept',
-                                        child: SizedBox(
-                                          width: 80,
-                                          height: 27,
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            minWidth: 80,
+                                            minHeight: requestContainerHeight,
+                                          ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               foregroundColor: context.tokens
@@ -528,9 +550,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                             .v3_lbl_authorize_prompt_accept_all,
                                         identifier:
                                             'v3_qa_authorize_prompt_accept_all',
-                                        child: SizedBox(
-                                          width: 80,
-                                          height: 27,
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            minWidth: 80,
+                                            minHeight: requestContainerHeight,
+                                          ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               foregroundColor: context.tokens
@@ -684,29 +708,44 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   SvgPicture.asset(
                                     'assets/images/ic_prompt_in_webrtc.svg',
                                     excludeFromSemantics: true,
+                                    width: 21,
+                                    height: 21,
                                   ),
                                   Gap(context
                                       .tokens.spacing.vsdslSpacingSm.left),
-                                  AutoSizeText(
-                                    sprintf(S.current.main_mirror_from_client, [
-                                      authRequestIdles[index].entries.first.key
-                                    ]),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: context.tokens.color
-                                          .vsdslColorOnSurfaceInverse,
+                                  Expanded(
+                                    // 添加 Expanded 包装 Text
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        sprintf(
+                                            S.current.main_mirror_from_client, [
+                                          authRequestIdles[index]
+                                              .entries
+                                              .first
+                                              .key
+                                        ]),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: context.tokens.color
+                                              .vsdslColorOnSurfaceInverse,
+                                        ),
+                                        maxLines: requestMaxLine, // 限制最多显示两行
+                                      ),
                                     ),
                                   ),
-                                  const Spacer(),
+                                  Gap(context
+                                      .tokens.spacing.vsdslSpacingSm.left),
                                   V3Focus(
                                     label: S
                                         .of(context)
                                         .v3_lbl_authorize_prompt_decline,
                                     identifier:
                                         'v3_qa_authorize_prompt_decline',
-                                    child: SizedBox(
-                                      width: 80,
-                                      height: requestContainerHeight,
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        minWidth: 80,
+                                        minHeight: requestContainerHeight,
+                                      ),
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           foregroundColor: context.tokens.color
@@ -758,9 +797,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         .of(context)
                                         .v3_lbl_authorize_prompt_accept,
                                     identifier: 'v3_qa_authorize_prompt_accept',
-                                    child: SizedBox(
-                                      width: 80,
-                                      height: 27,
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        minWidth: 80,
+                                        minHeight: requestContainerHeight,
+                                      ),
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           foregroundColor: context
@@ -805,9 +846,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         .v3_lbl_authorize_prompt_accept_all,
                                     identifier:
                                         'v3_qa_authorize_prompt_accept_all',
-                                    child: SizedBox(
-                                      width: 80,
-                                      height: 27,
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        minWidth: 80,
+                                        minHeight: requestContainerHeight,
+                                      ),
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           foregroundColor: context
