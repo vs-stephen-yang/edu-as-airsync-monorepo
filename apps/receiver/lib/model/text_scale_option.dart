@@ -25,11 +25,11 @@ enum ResizeTextSizeOption {
       BuildContext context) {
     final resizeTextSizeMap = {
       ResizeTextSizeOption.normal:
-          S.of(context).v3_settings_resize_text_size_normal(1.0),
+          '${S.of(context).v3_settings_resize_text_size_normal} (1.0)',
       ResizeTextSizeOption.large:
-          S.of(context).v3_settings_resize_text_size_large(1.5),
+          '${S.of(context).v3_settings_resize_text_size_large} (1.5)',
       ResizeTextSizeOption.xlarge:
-          S.of(context).v3_settings_resize_text_size_extra_large(2.0),
+          '${S.of(context).v3_settings_resize_text_size_extra_large} (2.0)',
     };
     return resizeTextSizeMap;
   }

@@ -3451,43 +3451,33 @@ class S {
     );
   }
 
-  /// `Resize text size`
-  String get v3_lbl_settings_resize_text_size {
+  /// `Normal`
+  String get v3_settings_resize_text_size_normal {
     return Intl.message(
-      'Resize text size',
-      name: 'v3_lbl_settings_resize_text_size',
+      'Normal',
+      name: 'v3_settings_resize_text_size_normal',
       desc: '',
       args: [],
     );
   }
 
-  /// `Normal({scale})`
-  String v3_settings_resize_text_size_normal(Object scale) {
+  /// `Large`
+  String get v3_settings_resize_text_size_large {
     return Intl.message(
-      'Normal($scale)',
-      name: 'v3_settings_resize_text_size_normal',
-      desc: '',
-      args: [scale],
-    );
-  }
-
-  /// `Large({scale})`
-  String v3_settings_resize_text_size_large(Object scale) {
-    return Intl.message(
-      'Large($scale)',
+      'Large',
       name: 'v3_settings_resize_text_size_large',
       desc: '',
-      args: [scale],
+      args: [],
     );
   }
 
-  /// `XLarge({scale})`
-  String v3_settings_resize_text_size_extra_large(Object scale) {
+  /// `XLarge`
+  String get v3_settings_resize_text_size_extra_large {
     return Intl.message(
-      'XLarge($scale)',
+      'XLarge',
       name: 'v3_settings_resize_text_size_extra_large',
       desc: '',
-      args: [scale],
+      args: [],
     );
   }
 }

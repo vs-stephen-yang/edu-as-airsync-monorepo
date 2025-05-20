@@ -23,12 +23,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(value) =>
       "Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times. ";
 
-  static String m2(scale) => "XLarge(${scale})";
-
-  static String m3(scale) => "Large(${scale})";
-
-  static String m4(scale) => "Normal(${scale})";
-
   static String m0(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -449,8 +443,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "More information about broadcast to display group"),
         "v3_lbl_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Select %s"),
-        "v3_lbl_settings_resize_text_size":
-            MessageLookupByLibrary.simpleMessage("Resize text size"),
         "v3_lbl_settings_show_display_code":
             MessageLookupByLibrary.simpleMessage(
                 "Turn on/off display code toggle"),
@@ -680,9 +672,12 @@ class MessageLookup extends MessageLookupByLibrary {
                 "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\n\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy."),
         "v3_settings_resize_text_size":
             MessageLookupByLibrary.simpleMessage("Resize text size"),
-        "v3_settings_resize_text_size_extra_large": m2,
-        "v3_settings_resize_text_size_large": m3,
-        "v3_settings_resize_text_size_normal": m4,
+        "v3_settings_resize_text_size_extra_large":
+            MessageLookupByLibrary.simpleMessage("XLarge"),
+        "v3_settings_resize_text_size_large":
+            MessageLookupByLibrary.simpleMessage("Large"),
+        "v3_settings_resize_text_size_normal":
+            MessageLookupByLibrary.simpleMessage("Normal"),
         "v3_settings_version": m0,
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s new"),
