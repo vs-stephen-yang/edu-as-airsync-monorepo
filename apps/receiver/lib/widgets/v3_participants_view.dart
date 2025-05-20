@@ -84,8 +84,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
-                      maxLines: 1, // 限制為單行
-                      overflow: TextOverflow.ellipsis, // 溢出時顯示省略號
+                      maxLines: 2,
                     ),
                   ),
                   // const Spacer(),

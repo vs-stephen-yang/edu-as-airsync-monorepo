@@ -86,87 +86,102 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
       );
     }
 
-    return SizedBox(
+    return Container(
       width: widget.isForMenuUse ? 358 : 283,
-      height: 34,
-      child: Row(
+      constraints: BoxConstraints(
+        minHeight: 34,
+      ),
+      child: Column(
         children: [
-          SvgPicture.asset(
-            isCasting
-                ? 'assets/images/ic_participant_avatar_cast.svg'
-                : isReceiving
-                    ? 'assets/images/ic_participant_avatar_receive.svg'
-                    : 'assets/images/ic_participant_avatar_wait.svg',
-            excludeFromSemantics: true,
-            width: 32,
-            height: 32,
-          ),
-          Gap(context.tokens.spacing.vsdslSpacingSm.left),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 18,
-                  child: AutoSizeText(
-                    rtcConnector.senderName ?? '',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurface,
+          Row(
+            children: [
+              SvgPicture.asset(
+                isCasting
+                    ? 'assets/images/ic_participant_avatar_cast.svg'
+                    : isReceiving
+                        ? 'assets/images/ic_participant_avatar_receive.svg'
+                        : 'assets/images/ic_participant_avatar_wait.svg',
+                excludeFromSemantics: true,
+                width: 32,
+                height: 32,
+              ),
+              Gap(context.tokens.spacing.vsdslSpacingSm.left),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(minHeight: 18),
+                      child: AutoSizeText(
+                        rtcConnector.senderName ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: context.tokens.color.vsdslColorOnSurface,
+                        ),
+                        maxLines: 3,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                    if (widget.isForMenuUse && status.isNotEmpty) ...[
+                      Gap(context.tokens.spacing.vsdslSpacingXs.top),
+                      AutoSizeText(
+                        status,
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                          color: (isWaiting)
+                              ? context.tokens.color.vsdslColorSurface400
+                              : (isCasting)
+                                  ? context
+                                      .tokens.color.vsdslColorSecondaryVariant
+                                  : context
+                                      .tokens.color.vsdslColorSuccessVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                        minFontSize: 8,
+                      ),
+                    ],
+                  ],
                 ),
-                if (widget.isForMenuUse && status.isNotEmpty) ...[
-                  Gap(context.tokens.spacing.vsdslSpacingXs.top),
-                  AutoSizeText(
-                    status,
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                      color: (isWaiting)
-                          ? context.tokens.color.vsdslColorSurface400
-                          : (isCasting)
-                              ? context.tokens.color.vsdslColorSecondaryVariant
-                              : context.tokens.color.vsdslColorSuccessVariant,
-                    ),
-                    textAlign: TextAlign.center,
-                    minFontSize: 8,
-                  ),
-                ],
-              ],
-            ),
+              ),
+              ValueListenableBuilder(
+                valueListenable: rtcConnector.reconnectChannelStateNotifier,
+                builder: (BuildContext context, ReconnectState value,
+                    Widget? child) {
+                  if (rtcConnector.clickButtonWhenReconnect) {
+                    if (value == ReconnectState.success) {
+                      rtcConnector.clickButtonWhenReconnect = false;
+                      V3Toast()
+                          .makeReconnectToast(
+                              value,
+                              S
+                                  .of(context)
+                                  .main_feature_reconnect_success_toast)
+                          ?.show(context);
+                      rtcConnector.reconnectChannelStateNotifier.value =
+                          ReconnectState.idle;
+                    } else if (value == ReconnectState.fail) {
+                      rtcConnector.clickButtonWhenReconnect = false;
+                      V3Toast()
+                          .makeReconnectToast(value,
+                              S.of(context).main_feature_reconnect_fail_toast)
+                          ?.show(context);
+                      rtcConnector.reconnectChannelStateNotifier.value =
+                          ReconnectState.idle;
+                    }
+                  }
+                  return Container();
+                },
+              ),
+            ],
           ),
-          Gap(context.tokens.spacing.vsdslSpacing2xl.left),
-          itemParticipant,
-          ValueListenableBuilder(
-            valueListenable: rtcConnector.reconnectChannelStateNotifier,
-            builder:
-                (BuildContext context, ReconnectState value, Widget? child) {
-              if (rtcConnector.clickButtonWhenReconnect) {
-                if (value == ReconnectState.success) {
-                  rtcConnector.clickButtonWhenReconnect = false;
-                  V3Toast()
-                      .makeReconnectToast(value,
-                          S.of(context).main_feature_reconnect_success_toast)
-                      ?.show(context);
-                  rtcConnector.reconnectChannelStateNotifier.value =
-                      ReconnectState.idle;
-                } else if (value == ReconnectState.fail) {
-                  rtcConnector.clickButtonWhenReconnect = false;
-                  V3Toast()
-                      .makeReconnectToast(value,
-                          S.of(context).main_feature_reconnect_fail_toast)
-                      ?.show(context);
-                  rtcConnector.reconnectChannelStateNotifier.value =
-                      ReconnectState.idle;
-                }
-              }
-              return Container();
-            },
-          ),
+          Row(
+            children: [
+              Spacer(),
+              itemParticipant,
+            ],
+          )
         ],
       ),
     );
@@ -192,13 +207,15 @@ class ParticipantStandbyFeature extends StatelessWidget {
         V3Focus(
           label: S.of(context).v3_lbl_participant_share,
           identifier: 'v3_qa_participant_share',
-          child: SizedBox(
-            width: isForMenuUse
-                ? rtcConnector.senderPlatform == 'web'
-                    ? 105
-                    : 74
-                : 66,
-            height: 27,
+          child: Container(
+            constraints: BoxConstraints(
+              minWidth: isForMenuUse
+                  ? rtcConnector.senderPlatform == 'web'
+                      ? 105
+                      : 74
+                  : 66,
+              minHeight: 27,
+            ),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 5.0,
@@ -207,7 +224,8 @@ class ParticipantStandbyFeature extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: context.tokens.radii.vsdslRadiusFull,
                 ),
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () {
                 EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
@@ -233,13 +251,13 @@ class ParticipantStandbyFeature extends StatelessWidget {
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   ],
-                  Expanded(
-                    child: Text(
+                  Flexible(
+                    child: AutoSizeText(
                       S.of(context).v3_participant_item_share,
                       textAlign:
                           isForMenuUse ? TextAlign.left : TextAlign.center,
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.visible,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

@@ -72,6 +72,8 @@ class V3ParticipantList extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color: context.tokens.color.vsdslColorOnSurfaceVariant,
                 ),
+                maxLines: 2,
+                textAlign: TextAlign.center,
               ),
             ],
           );
@@ -99,6 +101,7 @@ class V3ParticipantList extends StatelessWidget {
                     ),
                   ),
                 ]),
+                maxLines: 2,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
