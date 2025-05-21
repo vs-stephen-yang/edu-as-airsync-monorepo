@@ -389,7 +389,6 @@ class V3Instruction extends StatelessWidget {
                 !isQuickConnect) {
               return Container(
                 width: 171,
-                height: 245,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                     borderRadius: context.tokens.radii.vsdslRadiusXl,

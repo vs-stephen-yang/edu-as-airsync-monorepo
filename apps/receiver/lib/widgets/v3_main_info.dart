@@ -99,7 +99,6 @@ class V3MainInfo extends StatelessWidget {
   }
 
   Widget _buildStackContent(BuildContext context, {required bool isLandscape}) {
-
     // 創建 ScrollController
     final ScrollController scrollController = ScrollController();
 
@@ -144,7 +143,6 @@ class V3MainInfo extends StatelessWidget {
                 right: isLandscape ? 42 : 29,
                 child: Container(
                   width: 171,
-                  height: 285, // 增加高度從 229 到 245，以容納 QR 碼
                   decoration: _buildQrCodeDecoration(context),
                   child: const V3QrCodeQuickConnect(),
                 ),
