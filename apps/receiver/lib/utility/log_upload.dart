@@ -27,7 +27,7 @@ uploadLog(String message, String logs) async {
 
 Future<bool> uploadSystemLog(String message) async {
   try {
-    final log = await LogcatReader.readLog();
+    final log = await LogcatReader.readLog(lines: 1000);
 
     await uploadLog(message, log);
     return true;
