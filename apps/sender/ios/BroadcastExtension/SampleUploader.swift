@@ -41,6 +41,7 @@ class SampleUploader {
 
     private var videoConstraintWidth = 0
     private var videoConstraintHeight = 0
+    private var videoDecoderLimitHeight = 0
 
     private var currWidth: Int = 0
     private var currHeight: Int = 0
@@ -77,6 +78,11 @@ class SampleUploader {
         videoConstraintWidth = width
         videoConstraintHeight = height
         NSLog("updateConstraint width: \(videoConstraintWidth) height: \(videoConstraintHeight)")
+    }
+    
+    func updateDecoderLimitHeight(decLimitHeight: Int) {
+        videoDecoderLimitHeight = decLimitHeight
+        NSLog("videoDecoderLimitHeight: \(videoDecoderLimitHeight)")
     }
 }
 
@@ -159,6 +165,35 @@ private extension SampleUploader {
         }
         return max(widthScaleFactor, heightScaleFactor)
     }
+    
+    func calcScaleFactorWithLimitHeight(width: Int, height: Int, orientation: UInt, constraintWidth: Int, constraintHeight: Int, decLimitHeight: Int) -> Double {
+        // iOS device capture always portrait; constraint size always landscape
+        var sourceWidth = width
+        var sourceHeight = height
+        var portraitConstraintWidth = constraintHeight
+        var portraitConstraintHeight = constraintWidth
+        var widthScaleFactor: Double
+        var heightScaleFactor: Double
+
+        if portraitConstraintWidth > 0 {
+            var limitWidth = (decLimitHeight > 0)
+                ? min(portraitConstraintWidth, decLimitHeight)
+                : portraitConstraintWidth
+            widthScaleFactor = Double(sourceWidth) / Double(limitWidth)
+        } else {
+            widthScaleFactor = 1.0
+        }
+
+        if portraitConstraintHeight > 0 {
+            var limitHeight = (decLimitHeight > 0)
+                ? min(portraitConstraintHeight, decLimitHeight)
+                : portraitConstraintHeight
+            heightScaleFactor = Double(sourceHeight) / Double(limitHeight)
+        } else {
+            heightScaleFactor = 1.0
+        }
+        return max(widthScaleFactor, heightScaleFactor)
+    }
 
     func prepareVideo(sample buffer: CMSampleBuffer) -> Data? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(buffer) else {
@@ -176,7 +211,7 @@ private extension SampleUploader {
         // Calculate the currScaleWidth, currScaleHeight, currScaleFactor if changed
         //
         if (width != currWidth || height != currHeight || currConstraintHeight != videoConstraintHeight) {
-            currScaleFactor = calcScaleFactor(width: width, height: height, orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight)
+            currScaleFactor = calcScaleFactorWithLimitHeight(width: width, height: height, orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight, decLimitHeight: videoDecoderLimitHeight)
             currScaleWidth = Double(width)/(currScaleFactor)
             currScaleHeight = Double(height)/(currScaleFactor)
 

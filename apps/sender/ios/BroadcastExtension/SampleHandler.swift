@@ -44,6 +44,8 @@ class SampleHandler: RPBroadcastSampleHandler {
       let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
       let width = defaults?.integer(forKey: "constraintWidth") ?? 0
       let height = defaults?.integer(forKey: "constraintHeight") ?? 0
+      let decLimitHeight = defaults?.integer(forKey: "decLimitHeight") ?? 0
+      videoUploader?.updateDecoderLimitHeight(decLimitHeight: decLimitHeight)
       videoUploader?.updateConstraint(width: width, height: height)
     }
     
