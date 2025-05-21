@@ -305,13 +305,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           child: ElevatedButton(
                             onPressed: () async {
                               // Upload log
-                              await uploadSystemLog('log');
+                              final result = await uploadSystemLog('log');
 
                               if (!context.mounted) return;
 
                               MotionToast.success(
-                                description:
-                                    const Text("Logs uploaded successfully"),
+                                description: Text(
+                                  result
+                                      ? "Logs uploaded successfully"
+                                      : "Log upload failed",
+                                ),
                               ).show(context);
                             },
                             child: const Text(
