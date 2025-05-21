@@ -1,13 +1,11 @@
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:display_flutter/utility/log.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Upload log using Sentry's user feedback
-uploadLog(String message) async {
+uploadLog(String message, String logs) async {
   final feedback = SentryFeedback(message: message, name: 'default');
 
-  final logs = getLogs();
   final content = Uint8List.fromList(utf8.encode(logs)).buffer.asByteData();
 
   await Sentry.captureFeedback(
