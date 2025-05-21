@@ -484,14 +484,7 @@ class RTCConnector {
   int getFullHeight(int attenderCount) {
     int fullHeight = 1536;
 
-    // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
-    // if (RTCConnector.isMtk9950Model(_deviceType) &&
-    //     attenderCount > 1 &&
-    //     senderPlatform != null &&
-    //     senderPlatform == "ios") {
-    //   fullHeight = 720;
-    // }
-
+    // #85879  Workaround to solve WebRTC screen freeze on IFP52-1 issue
     if (RTCConnector.isMtk9950Model(_deviceType) &&
         attenderCount > 1 &&
         senderPlatform != null) {
@@ -501,6 +494,13 @@ class RTCConnector {
     return fullHeight;
   }
 
+  int getDecoderLimitHeight(String? deviceType, int attenderCount) {
+    if (isMtk9950Model(deviceType) && (attenderCount > 1)) {
+      return 1080;
+    }
+    return 0;   // no limitation
+  }
+
   void sendChangeQuality(
       bool isFullHeight, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
@@ -508,8 +508,7 @@ class RTCConnector {
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0,
         height: isFullHeight ? getFullHeight(attendeeCount) : 540,
-        decLimitHeight: (RTCConnector.isMtk9950Model(_deviceType) && attendeeCount > 1 )? 1080 : 0);
-
+        decLimitHeight: getDecoderLimitHeight(_deviceType, attendeeCount));
     log.info(
         '[$clientId] Changing present quality. height:${message.constraints?.height}');
 
