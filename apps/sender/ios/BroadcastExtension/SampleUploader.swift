@@ -176,17 +176,14 @@ private extension SampleUploader {
         var heightScaleFactor: Double
 
         if portraitConstraintWidth > 0 {
-            var limitWidth = (decLimitHeight > 0)
-                ? min(portraitConstraintWidth, decLimitHeight)
-                : portraitConstraintWidth
-            widthScaleFactor = Double(sourceWidth) / Double(limitWidth)
+            widthScaleFactor = Double(sourceWidth) / Double(portraitConstraintWidth)
         } else {
             widthScaleFactor = 1.0
         }
 
         if portraitConstraintHeight > 0 {
             var limitHeight = (decLimitHeight > 0)
-                ? min(portraitConstraintHeight, decLimitHeight)
+                ? min(constraintHeight, decLimitHeight)
                 : portraitConstraintHeight
             heightScaleFactor = Double(sourceHeight) / Double(limitHeight)
         } else {
