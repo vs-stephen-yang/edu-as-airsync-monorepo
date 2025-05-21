@@ -1120,7 +1120,7 @@ class WebRTCConnector {
 
   // change present quality
   bool _streamPublished = false;
-  ChangePresentQuality? _pendingChangePresentQuality, _lastChangePresentQualityMsg;
+  ChangePresentQuality? _pendingChangePresentQuality;
 
   double _screenWidth = 1920.0;
   double _screenHeight = 1536.0;
@@ -1130,7 +1130,6 @@ class WebRTCConnector {
   int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
   int _actualHeight = 1080;
-  bool _isMtk9950 = false;
 
   static const double _defaultMinFrameRate = 30.0;
   static const double _defaultFrameRate = 30.0;
@@ -1862,8 +1861,6 @@ class WebRTCConnector {
     log.info(
         "Received quality change request. height:${msg.constraints?.height}");
 
-    _lastChangePresentQualityMsg = msg;
-
     if (!_streamPublished) {
       _pendingChangePresentQuality = msg;
       return;
@@ -2043,9 +2040,6 @@ class WebRTCConnector {
       _actualWidth = stats.frameWidth!;
       _actualHeight = stats.frameHeight!;
       _updateEncodingParameters();
-      if (_isMtk9950) {
-        changePresentQuality(_lastChangePresentQualityMsg!);
-      }
     }
   }
 
