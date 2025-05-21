@@ -28,6 +28,9 @@ import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 import com.mvbcast.crosswalk.vsapi.VSApiHandler;
 
 import java.util.Calendar;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -137,6 +140,25 @@ public class EulaActivity extends FlutterActivity {
                 }
             }
         });
+
+        new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/logcat")
+                .setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("readLog")) {
+                        try {
+                            String pid = String.valueOf(android.os.Process.myPid());
+                            String buffers = call.argument("buffers");
+                            String priority = call.argument("priority");
+                            int lines = call.argument("lines");
+
+                            String output = readLogFromLogcat(pid, buffers, priority, lines);
+                            result.success(output);
+                        } catch (Exception e) {
+                            result.error("ERROR", "Failed to read logcat", e.getMessage());
+                        }
+                    } else {
+                        result.notImplemented();
+                    }
+                });
 
         new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_helper")
                 .setMethodCallHandler((call, result) -> {
@@ -289,6 +311,28 @@ public class EulaActivity extends FlutterActivity {
         }
     }
     // endregion
+
+    private static String readLogFromLogcat(String pid, String buffers, String priority, int lines) throws IOException {
+        String command = String.format("logcat --pid=%s -d -b %s *:%s -t %d", pid, buffers, priority, lines);
+
+        Log.i(TAG, "Reading system log with command: " + command);
+
+        StringBuilder output = new StringBuilder();
+        Process process = Runtime.getRuntime().exec(command);
+
+        try (
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        ){
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        } finally {
+            process.destroy();
+        }
+
+        return output.toString();
+    }
 
     private void enableFullscreenMode(FlutterActivity activity) {
         if (activity.getWindow() != null) {
