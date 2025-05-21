@@ -373,8 +373,6 @@ class _SubTittleButton extends StatelessWidget {
                     fontSize: 12,
                     color: Colors.white,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (locked)
