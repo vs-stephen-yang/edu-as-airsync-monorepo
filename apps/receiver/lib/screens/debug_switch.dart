@@ -4,9 +4,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
-import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_upload.dart';
-import 'package:display_flutter/utility/logcat_reader.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
@@ -307,13 +305,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           child: ElevatedButton(
                             onPressed: () async {
                               // Upload log
-                              try {
-                                String log = await LogcatReader.readLog();
-                                uploadLog('log', log);
-                              } catch (e) {
-                                log.warning('Failed to upload log', e);
-                                return;
-                              }
+                              await uploadSystemLog('log');
 
                               if (!context.mounted) return;
 

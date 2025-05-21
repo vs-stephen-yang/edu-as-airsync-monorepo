@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/logcat_reader.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Upload log using Sentry's user feedback
@@ -21,4 +23,16 @@ uploadLog(String message, String logs) async {
       scope.addAttachment(attachment);
     },
   );
+}
+
+Future<bool> uploadSystemLog(String message) async {
+  try {
+    final log = await LogcatReader.readLog();
+
+    await uploadLog(message, log);
+    return true;
+  } catch (e) {
+    log.warning('Failed to upload log', e);
+    return false;
+  }
 }
