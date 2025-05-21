@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:developer' as developer;
 import 'package:display_flutter/utility/log_storage.dart';
 import 'package:logging/logging.dart';
 
@@ -20,7 +19,8 @@ void initLogger() {
       msg += '\n${record.stackTrace.toString()}';
     }
 
-    developer.log(record.message, name: 'AirSync', level: record.level.value);
+    // ignore: avoid_print
+    print('${record.level.name} ${record.message}');
 
     _logStorage?.addLog(msg);
   });
