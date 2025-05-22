@@ -386,55 +386,57 @@ public class WiFiDirectMgr {
    * @param connectInfo
    */
   private void setConnInfo(String connectInfo) {
-    if (!TextUtils.isEmpty(connectInfo)) {
-      String sourceIp = "";
-      connectInfo = connectInfo.replace(":", "");
-      String[] connectInfoArr = connectInfo.split(" ");
-      for (int i = 0; i < connectInfoArr.length - 1; i += 2) {
-        if ("groupFormed".equals(connectInfoArr[i])) {
-          isGroupFormed_ = "true".equals(connectInfoArr[i + 1]);
-        } else if ("isGroupOwner".equals(connectInfoArr[i])) {
-          isGroupOwner_ = "true".equals(connectInfoArr[i + 1]);
-        } else if (GROUP_OWNER_ADDRESS_KEYS.contains(connectInfoArr[i])) {
-          if (isGroupOwner_) {
-            String sourceIpStr;
-            while (isGroupFormed_ && isStart_) {
-              if (TextUtils.isEmpty(sourceMacAddr_)) {
-                Log.d(TAG, "Have not gotten Mac Addr.");
-                break;
-              }
+    if (TextUtils.isEmpty(connectInfo)) {
+      return;
+    }
 
-              sourceIpStr = ARPUtil.getIPFromMac(sourceMacAddr_, p2pInterfaceName_);
-              if (!TextUtils.isEmpty(sourceIpStr)) {
-                sourceIp = sourceIpStr;
-                Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
-                break;
-              } else {
-                Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr_ + " ret is null");
-              }
-              try {
-                Thread.sleep(500);
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              }
+    String sourceIp = "";
+    connectInfo = connectInfo.replace(":", "");
+    String[] connectInfoArr = connectInfo.split(" ");
+    for (int i = 0; i < connectInfoArr.length - 1; i += 2) {
+      if ("groupFormed".equals(connectInfoArr[i])) {
+        isGroupFormed_ = "true".equals(connectInfoArr[i + 1]);
+      } else if ("isGroupOwner".equals(connectInfoArr[i])) {
+        isGroupOwner_ = "true".equals(connectInfoArr[i + 1]);
+      } else if (GROUP_OWNER_ADDRESS_KEYS.contains(connectInfoArr[i])) {
+        if (isGroupOwner_) {
+          String sourceIpStr;
+          while (isGroupFormed_ && isStart_) {
+            if (TextUtils.isEmpty(sourceMacAddr_)) {
+              Log.d(TAG, "Have not gotten Mac Addr.");
+              break;
             }
-          } else {
-            sourceIp = connectInfoArr[i + 1].substring(1);
+
+            sourceIpStr = ARPUtil.getIPFromMac(sourceMacAddr_, p2pInterfaceName_);
+            if (!TextUtils.isEmpty(sourceIpStr)) {
+              sourceIp = sourceIpStr;
+              Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
+              break;
+            } else {
+              Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr_ + " ret is null");
+            }
+            try {
+              Thread.sleep(500);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
           }
+        } else {
+          sourceIp = connectInfoArr[i + 1].substring(1);
         }
       }
-      Log.d(TAG, "setConnInfo isGroupFormed:" + isGroupFormed_
-          + ", isGroupOwner:" + isGroupOwner_
-          + ", SourceIp:" + sourceIp);
-      sourceIp_ = sourceIp;
-      PeerInfo peerInfo = new PeerInfo();
-      peerInfo.ip_ = sourceIp_;
-      peerInfo.port_ = sourcePort_;
-      peerInfo.deviceName_ = sourceDeviceName_;
-      peerInfo.macAddr_ = sourceMacAddr_;
-      peerInfos_.add(peerInfo);
-      listener_.onPeerConnected(sourceDeviceName_, sourceIp_, sourcePort_);
     }
+    Log.d(TAG, "setConnInfo isGroupFormed:" + isGroupFormed_
+        + ", isGroupOwner:" + isGroupOwner_
+        + ", SourceIp:" + sourceIp);
+    sourceIp_ = sourceIp;
+    PeerInfo peerInfo = new PeerInfo();
+    peerInfo.ip_ = sourceIp_;
+    peerInfo.port_ = sourcePort_;
+    peerInfo.deviceName_ = sourceDeviceName_;
+    peerInfo.macAddr_ = sourceMacAddr_;
+    peerInfos_.add(peerInfo);
+    listener_.onPeerConnected(sourceDeviceName_, sourceIp_, sourcePort_);
   }
 
   private final BroadcastReceiver broadcastReceiver_ = new BroadcastReceiver() {
