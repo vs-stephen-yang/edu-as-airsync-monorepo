@@ -1130,6 +1130,7 @@ class WebRTCConnector {
   int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
   int _actualHeight = 1080;
+  int _decodeHeightLimit = 0;
 
   static const double _defaultMinFrameRate = 30.0;
   static const double _defaultFrameRate = 30.0;
@@ -1381,6 +1382,9 @@ class WebRTCConnector {
   //
   // Related: https://issues.chromium.org/issues/40922733
   void _applyWebMinFrameRateWorkaround(MediaStreamTrack track) {
+    int desktopScreenHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
+        ? _decodeHeightLimit
+        : _trackHeight;
     track.applyConstraints(
       <String, dynamic>{
         'frameRate': {
@@ -1388,7 +1392,7 @@ class WebRTCConnector {
           'min': _minTrackFrameRate,
         },
         'width': _trackWidth,
-        'height': _trackHeight,
+        'height': desktopScreenHeight,
       },
     );
     log.info(
@@ -1490,13 +1494,18 @@ class WebRTCConnector {
 
   Future<MediaStream?> getDisplayMedia() async {
     try {
+      int desktopScreenHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
+          ? _decodeHeightLimit
+          : _trackHeight;
+      print('[UG] desktopScreenHeight: $desktopScreenHeight, decodeHeightLimit: $_decodeHeightLimit, _trackHeight: $_trackHeight');
       final videoConstraints = kIsWeb
           ? {
               // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
               // Malformed constraint: Cannot use both optional/mandatory and specific constraints.
               'frameRate': _idealTrackFrameRate,
               'width': _trackWidth,
-              'height': _trackHeight,
+              'height': desktopScreenHeight,
+              // 'decodeHeightLimit': _decodeHeightLimit,
             }
           : {
               'deviceId': _deviceId,
@@ -1505,7 +1514,8 @@ class WebRTCConnector {
                 'frameRate': _idealTrackFrameRate,
               },
               'width': _trackWidth,
-              'height': _trackHeight,
+              'height': desktopScreenHeight,
+              // 'decodeHeightLimit': _decodeHeightLimit,
             };
       int? virtualAudioInputDeviceID; // for macOS only
       if (_isAudioCaptureAllowed() && !kIsWeb && Platform.isMacOS) {
@@ -1880,7 +1890,8 @@ class WebRTCConnector {
       _trackWidth = (constraints.height! > 540) ? _maxTrackWidth : _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
       _trackHeight = constraints.height!;
     }
-    int decLimitHeight = constraints.decLimitHeight;
+    _decodeHeightLimit = constraints.decodeHeightLimit;
+    print('[UG] _trackWidth: $_trackWidth, _trackHeight: $_trackHeight, decodeHeightLimit: $_decodeHeightLimit');
     _idealTrackFrameRate = constraints.frameRate!.toDouble();
 
     if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
@@ -1894,7 +1905,7 @@ class WebRTCConnector {
           'frameRate': _idealTrackFrameRate,
           'width': _trackWidth,
           'height': _trackHeight,
-          'decLimitHeight': decLimitHeight,
+          'decodeHeightLimit': _decodeHeightLimit,
         };
         log.info(
             "Apply video constraints. width:$_trackWidth height:$_trackHeight");
