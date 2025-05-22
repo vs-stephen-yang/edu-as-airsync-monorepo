@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:device_info_vs/device_info_vs.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
@@ -621,5 +622,10 @@ class MirrorStateProvider extends ChangeNotifier
         break;
       default:
     }
+  }
+
+  @override
+  void onMirrorError(String mirrorType, String errorMessage) {
+    trackTrace("mirror_error", target: errorMessage);
   }
 }
