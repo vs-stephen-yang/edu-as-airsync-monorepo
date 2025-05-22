@@ -1382,7 +1382,7 @@ class WebRTCConnector {
   //
   // Related: https://issues.chromium.org/issues/40922733
   void _applyWebMinFrameRateWorkaround(MediaStreamTrack track) {
-    int desktopScreenHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
+    int constraintHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
         ? _decodeHeightLimit
         : _trackHeight;
     track.applyConstraints(
@@ -1392,7 +1392,7 @@ class WebRTCConnector {
           'min': _minTrackFrameRate,
         },
         'width': _trackWidth,
-        'height': desktopScreenHeight,
+        'height': constraintHeight,
       },
     );
     log.info(
@@ -1494,18 +1494,16 @@ class WebRTCConnector {
 
   Future<MediaStream?> getDisplayMedia() async {
     try {
-      int desktopScreenHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
+      int constraintHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
           ? _decodeHeightLimit
           : _trackHeight;
-      print('[UG] desktopScreenHeight: $desktopScreenHeight, decodeHeightLimit: $_decodeHeightLimit, _trackHeight: $_trackHeight');
       final videoConstraints = kIsWeb
           ? {
               // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
               // Malformed constraint: Cannot use both optional/mandatory and specific constraints.
               'frameRate': _idealTrackFrameRate,
               'width': _trackWidth,
-              'height': desktopScreenHeight,
-              // 'decodeHeightLimit': _decodeHeightLimit,
+              'height': constraintHeight,
             }
           : {
               'deviceId': _deviceId,
@@ -1514,8 +1512,7 @@ class WebRTCConnector {
                 'frameRate': _idealTrackFrameRate,
               },
               'width': _trackWidth,
-              'height': desktopScreenHeight,
-              // 'decodeHeightLimit': _decodeHeightLimit,
+              'height': constraintHeight,
             };
       int? virtualAudioInputDeviceID; // for macOS only
       if (_isAudioCaptureAllowed() && !kIsWeb && Platform.isMacOS) {
@@ -1886,12 +1883,10 @@ class WebRTCConnector {
       _trackWidth = _maxTrackWidth;
       _trackHeight = _maxTrackHeight;
     } else {
-      // constraint height 540 means split screen; 1080 means full screen with multiple streams in MTK9950 workaround
-      _trackWidth = (constraints.height! > 540) ? _maxTrackWidth : _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
+      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
       _trackHeight = constraints.height!;
     }
     _decodeHeightLimit = constraints.decodeHeightLimit;
-    print('[UG] _trackWidth: $_trackWidth, _trackHeight: $_trackHeight, decodeHeightLimit: $_decodeHeightLimit');
     _idealTrackFrameRate = constraints.frameRate!.toDouble();
 
     if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
