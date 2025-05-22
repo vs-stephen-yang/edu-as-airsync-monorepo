@@ -41,7 +41,7 @@ class SampleUploader {
 
     private var videoConstraintWidth = 0
     private var videoConstraintHeight = 0
-    private var videoDecoderLimitHeight = 0
+    private var videoDecodeHeightLimit = 0
 
     private var currWidth: Int = 0
     private var currHeight: Int = 0
@@ -80,9 +80,9 @@ class SampleUploader {
         NSLog("updateConstraint width: \(videoConstraintWidth) height: \(videoConstraintHeight)")
     }
     
-    func updateDecoderLimitHeight(decLimitHeight: Int) {
-        videoDecoderLimitHeight = decLimitHeight
-        NSLog("videoDecoderLimitHeight: \(videoDecoderLimitHeight)")
+    func updateDecodeHeightLimit(decodeHeightLimit: Int) {
+        videoDecodeHeightLimit = decodeHeightLimit
+        NSLog("videoDecodeHeightLimit: \(videoDecodeHeightLimit)")
     }
 }
 
@@ -166,7 +166,7 @@ private extension SampleUploader {
         return max(widthScaleFactor, heightScaleFactor)
     }
     
-    func calcScaleFactorWithLimitHeight(width: Int, height: Int, orientation: UInt, constraintWidth: Int, constraintHeight: Int, decLimitHeight: Int) -> Double {
+    func calcScaleFactorWithLimitHeight(width: Int, height: Int, orientation: UInt, constraintWidth: Int, constraintHeight: Int, decodeHeightLimit: Int) -> Double {
         // iOS device capture always portrait; constraint size always landscape
         var sourceWidth = width
         var sourceHeight = height
@@ -182,8 +182,8 @@ private extension SampleUploader {
         }
 
         if portraitConstraintHeight > 0 {
-            var limitHeight = (decLimitHeight > 0)
-                ? min(constraintHeight, decLimitHeight)
+            var limitHeight = (decodeHeightLimit > 0)
+                ? min(constraintHeight, decodeHeightLimit)
                 : portraitConstraintHeight
             heightScaleFactor = Double(sourceHeight) / Double(limitHeight)
         } else {
@@ -208,7 +208,7 @@ private extension SampleUploader {
         // Calculate the currScaleWidth, currScaleHeight, currScaleFactor if changed
         //
         if (width != currWidth || height != currHeight || currConstraintHeight != videoConstraintHeight) {
-            currScaleFactor = calcScaleFactorWithLimitHeight(width: width, height: height, orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight, decLimitHeight: videoDecoderLimitHeight)
+            currScaleFactor = calcScaleFactorWithLimitHeight(width: width, height: height, orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight, decodeHeightLimit: videoDecodeHeightLimit)
             currScaleWidth = Double(width)/(currScaleFactor)
             currScaleHeight = Double(height)/(currScaleFactor)
 
