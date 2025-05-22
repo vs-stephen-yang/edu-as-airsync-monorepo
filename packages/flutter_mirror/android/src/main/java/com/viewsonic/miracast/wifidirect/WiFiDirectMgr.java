@@ -152,6 +152,7 @@ public class WiFiDirectMgr {
         @Override
         public void onFailure(int reason) {
           Log.e(TAG, "Failed to createGroup with reason " + reason + ".");
+          // listener_.onWifiDirectError("Failed to create P2P group");
         }
       });
     } catch (Exception e) {
@@ -436,6 +437,7 @@ public class WiFiDirectMgr {
       }
     }
     if (sourceIp == null) {
+      listener_.onWifiDirectError("Failed to get source IP");
       return;
     }
     Log.d(TAG, "setConnInfo isGroupFormed:" + isGroupFormed_

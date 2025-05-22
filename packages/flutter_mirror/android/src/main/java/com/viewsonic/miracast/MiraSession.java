@@ -235,7 +235,7 @@ public class MiraSession
 
       @Override
       public void onConnectTimeout(TcpConnection connection) {
-
+        mirrorListener_.onMiracastSessionError(id_, "RTSP connection failed to establish");
       }
 
       @Override
