@@ -46,6 +46,7 @@ class SampleUploader {
     private var currWidth: Int = 0
     private var currHeight: Int = 0
     private var currConstraintHeight: Int = 0
+    private var currDecodeHeightLimit: Int = 0
     private var currScaleWidth: Double = 0.0
     private var currScaleHeight: Double = 0.0
     private var currScaleFactor: Double = -1.0
@@ -207,7 +208,7 @@ private extension SampleUploader {
         //
         // Calculate the currScaleWidth, currScaleHeight, currScaleFactor if changed
         //
-        if (width != currWidth || height != currHeight || currConstraintHeight != videoConstraintHeight) {
+        if (width != currWidth || height != currHeight || currConstraintHeight != videoConstraintHeight || currDecodeHeightLimit != videoDecodeHeightLimit) {
             currScaleFactor = calcScaleFactorWithLimitHeight(width: width, height: height, orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight, decodeHeightLimit: videoDecodeHeightLimit)
             currScaleWidth = Double(width)/(currScaleFactor)
             currScaleHeight = Double(height)/(currScaleFactor)
@@ -231,6 +232,7 @@ private extension SampleUploader {
             currWidth = width
             currHeight = height
             currConstraintHeight = videoConstraintHeight
+            currDecodeHeightLimit = videoDecodeHeightLimit
         }
 
         let scaleTransform = CGAffineTransform(scaleX: CGFloat(1.0/currScaleFactor), y: CGFloat(1.0/currScaleFactor))
