@@ -110,6 +110,7 @@ public class GestureDispatchService extends AccessibilityService {
     // Log if dispatching the gesture failed.
     if (!result) {
       Log.w(TAG, "dispatchGesture failed");
+      pendingGestures.clear();
     }
   }
 
