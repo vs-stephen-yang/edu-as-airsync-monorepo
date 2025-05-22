@@ -46,7 +46,6 @@ import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:windows_single_instance/windows_single_instance.dart';
 
 import 'annotation/annotation_model.dart';
 import 'annotation/canvas_widget_desktop.dart';
@@ -54,16 +53,6 @@ import 'annotation/canvas_widget_desktop.dart';
 void commonEntry(List<String> args, ConfigSettings settings) async {
   await runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-
-    // Ensures that only one instance of the application is running.
-    if (!kIsWeb && Platform.isWindows) {
-      await WindowsSingleInstance.ensureSingleInstance(
-        args,
-        "viewsonic_airsync_sender", // An unique windows pipe name
-        bringWindowToFront: true, // Bring the existing window to the front
-        onSecondWindow: (args) {},
-      );
-    }
 
     if (settings.sentry != null) {
       initSentry(settings.sentry!);
