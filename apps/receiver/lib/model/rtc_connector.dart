@@ -481,16 +481,8 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
-  int getFullHeight(int attenderCount) {
-    int fullHeight = 1536;
-
-    // #85879  Workaround to solve WebRTC screen freeze on IFP52-1 issue
-    if (RTCConnector.isMtk9950Model(_deviceType) &&
-        attenderCount > 1 &&
-        senderPlatform != null) {
-        fullHeight = 1080;
-    }
-
+  int getFullHeight(bool isFullHeight) {
+    int fullHeight = isFullHeight? 1536 : 540;
     return fullHeight;
   }
 
@@ -507,7 +499,7 @@ class RTCConnector {
 
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0,
-        height: isFullHeight ? getFullHeight(attendeeCount) : 540,
+        height: getFullHeight(isFullHeight),
         decodeHeightLimit: getDecodeHeightLimit(_deviceType, attendeeCount));
     log.info(
         '[$clientId] Changing present quality. height:${message.constraints?.height}');
