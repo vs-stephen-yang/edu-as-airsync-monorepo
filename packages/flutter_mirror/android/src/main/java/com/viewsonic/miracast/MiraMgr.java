@@ -123,6 +123,13 @@ public class MiraMgr
   }
 
   @Override
+  public void onWifiDirectError(String errorMessage) {
+    if (listener_ != null) {
+      listener_.onMiracastError(errorMessage);
+    }
+  }
+
+  @Override
   public void onRtspConnected(String mirrorId, String deviceName) {
     if (listener_ != null) {
       listener_.onSessionBegin(mirrorId, deviceName);
@@ -150,4 +157,15 @@ public class MiraMgr
       }
     }
   }
+
+  @Override
+  public void onMiracastSessionError(String mirrorId, String errorMessage) {
+    if (listener_ != null) {
+      try {
+        listener_.onMiracastError(errorMessage);
+      } catch (Exception e) {
+      }
+    }
+  }
+
 }

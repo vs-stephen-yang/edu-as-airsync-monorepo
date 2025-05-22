@@ -17,8 +17,13 @@ public class MiracastReceiver implements
   private static final String TAG = "MiracastReceiver";
   private long instance_;
 
+  MiracastReceiverListener listener_;
+
   public MiracastReceiver(
+      MiracastReceiverListener listener,
       long mirrorListenerInstance) {
+
+    listener_ = listener;
 
     // create a C++ MiracastReceiver object
     instance_ = createInstanceNative(
@@ -138,6 +143,11 @@ public class MiracastReceiver implements
         codecName,
         sampleRate,
         channelCount);
+  }
+
+  @Override
+  public void onMiracastError(String errorMessage) {
+    listener_.onMiracastError(errorMessage);
   }
 
   // Native methods

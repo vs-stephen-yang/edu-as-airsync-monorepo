@@ -90,6 +90,11 @@ class _MyAppState extends State<MyApp>
   }
 
   @override
+  void onMirrorError(String mirrorType, String errorMessage) {
+    print('Mirror error: $mirrorType $errorMessage');
+  }
+
+  @override
   void onMirrorAuth(String pin, int timeoutSec) {
     setState(() {
       _pin = pin;
@@ -168,8 +173,7 @@ class _MyAppState extends State<MyApp>
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
   }
 
   void _getWidgetInfo(_Mirror mirror) {
@@ -188,8 +192,8 @@ class _MyAppState extends State<MyApp>
 
   void _onTouchEvent(_Mirror mirror, PointerEvent event) {
     //if (mirror.sizeChanged) {
-      _getWidgetInfo(mirror);
-      //mirror.sizeChanged = false;
+    _getWidgetInfo(mirror);
+    //mirror.sizeChanged = false;
     //}
 
     _plugin.onMirrorTouch(
@@ -232,7 +236,8 @@ class _MyAppState extends State<MyApp>
 
   Future<void> toggleTouchback(_Mirror mirror) async {
     bool newTouchBackState = !mirror.touchbackEnabled;
-    bool success = await _plugin.enableTouchback(mirror.mirrorId, newTouchBackState);
+    bool success =
+        await _plugin.enableTouchback(mirror.mirrorId, newTouchBackState);
     if (success) {
       setState(() {
         mirror.touchbackEnabled = newTouchBackState;
@@ -245,8 +250,7 @@ class _MyAppState extends State<MyApp>
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
     }
   }
 
@@ -272,8 +276,9 @@ class _MyAppState extends State<MyApp>
         onPressed: () async {
           toggleTouchback(mirror);
         },
-        child: Text(mirror.touchbackEnabled ? "Disable Touchback" : "Enable Touchback")
-    );
+        child: Text(mirror.touchbackEnabled
+            ? "Disable Touchback"
+            : "Enable Touchback"));
 
     final toggleAudioButton = ElevatedButton(
       onPressed: () {
@@ -288,8 +293,7 @@ class _MyAppState extends State<MyApp>
         children: [
           closeButton,
           toggleAudioButton,
-          if (mirror.mirrorType == MirrorType.airplay)
-            toggleEnableTouchback
+          if (mirror.mirrorType == MirrorType.airplay) toggleEnableTouchback
         ],
       ),
     );

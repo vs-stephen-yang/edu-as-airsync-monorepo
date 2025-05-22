@@ -19,4 +19,6 @@ public interface MiraMgrListener {
       String codecName,
       int sampleRate,
       int channelCount);
+
+  void onMiracastError(String errorMessage);
 }

@@ -193,6 +193,11 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int timeoutSec = call.arguments["timeoutSec"];
 
         _mirrorListener?.onMirrorAuth(pin, timeoutSec);
+      } else if (call.method == 'onMirrorError') {
+        String mirrorType = call.arguments["mirrorType"];
+        String errorMessage = call.arguments["errorMessage"];
+
+        _mirrorListener?.onMirrorError(mirrorType, errorMessage);
       } else if (call.method == 'onCredentialsRequest') {
         int year = call.arguments["year"];
         int month = call.arguments["month"];
@@ -202,9 +207,11 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         await updateCredentials(credentials);
       } else if (call.method == 'onBluetoothTouchbackStatusChanged') {
         int statusCode = call.arguments["status"];
-        BluetoothTouchbackStatus? status = BluetoothTouchbackStatus.values[statusCode];
+        BluetoothTouchbackStatus? status =
+            BluetoothTouchbackStatus.values[statusCode];
         if (status != null) {
-          _bluetoothTouchbackListener?.onBluetoothTouchbackStatusChanged(status);
+          _bluetoothTouchbackListener
+              ?.onBluetoothTouchbackStatusChanged(status);
         } else {
           log("Unknown BluetoothTouchbackStatus: $statusCode");
         }

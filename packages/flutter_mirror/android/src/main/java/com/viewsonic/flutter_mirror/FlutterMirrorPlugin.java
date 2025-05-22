@@ -32,7 +32,6 @@ import android.view.Surface;
 import android.os.Handler;
 import android.os.Looper;
 
-
 /** FlutterMirrorPlugin */
 @Keep
 public class FlutterMirrorPlugin implements
@@ -112,7 +111,8 @@ public class FlutterMirrorPlugin implements
 
     bluetoothTouchBackController_ = new BluetoothTouchBackController(context_, activity_, this, false);
     activityPluginBinding.addActivityResultListener(bluetoothTouchBackController_.getActivityResultListener());
-    activityPluginBinding.addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
+    activityPluginBinding
+        .addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
 
     // Correct way to register lifecycle callbacks
     application_.registerActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
@@ -161,19 +161,19 @@ public class FlutterMirrorPlugin implements
       double y = call.argument("y");
       if (mirrorReceiver_ != null) {
         mirrorReceiver_.onMirrorTouch(
-          mirrorId,
-          touchId,
-          touch,
-          x,
-          y);
+            mirrorId,
+            touchId,
+            touch,
+            x,
+            y);
       }
       if (bluetoothTouchBackController_ != null) {
         bluetoothTouchBackController_.onMirrorTouch(
-          mirrorId,
-          touchId,
-          touch,
-          x,
-          y);
+            mirrorId,
+            touchId,
+            touch,
+            x,
+            y);
       }
       result.success(new HashMap<>());
     } else if (call.method.equals("enableTouchback")) {
@@ -513,6 +513,19 @@ public class FlutterMirrorPlugin implements
       arguments.put("height", height);
 
       channel_.invokeMethod("onMirrorVideoResize", arguments);
+    });
+  }
+
+  @Override
+  public void onMirrorError(String mirrorType, String errorMessage) {
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorType", mirrorType);
+      arguments.put("errorMessage", errorMessage);
+
+      channel_.invokeMethod("onMirrorError", arguments);
     });
   }
 

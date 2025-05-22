@@ -20,4 +20,6 @@ public interface MirrorListener {
       int year,
       int month,
       int day);
+
+  public void onMirrorError(String mirrorType, String errorMessage);
 }
