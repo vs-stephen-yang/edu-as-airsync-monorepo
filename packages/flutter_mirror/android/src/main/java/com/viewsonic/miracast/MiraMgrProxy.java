@@ -110,4 +110,10 @@ public class MiraMgrProxy
     eventBase_.post(
         () -> miraMgr_.onPeerDisconnected(ip));
   }
+
+  @Override
+  public void onWifiDirectError(String errorMessage) {
+    eventBase_.post(
+        () -> miraMgr_.onWifiDirectError(errorMessage));
+  }
 }

@@ -15,4 +15,6 @@ abstract class FlutterMirrorListener {
   void onMirrorVideoResize(String mirrorId, int width, int height);
 
   void onMirrorVideoFrameRate(String mirrorId, int fps);
+
+  void onMirrorError(String mirrorType, String errorMessage);
 }

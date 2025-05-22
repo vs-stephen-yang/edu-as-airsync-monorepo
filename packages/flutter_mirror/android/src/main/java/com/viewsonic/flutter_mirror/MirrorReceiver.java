@@ -12,6 +12,7 @@ import java.util.Map;
 
 @Keep
 public class MirrorReceiver implements
+    MiracastReceiverListener,
     MirrorListener {
 
   private static final String TAG = "MirrorReceiver";
@@ -44,6 +45,7 @@ public class MirrorReceiver implements
     assert instance_ != 0;
 
     miracastReceiver_ = new MiracastReceiver(
+        this,
         instance_);
 
     assert (instance_ != 0);
@@ -323,6 +325,15 @@ public class MirrorReceiver implements
       int month,
       int day) {
     mirrorListener_.onCredentialsRequest(year, month, day);
+  }
+
+  @Override
+  public void onMiracastError(String erroMessage) {
+    mirrorListener_.onMirrorError("miracast", erroMessage);
+  }
+  @Override
+  public void onMirrorError(String mirrorType, String erroMessage) {
+    mirrorListener_.onMirrorError(mirrorType, erroMessage);
   }
 
   private native long createInstanceNative(
