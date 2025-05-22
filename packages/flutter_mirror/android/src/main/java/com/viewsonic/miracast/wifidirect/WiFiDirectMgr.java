@@ -51,6 +51,11 @@ public class WiFiDirectMgr {
   private static final int MIRACAST_SOURCE = 1;
   private static final int MIRACAST_SINK = 2;
 
+  // Maximum number of IP lookup retries (10 attempts, up to ~1 s total wait)
+  private static final int IP_LOOKUP_MAX_RETRIES = 10;
+
+  private static final long IP_LOOKUP_RETRY_DELAY_MS = 100L;
+
   private static final Set<String> GROUP_OWNER_ADDRESS_KEYS = Set.of("groupOwnerAddress", "groupOwnerIpAddress");
 
   private class PeerInfo {
@@ -268,8 +273,7 @@ public class WiFiDirectMgr {
       String groupInfoStr = group.toString();
       p2pInterfaceName_ = group.getInterface();
       int clientNum = group.getClientList().size();
-      Log.d(TAG, "\n====== Group info: ======\n"
-          + groupInfoStr + "\n================== Client num:" + clientNum);
+      Log.d(TAG, "\n====== Group info: ======\n" + groupInfoStr + "\n================== Client num:" + clientNum);
 
       if (clientNum > groupClientNum_) {
         setGroupInfo(groupInfoStr);
@@ -381,7 +385,7 @@ public class WiFiDirectMgr {
   }
 
   private String getIpFromConnection() {
-    while (isGroupFormed_ && isStart_) {
+    for (int attempt = 1; attempt <= IP_LOOKUP_MAX_RETRIES && isGroupFormed_ && isStart_; attempt++) {
       if (TextUtils.isEmpty(sourceMacAddr_)) {
         Log.d(TAG, "Have not gotten Mac Addr.");
         return null;
@@ -396,11 +400,12 @@ public class WiFiDirectMgr {
       Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr_ + " ret is null");
 
       try {
-        Thread.sleep(500);
+        Thread.sleep(IP_LOOKUP_RETRY_DELAY_MS);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
     }
+    Log.w(TAG, "Failed to lookup IP after " + IP_LOOKUP_MAX_RETRIES + " attempts.");
     return null;
   }
 
@@ -429,6 +434,9 @@ public class WiFiDirectMgr {
           sourceIp = connectInfoArr[i + 1].substring(1);
         }
       }
+    }
+    if (sourceIp == null) {
+      return;
     }
     Log.d(TAG, "setConnInfo isGroupFormed:" + isGroupFormed_
         + ", isGroupOwner:" + isGroupOwner_
