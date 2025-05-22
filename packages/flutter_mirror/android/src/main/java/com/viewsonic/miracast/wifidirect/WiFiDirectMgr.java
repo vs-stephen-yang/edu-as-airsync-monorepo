@@ -380,6 +380,30 @@ public class WiFiDirectMgr {
     }
   }
 
+  private String getIpFromConnection() {
+    while (isGroupFormed_ && isStart_) {
+      if (TextUtils.isEmpty(sourceMacAddr_)) {
+        Log.d(TAG, "Have not gotten Mac Addr.");
+        return null;
+      }
+
+      String sourceIp = ARPUtil.getIPFromMac(sourceMacAddr_, p2pInterfaceName_);
+      if (!TextUtils.isEmpty(sourceIp)) {
+        Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
+        return sourceIp;
+      }
+
+      Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr_ + " ret is null");
+
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
   /**
    * set the groupFormed isGroupOwner groupOwnerAddress info
    *
@@ -400,27 +424,7 @@ public class WiFiDirectMgr {
         isGroupOwner_ = "true".equals(connectInfoArr[i + 1]);
       } else if (GROUP_OWNER_ADDRESS_KEYS.contains(connectInfoArr[i])) {
         if (isGroupOwner_) {
-          String sourceIpStr;
-          while (isGroupFormed_ && isStart_) {
-            if (TextUtils.isEmpty(sourceMacAddr_)) {
-              Log.d(TAG, "Have not gotten Mac Addr.");
-              break;
-            }
-
-            sourceIpStr = ARPUtil.getIPFromMac(sourceMacAddr_, p2pInterfaceName_);
-            if (!TextUtils.isEmpty(sourceIpStr)) {
-              sourceIp = sourceIpStr;
-              Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
-              break;
-            } else {
-              Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr_ + " ret is null");
-            }
-            try {
-              Thread.sleep(500);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-            }
-          }
+          sourceIp = getIpFromConnection();
         } else {
           sourceIp = connectInfoArr[i + 1].substring(1);
         }
