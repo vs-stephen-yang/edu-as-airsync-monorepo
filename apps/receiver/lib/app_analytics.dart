@@ -86,6 +86,11 @@ class AppAnalytics {
     if (serialNumber != null) {
       instance.setGlobalProperty('serial_number', serialNumber);
     }
+
+    final macAddress = await _vsApi?.getEthernetMacAddress();
+    if (macAddress != null) {
+      instance.setGlobalProperty('mac_address', macAddress);
+    }
   }
 
   // Singleton instance variable
@@ -107,26 +112,13 @@ class AppAnalytics {
   }) {
     log.info('Track event: $name');
 
-    if (_vsApi == null) {
-      _client?.trackEvent(
-        name: name,
-        additionalProperties: {
-          ...properties,
-          ..._globalProperties,
-        },
-      );
-    } else {
-      unawaited(_vsApi!.getCurrentMacAddress().then((macAddress) {
-        _client?.trackEvent(
-          name: name,
-          additionalProperties: {
-            ...properties,
-            ..._globalProperties,
-            'mac_address': macAddress,
-          },
-        );
-      }));
-    }
+    _client?.trackEvent(
+      name: name,
+      additionalProperties: {
+        ...properties,
+        ..._globalProperties,
+      },
+    );
   }
 
   void trackTrace(
@@ -134,28 +126,14 @@ class AppAnalytics {
     Severity severity = Severity.information,
     Map<String, Object> properties = const <String, Object>{},
   }) {
-    if (_vsApi == null) {
-      _client?.trackTrace(
-        severity: severity,
-        message: message,
-        additionalProperties: {
-          ...properties,
-          ..._globalProperties,
-        },
-      );
-    } else {
-      unawaited(_vsApi!.getCurrentMacAddress().then((macAddress) {
-        _client?.trackTrace(
-          severity: severity,
-          message: message,
-          additionalProperties: {
-            ...properties,
-            ..._globalProperties,
-            'mac_address': macAddress,
-          },
-        );
-      }));
-    }
+    _client?.trackTrace(
+      severity: severity,
+      message: message,
+      additionalProperties: {
+        ...properties,
+        ..._globalProperties,
+      },
+    );
   }
 
   void trackPageView(String name) {

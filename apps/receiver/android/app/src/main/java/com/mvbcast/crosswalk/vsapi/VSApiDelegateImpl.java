@@ -22,7 +22,7 @@ public class VSApiDelegateImpl implements VSApiDelegate {
     }
 
     @Override
-    public String getCurrentMacAddress() throws Exception {
-        return vsNetworkManager.getCurrentMacAddress();
+    public String getEthernetMacAddress() throws Exception {
+        return vsNetworkManager.getEthernetMacAddress();
     }
 }

@@ -35,11 +35,11 @@ public class VSApiHandler implements MethodChannel.MethodCallHandler {
                     result.error("VS_API_ERROR", "Failed to get serial number", e.getMessage());
                 }
                 break;
-            case "getCurrentMacAddress":
+            case "getEthernetMacAddress":
                 try {
-                    result.success(delegate.getCurrentMacAddress());
+                    result.success(delegate.getEthernetMacAddress());
                 } catch (Exception e) {
-                    result.error("VS_API_ERROR", "Failed to get current MAC address", e.getMessage());
+                    result.error("VS_API_ERROR", "Failed to get Ethernet MAC address", e.getMessage());
                 }
                 break;
             default:

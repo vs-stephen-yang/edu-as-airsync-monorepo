@@ -7,7 +7,7 @@ public class VSApiEmptyDelegate implements VSApiDelegate {
     }
 
     @Override
-    public String getCurrentMacAddress() {
+    public String getEthernetMacAddress() {
         return "Not supported on Android API < 26";
     }
 }
