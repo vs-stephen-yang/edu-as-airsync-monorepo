@@ -84,6 +84,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
+    final vsApi = await VSApi.createVSApiInstance();
+
     await AppAnalytics.initializeApp(
       instrumentationKey: settings.instrumentationKey,
       ingestionEndpoint: settings.ingestionEndpoint,
@@ -91,7 +93,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
       userId: AppInstanceCreate().instanceID,
       sessionId: const Uuid().v4(),
       deviceInfo: await ClientDeviceInfo.fetch(),
-      vsApi: await VSApi.createVSApiInstance(),
+      serialNumber: await vsApi?.getSerialNumber(),
+      macAddress: await vsApi?.getEthernetMacAddress(),
     );
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
