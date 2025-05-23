@@ -24,11 +24,11 @@ class VSApi {
     }
   }
 
-  Future<String> getCurrentMacAddress() async {
+  Future<String> getEthernetMacAddress() async {
     try {
-      return await _channel.invokeMethod('getCurrentMacAddress');
+      return await _channel.invokeMethod('getEthernetMacAddress');
     } on PlatformException catch (e) {
-      log.info('On VSApi getCurrentMacAddress', e);
+      log.info('On VSApi getEthernetMacAddress', e);
       return 'Unknown';
     }
   }
