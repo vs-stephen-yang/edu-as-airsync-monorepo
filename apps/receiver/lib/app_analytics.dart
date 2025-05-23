@@ -6,7 +6,6 @@ import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/offline_http_client.dart';
-import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:http/http.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
@@ -23,7 +22,6 @@ enum EventCategory {
 class AppAnalytics {
   TelemetryClient? _client;
   final _globalProperties = <String, String>{};
-  static VSApi? _vsApi;
 
   // Private constructor
   AppAnalytics._();
@@ -31,11 +29,12 @@ class AppAnalytics {
   static Future<void> initializeApp({
     required String instrumentationKey,
     required String ingestionEndpoint,
-    required VSApi? vsApi,
     String? applicationVersion,
     String? sessionId,
     String? userId,
     ClientDeviceInfo? deviceInfo,
+    String? serialNumber,
+    String? macAddress,
   }) async {
     const timeout = Duration(seconds: 10);
 
@@ -80,14 +79,10 @@ class AppAnalytics {
       instance.setGlobalProperty('session_id', sessionId);
     }
 
-    _vsApi = vsApi;
-
-    final serialNumber = await _vsApi?.getSerialNumber();
     if (serialNumber != null) {
       instance.setGlobalProperty('serial_number', serialNumber);
     }
 
-    final macAddress = await _vsApi?.getEthernetMacAddress();
     if (macAddress != null) {
       instance.setGlobalProperty('mac_address', macAddress);
     }
