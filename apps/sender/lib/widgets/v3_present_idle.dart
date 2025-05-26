@@ -208,6 +208,7 @@ class _V3PresentIdleState extends State<V3PresentIdle>
                 if (kIsWeb) ...[
                   AutoSizeText(
                     S.of(context).v3_main_present_title,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 32,
                       color: context.tokens.color.vsdswColorOnSurface,
@@ -219,6 +220,7 @@ class _V3PresentIdleState extends State<V3PresentIdle>
                   const Padding(padding: EdgeInsets.only(bottom: 8)),
                   AutoSizeText(
                     S.of(context).v3_main_present_subtitle,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
                       color: context.tokens.color.vsdswColorOnSurfaceVariant,
