@@ -79,60 +79,6 @@ class V3WebMain extends StatelessWidget {
                       alignment: AlignmentDirectional.center,
                       children: [
                         Positioned(
-                          top: 21,
-                          right: 40,
-                          child: Row(
-                            children: [
-                              const LanguageShowMenu(),
-                              const SizedBox(width: 16),
-                              V3Focus(
-                                label: S.current.v3_lbl_main_download,
-                                identifier: 'v3_qa_main_download',
-                                button: true,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    elevation: 5.0,
-                                    shadowColor:
-                                        context.tokens.color.vsdswColorPrimary,
-                                    foregroundColor: context
-                                        .tokens.color.vsdswColorOnPrimary,
-                                    backgroundColor:
-                                        context.tokens.color.vsdswColorPrimary,
-                                    textStyle: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                  ),
-                                  onPressed: () {
-                                    scrollTo?.call();
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/images/v3_ic_web_main_download.svg',
-                                        width: 16,
-                                        height: 16,
-                                        colorFilter: ColorFilter.mode(
-                                          context
-                                              .tokens.color.vsdswColorOnPrimary,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          width: context.tokens.spacing
-                                              .vsdswSpacing2xs.left),
-                                      AutoSizeText(
-                                          S.of(context).v3_main_download),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
                           top: 82,
                           right: 0,
                           left: 0,
@@ -145,13 +91,7 @@ class V3WebMain extends StatelessWidget {
                 ),
               ],
             ),
-            Positioned(
-              left: 40,
-              top: 16,
-              child: ExcludeSemantics(
-                child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
-              ),
-            ),
+            ResponsiveHeader(scrollTo: scrollTo),
           ],
           if (isWaiting) ...[
             Container(color: context.tokens.color.vsdswColorOpacityNeutralMd),
@@ -170,51 +110,100 @@ class V3WebMain extends StatelessWidget {
         kIsWeb && (ui_web.browser.isChromium || ui_web.browser.isEdge);
     bool showUnsupportedMassage = true;
     return StatefulBuilder(builder: (context, setState) {
+      final isSmallScreen = !isBigThan768(context);
       return (showUnsupportedMassage && !supportedBrowsers)
-          ? Container(
-              height: 48,
-              color: context.tokens.color.vsdswColorWarning,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    S.current.v3_main_web_nonsupport,
-                    style: TextStyle(
-                      color: context.tokens.color.vsdswColorOnWarning,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const Gap(24),
-                  InkWell(
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 32,
-                      decoration: ShapeDecoration(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        S.current.v3_main_web_nonsupport_confirm,
+          ? (isSmallScreen)
+              ? Container(
+                  color: context.tokens.color.vsdswColorWarning,
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        S.current.v3_main_web_nonsupport,
                         style: TextStyle(
-                          color: context.tokens.color.vsdswColorWarning,
+                          color: context.tokens.color.vsdswColorOnWarning,
                           fontSize: 14,
-                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        showUnsupportedMassage = false;
-                      });
-                    },
+                      const Gap(24),
+                      IntrinsicWidth(
+                        child: InkWell(
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 32,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              S.current.v3_main_web_nonsupport_confirm,
+                              style: TextStyle(
+                                color: context.tokens.color.vsdswColorWarning,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              showUnsupportedMassage = false;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
+                )
+              : Container(
+                  height: 48,
+                  color: context.tokens.color.vsdswColorWarning,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        S.current.v3_main_web_nonsupport,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdswColorOnWarning,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const Gap(24),
+                      InkWell(
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 32,
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            S.current.v3_main_web_nonsupport_confirm,
+                            style: TextStyle(
+                              color: context.tokens.color.vsdswColorWarning,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            showUnsupportedMassage = false;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                )
           : const SizedBox();
     });
   }
@@ -286,7 +275,9 @@ class V3PresentStateMachine extends StatelessWidget {
 }
 
 class LanguageShowMenu extends StatefulWidget {
-  const LanguageShowMenu({super.key});
+  final bool showLanguageOnSurface;
+
+  const LanguageShowMenu(this.showLanguageOnSurface, {super.key});
 
   @override
   State<StatefulWidget> createState() => _LanguageShowMenuState();
@@ -391,21 +382,23 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
                 )
               : null,
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.language,
                 size: 16,
                 color: context.tokens.color.vsdswColorOnSurface,
               ),
-              const SizedBox(width: 8),
-              AutoSizeText(
-                prefLanguageProvider.language,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdswColorOnSurface,
+              if (widget.showLanguageOnSurface) const SizedBox(width: 8),
+              if (widget.showLanguageOnSurface)
+                Text(
+                  prefLanguageProvider.language,
+                  style: TextStyle(
+                    fontSize: !isBigThan768(context) ? 12 : 14,
+                    fontWeight: FontWeight.w400,
+                    color: context.tokens.color.vsdswColorOnSurface,
+                  ),
                 ),
-              ),
               const SizedBox(width: 8),
               Icon(
                 Icons.keyboard_arrow_down_sharp,
@@ -456,6 +449,107 @@ class V3PopupMenuItem<T> extends PopupMenuEntry<T> {
 
   @override
   State<V3PopupMenuItem<T>> createState() => _V3PopupMenuItemState<T>();
+}
+
+class ResponsiveHeader extends StatelessWidget {
+  const ResponsiveHeader({
+    super.key,
+    required this.scrollTo,
+  });
+
+  final Function()? scrollTo;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isSmallScreen = !isBigThan768(context);
+
+    final horizontalPadding = isSmallScreen ? 16.0 : 40.0;
+    final verticalPadding = isSmallScreen ? 8.0 : 16.0;
+    return Stack(
+      children: [
+        Positioned(
+          top: verticalPadding,
+          right: horizontalPadding,
+          left: horizontalPadding,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ExcludeSemantics(
+                  child: SvgPicture.asset('assets/images/ic_logo_airsync.svg')),
+              Spacer(),
+              LanguageShowMenu(!isSmallScreen),
+              const SizedBox(width: 16),
+              V3Focus(
+                label: S.current.v3_lbl_main_download,
+                identifier: 'v3_qa_main_download',
+                button: true,
+                child: InkWell(
+                  onTap: () => scrollTo?.call(),
+                  borderRadius: BorderRadius.circular(8),
+                  customBorder: isSmallScreen ? const CircleBorder() : null,
+                  splashColor: context.tokens.color.vsdswColorOnPrimary
+                      .withValues(alpha: 0.2),
+                  highlightColor: Colors.transparent,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isSmallScreen ? 10 : 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.tokens.color.vsdswColorPrimary,
+                      shape:
+                          isSmallScreen ? BoxShape.circle : BoxShape.rectangle,
+                      borderRadius:
+                          isSmallScreen ? null : BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.tokens.color.vsdswColorPrimary
+                              .withValues(alpha: 0.4),
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/v3_ic_web_main_download.svg',
+                          width: 16,
+                          height: 16,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdswColorOnPrimary,
+                            BlendMode.srcIn,
+                          ),
+                          excludeFromSemantics: true,
+                        ),
+                        if (!isSmallScreen)
+                          SizedBox(
+                            width: context.tokens.spacing.vsdswSpacing2xs.left,
+                          ),
+                        if (!isSmallScreen)
+                          Flexible(
+                            child: AutoSizeText(
+                              S.of(context).v3_main_download,
+                              minFontSize: 5.0,
+                              overflow: TextOverflow.visible,
+                              style: TextStyle(
+                                color: context.tokens.color.vsdswColorOnPrimary,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _V3PopupMenuItemState<T> extends State<V3PopupMenuItem<T>> {

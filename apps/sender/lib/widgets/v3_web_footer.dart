@@ -72,6 +72,7 @@ class V3WebFooter extends StatelessWidget {
                 const SizedBox(height: 40),
                 AutoSizeText(
                   S.of(context).v3_main_copy_rights(DateTime.now().year),
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
                     color: context.tokens.color.vsdswColorOnSurfaceVariant,
