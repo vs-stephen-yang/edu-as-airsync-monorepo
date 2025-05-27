@@ -47,8 +47,10 @@ class V3HomeApp extends StatelessWidget {
               ),
               if (presentStateProvider.currentState == ViewState.idle &&
                   (demoProvider.state == V3DemoViewState.idle ||
-                      demoProvider.state == V3DemoViewState.off))
+                      demoProvider.state == V3DemoViewState.off)) ...[
+                const QRCodeConnect(),
                 const SettingMenu(),
+              ]
             ],
           );
         }),
@@ -117,6 +119,53 @@ class V3PresentStateMachine extends StatelessWidget {
   }
 }
 
+class QRCodeConnect extends StatelessWidget {
+  const QRCodeConnect({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      return Positioned(
+        top: 24,
+        left: 8,
+        child: V3Focus(
+          label: S.of(context).v3_lbl_qr_code,
+          identifier: 'v3_qa_qr_code',
+          button: true,
+          child: Container(
+            width: 48,
+            height: 48,
+            decoration: ShapeDecoration(
+              color: context.tokens.color.vsdswColorSurface200,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  width: 1,
+                  color: context.tokens.color.vsdswColorSurface200,
+                ),
+                borderRadius: context.tokens.radii.vsdswRadiusFull,
+              ),
+              shadows: context.tokens.shadow.vsdswShadowNeutralSm,
+            ),
+            child: ExcludeSemantics(
+              child: IconButton(
+                icon: SvgPicture.asset(
+                  'assets/images/v3_ic_qrcode.svg',
+                ),
+                onPressed: () {
+                  Provider.of<PresentStateProvider>(context, listen: false)
+                      .presentQrScannerPage();
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+}
+
 class SettingMenu extends StatelessWidget {
   const SettingMenu({super.key});
 
@@ -124,46 +173,42 @@ class SettingMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isMobile = Platform.isAndroid || Platform.isIOS;
     return Positioned(
-        left: isMobile ? null : 24,
-        top: isMobile ? 24 : null,
-        right: isMobile ? 8 : null,
-        bottom: isMobile ? null : 24,
-        child: V3Focus(
-          label: S.of(context).v3_lbl_setting,
-          identifier: 'v3_qa_setting',
-          button: true,
-          child: InkWell(
-            onTap: () {
-              _showOptionsMenuDialog(context);
-            },
-            borderRadius: context.tokens.radii.vsdswRadiusFull,
-            child: Ink(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
+      left: isMobile ? null : 24,
+      top: isMobile ? 24 : null,
+      right: isMobile ? 8 : null,
+      bottom: isMobile ? null : 24,
+      child: V3Focus(
+        label: S.of(context).v3_lbl_setting,
+        identifier: 'v3_qa_setting',
+        button: true,
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: ShapeDecoration(
+            color: context.tokens.color.vsdswColorSurface900,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
                 color: context.tokens.color.vsdswColorSurface900,
-                borderRadius: context.tokens.radii.vsdswRadiusFull,
-                border: Border.all(
-                  width: 1,
-                  color: context.tokens.color.vsdswColorOpacityNeutralMd,
-                ),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 4,
-                    offset: Offset(0, 2), // 對應 elevation: 4
-                  ),
-                ],
               ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/v3_ic_setting.svg',
-                  excludeFromSemantics: true,
-                ),
+              borderRadius: context.tokens.radii.vsdswRadiusFull,
+            ),
+            shadows: context.tokens.shadow.vsdswShadowNeutralSm,
+          ),
+          child: ExcludeSemantics(
+            child: IconButton(
+              icon: SvgPicture.asset(
+                'assets/images/v3_ic_setting.svg',
+                excludeFromSemantics: true,
               ),
+              onPressed: () {
+                _showOptionsMenuDialog(context);
+              },
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   _showOptionsMenuDialog(BuildContext context) {
