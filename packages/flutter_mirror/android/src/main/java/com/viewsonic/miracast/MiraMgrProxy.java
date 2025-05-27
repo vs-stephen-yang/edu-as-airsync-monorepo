@@ -100,15 +100,15 @@ public class MiraMgrProxy
   }
 
   @Override
-  public void onPeerConnected(String name, String ip, int port) {
+  public void onPeerConnected(String peerMacAddress, String name, String ip, int port) {
     eventBase_.post(
-        () -> miraMgr_.onPeerConnected(name, ip, port));
+        () -> miraMgr_.onPeerConnected(peerMacAddress, name, ip, port));
   }
 
   @Override
-  public void onPeerDisconnected(String ip) {
+  public void onPeerDisconnected(String peerMacAddress) {
     eventBase_.post(
-        () -> miraMgr_.onPeerDisconnected(ip));
+        () -> miraMgr_.onPeerDisconnected(peerMacAddress));
   }
 
   @Override

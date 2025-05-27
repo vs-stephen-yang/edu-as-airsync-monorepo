@@ -28,6 +28,7 @@ public class MiraSession
   private static final int UIBC_BUFFER_CAPACITY = 1024 * 2;
   private static final int kRequestIdrMinIntervalMs_ = 1000; // ms
 
+  private String peerMacAddress_;
   private String id_;
   private String ip_;
   private int port_;
@@ -63,6 +64,7 @@ public class MiraSession
       String id,
       String ip,
       int port,
+      String peerMacAddress,
       String peerName,
       String receiverName,
       EventBase eventBase,
@@ -71,6 +73,7 @@ public class MiraSession
     ip_ = ip;
     port_ = port;
     peerName_ = peerName;
+    peerMacAddress_ = peerMacAddress;
     receiverName_ = receiverName;
     rtspClient_ = new RtspClient("rtsp://" + ip_ + "/", port_);
     mirrorListener_ = listener;
@@ -88,6 +91,10 @@ public class MiraSession
       }
     });
     Log.d(TAG, "#" + id_ + " rtsp client->" + "rtsp://" + ip_ + ":" + port_);
+  }
+
+  public String getPeerAddress() {
+    return peerMacAddress_;
   }
 
   public String getIp() {

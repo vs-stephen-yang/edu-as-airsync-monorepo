@@ -21,12 +21,18 @@ public class MiraMgr
     return kMirrorIdPrefix_ + seq;
   }
 
-  public MiraSession createSession(String peerName, String peerIp, int peerPort, String receiverName) {
+  public MiraSession createSession(
+      String peerMacAddress,
+      String peerName,
+      String peerIp,
+      int peerPort,
+      String receiverName) {
     mirror_increment_seq_++;
     MiraSession session = new MiraSession(
         formatMirrorId(mirror_increment_seq_),
         peerIp,
         peerPort,
+        peerMacAddress,
         peerName,
         receiverName,
         eventBase_,
@@ -35,9 +41,9 @@ public class MiraMgr
     return session;
   }
 
-  public String removeSessionByIp(String ip) {
+  public String removeSessionByPeerAddress(String peerMacAddress) {
     for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
-      if (entry.getValue().getIp().equals(ip)) {
+      if (entry.getValue().getPeerAddress().equals(peerMacAddress)) {
         String sessionId = entry.getKey();
         mirror_sessions_.remove(sessionId);
 
@@ -99,22 +105,22 @@ public class MiraMgr
     }
   }
 
-  private void connectionPrompt(String peerName, String peerIp, int peerPort) {
-    MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
+  private void connectionPrompt(String peerMacAddress, String peerName, String peerIp, int peerPort) {
+    MiraSession session = createSession(peerMacAddress, peerName, peerIp, peerPort, receiverName_);
     session.startRtsp();
   }
 
   @Override
-  public void onPeerConnected(String name, String ip, int port) {
-    Log.d(TAG, "onPeerConnected.");
-    connectionPrompt(name, ip, port);
+  public void onPeerConnected(String peerMacAddress, String name, String ip, int port) {
+    Log.d(TAG, "onPeerConnected: " + peerMacAddress);
+    connectionPrompt(peerMacAddress, name, ip, port);
 
   }
 
   @Override
-  public void onPeerDisconnected(String ip) {
-    Log.d(TAG, "onPeerDisconnected:" + ip);
-    String removeSessionId = removeSessionByIp(ip);
+  public void onPeerDisconnected(String peerMacAddress) {
+    Log.d(TAG, "onPeerDisconnected:" + peerMacAddress);
+    String removeSessionId = removeSessionByPeerAddress(peerMacAddress);
     if (removeSessionId != null) {
       if (listener_ != null) {
         listener_.onSessionEnd(removeSessionId);
