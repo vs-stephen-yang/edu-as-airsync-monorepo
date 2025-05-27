@@ -10,8 +10,6 @@ import android.hardware.usb.UsbManager;
 import android.net.wifi.p2p.*;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
-import android.net.wifi.p2p.WifiP2pManager.GroupInfoListener;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.net.wifi.p2p.WifiP2pWfdInfo;
 import android.os.Build;
 import android.text.TextUtils;
@@ -24,21 +22,18 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class WiFiDirectMgr {
   private static final String TAG = "MiraWiFiDirectMgr";
-  private static final int DEFALUT_SOURCE_PORT = 7236;
+  private static final int DEFAULT_SOURCE_PORT = 7236;
   private static final int PRODUCT_ID_VB_WIFI_004 = 34817;
 
   private boolean isStart_ = false;
   private boolean isGroupFormed_ = false;
-  private boolean isGroupOwner_ = false;
   private String p2pInterfaceName_ = "";
 
-  private int sourcePort_ = DEFALUT_SOURCE_PORT;
+  private int sourcePort_ = DEFAULT_SOURCE_PORT;
 
   // see
   // https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Wifi/framework/java/android/net/wifi/p2p/WifiP2pManager.java?q=setMiracastMode%20WiFiP2PManager
@@ -51,17 +46,15 @@ public class WiFiDirectMgr {
 
   private static final long IP_LOOKUP_RETRY_DELAY_MS = 100L;
 
-  private static final Set<String> GROUP_OWNER_ADDRESS_KEYS = Set.of("groupOwnerAddress", "groupOwnerIpAddress");
-
-  private class PeerInfo {
+  private static class PeerInfo {
     public String deviceName_;
     public String ip_;
     public int port_;
     public String macAddr_;
   }
 
-  private Map<String, PeerInfo> peers_ = new HashMap();
-  private WiFiDirectListener listener_;
+  private final Map<String, PeerInfo> peers_ = new HashMap<>();
+  private final WiFiDirectListener listener_;
 
   public WiFiDirectMgr(WiFiDirectListener listener) {
     listener_ = listener;
@@ -79,7 +72,7 @@ public class WiFiDirectMgr {
     isStart_ = true;
     context_ = context;
     receiverName_ = receiverName;
-    wifiP2pManager_ = (WifiP2pManager) context_.getSystemService(context_.WIFI_P2P_SERVICE);
+    wifiP2pManager_ = (WifiP2pManager) context_.getSystemService(Context.WIFI_P2P_SERVICE);
     channel_ = wifiP2pManager_.initialize(context_, context_.getMainLooper(), null);
     final IntentFilter intentFilter_ = new IntentFilter();
     // Indicates a change in the Wi-Fi P2P status.
@@ -151,8 +144,7 @@ public class WiFiDirectMgr {
         }
       });
     } catch (Exception e) {
-      e.printStackTrace();
-      Log.e(TAG, "Failed to createGroup:" + e.getLocalizedMessage());
+      Log.e(TAG, "Failed to createGroup", e);
     }
   }
 
@@ -185,13 +177,10 @@ public class WiFiDirectMgr {
     final Object lock = new Object();
     boolean[] havedGroup = { false };
 
-    wifiP2pManager_.requestGroupInfo(channel_, new GroupInfoListener() {
-      @Override
-      public void onGroupInfoAvailable(WifiP2pGroup group) {
-        havedGroup[0] = (group != null);
-        synchronized (lock) {
-          lock.notify();
-        }
+    wifiP2pManager_.requestGroupInfo(channel_, group -> {
+      havedGroup[0] = (group != null);
+      synchronized (lock) {
+        lock.notify();
       }
     });
 
@@ -199,8 +188,7 @@ public class WiFiDirectMgr {
       try {
         lock.wait(1000);
       } catch (InterruptedException e) {
-        e.printStackTrace();
-        Log.e(TAG, "lock wait: " + e.getLocalizedMessage());
+        Log.e(TAG, "lock wait", e);
       }
     }
 
@@ -232,8 +220,7 @@ public class WiFiDirectMgr {
         lock.wait(1000);
       } catch (InterruptedException e) {
         // Handle exception
-        e.printStackTrace();
-        Log.e(TAG, "lock wait: " + e.getLocalizedMessage());
+        Log.e(TAG, "lock wait", e);
       }
     }
   }
@@ -279,6 +266,10 @@ public class WiFiDirectMgr {
 
     PeerInfo peer = peers_.get(device.deviceAddress);
 
+    if (peer == null) {
+      return;
+    }
+
     listener_.onPeerDisconnected(peer.ip_);
   }
 
@@ -310,60 +301,6 @@ public class WiFiDirectMgr {
 
     Log.d(TAG, "Connection changed. " + info);
     isGroupFormed_ = info.groupFormed;
-    isGroupOwner_ = info.isGroupOwner;
-  }
-
-  /**
-   * set the source deviceAddress and WFD CtrlPort when the source in p2p
-   * play a role as a group client
-   *
-   * @param groupInfo
-   */
-  /*
-   * example
-   * network: DIRECT-XB-Mi-Firefly-RK3399
-   * isGO: true
-   * GO: Device:
-   * deviceAddress: d6:12:43:8b:d4:24
-   * primary type: null
-   * secondary type: null
-   * wps: 0
-   * grpcapab: 0
-   * devcapab: 0
-   * status: 4
-   * wfdInfo: WFD enabled: falseWFD DeviceInfo: 0
-   * WFD CtrlPort: 0
-   * WFD MaxThroughput: 0
-   * Client: Device: Harvey Lin
-   * deviceAddress: 58:ce:2a:fc:4b:13
-   * primary type: 1-0050F200-0
-   * secondary type: null
-   * wps: 4584
-   * grpcapab: 4
-   * devcapab: 37
-   * status: 0
-   * wfdInfo: WFD enabled: trueWFD DeviceInfo: 272
-   * WFD CtrlPort: 7236
-   * WFD MaxThroughput: 6
-   * interface: p2p-wlan0-0
-   * networkId: 0
-   */
-  private void setGroupInfo(String groupInfo) {
-    sourcePort_ = DEFALUT_SOURCE_PORT;
-    if (!TextUtils.isEmpty(groupInfo) && groupInfo.contains("WFD CtrlPort: ")
-        && groupInfo.contains("WFD MaxThroughput")) {
-      try {
-        String sourcePortStr = groupInfo.substring(
-            groupInfo.lastIndexOf("WFD CtrlPort: ") + 14, groupInfo.lastIndexOf("WFD MaxThroughput")).trim();
-        if (!TextUtils.isEmpty(sourcePortStr)) {
-          int tmp = Integer.parseInt(sourcePortStr);
-          sourcePort_ = (tmp > 0) ? tmp : DEFALUT_SOURCE_PORT;
-          Log.d(TAG, "sourcePort:" + sourcePort_);
-        }
-      } catch (RuntimeException e) {
-        Log.e(TAG, "setGroupInfo exception: " + e.getMessage());
-      }
-    }
   }
 
   private String getIpFromMacAddress(String sourceMacAddr) {
@@ -380,7 +317,7 @@ public class WiFiDirectMgr {
       try {
         Thread.sleep(IP_LOOKUP_RETRY_DELAY_MS);
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        Log.e(TAG, "Sleep in getIpFromMacAddress", e);
       }
     }
     Log.w(TAG, "Failed to lookup IP after " + IP_LOOKUP_MAX_RETRIES + " attempts.");
@@ -429,11 +366,11 @@ public class WiFiDirectMgr {
   @SuppressLint("PrivateApi")
   private void setEnableWFD(WifiP2pManager wifiP2pManager, Channel channel, boolean enable, ActionListener listener) {
     try {
-      Class clsWifiP2pWfdInfo = Class.forName("android.net.wifi.p2p.WifiP2pWfdInfo");
-      WifiP2pWfdInfo wifiP2pWfdInfo = null;
-      String setWfdMethodName = null;
+      Class<?> clsWifiP2pWfdInfo = Class.forName("android.net.wifi.p2p.WifiP2pWfdInfo");
+      WifiP2pWfdInfo wifiP2pWfdInfo;
+      String setWfdMethodName;
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-        Constructor ctorWifiP2pWfdInfo = clsWifiP2pWfdInfo.getConstructor();
+        Constructor<?> ctorWifiP2pWfdInfo = clsWifiP2pWfdInfo.getConstructor();
         wifiP2pWfdInfo = (WifiP2pWfdInfo) ctorWifiP2pWfdInfo.newInstance();
 
         // wifiP2pWfdInfo.setWfdEnabled(true);
@@ -448,9 +385,9 @@ public class WiFiDirectMgr {
         Method mtdSetSessionAvailable = clsWifiP2pWfdInfo.getMethod("setSessionAvailable", boolean.class);
         mtdSetSessionAvailable.invoke(wifiP2pWfdInfo, enable);
 
-        // wifiP2pWfdInfo.setControlPort(DEFALUT_SOURCE_PORT);
+        // wifiP2pWfdInfo.setControlPort(DEFAULT_SOURCE_PORT);
         Method mtdSetControlPort = clsWifiP2pWfdInfo.getMethod("setControlPort", int.class);
-        mtdSetControlPort.invoke(wifiP2pWfdInfo, DEFALUT_SOURCE_PORT);
+        mtdSetControlPort.invoke(wifiP2pWfdInfo, DEFAULT_SOURCE_PORT);
 
         // wifiP2pWfdInfo.setMaxThroughput(MAX_THROUGHPUT);
         Method mtdSetMaxThroughput = clsWifiP2pWfdInfo.getMethod("setMaxThroughput", int.class);
@@ -462,20 +399,19 @@ public class WiFiDirectMgr {
         wifiP2pWfdInfo.setEnabled(enable);
         wifiP2pWfdInfo.setDeviceType(WifiP2pWfdInfo.DEVICE_TYPE_PRIMARY_SINK);
         wifiP2pWfdInfo.setSessionAvailable(enable);
-        wifiP2pWfdInfo.setControlPort(DEFALUT_SOURCE_PORT);
+        wifiP2pWfdInfo.setControlPort(DEFAULT_SOURCE_PORT);
         wifiP2pWfdInfo.setMaxThroughput(20);
         setWfdMethodName = "setWfdInfo";
       }
 
       if (listener != null) {
-        Class clsWifiP2pManager = Class.forName("android.net.wifi.p2p.WifiP2pManager");
+        Class<?> clsWifiP2pManager = Class.forName("android.net.wifi.p2p.WifiP2pManager");
         Method methodSetWFDInfo = clsWifiP2pManager.getMethod(setWfdMethodName,
             Channel.class, clsWifiP2pWfdInfo, ActionListener.class);
         methodSetWFDInfo.invoke(wifiP2pManager, channel, wifiP2pWfdInfo, listener);
       }
     } catch (Exception e) {
-      e.printStackTrace();
-      Log.e(TAG, "Failed to setEnableWFD: " + e.getLocalizedMessage());
+      Log.e(TAG, "Failed to setEnableWFD", e);
     }
   }
 
@@ -483,7 +419,7 @@ public class WiFiDirectMgr {
     try {
       Log.d(TAG, "Setting Miracast mode to " + mode);
       WifiP2pManager.class.getMethod("setMiracastMode", Integer.TYPE)
-          .invoke(wifiP2pManager_, Integer.valueOf(mode));
+          .invoke(wifiP2pManager_, mode);
       Log.d(TAG, "Successfully set Miracast mode: " + mode);
     } catch (Throwable e) {
       Log.e(TAG, "Throwable in setting Miracast mode: " + e.getMessage());
@@ -502,13 +438,12 @@ public class WiFiDirectMgr {
   }
 
   public String getDeviceName() {
-    String manufacturer = android.os.Build.MANUFACTURER;
     String model = android.os.Build.MODEL;
     return capitalize(model);
   }
 
   private String capitalize(String s) {
-    if (s == null || s.length() == 0) {
+    if (s == null || s.isEmpty()) {
       return "";
     }
     char first = s.charAt(0);
@@ -517,10 +452,6 @@ public class WiFiDirectMgr {
     } else {
       return Character.toUpperCase(first) + s.substring(1);
     }
-  }
-
-  private String getNickName() {
-    return "Mi-" + getDeviceName();
   }
 
   private String getReceiverName() {
