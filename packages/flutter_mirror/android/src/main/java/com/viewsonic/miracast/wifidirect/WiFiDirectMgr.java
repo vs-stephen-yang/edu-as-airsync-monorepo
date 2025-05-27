@@ -21,8 +21,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class WiFiDirectMgr {
   private static final String TAG = "MiraWiFiDirectMgr";
@@ -46,14 +48,7 @@ public class WiFiDirectMgr {
 
   private static final long IP_LOOKUP_RETRY_DELAY_MS = 100L;
 
-  private static class PeerInfo {
-    public String deviceName_;
-    public String ip_;
-    public int port_;
-    public String macAddr_;
-  }
-
-  private final Map<String, PeerInfo> peers_ = new HashMap<>();
+  Set<String> peers_ = new HashSet<>();
   private final WiFiDirectListener listener_;
 
   public WiFiDirectMgr(WiFiDirectListener listener) {
@@ -226,15 +221,15 @@ public class WiFiDirectMgr {
   }
 
   private void onDeviceConnected(WifiP2pDevice device) {
-    Log.d(TAG, "Device connected: " + device.deviceAddress);
-
-    if (peers_.containsKey(device.deviceAddress)) {
-      Log.w(TAG, "Device already connected");
+    if (device.deviceAddress == null) {
+      Log.w(TAG, "The device address is null");
       return;
     }
 
-    if (device.deviceAddress == null) {
-      Log.w(TAG, "The device address is null");
+    Log.d(TAG, "Device connected: " + device.deviceAddress);
+
+    if (peers_.contains(device.deviceAddress)) {
+      Log.w(TAG, "Device already connected");
       return;
     }
 
@@ -245,32 +240,21 @@ public class WiFiDirectMgr {
       return;
     }
 
-    PeerInfo peerInfo = new PeerInfo();
-    peerInfo.ip_ = sourceIp;
-    peerInfo.port_ = sourcePort_;
-    peerInfo.deviceName_ = device.deviceName;
-    peerInfo.macAddr_ = device.deviceAddress;
-
-    peers_.put(device.deviceAddress, peerInfo);
-
-    listener_.onPeerConnected(device.deviceName, sourceIp, sourcePort_);
+    peers_.add(device.deviceAddress);
+    listener_.onPeerConnected(device.deviceAddress, device.deviceName, sourceIp, sourcePort_);
   }
 
   private void onDeviceDisconnected(WifiP2pDevice device) {
     Log.d(TAG, "Device disconnected: " + device.deviceAddress);
 
-    if (!peers_.containsKey(device.deviceAddress)) {
+    if (!peers_.contains(device.deviceAddress)) {
       Log.w(TAG, "Device is not previously connected: " + device.deviceAddress);
       return;
     }
 
-    PeerInfo peer = peers_.get(device.deviceAddress);
+    peers_.remove(device.deviceAddress);
 
-    if (peer == null) {
-      return;
-    }
-
-    listener_.onPeerDisconnected(peer.ip_);
+    listener_.onPeerDisconnected(device.deviceAddress);
   }
 
   private void processPeerListChanged(final Collection<WifiP2pDevice> peerList) {
