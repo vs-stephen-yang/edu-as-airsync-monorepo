@@ -11,7 +11,6 @@ import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
-import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_audio_driver_warning.dart';
@@ -162,42 +161,6 @@ class _V3PresentIdleState extends State<V3PresentIdle>
       alignment: AlignmentDirectional.center,
       children: [
         const V3PresentIdleAudioDriverWarning(),
-        if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
-          Positioned(
-            top: 24,
-            left: 8,
-            child: V3Focus(
-              label: S.of(context).v3_lbl_qr_code,
-              identifier: 'v3_qa_qr_code',
-              button: true,
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: ShapeDecoration(
-                  color: context.tokens.color.vsdswColorSurface200,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
-                      color: context.tokens.color.vsdswColorSurface200,
-                    ),
-                    borderRadius: context.tokens.radii.vsdswRadiusFull,
-                  ),
-                  shadows: context.tokens.shadow.vsdswShadowNeutralLg,
-                ),
-                child: ExcludeSemantics(
-                  child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/v3_ic_qrcode.svg',
-                    ),
-                    onPressed: () {
-                      Provider.of<PresentStateProvider>(context, listen: false)
-                          .presentQrScannerPage();
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
         Align(
           alignment: Alignment.center,
           child: SingleChildScrollView(
