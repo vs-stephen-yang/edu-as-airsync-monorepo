@@ -12,6 +12,8 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pWfdInfo;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -51,8 +53,12 @@ public class WiFiDirectMgr {
   Set<String> peers_ = new HashSet<>();
   private final WiFiDirectListener listener_;
 
+  Handler handler_;
+
   public WiFiDirectMgr(WiFiDirectListener listener) {
     listener_ = listener;
+
+    handler_ = new Handler(Looper.getMainLooper());
   }
 
   private Context context_;
@@ -233,7 +239,14 @@ public class WiFiDirectMgr {
       return;
     }
 
-    String sourceIp = getIpFromMacAddress(device.deviceAddress);
+    new Thread(() -> {
+      String sourceIp = getIpFromMacAddress(device.deviceAddress);
+
+      handler_.post(() -> onDeviceConnectedWithIp(device, sourceIp));
+    }).start();
+  }
+
+  private void onDeviceConnectedWithIp(WifiP2pDevice device, String sourceIp) {
 
     if (sourceIp == null) {
       listener_.onWifiDirectError("Failed to get source IP");
@@ -241,6 +254,7 @@ public class WiFiDirectMgr {
     }
 
     peers_.add(device.deviceAddress);
+
     listener_.onPeerConnected(device.deviceAddress, device.deviceName, sourceIp, sourcePort_);
   }
 
