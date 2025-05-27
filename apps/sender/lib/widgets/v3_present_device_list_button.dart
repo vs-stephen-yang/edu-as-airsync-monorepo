@@ -14,81 +14,78 @@ class V3PresentDeviceListButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48,
-      child: Wrap(
-        spacing: 8,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(
-            S.current.v3_device_list_button_text,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: context.tokens.color.vsdswColorOnSurface,
-              fontSize: 16,
-              fontFamily: 'Inter',
-            ),
+    return Wrap(
+      spacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          S.current.v3_device_list_button_text,
+          textAlign: TextAlign.right,
+          style: TextStyle(
+            color: context.tokens.color.vsdswColorOnSurface,
+            fontSize: 16,
+            fontFamily: 'Inter',
           ),
-          V3Focus(
-            label: S.current.v3_lbl_device_list_button_device_list,
-            identifier: 'v3_qa_device_list_button_device_list',
-            button: true,
-            child: InkWell(
-              focusColor: Colors.transparent,
-              borderRadius: BorderRadius.circular(20),
-              onTap: onTap,
+        ),
+        V3Focus(
+          label: S.current.v3_lbl_device_list_button_device_list,
+          identifier: 'v3_qa_device_list_button_device_list',
+          button: true,
+          child: InkWell(
+            focusColor: Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            onTap: onTap,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              height: 48, // 實際觸控範圍（符合 WCAG）
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                height: 48, // 實際觸控範圍（符合 WCAG）
-                child: Container(
-                  height: 32, // 實際看起來的按鈕高度
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: ShapeDecoration(
-                    color: context.tokens.color.vsdswColorTertiary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: context.tokens.color.vsdswColorOpacityNeutralSm,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
+                height: 32, // 實際看起來的按鈕高度
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: ShapeDecoration(
+                  color: context.tokens.color.vsdswColorTertiary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: ExcludeSemantics(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/ic_device_list_screen.svg',
-                          width: 16,
-                          height: 16,
-                          colorFilter: ColorFilter.mode(
-                            context.tokens.color.vsdswColorOnTertiary,
-                            BlendMode.srcIn,
-                          ),
+                  shadows: [
+                    BoxShadow(
+                      color: context.tokens.color.vsdswColorOpacityNeutralSm,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
+                ),
+                child: ExcludeSemantics(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/ic_device_list_screen.svg',
+                        width: 16,
+                        height: 16,
+                        colorFilter: ColorFilter.mode(
+                          context.tokens.color.vsdswColorOnTertiary,
+                          BlendMode.srcIn,
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          S.current.v3_device_list_button_device_list,
-                          style: TextStyle(
-                            color: context.tokens.color.vsdswColorOnTertiary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            height: 1.2,
-                            letterSpacing: 0.28,
-                          ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        S.current.v3_device_list_button_device_list,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdswColorOnTertiary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                          letterSpacing: 0.28,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
