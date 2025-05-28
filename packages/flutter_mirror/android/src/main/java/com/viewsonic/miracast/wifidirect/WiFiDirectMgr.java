@@ -21,6 +21,8 @@ import com.viewsonic.miracast.utils.ARPUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +38,7 @@ public class WiFiDirectMgr {
   private boolean isStart_ = false;
   private boolean isGroupFormed_ = false;
   private String p2pInterfaceName_ = "";
+  private String groupOwnerAddress_;
 
   private int sourcePort_ = DEFAULT_SOURCE_PORT;
 
@@ -226,6 +229,21 @@ public class WiFiDirectMgr {
     }
   }
 
+  private String fetchIpFromMacAddress(String deviceAddress) {
+    String ip = getIpFromMacAddress(deviceAddress);
+
+    if (ip != null) {
+      return ip;
+    }
+
+    if (groupOwnerAddress_ != null) {
+      Log.d(TAG, "Probe subnet");
+      probeSubnet(groupOwnerAddress_);
+    }
+
+    return getIpFromMacAddress(deviceAddress, IP_LOOKUP_MAX_RETRIES);
+  }
+
   private void onDeviceConnected(WifiP2pDevice device) {
     if (device.deviceAddress == null) {
       Log.w(TAG, "The device address is null");
@@ -240,7 +258,7 @@ public class WiFiDirectMgr {
     }
 
     new Thread(() -> {
-      String sourceIp = getIpFromMacAddress(device.deviceAddress);
+      String sourceIp = fetchIpFromMacAddress(device.deviceAddress);
 
       handler_.post(() -> onDeviceConnectedWithIp(device, sourceIp));
     }).start();
@@ -299,12 +317,16 @@ public class WiFiDirectMgr {
 
     Log.d(TAG, "Connection changed. " + info);
     isGroupFormed_ = info.groupFormed;
+
+    if (info.groupOwnerAddress != null) {
+      groupOwnerAddress_ = info.groupOwnerAddress.getHostAddress();
+    }
   }
 
-  private String getIpFromMacAddress(String sourceMacAddr) {
-    for (int attempt = 1; attempt <= IP_LOOKUP_MAX_RETRIES && isGroupFormed_ && isStart_; attempt++) {
+  private String getIpFromMacAddress(String sourceMacAddr, int retryCount) {
+    for (int attempt = 1; attempt <= retryCount && isGroupFormed_ && isStart_; attempt++) {
 
-      String sourceIp = ARPUtil.getIPFromMac(sourceMacAddr, p2pInterfaceName_);
+      String sourceIp = getIpFromMacAddress(sourceMacAddr);
       if (!TextUtils.isEmpty(sourceIp)) {
         Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
         return sourceIp;
@@ -318,8 +340,41 @@ public class WiFiDirectMgr {
         Log.e(TAG, "Sleep in getIpFromMacAddress", e);
       }
     }
-    Log.w(TAG, "Failed to lookup IP after " + IP_LOOKUP_MAX_RETRIES + " attempts.");
+    Log.w(TAG, "Failed to lookup IP after " + retryCount + " attempts.");
     return null;
+  }
+
+  private String getIpFromMacAddress(String sourceMacAddr) {
+    return ARPUtil.getIPFromMac(sourceMacAddr, p2pInterfaceName_);
+  }
+
+  /**
+   * Probes the local subnet by sending quick reachability checks to IP addresses
+   * in the range x.x.x.2 to x.x.x.254 derived from the provided gateway IP
+   * address.
+   *
+   * This is used to stimulate network activity, encouraging ARP table population
+   * with updated MAC-to-IP mappings for devices on the same subnet.
+   *
+   * Note: This method performs best on networks where ICMP or ARP responses are
+   * permitted.
+   *
+   * @param groupOwnerIp The IP address of the group owner (e.g., "192.168.49.1").
+   */
+  private void probeSubnet(String groupOwnerIp) {
+    try {
+      byte[] address = InetAddress.getByName(groupOwnerIp).getAddress();
+      for (int i = 2; i < 255; i++) {
+        address[3] = (byte) i;
+        try {
+          InetAddress byAddress = InetAddress.getByAddress(address);
+          byAddress.isReachable(1);
+        } catch (Exception e) {
+        }
+      }
+    } catch (UnknownHostException e) {
+      Log.e(TAG, "probeSubnet failed", e);
+    }
   }
 
   private final BroadcastReceiver broadcastReceiver_ = new BroadcastReceiver() {
