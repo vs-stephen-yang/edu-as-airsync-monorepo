@@ -47,10 +47,10 @@ public class WiFiDirectMgr {
   private static final int MIRACAST_SOURCE = 1;
   private static final int MIRACAST_SINK = 2;
 
-  // Maximum number of IP lookup retries (10 attempts, up to ~1 s total wait)
-  private static final int IP_LOOKUP_MAX_RETRIES = 10;
+  // Maximum number of IP lookup retries (50 attempts, up to ~10 s total wait)
+  private static final int IP_LOOKUP_MAX_RETRIES = 50;
 
-  private static final long IP_LOOKUP_RETRY_DELAY_MS = 100L;
+  private static final long IP_LOOKUP_RETRY_DELAY_MS = 200L;
 
   Set<String> peers_ = new HashSet<>();
   private final WiFiDirectListener listener_;
