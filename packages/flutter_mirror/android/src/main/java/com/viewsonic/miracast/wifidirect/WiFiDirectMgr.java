@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 public class WiFiDirectMgr {
@@ -229,19 +228,37 @@ public class WiFiDirectMgr {
     }
   }
 
-  private String fetchIpFromMacAddress(String deviceAddress) {
-    String ip = getIpFromMacAddress(deviceAddress);
+  private String fetchIpFromMacAddress(String deviceAddress) throws InterruptedException {
 
-    if (ip != null) {
-      return ip;
-    }
+    Thread probeSubnetThread = null;
 
+    // 1. Start probing subnet in the background
     if (groupOwnerAddress_ != null) {
-      Log.d(TAG, "Probe subnet");
-      probeSubnet(groupOwnerAddress_);
+      Log.d(TAG, "Start probing subnet to trigger ARP table updates");
+
+      probeSubnetThread = new Thread(() -> {
+        try {
+          probeSubnet(groupOwnerAddress_);
+        } catch (Exception e) {
+          Log.e(TAG, "probeSubnet", e);
+        }
+      }, "probeSubnetThread");
+
+      probeSubnetThread.start();
     }
 
-    return getIpFromMacAddress(deviceAddress, IP_LOOKUP_MAX_RETRIES);
+    // 2. Resolve IP address
+    String ip = getIpFromMacAddress(deviceAddress, IP_LOOKUP_MAX_RETRIES);
+
+    // 3. Stopping probing subnet
+    if (probeSubnetThread != null) {
+      Log.d(TAG, "Stopping probing subnet");
+      probeSubnetThread.interrupt();
+      probeSubnetThread.join();
+      Log.d(TAG, "Stopped probing subnet");
+    }
+
+    return ip;
   }
 
   private void onDeviceConnected(WifiP2pDevice device) {
@@ -258,10 +275,14 @@ public class WiFiDirectMgr {
     }
 
     new Thread(() -> {
-      String sourceIp = fetchIpFromMacAddress(device.deviceAddress);
+      try {
+        String sourceIp = fetchIpFromMacAddress(device.deviceAddress);
 
-      handler_.post(() -> onDeviceConnectedWithIp(device, sourceIp));
-    }).start();
+        handler_.post(() -> onDeviceConnectedWithIp(device, sourceIp));
+      } catch (InterruptedException e) {
+        return;
+      }
+    }, "fetchIpFromMacAddress").start();
   }
 
   private void onDeviceConnectedWithIp(WifiP2pDevice device, String sourceIp) {
@@ -323,7 +344,7 @@ public class WiFiDirectMgr {
     }
   }
 
-  private String getIpFromMacAddress(String sourceMacAddr, int retryCount) {
+  private String getIpFromMacAddress(String sourceMacAddr, int retryCount) throws InterruptedException {
     for (int attempt = 1; attempt <= retryCount && isGroupFormed_ && isStart_; attempt++) {
 
       String sourceIp = getIpFromMacAddress(sourceMacAddr);
@@ -334,11 +355,7 @@ public class WiFiDirectMgr {
 
       Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr + " ret is null");
 
-      try {
-        Thread.sleep(IP_LOOKUP_RETRY_DELAY_MS);
-      } catch (InterruptedException e) {
-        Log.e(TAG, "Sleep in getIpFromMacAddress", e);
-      }
+      Thread.sleep(IP_LOOKUP_RETRY_DELAY_MS);
     }
     Log.w(TAG, "Failed to lookup IP after " + retryCount + " attempts.");
     return null;
@@ -361,19 +378,21 @@ public class WiFiDirectMgr {
    *
    * @param groupOwnerIp The IP address of the group owner (e.g., "192.168.49.1").
    */
-  private void probeSubnet(String groupOwnerIp) {
-    try {
-      byte[] address = InetAddress.getByName(groupOwnerIp).getAddress();
-      for (int i = 2; i < 255; i++) {
-        address[3] = (byte) i;
-        try {
-          InetAddress byAddress = InetAddress.getByAddress(address);
-          byAddress.isReachable(1);
-        } catch (Exception e) {
-        }
+  private void probeSubnet(String groupOwnerIp) throws UnknownHostException {
+    byte[] address = InetAddress.getByName(groupOwnerIp).getAddress();
+    for (int i = 2; i < 255; i++) {
+      if (Thread.currentThread().isInterrupted()) {
+        Log.d(TAG, "probeSubnet thread interrupted, stopping.");
+        return;
       }
-    } catch (UnknownHostException e) {
-      Log.e(TAG, "probeSubnet failed", e);
+
+      address[3] = (byte) i;
+      try {
+        InetAddress byAddress = InetAddress.getByAddress(address);
+        byAddress.isReachable(1);
+      } catch (Exception e) {
+        Log.d(TAG, "probeSubnet failed", e);
+      }
     }
   }
 
