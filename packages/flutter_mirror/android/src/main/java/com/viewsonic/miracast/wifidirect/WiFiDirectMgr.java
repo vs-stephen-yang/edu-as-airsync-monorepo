@@ -267,12 +267,11 @@ public class WiFiDirectMgr {
       return;
     }
 
-    Log.d(TAG, "Device connected: " + device.deviceAddress);
-
     if (peers_.contains(device.deviceAddress)) {
-      Log.w(TAG, "Device already connected");
       return;
     }
+
+    Log.d(TAG, "Device connected: " + device.deviceAddress);
 
     new Thread(() -> {
       try {
@@ -298,12 +297,10 @@ public class WiFiDirectMgr {
   }
 
   private void onDeviceDisconnected(WifiP2pDevice device) {
-    Log.d(TAG, "Device disconnected: " + device.deviceAddress);
-
     if (!peers_.contains(device.deviceAddress)) {
-      Log.w(TAG, "Device is not previously connected: " + device.deviceAddress);
       return;
     }
+    Log.d(TAG, "Device disconnected: " + device.deviceAddress);
 
     peers_.remove(device.deviceAddress);
 
@@ -311,9 +308,8 @@ public class WiFiDirectMgr {
   }
 
   private void processPeerListChanged(final Collection<WifiP2pDevice> peerList) {
-    Log.d(TAG, peerList.size() + " device(s) found");
     for (WifiP2pDevice peer : peerList) {
-      Log.d(TAG, String.format("peer: %s - %s - status: %d",
+      Log.d(TAG, String.format("Peer: %s - %s - status: %d",
           peer.deviceName,
           peer.deviceAddress,
           peer.status));
@@ -329,8 +325,9 @@ public class WiFiDirectMgr {
 
   private void onGroupInfoAvailable(WifiP2pGroup group) {
     assert group != null : "group must not be null";
+
     p2pInterfaceName_ = group.getInterface();
-    Log.d(TAG, "\n====== Group info: ======\n" + group);
+    Log.d(TAG, "Group info updated:\n" + group);
   }
 
   public void onConnectionInfoAvailable(WifiP2pInfo info) {
@@ -349,15 +346,15 @@ public class WiFiDirectMgr {
 
       String sourceIp = getIpFromMacAddress(sourceMacAddr);
       if (!TextUtils.isEmpty(sourceIp)) {
-        Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
+        Log.d(TAG, "Resolved IP: " + sourceIp + " from MAC: " + sourceMacAddr);
         return sourceIp;
       }
 
-      Log.d(TAG, "ARPUtil.getIPFromMac: " + sourceMacAddr + " ret is null");
+      Log.d(TAG, "Attempt " + attempt + ": Failed to resolve IP for MAC " + sourceMacAddr);
 
       Thread.sleep(IP_LOOKUP_RETRY_DELAY_MS);
     }
-    Log.w(TAG, "Failed to lookup IP after " + retryCount + " attempts.");
+    Log.w(TAG, "Failed to resolve IP for MAC " + sourceMacAddr + " after " + retryCount + " attempts.");
     return null;
   }
 
