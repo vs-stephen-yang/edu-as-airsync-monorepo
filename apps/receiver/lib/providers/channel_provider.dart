@@ -1029,8 +1029,8 @@ class ChannelProvider extends ChangeNotifier {
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
     getIceServersForDirect() => Future.value(<RtcIceServer>[]);
 
-    var mediator = DisplayGroupMediatorObject(
-        _remoteScreenServe, _instanceInfo.ipAddress, getIceServersForDirect);
+    var mediator = DisplayGroupMediatorObject(_remoteScreenServe,
+        _instanceInfo.ipAddress, getIceServersForDirect, removeSender);
 
     _displayGroupHost ??= DisplayGroupHost(mediator);
 
