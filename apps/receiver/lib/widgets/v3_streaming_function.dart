@@ -392,9 +392,6 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                             status ==
                                 BluetoothTouchbackStatus.devicePairedFailed ||
                             status ==
-                                BluetoothTouchbackStatus
-                                    .hidProfileServiceStartedFailed ||
-                            status ==
                                 BluetoothTouchbackStatus.hidDisconnected ||
                             status ==
                                 BluetoothTouchbackStatus.deviceFoundFailed) {

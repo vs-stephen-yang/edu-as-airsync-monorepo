@@ -19,17 +19,20 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -42,8 +45,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -93,12 +98,7 @@ class S {
 
   /// `AirSync EULA`
   String get eula_title {
-    return Intl.message(
-      'AirSync EULA',
-      name: 'eula_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('AirSync EULA', name: 'eula_title', desc: '', args: []);
   }
 
   /// `I Disagree`
@@ -113,12 +113,7 @@ class S {
 
   /// `I Agree`
   String get eula_agree {
-    return Intl.message(
-      'I Agree',
-      name: 'eula_agree',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('I Agree', name: 'eula_agree', desc: '', args: []);
   }
 
   /// `%02d min : %02d sec`
@@ -353,32 +348,17 @@ class S {
 
   /// `CANCEL`
   String get moderator_cancel {
-    return Intl.message(
-      'CANCEL',
-      name: 'moderator_cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('CANCEL', name: 'moderator_cancel', desc: '', args: []);
   }
 
   /// `EXIT`
   String get moderator_exit {
-    return Intl.message(
-      'EXIT',
-      name: 'moderator_exit',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('EXIT', name: 'moderator_exit', desc: '', args: []);
   }
 
   /// `REMOVE`
   String get moderator_remove {
-    return Intl.message(
-      'REMOVE',
-      name: 'moderator_remove',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('REMOVE', name: 'moderator_remove', desc: '', args: []);
   }
 
   /// `Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.`
@@ -1573,12 +1553,7 @@ class S {
 
   /// `Agree`
   String get v3_eula_agree {
-    return Intl.message(
-      'Agree',
-      name: 'v3_eula_agree',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Agree', name: 'v3_eula_agree', desc: '', args: []);
   }
 
   /// `Disagree`
@@ -1773,12 +1748,7 @@ class S {
 
   /// `OR`
   String get v3_download_app_or {
-    return Intl.message(
-      'OR',
-      name: 'v3_download_app_or',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('OR', name: 'v3_download_app_or', desc: '', args: []);
   }
 
   /// `Disable Mirroring for Moderator Mode`
@@ -3476,6 +3446,66 @@ class S {
     return Intl.message(
       'XLarge',
       name: 'v3_settings_resize_text_size_extra_large',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation timed out, please restart Bluetooth`
+  String get v3_touchback_restart_bluetooth_title {
+    return Intl.message(
+      'Operation timed out, please restart Bluetooth',
+      name: 'v3_touchback_restart_bluetooth_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.`
+  String get v3_touchback_restart_bluetooth_message {
+    return Intl.message(
+      'Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.',
+      name: 'v3_touchback_restart_bluetooth_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart`
+  String get v3_touchback_restart_bluetooth_btn_restart {
+    return Intl.message(
+      'Restart',
+      name: 'v3_touchback_restart_bluetooth_btn_restart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_touchback_restart_bluetooth_btn_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_touchback_restart_bluetooth_btn_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_lbl_touchback_restart_bluetooth_btn_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_lbl_touchback_restart_bluetooth_btn_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart`
+  String get v3_lbl_touchback_restart_bluetooth_btn_restart {
+    return Intl.message(
+      'Restart',
+      name: 'v3_lbl_touchback_restart_bluetooth_btn_restart',
       desc: '',
       args: [],
     );
