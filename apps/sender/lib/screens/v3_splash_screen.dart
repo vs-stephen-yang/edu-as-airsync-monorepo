@@ -17,7 +17,7 @@ class _SplashScreenState extends State<V3SplashScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     Future.delayed(const Duration(seconds: 2), () {
       navService.pushNamedAndRemoveUntil(
         AppPreferences().showEULA ? '/v3eula' : '/v3home',
@@ -28,8 +28,8 @@ class _SplashScreenState extends State<V3SplashScreen> {
   @override
   void dispose() {
     super.dispose();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
+    // hide the Android Status Bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override

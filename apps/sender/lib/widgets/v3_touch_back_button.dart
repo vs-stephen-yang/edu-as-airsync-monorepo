@@ -89,7 +89,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
             identifier: 'v3_touch_back_button',
             child: SizedBox(
               width: 56,
-              height: 32,
+              height: 48,
               child: InkWell(
                 child: isButtonEnabled
                     ? SvgPicture.asset('assets/images/v3_ic_switch_on.svg')
@@ -129,8 +129,11 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
               return AlertDialog(
                 backgroundColor: Colors.white,
                 title: Text(S.of(context).v3_present_touch_back_dialog_title),
-                content: Text(
-                    S.of(context).v3_present_touch_back_dialog_description),
+                content: SingleChildScrollView(
+                  child: Text(
+                    S.of(context).v3_present_touch_back_dialog_description,
+                  ),
+                ),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () async {

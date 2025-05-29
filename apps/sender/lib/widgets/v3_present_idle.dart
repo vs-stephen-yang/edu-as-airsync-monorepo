@@ -143,55 +143,49 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       alignment: AlignmentDirectional.center,
       children: [
         const V3PresentIdleAudioDriverWarning(),
-        Align(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (kIsWeb) ...[
-                  AutoSizeText(
-                    S.of(context).v3_main_present_title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 32,
-                      color: context.tokens.color.vsdswColorOnSurface,
-                      fontWeight: FontWeight.w700,
-                      // height: 0.04,
-                      letterSpacing: -0.32,
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.only(bottom: 8)),
-                  AutoSizeText(
-                    S.of(context).v3_main_present_subtitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: context.tokens.color.vsdswColorOnSurfaceVariant,
-                      fontWeight: FontWeight.w400,
-                      // height: 0.10,
-                      letterSpacing: -0.18,
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 40)),
-                ],
-                if (!kIsWeb) ...[
-                  ExcludeSemantics(
-                    child: SvgPicture.asset('assets/images/v3_ic_airsync.svg'),
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 35)),
-                ],
-                _inputTextFields(),
-                _nextButton(
-                    channelProvider, demoProvider, presentStateProvider),
-                if (!kIsWeb) ...[
-                  Gap((Platform.isAndroid || Platform.isIOS) ? 40 : 60),
-                  buildDeviceListButton(presentStateProvider),
-                ],
-              ],
-            ),
-          ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (kIsWeb) ...[
+              AutoSizeText(
+                S.of(context).v3_main_present_title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 32,
+                  color: context.tokens.color.vsdswColorOnSurface,
+                  fontWeight: FontWeight.w700,
+                  // height: 0.04,
+                  letterSpacing: -0.32,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 8)),
+              AutoSizeText(
+                S.of(context).v3_main_present_subtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                  fontWeight: FontWeight.w400,
+                  // height: 0.10,
+                  letterSpacing: -0.18,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(top: 40)),
+            ],
+            if (!kIsWeb) ...[
+              ExcludeSemantics(
+                child: SvgPicture.asset('assets/images/v3_ic_airsync.svg'),
+              ),
+              const Padding(padding: EdgeInsets.only(top: 35)),
+            ],
+            _inputTextFields(),
+            _nextButton(channelProvider, demoProvider, presentStateProvider),
+            if (!kIsWeb) ...[
+              Gap((Platform.isAndroid || Platform.isIOS) ? 40 : 60),
+              buildDeviceListButton(presentStateProvider),
+            ],
+          ],
         ),
         if (kIsWeb) ...[
           Positioned(

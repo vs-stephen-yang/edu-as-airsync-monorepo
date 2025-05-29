@@ -19,71 +19,77 @@ class V3PresentWaitPrompt extends StatelessWidget {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     bool isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
 
-    return Container(
-      width: isMobile ? 359 : 504,
-      height: isMobile ? 360 : 332,
-      decoration: BoxDecoration(
-        color: context.tokens.color.vsdswColorSurface100,
-        borderRadius: context.tokens.radii.vsdswRadius2xl,
-        boxShadow: [
-          context.tokens.shadow.vsdswShadowNeutralLg[0],
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (!isMobile)
-            WaitingText(isModerator: channelProvider.moderatorStatus),
-          SizedBox(
-            width: 115,
-            height: 115,
-            child: Lottie.asset('assets/lottie_files/vsdsl-spinner-sty1.json'),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: isMobile ? 359 : 504,
+          height: isMobile ? 360 : 332,
+          decoration: BoxDecoration(
+            color: context.tokens.color.vsdswColorSurface100,
+            borderRadius: context.tokens.radii.vsdswRadius2xl,
+            boxShadow: [
+              context.tokens.shadow.vsdswShadowNeutralLg[0],
+            ],
           ),
-          const Padding(padding: EdgeInsets.only(top: 40)),
-          if (isMobile)
-            WaitingText(isModerator: channelProvider.moderatorStatus),
-          if (!channelProvider.moderatorStatus)
-            Container(
-              width: isMobile ? 300 : 240,
-              height: 48,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: context.tokens.color.vsdswColorSurface100,
-                  border: Border.all(
-                    color: context.tokens.color.vsdswColorSecondary,
-                    width: 1,
-                  ),
-                  borderRadius: context.tokens.radii.vsdswRadiusFull,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(0.0, 8.0),
-                      blurRadius: 16.0,
-                      spreadRadius: 0.0,
-                      color: context.tokens.color.vsdswColorSecondary
-                          .withOpacity(0.2),
-                    ),
-                  ]),
-              child: AutoSizeText(
-                channelProvider.randomName,
-                style: TextStyle(
-                  color: context.tokens.color.vsdswColorOnSurface,
-                  fontSize: 16,
-                ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!isMobile)
+                WaitingText(isModerator: channelProvider.moderatorStatus),
+              SizedBox(
+                width: 115,
+                height: 115,
+                child:
+                    Lottie.asset('assets/lottie_files/vsdsl-spinner-sty1.json'),
               ),
-            ),
-          if (channelProvider.moderatorStatus)
-            V3CustomWhiteButton(
-              label: S.of(context).v3_lbl_moderator_disconnect,
-              identifier: 'v3_qa_moderator_disconnect',
-              buttonSize: Size(isMobile ? 300 : 240, 48),
-              text: S.of(context).v3_main_moderator_disconnect,
-              onPressed: () {
-                trackEvent('click_disconnect', EventCategory.session);
-                channelProvider.presentEnd();
-              },
-            ),
-        ],
-      ),
+              const Padding(padding: EdgeInsets.only(top: 40)),
+              if (isMobile)
+                WaitingText(isModerator: channelProvider.moderatorStatus),
+              if (!channelProvider.moderatorStatus)
+                Container(
+                  width: isMobile ? 300 : 240,
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: context.tokens.color.vsdswColorSurface100,
+                      border: Border.all(
+                        color: context.tokens.color.vsdswColorSecondary,
+                        width: 1,
+                      ),
+                      borderRadius: context.tokens.radii.vsdswRadiusFull,
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0.0, 8.0),
+                          blurRadius: 16.0,
+                          spreadRadius: 0.0,
+                          color: context.tokens.color.vsdswColorSecondary
+                              .withOpacity(0.2),
+                        ),
+                      ]),
+                  child: AutoSizeText(
+                    channelProvider.randomName,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnSurface,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              if (channelProvider.moderatorStatus)
+                V3CustomWhiteButton(
+                  label: S.of(context).v3_lbl_moderator_disconnect,
+                  identifier: 'v3_qa_moderator_disconnect',
+                  buttonSize: Size(isMobile ? 300 : 240, 48),
+                  text: S.of(context).v3_main_moderator_disconnect,
+                  onPressed: () {
+                    trackEvent('click_disconnect', EventCategory.session);
+                    channelProvider.presentEnd();
+                  },
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

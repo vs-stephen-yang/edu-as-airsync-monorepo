@@ -37,21 +37,32 @@ class V3HomeApp extends StatelessWidget {
         constraints: const BoxConstraints.expand(),
         child: Consumer2<PresentStateProvider, V3DemoProvider>(
             builder: (context, presentStateProvider, demoProvider, child) {
-          return Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              const V3Background(),
-              V3PresentStateMachine(
-                presentStateProvider: presentStateProvider,
-                demoProvider: demoProvider,
+          return SingleChildScrollView(
+            reverse: true,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom, // 加上鍵盤高度
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height,
               ),
-              if (presentStateProvider.currentState == ViewState.idle &&
-                  (demoProvider.state == V3DemoViewState.idle ||
-                      demoProvider.state == V3DemoViewState.off)) ...[
-                const QRCodeConnect(),
-                const SettingMenu(),
-              ]
-            ],
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  const V3Background(),
+                  V3PresentStateMachine(
+                    presentStateProvider: presentStateProvider,
+                    demoProvider: demoProvider,
+                  ),
+                  if (presentStateProvider.currentState == ViewState.idle &&
+                      (demoProvider.state == V3DemoViewState.idle ||
+                          demoProvider.state == V3DemoViewState.off)) ...[
+                    const QRCodeConnect(),
+                    const SettingMenu(),
+                  ]
+                ],
+              ),
+            ),
           );
         }),
       ),
