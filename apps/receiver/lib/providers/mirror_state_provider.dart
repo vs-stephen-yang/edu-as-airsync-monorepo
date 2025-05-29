@@ -96,6 +96,8 @@ class MirrorStateProvider extends ChangeNotifier
 
   bool get airPlayCodeEnable => _airplayCodeEnabled;
 
+  Timer? _hidProfileTimeoutTimer;
+
   Future<void> setAirPlayCodeEnable(bool value) async {
     await _set(airplayCodeEnable: _airplayCodeEnabled = value);
     if (_airplayEnabled) {
@@ -562,10 +564,13 @@ class MirrorStateProvider extends ChangeNotifier
   Future<void> onBluetoothTouchbackStatusChanged(
       BluetoothTouchbackStatus status) async {
     log.info('onBluetoothTouchbackStatusChanged: ${status.name}');
+    // 取消先前可能還在執行的計時器
+    _hidProfileTimeoutTimer?.cancel();
+
     if (status == BluetoothTouchbackStatus.closedByUser ||
         status == BluetoothTouchbackStatus.adapterEnabledFailed ||
         status == BluetoothTouchbackStatus.devicePairedFailed ||
-        status == BluetoothTouchbackStatus.hidProfileServiceStartedFailed ||
+        // status == BluetoothTouchbackStatus.hidProfileServiceStartedFailed ||
         status == BluetoothTouchbackStatus.hidDisconnected ||
         status == BluetoothTouchbackStatus.deviceFoundFailed) {
       for (MirrorRequest request
@@ -587,6 +592,18 @@ class MirrorStateProvider extends ChangeNotifier
       case BluetoothTouchbackStatus.hidProfileServiceStarting:
         V3BluetoothStatusNotification.showStatusAlert.value =
             BluetoothProgress(status: status, percent: 0.2);
+
+        // 啟動 10 秒倒數計時
+        _hidProfileTimeoutTimer = Timer(Duration(seconds: 10), () {
+          // 當 10 秒過去但未進入下一個狀態
+          V3BluetoothStatusNotification.showStatusAlert.value =
+              BluetoothProgress(
+                  status:
+                      BluetoothTouchbackStatus.hidProfileServiceStartedFailed,
+                  percent: 0.0);
+          log.warning('**** hidProfileServiceStarting timeout: 未進入下一個狀態');
+        });
+
         break;
       case BluetoothTouchbackStatus.hidProfileServiceStartedSuccess:
         V3BluetoothStatusNotification.showStatusAlert.value =

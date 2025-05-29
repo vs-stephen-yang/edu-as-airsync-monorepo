@@ -341,5 +341,11 @@
   "v3_settings_resize_text_size": "Resize text size",
   "v3_settings_resize_text_size_normal": "Normal",
   "v3_settings_resize_text_size_large": "Large",
-  "v3_settings_resize_text_size_extra_large": "XLarge"
+  "v3_settings_resize_text_size_extra_large": "XLarge",
+  "v3_touchback_restart_bluetooth_title": "Operation timed out, please restart Bluetooth",
+  "v3_touchback_restart_bluetooth_message": "Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.",
+  "v3_touchback_restart_bluetooth_btn_restart": "Restart",
+  "v3_touchback_restart_bluetooth_btn_cancel": "Cancel",
+  "v3_lbl_touchback_restart_bluetooth_btn_cancel": "Cancel",
+  "v3_lbl_touchback_restart_bluetooth_btn_restart": "Restart"
 }

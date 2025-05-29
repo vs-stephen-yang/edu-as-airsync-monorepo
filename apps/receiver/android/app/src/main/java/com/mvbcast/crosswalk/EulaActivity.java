@@ -14,6 +14,7 @@ import android.net.NetworkCapabilities;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
@@ -27,10 +28,10 @@ import com.mvbcast.crosswalk.helper.WifiHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 import com.mvbcast.crosswalk.vsapi.VSApiHandler;
 
-import java.util.Calendar;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Calendar;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -180,6 +181,17 @@ public class EulaActivity extends FlutterActivity {
                         result.success(isEnabled);
                     } else {
                         result.success(false);
+                    }
+                });
+
+        new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/settings")
+                .setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("openBluetoothSettings")) {
+                        Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                        startActivity(intent);
+                        result.success(null);
+                    } else {
+                        result.notImplemented();
                     }
                 });
 
