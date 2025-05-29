@@ -58,131 +58,139 @@ class _V3DeviceListState extends State<V3DeviceList> {
       }
     });
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: isMobile() ? 641 : 504,
-        maxHeight: isMobile() ? 541 : 538,
-      ),
-      child: Container(
-        padding: const EdgeInsets.only(top: 22, left: 22, right: 22),
-        margin: const EdgeInsets.all(8),
-        decoration: ShapeDecoration(
-          color: context.tokens.color.vsdswColorSurface100,
-          shape: RoundedRectangleBorder(
-            borderRadius: context.tokens.radii.vsdswRadius2xl,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: isMobile() ? 641 : 504,
+            maxHeight: isMobile() ? 541 : 538,
           ),
-          shadows: const [
-            BoxShadow(
-              color: Color(0x28151C32),
-              blurRadius: 16,
-              offset: Offset(0, 8),
-              spreadRadius: 0,
-            )
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
+          child: Container(
+            padding: const EdgeInsets.only(top: 22, left: 22, right: 22),
+            margin: const EdgeInsets.all(8),
+            decoration: ShapeDecoration(
+              color: context.tokens.color.vsdswColorSurface100,
+              shape: RoundedRectangleBorder(
+                borderRadius: context.tokens.radii.vsdswRadius2xl,
+              ),
+              shadows: const [
+                BoxShadow(
+                  color: Color(0x28151C32),
+                  blurRadius: 16,
+                  offset: Offset(0, 8),
+                  spreadRadius: 0,
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Spacer(flex: 1),
-                Expanded(
-                  flex: 2,
-                  child: Center(
-                    child: Text(
-                      S.of(context).main_device_list,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: context.tokens.color.vsdswColorOnSurface,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      V3Focus(
-                        identifier: 'v3_qa_device_list_close',
-                        child: SizedBox(
-                          width:
-                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
-                          height:
-                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
-                          child: InkWell(
-                            onTap: () {
-                              _presentStateProvider.presentMainPage();
-                            },
-                            child: Icon(
-                              size: 20.0,
-                              Icons.close,
-                              semanticLabel:
-                                  S.of(context).v3_lbl_device_list_close,
-                              color: context.tokens.color.vsdswColorOnSurface,
-                            ),
+                Row(
+                  children: [
+                    const Spacer(flex: 1),
+                    Expanded(
+                      flex: 2,
+                      child: Center(
+                        child: Text(
+                          S.of(context).main_device_list,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: context.tokens.color.vsdswColorOnSurface,
+                            fontSize: 20,
                           ),
                         ),
                       ),
-                    ],
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          V3Focus(
+                            identifier: 'v3_qa_device_list_close',
+                            child: SizedBox(
+                              width: (Platform.isAndroid || Platform.isIOS)
+                                  ? 48
+                                  : 28,
+                              height: (Platform.isAndroid || Platform.isIOS)
+                                  ? 48
+                                  : 28,
+                              child: InkWell(
+                                onTap: () {
+                                  _presentStateProvider.presentMainPage();
+                                },
+                                child: Icon(
+                                  size: 20.0,
+                                  Icons.close,
+                                  semanticLabel:
+                                      S.of(context).v3_lbl_device_list_close,
+                                  color:
+                                      context.tokens.color.vsdswColorOnSurface,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Gap((Platform.isAndroid || Platform.isIOS) ? 10 : 22),
+                Divider(
+                  color: context.tokens.color.vsdswColorOutline,
+                ),
+                Expanded(
+                  child: Consumer<DeviceListProvider>(
+                    builder: (BuildContext context, DeviceListProvider value,
+                        Widget? child) {
+                      return ListView.builder(
+                        itemCount: value.devices.length,
+                        itemBuilder: (context, index) {
+                          final airSyncBonsoirService = value.devices[index];
+                          return V3Focus(
+                            label:
+                                '${airSyncBonsoirService.name} ${airSyncBonsoirService.displayCode}',
+                            identifier: 'v3_qa_device_list_item_$index',
+                            child: InkWell(
+                              child: buildMobileItem(
+                                  airSyncBonsoirService, context),
+                              onTap: () {
+                                setState(() {
+                                  _connectService = airSyncBonsoirService;
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
+                ),
+                Divider(
+                  color: context.tokens.color.vsdswColorOutline,
+                ),
+                buildInkWellButton(
+                  buildContext: context,
+                  text: 'Next',
+                  enable: _connectService != null,
+                  onTap: () {
+                    if (_connectService == null) return;
+                    AppAnalytics.instance.setGlobalProperty(
+                        'display_code', _connectService!.displayCode);
+
+                    trackEvent('click_quick_connect', EventCategory.session);
+                    _channelProvider.startDirectConnect(
+                        otp: null,
+                        service: _connectService!,
+                        presentStateProvider: _presentStateProvider);
+                  },
                 ),
               ],
             ),
-            Gap((Platform.isAndroid || Platform.isIOS) ? 10 : 22),
-            Divider(
-              color: context.tokens.color.vsdswColorOutline,
-            ),
-            Expanded(
-              child: Consumer<DeviceListProvider>(
-                builder: (BuildContext context, DeviceListProvider value,
-                    Widget? child) {
-                  return ListView.builder(
-                    itemCount: value.devices.length,
-                    itemBuilder: (context, index) {
-                      final airSyncBonsoirService = value.devices[index];
-                      return V3Focus(
-                        label:
-                            '${airSyncBonsoirService.name} ${airSyncBonsoirService.displayCode}',
-                        identifier: 'v3_qa_device_list_item_$index',
-                        child: InkWell(
-                          child:
-                              buildMobileItem(airSyncBonsoirService, context),
-                          onTap: () {
-                            setState(() {
-                              _connectService = airSyncBonsoirService;
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            Divider(
-              color: context.tokens.color.vsdswColorOutline,
-            ),
-            buildInkWellButton(
-              buildContext: context,
-              text: 'Next',
-              enable: _connectService != null,
-              onTap: () {
-                if (_connectService == null) return;
-                AppAnalytics.instance.setGlobalProperty(
-                    'display_code', _connectService!.displayCode);
-
-                trackEvent('click_quick_connect', EventCategory.session);
-                _channelProvider.startDirectConnect(
-                    otp: null,
-                    service: _connectService!,
-                    presentStateProvider: _presentStateProvider);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        )
+      ],
     );
   }
 
