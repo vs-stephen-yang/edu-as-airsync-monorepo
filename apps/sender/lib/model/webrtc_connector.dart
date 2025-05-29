@@ -1382,9 +1382,7 @@ class WebRTCConnector {
   //
   // Related: https://issues.chromium.org/issues/40922733
   void _applyWebMinFrameRateWorkaround(MediaStreamTrack track) {
-    int constraintHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
-        ? _decodeHeightLimit
-        : _trackHeight;
+    int constraintHeight = _getConstraintHeight();
     track.applyConstraints(
       <String, dynamic>{
         'frameRate': {
@@ -1494,9 +1492,7 @@ class WebRTCConnector {
 
   Future<MediaStream?> getDisplayMedia() async {
     try {
-      int constraintHeight = (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
-          ? _decodeHeightLimit
-          : _trackHeight;
+      int constraintHeight = _getConstraintHeight();
       final videoConstraints = kIsWeb
           ? {
               // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
@@ -1841,6 +1837,12 @@ class WebRTCConnector {
       }
     }
     return await sender.setParameters(params);
+  }
+
+  int _getConstraintHeight() {
+    return (_decodeHeightLimit > 0 && _decodeHeightLimit < _trackHeight)
+        ? _decodeHeightLimit
+        : _trackHeight;
   }
 
   int _calculateBitrateWithScreenScaling({
