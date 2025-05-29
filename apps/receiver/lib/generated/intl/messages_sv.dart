@@ -208,6 +208,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Acceptera",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "\nAcceptera alla",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("Neka"),
     "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("På"),
     "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
@@ -344,8 +347,318 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "Skärmdelning är på väg att upphöra. Starta om skärmdelningen om det behövs.",
     ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Acceptera begäran",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Acceptera alla förfrågningar",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Avvisa begäran",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Stäng anslutningen av Cast-enheten",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Inaktivera touchback för Cast-enhet",
+        ),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Aktivera touchback för Cast-enhet",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Stäng menyn för den nedladdade avsändarappen",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage("Stäng listan över cast-enheter"),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Stäng moderatorlistan",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Stäng snabbmenyn för direktuppspelning",
+        ),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Stäng dialogrutan för anslutningsstatus",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
+      "Håller med EULA",
+    ),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Accepterar inte EULA",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Avbryt att avsluta moderatorläget",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Bekräfta att du avslutar moderatorläget",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Förläng inte delningstid",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Förläng tiden för delning",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Meddelande om avvisning av stängd grupp",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Anslutningsfel, kontrollera enhetens nätverksinställning",
+        ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Endast lokal anslutning",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Välj språk",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Välj %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "\nAvbryt Dialogrutan ",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Dialogrutan Bekräfta",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Minimera snabbanslutningsmenyn",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Minimera menyn för strömmande QR-kod",
+        ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Växla moderatorläge",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Öppna menyn för att ladda ner avsändarappen",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Öppna listan över castade enheter",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "\nÖppna moderatorlistan",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Öppna inställningsmenyn",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Öppna QR-kodmenyn för streaming",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Öppna snabbmenyn för direktuppspelning",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Casta enheten till den här mötesdeltagaren",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Stäng deltagaranslutning",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Koppla bort den här mötesdeltagaren",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Stäng anslutning för speglingsdeltagare",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Dela till den här deltagarens spegling",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Stoppa speglingen av deltagarnas strömning",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Dela till den här deltagarens skärm",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Stoppa deltagares streaming",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Aktivera touchback för den här mötesdeltagaren",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Inaktivera touchback för den här mötesdeltagaren",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandera presentationskontrollen",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimera presentationskontroll",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Stäng av ljudet för presentationen",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Stoppa presentationen",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Tillbaka till föregående sida",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Öppna menyn för sändningsinställningar",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Öppna menyn för sändningstavlor",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Öppna menyn för sändningsenheter",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Öppna sändning för att visa gruppmenyn",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Välj %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Stäng inställningsmenyn",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Öppna menyn för anslutningsinställningar",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Välj %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage("Slå på/av auktoriseringsläge"),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
+          "Slå på/av OTP-läge för automatisk fyllning",
+        ),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage("Slå på/av automatiskt startläge"),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Ändra enhetsnamn",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Stäng inställningen för enhetsnamn",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Spara enhetsnamn",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Öppna enhetens inställningsmeny",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Slå på/av växlingsknapp för smart skalning",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Ange enhetsnamn",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Öppna rullgardinsmenyn för skärmsändning",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Välj %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Öppna inställningsmenyn för juridisk princip",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Inställningsmenyn är låst",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage("Slå på/av automatisk accept"),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage("Slå på/av krav för lösenkod"),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Mer information om sändning till visningsgrupp",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Välj %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av växling av visningskod",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Öppna inställningsmenyn för nyheter",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "Ikon för nyheter",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Aktivera/inaktivera Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "\nÖppna inställningsmenyn för spegling",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "Airplay touchback",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay-reglage"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage("Växla växla casta till enheter"),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Utöka strömningsfunktioner",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast växling"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Direktuppspelning Snabbmenyn är låst",
+        ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Komprimera strömningsfunktioner",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast-växling"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandera strömningsvyn",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("Expandera strömningsfunktionen"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Komprimera strömningsfunktion"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Komprimera direktuppspelningsvy",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Stäng av ljudet",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Sluta streama",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Slå på ljudet",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "\nAvbryt Dialogrutan ",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Bekräfta",
+    ),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Stäng",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Endast internetanslutning。",
+    ),
+    "v3_main_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Anslutningsfel, kontrollera enhetens nätverksinställning。",
+        ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Anslutningsfel, kontrollera enhetens nätverksinställning。",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "\nEndast LAN-anslutning, kontrollera enhetens nätverksinställning。",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Kan inte upptäcka en internetanslutning. Anslut till ett Wi-Fi- eller intranätsnätverk och försök igen.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast är inte tillgängligt nu. Den aktuella Wi-Fi-kanalen har inte stöd för skärmcasting.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Lösenkod",
@@ -472,6 +785,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Enhets namn",
     ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Enhetsnamnet får inte vara tomt",
+    ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Spara",
     ),
@@ -565,6 +881,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_menu_title": MessageLookupByLibrary.simpleMessage("Genvägar"),
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("Spegling"),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Du kan bara göra touchback en enhet åt gången.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback till %s?",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack är inaktiverat.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Parningen misslyckades. TouchBack är inte aktiverat. Försök igen",
+    ),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Tidsgräns för åtgärd. Stäng av och starta om Bluetooth-funktionen på den stora skärmen och starta sedan om touchback.",
+    ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Hitta enhet"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Enheten hittades korrekt"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Enhet parad"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Parning av enhet"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid ansluten"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("\nHid anslutning"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Hid-profiltjänsten har startat"),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Tjänsten för dold profil startar",
+        ),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Initierats"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Initierar"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Du kan nu fjärrstyra %s från IFP.",
+    ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Väntar på att den här deltagaren ska dela sin skärm",
     ),

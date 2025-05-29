@@ -148,6 +148,7 @@
   "v3_group_dialog_message": "%s hat eine Übertragungsanfrage an Ihr Gerät gesendet. Diese Aktion synchronisiert und zeigt den aktuellen Inhalt an. Möchten Sie diese Anfrage akzeptieren?",
   "v3_group_dialog_accept": "Akzeptieren",
   "v3_group_dialog_decline": "Ablehnen",
+  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync ist eine ViewSonic-ösung zur drahtlosen Bildschirmfreigabe. Wenn sie mit dem AirSync-Sender verwendet wird, ermöglicht sie eine nahtlose Bildschirmfreigabe vom Gerät eines Benutzers zu den interaktiven Displays von ViewSonic.\n\nNeue Funktionen in dieser Version:\n\n1. Der Moderatormodus unterstützt jetzt Mirroring.\n\n2. Integration mit ViewSonic Manager durch Manager-Fernsteuerung.\n\n3. PWA-Sender für Chromebooks zur Bildschirmfreigabe im Internet.\n\n4. Unterstützung für 9 Bildschirme-Splitscreen bei ausgewählten Modellen.\n\n5. Unterstützung von Bildschirmerweiterung mit Touchback.\n\n6. Verbesserte Stabilität.\n\n7. Behobene Bugs.",
   "v3_eula_title": "Endbenutzer-Lizenzvereinbarung",
   "v3_eula_agree": "Zustimmen",
   "v3_eula_disagree": "Ablehnen",
@@ -185,6 +186,8 @@
   "v3_settings_feature_locked": "Durch ViewSonic Manager gesperrt.",
   "v3_cast_to_device_list_msg": "Maximal bis zu 10 Geräte.",
   "v3_quick_connect_menu_bottom_msg": "Der geteilte Bildschirm wird aktiviert, wenn zwei oder mehr Benutzer Bildschirme freigeben.",
+  "v3_settings_version": "AirSync ©{year}. Version {version}",
   "v3_settings_broadcast_screen_energy_saving": "Bitte schalten Sie den Energiesparmodus aus, um unerwartete Unterbrechungen während der Übertragung zu vermeiden.",
-  "v3_participants_desc_maximum_9": "Maximal bis zu 9 Teilnehmer."
+  "v3_participants_desc_maximum_9": "Maximal bis zu 9 Teilnehmer.",
+  "v3_settings_device_smart_scaling": "Smart Scaling"
 }

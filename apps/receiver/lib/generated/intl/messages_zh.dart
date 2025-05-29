@@ -164,6 +164,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "update_message": MessageLookupByLibrary.simpleMessage("已有新版本可供安裝"),
     "update_title": MessageLookupByLibrary.simpleMessage("AirSync 更新"),
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage("接受"),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "一律接受",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒絕"),
     "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
     "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
@@ -280,6 +283,244 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "螢幕分享即將結束。如需要，請重新開始分享螢幕。",
     ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "接受請求",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "一律接受所有請求",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "拒絕請求",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "結束與設備端連線",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage("關閉反控"),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "啟動反控",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "關閉下載sender app選單",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage("關閉設備清單"),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "關閉主持人模式參與人員清單",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage("收合投影控制捷徑"),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "關閉連線狀態對話框",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("同意終端使用者授權合約"),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "不同意終端使用者授權合約",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "取消結束主持人模式",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "確定結束主持人模式",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "不延長投影時間",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "延長投影時間",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage("連線錯誤，請檢查網路連線設定"),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "僅限區域網路連線",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage("選擇語言"),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "選擇 %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage("取消"),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage("確認"),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "縮小快速連線選單",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage("隱藏QR code視窗"),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage("主持人模式開關"),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "開啟下載sender app選單",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "開啟設備清單",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "開啟主持人模式參與人員清單",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "開啟設定功能選單",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "顯示QR code視窗",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "展開投影控制捷徑",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "分享畫面給參與者",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "結束參與者的連線",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "結束參與者的連線",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "分享畫面到參與人員",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage("停止參與者的投影"),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "啟動參與者反控",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage("取消"),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage("展開投影控制列"),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "縮小投影控制列",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage("靜音"),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage("停止投影"),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "可訪問性",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage("回到上一頁"),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "展開螢幕廣播設定選單",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "展開廣播到大屏選單",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "展開螢幕廣播選單",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage("展開螢幕群組選單"),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("選擇 %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "關閉設定選單",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "展開連線模式設定選單",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "選擇 %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage("開啟或關閉授權後投影"),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage("開啟或關閉自動帶入一次性密碼"),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage("開啟或關閉自動啟動"),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "更改裝置名稱",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "關閉裝置名稱設定",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "儲存裝置名稱",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "展開裝置設定選單",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage("開啟或關閉智慧滿屏"),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "輸入裝置名稱",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "展開螢幕廣播邀請選單",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "選擇 %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "展開法律和政策",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "設定功能已鎖定",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage("開啟或關閉自動接受螢幕鏡射"),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage("開啟或關閉AirPlay驗證碼"),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage("更多螢幕廣播資訊"),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "選擇 %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "開啟或關閉投影辨識碼",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "展開what\'s new",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "最新消息圖示",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "開啟或關閉AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "開啟或關閉Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "開啟或關閉Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "展開螢幕鏡射設定選單",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "AirPlay反控",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay開關"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage("分享畫面到設備端開關"),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "展開功能捷徑列",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast開關"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage("已鎖定功能捷徑列"),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "收合功能捷徑列",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast開關"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "展開分享畫面",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("展開撥放控制功能"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("收合撥放控制功能"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "收合分享畫面",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage("靜音"),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "結束分享畫面",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "取消靜音",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "取消",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "確定",
+    ),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "關閉",
     ),
@@ -294,6 +535,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("僅接受內部網路連線分享，請檢查設備端的網路連線設定。"),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "無網路連接。請連接到Wi-Fi或Intranet網絡，然後重試。",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "目前使用的Wi-Fi頻道不支援Miracast功能",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage("密碼"),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
@@ -470,6 +714,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_menu_title": MessageLookupByLibrary.simpleMessage("快速功能區"),
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("螢幕鏡射"),
+    "v3_touchback_restart_bluetooth_message":
+        MessageLookupByLibrary.simpleMessage("操作逾時，請關閉並重新啟動大屏端藍芽功能，然後重新啟動反控"),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage("等待螢幕分享中"),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage("等待其他人加入"),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
