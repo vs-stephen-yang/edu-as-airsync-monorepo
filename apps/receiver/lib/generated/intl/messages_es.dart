@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
+  static String m1(value) =>
+      "La duplicación está por finalizar. ¿Deseas extenderla por 3 horas? Puedes extenderla hasta ${value} veces.";
+
   static String m0(year, version) => "AirSync ©${year}. versión ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -211,6 +214,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Aceptar",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Aceptar todo",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Rechazar",
     ),
@@ -243,8 +249,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Touchback",
     ),
+    "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
+      "La duplicación ha finalizado.",
+    ),
+    "v3_casting_time_countdown": m1,
+    "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "No extender",
+    ),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Extender"),
+    "v3_casting_time_extend_success_toast":
+        MessageLookupByLibrary.simpleMessage(
+          "Duplicación extendida por 3 horas.",
+        ),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Escanea el código QR con tu dispositivo iOS o Android para descargar",
+    ),
+    "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
+      "¡Para una mejor experiencia de usuario!",
+    ),
+    "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
+      "Instalador manual",
+    ),
+    "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
+      "Instalar MacOS desde App Store",
+    ),
+    "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
+      "Solo para MacOS",
+    ),
+    "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
+      "Escritorio",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
       "Descargar la aplicación del emisor",
@@ -260,6 +293,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
       "Escanea el código QR para acceso instantáneo.",
+    ),
+    "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
+      "Móvil",
     ),
     "v3_download_app_or": MessageLookupByLibrary.simpleMessage("O"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
@@ -320,8 +356,322 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Compatible con compartir a través de AirPlay, Google Cast o Miracast",
     ),
+    "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+      "La duplicación está por finalizar. Reiníciala si es necesario.",
+    ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Aceptar solicitud",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Aceptar todas las solicitudes",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Rechazar solicitud",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar conexión del dispositivo de transmisión",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Desactivar retroalimentación táctil para dispositivo de transmisión",
+        ),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Activar retroalimentación táctil para dispositivo de transmisión",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Cerrar menú para descargar la app del emisor",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage(
+          "Cerrar lista de dispositivos de transmisión",
+        ),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Cerrar lista de moderadores",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Cerrar menú rápido de transmisión",
+        ),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar diálogo de estado de conexión",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
+      "Aceptar el EULA",
+    ),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "No aceptar el EULA",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancelar salida del modo moderador",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Confirmar salida del modo moderador",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "No extender el tiempo de transmisión",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Extender el tiempo de transmisión",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar notificación de rechazo grupal",
+    ),
+    "v3_lbl_internet_connection_only_error": MessageLookupByLibrary.simpleMessage(
+      "Error de conectividad, revisa la configuración de red del dispositivo",
+    ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Solo conexión local",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Seleccionar idioma",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Seleccionar %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancelar diálogo",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Confirmar diálogo",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Minimizar menú de conexión rápida",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Minimizar menú de código QR de transmisión",
+        ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Alternar modo moderador",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú para descargar la app del emisor",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Abrir lista de dispositivos de transmisión",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Abrir lista de moderadores",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de configuración",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de código QR de transmisión",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú rápido de transmisión",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Transmitir dispositivo a este participante",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar conexión del participante",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Desconectar este participante",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar conexión espejo del participante",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Compartir en espejo del participante",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Detener transmisión espejo del participante",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Compartir en la pantalla de este participante",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Detener transmisión del participante",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Activar retroalimentación táctil para este participante",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Desactivar retroalimentación táctil para este participante",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandir controles de presentación",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimizar controles de presentación",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Silenciar presentación",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Detener presentación",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Volver a la página anterior",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de configuración de transmisión",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de tableros de transmisión",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de dispositivos de transmisión",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Abrir menú de transmisión a grupo de pantallas",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Seleccionar %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Cerrar menú de configuración",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de configuración de conectividad",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Seleccionar %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage(
+          "Activar/desactivar modo de autorización",
+        ),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
+          "Activar/desactivar autocompletado de OTP",
+        ),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage(
+          "Activar/desactivar inicio automático",
+        ),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Modificar nombre del dispositivo",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar configuración de nombre del dispositivo",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Guardar nombre del dispositivo",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de configuración del dispositivo",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Activar/desactivar escalado inteligente",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Introduce nombre del dispositivo",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú desplegable de transmisión de pantalla",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Seleccionar %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de política legal",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Menú de configuración bloqueado",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage(
+          "Activar/desactivar aceptación automática",
+        ),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage(
+          "Activar/desactivar requerir código de acceso",
+        ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Más información sobre transmisión a grupo de pantallas",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Seleccionar %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Activar/desactivar visualización del código",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de novedades",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "Icono de novedades",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Activar/desactivar AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Activar/desactivar Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Activar/desactivar Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Abrir menú de configuración de duplicación",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("Alternar AirPlay"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage(
+          "Alternar transmitir a dispositivos",
+        ),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandir funciones de transmisión",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Alternar Google Cast"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Menú rápido de transmisión bloqueado",
+        ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Contraer funciones de transmisión",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Alternar Miracast"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandir vista de transmisión",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("Expandir función de transmisión"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Contraer función de transmisión"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Contraer vista de transmisión",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Silenciar audio",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Detener transmisión",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Activar audio",
+    ),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Cerrar",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Solo conexión a internet.",
+    ),
+    "v3_main_internet_connection_only_error": MessageLookupByLibrary.simpleMessage(
+      "Error de conectividad, revisa la configuración de red del dispositivo.",
+    ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Error de conectividad, revisa la configuración de red del dispositivo.",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Solo conexión LAN, revisa la configuración de red del dispositivo.",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "No se puede detectar una conexión a internet. Por favor, conéctate a una red Wi-Fi o intranet e inténtalo de nuevo.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast no disponible. El canal Wi-Fi actual no admite transmisión de pantalla.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Código de Acceso",
@@ -380,6 +730,20 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "Código QR",
+    ),
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancelar",
+    ),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage("Borrar"),
+    "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
+      "Confirmar",
+    ),
+    "v3_setting_passcode_error_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Contraseña inválida, intenta nuevamente.",
+        ),
+    "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+      "Introduce el código para desbloquear los ajustes",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Transmitir la pantalla del panel interactivo en todo momento.",

@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
+  static String m0(year, version) => "AirSync ©${year}. Version ${version}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "eula_agree": MessageLookupByLibrary.simpleMessage("Ich stimme zu"),
@@ -447,6 +449,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Halten Sie den Code oben auf dem Bildschirm sichtbar, auch wenn Sie zu anderen Apps wechseln und die Bildschirmfreigabe aktiv ist.",
         ),
+    "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
+      "Smart Scaling",
+    ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
       "Nicht verfügbar",
     ),
@@ -503,8 +508,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic verpflichtet sich, Ihre Privatsphäre zu schützen und behandelt den Umgang mit personenbezogenen Daten mit großer Sorgfalt. Die nachstehende Datenschutzrichtlinie erläutert, wie ViewSonic Ihre personenbezogenen Daten behandelt, nachdem sie von ViewSonic durch Ihre Nutzung der Website erfasst wurden. ViewSonic wahrt die Vertraulichkeit Ihrer Daten durch den Einsatz von Sicherheitstechnologien und hält sich an Richtlinien, die eine unbefugte Nutzung Ihrer personenbezogenen Daten verhindern. Durch die Nutzung dieser Website erklären Sie sich mit der Erfassung und Nutzung Ihrer Daten einverstanden.\n\nWebsites, auf die Sie von ViewSonic.com aus verlinken, haben möglicherweise eigene Datenschutzrichtlinien, die von denen von ViewSonic abweichen können. Bitte lesen Sie die Datenschutzrichtlinien dieser Websites, um detaillierte Informationen darüber zu erhalten, wie sie die während Ihres Besuchs erfassten Daten verwenden können.\n\nBitte klicken Sie auf die folgenden Links, um mehr über unsere Datenschutzrichtlinie zu erfahren.",
     ),
+    "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "Was ist neu",
+    ),
+    "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
+      "AirSync %s\n\nAirSync ist eine ViewSonic-ösung zur drahtlosen Bildschirmfreigabe. Wenn sie mit dem AirSync-Sender verwendet wird, ermöglicht sie eine nahtlose Bildschirmfreigabe vom Gerät eines Benutzers zu den interaktiven Displays von ViewSonic.\n\nNeue Funktionen in dieser Version:\n\n1. Der Moderatormodus unterstützt jetzt Mirroring.\n\n2. Integration mit ViewSonic Manager durch Manager-Fernsteuerung.\n\n3. PWA-Sender für Chromebooks zur Bildschirmfreigabe im Internet.\n\n4. Unterstützung für 9 Bildschirme-Splitscreen bei ausgewählten Modellen.\n\n5. Unterstützung von Bildschirmerweiterung mit Touchback.\n\n6. Verbesserte Stabilität.\n\n7. Behobene Bugs.",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(

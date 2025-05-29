@@ -1111,16 +1111,6 @@ class S {
     );
   }
 
-  /// `Device name cannot be empty`
-  String get v3_settings_device_name_empty_error {
-    return Intl.message(
-      'Device name cannot be empty',
-      name: 'v3_settings_device_name_empty_error',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Show display code on top`
   String get v3_settings_device_show_display_code {
     return Intl.message(
@@ -1621,16 +1611,6 @@ class S {
     return Intl.message(
       'Receiving + Touchback',
       name: 'v3_participant_item_controlling',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Accessibility`
-  String get v3_settings_accessibility {
-    return Intl.message(
-      'Accessibility',
-      name: 'v3_settings_accessibility',
       desc: '',
       args: [],
     );
@@ -3321,6 +3301,136 @@ class S {
     );
   }
 
+  /// `Device name cannot be empty`
+  String get v3_settings_device_name_empty_error {
+    return Intl.message(
+      'Device name cannot be empty',
+      name: 'v3_settings_device_name_empty_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Normal`
+  String get v3_settings_resize_text_size_normal {
+    return Intl.message(
+      'Normal',
+      name: 'v3_settings_resize_text_size_normal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Large`
+  String get v3_settings_resize_text_size_large {
+    return Intl.message(
+      'Large',
+      name: 'v3_settings_resize_text_size_large',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `XLarge`
+  String get v3_settings_resize_text_size_extra_large {
+    return Intl.message(
+      'XLarge',
+      name: 'v3_settings_resize_text_size_extra_large',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accessibility`
+  String get v3_settings_accessibility {
+    return Intl.message(
+      'Accessibility',
+      name: 'v3_settings_accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resize text size`
+  String get v3_settings_resize_text_size {
+    return Intl.message(
+      'Resize text size',
+      name: 'v3_settings_resize_text_size',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accessibility`
+  String get v3_lbl_settings_accessibility {
+    return Intl.message(
+      'Accessibility',
+      name: 'v3_lbl_settings_accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.`
+  String get v3_touchback_restart_bluetooth_message {
+    return Intl.message(
+      'Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.',
+      name: 'v3_touchback_restart_bluetooth_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operation timed out, please restart Bluetooth`
+  String get v3_touchback_restart_bluetooth_title {
+    return Intl.message(
+      'Operation timed out, please restart Bluetooth',
+      name: 'v3_touchback_restart_bluetooth_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart`
+  String get v3_touchback_restart_bluetooth_btn_restart {
+    return Intl.message(
+      'Restart',
+      name: 'v3_touchback_restart_bluetooth_btn_restart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_lbl_touchback_restart_bluetooth_btn_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_lbl_touchback_restart_bluetooth_btn_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart`
+  String get v3_lbl_touchback_restart_bluetooth_btn_restart {
+    return Intl.message(
+      'Restart',
+      name: 'v3_lbl_touchback_restart_bluetooth_btn_restart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_touchback_restart_bluetooth_btn_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_touchback_restart_bluetooth_btn_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Bring App to top`
   String get v3_lbl_overlay_bring_app_to_top {
     return Intl.message(
@@ -3396,116 +3506,6 @@ class S {
     return Intl.message(
       'Confirm no device selected.',
       name: 'v3_lbl_settings_broadcast_to_display_group_confirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Accessibility`
-  String get v3_lbl_settings_accessibility {
-    return Intl.message(
-      'Accessibility',
-      name: 'v3_lbl_settings_accessibility',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Resize text size`
-  String get v3_settings_resize_text_size {
-    return Intl.message(
-      'Resize text size',
-      name: 'v3_settings_resize_text_size',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Normal`
-  String get v3_settings_resize_text_size_normal {
-    return Intl.message(
-      'Normal',
-      name: 'v3_settings_resize_text_size_normal',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Large`
-  String get v3_settings_resize_text_size_large {
-    return Intl.message(
-      'Large',
-      name: 'v3_settings_resize_text_size_large',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `XLarge`
-  String get v3_settings_resize_text_size_extra_large {
-    return Intl.message(
-      'XLarge',
-      name: 'v3_settings_resize_text_size_extra_large',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Operation timed out, please restart Bluetooth`
-  String get v3_touchback_restart_bluetooth_title {
-    return Intl.message(
-      'Operation timed out, please restart Bluetooth',
-      name: 'v3_touchback_restart_bluetooth_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.`
-  String get v3_touchback_restart_bluetooth_message {
-    return Intl.message(
-      'Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.',
-      name: 'v3_touchback_restart_bluetooth_message',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restart`
-  String get v3_touchback_restart_bluetooth_btn_restart {
-    return Intl.message(
-      'Restart',
-      name: 'v3_touchback_restart_bluetooth_btn_restart',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get v3_touchback_restart_bluetooth_btn_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'v3_touchback_restart_bluetooth_btn_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get v3_lbl_touchback_restart_bluetooth_btn_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'v3_lbl_touchback_restart_bluetooth_btn_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restart`
-  String get v3_lbl_touchback_restart_bluetooth_btn_restart {
-    return Intl.message(
-      'Restart',
-      name: 'v3_lbl_touchback_restart_bluetooth_btn_restart',
       desc: '',
       args: [],
     );
