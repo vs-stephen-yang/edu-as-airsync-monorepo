@@ -13,7 +13,8 @@ class V3Status extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      alignment: WrapAlignment.end,
       children: [
         Image(
           excludeFromSemantics: true,
@@ -28,12 +29,16 @@ class V3Status extends StatelessWidget {
           ),
           child: Consumer<InstanceInfoProvider>(
             builder: (_, provider, __) {
-              return Text(
-                provider.deviceName,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: context.tokens.color.vsdslColorOnSurface,
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  provider.deviceName,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: context.tokens.color.vsdslColorOnSurface,
+                  ),
                 ),
               );
             },

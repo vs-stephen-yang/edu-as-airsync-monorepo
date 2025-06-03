@@ -21,8 +21,10 @@ class V3DownloadAppMenu extends StatelessWidget {
         final bool isLandscape = constraints.maxWidth > constraints.maxHeight;
         return Container(
           alignment: Alignment.center,
-          margin:
-              isLandscape ? null : const EdgeInsets.symmetric(horizontal: 58),
+          padding: isLandscape
+              ? const EdgeInsets.symmetric(horizontal: 85, vertical: 58)
+              : const EdgeInsets.symmetric(horizontal: 58),
+          color: context.tokens.color.vsdslColorOpacityNeutralXs,
           child: Dialog(
             backgroundColor: context.tokens.color.vsdslColorSurface100,
             insetPadding: EdgeInsets.zero,
@@ -55,6 +57,7 @@ class PortraitWidget extends StatelessWidget {
         alignment: Alignment.topCenter,
         children: [
           Scrollbar(
+            thumbVisibility: true,
             controller: scrollController,
             child: SingleChildScrollView(
               controller: scrollController,
@@ -134,12 +137,14 @@ class PortraitWidget extends StatelessWidget {
                           height: 27,
                         ),
                         const Gap(5),
-                        Text(
-                          S.current.v3_download_app_desktop,
-                          style: TextStyle(
-                            color: context.tokens.color.vsdslColorPrimary,
-                            fontSize: 21,
-                            fontWeight: FontWeight.w600,
+                        Expanded(
+                          child: Text(
+                            S.current.v3_download_app_desktop,
+                            style: TextStyle(
+                              color: context.tokens.color.vsdslColorPrimary,
+                              fontSize: 21,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
@@ -203,17 +208,18 @@ class PortraitWidget extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Row(
                       children: [
-                        Text(
-                          'Install MacOS via App Store',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color:
-                                context.tokens.color.vsdslColorOnSurfaceVariant,
-                            fontSize: 21,
-                            fontWeight: FontWeight.w600,
+                        Expanded(
+                          child: Text(
+                            'Install MacOS via App Store',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceVariant,
+                              fontSize: 21,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        const Spacer()
                       ],
                     ),
                   ),
@@ -396,35 +402,35 @@ class LandscapeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController leftScrollController = ScrollController();
     final ScrollController rightScrollController = ScrollController();
-    return SizedBox(
-      width: 910,
-      height: 604,
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 13),
-                child: AutoSizeText(
-                  S.of(context).v3_download_app_title,
-                  style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnSurface,
-                  ),
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 13),
+              child: AutoSizeText(
+                textAlign: TextAlign.center,
+                S.of(context).v3_download_app_title,
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w600,
+                  color: context.tokens.color.vsdslColorOnSurface,
                 ),
               ),
-              Container(
-                width: 910,
-                height: 1,
-                color: context.tokens.color.vsdslColorOutline,
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 15,
+            ),
+            Container(
+              height: 1,
+              color: context.tokens.color.vsdslColorOutline,
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 15,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, bottom: 10),
                       child: Scrollbar(
+                        thumbVisibility: true,
                         controller: leftScrollController,
                         child: SingleChildScrollView(
                           controller: leftScrollController,
@@ -631,43 +637,47 @@ class LandscapeWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 459,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 207,
-                              width: 2,
-                              color: context.tokens.color.vsdslColorOutline,
-                            ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 207,
+                            width: 2,
+                            color: context.tokens.color.vsdslColorOutline,
                           ),
-                          const SizedBox(height: 13),
-                          Text(
-                            S.current.v3_download_app_or,
-                            style: TextStyle(
-                              color: context.tokens.color.vsdslColorSurface500,
-                              fontSize: 12,
-                            ),
+                        ),
+                        const SizedBox(height: 13),
+                        Text(
+                          S.current.v3_download_app_or,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdslColorSurface500,
+                            fontSize: 12,
                           ),
-                          const SizedBox(height: 13),
-                          Expanded(
-                            child: Container(
-                              height: 207,
-                              width: 2,
-                              color: context.tokens.color.vsdslColorOutline,
-                            ),
+                        ),
+                        const SizedBox(height: 13),
+                        Expanded(
+                          child: Container(
+                            height: 207,
+                            width: 2,
+                            color: context.tokens.color.vsdslColorOutline,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      flex: 11,
+                  ),
+                  Expanded(
+                    flex: 11,
+                    child: Padding(
+                      padding: const EdgeInsets.only( bottom: 10),
                       child: Scrollbar(
+                        thumbVisibility: true,
                         controller: rightScrollController,
                         child: SingleChildScrollView(
                           controller: rightScrollController,
@@ -736,39 +746,39 @@ class LandscapeWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            right: 13,
-            bottom: 13,
-            child: V3Focus(
-              label: S.current.v3_lbl_close_download_app_menu,
-              identifier: 'v3_qa_close_download_app_menu',
-              child: SizedBox(
-                width: 33,
-                height: 33,
-                child: IconButton(
-                  focusNode: primaryFocusNode,
-                  icon: SvgPicture.asset(
-                    'assets/images/ic_menu_close_gray.svg',
-                    excludeFromSemantics: true,
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    if (navService.canPop()) {
-                      navService.goBack();
-                    }
-                  },
-                ),
+                ],
               ),
             ),
-          )
-        ],
-      ),
+          ],
+        ),
+        Positioned(
+          right: 13,
+          bottom: 13,
+          child: V3Focus(
+            label: S.current.v3_lbl_close_download_app_menu,
+            identifier: 'v3_qa_close_download_app_menu',
+            child: SizedBox(
+              width: 33,
+              height: 33,
+              child: IconButton(
+                focusNode: primaryFocusNode,
+                icon: SvgPicture.asset(
+                  'assets/images/ic_menu_close_gray.svg',
+                  excludeFromSemantics: true,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  if (navService.canPop()) {
+                    navService.goBack();
+                  }
+                },
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

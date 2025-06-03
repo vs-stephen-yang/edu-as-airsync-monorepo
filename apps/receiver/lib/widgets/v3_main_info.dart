@@ -25,10 +25,8 @@ class V3MainInfo extends StatelessWidget {
       return Container(
         alignment: Alignment.center,
         margin: isLandscape
-            ? null
+            ? const EdgeInsets.symmetric(vertical: 106, horizontal: 53)
             : const EdgeInsets.symmetric(vertical: 120, horizontal: 29),
-        width: isLandscape ? 1173 : null,
-        height: isLandscape ? 505 : null,
         decoration: _buildContainerDecoration(context),
         child: Consumer<ConnectivityProvider>(
             builder: (_, connectivityProvider, __) {
@@ -60,22 +58,20 @@ class V3MainInfo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Scrollbar(
-            child: SingleChildScrollView(
-              child: SizedBox(
-                height: 480, // 使用與外層容器相同的高度
-                child: _buildStackContent(context, isLandscape: true),
-              ),
-            ),
+          flex: 5,
+          child: Container(
+            child: _landscapeContent(context),
           ),
         ),
         Container(
           width: 1,
           color: context.tokens.color.vsdslColorOutline,
         ),
-        const SizedBox(
-          width: 340,
-          child: V3ParticipantsView(),
+        Expanded(
+          flex: 2,
+          child: const SizedBox(
+            child: V3ParticipantsView(),
+          ),
         ),
       ],
     );
@@ -85,7 +81,7 @@ class V3MainInfo extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: _buildStackContent(context, isLandscape: false),
+          child: _portraitContent(context),
         ),
         Container(
           height: 1,
@@ -98,55 +94,94 @@ class V3MainInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildStackContent(BuildContext context, {required bool isLandscape}) {
+  Widget _portraitContent(BuildContext context) {
     // 創建 ScrollController
     final ScrollController scrollController = ScrollController();
-
     return ValueListenableBuilder<int>(
       valueListenable: AppPreferences().textSizeOptionNotifier,
       builder: (context, value, child) {
         final textSizeOption = ResizeTextSizeOption.fromValue(value);
-
         return Stack(
-          alignment: Alignment.center,
           children: [
-            Positioned(
-              top: 0,
-              bottom: 80,
-              left: 53,
-              right: isLandscape ? 230 : 50,
-              // 為右側的 QR 碼留出空間
+            Container(
+              padding: EdgeInsets.all(50),
               child: Scrollbar(
                 controller: scrollController, // 使用 ScrollController
-                thumbVisibility: AppPreferences().textScale != 1,
+                thumbVisibility: true,
                 child: SingleChildScrollView(
                   controller: scrollController, // 使用相同的 ScrollController
-                  child: const V3Instruction(isCastToDevice: false),
+                  child: Column(
+                    children: [
+                      const V3Instruction(isCastToDevice: false),
+                      _buildInstructionRow(context),
+                      _buildMiracastInstructionRow(context),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Positioned(
-              left: 50,
-              bottom: 50, // 增加底部距離，為 _buildMiracastInstructionRow 留出更多空間
-              child: _buildInstructionRow(context),
-            ),
-            Positioned(
-              left: 50,
-              bottom: 6,
-              child: _buildMiracastInstructionRow(context),
-            ),
-            if (isLandscape ||
-                (!isLandscape && textSizeOption == ResizeTextSizeOption.normal))
+            if (textSizeOption == ResizeTextSizeOption.normal)
               Positioned(
-                bottom: isLandscape ? null : 40,
-                top: isLandscape ? 110 : null,
-                right: isLandscape ? 42 : 29,
+                bottom: 40,
+                top: null,
+                right: 29,
                 child: Container(
                   width: 171,
                   decoration: _buildQrCodeDecoration(context),
                   child: const V3QrCodeQuickConnect(),
                 ),
               ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _landscapeContent(BuildContext context) {
+    // 創建 ScrollController
+    final ScrollController scrollController = ScrollController();
+
+    return ValueListenableBuilder<int>(
+      valueListenable: AppPreferences().textSizeOptionNotifier,
+      builder: (context, value, child) {
+        return Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.only(left: 53, top: 53),
+                      child: Scrollbar(
+                        controller: scrollController, // 使用 ScrollController
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          controller:
+                              scrollController, // 使用相同的 ScrollController
+                          child: const V3Instruction(isCastToDevice: false),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 43),
+                    width: 171,
+                    constraints: BoxConstraints(maxHeight: 230),
+                    decoration: _buildQrCodeDecoration(context),
+                    child: const V3QrCodeQuickConnect(),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 50),
+              child: _buildInstructionRow(context),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 6),
+              child: _buildMiracastInstructionRow(context),
+            ),
           ],
         );
       },
@@ -169,22 +204,24 @@ class V3MainInfo extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 5),
-          child: AutoSizeText.rich(
-            _buildTextSpan(
-              fullText: S.of(context).v3_instruction_support,
-              formatTexts: ['AirPlay, Google Cast', 'Miracast'],
-              formatStyle: TextStyle(
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: AutoSizeText.rich(
+              _buildTextSpan(
+                fullText: S.of(context).v3_instruction_support,
+                formatTexts: ['AirPlay, Google Cast', 'Miracast'],
+                formatStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400, // 最新的設計沒有粗體
+                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                ),
+              ),
+              style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w400, // 最新的設計沒有粗體
+                fontWeight: FontWeight.w400,
                 color: context.tokens.color.vsdslColorOnSurfaceVariant,
               ),
-            ),
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: context.tokens.color.vsdslColorOnSurfaceVariant,
             ),
           ),
         ),
@@ -211,20 +248,22 @@ class V3MainInfo extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: SizedBox(
-                    width: 700, // 設置一個固定的寬度
-                    child: AutoSizeText(
-                      S.of(context).v3_miracast_not_support,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w400,
-                        color: context.tokens.color.vsdslColorWarning,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: SizedBox(
+                      width: 700, // 設置一個固定的寬度
+                      child: AutoSizeText(
+                        S.of(context).v3_miracast_not_support,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w400,
+                          color: context.tokens.color.vsdslColorWarning,
+                        ),
+                        minFontSize: 9,
+                        maxLines: 2, // 允許最多兩行
+                        overflow: TextOverflow.ellipsis, // 如果超過兩行，使用省略號
                       ),
-                      minFontSize: 9,
-                      maxLines: 2, // 允許最多兩行
-                      overflow: TextOverflow.ellipsis, // 如果超過兩行，使用省略號
                     ),
                   ),
                 ),

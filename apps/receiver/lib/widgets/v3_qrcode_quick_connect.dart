@@ -40,14 +40,21 @@ class V3QrCodeQuickConnect extends StatelessWidget {
         size: size,
       ),
     );
-
+    final ScrollController scrollController = ScrollController();
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
           vertical: context.tokens.spacing.vsdslSpacing4xl.top - 1),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: isStringOnTop ? children : children.reversed.toList(),
+      child: Scrollbar(
+        thumbVisibility: true,
+        controller: scrollController,
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: isStringOnTop ? children : children.reversed.toList(),
+          ),
+        ),
       ),
     );
   }
