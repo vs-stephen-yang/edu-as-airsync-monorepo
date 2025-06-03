@@ -23,7 +23,6 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
       top: 25,
       right: 25,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -58,7 +57,8 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
               ),
             ],
           ),
-          if (!widget.isWaitForStream) const V3Status(),
+          Expanded(
+              child: !widget.isWaitForStream ? const V3Status() : SizedBox()),
         ],
       ),
     );

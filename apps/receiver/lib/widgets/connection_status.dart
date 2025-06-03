@@ -374,6 +374,7 @@ class _ConnectionStatusWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(9999),
         ),
       ),
+      constraints: BoxConstraints(maxWidth: 230),
       padding: EdgeInsets.symmetric(
         horizontal: context.tokens.spacing.vsdslSpacingXl.left,
         vertical: context.tokens.spacing.vsdslSpacingSm.top,
@@ -391,14 +392,16 @@ class _ConnectionStatusWidget extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: context.tokens.spacing.vsdslSpacingSm.left,
-            ),
-            child: AutoSizeText(
-              message,
-              style: context.tokens.textStyle.airsyncFontSubtitle600.apply(
-                color: textColor ?? context.tokens.color.vsdslColorSurface600,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: context.tokens.spacing.vsdslSpacingSm.left,
+              ),
+              child: AutoSizeText(
+                message,
+                style: context.tokens.textStyle.airsyncFontSubtitle600.apply(
+                  color: textColor ?? context.tokens.color.vsdslColorSurface600,
+                ),
               ),
             ),
           ),

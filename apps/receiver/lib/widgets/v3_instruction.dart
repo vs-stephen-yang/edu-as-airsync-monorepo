@@ -195,45 +195,35 @@ class V3Instruction extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         left: 5, right: 5),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      // 設置為最小尺寸
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/ic_download_sender.svg',
+                                          excludeFromSemantics: true,
+                                          width: 23,
+                                          height: 23,
+                                        ),
+                                        const Gap(5),
+                                        Flexible(
+                                          // 添加 Flexible 讓文本可以縮小
+                                          child: AutoSizeText(
+                                            S.current.v3_download_app_title,
+                                            style: context.tokens.textStyle
+                                                .airsyncFontTitle
+                                                .apply(
                                               color: context.tokens.color
                                                   .vsdslColorOnSurface,
-                                              width: 1),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        // 設置為最小尺寸
-                                        children: [
-                                          SvgPicture.asset(
-                                            'assets/images/ic_download_sender.svg',
-                                            excludeFromSemantics: true,
-                                            width: 23,
-                                            height: 23,
-                                          ),
-                                          const Gap(5),
-                                          Flexible(
-                                            // 添加 Flexible 讓文本可以縮小
-                                            child: AutoSizeText(
-                                              S.current.v3_download_app_title,
-                                              style: context.tokens.textStyle
-                                                  .airsyncFontTitle
-                                                  .apply(
-                                                      color: context
-                                                          .tokens
-                                                          .color
-                                                          .vsdslColorOnSurface,
-                                                      fontWeightDelta:
-                                                          FontWeight
-                                                              .w700.value),
-                                              minFontSize: 12, // 設置最小字體大小
+                                              fontWeightDelta:
+                                                  FontWeight.w700.value,
+                                              decoration:
+                                                  TextDecoration.underline,
                                             ),
-                                          )
-                                        ],
-                                      ),
+                                            minFontSize: 12, // 設置最小字體大小
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                   onTap: () {
@@ -322,7 +312,7 @@ class V3Instruction extends StatelessWidget {
           ],
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-        Row(
+        Wrap(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 35),
@@ -346,33 +336,39 @@ class V3Instruction extends StatelessWidget {
               }),
             ),
             const Gap(16),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: context.tokens.spacing.vsdslSpacingMd.left),
-              child:
-                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-                return ValueListenableBuilder<int>(
-                  valueListenable: channelProvider.countDownProgress,
-                  builder: (_, progress, __) {
-                    return Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(math.pi),
-                      child: SizedBox(
-                        width: 27,
-                        height: 27,
-                        child: CircularProgressIndicator(
-                          value: progress / channelProvider.maxCountDown,
-                          strokeWidth: 4,
-                          backgroundColor: const Color(0xFFE9EAF0),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                              Color(0xFF636D8A)),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
+            Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+              return ValueListenableBuilder<int>(
+                valueListenable: channelProvider.countDownProgress,
+                builder: (_, progress, __) {
+                  return ValueListenableBuilder(
+                      valueListenable: AppPreferences().textSizeOptionNotifier,
+                      builder: (context, _, __) {
+                        return Container(
+                          height: 45 * AppPreferences().textScale,
+                          width: 40,
+                          alignment: Alignment.bottomCenter,
+                          margin: EdgeInsets.only(
+                              left: context.tokens.spacing.vsdslSpacingMd.left),
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.rotationY(math.pi),
+                            child: SizedBox(
+                              width: 27,
+                              height: 27,
+                              child: CircularProgressIndicator(
+                                value: progress / channelProvider.maxCountDown,
+                                strokeWidth: 4,
+                                backgroundColor: const Color(0xFFE9EAF0),
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Color(0xFF636D8A)),
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+                },
+              );
+            }),
           ],
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
@@ -382,10 +378,9 @@ class V3Instruction extends StatelessWidget {
             final textSizeOption = ResizeTextSizeOption.fromValue(value);
             final isLandscape = MediaQuery.of(context).size.width >
                 MediaQuery.of(context).size.height;
-
             // 根據條件決定是否顯示 QR 碼
             if (!isLandscape &&
-                textSizeOption != ResizeTextSizeOption.normal &&
+                (textSizeOption != ResizeTextSizeOption.normal) &&
                 !isQuickConnect) {
               return Container(
                 width: 171,
