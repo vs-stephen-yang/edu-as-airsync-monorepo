@@ -5,7 +5,6 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -14,7 +13,6 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/connection_status.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
-import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -370,35 +368,6 @@ class V3Instruction extends StatelessWidget {
               );
             }),
           ],
-        ),
-        SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
-        ValueListenableBuilder<int>(
-          valueListenable: AppPreferences().textSizeOptionNotifier,
-          builder: (context, value, child) {
-            final textSizeOption = ResizeTextSizeOption.fromValue(value);
-            final isLandscape = MediaQuery.of(context).size.width >
-                MediaQuery.of(context).size.height;
-            // 根據條件決定是否顯示 QR 碼
-            if (!isLandscape &&
-                (textSizeOption != ResizeTextSizeOption.normal) &&
-                !isQuickConnect) {
-              return Container(
-                width: 171,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: context.tokens.radii.vsdslRadiusXl,
-                    side: BorderSide(
-                      width: 1,
-                      color: context.tokens.color.vsdslColorOutline,
-                    ),
-                  ),
-                ),
-                child: const V3QrCodeQuickConnect(), // 減小 QR 碼的大小
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
       ],

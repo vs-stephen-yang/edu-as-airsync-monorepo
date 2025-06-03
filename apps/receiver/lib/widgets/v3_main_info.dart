@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
@@ -83,6 +82,8 @@ class V3MainInfo extends StatelessWidget {
         Expanded(
           child: _portraitContent(context),
         ),
+        _buildInstructionRow(context),
+        _buildMiracastInstructionRow(context),
         Container(
           height: 1,
           color: context.tokens.color.vsdslColorOutline,
@@ -100,37 +101,29 @@ class V3MainInfo extends StatelessWidget {
     return ValueListenableBuilder<int>(
       valueListenable: AppPreferences().textSizeOptionNotifier,
       builder: (context, value, child) {
-        final textSizeOption = ResizeTextSizeOption.fromValue(value);
-        return Stack(
+        return Row(
           children: [
-            Container(
-              padding: EdgeInsets.all(50),
-              child: Scrollbar(
-                controller: scrollController, // 使用 ScrollController
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  controller: scrollController, // 使用相同的 ScrollController
-                  child: Column(
-                    children: [
-                      const V3Instruction(isCastToDevice: false),
-                      _buildInstructionRow(context),
-                      _buildMiracastInstructionRow(context),
-                    ],
+            Expanded(
+              child: Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(left: 30, top: 30),
+                child: Scrollbar(
+                  controller: scrollController, // 使用 ScrollController
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: scrollController, // 使用相同的 ScrollController
+                    child: const V3Instruction(isCastToDevice: false),
                   ),
                 ),
               ),
             ),
-            if (textSizeOption == ResizeTextSizeOption.normal)
-              Positioned(
-                bottom: 40,
-                top: null,
-                right: 29,
-                child: Container(
-                  width: 171,
-                  decoration: _buildQrCodeDecoration(context),
-                  child: const V3QrCodeQuickConnect(),
-                ),
-              ),
+            Container(
+              width: 171,
+              height: 240,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              decoration: _buildQrCodeDecoration(context),
+              child: const V3QrCodeQuickConnect(),
+            ),
           ],
         );
       },
