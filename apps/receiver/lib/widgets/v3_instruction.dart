@@ -102,6 +102,7 @@ class V3Instruction extends StatelessWidget {
           SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
         ],
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -111,6 +112,7 @@ class V3Instruction extends StatelessWidget {
               height: 27,
               width: 27,
             ),
+            Gap(context.tokens.spacing.vsdslSpacingMd.left),
             Expanded(
               // 添加 Expanded 來確保內容不會溢出
               child: Consumer<ConnectivityProvider>(
@@ -244,6 +246,8 @@ class V3Instruction extends StatelessWidget {
         SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
         Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SvgPicture.asset(
               'assets/images/ic_item2.svg',
@@ -251,18 +255,15 @@ class V3Instruction extends StatelessWidget {
               height: 27,
               width: 27,
             ),
+            Gap(context.tokens.spacing.vsdslSpacingMd.left),
             Expanded(
               // 添加 Expanded 來確保內容不會溢出
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: AutoSizeText(
-                  S.of(context).v3_instruction2,
-                  style: context.tokens.textStyle.airsyncFontTitle.apply(
-                    color: context.tokens.color.vsdslColorOnSurface,
-                  ),
-                  maxLines: 6,
+              child: AutoSizeText(
+                S.of(context).v3_instruction2,
+                style: context.tokens.textStyle.airsyncFontTitle.apply(
+                  color: context.tokens.color.vsdslColorOnSurface,
                 ),
+                maxLines: 6,
               ),
             ),
           ],
@@ -294,17 +295,14 @@ class V3Instruction extends StatelessWidget {
               height: 27,
               width: 27,
             ),
+            Gap(context.tokens.spacing.vsdslSpacingMd.left),
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: AutoSizeText(
-                  S.of(context).v3_instruction3,
-                  style: context.tokens.textStyle.airsyncFontTitle.apply(
-                    color: context.tokens.color.vsdslColorOnSurface,
-                  ),
-                  maxLines: 2,
+              child: AutoSizeText(
+                S.of(context).v3_instruction3,
+                style: context.tokens.textStyle.airsyncFontTitle.apply(
+                  color: context.tokens.color.vsdslColorOnSurface,
                 ),
+                maxLines: 2,
               ),
             ),
           ],
