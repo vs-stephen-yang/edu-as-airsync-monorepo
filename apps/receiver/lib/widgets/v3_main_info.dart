@@ -11,6 +11,7 @@ import 'package:display_flutter/widgets/v3_participants_view.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3MainInfo extends StatelessWidget {
@@ -84,6 +85,7 @@ class V3MainInfo extends StatelessWidget {
         ),
         _buildInstructionRow(context),
         _buildMiracastInstructionRow(context),
+        const Gap(30),
         Container(
           height: 1,
           color: context.tokens.color.vsdslColorOutline,
@@ -175,6 +177,7 @@ class V3MainInfo extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 50, vertical: 6),
               child: _buildMiracastInstructionRow(context),
             ),
+            const Gap(30),
           ],
         );
       },
