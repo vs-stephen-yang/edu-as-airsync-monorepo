@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
@@ -27,7 +28,7 @@ class V3MessageDialog extends ConsumerWidget {
         child: Container(
           width: dialogState.width ?? 400,
           // 設置固定寬度
-          height: dialogState.height ?? 265,
+          height: (dialogState.height ?? 265) * AppPreferences().textScale,
           // 設置固定高度
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
