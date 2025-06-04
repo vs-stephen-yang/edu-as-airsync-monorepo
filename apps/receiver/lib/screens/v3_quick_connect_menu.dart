@@ -47,6 +47,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
     return Container(
       margin: EdgeInsets.only(top: 110, bottom: 53),
       alignment: Alignment.center,
@@ -176,7 +177,6 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       constraints: const BoxConstraints(
-                        minWidth: 485,
                         minHeight: 48,
                       ),
                       decoration: BoxDecoration(
@@ -280,7 +280,6 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         alignment: Alignment.center,
-                        width: 485,
                         child: PageView(
                           controller: _pageController,
                           onPageChanged: (index) {
@@ -294,11 +293,17 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                               }
                             });
                           },
-                          children: const [
+                          children: [
                             Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: SingleChildScrollView(
-                                  child: V3Instruction(isQuickConnect: true)),
+                              padding: EdgeInsets.only(top: 20),
+                              child: Scrollbar(
+                                thumbVisibility: true,
+                                controller: scrollController,
+                                child: SingleChildScrollView(
+                                  controller: scrollController,
+                                  child: V3Instruction(isQuickConnect: true),
+                                ),
+                              ),
                             ),
                             FittedBox(
                               fit: BoxFit.contain,
@@ -310,33 +315,33 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                       ),
                     ),
                     Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        alignment: Alignment.center,
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/ic_split_screen_quick_menu.svg',
-                              excludeFromSemantics: true,
-                              width: 21,
-                              height: 21,
-                            ),
-                            const Gap(3),
-                            Expanded(
-                              // 添加 Expanded 包装 AutoSizeText
-                              child: AutoSizeText(
-                                S.current.v3_quick_connect_menu_bottom_msg,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  color: context
-                                      .tokens.color.vsdslColorOnSurfaceVariant,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 2,
+                      padding: EdgeInsets.all(20),
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/ic_split_screen_quick_menu.svg',
+                            excludeFromSemantics: true,
+                            width: 21,
+                            height: 21,
+                          ),
+                          const Gap(3),
+                          Expanded(
+                            // 添加 Expanded 包装 AutoSizeText
+                            child: AutoSizeText(
+                              S.current.v3_quick_connect_menu_bottom_msg,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceVariant,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
                               ),
-                            )
-                          ],
-                        )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 Positioned(
