@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
@@ -82,7 +83,7 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                       ? 'v3_qa_cast_device_touchback_disable_${widget.index}'
                       : 'v3_qa_cast_device_touchback_enable_${widget.index}',
                   child: SizedBox(
-                    height: 27,
+                    height: 27 * AppPreferences().textScale,
                     child: ElevatedButton.icon(
                       onPressed: () {
                         if (remoteScreenConnector.isTouchEnabled) {
@@ -108,8 +109,6 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                         remoteScreenConnector.isTouchEnabled
                             ? S.of(context).v3_cast_to_device_touch_back_disable
                             : S.of(context).v3_cast_to_device_touch_back,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

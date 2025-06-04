@@ -47,25 +47,21 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Container(
+      margin: EdgeInsets.only(top: 110, bottom: 53),
       alignment: Alignment.center,
-      children: [
-        Positioned(
-          bottom: 55,
-          child: Dialog(
-            backgroundColor: context.tokens.color.vsdslColorSurface100,
-            insetPadding: EdgeInsets.zero,
-            elevation: 16.0,
-            shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-            child: Container(
-              width: 512,
-              constraints: const BoxConstraints(
-                minHeight: 555,
-              ),
-              child: DefaultTabController(
-                length: 2,
-                child: Stack(
-                  alignment: Alignment.topCenter,
+      child: Dialog(
+        backgroundColor: context.tokens.color.vsdslColorSurface100,
+        insetPadding: EdgeInsets.zero,
+        elevation: 16.0,
+        shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
+        child: SizedBox(
+          width: 512,
+          child: DefaultTabController(
+            length: 2,
+            child: Stack(
+              children: [
+                Column(
                   children: [
                     Container(
                       constraints: const BoxConstraints(
@@ -90,300 +86,289 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                         ),
                       ),
                     ),
-                    Positioned(
-                      left: 13,
-                      top: 52,
-                      right: 13,
-                      child: Column(
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/ic_screen.svg',
-                                excludeFromSemantics: true,
-                                width: 27,
-                                height: 27,
-                                colorFilter: ColorFilter.mode(
-                                  context.tokens.color.vsdslColorSurface600,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(
-                                    context.tokens.spacing.vsdslSpacingSm.left),
-                                child: Consumer<InstanceInfoProvider>(
-                                  builder: (_, instanceInfoProvider, __) {
-                                    return AutoSizeText(
-                                      instanceInfoProvider.deviceName,
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w700,
-                                        color: context.tokens.color
-                                            .vsdslColorOnSurfaceVariant,
-                                        letterSpacing: -0.48,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              ValueListenableBuilder(
-                                valueListenable:
-                                    AppPreferences().connectivityTypeNotifier,
-                                builder: (context, connectivityType, child) {
-                                  if (AppPreferences().connectivityType ==
-                                      ConnectivityType.local.name) {
-                                    return Container(
-                                      decoration: ShapeDecoration(
-                                        color: context
-                                            .tokens.color.vsdslColorSurface200,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(9999),
-                                        ),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: context.tokens.spacing
-                                              .vsdslSpacingXl.left,
-                                          vertical: context.tokens.spacing
-                                              .vsdslSpacingSm.top),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SvgPicture.asset(
-                                            'assets/images/ic_local_connection_only.svg',
-                                            width: 21,
-                                            height: 21,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: context.tokens.spacing
-                                                    .vsdslSpacingSm.left),
-                                            child: AutoSizeText(
-                                              S
-                                                  .of(context)
-                                                  .v3_settings_local_connection_only,
-                                              style: context.tokens.textStyle
-                                                  .airsyncFontSubtitle600
-                                                  .apply(
-                                                color: context.tokens.color
-                                                    .vsdslColorSurface600,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  } else {
-                                    return const SizedBox();
-                                  }
-                                },
-                              ),
-                            ],
+                          SvgPicture.asset(
+                            'assets/images/ic_screen.svg',
+                            excludeFromSemantics: true,
+                            width: 27,
+                            height: 27,
+                            colorFilter: ColorFilter.mode(
+                              context.tokens.color.vsdslColorSurface600,
+                              BlendMode.srcIn,
+                            ),
                           ),
-                          Container(
-                            constraints: const BoxConstraints(
-                              minWidth: 485,
-                              minHeight: 48,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: context.tokens.radii.vsdslRadiusLg,
-                              color: context.tokens.color.vsdslColorSurface200,
-                            ),
-                            child: Row(
-                              children:
-                                  List.generate(_focusNodes.length, (index) {
-                                return Expanded(
-                                  child: Focus(
-                                    focusNode: _focusNodes[index],
-                                    onFocusChange: (hasFocus) {
-                                      if (hasFocus) {
-                                        _focusNodes[index].requestFocus();
-                                        setState(() {});
-                                      } else {
-                                        _focusNodes[index].unfocus();
-                                        setState(() {});
-                                      }
-                                    },
-                                    onKeyEvent: (node, event) {
-                                      if (event.logicalKey ==
-                                              LogicalKeyboardKey.enter ||
-                                          event.logicalKey ==
-                                              LogicalKeyboardKey.select) {
-                                        setState(() {
-                                          selected = index;
-                                        });
-                                        _pageController.animateToPage(
-                                          index,
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          curve: Curves.ease,
-                                        );
-                                        return KeyEventResult.handled;
-                                      }
-                                      return KeyEventResult.ignored;
-                                    },
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selected = index;
-                                        });
-                                        _pageController.animateToPage(
-                                          index,
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          curve: Curves.ease,
-                                        );
-                                      },
-                                      child: Container(
-                                        // 使用固定高度 48 代替 double.infinity
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          borderRadius: context
-                                              .tokens.radii.vsdslRadiusXs,
-                                          border: Border.all(
-                                            color: _focusNodes[index].hasFocus
-                                                ? context.tokens.color
-                                                    .vsdslColorSecondary
-                                                : Colors.transparent,
-                                            width: _focusNodes[index].hasFocus
-                                                ? 2.0
-                                                : 0,
-                                          ),
-                                          color: Colors.transparent,
-                                        ),
-                                        child: AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 200),
-                                          decoration: BoxDecoration(
-                                            borderRadius: context
-                                                .tokens.radii.vsdslRadiusLg,
-                                            color: selected == index
-                                                ? context.tokens.color
-                                                    .vsdslColorPrimary
-                                                : Colors.transparent,
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            index == 0
-                                                ? S
-                                                    .of(context)
-                                                    .v3_quick_connect_menu_display_code
-                                                : S
-                                                    .of(context)
-                                                    .v3_quick_connect_menu_qrcode,
-                                            style: TextStyle(
-                                              color: selected == index
-                                                  ? context.tokens.color
-                                                      .vsdslColorOnSurfaceInverse
-                                                  : context.tokens.color
-                                                      .vsdslColorPrimary,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                          Padding(
+                            padding: EdgeInsets.all(
+                                context.tokens.spacing.vsdslSpacingSm.left),
+                            child: Consumer<InstanceInfoProvider>(
+                              builder: (_, instanceInfoProvider, __) {
+                                return AutoSizeText(
+                                  instanceInfoProvider.deviceName,
+                                  style: TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w700,
+                                    color: context.tokens.color
+                                        .vsdslColorOnSurfaceVariant,
+                                    letterSpacing: -0.48,
                                   ),
                                 );
-                              }),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            constraints: BoxConstraints(
-                              maxHeight: 300,
-                            ),
-                            width: 485,
-                            child: PageView(
-                              controller: _pageController,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  selected = index;
-                                  final bool openedWithLogicalKey =
-                                      HardwareKeyboard.instance
-                                          .logicalKeysPressed.isNotEmpty;
-                                  if (openedWithLogicalKey) {
-                                    FocusScope.of(context)
-                                        .requestFocus(_focusNodes[index]);
-                                  }
-                                });
                               },
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: SingleChildScrollView(
-                                      child:
-                                          V3Instruction(isQuickConnect: true)),
-                                ),
-                                V3QrCodeQuickConnect(
-                                    isStringOnTop: true, size: 195),
-                              ],
                             ),
                           ),
-                          Container(
-                              alignment: Alignment.center,
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/images/ic_split_screen_quick_menu.svg',
-                                    excludeFromSemantics: true,
-                                    width: 21,
-                                    height: 21,
-                                  ),
-                                  const Gap(3),
-                                  Expanded(
-                                    // 添加 Expanded 包装 AutoSizeText
-                                    child: AutoSizeText(
-                                      S.current
-                                          .v3_quick_connect_menu_bottom_msg,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: context.tokens.color
-                                            .vsdslColorOnSurfaceVariant,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      maxLines: 2,
+                          ValueListenableBuilder(
+                            valueListenable:
+                                AppPreferences().connectivityTypeNotifier,
+                            builder: (context, connectivityType, child) {
+                              if (AppPreferences().connectivityType ==
+                                  ConnectivityType.local.name) {
+                                return Container(
+                                  decoration: ShapeDecoration(
+                                    color: context
+                                        .tokens.color.vsdslColorSurface200,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(9999),
                                     ),
-                                  )
-                                ],
-                              )),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      right: 13,
-                      bottom: 13,
-                      child: V3Focus(
-                        label:
-                            S.of(context).v3_lbl_minimal_streaming_qrcode_menu,
-                        identifier: 'v3_qa_minimal_streaming_qrcode_menu',
-                        child: SizedBox(
-                          width: 33,
-                          height: 33,
-                          child: IconButton(
-                            focusNode: widget.primaryFocusNode,
-                            icon: SvgPicture.asset(
-                              'assets/images/ic_menu_close_gray.svg',
-                            ),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            onPressed: () {
-                              if (navService.canPop()) {
-                                navService.goBack();
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: context
+                                          .tokens.spacing.vsdslSpacingXl.left,
+                                      vertical: context
+                                          .tokens.spacing.vsdslSpacingSm.top),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/images/ic_local_connection_only.svg',
+                                        width: 21,
+                                        height: 21,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: context.tokens.spacing
+                                                .vsdslSpacingSm.left),
+                                        child: AutoSizeText(
+                                          S
+                                              .of(context)
+                                              .v3_settings_local_connection_only,
+                                          style: context.tokens.textStyle
+                                              .airsyncFontSubtitle600
+                                              .apply(
+                                            color: context.tokens.color
+                                                .vsdslColorSurface600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox();
                               }
                             },
                           ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      constraints: const BoxConstraints(
+                        minWidth: 485,
+                        minHeight: 48,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: context.tokens.radii.vsdslRadiusLg,
+                        color: context.tokens.color.vsdslColorSurface200,
+                      ),
+                      child: Row(
+                        children: List.generate(_focusNodes.length, (index) {
+                          return Expanded(
+                            child: Focus(
+                              focusNode: _focusNodes[index],
+                              onFocusChange: (hasFocus) {
+                                if (hasFocus) {
+                                  _focusNodes[index].requestFocus();
+                                  setState(() {});
+                                } else {
+                                  _focusNodes[index].unfocus();
+                                  setState(() {});
+                                }
+                              },
+                              onKeyEvent: (node, event) {
+                                if (event.logicalKey ==
+                                        LogicalKeyboardKey.enter ||
+                                    event.logicalKey ==
+                                        LogicalKeyboardKey.select) {
+                                  setState(() {
+                                    selected = index;
+                                  });
+                                  _pageController.animateToPage(
+                                    index,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                  return KeyEventResult.handled;
+                                }
+                                return KeyEventResult.ignored;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selected = index;
+                                  });
+                                  _pageController.animateToPage(
+                                    index,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                                child: Container(
+                                  // 使用固定高度 48 代替 double.infinity
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        context.tokens.radii.vsdslRadiusXs,
+                                    border: Border.all(
+                                      color: _focusNodes[index].hasFocus
+                                          ? context
+                                              .tokens.color.vsdslColorSecondary
+                                          : Colors.transparent,
+                                      width:
+                                          _focusNodes[index].hasFocus ? 2.0 : 0,
+                                    ),
+                                    color: Colors.transparent,
+                                  ),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          context.tokens.radii.vsdslRadiusLg,
+                                      color: selected == index
+                                          ? context
+                                              .tokens.color.vsdslColorPrimary
+                                          : Colors.transparent,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      index == 0
+                                          ? S
+                                              .of(context)
+                                              .v3_quick_connect_menu_display_code
+                                          : S
+                                              .of(context)
+                                              .v3_quick_connect_menu_qrcode,
+                                      style: TextStyle(
+                                        color: selected == index
+                                            ? context.tokens.color
+                                                .vsdslColorOnSurfaceInverse
+                                            : context
+                                                .tokens.color.vsdslColorPrimary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        alignment: Alignment.center,
+                        width: 485,
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            setState(() {
+                              selected = index;
+                              final bool openedWithLogicalKey = HardwareKeyboard
+                                  .instance.logicalKeysPressed.isNotEmpty;
+                              if (openedWithLogicalKey) {
+                                FocusScope.of(context)
+                                    .requestFocus(_focusNodes[index]);
+                              }
+                            });
+                          },
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: SingleChildScrollView(
+                                  child: V3Instruction(isQuickConnect: true)),
+                            ),
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: V3QrCodeQuickConnect(
+                                  isStringOnTop: true, size: 195),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                    Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/ic_split_screen_quick_menu.svg',
+                              excludeFromSemantics: true,
+                              width: 21,
+                              height: 21,
+                            ),
+                            const Gap(3),
+                            Expanded(
+                              // 添加 Expanded 包装 AutoSizeText
+                              child: AutoSizeText(
+                                S.current.v3_quick_connect_menu_bottom_msg,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: context
+                                      .tokens.color.vsdslColorOnSurfaceVariant,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 2,
+                              ),
+                            )
+                          ],
+                        )),
                   ],
                 ),
-              ),
+                Positioned(
+                  right: 13,
+                  bottom: 13,
+                  child: V3Focus(
+                    label: S.of(context).v3_lbl_minimal_streaming_qrcode_menu,
+                    identifier: 'v3_qa_minimal_streaming_qrcode_menu',
+                    child: SizedBox(
+                      width: 33,
+                      height: 33,
+                      child: IconButton(
+                        focusNode: widget.primaryFocusNode,
+                        icon: SvgPicture.asset(
+                          'assets/images/ic_menu_close_gray.svg',
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          if (navService.canPop()) {
+                            navService.goBack();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

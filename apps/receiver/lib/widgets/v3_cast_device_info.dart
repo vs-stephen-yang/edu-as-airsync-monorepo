@@ -19,8 +19,6 @@ class V3CastDeviceInfo extends StatelessWidget {
       final bool isLandscape = constraints.maxWidth > constraints.maxHeight;
       return Container(
         alignment: Alignment.center,
-        width: isLandscape ? 910 : 604,
-        height: isLandscape ? 628 : 1027,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
             borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -42,7 +40,6 @@ class V3CastDeviceInfo extends StatelessWidget {
                     children: [
                       const Gap(13),
                       Container(
-                        height: 45,
                         alignment: Alignment.center,
                         child: Text(
                           S.of(context).v3_cast_to_device_menu_title,
@@ -60,13 +57,13 @@ class V3CastDeviceInfo extends StatelessWidget {
                         color: context.tokens.color.vsdslColorOutline,
                       ),
                       if (isLandscape)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                flex: 10,
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 15,
                                 child: Container(
-                                  height: 525,
                                   padding: EdgeInsets.symmetric(horizontal: 20),
                                   child: Scrollbar(
                                     controller: scrollController,
@@ -78,9 +75,8 @@ class V3CastDeviceInfo extends StatelessWidget {
                                         children: [
                                           const V3Instruction(
                                               isCastToDevice: true),
-                                          const SizedBox(height: 8),
+                                          const Gap(8),
                                           SizedBox(
-                                            width: 420,
                                             child: Row(
                                               children: [
                                                 Expanded(
@@ -114,34 +110,36 @@ class V3CastDeviceInfo extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          const SizedBox(height: 17),
+                                          const Gap(17),
                                           const V3QrCodeInstruction(),
+                                          const Gap(17),
                                         ],
                                       ),
                                     ),
                                   ),
-                                )),
-                            Expanded(
-                              flex: 7,
-                              child: Container(
-                                height: 550,
-                                decoration: ShapeDecoration(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(30)),
-                                  ),
-                                  color: context
-                                      .tokens.color.vsdslColorSurface200
-                                      .withOpacity(0.32),
                                 ),
-                                child: const V3CastDevicesView(),
                               ),
-                            ),
-                          ],
+                              Expanded(
+                                flex: 11,
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(30)),
+                                    ),
+                                    color: context
+                                        .tokens.color.vsdslColorSurface200
+                                        .withOpacity(0.32),
+                                  ),
+                                  child: const V3CastDevicesView(),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       if (!isLandscape) ...[
                         Expanded(
-                          flex: 16,
+                          flex: 15,
                           child: Scrollbar(
                             controller: scrollController,
                             child: SingleChildScrollView(
@@ -183,8 +181,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                                       ],
                                     ),
                                     const Gap(17),
-                                    const V3QrCodeInstruction(
-                                        widthExpand: true),
+                                    const V3QrCodeInstruction(),
                                   ],
                                 ),
                               ),
@@ -217,15 +214,12 @@ class V3CastDeviceInfo extends StatelessWidget {
 }
 
 class V3QrCodeInstruction extends StatelessWidget {
-  const V3QrCodeInstruction({super.key, this.widthExpand = false});
-
-  final bool widthExpand;
+  const V3QrCodeInstruction({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     return Container(
-      width: widthExpand ? null : 420,
       height: 160,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
@@ -243,7 +237,7 @@ class V3QrCodeInstruction extends StatelessWidget {
       child: Row(
         children: [
           const V3QrCodeImage(size: 120),
-          const SizedBox(width: 20),
+          const Gap(20),
           Expanded(
             child: Scrollbar(
               controller: scrollController,
@@ -255,17 +249,15 @@ class V3QrCodeInstruction extends StatelessWidget {
                   children: [
                     Text(
                       S.of(context).v3_cast_to_device_menu_quick_connect1,
-                      maxLines: 2,
                       style: TextStyle(
                         fontSize: 21,
                         fontWeight: FontWeight.w700,
                         color: context.tokens.color.vsdslColorOnSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    const Gap(5),
                     Text(
                       S.of(context).v3_cast_to_device_menu_quick_connect2,
-                      maxLines: 2,
                       style: TextStyle(
                         fontSize: 21,
                         fontWeight: FontWeight.w400,
