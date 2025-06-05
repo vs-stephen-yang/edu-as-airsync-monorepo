@@ -54,4 +54,16 @@ void main() {
     // assert
     expect(channels.length, 1);
   });
+
+  test('Channel should be removed after it closes', () async {
+    // arrange
+    final connection = FakeConnection();
+    server.handleNewConnection('1000', connection);
+
+    // action
+    await channels.first.close(null);
+
+    // assert
+    expect(server.channelCount, 0);
+  });
 }
