@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'lt';
 
+  static String m1(value) =>
+      "\nEkrano bendrinimas netrukus baigsis. Ar norėtumėte jį pratęsti 3 valandomis? Galite pratęsti iki ${value} kartų.";
+
   static String m0(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -241,8 +244,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Grįžtamasis ryšys",
     ),
+    "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
+      "Ekrano bendrinimas baigėsi.",
+    ),
+    "v3_casting_time_countdown": m1,
+    "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Negalima pratęsti",
+    ),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Išplėsti"),
+    "v3_casting_time_extend_success_toast":
+        MessageLookupByLibrary.simpleMessage("Pratęstas 3 valandoms."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Nuskenuokite QR kodą su savo iOS ar Android įrenginiu, kad atsisiųstumėte",
+    ),
+    "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
+      "Už geriausią vartotojo patirtį!",
+    ),
+    "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
+      "*Rankinis diegimo įrenginys",
+    ),
+    "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
+      "Įdiekite \"MacOS\" per \"App Store\".",
+    ),
+    "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
+      "*Tik \"MacOS\"",
+    ),
+    "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
+      "Darbalaukis",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
       "Atsisiųsti siuntėjo programėlę",
@@ -258,6 +286,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
       "Nuskenuokite QR kodą greitai prieigai.",
+    ),
+    "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
+      "Mobilus",
     ),
     "v3_download_app_or": MessageLookupByLibrary.simpleMessage("ARBA"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
@@ -317,6 +348,51 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Palaikomas bendrinimas per AirPlay, Google Cast arba Miracast",
+    ),
+    "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+      "Ekrano bendrinimas netrukus baigsis. Jei reikia, iš naujo paleiskite ekrano bendrinimą.",
+    ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Priimti užklausą",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Priimkite visas užklausas",
+    ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Tik vietinis ryšys",
+    ),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "\nIšplėskite srautinio perdavimo funkcijas",
+    ),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Srautinio perdavimo nuorodų meniu užrakintas",
+        ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Sutraukti srautinio perdavimo funkcijas",
+    ),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Išplėskite srautinio perdavimo rodinį",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage(
+          "Išplėskite srautinio perdavimo funkciją",
+        ),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage(
+          "Sutraukti srautinio perdavimo funkciją",
+        ),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Sutraukti srautinio perdavimo rodinį",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Nutildyti garsą",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Sustabdyti srautinį perdavimą",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Garso nutildymo išjungimas",
     ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Nepavyko aptikti interneto ryšio. Prisijunkite prie „Wi-Fi“ arba intraneto tinklo ir bandykite dar kartą.",
@@ -378,6 +454,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR kodas",
+    ),
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atšaukti",
+    ),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
+      "Atšaukti",
+    ),
+    "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
+      "Patvirtinti",
+    ),
+    "v3_setting_passcode_error_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Neteisingas slaptažodis, bandykite dar kartą.",
+        ),
+    "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+      "Įveskite prieigos kodą, kad atrakintumėte nustatymus",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Transliuoti IFP ekraną visada.",
@@ -453,6 +545,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Išlaikyti kodą matomą ekrano viršuje, net ir pereinant prie kitų programų arba kai aktyvi ekrano bendrinimo funkcija.",
         ),
+    "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
+      "Išmanusis mastelio keitimas",
+    ),
+    "v3_settings_device_smart_scaling_desc": MessageLookupByLibrary.simpleMessage(
+      "Automatiškai sureguliuokite ekrano dydį, kad maksimaliai išnaudotumėte vietą ekrane. Vaizdas gali būti šiek tiek iškraipytas.",
+    ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
       "Nepasiekiama",
     ),
@@ -511,6 +609,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas naujo"),
+    "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
+      "\n\"AirSync\" yra \"ViewSonic\" patentuotas belaidžio ekrano bendrinimo sprendimas. Kai naudojamas su \"AirSync\" siuntėju, jis leidžia sklandžiai bendrinti ekraną iš vartotojo įrenginio į \"ViewSonic\" interaktyvius ekranus.\n\nNaujos šio leidimo funkcijos: \n\n1. Moderatoriaus režimas dabar palaiko atspindėjimą.\n\n2. Integracija su ViewSonic Manager per Manager nuotolinio valdymo pultą.\n\n3. PWA versijos siuntėjas, skirtas \"Chromebook\" įrenginiams, skirtas ekrano bendrinimui internete.\n\n4. 9 padalintų ekranų palaikymas pasirinktuose modeliuose.\n\n5. Palaikykite ekrano plėtinį su jutikliniu grąžinimu. \n\n6. Pagerintas stabilumas.\n\n7. Klaidos ištaisytos.",
+    ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(
       "Siųsti į įrenginius",

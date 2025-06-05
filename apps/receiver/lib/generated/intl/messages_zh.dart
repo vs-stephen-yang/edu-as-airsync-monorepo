@@ -329,6 +329,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
       "延長投影時間",
     ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage("關閉提示"),
     "v3_lbl_internet_connection_only_error":
         MessageLookupByLibrary.simpleMessage("連線錯誤，請檢查網路連線設定"),
     "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
@@ -364,6 +365,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
       "展開投影控制捷徑",
     ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "常駐連線資訊狀態列",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "展開常駐選單",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "最小化常駐選單",
+    ),
     "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
       "分享畫面給參與者",
     ),
@@ -372,6 +382,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
       "結束參與者的連線",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "中斷連線",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "分享畫面",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "停止鏡射",
     ),
     "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
       "分享畫面到參與人員",
@@ -403,7 +422,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage("展開螢幕群組選單"),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("廣播"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("選擇 %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage("未選擇任何接收端"),
     "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("選擇 %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("儲存"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
         MessageLookupByLibrary.simpleMessage("選擇 %s"),
     "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
       "關閉設定選單",
@@ -521,6 +550,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
       "確定",
     ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("取消"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("重新啟動"),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "關閉",
     ),
@@ -589,6 +622,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "請輸入解鎖密碼",
     ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage("無障礙協助"),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "不論有無分享螢幕，一律接收廣播。",
     ),
@@ -637,6 +671,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("開機後自動執行 AirSync"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage("裝置名稱"),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "設備名稱不可為空白",
+    ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage("儲存"),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage("裝置設定"),
     "v3_settings_device_show_display_code":
@@ -696,12 +733,23 @@ class MessageLookup extends MessageLookupByLibrary {
       "開源許可證",
     ),
     "v3_settings_privacy_policy": MessageLookupByLibrary.simpleMessage("隱私權政策"),
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "調整字體大小",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("特大"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "大",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "正常",
+    ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "What\'s New",
     ),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-      "AirSync %s 版本發行說明\n\nAirSync 是 ViewSonic 專有的無線螢幕分享產品。搭配AirSync 傳送端一起使用時，您可以快速地從您的各種設備無線分享螢幕到 ViewSonic 大型互動式顯示器。\n\n新功能:\n\n1. 主持人模式可管理螢幕鏡射\n\n2. 可透過ViewSonic Manager遠端調整設定\n\n3. 提供Chromebook使用者PWA版本sender，以支援internet螢幕分享\n\n4. 特定機種支援九分割\n\n5. 支援延伸螢幕分享及反控\n\n6. 改善穩定度\n\n7. 問題修正",
+      "AirSync %s 版本發行說明\n\nAirSync 是 ViewSonic 專有的無線螢幕分享產品。搭配AirSync sender一起使用時，您可以快速地從您的各種設備無線分享螢幕到 ViewSonic 大型互動式顯示器。\n\n此版本包含以下新功能：\n\n1. 支援 ViewSonic LED 顯示器。\n\n2. 支援在大屏上反控Android裝置的功能。\n\n3. 支援透過 AirPlay 共享時，在大屏上反控iPad的功能。\n\n4. 智慧滿屏。\n\n5. 可以調整設備端接收大屏畫面視窗的大小。\n\n6. 提升 Miracast 的穩定性。\n\n7. 修正錯誤。",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage("分享到設備端"),
@@ -714,8 +762,47 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_menu_title": MessageLookupByLibrary.simpleMessage("快速功能區"),
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("螢幕鏡射"),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "一次只能反控一台設備",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage("啟用反控%s?"),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "反控已關閉",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "配對失敗，未啟用反控。請重新操作。",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("取消"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("重啟"),
     "v3_touchback_restart_bluetooth_message":
         MessageLookupByLibrary.simpleMessage("操作逾時，請關閉並重新啟動大屏端藍芽功能，然後重新啟動反控"),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage("操作逾時，請重啟藍芽"),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("搜尋設備中"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("成功發現設備"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("設備配對成功"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("設備配對中"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("HID設備已連線"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("HID設備連線中"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("HID服務啟動成功"),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage("HID服務啟動中"),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("初始化完成"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("正在初始化"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "您可以開始從大屏反控設備端",
+    ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage("等待螢幕分享中"),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage("等待其他人加入"),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
