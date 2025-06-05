@@ -440,7 +440,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Open Streaming Shortcut Menu",
     ),
     "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
-      "Bring App to top",
+      "Floating connection information tab",
     ),
     "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
       "Expand overlay menu",
@@ -899,7 +899,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "What\'s new",
     ),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-      "AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nNew features for this release: \n\n1. Moderator mode now supports mirrorring.\n\n2. Integration with ViewSonic Manager through Manager remote control.\n\n3. PWA version sender for Chromebooks for internet screen sharing.\n\n4. Support for 9-split screens on selected models.\n\n5. Support screen extension with touchback. \n\n6. Improved stability.\n\n7. Bugs fixed.",
+      "AirSync %s\n\nAirSync is a proprietary wireless screen-sharing solution from ViewSonic. When utilized with the AirSync sender, it allows users to seamlessly share their screens with ViewSonic interactive displays.\n\nThis release includes the following new features:\n\n1. Support for ViewSonic LED Displays.\n\n2. Touchback functionality for Android devices on IFP.\n\n3. Touchback functionality for iPads when sharing via AirPlay.\n\n4. Smart scaling.\n\n5. Capability to resize the cast to device window.\n\n6. Enhanced stability for Miracast.\n\n7. Fixed various bugs.",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(

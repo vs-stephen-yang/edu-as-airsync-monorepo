@@ -449,6 +449,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
       "Öppna snabbmenyn för direktuppspelning",
     ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Ta appen till toppen",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandera överläggsmenyn",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimera överläggsmenyn",
+    ),
     "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
       "Casta enheten till den här mötesdeltagaren",
     ),
@@ -492,6 +501,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
       "Stoppa presentationen",
     ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Tillgänglighet",
+    ),
     "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
       "Tillbaka till föregående sida",
     ),
@@ -508,7 +520,19 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Öppna sändning för att visa gruppmenyn",
         ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Skicka ut"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Välj %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Bekräfta att ingen enhet har valts.",
+        ),
     "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Välj %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Spara"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
         MessageLookupByLibrary.simpleMessage("Välj %s"),
     "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
       "Stäng inställningsmenyn",
@@ -636,6 +660,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
       "Bekräfta",
     ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Avbryt"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Starta om"),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "Stäng",
     ),
@@ -725,6 +753,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Ogiltigt lösenord, försök igen."),
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "Ange lösenord för att låsa upp Inställningar",
+    ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Tillgänglighet",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "https://s3.eu-west-1.amazonaws.com/po-pub/i/Aq0gfcuWlTNP5C8gs21VQiAG.png",
@@ -863,6 +894,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic är engagerad i att skydda din integritet och hanterar personuppgifter med största allvar. Integritetspolicyn nedan beskriver hur ViewSonic behandlar dina personuppgifter efter att de har samlats in via din användning av webbplatsen. ViewSonic upprätthåller sekretessen för din information genom säkerhetstekniker och följer policyer som förhindrar obehörig användning av dina personuppgifter. Genom att använda denna webbplats samtycker du till insamling och användning av din information.\n\nWebbplatser som du länkar till från ViewSonic.com kan ha egna integritetspolicyer som skiljer sig från ViewSonics. Vänligen granska dessa webbplatsers integritetspolicyer för detaljerad information om hur de kan använda information som samlas in när du besöker dem.\n\nKlicka på följande länkar för att lära dig mer om vår integritetspolicy.",
     ),
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Ändra text storlek",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("Extra Stor"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Stor",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Normal",
+    ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Nyheter"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
@@ -893,9 +935,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Parningen misslyckades. TouchBack är inte aktiverat. Försök igen",
     ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Avbryt"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Starta om"),
     "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
       "Tidsgräns för åtgärd. Stäng av och starta om Bluetooth-funktionen på den stora skärmen och starta sedan om touchback.",
     ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Funktionen har avslutat, starta om Bluetooth",
+        ),
     "v3_touchback_state_deviceFinding_message":
         MessageLookupByLibrary.simpleMessage("Hitta enhet"),
     "v3_touchback_state_deviceFoundSuccess_message":
