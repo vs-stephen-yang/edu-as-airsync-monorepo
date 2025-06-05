@@ -8,7 +8,7 @@ import 'display_group_mediator.dart';
 import 'display_group_member_info.dart';
 
 class DisplayGroupMember {
-  Uri? _uri;
+  final Uri _uri;
 
   final DisplayGroupMemberInfo _info;
 
@@ -25,26 +25,22 @@ class DisplayGroupMember {
   RemoteScreenConnector? _connector;
 
   DisplayGroupMember(this._info, this._mediator,
-      {required this.onRejected, required this.onStopped}) {
-    _uri = Uri(
-      scheme: 'wss',
-      host: _info.host,
-      port: _info.port,
-    );
-
+      {required this.onRejected, required this.onStopped})
+      : _uri = Uri(
+          scheme: 'wss',
+          host: _info.host,
+          port: _info.port,
+        ) {
     newChannel();
   }
 
   void newChannel() {
-    if (_uri == null) {
-      return;
-    }
 
     final clientId = const Uuid().v4();
 
     _channel = DisplayChannelClient(
       clientId,
-      _uri!,
+      _uri,
       _createConnection,
     );
 
