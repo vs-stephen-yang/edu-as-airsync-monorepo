@@ -42,6 +42,7 @@ class DirectConnectionServer {
       token,
       displayCode,
       clientIpAddress,
+      queryParameters: parameters,
     );
   }
 
