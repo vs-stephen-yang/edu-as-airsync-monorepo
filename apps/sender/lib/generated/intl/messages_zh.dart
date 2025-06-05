@@ -188,6 +188,108 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("不同意"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage("最終用戶許可協議"),
+    "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage("更改語言"),
+    "v3_lbl_device_list_button_device_list":
+        MessageLookupByLibrary.simpleMessage("設備清單"),
+    "v3_lbl_device_list_close": MessageLookupByLibrary.simpleMessage("關閉設備清單"),
+    "v3_lbl_device_list_next": MessageLookupByLibrary.simpleMessage("下一步"),
+    "v3_lbl_download_independent_version": MessageLookupByLibrary.simpleMessage(
+      "取得mac OS獨立發行版本",
+    ),
+    "v3_lbl_download_menu_minimal": MessageLookupByLibrary.simpleMessage(
+      "選單最小化",
+    ),
+    "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage("輸入投影辨識碼"),
+    "v3_lbl_main_display_code_remove": MessageLookupByLibrary.simpleMessage(
+      "清除投影辨識碼",
+    ),
+    "v3_lbl_main_download": MessageLookupByLibrary.simpleMessage("下載傳送端App"),
+    "v3_lbl_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
+      "取得mac OS線上商店版本",
+    ),
+    "v3_lbl_main_download_mobile": MessageLookupByLibrary.simpleMessage(
+      "取得移動裝置端版本",
+    ),
+    "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
+      "取得Windows版本",
+    ),
+    "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage("分享"),
+    "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
+      "輸入您的名稱",
+    ),
+    "v3_lbl_main_password": MessageLookupByLibrary.simpleMessage("輸入一次性密碼"),
+    "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage("下一步"),
+    "v3_lbl_main_privacy": MessageLookupByLibrary.simpleMessage("隱私權政策"),
+    "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
+      "連線",
+    ),
+    "v3_lbl_moderator_back": MessageLookupByLibrary.simpleMessage("返回"),
+    "v3_lbl_moderator_disconnect": MessageLookupByLibrary.simpleMessage("中斷連線"),
+    "v3_lbl_present_idle_audio_driver_warning_close":
+        MessageLookupByLibrary.simpleMessage("關閉音訊驅動程式提示"),
+    "v3_lbl_present_idle_audio_driver_warning_download":
+        MessageLookupByLibrary.simpleMessage("下載音訊驅動程式"),
+    "v3_lbl_qr_close": MessageLookupByLibrary.simpleMessage("關閉QR code"),
+    "v3_lbl_qr_code": MessageLookupByLibrary.simpleMessage("顯示QR code"),
+    "v3_lbl_select_language": MessageLookupByLibrary.simpleMessage("選擇 %s"),
+    "v3_lbl_select_role_receive": MessageLookupByLibrary.simpleMessage("接收螢幕"),
+    "v3_lbl_select_role_share": MessageLookupByLibrary.simpleMessage("分享螢幕"),
+    "v3_lbl_select_screen_audio": MessageLookupByLibrary.simpleMessage("分享音訊"),
+    "v3_lbl_select_screen_cancel": MessageLookupByLibrary.simpleMessage("取消分享"),
+    "v3_lbl_select_screen_close": MessageLookupByLibrary.simpleMessage(
+      "關閉分享畫面來源視窗",
+    ),
+    "v3_lbl_select_screen_ios_back": MessageLookupByLibrary.simpleMessage("返回"),
+    "v3_lbl_select_screen_ios_start_sharing":
+        MessageLookupByLibrary.simpleMessage("開始分享"),
+    "v3_lbl_select_screen_share": MessageLookupByLibrary.simpleMessage("分享螢幕"),
+    "v3_lbl_select_screen_source_name": MessageLookupByLibrary.simpleMessage(
+      "分享畫面來源: %s",
+    ),
+    "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("設定"),
+    "v3_lbl_setting_language_select": MessageLookupByLibrary.simpleMessage(
+      "選擇語言: %s",
+    ),
+    "v3_lbl_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "檢視法律政策: %s",
+    ),
+    "v3_lbl_setting_menu_back": MessageLookupByLibrary.simpleMessage("回上一層選單"),
+    "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage("關閉設定選單"),
+    "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
+      "隱私權政策",
+    ),
+    "v3_lbl_setting_select": MessageLookupByLibrary.simpleMessage("選擇 %s"),
+    "v3_lbl_setting_software_update_deny_action":
+        MessageLookupByLibrary.simpleMessage("稍後更新"),
+    "v3_lbl_setting_software_update_fail_close":
+        MessageLookupByLibrary.simpleMessage("關閉更新失敗對話窗"),
+    "v3_lbl_setting_software_update_fail_ok":
+        MessageLookupByLibrary.simpleMessage("確定"),
+    "v3_lbl_setting_software_update_no_available":
+        MessageLookupByLibrary.simpleMessage("無可用的更新"),
+    "v3_lbl_setting_software_update_no_available_action":
+        MessageLookupByLibrary.simpleMessage("確定"),
+    "v3_lbl_setting_software_update_now_action":
+        MessageLookupByLibrary.simpleMessage("立即更新"),
+    "v3_lbl_setting_software_update_positive_action":
+        MessageLookupByLibrary.simpleMessage("立即更新"),
+    "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
+      "關閉更新選單",
+    ),
+    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("結束暫停"),
+    "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("暫停"),
+    "v3_lbl_sharing_stop": MessageLookupByLibrary.simpleMessage("停止分享"),
+    "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
+      "打開投影控制列",
+    ),
+    "v3_lbl_streaming_minimize_button": MessageLookupByLibrary.simpleMessage(
+      "隱藏投影控制列",
+    ),
+    "v3_lbl_streaming_stop_button": MessageLookupByLibrary.simpleMessage(
+      "結束分享",
+    ),
+    "v3_lbl_touch_back_off": MessageLookupByLibrary.simpleMessage("停用反控"),
+    "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage("啟用反控"),
     "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("可訪問性"),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
       "接收端同意後即可開始分享畫面",
@@ -372,6 +474,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_select_screen_ios_start_sharing": MessageLookupByLibrary.simpleMessage(
       "開始分享",
+    ),
+    "v3_setting_accessibility": MessageLookupByLibrary.simpleMessage("無障礙協助"),
+    "v3_setting_accessibility_size_large": MessageLookupByLibrary.simpleMessage(
+      "大",
+    ),
+    "v3_setting_accessibility_size_normal":
+        MessageLookupByLibrary.simpleMessage("正常"),
+    "v3_setting_accessibility_size_xlarge":
+        MessageLookupByLibrary.simpleMessage("特大"),
+    "v3_setting_accessibility_text_size": MessageLookupByLibrary.simpleMessage(
+      "字體大小",
     ),
     "v3_setting_app_version": m2,
     "v3_setting_app_version_independent": m3,
