@@ -385,6 +385,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void _onNewChannelFromHost(Channel channel) {
     if (_displayGroupSession != null) {
+      channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose));
       // TODO: handle the existing display group session
       return;
     }
