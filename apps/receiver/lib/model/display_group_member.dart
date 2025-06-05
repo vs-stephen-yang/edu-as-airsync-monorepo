@@ -8,11 +8,11 @@ import 'display_group_mediator.dart';
 import 'display_group_member_info.dart';
 
 class DisplayGroupMember {
+  Uri? _uri;
+
   final DisplayGroupMemberInfo _info;
 
   late DisplayChannelClient _channel;
-
-  final String _clientId = const Uuid().v4();
 
   final DisplayGroupMediator _mediator;
 
@@ -26,15 +26,25 @@ class DisplayGroupMember {
 
   DisplayGroupMember(this._info, this._mediator,
       {required this.onRejected, required this.onStopped}) {
-    final uri = Uri(
+    _uri = Uri(
       scheme: 'wss',
       host: _info.host,
       port: _info.port,
     );
 
+    newChannel();
+  }
+
+  void newChannel() {
+    if (_uri == null) {
+      return;
+    }
+
+    final clientId = const Uuid().v4();
+
     _channel = DisplayChannelClient(
-      _clientId,
-      uri,
+      clientId,
+      _uri!,
       _createConnection,
     );
 
@@ -68,6 +78,14 @@ class DisplayGroupMember {
       case ChannelState.connected:
         break;
       case ChannelState.closed:
+        // The following situations require re-establishing the connection:
+        // 1. When disconnected due to network issues
+        // 2. When an old DisplayGroupSession from “Cast to Board Member” has not been cleared and sent a remote close
+        if (_channel.closeReason?.code == ChannelCloseCode.networkError ||
+            _channel.closeReason?.code == ChannelCloseCode.heartbeatTimeout ||
+            _channel.closeReason?.code == ChannelCloseCode.remoteClose) {
+          newChannel();
+        }
         break;
       default:
         break;
