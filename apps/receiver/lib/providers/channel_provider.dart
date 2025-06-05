@@ -745,6 +745,10 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     if (isDirectConnect) {
+      if (_isChannelFromHost(connectionRequest.queryParameters)) {
+        return ConnectRequestStatus.success;
+      }
+
       // Handle verification for direct connections
       if (connectionRequest.token == null || connectionRequest.token!.isEmpty) {
         // When the token is empty, we assume the connection is initiated from the device list.
