@@ -1896,10 +1896,10 @@ class S {
     );
   }
 
-  /// `Summit Next`
+  /// `Submit Next`
   String get v3_lbl_main_present_action {
     return Intl.message(
-      'Summit Next',
+      'Submit Next',
       name: 'v3_lbl_main_present_action',
       desc: '',
       args: [],
@@ -1916,20 +1916,20 @@ class S {
     );
   }
 
-  /// `Summit Connect`
+  /// `Submit Connect`
   String get v3_lbl_main_receive_app_action {
     return Intl.message(
-      'Summit Connect',
+      'Submit Connect',
       name: 'v3_lbl_main_receive_app_action',
       desc: '',
       args: [],
     );
   }
 
-  /// `Summit Share`
+  /// `Submit Share`
   String get v3_lbl_main_moderator_action {
     return Intl.message(
-      'Summit Share',
+      'Submit Share',
       name: 'v3_lbl_main_moderator_action',
       desc: '',
       args: [],
@@ -2451,16 +2451,6 @@ class S {
     );
   }
 
-  /// `Privacy policy`
-  String get v3_lbl_setting_privacy_policy {
-    return Intl.message(
-      'Privacy policy',
-      name: 'v3_lbl_setting_privacy_policy',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Text Size`
   String get v3_setting_accessibility_text_size {
     return Intl.message(
@@ -2511,6 +2501,16 @@ class S {
     );
   }
 
+  /// `Privacy policy`
+  String get v3_lbl_setting_privacy_policy {
+    return Intl.message(
+      'Privacy policy',
+      name: 'v3_lbl_setting_privacy_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Allow to Touchback`
   String get v3_present_touch_back_dialog_title {
     return Intl.message(
@@ -2524,7 +2524,7 @@ class S {
   /// `When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.`
   String get v3_present_touch_back_dialog_description {
     return Intl.message(
-      'When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.',
+      'When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.',
       name: 'v3_present_touch_back_dialog_description',
       desc: '',
       args: [],
@@ -2564,6 +2564,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'et'),
       Locale.fromSubtags(languageCode: 'fi'),
       Locale.fromSubtags(languageCode: 'fr'),
+      Locale.fromSubtags(languageCode: 'ja'),
       Locale.fromSubtags(languageCode: 'lt'),
       Locale.fromSubtags(languageCode: 'lv'),
       Locale.fromSubtags(languageCode: 'no'),

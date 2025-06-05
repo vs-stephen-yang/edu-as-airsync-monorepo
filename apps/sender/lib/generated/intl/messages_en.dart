@@ -273,7 +273,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Get the Windows version",
     ),
     "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
-      "Summit Share",
+      "Submit Share",
     ),
     "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
       "Type Your Name",
@@ -282,13 +282,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Type Password",
     ),
     "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage(
-      "Summit Next",
+      "Submit Next",
     ),
     "v3_lbl_main_privacy": MessageLookupByLibrary.simpleMessage(
       "Privacy Policy",
     ),
     "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
-      "Summit Connect",
+      "Submit Connect",
     ),
     "v3_lbl_moderator_back": MessageLookupByLibrary.simpleMessage("Go back"),
     "v3_lbl_moderator_disconnect": MessageLookupByLibrary.simpleMessage(
@@ -595,18 +595,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
       "Allow touchback",
     ),
-    "v3_present_touch_back_dialog_allow":
-        MessageLookupByLibrary.simpleMessage(
+    "v3_present_touch_back_dialog_allow": MessageLookupByLibrary.simpleMessage(
       "Allow",
     ),
     "v3_present_touch_back_dialog_description":
         MessageLookupByLibrary.simpleMessage(
-      "When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.",
-    ),
+          "When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).\\nTo enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.\\nAirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.",
+        ),
     "v3_present_touch_back_dialog_not_now":
         MessageLookupByLibrary.simpleMessage("Not now"),
-    "v3_present_touch_back_dialog_title":
-        MessageLookupByLibrary.simpleMessage(
+    "v3_present_touch_back_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Allow to Touchback",
     ),
     "v3_receiver_remote_screen_busy_action":
