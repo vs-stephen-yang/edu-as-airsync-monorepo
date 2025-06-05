@@ -32,6 +32,8 @@ class ChannelStore {
   final Duration heartbeatTimeout;
   final Duration reconnectTimeout;
 
+  int get channelCount => _channels.length;
+
   ChannelStore(
     this._onNewChannel,
     this._verifyConnectRequest, {
@@ -39,6 +41,10 @@ class ChannelStore {
     this.heartbeatTimeout = const Duration(seconds: 10),
     this.reconnectTimeout = const Duration(seconds: 2),
   });
+
+  void _onChannelClosed(String clientId, MultiConnectionChannel channel) {
+    _channels.remove(clientId);
+  }
 
   // handle a new connection
   void handleNewConnection(
@@ -63,6 +69,12 @@ class ChannelStore {
       );
       isNewChannelCreated = true;
       _channels[clientId] = channel;
+
+      channel.stateStream.listen((ChannelState state) {
+        if (state == ChannelState.closed) {
+          _onChannelClosed(clientId, channel!);
+        }
+      });
     }
 
     channel.addConnection(connection);
