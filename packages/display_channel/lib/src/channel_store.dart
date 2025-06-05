@@ -11,6 +11,7 @@ enum ConnectRequestStatus {
   invalidDisplayCode,
   rateLimitExceeded,
   authenticationRequired,
+  channelClosed,
 }
 
 typedef OnNewChannel = void Function(
@@ -33,6 +34,7 @@ class ChannelStore {
   final Duration reconnectTimeout;
 
   int get channelCount => _channels.length;
+  static const _reconnectTokenPrefix = 'reconn_';
 
   ChannelStore(
     this._onNewChannel,
@@ -57,7 +59,7 @@ class ChannelStore {
 
     if (channel == null) {
       //TODO: improve the creation of reconnection token
-      final reconnectionToken = _uuid.v4();
+      final reconnectionToken = _reconnectTokenPrefix + _uuid.v4();
 
       // create a new channel
       channel = MultiConnectionChannel(
@@ -84,26 +86,40 @@ class ChannelStore {
     }
   }
 
+  // Returns true if the connection request is considered a reconnection,
+  // based on token length or other identifying characteristics.
+  bool _isReconnection(String token) {
+    return token.length >= _uuid.v4().length ||
+        token.startsWith(_reconnectTokenPrefix);
+  }
+
   // check if the connection is valid
   ConnectRequestStatus verifyConnectionRequest(
       ConnectionRequest connectionRequest) {
-    // check reconnection token
-    if (_verifyReconnectionToken(connectionRequest)) {
-      return ConnectRequestStatus.success;
+    final token = connectionRequest.token;
+
+    // Reject if no token is provided
+    if (token == null) {
+      return ConnectRequestStatus.invalidOtp;
+    }
+
+    // If it's a reconnection attempt, validate it separately
+    if (_isReconnection(token)) {
+      return _verifyReconnectionToken(connectionRequest.clientId, token);
     }
 
     return _verifyConnectRequest(connectionRequest);
   }
 
-  bool _verifyReconnectionToken(ConnectionRequest connectionRequest) {
-    var channel = _channels[connectionRequest.clientId];
-    if (channel == null) {
-      return false;
-    }
+  ConnectRequestStatus _verifyReconnectionToken(String clientId, String token) {
+    final channel = _channels[clientId];
 
-    if (connectionRequest.token == null) {
-      return false;
+    // Reject if no active channel is found (likely already closed)
+    if (channel == null) {
+      return ConnectRequestStatus.channelClosed;
     }
-    return channel.verifyReconnectionToken(connectionRequest.token!);
+    return channel.verifyReconnectionToken(token)
+        ? ConnectRequestStatus.success
+        : ConnectRequestStatus.invalidOtp;
   }
 }
