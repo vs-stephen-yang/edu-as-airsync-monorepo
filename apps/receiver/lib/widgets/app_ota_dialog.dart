@@ -77,26 +77,29 @@ class AppOTADialogState extends State<AppOTADialog>
           // it will break "Show Prompt mechanism"
           canPop: false,
           child: AlertDialog(
-            title: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: Image(
-                    image: Svg('assets/images/ic_logo_airsync_icon.svg'),
+            title: Semantics(
+              identifier: 'v3_qa_ota_dialog_tittle',
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Image(
+                      image: Svg('assets/images/ic_logo_airsync_icon.svg'),
+                    ),
                   ),
-                ),
-                const Gap(20),
-                Text(
-                  S.of(context).update_title,
-                  style: TextStyle(
-                    color: context.tokens.color.vsdslColorOnSurface,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
+                  const Gap(20),
+                  Text(
+                    S.of(context).update_title,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurface,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
