@@ -179,35 +179,57 @@ class V3SettingsMirroring extends StatelessWidget {
                 ),
                 V3SettingMenuSubItemFocus(
                   excludeSemantics: false,
-                  child: Row(
+                  child: Column(
                     children: [
-                      SizedBox(
-                        width: 48,
-                        height: 48,
-                        child: V3CustomCheckbox(
-                            label: S
-                                .of(context)
-                                .v3_lbl_settings_mirroring_auto_accept,
-                            identifier: 'v3_qa_settings_mirroring_auto_accept',
-                            isDisable: disable,
-                            value: !mirrorStateProvider.isMirrorConfirmation,
-                            onChanged: (bool? value) {
-                              mirrorStateProvider.isMirrorConfirmation =
-                                  !mirrorStateProvider.isMirrorConfirmation;
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: V3CustomCheckbox(
+                                label: S
+                                    .of(context)
+                                    .v3_lbl_settings_mirroring_auto_accept,
+                                identifier:
+                                    'v3_qa_settings_mirroring_auto_accept',
+                                isDisable: disable,
+                                value:
+                                    !mirrorStateProvider.isMirrorConfirmation,
+                                onChanged: (bool? value) {
+                                  mirrorStateProvider.isMirrorConfirmation =
+                                      !mirrorStateProvider.isMirrorConfirmation;
 
-                              trackEvent(
-                                'click_auto_accept',
-                                EventCategory.setting,
-                                target: mirrorStateProvider.isMirrorConfirmation
-                                    ? 'on'
-                                    : 'off',
-                              );
-                            }),
+                                  trackEvent(
+                                    'click_auto_accept',
+                                    EventCategory.setting,
+                                    target:
+                                        mirrorStateProvider.isMirrorConfirmation
+                                            ? 'on'
+                                            : 'off',
+                                  );
+                                }),
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                          Flexible(
+                            child: Text(
+                              S.of(context).v3_settings_mirroring_auto_accept,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                      Flexible(
+                      Padding(
+                        padding: EdgeInsets.only(
+                            bottom:
+                                context.tokens.spacing.vsdslSpacingSm.bottom,
+                            left: 20 +
+                                context.tokens.spacing.vsdslSpacingSm.right),
                         child: Text(
-                          S.of(context).v3_settings_mirroring_auto_accept,
+                          S.of(context).v3_settings_mirroring_auto_accept_desc,
                           style: TextStyle(
                             fontSize: 12,
                             color:
@@ -216,18 +238,6 @@ class V3SettingsMirroring extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
-                      left: 20 + context.tokens.spacing.vsdslSpacingSm.right),
-                  child: Text(
-                    S.of(context).v3_settings_mirroring_auto_accept_desc,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                    ),
                   ),
                 ),
               ],
