@@ -10,7 +10,9 @@ class V3Focus extends StatelessWidget {
     this.label,
     required this.identifier,
     this.button = true,
-  });
+    this.link = false,
+  }) : assert((button == true ? 1 : 0) + (link == true ? 1 : 0) <=
+            1); // 只能有一個是 true
 
   final Widget child;
   final KeyEventResult Function(FocusNode node, KeyEvent event)? onFocusMove;
@@ -18,6 +20,7 @@ class V3Focus extends StatelessWidget {
   final String? label;
   final String identifier;
   final bool button;
+  final bool link;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,7 @@ class V3Focus extends StatelessWidget {
               label: label,
               identifier: identifier,
               button: button,
+              link: link,
               child: child,
             ),
           );

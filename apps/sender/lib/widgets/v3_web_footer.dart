@@ -4,7 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/link.dart';
 
 class V3WebFooter extends StatelessWidget {
   const V3WebFooter({super.key});
@@ -54,17 +54,22 @@ class V3WebFooter extends StatelessWidget {
                 V3Focus(
                   label: S.current.v3_lbl_main_privacy,
                   identifier: 'v3_qa_main_privacy',
-                  button: true,
-                  child: TextButton(
-                    onPressed: () {
-                      launchUrl(Uri.parse(
-                          '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
-                    },
-                    child: AutoSizeText(
-                      S.of(context).v3_main_privacy,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: context.tokens.color.vsdswColorOnSurface,
+                  button: false,
+                  link: true,
+                  child: Link(
+                    uri: Uri.parse(
+                        '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'),
+                    target: LinkTarget.blank,
+                    builder: (context, followLink) => ExcludeSemantics(
+                      child: TextButton(
+                        onPressed: followLink,
+                        child: AutoSizeText(
+                          S.of(context).v3_main_privacy,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: context.tokens.color.vsdswColorOnSurface,
+                          ),
+                        ),
                       ),
                     ),
                   ),
