@@ -258,12 +258,20 @@ class _V3StreamingViewState extends ConsumerState {
                                         screenHeight: _fullHeight,
                                         displaySmartScalingEnabled:
                                             smartScalingDecision),
-                                  if (HybridConnectionList()
-                                      .isPresenting(index: index))
-                                    Positioned(
-                                      bottom: 0,
-                                      child: V3StreamingFunction(index: index),
-                                    ),
+                                  provider.Consumer<ChannelProvider>(
+                                    builder: (_, channelProvider, __) {
+                                      // 直接監聽ChannelProvider確保每次都能抓到最新的狀態
+                                      if (HybridConnectionList()
+                                          .isPresenting(index: index)) {
+                                        return Positioned(
+                                          bottom: 0,
+                                          child:
+                                              V3StreamingFunction(index: index),
+                                        );
+                                      }
+                                      return const SizedBox.shrink();
+                                    },
+                                  ),
                                   if (HybridConnectionList()
                                       .isStopPresenting(index))
                                     Column(
@@ -390,11 +398,13 @@ class _V3StreamingViewState extends ConsumerState {
         return V3NewSharingMenu(name: name);
       },
     ).then((_) {
-      ChannelProvider channelProvider =
-          provider.Provider.of<ChannelProvider>(context, listen: false);
-      channelProvider.showNewSharingNameList.value.remove(name);
-      channelProvider.showNewSharingNameList.value =
-          List.from(channelProvider.showNewSharingNameList.value);
+      if (mounted) {
+        ChannelProvider channelProvider =
+            provider.Provider.of<ChannelProvider>(context, listen: false);
+        channelProvider.showNewSharingNameList.value.remove(name);
+        channelProvider.showNewSharingNameList.value =
+            List.from(channelProvider.showNewSharingNameList.value);
+      }
     }).whenComplete(() {
       setState(() {
         _isNewSharingOnScreen = false;
