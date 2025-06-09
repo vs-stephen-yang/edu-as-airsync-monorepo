@@ -411,11 +411,13 @@ class DownloadWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      S.current.v3_main_download_mac_store_label,
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: context.tokens.color.vsdswColorOnSurface),
+                    ExcludeSemantics(
+                      child: Text(
+                        S.current.v3_main_download_mac_store_label,
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorOnSurface),
+                      ),
                     ),
                     const Gap(5),
                     V3Focus(

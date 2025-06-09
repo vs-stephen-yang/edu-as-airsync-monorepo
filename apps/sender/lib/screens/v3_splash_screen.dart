@@ -41,9 +41,11 @@ class _SplashScreenState extends State<V3SplashScreen> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            SvgPicture.asset(
-              'assets/images/v3_ic_airsync.svg',
-              excludeFromSemantics: true,
+            ExcludeSemantics(
+              child: SvgPicture.asset(
+                'assets/images/v3_ic_airsync.svg',
+                excludeFromSemantics: true,
+              ),
             ),
             Positioned(
               bottom: (Platform.isAndroid || Platform.isIOS) ? 24 : 32,
