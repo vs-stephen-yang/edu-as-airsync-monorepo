@@ -82,13 +82,12 @@ class _BaseFocusSingleChildScrollViewState
           return Stack(
             fit: StackFit.expand,
             children: [
-              // 可捲動區塊
               RawScrollbar(
                 controller: _scrollController,
                 thumbVisibility: true,
                 thumbColor: context.tokens.color.vsdslColorOutline,
-                radius: const Radius.circular(5),
-                thickness: 2,
+                radius: const Radius.circular(10),
+                thickness: 4,
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   child: Padding(

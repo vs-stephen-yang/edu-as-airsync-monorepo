@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_qrcode_image.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 
 class V3QrCodeQuickConnect extends StatelessWidget {
@@ -45,8 +46,7 @@ class V3QrCodeQuickConnect extends StatelessWidget {
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
           vertical: context.tokens.spacing.vsdslSpacing4xl.top - 1),
-      child: Scrollbar(
-        thumbVisibility: true,
+      child: V3Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,

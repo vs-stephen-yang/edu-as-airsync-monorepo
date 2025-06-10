@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -296,8 +297,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(top: 20),
-                              child: Scrollbar(
-                                thumbVisibility: true,
+                              child: V3Scrollbar(
                                 controller: scrollController,
                                 child: SingleChildScrollView(
                                   controller: scrollController,

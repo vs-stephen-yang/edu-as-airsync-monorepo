@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -36,11 +37,8 @@ class V3Setting2ndLayer extends StatelessWidget {
                   builder: (context) {
                     final ScrollController scrollController =
                         ScrollController();
-                    return Scrollbar(
+                    return V3Scrollbar(
                       controller: scrollController,
-                      thumbVisibility: true,
-                      thickness: 4,
-                      radius: const Radius.circular(10),
                       child: SingleChildScrollView(
                         controller: scrollController,
                         padding: const EdgeInsets.only(right: 8),

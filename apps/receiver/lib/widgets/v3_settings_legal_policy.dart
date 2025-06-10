@@ -3,6 +3,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/oss_licenses.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
@@ -59,9 +60,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
           Expanded(
             child: Builder(builder: (context) {
               final sc = ScrollController();
-              return Scrollbar(
+              return V3Scrollbar(
                 controller: sc,
-                thumbVisibility: true,
                 child: ListView.builder(
                   controller: sc,
                   itemCount: dependencies

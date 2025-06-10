@@ -6,6 +6,7 @@ import 'package:display_flutter/widgets/v3_cast_devices_view.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
 import 'package:display_flutter/widgets/v3_qrcode_image.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -65,8 +66,9 @@ class V3CastDeviceInfo extends StatelessWidget {
                                 flex: 15,
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Scrollbar(
+                                  child: V3Scrollbar(
                                     controller: scrollController,
+                                    thumbVisibility: false,
                                     child: SingleChildScrollView(
                                       controller: scrollController,
                                       child: Column(

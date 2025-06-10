@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_accessibility.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_cast_to_boards.dart';
 import 'package:display_flutter/widgets/v3_settings_connectivity.dart';
@@ -181,11 +182,8 @@ class _V3SettingMenuSidebar extends StatelessWidget {
               child: Builder(
                 builder: (context) {
                   final ScrollController scrollController = ScrollController();
-                  return Scrollbar(
+                  return V3Scrollbar(
                     controller: scrollController,
-                    thumbVisibility: true,
-                    thickness: 4,
-                    radius: const Radius.circular(10),
                     child: SingleChildScrollView(
                       controller: scrollController,
                       padding: const EdgeInsets.only(right: 8), // 為滾動條留出空間
