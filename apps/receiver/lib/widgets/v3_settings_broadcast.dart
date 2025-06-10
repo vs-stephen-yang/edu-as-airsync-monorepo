@@ -127,8 +127,8 @@ class CastToDevices extends StatelessWidget {
                       Consumer<ChannelProvider>(
                         builder: (_, channelProvider, __) {
                           return SizedBox(
-                            width: 36,
-                            height: 21,
+                            width: 41,
+                            height: 25,
                             child: V3Focus(
                               label: S
                                   .of(context)
