@@ -53,22 +53,27 @@ class V3SettingMenuItemToggleTile extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               SizedBox(
-                height: 21,
-                width: 38,
+                height: 48,
+                width: 48,
                 child: ExcludeFocus(
-                  child: InkWell(
-                    highlightColor: Colors.transparent,
-                    onTap: isLocked ? null : onTap,
-                    child: SvgPicture.asset(
-                      isLocked
-                          ? switchOn
-                              ? 'assets/images/ic_switch_on_lock.svg'
-                              : 'assets/images/ic_switch_off_lock.svg'
-                          : switchOn
-                              ? 'assets/images/ic_switch_on.svg'
-                              : 'assets/images/ic_switch_off.svg',
-                      fit: BoxFit
-                          .fitHeight, // Ensure it fits the height properly
+                  child: Center(
+                    child: SizedBox(
+                      width: 37,
+                      height: 21,
+                      child: InkWell(
+                        highlightColor: Colors.transparent,
+                        onTap: isLocked ? null : onTap,
+                        child: SvgPicture.asset(
+                          isLocked
+                              ? switchOn
+                                  ? 'assets/images/ic_switch_on_lock.svg'
+                                  : 'assets/images/ic_switch_off_lock.svg'
+                              : switchOn
+                                  ? 'assets/images/ic_switch_on.svg'
+                                  : 'assets/images/ic_switch_off.svg',
+                          fit: BoxFit.contain, // 圖片會自適應 21x38，無需縮放變形
+                        ),
+                      ),
                     ),
                   ),
                 ),
