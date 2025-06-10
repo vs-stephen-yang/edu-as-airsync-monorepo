@@ -294,7 +294,7 @@ class ExpandedContentWidget extends StatelessWidget {
       child: Row(
         children: [
           gap,
-          _buildIcon('assets/images/ic_drag.svg'),
+          ExcludeSemantics(child: _buildIcon('assets/images/ic_drag.svg')),
           textPadding,
           Flexible(child: _buildText(context)),
           textPadding,
