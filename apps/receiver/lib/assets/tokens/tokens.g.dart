@@ -200,7 +200,7 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdslColorOnWarningVariant => const Color(0xFFFFFFFF);
   @override
-  Color get vsdslColorError => const Color(0xFFF67F00);
+  Color get vsdslColorError => const Color(0xFFDB0025);
   @override
   Color get vsdslColorOnError => const Color(0xFFFFFFFF);
   @override
