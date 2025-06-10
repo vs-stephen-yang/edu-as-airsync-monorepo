@@ -392,7 +392,8 @@ class _ConnectionStatusWidget extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          Expanded(
+          Flexible(
+            fit: FlexFit.loose,
             child: Padding(
               padding: EdgeInsets.only(
                 left: context.tokens.spacing.vsdslSpacingSm.left,
