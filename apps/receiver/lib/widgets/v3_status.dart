@@ -15,6 +15,7 @@ class V3Status extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Image(
           excludeFromSemantics: true,
