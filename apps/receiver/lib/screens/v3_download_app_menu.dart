@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -56,8 +57,7 @@ class PortraitWidget extends StatelessWidget {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          Scrollbar(
-            thumbVisibility: true,
+          V3Scrollbar(
             controller: scrollController,
             child: SingleChildScrollView(
               controller: scrollController,
@@ -429,8 +429,7 @@ class LandscapeWidget extends StatelessWidget {
                     flex: 15,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10, bottom: 10),
-                      child: Scrollbar(
-                        thumbVisibility: true,
+                      child: V3Scrollbar(
                         controller: leftScrollController,
                         child: SingleChildScrollView(
                           controller: leftScrollController,
@@ -676,8 +675,7 @@ class LandscapeWidget extends StatelessWidget {
                     flex: 11,
                     child: Padding(
                       padding: const EdgeInsets.only( bottom: 10),
-                      child: Scrollbar(
-                        thumbVisibility: true,
+                      child: V3Scrollbar(
                         controller: rightScrollController,
                         child: SingleChildScrollView(
                           controller: rightScrollController,

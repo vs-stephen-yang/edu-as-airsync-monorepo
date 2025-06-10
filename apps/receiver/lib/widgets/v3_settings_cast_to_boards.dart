@@ -13,6 +13,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_item_toggle_tile.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
@@ -455,21 +456,25 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       bool isBroadcastingToGroup, ChannelProvider channelProvider) {
     final clientList = ref.watch(groupProvider
         .select((state) => [...state.selectedList, ...state.clients]));
+    final sc = ScrollController();
     return Expanded(
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: isBroadcastingToGroup ? clientList.length : 0,
-        itemBuilder: (context, index) {
-          final client = clientList[index];
-          return Opacity(
-            opacity: isBroadcastingToGroup ? 1.0 : 0.3,
-            child:
-                _buildListTIle(client, context, groupNotifier, channelProvider),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) =>
-            Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
+      child: V3Scrollbar(
+        controller: sc,
+        child: ListView.separated(
+          shrinkWrap: true,
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: isBroadcastingToGroup ? clientList.length : 0,
+          itemBuilder: (context, index) {
+            final client = clientList[index];
+            return Opacity(
+              opacity: isBroadcastingToGroup ? 1.0 : 0.3,
+              child: _buildListTIle(
+                  client, context, groupNotifier, channelProvider),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) =>
+              Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
+        ),
       ),
     );
   }

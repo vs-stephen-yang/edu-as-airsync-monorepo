@@ -9,6 +9,7 @@ import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -109,11 +110,10 @@ class V3MainInfo extends StatelessWidget {
               child: Container(
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.only(left: 30, top: 30),
-                child: Scrollbar(
-                  controller: scrollController, // 使用 ScrollController
-                  thumbVisibility: true,
+                child: V3Scrollbar(
+                  controller: scrollController,
                   child: SingleChildScrollView(
-                    controller: scrollController, // 使用相同的 ScrollController
+                    controller: scrollController,
                     child: const V3Instruction(isCastToDevice: false),
                   ),
                 ),
@@ -148,7 +148,7 @@ class V3MainInfo extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.topCenter,
                       padding: EdgeInsets.only(left: 53, top: 53),
-                      child: Scrollbar(
+                      child: V3Scrollbar(
                         controller: scrollController, // 使用 ScrollController
                         thumbVisibility: true,
                         child: SingleChildScrollView(

@@ -3,6 +3,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,11 +39,8 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
           child: Builder(
             builder: (context) {
               final ScrollController scrollController = ScrollController();
-              return Scrollbar(
+              return V3Scrollbar(
                 controller: scrollController,
-                thumbVisibility: true,
-                thickness: 4,
-                radius: const Radius.circular(10),
                 child: SingleChildScrollView(
                   controller: scrollController,
                   padding: const EdgeInsets.only(right: 8), // 為滾動條留出空間
