@@ -253,7 +253,9 @@ class MyApp extends StatelessWidget {
                 fontFamilyFallback: ['NotoSansTC'],
               ),
             ),
-            home: kIsWeb ? botToastBuilder(context, const V3Home()) : const V3SplashScreen(),
+            // BUG 87068這邊只針對Android平台做調整
+            initialRoute: WebRTC.platformIsAndroid ? null : (kIsWeb ? '/v3home' : '/v3splash'),
+            home: WebRTC.platformIsAndroid ? const V3SplashScreen() : null,
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/v3home')'
