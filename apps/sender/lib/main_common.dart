@@ -253,7 +253,7 @@ class MyApp extends StatelessWidget {
                 fontFamilyFallback: ['NotoSansTC'],
               ),
             ),
-            initialRoute: kIsWeb ? '/v3home' : '/v3splash',
+            home: kIsWeb ? botToastBuilder(context, const V3Home()) : const V3SplashScreen(),
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/v3home')'
