@@ -64,7 +64,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
         ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: isMobile() ? 641 : 504,
-            maxHeight: isMobile() ? 541 : 538,
+            maxHeight: isMobile() ? 541 : 452,
           ),
           child: Container(
             padding: const EdgeInsets.only(top: 22, left: 22, right: 22),
