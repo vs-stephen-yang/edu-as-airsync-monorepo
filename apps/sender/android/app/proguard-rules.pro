@@ -27,6 +27,7 @@
 
 ##---------------Begin: Sentry specific rules -------------------------
 -keep class io.sentry.** { *; }
+-keep interface io.sentry.** { *; }
 -dontwarn io.sentry.**
 ##---------------End: Sentry specific rules ---------------------------
 
