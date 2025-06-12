@@ -34,6 +34,7 @@ class ApReceiver
 
   virtual bool OnMirrorStart(
       const std::string& device_name,
+      const std::string& device_model,
       ap::AirplayMirrorSessionPtr session) override;
 
  private:

@@ -17,6 +17,7 @@ class ApMirrorSession
   ApMirrorSession(
       const std::string& mirror_id,
       const std::string& device_name,
+      const std::string& device_model,
       MirrorListener& mirror_listener,
       ap::AirplayMirrorSessionPtr session);
 
@@ -63,6 +64,7 @@ class ApMirrorSession
  private:
   std::string mirror_id_;
   std::string device_name_;
+  std::string device_model_; // e.g. "iPhone12,1", "iPad7,11"
 
   MirrorListener& mirror_listener_;
 
