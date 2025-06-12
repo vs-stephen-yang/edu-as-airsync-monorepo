@@ -1,0 +1,217 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
+
+/// 設備名稱顯示組件
+class DeviceNameDisplay extends StatelessWidget {
+  final String deviceName;
+  final TextStyle? textStyle;
+
+  const DeviceNameDisplay({
+    super.key,
+    required this.deviceName,
+    this.textStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Builder(builder: (context) {
+        final sc = ScrollController();
+        return V3Scrollbar(
+          controller: sc,
+          child: SingleChildScrollView(
+            controller: sc,
+            child: Text(
+              deviceName,
+              style: textStyle ??
+                  TextStyle(
+                    fontSize: 12,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+/// 授權按鈕類型
+enum AuthorizeButtonType {
+  decline,
+  accept,
+  acceptAll,
+}
+
+/// 統一的授權按鈕組件
+class AuthorizeButton extends StatelessWidget {
+  final AuthorizeButtonType type;
+  final String text;
+  final VoidCallback onPressed;
+  final String? focusLabel;
+  final String? focusIdentifier;
+  final double minWidth;
+  final double minHeight;
+
+  const AuthorizeButton({
+    super.key,
+    required this.type,
+    required this.text,
+    required this.onPressed,
+    this.focusLabel,
+    this.focusIdentifier,
+    this.minWidth = 80,
+    required this.minHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return V3Focus(
+      label: focusLabel ?? text,
+      identifier: focusIdentifier ?? 'authorize_button_${type.name}',
+      child: Container(
+        constraints: BoxConstraints(
+          minWidth: minWidth,
+          minHeight: minHeight,
+        ),
+        child: ElevatedButton(
+          style: _getButtonStyle(context),
+          onPressed: onPressed,
+          child: AutoSizeText(text),
+        ),
+      ),
+    );
+  }
+
+  ButtonStyle _getButtonStyle(BuildContext context) {
+    final basePadding = MediaQuery.of(context).textScaler.scale(1.0) <= 1.0
+        ? EdgeInsets.zero
+        : const EdgeInsets.symmetric(horizontal: 10);
+
+    const baseTextStyle = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+    );
+
+    switch (type) {
+      case AuthorizeButtonType.decline:
+        return ElevatedButton.styleFrom(
+          foregroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+          backgroundColor: context.tokens.color.vsdslColorOpacityNeutralSm,
+          side: BorderSide(
+            color: context.tokens.color.vsdslColorOnSurfaceInverse,
+            width: 1.5,
+          ),
+          textStyle: baseTextStyle,
+          padding: basePadding,
+        );
+
+      case AuthorizeButtonType.accept:
+      case AuthorizeButtonType.acceptAll:
+        return ElevatedButton.styleFrom(
+          foregroundColor: context.tokens.color.vsdslColorNeutral,
+          backgroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+          textStyle: baseTextStyle,
+          padding: basePadding,
+        );
+    }
+  }
+}
+
+/// 請求行組件的數據模型
+class RequestRowData {
+  final String deviceName;
+  final String iconAsset;
+  final VoidCallback onDecline;
+  final VoidCallback onAccept;
+  final VoidCallback onAcceptAll;
+  final String declineText;
+  final String acceptText;
+  final String acceptAllText;
+
+  const RequestRowData({
+    required this.deviceName,
+    required this.iconAsset,
+    required this.onDecline,
+    required this.onAccept,
+    required this.onAcceptAll,
+    required this.declineText,
+    required this.acceptText,
+    required this.acceptAllText,
+  });
+}
+
+/// 統一的請求行組件
+class RequestRow extends StatelessWidget {
+  final RequestRowData data;
+  final double containerHeight;
+
+  const RequestRow({
+    super.key,
+    required this.data,
+    required this.containerHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 508,
+      height: containerHeight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 圖標
+          SvgPicture.asset(
+            data.iconAsset,
+            excludeFromSemantics: true,
+            width: 21,
+            height: 21,
+          ),
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
+
+          // 設備名稱
+          DeviceNameDisplay(deviceName: data.deviceName),
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
+
+          // Decline 按鈕
+          AuthorizeButton(
+            type: AuthorizeButtonType.decline,
+            text: data.declineText,
+            onPressed: data.onDecline,
+            focusLabel: data.declineText,
+            focusIdentifier: 'v3_qa_authorize_prompt_decline',
+            minHeight: containerHeight,
+          ),
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
+
+          // Accept 按鈕
+          AuthorizeButton(
+            type: AuthorizeButtonType.accept,
+            text: data.acceptText,
+            onPressed: data.onAccept,
+            focusLabel: data.acceptText,
+            focusIdentifier: 'v3_qa_authorize_prompt_accept',
+            minHeight: containerHeight,
+          ),
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
+
+          // Accept All 按鈕
+          AuthorizeButton(
+            type: AuthorizeButtonType.acceptAll,
+            text: data.acceptAllText,
+            onPressed: data.onAcceptAll,
+            focusLabel: data.acceptAllText,
+            focusIdentifier: 'v3_qa_authorize_prompt_accept_all',
+            minHeight: containerHeight,
+          ),
+        ],
+      ),
+    );
+  }
+}

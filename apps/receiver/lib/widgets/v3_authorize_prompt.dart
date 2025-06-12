@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
@@ -9,7 +7,8 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/utility/user_timer_manager.dart';
+import 'package:display_flutter/widgets/authorize_prompt_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -28,20 +27,37 @@ class V3AuthorizePrompt extends StatefulWidget {
 class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
   List<BuildContext> dialogContextList = [];
 
-  Timer? _autoCloseTimer;
-  final int _totalSeconds = 9;
-  int _remainingSeconds = 9;
+  final UserTimerManager _timerManager = UserTimerManager();
   final ValueNotifier<double> _progressNotifier = ValueNotifier<double>(1.0);
+  final ValueNotifier<int> _remainingSecondsNotifier = ValueNotifier<int>(0);
 
-  // 添加变量来跟踪上一次的请求数量
-  int _lastAuthRequestCount = 0;
-  int _lastMirrorRequestCount = 0;
+  @override
+  void initState() {
+    super.initState();
+
+    // 設置計時器管理器的回調
+    _timerManager.onProgressUpdate = (progress, remainingSeconds) {
+      _progressNotifier.value = progress;
+      _remainingSecondsNotifier.value = remainingSeconds;
+    };
+
+    _timerManager.onUserTimeout = (userId) {
+      _handleUserTimeout(userId);
+    };
+  }
 
   @override
   void dispose() {
-    _cancelAutoCloseTimer();
+    _timerManager.clearAll();
     _progressNotifier.dispose();
+    _remainingSecondsNotifier.dispose();
     super.dispose();
+  }
+
+  // 移除舊的計時器方法，替換為新的重置方法
+  void _resetTimerForUser(String userId) {
+    // 當用戶進行操作時，重置該用戶的計時器
+    _timerManager.resetUser(userId);
   }
 
   @override
@@ -54,44 +70,19 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
           .values
           .where((request) => request.mirrorState == MirrorState.idle);
 
-      if ((authRequestIdles.isNotEmpty || mirrorRequestIdles.isNotEmpty) &&
-          dialogContextList.isEmpty) {
-        if (authRequestIdles.isNotEmpty) {
-          Future.delayed(Duration.zero, () {
-            if (context.mounted) {
-              _showAuthDialog(context);
-            }
-          });
-        } else {
-          for (MirrorRequest request
-              in HybridConnectionList().getMirrorMap().values) {
-            if (request.mirrorState == MirrorState.idle) {
-              if ((!ChannelProvider.isModeratorMode &&
-                      HybridConnectionList.hybridSplitScreenCount.value <
-                          HybridConnectionList.maxHybridSplitScreen) ||
-                  (ChannelProvider.isModeratorMode &&
-                      HybridConnectionList().getConnectionCount() <
-                          HybridConnectionList.maxHybridConnection)) {
-                // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
-                Future.delayed(Duration.zero, () {
-                  if (context.mounted) {
-                    _showAuthDialog(context);
-                  }
-                });
-              } else {
-                mirrorStateProvider.stopAcceptedMirror(request.mirrorId);
-                Future.delayed(Duration.zero, () {
-                  _showMaxAmountToast();
-                });
-                request.trackSessionEvent('device_full');
-              }
-            }
-          }
-        }
-      } else if (mirrorStateProvider.pinCode.isNotEmpty &&
+      // 使用 WidgetsBinding.instance.addPostFrameCallback 來延遲更新
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _updateTimerUsers(
+            authRequestIdles, mirrorRequestIdles, mirrorStateProvider.pinCode);
+      });
+
+      if ((authRequestIdles.isNotEmpty ||
+              mirrorRequestIdles.isNotEmpty ||
+              mirrorStateProvider.pinCode.isNotEmpty) &&
           dialogContextList.isEmpty) {
         Future.delayed(Duration.zero, () {
           if (context.mounted) {
+            print('------mounted--showing auth dialog');
             _showAuthDialog(context);
           }
         });
@@ -109,62 +100,106 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
           }
         }
         dialogContextList.clear();
-        _cancelAutoCloseTimer(); // 當對話框關閉時，取消計時器
+        // 延遲清空計時器，避免在 build 中執行
+        Future.delayed(Duration.zero, () {
+          _timerManager.clearAll();
+        });
       }
       return const SizedBox.shrink();
     });
   }
 
-  void _startAutoCloseTimer() {
-    _cancelAutoCloseTimer();
-    _remainingSeconds = _totalSeconds; // 重置倒計時
-    _progressNotifier.value = 1.0; // 重置進度條
+  // 新增方法：更新計時器管理器中的用戶
+  void _updateTimerUsers(
+    List<Map<String, dynamic>> authRequestIdles,
+    Iterable<MirrorRequest> mirrorRequestIdles,
+    String pinCode,
+  ) {
+    Set<String> currentUserIds = {};
 
-    _autoCloseTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _remainingSeconds--;
-      _progressNotifier.value = _remainingSeconds / _totalSeconds;
+    // 添加 WebRTC 用戶
+    for (var request in authRequestIdles) {
+      final deviceName = request.entries.first.key;
+      final userId = 'webrtc_$deviceName';
+      currentUserIds.add(userId);
 
-      if (_remainingSeconds <= 0) {
-        _handleAutoClose();
-        _cancelAutoCloseTimer();
+      _timerManager.addUser(
+        id: userId,
+        deviceName: deviceName,
+        connectionType: UserTimerManager.getWebRTCConnectionType(),
+      );
+    }
+
+    // 添加 Mirror 用戶
+    for (var request in mirrorRequestIdles) {
+      final userId = 'mirror_${request.mirrorId}';
+      currentUserIds.add(userId);
+
+      final connectionType = UserTimerManager.getConnectionTypeFromString(
+        request.mirrorType.toString().split('.').last,
+        hasPin: pinCode.isNotEmpty &&
+            request.mirrorType.toString().contains('airplay'),
+      );
+
+      _timerManager.addUser(
+        id: userId,
+        deviceName: request.deviceName,
+        connectionType: connectionType,
+      );
+    }
+
+    // 添加 PIN 碼用戶（如果存在）
+    if (pinCode.isNotEmpty) {
+      const userId = 'pin_code';
+      currentUserIds.add(userId);
+
+      _timerManager.addUser(
+        id: userId,
+        deviceName: 'PIN Code',
+        connectionType: ConnectionType.airplayWithPin,
+      );
+    }
+
+    // 移除不再存在的用戶
+    final existingUserIds = _timerManager.allTimers.keys.toSet();
+    for (final userId in existingUserIds) {
+      if (!currentUserIds.contains(userId)) {
+        _timerManager.removeUser(userId);
       }
-    });
+    }
   }
 
-  // 取消自動關閉計時器
-  void _cancelAutoCloseTimer() {
-    _autoCloseTimer?.cancel();
-    _autoCloseTimer = null;
-  }
-
-  // 處理自動關閉
-  void _handleAutoClose() {
-    // 自動拒絕所有未處理的請求
+  // 新增方法：處理用戶超時
+  void _handleUserTimeout(String userId) {
     final channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
 
-    // 處理 WebRTC 請求
-    if (channelProvider.authorizeRequestList.isNotEmpty) {
-      for (var request in channelProvider.authorizeRequestList) {
-        request.entries.first.value.sendRejectPresent(
-            PresentRejectedReasonCode.timeout.code,
-            'auto reject due to timeout');
+    if (userId.startsWith('webrtc_')) {
+      // 處理 WebRTC 超時
+      final deviceName = userId.substring(7); // 移除 'webrtc_' 前綴
+      final requestIndex = channelProvider.authorizeRequestList.indexWhere(
+        (request) => request.entries.first.key == deviceName,
+      );
+
+      if (requestIndex != -1) {
+        channelProvider.authorizeRequestList[requestIndex].entries.first.value
+            .sendRejectPresent(PresentRejectedReasonCode.timeout.code,
+                'auto reject due to timeout');
+        channelProvider.authorizeRequestList.removeAt(requestIndex);
       }
-      channelProvider.authorizeRequestList.clear();
+    } else if (userId.startsWith('mirror_')) {
+      // 處理 Mirror 超時
+      final mirrorId = userId.substring(7); // 移除 'mirror_' 前綴
+      mirrorStateProvider.clearRequestMirrorId(mirrorId);
+    } else if (userId == 'pin_code') {
+      // 處理 PIN 碼超時
+      mirrorStateProvider.clearPinCode();
     }
 
-    // 處理鏡像請求
-    for (MirrorRequest request
-        in HybridConnectionList().getMirrorMap().values) {
-      if (request.mirrorState == MirrorState.idle) {
-        mirrorStateProvider.clearRequestMirrorId(request.mirrorId);
-      }
-    }
-
-    // 關閉對話框
-    if (dialogContextList.isNotEmpty) {
+    // 如果沒有更多用戶，關閉對話框
+    if (!_timerManager.hasUsers && dialogContextList.isNotEmpty) {
       for (var context in dialogContextList) {
         if (context.mounted && Navigator.canPop(context)) {
           Navigator.pop(context);
@@ -195,9 +230,6 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
     }
     FocusScope.of(context).unfocus();
 
-    // 啟動自動關閉計時器
-    _startAutoCloseTimer();
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -227,18 +259,6 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                         .where((request) =>
                             request.mirrorState == MirrorState.idle);
 
-                    int currentAuthCount = authRequestIdles.length;
-                    int currentMirrorCount = mirrorRequestIdles.length;
-
-                    if ((currentAuthCount > _lastAuthRequestCount ||
-                            currentMirrorCount > _lastMirrorRequestCount) &&
-                        _autoCloseTimer != null) {
-                      _startAutoCloseTimer();
-                    }
-
-                    _lastAuthRequestCount = currentAuthCount;
-                    _lastMirrorRequestCount = currentMirrorCount;
-
                     // Calculate Dialog height.
                     var totalHeight = 0.0;
                     // container padding height
@@ -257,8 +277,6 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                         MediaQuery.of(context).textScaleFactor > 1.0
                             ? 60.0
                             : 30.0;
-                    var requestMaxLine =
-                        MediaQuery.of(context).textScaleFactor > 1.0 ? 2 : 1;
                     var requestPaddingHeight =
                         context.tokens.spacing.vsdslSpacingLg.vertical;
                     if (mirrorRequestIdles.isNotEmpty) {
@@ -382,241 +400,97 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                               itemCount: mirrorRequestIdles.length,
                               itemBuilder:
                                   (BuildContext buildContext, int index) {
-                                return SizedBox(
-                                  width: 508,
-                                  height: requestContainerHeight,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      SvgPicture.asset(
+                                final request =
+                                    mirrorRequestIdles.toList()[index];
+                                final deviceDisplayName = sprintf(
+                                    S.current.main_mirror_from_client,
+                                    [request.deviceName]);
+
+                                return RequestRow(
+                                  data: RequestRowData(
+                                    deviceName: deviceDisplayName,
+                                    iconAsset:
                                         'assets/images/ic_prompt_in_mirror.svg',
-                                        excludeFromSemantics: true,
-                                        width: 21,
-                                        height: 21,
-                                      ),
-                                      Gap(context
-                                          .tokens.spacing.vsdslSpacingSm.left),
-                                      Expanded(
-                                        // 添加 Expanded 包装 Text
-                                        child: SingleChildScrollView(
-                                          child: Text(
-                                            sprintf(
-                                                S.current
-                                                    .main_mirror_from_client,
-                                                [
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .deviceName
-                                                ]),
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: context.tokens.color
-                                                  .vsdslColorOnSurfaceInverse,
-                                            ),
-                                            maxLines:
-                                                requestMaxLine, // 限制最多显示两行
-                                          ),
-                                        ),
-                                      ),
-                                      Gap(context
-                                          .tokens.spacing.vsdslSpacingSm.left),
-                                      V3Focus(
-                                        label: S
-                                            .of(context)
-                                            .v3_lbl_authorize_prompt_decline,
-                                        identifier:
-                                            'v3_qa_authorize_prompt_decline',
-                                        child: Container(
-                                          constraints: BoxConstraints(
-                                            minWidth: 80,
-                                            minHeight: requestContainerHeight,
-                                          ),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOnSurfaceInverse,
-                                              backgroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOpacityNeutralSm,
-                                              side: BorderSide(
-                                                color: context.tokens.color
-                                                    .vsdslColorOnSurfaceInverse,
-                                                width: 1.5,
-                                              ),
-                                              textStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              padding: EdgeInsets.zero,
-                                            ),
-                                            onPressed: () {
-                                              // 重置計時器
-                                              _startAutoCloseTimer();
+                                    declineText: S
+                                        .of(context)
+                                        .v3_authorize_prompt_decline,
+                                    acceptText: S
+                                        .of(context)
+                                        .v3_authorize_prompt_accept,
+                                    acceptAllText: S
+                                        .of(context)
+                                        .v3_authorize_prompt_accept_all,
+                                    onDecline: () {
+                                      _resetTimerForUser(
+                                          'mirror_${request.mirrorId}');
 
-                                              final String mirrorType =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorType
-                                                      .name
-                                                      .replaceAll('googlecast',
-                                                          'google_cast');
-                                              trackEvent('click_decline_device',
-                                                  EventCategory.session,
-                                                  mode: mirrorType);
-                                              var mirrorId = mirrorRequestIdles
-                                                  .toList()[index]
-                                                  .mirrorId;
-                                              mirrorStateProvider
-                                                  .clearRequestMirrorId(
-                                                      mirrorId);
-                                            },
-                                            child: AutoSizeText(S
-                                                .of(context)
-                                                .v3_authorize_prompt_decline),
-                                          ),
-                                        ),
-                                      ),
-                                      Gap(context
-                                          .tokens.spacing.vsdslSpacingSm.left),
-                                      V3Focus(
-                                        label: S
-                                            .of(context)
-                                            .v3_lbl_authorize_prompt_accept,
-                                        identifier:
-                                            'v3_qa_authorize_prompt_accept',
-                                        child: Container(
-                                          constraints: BoxConstraints(
-                                            minWidth: 80,
-                                            minHeight: requestContainerHeight,
-                                          ),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: context.tokens
-                                                  .color.vsdslColorNeutral,
-                                              backgroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOnSurfaceInverse,
-                                              textStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              padding: EdgeInsets.zero,
-                                            ),
-                                            onPressed: () async {
-                                              // 重置計時器
-                                              _startAutoCloseTimer();
+                                      final String mirrorType =
+                                          request.mirrorType.name.replaceAll(
+                                              'googlecast', 'google_cast');
+                                          trackEvent('click_decline_device',
+                                              EventCategory.session,
+                                              mode: mirrorType);
+                                          mirrorStateProvider
+                                              .clearRequestMirrorId(
+                                              request.mirrorId);
+                                        },
+                                        onAccept: () async {
+                                          _resetTimerForUser(
+                                              'mirror_${request.mirrorId}');
 
-                                              final String mirrorType =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorType
-                                                      .name
-                                                      .replaceAll('googlecast',
-                                                          'google_cast');
-                                              trackEvent('click_accept_device',
-                                                  EventCategory.session,
-                                                  mode: mirrorType);
-                                              String? mirrorId =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorId;
-                                              if (ChannelProvider
-                                                  .isModeratorMode) {
-                                                mirrorStateProvider
-                                                    .setModeratorIdleMirrorId(
-                                                        mirrorId);
-                                              } else {
-                                                mirrorStateProvider
-                                                    .setAcceptMirrorId(
-                                                        mirrorId);
-                                              }
-                                            },
-                                            child: AutoSizeText(S
-                                                .of(context)
-                                                .v3_authorize_prompt_accept),
-                                          ),
-                                        ),
-                                      ),
-                                      Gap(context
-                                          .tokens.spacing.vsdslSpacingSm.left),
-                                      V3Focus(
-                                        label: S
-                                            .of(context)
-                                            .v3_lbl_authorize_prompt_accept_all,
-                                        identifier:
-                                            'v3_qa_authorize_prompt_accept_all',
-                                        child: Container(
-                                          constraints: BoxConstraints(
-                                            minWidth: 80,
-                                            minHeight: requestContainerHeight,
-                                          ),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: context.tokens
-                                                  .color.vsdslColorNeutral,
-                                              backgroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOnSurfaceInverse,
-                                              textStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              padding: EdgeInsets.zero,
-                                            ),
-                                            onPressed: () async {
-                                              // 重置計時器
-                                              _startAutoCloseTimer();
+                                      final String mirrorType =
+                                          request.mirrorType.name.replaceAll(
+                                              'googlecast', 'google_cast');
+                                      trackEvent('click_accept_device',
+                                          EventCategory.session,
+                                          mode: mirrorType);
 
-                                              final String mirrorType =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorType
-                                                      .name
-                                                      .replaceAll('googlecast',
-                                                          'google_cast');
-                                              trackEvent(
-                                                  'click_accept_all_device',
-                                                  EventCategory.session,
-                                                  mode: mirrorType);
+                                      if (ChannelProvider.isModeratorMode) {
+                                        mirrorStateProvider
+                                            .setModeratorIdleMirrorId(
+                                                request.mirrorId);
+                                      } else {
+                                        mirrorStateProvider.setAcceptMirrorId(
+                                            request.mirrorId);
+                                      }
+                                    },
+                                    onAcceptAll: () async {
+                                      // 重置所有 mirror 計時器
+                                      for (var req in mirrorRequestIdles) {
+                                        _resetTimerForUser(
+                                            'mirror_${req.mirrorId}');
+                                      }
 
-                                              for (int i = mirrorRequestIdles
-                                                      .toList()
-                                                      .length;
-                                                  i > 0;
-                                                  i--) {
-                                                String? mirrorId =
-                                                    mirrorRequestIdles
-                                                        .toList()[i - 1]
-                                                        .mirrorId;
-                                                if (ChannelProvider
-                                                    .isModeratorMode) {
-                                                  mirrorStateProvider
-                                                      .setModeratorIdleMirrorId(
-                                                          mirrorId);
-                                                } else {
-                                                  mirrorStateProvider
-                                                      .setAcceptMirrorId(
-                                                          mirrorId);
-                                                }
-                                              }
+                                      final String mirrorType =
+                                          request.mirrorType.name.replaceAll(
+                                              'googlecast', 'google_cast');
+                                          trackEvent('click_accept_all_device',
+                                              EventCategory.session,
+                                              mode: mirrorType);
 
-                                              mirrorStateProvider
-                                                  .isMirrorConfirmation = false;
-                                            },
-                                            child: AutoSizeText(S
-                                                .of(context)
-                                                .v3_authorize_prompt_accept_all),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                      for (int i = mirrorRequestIdles
+                                              .toList()
+                                              .length;
+                                          i > 0;
+                                          i--) {
+                                        String? mirrorId = mirrorRequestIdles
+                                            .toList()[i - 1]
+                                            .mirrorId;
+                                        if (ChannelProvider.isModeratorMode) {
+                                          mirrorStateProvider
+                                              .setModeratorIdleMirrorId(
+                                                  mirrorId);
+                                        } else {
+                                          mirrorStateProvider
+                                              .setAcceptMirrorId(mirrorId);
+                                        }
+                                      }
+
+                                      mirrorStateProvider.isMirrorConfirmation =
+                                          false;
+                                    },
                                   ),
+                                  containerHeight: requestContainerHeight,
                                 );
                               },
                               separatorBuilder:
@@ -698,206 +572,76 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                           shrinkWrap: true,
                           itemCount: authRequestIdles.length,
                           itemBuilder: (BuildContext buildContext, int index) {
-                            return SizedBox(
-                              width: 508,
-                              height: requestContainerHeight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SvgPicture.asset(
+                            final request = authRequestIdles[index];
+                            final deviceName = request.entries.first.key;
+                            final deviceDisplayName = sprintf(
+                                S.current.main_mirror_from_client,
+                                [deviceName]);
+
+                            return RequestRow(
+                              data: RequestRowData(
+                                deviceName: deviceDisplayName,
+                                iconAsset:
                                     'assets/images/ic_prompt_in_webrtc.svg',
-                                    excludeFromSemantics: true,
-                                    width: 21,
-                                    height: 21,
-                                  ),
-                                  Gap(context
-                                      .tokens.spacing.vsdslSpacingSm.left),
-                                  Expanded(
-                                    // 添加 Expanded 包装 Text
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        sprintf(
-                                            S.current.main_mirror_from_client, [
-                                          authRequestIdles[index]
-                                              .entries
-                                              .first
-                                              .key
-                                        ]),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
-                                        ),
-                                        maxLines: requestMaxLine, // 限制最多显示两行
-                                      ),
-                                    ),
-                                  ),
-                                  Gap(context
-                                      .tokens.spacing.vsdslSpacingSm.left),
-                                  V3Focus(
-                                    label: S
-                                        .of(context)
-                                        .v3_lbl_authorize_prompt_decline,
-                                    identifier:
-                                        'v3_qa_authorize_prompt_decline',
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        minWidth: 80,
-                                        minHeight: requestContainerHeight,
-                                      ),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
-                                          backgroundColor: context.tokens.color
-                                              .vsdslColorOpacityNeutralSm,
-                                          side: BorderSide(
-                                            color: context.tokens.color
-                                                .vsdslColorOnSurfaceInverse,
-                                            width: 1.5,
-                                          ),
-                                          textStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        onPressed: () {
-                                          // 重置計時器
-                                          _startAutoCloseTimer();
+                                declineText:
+                                    S.of(context).v3_authorize_prompt_decline,
+                                acceptText:
+                                    S.of(context).v3_authorize_prompt_accept,
+                                acceptAllText: S
+                                    .of(context)
+                                    .v3_authorize_prompt_accept_all,
+                                onDecline: () {
+                                  _resetTimerForUser('webrtc_$deviceName');
 
-                                          if (authRequestIdles.isNotEmpty) {
-                                            trackEvent('click_decline_device',
-                                                EventCategory.session,
-                                                mode: 'webrtc');
+                                  trackEvent('click_decline_device',
+                                      EventCategory.session,
+                                      mode: 'webrtc');
 
-                                            authRequestIdles[index]
-                                                .entries
-                                                .first
-                                                .value
-                                                .sendRejectPresent(
-                                                    PresentRejectedReasonCode
-                                                        .authorizeDecline.code,
-                                                    'authorize decline');
-                                            channelProvider.authorizeRequestList
-                                                .removeAt(index);
-                                          }
-                                        },
-                                        child: AutoSizeText(S
-                                            .of(context)
-                                            .v3_authorize_prompt_decline),
-                                      ),
-                                    ),
-                                  ),
-                                  Gap(context
-                                      .tokens.spacing.vsdslSpacingSm.left),
-                                  V3Focus(
-                                    label: S
-                                        .of(context)
-                                        .v3_lbl_authorize_prompt_accept,
-                                    identifier: 'v3_qa_authorize_prompt_accept',
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        minWidth: 80,
-                                        minHeight: requestContainerHeight,
-                                      ),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: context
-                                              .tokens.color.vsdslColorNeutral,
-                                          backgroundColor: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
-                                          textStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        onPressed: () {
-                                          // 重置計時器
-                                          _startAutoCloseTimer();
+                                  request.entries.first.value.sendRejectPresent(
+                                      PresentRejectedReasonCode
+                                          .authorizeDecline.code,
+                                      'authorize decline');
+                                  channelProvider.authorizeRequestList
+                                      .removeAt(index);
+                                },
+                                onAccept: () {
+                                  _resetTimerForUser('webrtc_$deviceName');
 
-                                          if (authRequestIdles.isNotEmpty) {
-                                            trackEvent('click_accept_device',
-                                                EventCategory.session,
-                                                mode: 'webrtc');
+                                  trackEvent('click_accept_device',
+                                      EventCategory.session,
+                                      mode: 'webrtc');
 
-                                            authRequestIdles[index]
-                                                .entries
-                                                .first
-                                                .value
-                                                .sendAllowPresent();
-                                            channelProvider.authorizeRequestList
-                                                .removeAt(index);
-                                          }
-                                        },
-                                        child: AutoSizeText(S
-                                            .of(context)
-                                            .v3_authorize_prompt_accept),
-                                      ),
-                                    ),
-                                  ),
-                                  Gap(context
-                                      .tokens.spacing.vsdslSpacingSm.left),
-                                  V3Focus(
-                                    label: S
-                                        .of(context)
-                                        .v3_lbl_authorize_prompt_accept_all,
-                                    identifier:
-                                        'v3_qa_authorize_prompt_accept_all',
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        minWidth: 80,
-                                        minHeight: requestContainerHeight,
-                                      ),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: context
-                                              .tokens.color.vsdslColorNeutral,
-                                          backgroundColor: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
-                                          textStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        onPressed: () {
-                                          // 重置計時器
-                                          _startAutoCloseTimer();
+                                  request.entries.first.value
+                                      .sendAllowPresent();
+                                  channelProvider.authorizeRequestList
+                                      .removeAt(index);
+                                },
+                                onAcceptAll: () {
+                                  // 重置所有 WebRTC 計時器
+                                  for (var req in authRequestIdles) {
+                                    final reqDeviceName = req.entries.first.key;
+                                    _resetTimerForUser('webrtc_$reqDeviceName');
+                                  }
 
-                                          if (authRequestIdles.isNotEmpty) {
-                                            trackEvent(
-                                                'click_accept_all_device',
-                                                EventCategory.session,
-                                                mode: 'webrtc');
+                                  trackEvent('click_accept_all_device',
+                                      EventCategory.session,
+                                      mode: 'webrtc');
 
-                                            for (int i =
-                                                    authRequestIdles.length;
-                                                i > 0;
-                                                i--) {
-                                              authRequestIdles[i - 1]
-                                                  .entries
-                                                  .first
-                                                  .value
-                                                  .sendAllowPresent();
-                                              channelProvider
-                                                  .authorizeRequestList
-                                                  .removeAt(i - 1);
-                                            }
-                                          }
-                                          channelProvider.isAuthorizeMode =
-                                              false;
-                                        },
-                                        child: AutoSizeText(S
-                                            .of(context)
-                                            .v3_authorize_prompt_accept_all),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  for (int i = authRequestIdles.length;
+                                      i > 0;
+                                      i--) {
+                                    authRequestIdles[i - 1]
+                                        .entries
+                                        .first
+                                        .value
+                                        .sendAllowPresent();
+                                    channelProvider.authorizeRequestList
+                                        .removeAt(i - 1);
+                                  }
+                                  channelProvider.isAuthorizeMode = false;
+                                },
                               ),
+                              containerHeight: requestContainerHeight,
                             );
                           },
                           separatorBuilder:
