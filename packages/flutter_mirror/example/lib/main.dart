@@ -116,6 +116,7 @@ class _MyAppState extends State<MyApp>
     int textureId,
     String deviceName,
     MirrorType mirrorType,
+    String deviceModel,
   ) {
     print('A new mirror has started. $mirrorType $deviceName');
 

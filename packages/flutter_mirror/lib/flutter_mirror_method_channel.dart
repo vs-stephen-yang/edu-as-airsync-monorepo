@@ -166,12 +166,14 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int textureId = call.arguments["textureId"];
         String deviceName = call.arguments["deviceName"];
         String mirrorType = call.arguments["mirrorType"];
+        String deviceModel = call.arguments["deviceModel"];
 
         _mirrorListener?.onMirrorStart(
           mirrorId,
           textureId,
           deviceName,
           MirrorType.values.byName(mirrorType),
+          deviceModel
         );
       } else if (call.method == 'onMirrorStop') {
         String mirrorId = call.arguments["mirrorId"];

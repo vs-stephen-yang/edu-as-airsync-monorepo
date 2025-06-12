@@ -8,6 +8,7 @@ abstract class FlutterMirrorListener {
     int textureId,
     String deviceName,
     MirrorType mirrorType,
+    String deviceModel,
   );
 
   void onMirrorStop(String mirrorId);

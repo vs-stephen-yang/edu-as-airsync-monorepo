@@ -482,6 +482,7 @@ public class FlutterMirrorPlugin implements
       arguments.put("textureId", textureId);
       arguments.put("deviceName", deviceName);
       arguments.put("mirrorType", mirrorType);
+      arguments.put("deviceModel", deviceModel);
 
       channel_.invokeMethod("onMirrorStart", arguments);
     });
