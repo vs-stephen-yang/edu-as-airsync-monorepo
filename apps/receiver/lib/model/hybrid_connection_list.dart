@@ -445,6 +445,7 @@ class HybridConnectionList {
         .entries
         .where((entry) => entry.value.mirrorState != MirrorState.idle));
   }
+
   //Mirror functions region
 
   bool isMirroring() {
@@ -465,6 +466,12 @@ class HybridConnectionList {
       }
     }
     return count;
+  }
+
+  int getMirrorConnectionIndex(String mirrorId) {
+    return _hybridConnectionList.indexWhere((e) {
+      return (e is MirrorRequest) && e.mirrorId == mirrorId;
+    });
   }
 
   //End region of Mirror functions

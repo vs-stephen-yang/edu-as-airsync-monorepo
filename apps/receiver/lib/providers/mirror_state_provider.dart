@@ -246,6 +246,12 @@ class MirrorStateProvider extends ChangeNotifier
 
   setModeratorIdleMirrorId(String? mirrorId, {bool stopCastEvent = false}) {
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
+      final index =
+          HybridConnectionList().getMirrorConnectionIndex(mirrorId ?? '');
+      if (index >= 0 &&
+          index == HybridConnectionList().enlargedScreenIndex.value) {
+        HybridConnectionList().enlargedScreenIndex.value = null;
+      }
       for (var entry in HybridConnectionList().getMirrorMap().entries) {
         if (entry.value.mirrorId == mirrorId) {
           MirrorRequest request = entry.value;
