@@ -236,7 +236,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       barrierColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
         var dialogWidth =
-            MediaQuery.of(context).textScaleFactor > 1.0 ? 628.0 : 700.0;
+            MediaQuery.of(context).textScaler.scale(1.0) > 1.0 ? 628.0 : 700.0;
         dialogContextList.add(dialogContext);
         return PopScope(
           // Using canPop=false to block back key return,
@@ -267,16 +267,17 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     // pin code height
                     var pinCodeHeight = 0.0;
                     if (mirrorStateProvider.pinCode.isNotEmpty) {
-                      pinCodeHeight += 70;
+                      var textScale =
+                          MediaQuery.of(context).textScaler.scale(1.0);
+                      pinCodeHeight += 70 * textScale; // 按比例縮放基本高度
                     }
                     // Divider height
                     var requestDividerHeight = 2.0;
                     // mirror request height and spacing height
                     var requestTotalHeight = 0.0;
-                    var requestContainerHeight =
-                        MediaQuery.of(context).textScaleFactor > 1.0
-                            ? 60.0
-                            : 30.0;
+                    var textScale =
+                        MediaQuery.of(context).textScaler.scale(1.0);
+                    var requestContainerHeight = 30.0 * textScale; // 按比例縮放容器高度
                     var requestPaddingHeight =
                         context.tokens.spacing.vsdslSpacingLg.vertical;
                     if (mirrorRequestIdles.isNotEmpty) {
@@ -427,16 +428,15 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       final String mirrorType =
                                           request.mirrorType.name.replaceAll(
                                               'googlecast', 'google_cast');
-                                          trackEvent('click_decline_device',
-                                              EventCategory.session,
-                                              mode: mirrorType);
-                                          mirrorStateProvider
-                                              .clearRequestMirrorId(
-                                              request.mirrorId);
-                                        },
-                                        onAccept: () async {
-                                          _resetTimerForUser(
-                                              'mirror_${request.mirrorId}');
+                                      trackEvent('click_decline_device',
+                                          EventCategory.session,
+                                          mode: mirrorType);
+                                      mirrorStateProvider.clearRequestMirrorId(
+                                          request.mirrorId);
+                                    },
+                                    onAccept: () async {
+                                      _resetTimerForUser(
+                                          'mirror_${request.mirrorId}');
 
                                       final String mirrorType =
                                           request.mirrorType.name.replaceAll(
@@ -464,9 +464,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       final String mirrorType =
                                           request.mirrorType.name.replaceAll(
                                               'googlecast', 'google_cast');
-                                          trackEvent('click_accept_all_device',
-                                              EventCategory.session,
-                                              mode: mirrorType);
+                                      trackEvent('click_accept_all_device',
+                                          EventCategory.session,
+                                          mode: mirrorType);
 
                                       for (int i = mirrorRequestIdles
                                               .toList()
