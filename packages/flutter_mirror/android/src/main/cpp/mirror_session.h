@@ -23,6 +23,7 @@ class MirrorSession {
   virtual SurfaceTexture GetTexture() = 0;
 
   virtual std::string GetSourceDisplayName() = 0;
+  virtual std::string GetSourceDeviceModel() = 0;
 
   virtual MirrorType GetMirrorType() = 0;
 

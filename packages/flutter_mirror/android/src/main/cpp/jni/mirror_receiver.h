@@ -32,6 +32,7 @@ class MirrorReceiver {
       const std::string& mirror_id,
       int64_t texture_id,
       const std::string& device_name,
+      const std::string& device_model,
       const std::string& mirror_type);
 
   // when a mirror session stops

@@ -33,6 +33,7 @@ class MiracastMirrorSession
   virtual std::string GetMirrorId() override;
   virtual SurfaceTexture GetTexture() override;
   virtual std::string GetSourceDisplayName() override;
+  virtual std::string GetSourceDeviceModel() override;
 
   virtual MirrorType GetMirrorType() override;
 

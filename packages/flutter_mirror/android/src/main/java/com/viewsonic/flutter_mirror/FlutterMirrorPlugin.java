@@ -467,6 +467,7 @@ public class FlutterMirrorPlugin implements
       String mirrorId,
       long textureId,
       String deviceName,
+      String deviceModel,
       String mirrorType) {
     Log.d(TAG, "FlutterMirrorPlugin.onMirrorStart() " + mirrorId);
 

@@ -30,6 +30,7 @@ class ApMirrorSession
   virtual std::string GetMirrorId() override;
   virtual SurfaceTexture GetTexture() override;
   virtual std::string GetSourceDisplayName() override;
+  virtual std::string GetSourceDeviceModel() override;
 
   virtual MirrorType GetMirrorType() override;
 
@@ -64,7 +65,7 @@ class ApMirrorSession
  private:
   std::string mirror_id_;
   std::string device_name_;
-  std::string device_model_; // e.g. "iPhone12,1", "iPad7,11"
+  std::string device_model_;  // e.g. "iPhone12,1", "iPad7,11"
 
   MirrorListener& mirror_listener_;
 

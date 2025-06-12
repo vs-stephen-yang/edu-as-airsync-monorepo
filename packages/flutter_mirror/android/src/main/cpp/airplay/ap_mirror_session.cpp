@@ -122,6 +122,9 @@ SurfaceTexture ApMirrorSession::GetTexture() {
 std::string ApMirrorSession::GetSourceDisplayName() {
   return device_name_;
 }
+std::string ApMirrorSession::GetSourceDeviceModel() {
+  return device_model_;
+}
 
 MirrorType ApMirrorSession::GetMirrorType() {
   return MirrorType::Airplay;
