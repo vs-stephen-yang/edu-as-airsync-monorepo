@@ -296,11 +296,13 @@ public class MirrorReceiver implements
       String mirrorId,
       long textureId,
       String deviceName,
+      String deviceModel,
       String mirrorType) {
     mirrorListener_.onMirrorStart(
         mirrorId,
         textureId,
         deviceName,
+        deviceModel,
         mirrorType);
   }
 
@@ -331,6 +333,7 @@ public class MirrorReceiver implements
   public void onMiracastError(String erroMessage) {
     mirrorListener_.onMirrorError("miracast", erroMessage);
   }
+
   @Override
   public void onMirrorError(String mirrorType, String erroMessage) {
     mirrorListener_.onMirrorError(mirrorType, erroMessage);

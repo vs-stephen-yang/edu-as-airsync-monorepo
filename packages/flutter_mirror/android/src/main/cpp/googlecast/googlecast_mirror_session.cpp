@@ -165,6 +165,10 @@ std::string GooglecastMirrorSession::GetSourceDisplayName() {
   return device_name_;
 }
 
+std::string GooglecastMirrorSession::GetSourceDeviceModel() {
+  return "";
+}
+
 MirrorType GooglecastMirrorSession::GetMirrorType() {
   return MirrorType::Googlecast;
 }

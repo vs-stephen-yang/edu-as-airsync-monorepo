@@ -97,6 +97,10 @@ std::string ReplayMirrorSession::GetSourceDisplayName() {
   return "";
 }
 
+std::string ReplayMirrorSession::GetSourceDeviceModel() {
+  return "";
+}
+
 MirrorType ReplayMirrorSession::GetMirrorType() {
   return MirrorType::Googlecast;
 }

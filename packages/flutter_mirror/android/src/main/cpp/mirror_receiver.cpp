@@ -249,12 +249,15 @@ void MirrorReceiver::OnMirrorStart(
   SurfaceTexture tex = session->GetTexture();
 
   std::string device_name = session->GetSourceDisplayName();
+  std::string device_model = session->GetSourceDeviceModel();
+
   MirrorType mirror_type = session->GetMirrorType();
 
   proxy_->OnMirrorStart(
       mirror_id,
       tex.id,
       device_name,
+      device_model,
       MirrorTypeToName(mirror_type));
 }
 

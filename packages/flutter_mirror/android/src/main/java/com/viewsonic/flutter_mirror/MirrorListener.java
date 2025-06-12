@@ -8,6 +8,7 @@ public interface MirrorListener {
       String mirrorId,
       long textureId,
       String deviceName,
+      String deviceModel,
       String mirrorType);
 
   public void onMirrorStop(String mirrorId);

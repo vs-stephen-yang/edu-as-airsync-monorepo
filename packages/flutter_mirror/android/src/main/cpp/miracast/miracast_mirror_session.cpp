@@ -200,6 +200,9 @@ std::string MiracastMirrorSession::GetMirrorId() {
 std::string MiracastMirrorSession::GetSourceDisplayName() {
   return device_name_;
 }
+std::string MiracastMirrorSession::GetSourceDeviceModel() {
+  return "";
+}
 
 MirrorType MiracastMirrorSession::GetMirrorType() {
   return MirrorType::Miracast;
