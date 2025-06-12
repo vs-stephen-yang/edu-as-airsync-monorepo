@@ -74,7 +74,7 @@ android {
 
 dependencies {
     implementation 'com.google.oboe:oboe:1.7.0'
-    implementation 'com.viewsonic.airplay:airplay:0.17.0'
+    implementation 'com.viewsonic.airplay:airplay:0.18.0'
     implementation 'com.viewsonic.googlecast:googlecast:0.10.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
