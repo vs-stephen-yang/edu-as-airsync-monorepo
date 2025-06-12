@@ -5,10 +5,12 @@
 ApMirrorSession::ApMirrorSession(
     const std::string& mirror_id,
     const std::string& device_name,
+    const std::string& device_model,
     MirrorListener& mirror_listener,
     ap::AirplayMirrorSessionPtr session)
     : mirror_id_(mirror_id),
       device_name_(device_name),
+      device_model_(device_model),
       mirror_listener_(mirror_listener),
       session_(session) {
   assert(session);
