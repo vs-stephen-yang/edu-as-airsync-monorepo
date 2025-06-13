@@ -462,6 +462,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
       "Abrir menú rápido de transmisión",
     ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Pestaña flotante de información de conexión",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Expandir menú superpuesto",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimizar menú superpuesto",
+    ),
     "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
       "Transmitir dispositivo a este participante",
     ),
@@ -505,6 +514,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
       "Detener presentación",
     ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Accesibilidad",
+    ),
     "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
       "Volver a la página anterior",
     ),
@@ -521,7 +533,19 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Abrir menú de transmisión a grupo de pantallas",
         ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Transmitir"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Seleccionar %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Confirmar que no se ha seleccionado ningún dispositivo.",
+        ),
     "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Seleccionar %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Guardar"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
         MessageLookupByLibrary.simpleMessage("Seleccionar %s"),
     "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
       "Cerrar menú de configuración",
@@ -611,6 +635,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Abrir menú de configuración de duplicación",
     ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "Reproducción por Airplay",
+    ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("Alternar AirPlay"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
@@ -650,6 +677,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
       "Activar audio",
     ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancelar diálogo",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Confirmar diálogo",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Cancelar"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Reiniciar"),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "Cerrar",
     ),
@@ -745,6 +782,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "Introduce el código para desbloquear los ajustes",
     ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Accesibilidad",
+    ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Transmitir la pantalla del panel interactivo en todo momento.",
     ),
@@ -804,6 +844,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Lanzar AirSync al iniciar"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Nombre del dispositivo",
+    ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "El nombre del dispositivo no puede estar vacío",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Guardar",
@@ -881,6 +924,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic se compromete a proteger tu privacidad y trata el manejo de datos personales con seriedad. La siguiente Política de Privacidad detalla cómo ViewSonic tratará tus datos personales después de haber sido recopilados por ViewSonic a través de tu uso del Sitio Web. ViewSonic mantiene la privacidad de tu información utilizando tecnologías de seguridad y adhiere a políticas que previenen el uso no autorizado de tu información personal. Al usar este Sitio Web, consientes la recopilación y uso de tu información.\n\nLos sitios web a los que te vinculas desde ViewSonic.com pueden tener su propia política de privacidad que puede diferir de la de ViewSonic. Por favor, revisa las políticas de privacidad de esos sitios web para obtener información detallada sobre cómo pueden usar la información recopilada mientras los visitas.\n\nPor favor, haz clic en los siguientes enlaces para aprender más sobre nuestra Política de Privacidad.",
     ),
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Redimensionar el tamaño del texto",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("XLarge"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Grande",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Normal",
+    ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Novedades"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
@@ -900,6 +954,60 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Duplicación",
+    ),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Solo puedes volver a un dispositivo a la vez.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Volver a %s？",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack está desactivado.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Emparejamiento fallido. TouchBack no está activado. Por favor, inténtalo de nuevo",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Cancelar"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Reiniciar"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Tiempo de operación agotado. Por favor, apaga y reinicia la función Bluetooth en la pantalla grande, luego reinicia el touchback.",
+    ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Tiempo de operación agotado, por favor reinicia Bluetooth",
+        ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Buscando dispositivo"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Dispositivo encontrado con éxito",
+        ),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Dispositivo emparejado con éxito",
+        ),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Emparejando dispositivo"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid conectado"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Conectando Hid"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Servicio de perfil Hid iniciado con éxito",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Iniciando el servicio de perfil Hid",
+        ),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Inicializado"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Inicializando"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Ahora puedes controlar %s remotamente desde el IFP.",
     ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Esperando a que este participante comparta su pantalla",
