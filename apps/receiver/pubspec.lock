@@ -34,8 +34,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v0.4.0-9"
-      resolved-ref: c3ac919437d69abb9ec24afce88344fb427b3f2b
+      ref: "v0.4.0-10"
+      resolved-ref: "5e355843b783a68d99b52f8edefda2bfc4a701a8"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window"
     source: git
     version: "0.0.0"
