@@ -148,7 +148,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStart(String mirrorId, int textureId, String deviceName,
-      MirrorType mirrorType) {
+      MirrorType mirrorType, String deviceModel) {
     log.info('onMirrorStart');
     if (mirrorType == MirrorType.airplay) {
       _pinTimer?.cancel();
@@ -158,8 +158,8 @@ class MirrorStateProvider extends ChangeNotifier
     if (HybridConnectionList().connectionListFull()) {
       stopAcceptedMirror(mirrorId);
     } else {
-      final mirrorRequest = MirrorRequest(
-          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType);
+      final mirrorRequest = MirrorRequest(_flutterMirrorPlugin, mirrorId,
+          textureId, deviceName, mirrorType, deviceModel);
       HybridConnectionList().addConnection(mirrorRequest);
 
       mirrorRequest.trackSessionEvent('connect_successfully');
