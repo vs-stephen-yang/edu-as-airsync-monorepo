@@ -8,6 +8,7 @@ class MirrorRequest {
   final String mirrorId;
   final int textureId;
   final String deviceName;
+  final String deviceModel;
   final MirrorType mirrorType;
   double aspectRatio = 3 / 2;
   MirrorState mirrorState = MirrorState.idle;
@@ -15,13 +16,17 @@ class MirrorRequest {
   bool _touchbackEnabled = false;
 
   MirrorRequest(this._flutterMirrorPlugin, this.mirrorId, this.textureId,
-      this.deviceName, this.mirrorType);
+      this.deviceName, this.mirrorType, this.deviceModel);
 
   void controlAudio(bool isEnable, {required bool setIsAudioEnabled}) {
     _flutterMirrorPlugin?.enableAudio(mirrorId, isEnable);
     if (setIsAudioEnabled) {
       isAudioEnabled = isEnable;
     }
+  }
+
+  bool isBluetoothHIDSupported() {
+    return deviceModel.toLowerCase().contains("ipad");
   }
 
   bool getAudioEnabled() {

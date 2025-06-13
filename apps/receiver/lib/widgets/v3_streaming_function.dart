@@ -58,6 +58,11 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 .mirrorType ==
             MirrorType.airplay;
 
+    final isHIDSupported = isAirplay &&
+        HybridConnectionList()
+            .getConnection<MirrorRequest>(widget.index)
+            .isBluetoothHIDSupported();
+
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
     return CompositedTransformTarget(
@@ -93,7 +98,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                   : MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                if (isAirplay)
+                if (isHIDSupported)
                   Visibility(
                     visible: !isCollapsed,
                     child: V3Focus(
