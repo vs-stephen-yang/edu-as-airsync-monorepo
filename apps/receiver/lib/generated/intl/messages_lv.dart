@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'lv';
 
+  static String m1(value) =>
+      "Ekrāna koplietošana drīz beigsies. Vai vēlaties to pagarināt par 3 stundām? Varat pagarināt līdz ${value} reizēm.";
+
   static String m0(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -241,6 +244,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Touchback",
     ),
+    "v3_casting_time_countdown": m1,
+    "v3_casting_time_extend_success_toast":
+        MessageLookupByLibrary.simpleMessage("Pagarināts uz 3 stundām."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Nolasiet QR kodu ar savu iOS vai Android ierīci, lai lejupielādētu",
     ),
@@ -317,6 +323,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Atbalsta kopīgošanu, izmantojot AirPlay, Google Cast vai Miracast",
+    ),
+    "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+      "Ekrāna koplietošana drīz beigsies. Ja nepieciešams, lūdzu, restartējiet ekrāna koplietošanu.",
     ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Neizdevās konstatēt interneta savienojumu. Lūdzu, izveidojiet savienojumu ar Wi-Fi vai iekšējo tīklu un mēģiniet vēlreiz.",
@@ -451,6 +460,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Saglabājiet kodu redzamu ekrāna augšpusē, pat pārslēdzoties uz citām lietotnēm un kopīgojot ekrānu.",
         ),
+    "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
+      "Vieda mēroga",
+    ),
+    "v3_settings_device_smart_scaling_desc": MessageLookupByLibrary.simpleMessage(
+      "Automātiski pielāgojiet ekrāna izmēru, lai maksimāli izmantotu ekrāna vietu. Attēls var būt nedaudz izkropļots.",
+    ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
       "Nav pieejams",
     ),
@@ -509,6 +524,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas jauns"),
+    "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
+      "\nAirSync %s\n\nAirSync ir patentēts bezvadu ekrāna koplietošanas risinājums no ViewSonic. Lietojot ar AirSync sūtītāju, tas ļauj lietotājiem nemanāmi koplietot savus ekrānus ar ViewSonic interaktīvajiem displejiem.\n\nŠajā laidienā ir iekļauti šādi jauni līdzekļi:\n\n1. Atbalsts ViewSonic LED displejiem.\n\n2. Touchback funkcionalitāte Android ierīcēm IFP.\n\n3. Touchback funkcionalitāte iPad, kopīgojot AirPlay.\n\n4. Gudra mērogošana.\n\n5. Iespēja mainīt apraides izmērus uz ierīces logu.\n\n6. Uzlabota stabilitāte Miracast.\n\n7. Novērstas dažādas kļūdas.",
+    ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(
       "Pārraidiet uz ierīcēm",

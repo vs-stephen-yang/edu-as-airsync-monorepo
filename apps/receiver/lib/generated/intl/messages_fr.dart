@@ -208,6 +208,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Accepter",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Tout accepter",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Refuser",
     ),
@@ -348,8 +351,360 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "Le partage d\'écran est sur le point de se terminer. Veuillez redémarrer le partage d\'écran si nécessaire.",
     ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Accepter la demande",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Accepter toutes les demandes",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Refuser la demande",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer la connexion de l\'appareil de diffusion",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Désactiver le retour tactile pour l\'appareil de diffusion",
+        ),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Activer le retour tactile pour l\'appareil de diffusion",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Fermer le menu de l\'application d\'envoi de téléchargement",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage(
+          "Fermer la liste des appareils de diffusion",
+        ),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Fermer la liste des modérateurs",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Fermer le menu de raccourci de streaming",
+        ),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer la boîte de dialogue de statut de connexion",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
+      "Accepter le CLUF",
+    ),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Refuser le CLUF",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Annuler la sortie du mode modérateur",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Confirmer la sortie du mode modérateur",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Ne pas prolonger le temps de diffusion",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Prolonger le temps de diffusion",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer la notification de rejet de groupe",
+    ),
+    "v3_lbl_internet_connection_only_error": MessageLookupByLibrary.simpleMessage(
+      "Erreur de connectivité, veuillez vérifier les paramètres réseau de l\'appareil",
+    ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Connexion locale uniquement",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Sélectionner la langue",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Sélectionner %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Annuler le dialogue",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Confirmer le dialogue",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Réduire le menu de connexion rapide",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Minimiser le menu du code QR de streaming",
+        ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Basculer en mode modérateur",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu de l\'application d\'envoi de téléchargement",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir la liste des appareils de diffusion",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir la liste des modérateurs",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu de configuration",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu du code QR de streaming",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu de raccourci de streaming",
+    ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Onglet d\'information de connexion flottant",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Développer le menu superposé",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimiser le menu superposé",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Projeter l\'appareil sur ce participant",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer la connexion du participant",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Déconnecter ce participant",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer la connexion miroir du participant",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Partager avec le miroir de ce participant",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Arrêter le streaming du participant en miroir",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Partager sur l\'écran de ce participant",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Arrêter le streaming du participant",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Activer le retour tactile pour ce participant",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Désactiver le retour tactile pour ce participant",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Agrandir le contrôle de la présentation",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Réduire le contrôle de la présentation",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Mettre la présentation en sourdine",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Arrêter la présentation",
+    ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Accessibilité",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Retour à la page précédente",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des paramètres de diffusion",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des tableaux de diffusion",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des appareils de diffusion",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Ouvrir le menu de diffusion au groupe d\'affichage",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Diffuser"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Sélectionner %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Confirmer qu\'aucun appareil n\'est sélectionné.",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Sélectionner %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Enregistrer"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
+        MessageLookupByLibrary.simpleMessage("Sélectionner %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Fermer le menu des paramètres",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des paramètres de connectivité",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Sélectionner %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage(
+          "Activer/désactiver le mode d\'autorisation",
+        ),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
+          "Activer/désactiver le mode de remplissage automatique OTP",
+        ),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage(
+          "Activer/désactiver le mode de démarrage automatique",
+        ),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Modifier le nom de l\'appareil",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer les paramètres du nom de l\'appareil",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Enregistrer le nom de l\'appareil",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des paramètres de l\'appareil",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Activer/désactiver la mise à l\'échelle intelligente",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Entrer le nom de l\'appareil",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu déroulant de diffusion d\'écran",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Sélectionner %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des politiques légales",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Le menu de configuration est verrouillé",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage(
+          "Activer/désactiver l\'acceptation automatique",
+        ),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage(
+          "Activer/désactiver le mot de passe requis",
+        ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Plus d\'informations sur la diffusion au groupe d\'affichage",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Sélectionner %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Activer/désactiver l\'affichage du code",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des nouveautés",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "nouvelle icône",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Activer/désactiver AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Activer/désactiver Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Activer/désactiver Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le menu des paramètres de mise en miroir",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "Retour tactile Airplay",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("Basculer AirPlay"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage(
+          "Basculer l\'affichage sur les appareils",
+        ),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Agrandir les fonctionnalités de streaming",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Basculer sur Google Cast"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Le menu de raccourci de streaming est verrouillé",
+        ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Réduire les fonctionnalités de streaming",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Basculer sur Miracast"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Agrandir la vue de streaming",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage(
+          "Agrandir la fonction de streaming",
+        ),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage(
+          "Réduire la fonction de streaming",
+        ),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Réduire la vue de streaming",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Couper le son",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Arrêter le streaming",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Rétablir le son",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Annuler la boîte de dialogue",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Boîte de dialogue de confirmation",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Annuler"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Redémarrer"),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Fermer",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Connexion Internet uniquement。",
+    ),
+    "v3_main_internet_connection_only_error": MessageLookupByLibrary.simpleMessage(
+      "Erreur de connectivité, veuillez vérifier les paramètres réseau de l\'appareil。",
+    ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Erreur de connectivité, veuillez vérifier les paramètres réseau de l\'appareil。",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Connexion LAN uniquement, veuillez vérifier les paramètres réseau de l\'appareil。",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Impossible de détecter une connexion Internet. Veuillez vous connecter à un réseau Wi-Fi ou intranet, et réessayez.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast non disponible pour le moment. Le canal Wi-Fi actuel ne supporte pas le partage d\'écran.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Code d\'accès",
@@ -427,6 +782,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "Entrez le code de sécurité pour déverrouiller les paramètres",
     ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Accessibilité",
+    ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Diffuser l\'écran source IFP tout le temps.",
     ),
@@ -487,6 +845,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Lancer AirSync au démarrage"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Nom de l\'appareil",
+    ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Le nom de l\'appareil ne peut pas être vide",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Enregistrer",
@@ -564,6 +925,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic s\'engage à protéger votre vie privée et prend le traitement des données personnelles au sérieux. La politique de confidentialité ci-dessous détaille comment ViewSonic traitera vos données personnelles après leur collecte par ViewSonic via votre utilisation du site Web. ViewSonic maintient la confidentialité de vos informations en utilisant des technologies de sécurité et adhère à des politiques qui empêchent l\'utilisation non autorisée de vos informations personnelles. En utilisant ce site Web, vous consentez à la collecte et à l\'utilisation de vos informations.\n\nLes sites Web que vous liez depuis ViewSonic.com peuvent avoir leur propre politique de confidentialité qui peut différer de celle de ViewSonic. Veuillez consulter les politiques de confidentialité de ces sites Web pour des informations détaillées sur la manière dont ils peuvent utiliser les informations recueillies lors de votre visite.\n\nVeuillez cliquer sur les liens suivants pour en savoir plus sur notre politique de confidentialité.",
     ),
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Redimensionner la taille du texte",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("Très grand"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Large",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Normal",
+    ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Nouveautés"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
@@ -585,6 +957,56 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Miroir d\'écran",
+    ),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Vous ne pouvez contrôler qu\'un seul appareil à la fois.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Retour tactile vers %s？",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "Le retour tactile est désactivé.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Échec de l\'appairage. Le retour tactile n\'est pas activé. Veuillez réessayer",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Annuler"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Redémarrer"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Délai d\'opération. Veuillez désactiver et redémarrer la fonction Bluetooth sur le grand écran, puis redémarrer le retour tactile.",
+    ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Temps d\'opération écoulé, veuillez redémarrer le Bluetooth",
+        ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Recherche de l\'appareil"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Appareil trouvé avec succès"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Appareil appairé avec succès"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Appairage de l\'appareil"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid connecté"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Connexion Hid"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Service de profil Hid démarré avec succès",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Démarrage du service de profil Hid",
+        ),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Initialisé"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Initialisation"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Vous pouvez maintenant contrôler %s à distance depuis l\'IFP.",
     ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "En attente de ce participant pour partager son écran",
