@@ -247,5 +247,10 @@
   "v3_setting_accessibility": "Prieinamumas",
   "v3_setting_accessibility_size_normal": "Įprastas",
   "v3_setting_accessibility_size_large": "Didelis",
-  "v3_setting_accessibility_size_xlarge": "XLarge"
+  "v3_setting_accessibility_size_xlarge": "XLarge",
+  "v3_lbl_setting_privacy_policy": "Privatumo politika",
+  "v3_present_touch_back_dialog_title": "Leisti \"Touchback\"",
+  "v3_present_touch_back_dialog_description": "Leisti \"Touchback\"\nKai įgalinsite ekrano bendrinimą, \"AirSync\" laikinai užfiksuos ir perduos ekrano turinį į pasirinktą ekraną (pvz., IFP).\\nKad įgalintų jutiklinį grąžinimą, \"AirSync\" reikalauja pritaikymo neįgaliesiems paslaugos leidimo, kad būtų galima leisti nuotolinį valdymą iš ekrano.\\\"nAirSync\" nerenka jūsų asmeninių duomenų ir nestebi jūsų veiksmų. Šis leidimas naudojamas tik jutiklinio valdymo funkcijai įjungti.",
+  "v3_present_touch_back_dialog_not_now": "Ne dabar",
+  "v3_present_touch_back_dialog_allow": "Leisti"
 }

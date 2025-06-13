@@ -248,5 +248,9 @@
   "v3_setting_accessibility_size_normal": "デフォルト",
   "v3_setting_accessibility_size_large": "大",
   "v3_setting_accessibility_size_xlarge": "最大",
-  "v3_lbl_setting_privacy_policy": "プライバシーポリシー"
+  "v3_lbl_setting_privacy_policy": "プライバシーポリシー",
+  "v3_present_touch_back_dialog_title": "タッチバックの許可",
+  "v3_present_touch_back_dialog_description": "画面共有を有効にすると、AirSync は一時的に画面の内容をキャプチャし、選択したディスプレイ (例：IFP) に送信します。\\nタッチバックを有効にするには、AirSync はディスプレイからのリモートコントロールを可能にするため、アクセシビリティサービス権限が必要です。\\nAirSync は個人データを収集したり、ユーザーの操作を監視したりしません。この権限は、タッチコントロール機能の有効化のみに利用されます。",
+  "v3_present_touch_back_dialog_not_now": "今はしない",
+  "v3_present_touch_back_dialog_allow": "許可"
 }
