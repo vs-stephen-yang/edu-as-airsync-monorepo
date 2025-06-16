@@ -604,10 +604,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     return Opacity(
       opacity: isBroadcastingToGroup ? 1.0 : 0.3,
       child: Container(
-        height: 26,
-        padding: const EdgeInsets.only(
-          left: 8,
-        ),
+        padding: const EdgeInsets.only(left: 8),
         child: Text(
           '${S.of(context).v3_settings_display_group} (${groupNotifier.selectedList.length}/10)',
           textAlign: TextAlign.left,
