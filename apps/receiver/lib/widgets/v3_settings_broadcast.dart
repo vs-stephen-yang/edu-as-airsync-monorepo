@@ -9,7 +9,6 @@ import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsBroadcast extends StatelessWidget {
@@ -18,54 +17,33 @@ class V3SettingsBroadcast extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
-      return Column(
-        children: [
-          Expanded(
-            child: V3Setting2ndLayer(
-              isDisable: settingsProvider.isBroadcastLock,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText(
-                    S.of(context).v3_settings_broadcast_cast_to,
-                    style: TextStyle(
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                      fontSize: 12,
-                    ),
-                  ),
-                  SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-                  V3SettingMenuSubItemFocus(
-                    excludeSemantics: false,
-                    child: CastToDevices(
-                      settingsProvider: settingsProvider,
-                      focusNode: settingsProvider.subFocusNode ?? FocusNode(),
-                    ),
-                  ),
-                  SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-                  V3SettingMenuSubItemFocus(
-                      excludeSemantics: false,
-                      child: CastToBoards(settingsProvider: settingsProvider)),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: 325,
-            decoration: BoxDecoration(
-              borderRadius: context.tokens.radii.vsdslRadiusLg,
-              color: context.tokens.color.vsdslColorSurface900,
-            ),
-            padding: context.tokens.spacing.vsdslSpacingXl,
-            child: Text(
-              S.of(context).v3_settings_broadcast_screen_energy_saving,
+      return V3Setting2ndLayer(
+        isDisable: settingsProvider.isBroadcastLock,
+        showEnergySaving: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AutoSizeText(
+              S.of(context).v3_settings_broadcast_cast_to,
               style: TextStyle(
-                color: context.tokens.color.vsdslColorOnTertiary,
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 fontSize: 12,
               ),
             ),
-          ),
-          const Gap(13)
-        ],
+            SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
+            V3SettingMenuSubItemFocus(
+              excludeSemantics: false,
+              child: CastToDevices(
+                settingsProvider: settingsProvider,
+                focusNode: settingsProvider.subFocusNode ?? FocusNode(),
+              ),
+            ),
+            SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
+            V3SettingMenuSubItemFocus(
+                excludeSemantics: false,
+                child: CastToBoards(settingsProvider: settingsProvider)),
+          ],
+        ),
       );
     });
   }
