@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -33,12 +34,23 @@ class V3StreamingFunction extends StatefulWidget {
 
 class _V3StreamingFunctionState extends State<V3StreamingFunction> {
   bool isCollapsed = false;
+  bool? _ifpSupportsBluetoothHID;
   Timer? autoCollapseTimer;
   final LayerLink _layerLink = LayerLink();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (_ifpSupportsBluetoothHID == null) {
+        final String? deviceModel = await DeviceInfoVs.deviceType;
+        if (deviceModel != null) {
+          setState(() {
+            _ifpSupportsBluetoothHID = !_isUnsupportedIFPModel(deviceModel);
+          });
+        }
+      }
+    });
     _startAutoCollapseTimer();
   }
 
@@ -59,6 +71,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
             MirrorType.airplay;
 
     final isHIDSupported = isAirplay &&
+        (_ifpSupportsBluetoothHID ?? false) &&
         HybridConnectionList()
             .getConnection<MirrorRequest>(widget.index)
             .isBluetoothHIDSupported();
@@ -424,6 +437,17 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
         ),
       ),
     );
+  }
+
+  // 不支援HID
+  bool _isUnsupportedIFPModel(String deviceModel) {
+    final unsupportedModels = [
+      'IFP105',
+      'IFP52_K', //IFP52-1A/B
+    ];
+    // 轉成大寫後比較以防大小寫錯誤
+    final normalizedModel = deviceModel.toUpperCase();
+    return unsupportedModels.any((model) => normalizedModel.contains(model));
   }
 
   void _startAutoCollapseTimer() {
