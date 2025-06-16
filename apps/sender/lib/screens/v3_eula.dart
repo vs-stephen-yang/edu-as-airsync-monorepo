@@ -120,10 +120,13 @@ class V3Eula extends StatelessWidget {
                                 if (Platform.isIOS) {
                                   // todo: may not pass Apple review, need add some dialog to let user known?
                                   exit(0);
+                                } else if (Platform.isWindows) {
+                                  // Windows: workable
+                                  exit(0);
                                 } else {
                                   // Android : workable.
                                   // macOS: workable.
-                                  // Windows: todo: waiting verify
+                                  // Windows: not workable
                                   SystemNavigator.pop();
                                 }
                               },
