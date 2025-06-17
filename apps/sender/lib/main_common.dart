@@ -6,6 +6,7 @@ import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:desktop_screenstate/desktop_screenstate.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/profile.dart';
@@ -149,22 +150,31 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     }
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
-      await windowManager.ensureInitialized();
+      if (Platform.isMacOS) {
+        // This package (desktop_window) cannot use on Windows platform.
+        // It will cause Windows did not limit the window size.
+        await DesktopWindow.setWindowSize(Size(640, 480));
+        await DesktopWindow.setMinWindowSize(Size(640, 480));
+      } else {
+        // This package (window_manager) cannot use on MacOS platform.
+        // It will cause MacOS did not detect window closed.
+        await windowManager.ensureInitialized();
 
-      WindowOptions windowOptions = const WindowOptions(
-        size: Size(640, 480),
-        minimumSize: Size(640, 480),
-        center: true,
-        backgroundColor: Colors.transparent,
-        skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.normal,
-        windowButtonVisibility: true,
-      );
+        WindowOptions windowOptions = const WindowOptions(
+          size: Size(640, 480),
+          minimumSize: Size(640, 480),
+          center: true,
+          backgroundColor: Colors.transparent,
+          skipTaskbar: false,
+          titleBarStyle: TitleBarStyle.normal,
+          windowButtonVisibility: true,
+        );
 
-      await windowManager.waitUntilReadyToShow(windowOptions, () async {
-        await windowManager.show();
-        await windowManager.focus();
-      });
+        await windowManager.waitUntilReadyToShow(windowOptions, () async {
+          await windowManager.show();
+          await windowManager.focus();
+        });
+      }
     }
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
@@ -254,7 +264,9 @@ class MyApp extends StatelessWidget {
               ),
             ),
             // BUG 87068這邊只針對Android平台做調整
-            initialRoute: WebRTC.platformIsAndroid ? null : (kIsWeb ? '/v3home' : '/v3splash'),
+            initialRoute: WebRTC.platformIsAndroid
+                ? null
+                : (kIsWeb ? '/v3home' : '/v3splash'),
             home: WebRTC.platformIsAndroid ? const V3SplashScreen() : null,
             navigatorKey: NavigationService.navigationKey,
             routes: {

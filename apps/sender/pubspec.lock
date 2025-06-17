@@ -464,6 +464,14 @@ packages:
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-desktop-screenstate"
     source: git
     version: "0.0.5"
+  desktop_window:
+    dependency: "direct main"
+    description:
+      name: desktop_window
+      sha256: d0590e75a0a8f91245b439fb7f2bf0ebb62d9cd9fdc7aa0622a5d50615c46845
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -661,10 +669,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_window_close
-      sha256: "63f5846efbf0974ec233e6b5f468aa604a4857157f4c6c44fd482621804a0464"
+      sha256: bbdd1ec57259cbffc3f978c1709a3314a0991f042490d9d0a02c5fd70ac8dff6
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2"
+    version: "1.2.0"
   frontend_server_client:
     dependency: transitive
     description:
