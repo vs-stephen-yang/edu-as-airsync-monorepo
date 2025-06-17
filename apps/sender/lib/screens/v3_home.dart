@@ -11,6 +11,7 @@ import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
+import 'package:display_cast_flutter/widgets/v3_exit_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
@@ -27,6 +28,7 @@ class V3Home extends StatefulWidget {
 
 class _V3HomeState extends State<V3Home> {
   late final AppLifecycleListener _lifecycleListener;
+  var _alertShowing = false;
 
   @override
   void initState() {
@@ -36,16 +38,28 @@ class _V3HomeState extends State<V3Home> {
       onExitRequested: _handleExitRequest,
     );
 
-    if (!kIsWeb) {
+    if (!kIsWeb &&
+        (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
       FlutterWindowClose.setWindowShouldCloseHandler(() async {
+        if (_alertShowing) return false;
+        _alertShowing = true;
+        return await showDialog(
+            context: context,
+            builder: (context) {
+              return V3ExitDialog();
+            }).then((value) async {
+          if (value) {
+            await _handleExitRequest();
+          }
+          _alertShowing = false;
+          return value;
+        });
+      });
+    } else {
+      html.window.onBeforeUnload.listen((event) async {
         await _handleExitRequest();
-        return true;
       });
     }
-
-    html.window.onBeforeUnload.listen((event) async {
-      await _handleExitRequest();
-    });
   }
 
   @override

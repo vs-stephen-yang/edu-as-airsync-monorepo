@@ -30,366 +30,471 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "device_list_enter_pin":
-            MessageLookupByLibrary.simpleMessage("Kertakäyttösalasana"),
-        "device_list_enter_pin_ok": MessageLookupByLibrary.simpleMessage("OK"),
-        "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-            "Verkkovirhe. Tarkista verkkoyhteys ja yritä uudelleen."),
-        "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
-            "AirSync-esitys on varattu. Yritä myöhemmin uudelleen."),
-        "main_connect_unknown_error":
-            MessageLookupByLibrary.simpleMessage("Tuntematon virhe."),
-        "main_connection_mode_unsupported":
-            MessageLookupByLibrary.simpleMessage(
-                "AirSync ei voi muodostaa yhteyttä Internetiin."),
-        "main_device_list": MessageLookupByLibrary.simpleMessage("Pikayhteys"),
-        "main_display_code":
-            MessageLookupByLibrary.simpleMessage("Näytä koodi"),
-        "main_display_code_description":
-            MessageLookupByLibrary.simpleMessage("Anna näyttökoodi"),
-        "main_display_code_error": MessageLookupByLibrary.simpleMessage(
-            "Hyväksyy vain kirjaimia ja numeroita."),
-        "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
-            "Maksimimäärä osallistujia (6) on saavutettu."),
-        "main_display_code_exceed_split_screen":
-            MessageLookupByLibrary.simpleMessage(
-                "Maksimimäärä esittäjiä (4) on saavutettu."),
-        "main_display_code_invalid":
-            MessageLookupByLibrary.simpleMessage("Virheellinen näyttökoodi"),
-        "main_feature_reconnect_fail_toast":
-            MessageLookupByLibrary.simpleMessage(
-                "Verkko (Control) yhteyden muodostus epäonnistui"),
-        "main_feature_reconnect_success_toast":
-            MessageLookupByLibrary.simpleMessage(
-                "Verkko (Control) yhteyden muodostus onnistui"),
-        "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-            "Verkko (Control) muodostaa uudelleen yhteyttä"),
-        "main_instance_not_found_or_offline":
-            MessageLookupByLibrary.simpleMessage(
-                "Näyttökoodia ei löytynyt tai esiintymä on offline-tilassa."),
-        "main_language": MessageLookupByLibrary.simpleMessage("Kieli"),
-        "main_language_name": MessageLookupByLibrary.simpleMessage("Englanti"),
-        "main_notice_not_support_description": MessageLookupByLibrary.simpleMessage(
-            "Selainjakamista ei tueta mobiililaitteilla. Lataa ja käytä AirSync-lähettäjäsovellusta paremman kokemuksen saamiseksi."),
-        "main_notice_positive_button": MessageLookupByLibrary.simpleMessage(
-            "Lataa AirSync-lähettäjäsovellus."),
-        "main_notice_title": MessageLookupByLibrary.simpleMessage("Ilmoitus"),
-        "main_otp_error":
-            MessageLookupByLibrary.simpleMessage("Hyväksyy vain numeroita."),
-        "main_password": MessageLookupByLibrary.simpleMessage("Salasana"),
-        "main_password_description":
-            MessageLookupByLibrary.simpleMessage("Anna kertakäyttösalasana"),
-        "main_password_invalid":
-            MessageLookupByLibrary.simpleMessage("Virheellinen salasana."),
-        "main_present": MessageLookupByLibrary.simpleMessage("Seuraava"),
-        "main_setting": MessageLookupByLibrary.simpleMessage("Asetukset"),
-        "main_touch_back":
-            MessageLookupByLibrary.simpleMessage("Takaisin kosketukseen"),
-        "main_update_deny_button":
-            MessageLookupByLibrary.simpleMessage("Ei nyt"),
-        "main_update_description_android": MessageLookupByLibrary.simpleMessage(
-            "Paina \"Päivitä\" asentaaksesi uuden version."),
-        "main_update_description_apple": MessageLookupByLibrary.simpleMessage(
-            "Paina \"Päivitä\" asentaaksesi uuden version."),
-        "main_update_description_windows": MessageLookupByLibrary.simpleMessage(
-            "Paina \"Päivitä\" asentaaksesi uuden version."),
-        "main_update_error_detail":
-            MessageLookupByLibrary.simpleMessage("Kuvaus:"),
-        "main_update_error_title":
-            MessageLookupByLibrary.simpleMessage("Versiopäivitys epäonnistui"),
-        "main_update_error_type":
-            MessageLookupByLibrary.simpleMessage("Epäonnistumisen syy:"),
-        "main_update_positive_button":
-            MessageLookupByLibrary.simpleMessage("Päivitä"),
-        "main_update_title":
-            MessageLookupByLibrary.simpleMessage("Uusi versio saatavilla"),
-        "main_webrtc_reconnect_fail_toast":
-            MessageLookupByLibrary.simpleMessage(
-                "Verkko (WebRTC) yhteyden muodostus epäonnistui"),
-        "main_webrtc_reconnect_success_toast":
-            MessageLookupByLibrary.simpleMessage(
-                "Verkko (WebRTC) yhteyden muodostus onnistui"),
-        "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-            "Verkko (WebRTC) muodostaa uudelleen yhteyttä"),
-        "moderator": MessageLookupByLibrary.simpleMessage("Anna nimesi"),
-        "moderator_back": MessageLookupByLibrary.simpleMessage("Takaisin"),
-        "moderator_exit": MessageLookupByLibrary.simpleMessage("POISTU"),
-        "moderator_fill_out":
-            MessageLookupByLibrary.simpleMessage("Kenttä vaaditaan"),
-        "moderator_name": MessageLookupByLibrary.simpleMessage("Nimi"),
-        "moderator_wait": MessageLookupByLibrary.simpleMessage(
-            "Odota, että moderaattori valitsee esittäjät..."),
-        "present_role_cast_screen":
-            MessageLookupByLibrary.simpleMessage("Jaa näyttö"),
-        "present_role_receive":
-            MessageLookupByLibrary.simpleMessage("Vastaanota näyttö"),
-        "present_select_screen_cancel":
-            MessageLookupByLibrary.simpleMessage("Peruuta"),
-        "present_select_screen_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Valitse näkymä jaettavaksi vastaanottavalle näytölle."),
-        "present_select_screen_entire":
-            MessageLookupByLibrary.simpleMessage("Koko näyttö"),
-        "present_select_screen_ios_restart":
-            MessageLookupByLibrary.simpleMessage("Aloita lähetys"),
-        "present_select_screen_ios_restart_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Paina \"Aloita lähetys\" jatkaaksesi jakamista ennen aikakatkaisua tai paina \"Takaisin\" palataksesi alkuperäiseen näkymään."),
-        "present_select_screen_share":
-            MessageLookupByLibrary.simpleMessage("Jaa"),
-        "present_select_screen_share_audio":
-            MessageLookupByLibrary.simpleMessage("Jaa näytön ääni"),
-        "present_select_screen_window":
-            MessageLookupByLibrary.simpleMessage("Ikkuna"),
-        "present_state_high_quality_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Ota korkea laatu käyttöön hyvissä verkko-olosuhteissa."),
-        "present_state_high_quality_title":
-            MessageLookupByLibrary.simpleMessage("Korkea laatu"),
-        "present_state_pause": MessageLookupByLibrary.simpleMessage("Tauko"),
-        "present_state_resume": MessageLookupByLibrary.simpleMessage("Jatka"),
-        "present_state_stop":
-            MessageLookupByLibrary.simpleMessage("Lopeta esittäminen"),
-        "present_time": MessageLookupByLibrary.simpleMessage("Kulunut aika"),
-        "present_time_unit_hour": MessageLookupByLibrary.simpleMessage("t"),
-        "present_time_unit_min": MessageLookupByLibrary.simpleMessage("min"),
-        "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("sek"),
-        "present_wait": m0,
-        "remote_screen_connect_error":
-            MessageLookupByLibrary.simpleMessage("Etänäytön yhteysvirhe"),
-        "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
-            "Jakamista käsitellään. Odota hetki."),
-        "settings_audio_configuration":
-            MessageLookupByLibrary.simpleMessage("Ääniasetukset"),
-        "settings_knowledge_base":
-            MessageLookupByLibrary.simpleMessage("Tietopankki"),
-        "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
-            "Ota näytön jakaminen AirSync-laitteeseen käyttöön."),
-        "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
-            "Asenna virtuaalinen ääniohjain."),
-        "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
-            "Maksimimäärä moderoituja istuntoja on saavutettu."),
-        "toast_maximum_remote_screen": MessageLookupByLibrary.simpleMessage(
-            "Maksimimäärä jaettuja näyttöjä on saavutettu."),
-        "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Maksimimäärä jaettuja näyttöjä on saavutettu."),
-        "v3_device_list_button_device_list":
-            MessageLookupByLibrary.simpleMessage("Laitelistat"),
-        "v3_device_list_button_text":
-            MessageLookupByLibrary.simpleMessage("Pikayhteys"),
-        "v3_device_list_dialog_connect":
-            MessageLookupByLibrary.simpleMessage("Yhdistä"),
-        "v3_device_list_dialog_invalid_otp":
-            MessageLookupByLibrary.simpleMessage(
-                "Virheellinen kertakäyttösalasana"),
-        "v3_device_list_dialog_title":
-            MessageLookupByLibrary.simpleMessage("Anna kertakäyttösalasana"),
-        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksy"),
-        "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Hylkää"),
-        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
-            "Loppukäyttäjän lisenssisopimus"),
-        "v3_main_accessibility":
-            MessageLookupByLibrary.simpleMessage("Saavutettavuus"),
-        "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
-            "Odota, että isäntä hyväksyy pyyntösi."),
-        "v3_main_connect_network_error":
-            MessageLookupByLibrary.simpleMessage("Verkkoyhteysvirhe."),
-        "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
-            "AirSync-esitys on varattu. Yritä myöhemmin uudelleen."),
-        "v3_main_connect_unknown_error":
-            MessageLookupByLibrary.simpleMessage("Tuntematon virhe."),
-        "v3_main_connection_mode_unsupported":
-            MessageLookupByLibrary.simpleMessage(
-                "AirSync ei muodosta yhteyttä Internetiin."),
-        "v3_main_copy_rights": m1,
-        "v3_main_display_code":
-            MessageLookupByLibrary.simpleMessage("Näyttökoodi"),
-        "v3_main_display_code_error":
-            MessageLookupByLibrary.simpleMessage("Hyväksyy vain numeroita."),
-        "v3_main_display_code_invalid":
-            MessageLookupByLibrary.simpleMessage("Virheellinen näyttökoodi"),
-        "v3_main_download":
-            MessageLookupByLibrary.simpleMessage("Lataa lähettäjäsovellus"),
-        "v3_main_download_action_download":
-            MessageLookupByLibrary.simpleMessage("Lataa"),
-        "v3_main_download_action_get":
-            MessageLookupByLibrary.simpleMessage("Hae"),
-        "v3_main_download_app_dialog_desc": MessageLookupByLibrary.simpleMessage(
-            "Skannaa QR-koodi iOS- tai Android-laitteellasi ladataksesi sovellus"),
-        "v3_main_download_app_dialog_title":
-            MessageLookupByLibrary.simpleMessage("Lataa lähettäjäsovellus"),
-        "v3_main_download_app_subtitle":
-            MessageLookupByLibrary.simpleMessage("iOS ja Android"),
-        "v3_main_download_app_title":
-            MessageLookupByLibrary.simpleMessage("AirSync-sovellus"),
-        "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
-            "Vaivaton näytön jakaminen yhdellä napsautuksella."),
-        "v3_main_download_mac_subtitle":
-            MessageLookupByLibrary.simpleMessage("macOS 10.15+"),
-        "v3_main_download_mac_title":
-            MessageLookupByLibrary.simpleMessage("Mac"),
-        "v3_main_download_title": MessageLookupByLibrary.simpleMessage(
-            "Hanki AirSync-lähettäjäsovellus"),
-        "v3_main_download_win_subtitle":
-            MessageLookupByLibrary.simpleMessage("Win 10 (1709+)/ Win 11"),
-        "v3_main_download_win_title":
-            MessageLookupByLibrary.simpleMessage("Windows"),
-        "v3_main_instance_not_found_or_offline":
-            MessageLookupByLibrary.simpleMessage(
-                "Näyttökoodia ei löytynyt tai esiintymä on offline-tilassa."),
-        "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Jaa"),
-        "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Kirjoita nimesi ennen näytön jakamista"),
-        "v3_main_moderator_app_title":
-            MessageLookupByLibrary.simpleMessage("Jaa"),
-        "v3_main_moderator_disconnect":
-            MessageLookupByLibrary.simpleMessage("Katkaise yhteys"),
-        "v3_main_moderator_input_hint":
-            MessageLookupByLibrary.simpleMessage("Kirjoita nimesi"),
-        "v3_main_moderator_input_limit":
-            MessageLookupByLibrary.simpleMessage("Rajoita nimi 20 merkkiin."),
-        "v3_main_moderator_subtitle":
-            MessageLookupByLibrary.simpleMessage("Anna esityksen otsikko"),
-        "v3_main_moderator_title":
-            MessageLookupByLibrary.simpleMessage("Jaa näyttösi"),
-        "v3_main_moderator_wait": MessageLookupByLibrary.simpleMessage(
-            "Odota, että moderaattori kutsuu sinut jakamaan"),
-        "v3_main_otp_error":
-            MessageLookupByLibrary.simpleMessage("Hyväksyy vain numeroita."),
-        "v3_main_password": MessageLookupByLibrary.simpleMessage("Salasana"),
-        "v3_main_password_invalid":
-            MessageLookupByLibrary.simpleMessage("Virheellinen salasana."),
-        "v3_main_present_action":
-            MessageLookupByLibrary.simpleMessage("Seuraava"),
-        "v3_main_present_subtitle":
-            MessageLookupByLibrary.simpleMessage("Seuraa aloitusohjeita."),
-        "v3_main_present_title":
-            MessageLookupByLibrary.simpleMessage("Jaa näyttösi"),
-        "v3_main_presenting_message":
-            MessageLookupByLibrary.simpleMessage("airsync.net jakaa näyttösi."),
-        "v3_main_privacy":
-            MessageLookupByLibrary.simpleMessage("Tietosuojakäytäntö"),
-        "v3_main_receive_app_action":
-            MessageLookupByLibrary.simpleMessage("Yhdistä"),
-        "v3_main_receive_app_receive_from":
-            MessageLookupByLibrary.simpleMessage("Vastaanota %s:lta"),
-        "v3_main_receive_app_stop":
-            MessageLookupByLibrary.simpleMessage("Pysäytä"),
-        "v3_main_receive_app_subtitle":
-            MessageLookupByLibrary.simpleMessage("Jaa näyttö laitteeseeni"),
-        "v3_main_receive_app_title":
-            MessageLookupByLibrary.simpleMessage("Vastaanota"),
-        "v3_main_select_role_receive":
-            MessageLookupByLibrary.simpleMessage("Vastaanota"),
-        "v3_main_select_role_share":
-            MessageLookupByLibrary.simpleMessage("Jaa"),
-        "v3_main_select_role_title":
-            MessageLookupByLibrary.simpleMessage("Valitse esitystilasi"),
-        "v3_main_terms": MessageLookupByLibrary.simpleMessage("Käyttöehdot"),
-        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
-            "Tällä hetkellä vain Chrome- ja Edge-selaimet ovat tuettuja."),
-        "v3_main_web_nonsupport_confirm":
-            MessageLookupByLibrary.simpleMessage("Ymmärretty!"),
-        "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
-            "Näytön jakaminen on pysäytetty.\nKokonaisaika jaettu %s."),
-        "v3_present_moderator_exited":
-            MessageLookupByLibrary.simpleMessage("Moderaattori on suljettu"),
-        "v3_present_moderator_exited_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_present_moderator_exited_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Moderaattori on suljettu, ole hyvä ja yhdistä uudelleen."),
-        "v3_present_options_menu_he_subtitle":
-            MessageLookupByLibrary.simpleMessage(
-                "Käytä laitteen näytönohjainta streamauksen koodaamiseen."),
-        "v3_present_options_menu_he_title":
-            MessageLookupByLibrary.simpleMessage("Laitteistokiihdytys"),
-        "v3_present_options_menu_hq_subtitle":
-            MessageLookupByLibrary.simpleMessage(
-                "Käytä korkeampaa bittinopeutta lähetykseen."),
-        "v3_present_options_menu_hq_title":
-            MessageLookupByLibrary.simpleMessage("Korkea laatu"),
-        "v3_present_screen_full":
-            MessageLookupByLibrary.simpleMessage("Näyttö täynnä"),
-        "v3_present_screen_full_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_present_screen_full_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Maksimimäärä jaettuja näyttöjä on saavutettu."),
-        "v3_present_select_screen_extension":
-            MessageLookupByLibrary.simpleMessage("Näytön laajennus"),
-        "v3_present_select_screen_extension_desc":
-            MessageLookupByLibrary.simpleMessage("Laajenna työtilaasi"),
-        "v3_present_select_screen_extension_desc2":
-            MessageLookupByLibrary.simpleMessage(
-                "Tämä mahdollistaa sisällön siirtämisen henkilökohtaisen laitteen ja IFP:n välillä reaaliaikaisessa vuorovaikutuksessa."),
-        "v3_present_select_screen_share_audio":
-            MessageLookupByLibrary.simpleMessage("Jaa tietokoneen ääni."),
-        "v3_present_select_screen_subtitle":
-            MessageLookupByLibrary.simpleMessage(
-                "%s haluaa jakaa näyttösi. Valitse, mitä jaetaan."),
-        "v3_present_session_full":
-            MessageLookupByLibrary.simpleMessage("Istunto täynnä"),
-        "v3_present_session_full_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_present_session_full_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Liittyminen ei onnistu. Istunto on saavuttanut maksimimäärän."),
-        "v3_present_touch_back_allow":
-            MessageLookupByLibrary.simpleMessage("Salli kosketusohjaus"),
-        "v3_receiver_remote_screen_busy_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_receiver_remote_screen_busy_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Näyttö on lähetyksessä muille näytöille. Yritä myöhemmin uudelleen."),
-        "v3_receiver_remote_screen_busy_title":
-            MessageLookupByLibrary.simpleMessage("Näyttö on lähetyksessä."),
-        "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
-            "Yhdistä nopeasti skannaamalla QR-koodi"),
-        "v3_select_screen_ios_countdown":
-            MessageLookupByLibrary.simpleMessage("Aikaa jäljellä"),
-        "v3_select_screen_ios_start_sharing":
-            MessageLookupByLibrary.simpleMessage("Aloita jakaminen"),
-        "v3_setting_app_version": m2,
-        "v3_setting_check_update":
-            MessageLookupByLibrary.simpleMessage("Tarkista päivitykset"),
-        "v3_setting_knowledge_base":
-            MessageLookupByLibrary.simpleMessage("Tietopankki"),
-        "v3_setting_language": MessageLookupByLibrary.simpleMessage("Kieli"),
-        "v3_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
-            "Oikeudelliset ja tietosuojaehdot"),
-        "v3_setting_open_source_license": MessageLookupByLibrary.simpleMessage(
-            "Avoimen lähdekoodin lisenssit"),
-        "v3_setting_privacy_policy":
-            MessageLookupByLibrary.simpleMessage("Tietosuojakäytäntö"),
-        "v3_setting_privacy_policy_description":
-            MessageLookupByLibrary.simpleMessage(
-                "ViewSonic on sitoutunut suojaamaan yksityisyyttäsi ja käsittelee henkilötietojen käsittelyä vakavasti. Alla oleva tietosuojakäytäntö kertoo, miten ViewSonic käsittelee henkilötietojasi sen jälkeen, kun ne on kerätty verkkosivuston käytön yhteydessä. ViewSonic suojaa tietojesi yksityisyyden käyttämällä tietoturvateknologioita ja noudattaa käytäntöjä, jotka estävät henkilötietojesi luvattoman käytön. Käyttämällä tätä verkkosivustoa annat suostumuksesi tietojesi keräämiseen ja käyttöön.\n\nVerkkosivustot, joihin siirryt ViewSonic.comista, saattavat noudattaa omia tietosuojakäytäntöjään, jotka voivat poiketa ViewSonicin käytännöistä. Tarkista näiden verkkosivustojen tietosuojakäytännöt saadaksesi yksityiskohtaista tietoa siitä, miten ne voivat käyttää tietoja, jotka kerätään vierailusi aikana.\n\nNapsauta seuraavia linkkejä saadaksesi lisätietoa tietosuojakäytännöstämme."),
-        "v3_setting_software_update":
-            MessageLookupByLibrary.simpleMessage("Ohjelmistopäivitys"),
-        "v3_setting_software_update_deny_action":
-            MessageLookupByLibrary.simpleMessage("Myöhemmin"),
-        "v3_setting_software_update_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Uusi versio on saatavilla. Haluatko päivittää nyt?"),
-        "v3_setting_software_update_force_action":
-            MessageLookupByLibrary.simpleMessage("Päivitä nyt"),
-        "v3_setting_software_update_force_description":
-            MessageLookupByLibrary.simpleMessage("Uusi versio on saatavilla."),
-        "v3_setting_software_update_no_available":
-            MessageLookupByLibrary.simpleMessage("Ei päivityksiä saatavilla"),
-        "v3_setting_software_update_no_available_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_setting_software_update_no_available_description":
-            MessageLookupByLibrary.simpleMessage(
-                "AirSync on jo ajan tasalla uusimman version kanssa."),
-        "v3_setting_software_update_no_internet_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Tarkista internet-yhteytesi ja yritä uudelleen."),
-        "v3_setting_software_update_no_internet_tittle":
-            MessageLookupByLibrary.simpleMessage("Ei internet-yhteyttä"),
-        "v3_setting_software_update_positive_action":
-            MessageLookupByLibrary.simpleMessage("Päivitä"),
-        "v3_setting_title": MessageLookupByLibrary.simpleMessage("Asetukset")
-      };
+    "device_list_enter_pin": MessageLookupByLibrary.simpleMessage(
+      "Kertakäyttösalasana",
+    ),
+    "device_list_enter_pin_ok": MessageLookupByLibrary.simpleMessage("OK"),
+    "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
+      "Verkkovirhe. Tarkista verkkoyhteys ja yritä uudelleen.",
+    ),
+    "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
+      "AirSync-esitys on varattu. Yritä myöhemmin uudelleen.",
+    ),
+    "main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
+      "Tuntematon virhe.",
+    ),
+    "main_connection_mode_unsupported": MessageLookupByLibrary.simpleMessage(
+      "AirSync ei voi muodostaa yhteyttä Internetiin.",
+    ),
+    "main_device_list": MessageLookupByLibrary.simpleMessage("Pikayhteys"),
+    "main_display_code": MessageLookupByLibrary.simpleMessage("Näytä koodi"),
+    "main_display_code_description": MessageLookupByLibrary.simpleMessage(
+      "Anna näyttökoodi",
+    ),
+    "main_display_code_error": MessageLookupByLibrary.simpleMessage(
+      "Hyväksyy vain kirjaimia ja numeroita.",
+    ),
+    "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
+      "Maksimimäärä osallistujia (6) on saavutettu.",
+    ),
+    "main_display_code_exceed_split_screen":
+        MessageLookupByLibrary.simpleMessage(
+          "Maksimimäärä esittäjiä (4) on saavutettu.",
+        ),
+    "main_display_code_invalid": MessageLookupByLibrary.simpleMessage(
+      "Virheellinen näyttökoodi",
+    ),
+    "main_feature_reconnect_fail_toast": MessageLookupByLibrary.simpleMessage(
+      "Verkko (Control) yhteyden muodostus epäonnistui",
+    ),
+    "main_feature_reconnect_success_toast":
+        MessageLookupByLibrary.simpleMessage(
+          "Verkko (Control) yhteyden muodostus onnistui",
+        ),
+    "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
+      "Verkko (Control) muodostaa uudelleen yhteyttä",
+    ),
+    "main_instance_not_found_or_offline": MessageLookupByLibrary.simpleMessage(
+      "Näyttökoodia ei löytynyt tai esiintymä on offline-tilassa.",
+    ),
+    "main_language": MessageLookupByLibrary.simpleMessage("Kieli"),
+    "main_language_name": MessageLookupByLibrary.simpleMessage("Englanti"),
+    "main_notice_not_support_description": MessageLookupByLibrary.simpleMessage(
+      "Selainjakamista ei tueta mobiililaitteilla. Lataa ja käytä AirSync-lähettäjäsovellusta paremman kokemuksen saamiseksi.",
+    ),
+    "main_notice_positive_button": MessageLookupByLibrary.simpleMessage(
+      "Lataa AirSync-lähettäjäsovellus.",
+    ),
+    "main_notice_title": MessageLookupByLibrary.simpleMessage("Ilmoitus"),
+    "main_otp_error": MessageLookupByLibrary.simpleMessage(
+      "Hyväksyy vain numeroita.",
+    ),
+    "main_password": MessageLookupByLibrary.simpleMessage("Salasana"),
+    "main_password_description": MessageLookupByLibrary.simpleMessage(
+      "Anna kertakäyttösalasana",
+    ),
+    "main_password_invalid": MessageLookupByLibrary.simpleMessage(
+      "Virheellinen salasana.",
+    ),
+    "main_present": MessageLookupByLibrary.simpleMessage("Seuraava"),
+    "main_setting": MessageLookupByLibrary.simpleMessage("Asetukset"),
+    "main_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Takaisin kosketukseen",
+    ),
+    "main_update_deny_button": MessageLookupByLibrary.simpleMessage("Ei nyt"),
+    "main_update_description_android": MessageLookupByLibrary.simpleMessage(
+      "Paina \"Päivitä\" asentaaksesi uuden version.",
+    ),
+    "main_update_description_apple": MessageLookupByLibrary.simpleMessage(
+      "Paina \"Päivitä\" asentaaksesi uuden version.",
+    ),
+    "main_update_description_windows": MessageLookupByLibrary.simpleMessage(
+      "Paina \"Päivitä\" asentaaksesi uuden version.",
+    ),
+    "main_update_error_detail": MessageLookupByLibrary.simpleMessage("Kuvaus:"),
+    "main_update_error_title": MessageLookupByLibrary.simpleMessage(
+      "Versiopäivitys epäonnistui",
+    ),
+    "main_update_error_type": MessageLookupByLibrary.simpleMessage(
+      "Epäonnistumisen syy:",
+    ),
+    "main_update_positive_button": MessageLookupByLibrary.simpleMessage(
+      "Päivitä",
+    ),
+    "main_update_title": MessageLookupByLibrary.simpleMessage(
+      "Uusi versio saatavilla",
+    ),
+    "main_webrtc_reconnect_fail_toast": MessageLookupByLibrary.simpleMessage(
+      "Verkko (WebRTC) yhteyden muodostus epäonnistui",
+    ),
+    "main_webrtc_reconnect_success_toast": MessageLookupByLibrary.simpleMessage(
+      "Verkko (WebRTC) yhteyden muodostus onnistui",
+    ),
+    "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
+      "Verkko (WebRTC) muodostaa uudelleen yhteyttä",
+    ),
+    "moderator": MessageLookupByLibrary.simpleMessage("Anna nimesi"),
+    "moderator_back": MessageLookupByLibrary.simpleMessage("Takaisin"),
+    "moderator_exit": MessageLookupByLibrary.simpleMessage("POISTU"),
+    "moderator_fill_out": MessageLookupByLibrary.simpleMessage(
+      "Kenttä vaaditaan",
+    ),
+    "moderator_name": MessageLookupByLibrary.simpleMessage("Nimi"),
+    "moderator_wait": MessageLookupByLibrary.simpleMessage(
+      "Odota, että moderaattori valitsee esittäjät...",
+    ),
+    "present_role_cast_screen": MessageLookupByLibrary.simpleMessage(
+      "Jaa näyttö",
+    ),
+    "present_role_receive": MessageLookupByLibrary.simpleMessage(
+      "Vastaanota näyttö",
+    ),
+    "present_select_screen_cancel": MessageLookupByLibrary.simpleMessage(
+      "Peruuta",
+    ),
+    "present_select_screen_description": MessageLookupByLibrary.simpleMessage(
+      "Valitse näkymä jaettavaksi vastaanottavalle näytölle.",
+    ),
+    "present_select_screen_entire": MessageLookupByLibrary.simpleMessage(
+      "Koko näyttö",
+    ),
+    "present_select_screen_ios_restart": MessageLookupByLibrary.simpleMessage(
+      "Aloita lähetys",
+    ),
+    "present_select_screen_ios_restart_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Paina \"Aloita lähetys\" jatkaaksesi jakamista ennen aikakatkaisua tai paina \"Takaisin\" palataksesi alkuperäiseen näkymään.",
+        ),
+    "present_select_screen_share": MessageLookupByLibrary.simpleMessage("Jaa"),
+    "present_select_screen_share_audio": MessageLookupByLibrary.simpleMessage(
+      "Jaa näytön ääni",
+    ),
+    "present_select_screen_window": MessageLookupByLibrary.simpleMessage(
+      "Ikkuna",
+    ),
+    "present_state_high_quality_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Ota korkea laatu käyttöön hyvissä verkko-olosuhteissa.",
+        ),
+    "present_state_high_quality_title": MessageLookupByLibrary.simpleMessage(
+      "Korkea laatu",
+    ),
+    "present_state_pause": MessageLookupByLibrary.simpleMessage("Tauko"),
+    "present_state_resume": MessageLookupByLibrary.simpleMessage("Jatka"),
+    "present_state_stop": MessageLookupByLibrary.simpleMessage(
+      "Lopeta esittäminen",
+    ),
+    "present_time": MessageLookupByLibrary.simpleMessage("Kulunut aika"),
+    "present_time_unit_hour": MessageLookupByLibrary.simpleMessage("t"),
+    "present_time_unit_min": MessageLookupByLibrary.simpleMessage("min"),
+    "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("sek"),
+    "present_wait": m0,
+    "remote_screen_connect_error": MessageLookupByLibrary.simpleMessage(
+      "Etänäytön yhteysvirhe",
+    ),
+    "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
+      "Jakamista käsitellään. Odota hetki.",
+    ),
+    "settings_audio_configuration": MessageLookupByLibrary.simpleMessage(
+      "Ääniasetukset",
+    ),
+    "settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Tietopankki",
+    ),
+    "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
+      "Ota näytön jakaminen AirSync-laitteeseen käyttöön.",
+    ),
+    "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
+      "Asenna virtuaalinen ääniohjain.",
+    ),
+    "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
+      "Maksimimäärä moderoituja istuntoja on saavutettu.",
+    ),
+    "toast_maximum_remote_screen": MessageLookupByLibrary.simpleMessage(
+      "Maksimimäärä jaettuja näyttöjä on saavutettu.",
+    ),
+    "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
+      "Maksimimäärä jaettuja näyttöjä on saavutettu.",
+    ),
+    "v3_device_list_button_device_list": MessageLookupByLibrary.simpleMessage(
+      "Laitelistat",
+    ),
+    "v3_device_list_button_text": MessageLookupByLibrary.simpleMessage(
+      "Pikayhteys",
+    ),
+    "v3_device_list_dialog_connect": MessageLookupByLibrary.simpleMessage(
+      "Yhdistä",
+    ),
+    "v3_device_list_dialog_invalid_otp": MessageLookupByLibrary.simpleMessage(
+      "Virheellinen kertakäyttösalasana",
+    ),
+    "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Anna kertakäyttösalasana",
+    ),
+    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksy"),
+    "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Hylkää"),
+    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+      "Loppukäyttäjän lisenssisopimus",
+    ),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Saavutettavuus",
+    ),
+    "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
+      "Odota, että isäntä hyväksyy pyyntösi.",
+    ),
+    "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
+      "Verkkoyhteysvirhe.",
+    ),
+    "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
+      "AirSync-esitys on varattu. Yritä myöhemmin uudelleen.",
+    ),
+    "v3_main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
+      "Tuntematon virhe.",
+    ),
+    "v3_main_connection_mode_unsupported": MessageLookupByLibrary.simpleMessage(
+      "AirSync ei muodosta yhteyttä Internetiin.",
+    ),
+    "v3_main_copy_rights": m1,
+    "v3_main_display_code": MessageLookupByLibrary.simpleMessage("Näyttökoodi"),
+    "v3_main_display_code_error": MessageLookupByLibrary.simpleMessage(
+      "Hyväksyy vain numeroita.",
+    ),
+    "v3_main_display_code_invalid": MessageLookupByLibrary.simpleMessage(
+      "Virheellinen näyttökoodi",
+    ),
+    "v3_main_download": MessageLookupByLibrary.simpleMessage(
+      "Lataa lähettäjäsovellus",
+    ),
+    "v3_main_download_action_download": MessageLookupByLibrary.simpleMessage(
+      "Lataa",
+    ),
+    "v3_main_download_action_get": MessageLookupByLibrary.simpleMessage("Hae"),
+    "v3_main_download_app_dialog_desc": MessageLookupByLibrary.simpleMessage(
+      "Skannaa QR-koodi iOS- tai Android-laitteellasi ladataksesi sovellus",
+    ),
+    "v3_main_download_app_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Lataa lähettäjäsovellus",
+    ),
+    "v3_main_download_app_subtitle": MessageLookupByLibrary.simpleMessage(
+      "iOS ja Android",
+    ),
+    "v3_main_download_app_title": MessageLookupByLibrary.simpleMessage(
+      "AirSync-sovellus",
+    ),
+    "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
+      "Vaivaton näytön jakaminen yhdellä napsautuksella.",
+    ),
+    "v3_main_download_mac_subtitle": MessageLookupByLibrary.simpleMessage(
+      "macOS 10.15+",
+    ),
+    "v3_main_download_mac_title": MessageLookupByLibrary.simpleMessage("Mac"),
+    "v3_main_download_title": MessageLookupByLibrary.simpleMessage(
+      "Hanki AirSync-lähettäjäsovellus",
+    ),
+    "v3_main_download_win_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Win 10 (1709+)/ Win 11",
+    ),
+    "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
+      "Windows",
+    ),
+    "v3_main_instance_not_found_or_offline":
+        MessageLookupByLibrary.simpleMessage(
+          "Näyttökoodia ei löytynyt tai esiintymä on offline-tilassa.",
+        ),
+    "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Jaa"),
+    "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Kirjoita nimesi ennen näytön jakamista",
+    ),
+    "v3_main_moderator_app_title": MessageLookupByLibrary.simpleMessage("Jaa"),
+    "v3_main_moderator_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Katkaise yhteys",
+    ),
+    "v3_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
+      "Kirjoita nimesi",
+    ),
+    "v3_main_moderator_input_limit": MessageLookupByLibrary.simpleMessage(
+      "Rajoita nimi 20 merkkiin.",
+    ),
+    "v3_main_moderator_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Anna esityksen otsikko",
+    ),
+    "v3_main_moderator_title": MessageLookupByLibrary.simpleMessage(
+      "Jaa näyttösi",
+    ),
+    "v3_main_moderator_wait": MessageLookupByLibrary.simpleMessage(
+      "Odota, että moderaattori kutsuu sinut jakamaan",
+    ),
+    "v3_main_otp_error": MessageLookupByLibrary.simpleMessage(
+      "Hyväksyy vain numeroita.",
+    ),
+    "v3_main_password": MessageLookupByLibrary.simpleMessage("Salasana"),
+    "v3_main_password_invalid": MessageLookupByLibrary.simpleMessage(
+      "Virheellinen salasana.",
+    ),
+    "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Seuraava"),
+    "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Seuraa aloitusohjeita.",
+    ),
+    "v3_main_present_title": MessageLookupByLibrary.simpleMessage(
+      "Jaa näyttösi",
+    ),
+    "v3_main_presenting_message": MessageLookupByLibrary.simpleMessage(
+      "airsync.net jakaa näyttösi.",
+    ),
+    "v3_main_privacy": MessageLookupByLibrary.simpleMessage(
+      "Tietosuojakäytäntö",
+    ),
+    "v3_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
+      "Yhdistä",
+    ),
+    "v3_main_receive_app_receive_from": MessageLookupByLibrary.simpleMessage(
+      "Vastaanota %s:lta",
+    ),
+    "v3_main_receive_app_stop": MessageLookupByLibrary.simpleMessage("Pysäytä"),
+    "v3_main_receive_app_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Jaa näyttö laitteeseeni",
+    ),
+    "v3_main_receive_app_title": MessageLookupByLibrary.simpleMessage(
+      "Vastaanota",
+    ),
+    "v3_main_select_role_receive": MessageLookupByLibrary.simpleMessage(
+      "Vastaanota",
+    ),
+    "v3_main_select_role_share": MessageLookupByLibrary.simpleMessage("Jaa"),
+    "v3_main_select_role_title": MessageLookupByLibrary.simpleMessage(
+      "Valitse esitystilasi",
+    ),
+    "v3_main_terms": MessageLookupByLibrary.simpleMessage("Käyttöehdot"),
+    "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+      "Tällä hetkellä vain Chrome- ja Edge-selaimet ovat tuettuja.",
+    ),
+    "v3_main_web_nonsupport_confirm": MessageLookupByLibrary.simpleMessage(
+      "Ymmärretty!",
+    ),
+    "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
+      "Näytön jakaminen on pysäytetty.\nKokonaisaika jaettu %s.",
+    ),
+    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+      "Moderaattori on suljettu",
+    ),
+    "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(
+      "OK",
+    ),
+    "v3_present_moderator_exited_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Moderaattori on suljettu, ole hyvä ja yhdistä uudelleen.",
+        ),
+    "v3_present_options_menu_he_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Käytä laitteen näytönohjainta streamauksen koodaamiseen.",
+    ),
+    "v3_present_options_menu_he_title": MessageLookupByLibrary.simpleMessage(
+      "Laitteistokiihdytys",
+    ),
+    "v3_present_options_menu_hq_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Käytä korkeampaa bittinopeutta lähetykseen.",
+    ),
+    "v3_present_options_menu_hq_title": MessageLookupByLibrary.simpleMessage(
+      "Korkea laatu",
+    ),
+    "v3_present_screen_full": MessageLookupByLibrary.simpleMessage(
+      "Näyttö täynnä",
+    ),
+    "v3_present_screen_full_action": MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_present_screen_full_description": MessageLookupByLibrary.simpleMessage(
+      "Maksimimäärä jaettuja näyttöjä on saavutettu.",
+    ),
+    "v3_present_select_screen_extension": MessageLookupByLibrary.simpleMessage(
+      "Näytön laajennus",
+    ),
+    "v3_present_select_screen_extension_desc":
+        MessageLookupByLibrary.simpleMessage("Laajenna työtilaasi"),
+    "v3_present_select_screen_extension_desc2":
+        MessageLookupByLibrary.simpleMessage(
+          "Tämä mahdollistaa sisällön siirtämisen henkilökohtaisen laitteen ja IFP:n välillä reaaliaikaisessa vuorovaikutuksessa.",
+        ),
+    "v3_present_select_screen_share_audio":
+        MessageLookupByLibrary.simpleMessage("Jaa tietokoneen ääni."),
+    "v3_present_select_screen_subtitle": MessageLookupByLibrary.simpleMessage(
+      "%s haluaa jakaa näyttösi. Valitse, mitä jaetaan.",
+    ),
+    "v3_present_session_full": MessageLookupByLibrary.simpleMessage(
+      "Istunto täynnä",
+    ),
+    "v3_present_session_full_action": MessageLookupByLibrary.simpleMessage(
+      "OK",
+    ),
+    "v3_present_session_full_description": MessageLookupByLibrary.simpleMessage(
+      "Liittyminen ei onnistu. Istunto on saavuttanut maksimimäärän.",
+    ),
+    "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
+      "Salli kosketusohjaus",
+    ),
+    "v3_receiver_remote_screen_busy_action":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_receiver_remote_screen_busy_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Näyttö on lähetyksessä muille näytöille. Yritä myöhemmin uudelleen.",
+        ),
+    "v3_receiver_remote_screen_busy_title":
+        MessageLookupByLibrary.simpleMessage("Näyttö on lähetyksessä."),
+    "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
+      "Yhdistä nopeasti skannaamalla QR-koodi",
+    ),
+    "v3_select_screen_ios_countdown": MessageLookupByLibrary.simpleMessage(
+      "Aikaa jäljellä",
+    ),
+    "v3_select_screen_ios_start_sharing": MessageLookupByLibrary.simpleMessage(
+      "Aloita jakaminen",
+    ),
+    "v3_setting_app_version": m2,
+    "v3_setting_check_update": MessageLookupByLibrary.simpleMessage(
+      "Tarkista päivitykset",
+    ),
+    "v3_setting_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Tietopankki",
+    ),
+    "v3_setting_language": MessageLookupByLibrary.simpleMessage("Kieli"),
+    "v3_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Oikeudelliset ja tietosuojaehdot",
+    ),
+    "v3_setting_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Avoimen lähdekoodin lisenssit",
+    ),
+    "v3_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
+      "Tietosuojakäytäntö",
+    ),
+    "v3_setting_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
+      "ViewSonic on sitoutunut suojaamaan yksityisyyttäsi ja käsittelee henkilötietojen käsittelyä vakavasti. Alla oleva tietosuojakäytäntö kertoo, miten ViewSonic käsittelee henkilötietojasi sen jälkeen, kun ne on kerätty verkkosivuston käytön yhteydessä. ViewSonic suojaa tietojesi yksityisyyden käyttämällä tietoturvateknologioita ja noudattaa käytäntöjä, jotka estävät henkilötietojesi luvattoman käytön. Käyttämällä tätä verkkosivustoa annat suostumuksesi tietojesi keräämiseen ja käyttöön.\n\nVerkkosivustot, joihin siirryt ViewSonic.comista, saattavat noudattaa omia tietosuojakäytäntöjään, jotka voivat poiketa ViewSonicin käytännöistä. Tarkista näiden verkkosivustojen tietosuojakäytännöt saadaksesi yksityiskohtaista tietoa siitä, miten ne voivat käyttää tietoja, jotka kerätään vierailusi aikana.\n\nNapsauta seuraavia linkkejä saadaksesi lisätietoa tietosuojakäytännöstämme.",
+    ),
+    "v3_setting_software_update": MessageLookupByLibrary.simpleMessage(
+      "Ohjelmistopäivitys",
+    ),
+    "v3_setting_software_update_deny_action":
+        MessageLookupByLibrary.simpleMessage("Myöhemmin"),
+    "v3_setting_software_update_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Uusi versio on saatavilla. Haluatko päivittää nyt?",
+        ),
+    "v3_setting_software_update_force_action":
+        MessageLookupByLibrary.simpleMessage("Päivitä nyt"),
+    "v3_setting_software_update_force_description":
+        MessageLookupByLibrary.simpleMessage("Uusi versio on saatavilla."),
+    "v3_setting_software_update_no_available":
+        MessageLookupByLibrary.simpleMessage("Ei päivityksiä saatavilla"),
+    "v3_setting_software_update_no_available_action":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_setting_software_update_no_available_description":
+        MessageLookupByLibrary.simpleMessage(
+          "AirSync on jo ajan tasalla uusimman version kanssa.",
+        ),
+    "v3_setting_software_update_no_internet_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Tarkista internet-yhteytesi ja yritä uudelleen.",
+        ),
+    "v3_setting_software_update_no_internet_tittle":
+        MessageLookupByLibrary.simpleMessage("Ei internet-yhteyttä"),
+    "v3_setting_software_update_positive_action":
+        MessageLookupByLibrary.simpleMessage("Päivitä"),
+    "v3_setting_title": MessageLookupByLibrary.simpleMessage("Asetukset"),
+  };
 }

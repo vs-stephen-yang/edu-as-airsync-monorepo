@@ -6,9 +6,12 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
+import 'package:display_cast_flutter/widgets/v3_exit_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_focus_single_child_scroll_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3Eula extends StatelessWidget {
@@ -16,6 +19,16 @@ class V3Eula extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!kIsWeb &&
+        (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
+      FlutterWindowClose.setWindowShouldCloseHandler(() async {
+        return await showDialog(
+            context: context,
+            builder: (context) {
+              return V3ExitDialog();
+            });
+      });
+    }
     return Scaffold(
       body: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
@@ -120,9 +133,11 @@ class V3Eula extends StatelessWidget {
                                 if (Platform.isIOS) {
                                   // todo: may not pass Apple review, need add some dialog to let user known?
                                   exit(0);
-                                } else if (Platform.isWindows) {
+                                } else if (Platform.isWindows ||
+                                    Platform.isMacOS) {
                                   // Windows: workable
-                                  exit(0);
+                                  // macOS: workable.
+                                  FlutterWindowClose.closeWindow();
                                 } else {
                                   // Android : workable.
                                   // macOS: workable.
