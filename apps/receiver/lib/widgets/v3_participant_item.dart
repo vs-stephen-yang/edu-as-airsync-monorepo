@@ -87,104 +87,152 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
     }
 
     return Container(
+      alignment: Alignment.center,
       width: widget.isForMenuUse ? 358 : 283,
-      constraints: BoxConstraints(
-        minHeight: 34,
-      ),
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                isCasting
-                    ? 'assets/images/ic_participant_avatar_cast.svg'
-                    : isReceiving
-                        ? 'assets/images/ic_participant_avatar_receive.svg'
-                        : 'assets/images/ic_participant_avatar_wait.svg',
-                excludeFromSemantics: true,
-                width: 32,
-                height: 32,
-              ),
-              Gap(context.tokens.spacing.vsdslSpacingSm.left),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(minHeight: 18),
-                      child: AutoSizeText(
-                        rtcConnector.senderName ?? '',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: context.tokens.color.vsdslColorOnSurface,
+          SvgPicture.asset(
+            isCasting
+                ? 'assets/images/ic_participant_avatar_cast.svg'
+                : isReceiving
+                    ? 'assets/images/ic_participant_avatar_receive.svg'
+                    : 'assets/images/ic_participant_avatar_wait.svg',
+            excludeFromSemantics: true,
+            width: 32,
+            height: 32,
+          ),
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
+          Expanded(
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              children: [
+                Container(
+                  constraints: BoxConstraints(minHeight: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        child: AutoSizeText(
+                          rtcConnector.senderName ?? '',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: context.tokens.color.vsdslColorOnSurface,
+                          ),
                         ),
-                        maxLines: 3,
                       ),
-                    ),
-                    if (widget.isForMenuUse && status.isNotEmpty) ...[
-                      Gap(context.tokens.spacing.vsdslSpacingXs.top),
-                      AutoSizeText(
-                        status,
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w600,
-                          color: (isWaiting)
-                              ? context.tokens.color.vsdslColorSurface400
-                              : (isCasting)
-                                  ? context
-                                      .tokens.color.vsdslColorSecondaryVariant
-                                  : context
-                                      .tokens.color.vsdslColorSuccessVariant,
+                      if (widget.isForMenuUse && status.isNotEmpty) ...[
+                        Gap(context.tokens.spacing.vsdslSpacingXs.top),
+                        AutoSizeText(
+                          status,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: (isWaiting)
+                                ? context.tokens.color.vsdslColorSurface400
+                                : (isCasting)
+                                    ? context
+                                        .tokens.color.vsdslColorSecondaryVariant
+                                    : context
+                                        .tokens.color.vsdslColorSuccessVariant,
+                          ),
+                          textAlign: TextAlign.center,
+                          minFontSize: 8,
                         ),
-                        textAlign: TextAlign.center,
-                        minFontSize: 8,
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
+                ),
+                Gap(context.tokens.spacing.vsdslSpacing2xl.left),
+                itemParticipant,
+              ],
+            ),
+          ),
+          if (!isWaiting & !isCasting & !isReceiving & !isControlling)
+            V3Focus(
+              label: S.of(context).v3_lbl_participant_close,
+              identifier: 'v3_qa_participant_close',
+              child: SizedBox(
+                width: 27,
+                height: 27,
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/ic_participant_close.svg',
+                    excludeFromSemantics: true,
+                  ),
+                  style: IconButton.styleFrom(
+                    elevation: 10.0,
+                    shadowColor:
+                        context.tokens.color.vsdslColorOpacityNeutralXs,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    EasyThrottle.throttle(
+                        'sendPresenterRemove', const Duration(seconds: 1), () {
+                      _sendPresenterRemove(context, rtcConnector);
+                    });
+                  },
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: rtcConnector.reconnectChannelStateNotifier,
-                builder: (BuildContext context, ReconnectState value,
-                    Widget? child) {
-                  if (rtcConnector.clickButtonWhenReconnect) {
-                    if (value == ReconnectState.success) {
-                      rtcConnector.clickButtonWhenReconnect = false;
-                      V3Toast()
-                          .makeReconnectToast(
-                              value,
-                              S
-                                  .of(context)
-                                  .main_feature_reconnect_success_toast)
-                          ?.show(context);
-                      rtcConnector.reconnectChannelStateNotifier.value =
-                          ReconnectState.idle;
-                    } else if (value == ReconnectState.fail) {
-                      rtcConnector.clickButtonWhenReconnect = false;
-                      V3Toast()
-                          .makeReconnectToast(value,
-                              S.of(context).main_feature_reconnect_fail_toast)
-                          ?.show(context);
-                      rtcConnector.reconnectChannelStateNotifier.value =
-                          ReconnectState.idle;
-                    }
-                  }
-                  return Container();
-                },
-              ),
-            ],
+            ),
+          ValueListenableBuilder(
+            valueListenable: rtcConnector.reconnectChannelStateNotifier,
+            builder:
+                (BuildContext context, ReconnectState value, Widget? child) {
+              if (rtcConnector.clickButtonWhenReconnect) {
+                if (value == ReconnectState.success) {
+                  rtcConnector.clickButtonWhenReconnect = false;
+                  V3Toast()
+                      .makeReconnectToast(value,
+                          S.of(context).main_feature_reconnect_success_toast)
+                      ?.show(context);
+                  rtcConnector.reconnectChannelStateNotifier.value =
+                      ReconnectState.idle;
+                } else if (value == ReconnectState.fail) {
+                  rtcConnector.clickButtonWhenReconnect = false;
+                  V3Toast()
+                      .makeReconnectToast(value,
+                          S.of(context).main_feature_reconnect_fail_toast)
+                      ?.show(context);
+                  rtcConnector.reconnectChannelStateNotifier.value =
+                      ReconnectState.idle;
+                }
+              }
+              return Container();
+            },
           ),
-          Row(
-            children: [
-              Spacer(),
-              itemParticipant,
-            ],
-          )
         ],
       ),
     );
+  }
+
+  _sendPresenterRemove(BuildContext context, RTCConnector rtcConnector) async {
+    if (widget.isForMenuUse) {
+      trackEvent(
+        'click_exit',
+        EventCategory.session,
+        participatorId: rtcConnector.clientId,
+        mode: 'webrtc',
+      );
+    }
+    rtcConnector.trackSessionEvent('click_remove_device');
+
+    if (!rtcConnector.isChannelConnectAvailable()) {
+      rtcConnector.clickButtonWhenReconnect = true;
+      V3Toast()
+          .makeReconnectToast(
+              rtcConnector.reconnectChannelState,
+              rtcConnector.reconnectChannelState == ReconnectState.reconnecting
+                  ? S.of(context).main_feature_reconnecting_toast
+                  : S.of(context).main_feature_reconnect_fail_toast)
+          ?.show(context);
+      return;
+    }
+
+    await rtcConnector.disconnectPeerConnection();
+    await rtcConnector.disconnectChannel(reason: 'User removed the presenter');
   }
 }
 
@@ -203,19 +251,13 @@ class ParticipantStandbyFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         V3Focus(
           label: S.of(context).v3_lbl_participant_share,
           identifier: 'v3_qa_participant_share',
-          child: Container(
-            constraints: BoxConstraints(
-              minWidth: isForMenuUse
-                  ? rtcConnector.senderPlatform == 'web'
-                      ? 105
-                      : 74
-                  : 66,
-              minHeight: 27,
-            ),
+          child: SizedBox(
+            height: 27,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 5.0,
@@ -225,7 +267,6 @@ class ParticipantStandbyFeature extends StatelessWidget {
                   borderRadius: context.tokens.radii.vsdslRadiusFull,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () {
                 EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
@@ -237,7 +278,6 @@ class ParticipantStandbyFeature extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isForMenuUse) ...[
-                    Gap(context.tokens.spacing.vsdslSpacingSm.left),
                     SizedBox(
                       child: SvgPicture.asset(
                         'assets/images/ic_arrow_to_screen.svg',
@@ -251,18 +291,13 @@ class ParticipantStandbyFeature extends StatelessWidget {
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   ],
-                  Flexible(
-                    child: AutoSizeText(
-                      S.of(context).v3_participant_item_share,
-                      textAlign:
-                          isForMenuUse ? TextAlign.left : TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                      ),
+                  Text(
+                    S.of(context).v3_participant_item_share,
+                    textAlign: isForMenuUse ? TextAlign.left : TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     ),
                   ),
                 ],
@@ -306,32 +341,6 @@ class ParticipantStandbyFeature extends StatelessWidget {
           ),
           SizedBox(width: context.tokens.spacing.vsdslSpacingSm.left),
         ],
-        V3Focus(
-          label: S.of(context).v3_lbl_participant_close,
-          identifier: 'v3_qa_participant_close',
-          child: SizedBox(
-            width: 27,
-            height: 27,
-            child: IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/ic_participant_close.svg',
-                excludeFromSemantics: true,
-              ),
-              style: IconButton.styleFrom(
-                elevation: 10.0,
-                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: () {
-                EasyThrottle.throttle(
-                    'sendPresenterRemove', const Duration(seconds: 1), () {
-                  _sendPresenterRemove(context, rtcConnector);
-                });
-              },
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -383,33 +392,6 @@ class ParticipantStandbyFeature extends StatelessWidget {
     }
     rtcConnector.sendInviteRemoteScreen();
   }
-
-  _sendPresenterRemove(BuildContext context, RTCConnector rtcConnector) async {
-    if (isForMenuUse) {
-      trackEvent(
-        'click_exit',
-        EventCategory.session,
-        participatorId: rtcConnector.clientId,
-        mode: 'webrtc',
-      );
-    }
-    rtcConnector.trackSessionEvent('click_remove_device');
-
-    if (!rtcConnector.isChannelConnectAvailable()) {
-      rtcConnector.clickButtonWhenReconnect = true;
-      V3Toast()
-          .makeReconnectToast(
-              rtcConnector.reconnectChannelState,
-              rtcConnector.reconnectChannelState == ReconnectState.reconnecting
-                  ? S.of(context).main_feature_reconnecting_toast
-                  : S.of(context).main_feature_reconnect_fail_toast)
-          ?.show(context);
-      return;
-    }
-
-    await rtcConnector.disconnectPeerConnection();
-    await rtcConnector.disconnectChannel(reason: 'User removed the presenter');
-  }
 }
 
 class ParticipantStreamingFeature extends StatelessWidget {
@@ -425,6 +407,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         V3Focus(
           label: S.of(context).v3_lbl_participant_stop,
@@ -491,13 +474,13 @@ class ParticipantReceivingFeature extends StatelessWidget {
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
-    return Row(
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
       children: [
         V3Focus(
           label: S.of(context).v3_lbl_participant_touch_back,
           identifier: 'v3_qa_participant_touch_back',
           child: SizedBox(
-            width: 104,
             height: 27,
             child: ElevatedButton(
               onPressed: () {
@@ -513,13 +496,12 @@ class ParticipantReceivingFeature extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: context.tokens.radii.vsdslRadiusFull,
                 ),
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 shadowColor: context.tokens.color.vsdslColorOnSurfaceInverse,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Gap(context.tokens.spacing.vsdslSpacingSm.left),
                   SvgPicture.asset(
                     'assets/images/ic_finger_touch.svg',
                     excludeFromSemantics: true,
@@ -527,16 +509,12 @@ class ParticipantReceivingFeature extends StatelessWidget {
                     height: 16,
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  Expanded(
-                    child: Text(
-                      S.of(context).v3_cast_to_device_touch_back,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnSurface,
-                      ),
+                  Text(
+                    S.of(context).v3_cast_to_device_touch_back,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurface,
                     ),
                   ),
                 ],
@@ -638,13 +616,13 @@ class ParticipantControllingFeature extends StatelessWidget {
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
-    return Row(
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
       children: [
         V3Focus(
           label: S.of(context).v3_lbl_participant_touch_back_disable,
           identifier: 'v3_qa_participant_touch_back_disable',
           child: SizedBox(
-            width: 104,
             height: 27,
             child: ElevatedButton(
               onPressed: () {
@@ -657,13 +635,12 @@ class ParticipantControllingFeature extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: context.tokens.radii.vsdslRadiusFull,
                 ),
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 shadowColor: context.tokens.color.vsdslColorOnSurfaceInverse,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Gap(context.tokens.spacing.vsdslSpacingSm.left),
                   SvgPicture.asset(
                     'assets/images/ic_finger_disable.svg',
                     excludeFromSemantics: true,
@@ -671,16 +648,12 @@ class ParticipantControllingFeature extends StatelessWidget {
                     height: 16,
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  Expanded(
-                    child: Text(
-                      S.of(context).v3_cast_to_device_touch_back_disable,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorError,
-                      ),
+                  Text(
+                    S.of(context).v3_cast_to_device_touch_back_disable,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorError,
                     ),
                   ),
                 ],

@@ -70,23 +70,22 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: widget.isLandscape ? 20 : 40),
+            padding: EdgeInsets.only(
+                bottom: widget.isLandscape ? 20 : 40, left: 15, right: 15),
             child: V3Focus(
               label: S.of(context).v3_lbl_moderator_toggle,
               identifier: 'v3_qa_moderator_toggle',
               child: Container(
-                width: 270,
-                // 恢復固定寬度
                 constraints: const BoxConstraints(
                   minHeight: 53, // 保持最小高度
                 ),
                 padding: const EdgeInsets.all(16),
-                decoration: const ShapeDecoration(
+                decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(9999)),
                     side: BorderSide(
                       width: 1,
-                      color: Color(0xFFE9EAF0),
+                      color: context.tokens.color.vsdslColorOutline,
                     ),
                   ),
                 ),
@@ -95,10 +94,10 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                     Expanded(
                       child: AutoSizeText(
                         S.of(context).v3_moderator_mode,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                          color: context.tokens.color.vsdslColorOnSurface,
                         ),
                         maxLines: 2,
                       ),
@@ -128,11 +127,11 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                               );
 
                               channelProvider.setModeratorMode(true);
-                                }
-                              },
-                            ),
-                          );
-                        }),
+                            }
+                          },
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -146,7 +145,8 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
   void _callLogOutDialog(BuildContext context) async {
     final RenderBox renderBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
-    final Size renderBoxSize = Size(renderBox.size.width - V3CustomDialog.width,
+    final Size renderBoxSize = Size(
+        renderBox.size.width - renderBox.size.width * 0.8,
         renderBox.size.height - V3CustomDialog.height);
     final Offset containerOffset = renderBox
         .localToGlobal(Offset.zero)
@@ -164,6 +164,8 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
             primaryFocusNode: primaryFocusNode,
             offset: containerOffset,
             alignmentGeometry: Alignment.centerRight,
+            // 由於parent寬度是會變動的，這邊dialog不寫死寬度，改成parent寬度的80%
+            width: renderBox.size.width * 0.8,
             title: S.of(context).v3_exit_moderator_mode_title,
             content: S.of(context).v3_exit_moderator_mode_desc,
             item1: S.of(context).v3_exit_moderator_mode_cancel,
