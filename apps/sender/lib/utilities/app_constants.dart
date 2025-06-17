@@ -2,6 +2,13 @@ class AppConstants {
   static const double viewStateMenuWidth = 300;
   static const double viewStateMenuHeight = 420;
 
+  static const double windowsMinHeight = 480;
+  static const double windowsMinWidth = 640;
+
+  static const double mobileMinHeight = 667;
+
+  // static const double mobileMinWidth = 375;
+
   static const double iconHasFocusSize = 56;
   static const double iconNotFocusSize = 48;
 
