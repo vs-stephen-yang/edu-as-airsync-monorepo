@@ -59,98 +59,93 @@ class _V3PresentIdleAudioDriverWarningState
           return const SizedBox.shrink();
         }
 
-        return Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.tokens.color.vsdswColorWarning,
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        flex: 2,
-                        child: Text(
-                          S.current.v3_present_select_screen_mac_audio_driver,
-                          style: TextStyle(
-                            fontSize:
-                                context.tokens.textStyle.vsdswBodySm.fontSize,
-                            color: context.tokens.color.vsdswColorOnWarning,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Flexible(
-                        flex: 1,
-                        child: V3Focus(
-                          label: S
-                              .of(context)
-                              .v3_lbl_present_idle_audio_driver_warning_download,
-                          identifier:
-                              'v3_qa_present_idle_audio_driver_warning_download',
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(context
-                                    .tokens.radii.vsdswRadiusmd.topLeft.x),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 6),
-                            ),
-                            onPressed: () {
-                              launchUrl(Uri.parse(
-                                  'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
-                            },
-                            child: Text(
-                              S.current
-                                  .v3_present_idle_download_virtual_audio_device,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: context.tokens.color.vsdswColorWarning,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                V3Focus(
-                  label: S
-                      .of(context)
-                      .v3_lbl_present_idle_audio_driver_warning_close,
-                  identifier: 'v3_qa_present_idle_audio_driver_warning_close',
-                  button: true,
-                  child: SizedBox(
-                    width: 28,
-                    height: 28,
-                    child: InkWell(
-                      child: ExcludeSemantics(
-                        child: Icon(
-                          Icons.close,
-                          size: 14,
+        return Container(
+          decoration: BoxDecoration(
+            color: context.tokens.color.vsdswColorWarning,
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: Text(
+                        S.current.v3_present_select_screen_mac_audio_driver,
+                        style: TextStyle(
+                          fontSize:
+                              context.tokens.textStyle.vsdswBodySm.fontSize,
                           color: context.tokens.color.vsdswColorOnWarning,
                         ),
                       ),
-                      onTap: () {
-                        setState(() {
-                          _isVisible = false;
-                        });
-                      },
                     ),
+                    const SizedBox(width: 16),
+                    Flexible(
+                      flex: 1,
+                      child: V3Focus(
+                        label: S
+                            .of(context)
+                            .v3_lbl_present_idle_audio_driver_warning_download,
+                        identifier:
+                            'v3_qa_present_idle_audio_driver_warning_download',
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  context.tokens.radii.vsdswRadiusmd.topLeft.x),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 6),
+                          ),
+                          onPressed: () {
+                            launchUrl(Uri.parse(
+                                'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
+                          },
+                          child: Text(
+                            S.current
+                                .v3_present_idle_download_virtual_audio_device,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: context.tokens.color.vsdswColorWarning,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              V3Focus(
+                label: S
+                    .of(context)
+                    .v3_lbl_present_idle_audio_driver_warning_close,
+                identifier: 'v3_qa_present_idle_audio_driver_warning_close',
+                button: true,
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: InkWell(
+                    child: ExcludeSemantics(
+                      child: Icon(
+                        Icons.close,
+                        size: 14,
+                        color: context.tokens.color.vsdswColorOnWarning,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _isVisible = false;
+                      });
+                    },
                   ),
                 ),
-                const SizedBox(width: 12),
-              ],
-            ),
+              ),
+              const SizedBox(width: 12),
+            ],
           ),
         );
       },

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:app_links/app_links.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -10,12 +11,14 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_audio_driver_warning.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -142,49 +145,83 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       fit: StackFit.expand,
       alignment: AlignmentDirectional.center,
       children: [
-        const V3PresentIdleAudioDriverWarning(),
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            if (kIsWeb) ...[
-              AutoSizeText(
-                S.of(context).v3_main_present_title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
-                  color: context.tokens.color.vsdswColorOnSurface,
-                  fontWeight: FontWeight.w700,
-                  // height: 0.04,
-                  letterSpacing: -0.32,
-                ),
-              ),
-              const Padding(padding: EdgeInsets.only(bottom: 8)),
-              AutoSizeText(
-                S.of(context).v3_main_present_subtitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: context.tokens.color.vsdswColorOnSurfaceVariant,
-                  fontWeight: FontWeight.w400,
-                  // height: 0.10,
-                  letterSpacing: -0.18,
-                ),
-              ),
-              const Padding(padding: EdgeInsets.only(top: 40)),
-            ],
-            if (!kIsWeb) ...[
-              ExcludeSemantics(
-                child: SvgPicture.asset('assets/images/v3_ic_airsync.svg'),
-              ),
-              const Padding(padding: EdgeInsets.only(top: 35)),
-            ],
-            _inputTextFields(),
-            _nextButton(channelProvider, demoProvider, presentStateProvider),
-            if (!kIsWeb) ...[
-              Gap((Platform.isAndroid || Platform.isIOS) ? 40 : 60),
-              buildDeviceListButton(presentStateProvider),
-            ],
+            const V3PresentIdleAudioDriverWarning(),
+            Expanded(
+              child: LayoutBuilder(builder: (context, constraints) {
+                final sc = ScrollController();
+                final minHeight = (Platform.isAndroid || Platform.isIOS)
+                    ? AppConstants.mobileMinHeight
+                    : AppConstants.windowsMinHeight;
+                final double gatHeight =
+                    (Platform.isAndroid || Platform.isIOS) ? 40 : 60;
+                final double gap = max(minHeight - constraints.maxHeight, 0) > 0
+                    ? 0
+                    : gatHeight;
+                return V3Scrollbar(
+                  controller: sc,
+                  child: SingleChildScrollView(
+                    physics: ClampingScrollPhysics(),
+                    controller: sc,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                        minWidth: double.infinity,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (kIsWeb) ...[
+                            AutoSizeText(
+                              S.of(context).v3_main_present_title,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 32,
+                                color: context.tokens.color.vsdswColorOnSurface,
+                                fontWeight: FontWeight.w700,
+                                // height: 0.04,
+                                letterSpacing: -0.32,
+                              ),
+                            ),
+                            const Padding(padding: EdgeInsets.only(bottom: 8)),
+                            AutoSizeText(
+                              S.of(context).v3_main_present_subtitle,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: context
+                                    .tokens.color.vsdswColorOnSurfaceVariant,
+                                fontWeight: FontWeight.w400,
+                                // height: 0.10,
+                                letterSpacing: -0.18,
+                              ),
+                            ),
+                            const Padding(padding: EdgeInsets.only(top: 40)),
+                          ],
+                          if (!kIsWeb) ...[
+                            ExcludeSemantics(
+                              child: SvgPicture.asset(
+                                  'assets/images/v3_ic_airsync.svg'),
+                            ),
+                            Gap(35),
+                          ],
+                          _inputTextFields(),
+                          _nextButton(channelProvider, demoProvider,
+                              presentStateProvider),
+                          if (!kIsWeb) ...[
+                            Gap(gap),
+                            buildDeviceListButton(presentStateProvider),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
           ],
         ),
         if (kIsWeb) ...[
