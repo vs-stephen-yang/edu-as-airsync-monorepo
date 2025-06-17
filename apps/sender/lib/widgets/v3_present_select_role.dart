@@ -11,6 +11,7 @@ import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentSelectRole extends StatelessWidget {
@@ -41,7 +42,15 @@ class V3PresentSelectRole extends StatelessWidget {
             letterSpacing: -0.24,
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: isMobile ? 32 : 60)),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: 5,
+              maxHeight: isMobile ? 32 : 60,
+            ),
+            child: Gap(isMobile ? 32 : 60),
+          ),
+        ),
         isMobile
             ? useColumn
                 ? Column(
