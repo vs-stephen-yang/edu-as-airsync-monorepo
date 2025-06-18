@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m2(year, version) => "AirSync ©${year}. version ${version}";
 
   static String m3(year, version) =>
-      "AirSync © {år}. version ${version} (Ind.)";
+      "AirSync © ${year}. version ${version} (Ind.)";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -467,6 +467,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Kan inte ansluta. Sessionen har nått sitt maxantal."),
         "v3_present_touch_back_allow":
+            MessageLookupByLibrary.simpleMessage("Tillåt touchback"),
+        "v3_present_touch_back_dialog_allow":
+            MessageLookupByLibrary.simpleMessage("Tillåt"),
+        "v3_present_touch_back_dialog_description":
+            MessageLookupByLibrary.simpleMessage(
+                "När du aktiverar skärmdelning kommer AirSync tillfälligt att fånga och överföra ditt skärminnehåll till den valda skärmen (t.ex. IFP).\\nFör att aktivera Touchback kräver AirSync tillstånd från Tillgänglighetstjänsten för att tillåta fjärrstyrning från skärmen.\\nAirSync samlar inte in dina personuppgifter och övervakar inte dina handlingar. Denna behörighet används endast för att aktivera pekkontrollfunktionen."),
+        "v3_present_touch_back_dialog_not_now":
+            MessageLookupByLibrary.simpleMessage("Inte nu"),
+        "v3_present_touch_back_dialog_title":
             MessageLookupByLibrary.simpleMessage("Tillåt touchback"),
         "v3_receiver_remote_screen_busy_action":
             MessageLookupByLibrary.simpleMessage("OK"),

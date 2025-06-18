@@ -186,7 +186,7 @@
   "v3_main_download_mac_pkg_label": "Lai iegūtu vislabāko lietotāja pieredzi!",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "vai instalējiet caur",
-  "v3_setting_app_version_independent": "AirSync © {gads}. versija {versija} (ind.)",
+  "v3_setting_app_version_independent": "AirSync © {year}. versija {version} (ind.)",
   "v3_lbl_main_present_action": "Iesniegt tālāk",
   "v3_lbl_device_list_button_device_list": "Ierīču saraksts",
   "v3_lbl_main_receive_app_action": "Iesniegt savienojumu",
