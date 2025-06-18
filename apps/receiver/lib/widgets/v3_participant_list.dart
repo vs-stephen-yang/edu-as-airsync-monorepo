@@ -78,6 +78,7 @@ class V3ParticipantList extends StatelessWidget {
             ],
           );
         } else {
+          final ScrollController scrollController = ScrollController();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -106,34 +107,39 @@ class V3ParticipantList extends StatelessWidget {
               ),
               SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
               Expanded(
-                child: ListView.separated(
-                  itemCount: HybridConnectionList().getConnectionCount(),
-                  itemBuilder: (BuildContext context, int index) {
-                    if (HybridConnectionList().isMirrorRequest(index)) {
-                      return V3ParticipantMirrorItem(
-                          index: index, isForMenuUse: isForMenuUse);
-                    } else {
-                      return V3ParticipantItem(
-                        index: index,
-                        isForMenuUse: isForMenuUse,
-                      );
-                    }
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return isForMenuUse
-                        ? Divider(
-                            height:
-                                context.tokens.spacing.vsdslSpacingLg.vertical,
-                            color: context
-                                .tokens.color.vsdslColorOnSurfaceVariant
-                                .withOpacity(0.32),
-                          )
-                        : Divider(
-                            height:
-                                context.tokens.spacing.vsdslSpacingXl.top / 2,
-                            color: Colors.transparent,
-                          );
-                  },
+                child: Scrollbar(
+                  controller: scrollController,
+                  thumbVisibility: true,
+                  child: ListView.separated(
+                    controller: scrollController,
+                    itemCount: HybridConnectionList().getConnectionCount(),
+                    itemBuilder: (BuildContext context, int index) {
+                      if (HybridConnectionList().isMirrorRequest(index)) {
+                        return V3ParticipantMirrorItem(
+                            index: index, isForMenuUse: isForMenuUse);
+                      } else {
+                        return V3ParticipantItem(
+                          index: index,
+                          isForMenuUse: isForMenuUse,
+                        );
+                      }
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return isForMenuUse
+                          ? Divider(
+                              height: context
+                                  .tokens.spacing.vsdslSpacingLg.vertical,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceVariant
+                                  .withOpacity(0.32),
+                            )
+                          : Divider(
+                              height:
+                                  context.tokens.spacing.vsdslSpacingXl.top / 2,
+                              color: Colors.transparent,
+                            );
+                    },
+                  ),
                 ),
               ),
             ],
