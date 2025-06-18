@@ -92,7 +92,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.sentry:sentry-android:8.0.0-beta.2'
+    implementation 'io.sentry:sentry-android:8.14.0'
 }
 
 flutter {
