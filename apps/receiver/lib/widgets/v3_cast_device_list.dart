@@ -15,6 +15,7 @@ class V3CastDeviceList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ChannelProvider>(
       builder: (_, channelProvider, __) {
+        final ScrollController scrollController = ScrollController();
         return Column(
           children: [
             AutoSizeText.rich(
@@ -51,17 +52,23 @@ class V3CastDeviceList extends StatelessWidget {
             SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
             Expanded(
               child: channelProvider.remoteScreenConnectors.isNotEmpty
-                  ? ListView.separated(
-                      itemCount: channelProvider.remoteScreenConnectors.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return V3CastDeviceItem(index: index);
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return Divider(
-                          height: context.tokens.spacing.vsdslSpacingMd.top,
-                          color: Colors.transparent,
-                        );
-                      },
+                  ? Scrollbar(
+                      controller: scrollController,
+                      thumbVisibility: true,
+                      child: ListView.separated(
+                        controller: scrollController,
+                        itemCount:
+                            channelProvider.remoteScreenConnectors.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return V3CastDeviceItem(index: index);
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Divider(
+                            height: context.tokens.spacing.vsdslSpacingMd.top,
+                            color: Colors.transparent,
+                          );
+                        },
+                      ),
                     )
                   : const Center(
                       child: DeviceEmpty(),
