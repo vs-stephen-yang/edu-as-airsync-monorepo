@@ -29,8 +29,12 @@ class DiscoverServices {
   }
 
   Future<void> resolveService(BonsoirService service) async {
-    unawaited(lock.synchronized(
-        () async => await service.resolve(discovery!.serviceResolver)));
+    unawaited(lock.synchronized(() async {
+      // 避免時間差導致Null Exception，當stopDiscovery後，EventOccurred仍然resolveService
+      if (discovery != null) {
+        await service.resolve(discovery!.serviceResolver);
+      }
+    }));
   }
 
   Future<String?> lookupIpAddress(String hostName) async {
