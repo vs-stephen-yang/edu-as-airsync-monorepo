@@ -28,6 +28,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(year, version) => "AirSync ©${year}. versija ${version}";
 
+  static String m3(year, version) =>
+      "AirSync © ${year}. versija ${version} (ind.)";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
@@ -193,6 +196,123 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nepiekrītu"),
         "v3_eula_title": MessageLookupByLibrary.simpleMessage(
             "Galalietotāja licences līgums"),
+        "v3_lbl_change_language":
+            MessageLookupByLibrary.simpleMessage("Valodas maiņa"),
+        "v3_lbl_device_list_button_device_list":
+            MessageLookupByLibrary.simpleMessage("Ierīču saraksts"),
+        "v3_lbl_device_list_close":
+            MessageLookupByLibrary.simpleMessage("Ierīču saraksta aizvēršana"),
+        "v3_lbl_device_list_next":
+            MessageLookupByLibrary.simpleMessage("Tālāk"),
+        "v3_lbl_download_independent_version":
+            MessageLookupByLibrary.simpleMessage(
+                "Iegūstiet Mac neatkarīgo versiju"),
+        "v3_lbl_download_menu_minimal":
+            MessageLookupByLibrary.simpleMessage("\nMinimāla ēdienkarte"),
+        "v3_lbl_main_display_code":
+            MessageLookupByLibrary.simpleMessage("Tipa displeja kods"),
+        "v3_lbl_main_display_code_remove":
+            MessageLookupByLibrary.simpleMessage("Notīrīt displeja kodu"),
+        "v3_lbl_main_download": MessageLookupByLibrary.simpleMessage(
+            "Lejupielādēt sūtītāja lietotni"),
+        "v3_lbl_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
+            "Iegūstiet Mac App Store versiju"),
+        "v3_lbl_main_download_mobile":
+            MessageLookupByLibrary.simpleMessage("Iegūt mobilo versiju"),
+        "v3_lbl_main_download_windows":
+            MessageLookupByLibrary.simpleMessage("Iegūt Windows versiju"),
+        "v3_lbl_main_moderator_action":
+            MessageLookupByLibrary.simpleMessage("Iesniegt Dalīties"),
+        "v3_lbl_main_moderator_input_hint":
+            MessageLookupByLibrary.simpleMessage("Ierakstiet savu vārdu"),
+        "v3_lbl_main_password":
+            MessageLookupByLibrary.simpleMessage("Ierakstiet paroli"),
+        "v3_lbl_main_present_action":
+            MessageLookupByLibrary.simpleMessage("Iesniegt tālāk"),
+        "v3_lbl_main_privacy":
+            MessageLookupByLibrary.simpleMessage("Privātuma politika"),
+        "v3_lbl_main_receive_app_action":
+            MessageLookupByLibrary.simpleMessage("Iesniegt savienojumu"),
+        "v3_lbl_moderator_back":
+            MessageLookupByLibrary.simpleMessage("Iet atpakaļ"),
+        "v3_lbl_moderator_disconnect":
+            MessageLookupByLibrary.simpleMessage("Atvienoties"),
+        "v3_lbl_present_idle_audio_driver_warning_close":
+            MessageLookupByLibrary.simpleMessage(
+                "Aizvērt audio draivera brīdinājums"),
+        "v3_lbl_present_idle_audio_driver_warning_download":
+            MessageLookupByLibrary.simpleMessage("Lejupielādēt audio draiveri"),
+        "v3_lbl_qr_close":
+            MessageLookupByLibrary.simpleMessage("Aizvērt QR kodu skeneri"),
+        "v3_lbl_qr_code":
+            MessageLookupByLibrary.simpleMessage("Atvērt QR kodu skeneri"),
+        "v3_lbl_select_language":
+            MessageLookupByLibrary.simpleMessage("Atlasiet %s"),
+        "v3_lbl_select_role_receive":
+            MessageLookupByLibrary.simpleMessage("Saņemt ekrānu"),
+        "v3_lbl_select_role_share":
+            MessageLookupByLibrary.simpleMessage("Kopīgot ekrānu"),
+        "v3_lbl_select_screen_audio":
+            MessageLookupByLibrary.simpleMessage("Datora audio koplietošana"),
+        "v3_lbl_select_screen_cancel":
+            MessageLookupByLibrary.simpleMessage("Atcelt koplietošanu"),
+        "v3_lbl_select_screen_close":
+            MessageLookupByLibrary.simpleMessage("Aizvērt ekrāna atlasi"),
+        "v3_lbl_select_screen_ios_back":
+            MessageLookupByLibrary.simpleMessage("Iet atpakaļ"),
+        "v3_lbl_select_screen_ios_start_sharing":
+            MessageLookupByLibrary.simpleMessage("Sākt kopīgošanu"),
+        "v3_lbl_select_screen_share":
+            MessageLookupByLibrary.simpleMessage("Kopīgot ekrānu"),
+        "v3_lbl_select_screen_source_name":
+            MessageLookupByLibrary.simpleMessage("Ekrāna avots: %s"),
+        "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("Iestatījumi"),
+        "v3_lbl_setting_language_select":
+            MessageLookupByLibrary.simpleMessage("Atlasīt valodu: %s"),
+        "v3_lbl_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
+            "Skatīt juridisko politiku: %s"),
+        "v3_lbl_setting_menu_back": MessageLookupByLibrary.simpleMessage(
+            "\nAtpakaļ uz iepriekšējo izvēlni"),
+        "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage(
+            "Iestatījumu izvēlnes aizvēršana"),
+        "v3_lbl_setting_privacy_policy":
+            MessageLookupByLibrary.simpleMessage("Privātuma politika"),
+        "v3_lbl_setting_select":
+            MessageLookupByLibrary.simpleMessage("Atlasiet %s"),
+        "v3_lbl_setting_software_update_deny_action":
+            MessageLookupByLibrary.simpleMessage("Vēlāk"),
+        "v3_lbl_setting_software_update_fail_close":
+            MessageLookupByLibrary.simpleMessage(
+                "Atjaunināšanas kļūdas aizvēršanas dialoglodziņš"),
+        "v3_lbl_setting_software_update_fail_ok":
+            MessageLookupByLibrary.simpleMessage("Labi"),
+        "v3_lbl_setting_software_update_no_available":
+            MessageLookupByLibrary.simpleMessage("Nav pieejamu atjauninājumu"),
+        "v3_lbl_setting_software_update_no_available_action":
+            MessageLookupByLibrary.simpleMessage("Labi"),
+        "v3_lbl_setting_software_update_now_action":
+            MessageLookupByLibrary.simpleMessage("Atjaunināt tūlīt"),
+        "v3_lbl_setting_software_update_positive_action":
+            MessageLookupByLibrary.simpleMessage("Atjaunināt"),
+        "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
+            "Dialoglodziņš Atjaunināšanas aizvēršana"),
+        "v3_lbl_sharing_pause_off":
+            MessageLookupByLibrary.simpleMessage("Pauze off"),
+        "v3_lbl_sharing_pause_on":
+            MessageLookupByLibrary.simpleMessage("Pauze On"),
+        "v3_lbl_sharing_stop":
+            MessageLookupByLibrary.simpleMessage("\nKoplietošanas apstāšanās"),
+        "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
+            "Straumēšanas vadīklu izvēršana"),
+        "v3_lbl_streaming_minimize_button":
+            MessageLookupByLibrary.simpleMessage(
+                "Straumēšanas vadīklu minimizēšana"),
+        "v3_lbl_streaming_stop_button":
+            MessageLookupByLibrary.simpleMessage("Straumēšanas pārtraukšana"),
+        "v3_lbl_touch_back_off":
+            MessageLookupByLibrary.simpleMessage("Atspējot pieskārienu"),
+        "v3_lbl_touch_back_on":
+            MessageLookupByLibrary.simpleMessage("\nIespējot pieskārienu"),
         "v3_main_accessibility":
             MessageLookupByLibrary.simpleMessage("Pieejamība"),
         "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -230,6 +350,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("AirSync lietotne"),
         "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
             "Vienkārša ekrāna kopīgošana ar vienu klikšķi."),
+        "v3_main_download_mac_pkg_label": MessageLookupByLibrary.simpleMessage(
+            "Lai iegūtu vislabāko lietotāja pieredzi!"),
+        "v3_main_download_mac_store":
+            MessageLookupByLibrary.simpleMessage("App Store"),
+        "v3_main_download_mac_store_label":
+            MessageLookupByLibrary.simpleMessage("vai instalējiet caur"),
         "v3_main_download_mac_subtitle":
             MessageLookupByLibrary.simpleMessage("macOS 10.15+"),
         "v3_main_download_mac_title":
@@ -299,6 +425,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sapratu!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Ekrāna kopīgošana ir apturēta.  \nKopējais kopīgošanas laiks: %s.  "),
+        "v3_present_idle_download_virtual_audio_device":
+            MessageLookupByLibrary.simpleMessage("Lejupielādēt"),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("Moderators ir aizvērts"),
         "v3_present_moderator_exited_action":
@@ -329,6 +457,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_select_screen_extension_desc2":
             MessageLookupByLibrary.simpleMessage(
                 "Šī funkcija ļauj pārvietot saturu starp personīgo ierīci un IFP, uzlabojot reāllaika mijiedarbību un kontroli."),
+        "v3_present_select_screen_mac_audio_driver":
+            MessageLookupByLibrary.simpleMessage(
+                "Nevar koplietot audio. Lūdzu, lejupielādējiet un instalējiet audio draiveri."),
         "v3_present_select_screen_share_audio":
             MessageLookupByLibrary.simpleMessage("Kopīgot datora audio."),
         "v3_present_select_screen_subtitle":
@@ -342,6 +473,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nevar pievienoties. Sesija ir sasniegusi maksimālo ierobežojumu."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Atļaut Touchback"),
+        "v3_present_touch_back_dialog_allow":
+            MessageLookupByLibrary.simpleMessage("Atļaut"),
+        "v3_present_touch_back_dialog_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Iespējojot ekrāna koplietošanu, AirSync īslaicīgi uztver un pārraidīs jūsu ekrāna saturu uz izvēlēto displeju (piemēram, IFP).\\nLai iespējotu Touchback, AirSync ir nepieciešama pieejamības pakalpojuma atļauja, lai atļautu tālvadības pulti no displeja.\\nAirSync neapkopo jūsu personas datus un neuzrauga jūsu darbības. Šī atļauja tiek izmantota tikai, lai iespējotu skārienvadības līdzekli."),
+        "v3_present_touch_back_dialog_not_now":
+            MessageLookupByLibrary.simpleMessage("Ne tagad"),
+        "v3_present_touch_back_dialog_title":
+            MessageLookupByLibrary.simpleMessage("Atļaut pieskārienu"),
         "v3_receiver_remote_screen_busy_action":
             MessageLookupByLibrary.simpleMessage("Labi"),
         "v3_receiver_remote_screen_busy_description":
@@ -355,7 +495,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Atlikušais laiks"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Sākt kopīgošanu"),
+        "v3_setting_accessibility":
+            MessageLookupByLibrary.simpleMessage("Pieejamība"),
+        "v3_setting_accessibility_size_large":
+            MessageLookupByLibrary.simpleMessage("Lielu"),
+        "v3_setting_accessibility_size_normal":
+            MessageLookupByLibrary.simpleMessage("Parasts"),
+        "v3_setting_accessibility_size_xlarge":
+            MessageLookupByLibrary.simpleMessage("\nXLarge"),
+        "v3_setting_accessibility_text_size":
+            MessageLookupByLibrary.simpleMessage("Teksta lielums"),
         "v3_setting_app_version": m2,
+        "v3_setting_app_version_independent": m3,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Pārbaudīt atjauninājumus"),
         "v3_setting_knowledge_base":
