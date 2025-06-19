@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,58 +29,73 @@ class V3PresentSelectRole extends StatelessWidget {
     MediaQueryData mediaQuery = MediaQuery.of(context);
     bool useColumn =
         Platform.isIOS || (Platform.isAndroid && mediaQuery.size.width < 768);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          S.of(context).v3_main_select_role_title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: context.tokens.color.vsdswColorOnSurface,
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.24,
-          ),
-        ),
-        Flexible(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 5,
-              maxHeight: isMobile ? 32 : 60,
-            ),
-            child: Gap(isMobile ? 32 : 60),
-          ),
-        ),
-        isMobile
-            ? useColumn
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildButtons(
-                        context,
-                        presentStateProvider,
-                        channelProvider,
-                        const Size(343, 194),
-                        const Size(108, 94)),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildButtons(
-                        context,
-                        presentStateProvider,
-                        channelProvider,
-                        const Size(343, 194),
-                        const Size(108, 94)),
-                  )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildButtons(
-                    context,
-                    presentStateProvider,
-                    channelProvider,
-                    const Size(300, 300),
-                    const Size(138, 120))),
-      ],
+    final sc = ScrollController();
+    return V3Scrollbar(
+      controller: sc,
+      child: SingleChildScrollView(
+        controller: sc,
+        child: LayoutBuilder(builder: (context, constraints) {
+          final screenHeight = MediaQuery.of(context).size.height;
+          return ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: screenHeight,
+              ),
+              child: IntrinsicHeight(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      S.of(context).v3_main_select_role_title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdswColorOnSurface,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.24,
+                      ),
+                    ),
+                    Flexible(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: 5,
+                          maxHeight: isMobile ? 32 : 60,
+                        ),
+                        child: Gap(isMobile ? 32 : 60),
+                      ),
+                    ),
+                    isMobile
+                        ? useColumn
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _buildButtons(
+                                    context,
+                                    presentStateProvider,
+                                    channelProvider,
+                                    const Size(343, 194),
+                                    const Size(108, 94)),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _buildButtons(
+                                    context,
+                                    presentStateProvider,
+                                    channelProvider,
+                                    const Size(343, 194),
+                                    const Size(108, 94)),
+                              )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: _buildButtons(
+                                context,
+                                presentStateProvider,
+                                channelProvider,
+                                const Size(300, 300),
+                                const Size(138, 120))),
+                  ],
+                ),
+              ));
+        }),
+      ),
     );
   }
 
@@ -195,7 +211,7 @@ class RoleButton extends StatelessWidget {
               SizedBox(
                   width: iconSize.width,
                   height: iconSize.height,
-                  child: SvgPicture.asset(iconPath)),
+                  child: ExcludeSemantics(child: SvgPicture.asset(iconPath))),
               const SizedBox(height: 16),
               Text(
                 name,

@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -144,25 +145,31 @@ class _V3DeviceListState extends State<V3DeviceList> {
                   child: Consumer<DeviceListProvider>(
                     builder: (BuildContext context, DeviceListProvider value,
                         Widget? child) {
-                      return ListView.builder(
-                        itemCount: value.devices.length,
-                        itemBuilder: (context, index) {
-                          final airSyncBonsoirService = value.devices[index];
-                          return V3Focus(
-                            label:
-                                '${airSyncBonsoirService.name} ${airSyncBonsoirService.displayCode}',
-                            identifier: 'v3_qa_device_list_item_$index',
-                            child: InkWell(
-                              child: buildMobileItem(
-                                  airSyncBonsoirService, context),
-                              onTap: () {
-                                setState(() {
-                                  _connectService = airSyncBonsoirService;
-                                });
-                              },
-                            ),
-                          );
-                        },
+                      final sc = ScrollController();
+                      return V3Scrollbar(
+                        controller: sc,
+                        child: ListView.builder(
+                          controller: sc,
+                          padding: EdgeInsets.only(right: 8),
+                          itemCount: value.devices.length,
+                          itemBuilder: (context, index) {
+                            final airSyncBonsoirService = value.devices[index];
+                            return V3Focus(
+                              label:
+                                  '${airSyncBonsoirService.name} ${airSyncBonsoirService.displayCode}',
+                              identifier: 'v3_qa_device_list_item_$index',
+                              child: InkWell(
+                                child: buildMobileItem(
+                                    airSyncBonsoirService, context),
+                                onTap: () {
+                                  setState(() {
+                                    _connectService = airSyncBonsoirService;
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
                   ),
@@ -328,7 +335,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
     double textScale =
         Provider.of<TextScaleProvider>(context, listen: false).textSize.value;
     return Container(
-      height: 72 * textScale,
+      height: textScale == 2.0 ? 72 * textScale * 1.3 : 72 * textScale,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: ShapeDecoration(
         color: onSelected ? context.tokens.color.vsdswColorPrimary : null,
@@ -351,43 +358,45 @@ class _V3DeviceListState extends State<V3DeviceList> {
                   : null,
               'assets/images/ic_device_list_screen.svg'),
           const Gap(8),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    airSyncBonsoirService.name,
-                    style: TextStyle(
-                      color: onSelected
-                          ? context.tokens.color.vsdswColorOnPrimary
-                          : context.tokens.color.vsdswColorOnSurface,
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      airSyncBonsoirService.name,
+                      style: TextStyle(
+                        color: onSelected
+                            ? context.tokens.color.vsdswColorOnPrimary
+                            : context.tokens.color.vsdswColorOnSurface,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    airSyncBonsoirService.displayCode,
-                    style: TextStyle(
-                      color: onSelected
-                          ? context.tokens.color.vsdswColorOnPrimary
-                          : context.tokens.color.vsdswColorOnSurface,
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      airSyncBonsoirService.displayCode,
+                      style: TextStyle(
+                        color: onSelected
+                            ? context.tokens.color.vsdswColorOnPrimary
+                            : context.tokens.color.vsdswColorOnSurface,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
