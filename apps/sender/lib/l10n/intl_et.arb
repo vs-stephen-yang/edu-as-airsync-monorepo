@@ -250,7 +250,7 @@
   "v3_setting_accessibility_size_xlarge": "XLarge",
   "v3_lbl_setting_privacy_policy": "Privaatsuspoliitika",
   "v3_present_touch_back_dialog_title": "Luba tagasilöök",
-  "v3_present_touch_back_dialog_description": "Kui lubate ekraani jagamise, jäädvustab AirSync ajutiselt teie ekraani sisu ja edastab selle valitud ekraanile (nt IFP).\\nTagasilöögi lubamiseks vajab AirSync juurdepääsetavuse teenuse luba, et lubada ekraanilt kaugjuhtimist.\\nAirSync ei kogu teie isikuandmeid ega jälgi teie tegevust. Seda luba kasutatakse ainult puutejuhtimise funktsiooni lubamiseks.",
+  "v3_present_touch_back_dialog_description": "Kui lubate ekraani jagamise, jäädvustab AirSync ajutiselt teie ekraani sisu ja edastab selle valitud ekraanile (nt IFP).Tagasilöögi lubamiseks vajab AirSync juurdepääsetavuse teenuse luba, et lubada ekraanilt kaugjuhtimist.AirSync ei kogu teie isikuandmeid ega jälgi teie tegevust. Seda luba kasutatakse ainult puutejuhtimise funktsiooni lubamiseks.",
   "v3_present_touch_back_dialog_not_now": "Mitte praegu",
   "v3_present_touch_back_dialog_allow": "Lubama"
 }

@@ -193,12 +193,12 @@
   "v3_lbl_main_moderator_action": "Pateikti dalį",
   "v3_lbl_main_moderator_input_hint": "Įveskite savo vardą",
   "v3_lbl_main_display_code": "Įveskite rodomą kodą",
-  "v3_lbl_main_password": "\nĮveskite slaptažodį",
+  "v3_lbl_main_password": "Įveskite slaptažodį",
   "v3_lbl_main_download_mac_store": "Gaukite \"Mac App Store\" versiją",
   "v3_lbl_main_download": "Atsisiųsti siuntėjo programėlę",
   "v3_lbl_select_language": "Pasirinkite %s",
   "v3_lbl_change_language": "Kalbos keitimas",
-  "v3_lbl_download_independent_version": "\nGaukite nepriklausomą \"Mac\" versiją",
+  "v3_lbl_download_independent_version": "Gaukite nepriklausomą \"Mac\" versiją",
   "v3_lbl_main_download_windows": "Gaukite \"Windows\" versiją",
   "v3_lbl_main_download_mobile": "Gaukite mobiliąją versiją",
   "v3_lbl_main_privacy": "Privatumo politika",
@@ -250,7 +250,7 @@
   "v3_setting_accessibility_size_xlarge": "XLarge",
   "v3_lbl_setting_privacy_policy": "Privatumo politika",
   "v3_present_touch_back_dialog_title": "Leisti \"Touchback\"",
-  "v3_present_touch_back_dialog_description": "Leisti \"Touchback\"\nKai įgalinsite ekrano bendrinimą, \"AirSync\" laikinai užfiksuos ir perduos ekrano turinį į pasirinktą ekraną (pvz., IFP).\\nKad įgalintų jutiklinį grąžinimą, \"AirSync\" reikalauja pritaikymo neįgaliesiems paslaugos leidimo, kad būtų galima leisti nuotolinį valdymą iš ekrano.\\\"nAirSync\" nerenka jūsų asmeninių duomenų ir nestebi jūsų veiksmų. Šis leidimas naudojamas tik jutiklinio valdymo funkcijai įjungti.",
+  "v3_present_touch_back_dialog_description": "Leisti \"Touchback\"\nKai įgalinsite ekrano bendrinimą, \"AirSync\" laikinai užfiksuos ir perduos ekrano turinį į pasirinktą ekraną (pvz., IFP).Kad įgalintų jutiklinį grąžinimą, \"AirSync\" reikalauja pritaikymo neįgaliesiems paslaugos leidimo, kad būtų galima leisti nuotolinį valdymą iš ekrano.\"AirSync\" nerenka jūsų asmeninių duomenų ir nestebi jūsų veiksmų. Šis leidimas naudojamas tik jutiklinio valdymo funkcijai įjungti.",
   "v3_present_touch_back_dialog_not_now": "Ne dabar",
   "v3_present_touch_back_dialog_allow": "Leisti"
 }
