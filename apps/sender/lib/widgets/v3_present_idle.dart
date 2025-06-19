@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:app_links/app_links.dart';
@@ -22,6 +21,7 @@ import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -152,11 +152,10 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
             Expanded(
               child: LayoutBuilder(builder: (context, constraints) {
                 final sc = ScrollController();
-                final minHeight = (Platform.isAndroid || Platform.isIOS)
+                final minHeight = WebRTC.platformIsMobile
                     ? AppConstants.mobileMinHeight
                     : AppConstants.windowsMinHeight;
-                final double gatHeight =
-                    (Platform.isAndroid || Platform.isIOS) ? 40 : 60;
+                final double gatHeight = WebRTC.platformIsMobile ? 40 : 60;
                 final double gap = max(minHeight - constraints.maxHeight, 0) > 0
                     ? 0
                     : gatHeight;

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -50,16 +51,23 @@ class V3SettingLicense extends StatelessWidget {
           left: isAppMode ? 16 : 24,
           right: isAppMode ? 16 : 24,
           bottom: isAppMode ? 16 : 24,
-          child: SingleChildScrollView(
-            child: Text(
-              settingsProvider.license?.license ??
-                  S.of(context).v3_setting_privacy_policy_description,
-              style: TextStyle(
-                color: context.tokens.color.vsdswColorOnSurfaceInverse,
-                fontSize: 12,
+          child: Builder(builder: (context) {
+            final sc = ScrollController();
+            return V3MenuScrollbar(
+              controller: sc,
+              child: SingleChildScrollView(
+                controller: sc,
+                child: Text(
+                  settingsProvider.license?.license ??
+                      S.of(context).v3_setting_privacy_policy_description,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdswColorOnSurfaceInverse,
+                    fontSize: 12,
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         ),
       ],
     );
