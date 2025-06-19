@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/oss_licenses.dart';
 import 'package:display_cast_flutter/providers/pref_text_scale_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -102,68 +103,79 @@ class V3SettingsLegalPolicy extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 24),
-              child: ListView.separated(
-                itemCount: dependencies
-                    .where((license) => !_hiddenLicenses.contains(license.name))
-                    .length,
-                itemBuilder: (BuildContext context, int index) {
-                  final visibleLicenses = dependencies
-                      .where(
-                          (license) => !_hiddenLicenses.contains(license.name))
-                      .toList();
-                  final license = visibleLicenses[index];
-                  return V3Focus(
-                    label: sprintf(S.of(context).v3_lbl_setting_legal_policy,
-                        [license.name]),
-                    identifier: sprintf(
-                        'v3_qa_setting_legal_policy %s', [license.name]),
-                    child: SizedBox(
-                      width: 352,
-                      height: (WebRTC.platformIsMobile ? 44 : 40) * textScale,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: context.tokens.spacing.vsdswSpacingXs.top,
-                            horizontal:
-                                context.tokens.spacing.vsdswSpacingSm.left),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: AutoSizeText(
-                                license.name,
-                                style: TextStyle(
-                                  color: context
-                                      .tokens.color.vsdswColorOnSurfaceInverse,
-                                  fontSize: 14,
+              child: Builder(builder: (context) {
+                final sc = ScrollController();
+                return V3MenuScrollbar(
+                  controller: sc,
+                  child: ListView.separated(
+                    controller: sc,
+                    itemCount: dependencies
+                        .where((license) =>
+                            !_hiddenLicenses.contains(license.name))
+                        .length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final visibleLicenses = dependencies
+                          .where((license) =>
+                              !_hiddenLicenses.contains(license.name))
+                          .toList();
+                      final license = visibleLicenses[index];
+                      return V3Focus(
+                        label: sprintf(
+                            S.of(context).v3_lbl_setting_legal_policy,
+                            [license.name]),
+                        identifier: sprintf(
+                            'v3_qa_setting_legal_policy %s', [license.name]),
+                        child: SizedBox(
+                          width: 352,
+                          height:
+                              (WebRTC.platformIsMobile ? 44 : 40) * textScale,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical:
+                                    context.tokens.spacing.vsdswSpacingXs.top,
+                                horizontal:
+                                    context.tokens.spacing.vsdswSpacingSm.left),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: AutoSizeText(
+                                    license.name,
+                                    style: TextStyle(
+                                      color: context.tokens.color
+                                          .vsdswColorOnSurfaceInverse,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                ExcludeSemantics(
+                                  child: IconButton(
+                                    icon: SvgPicture.asset(
+                                        'assets/images/v3_ic_arrow_right.svg'),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      settingsProvider.setPage(
+                                          SettingPageState.licenses,
+                                          license: license);
+                                    },
+                                  ),
+                                )
+                              ],
                             ),
-                            ExcludeSemantics(
-                              child: IconButton(
-                                icon: SvgPicture.asset(
-                                    'assets/images/v3_ic_arrow_right.svg'),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  settingsProvider.setPage(
-                                      SettingPageState.licenses,
-                                      license: license);
-                                },
-                              ),
-                            )
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Divider(
-                    thickness: 1,
-                    height: context.tokens.spacing.vsdswSpacingSm.vertical,
-                    color: context.tokens.color.vsdswColorOutlineVariant,
-                  );
-                },
-              ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider(
+                        thickness: 1,
+                        height: context.tokens.spacing.vsdswSpacingSm.vertical,
+                        color: context.tokens.color.vsdswColorOutlineVariant,
+                      );
+                    },
+                  ),
+                );
+              }),
             ),
           ),
         ],
