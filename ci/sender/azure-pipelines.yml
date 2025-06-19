@@ -73,3 +73,5 @@ jobs:
       # build prod
       - script: $(Flutter.Bin) build $(buildCommand) --no-pub $(extraBuildOptions) -t ./lib/main_production.dart
         displayName: Build prod
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
