@@ -525,7 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas jauns"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-      "\nAirSync %s\n\nAirSync ir patentēts bezvadu ekrāna koplietošanas risinājums no ViewSonic. Lietojot ar AirSync sūtītāju, tas ļauj lietotājiem nemanāmi koplietot savus ekrānus ar ViewSonic interaktīvajiem displejiem.\n\nŠajā laidienā ir iekļauti šādi jauni līdzekļi:\n\n1. Atbalsts ViewSonic LED displejiem.\n\n2. Touchback funkcionalitāte Android ierīcēm IFP.\n\n3. Touchback funkcionalitāte iPad, kopīgojot AirPlay.\n\n4. Gudra mērogošana.\n\n5. Iespēja mainīt apraides izmērus uz ierīces logu.\n\n6. Uzlabota stabilitāte Miracast.\n\n7. Novērstas dažādas kļūdas.",
+      "AirSync %s\n\nAirSync ir patentēts bezvadu ekrāna koplietošanas risinājums no ViewSonic. Lietojot ar AirSync sūtītāju, tas ļauj lietotājiem nemanāmi koplietot savus ekrānus ar ViewSonic interaktīvajiem displejiem.\n\nŠajā laidienā ir iekļauti šādi jauni līdzekļi:\n\n1. Atbalsts ViewSonic LED displejiem.\n\n2. Touchback funkcionalitāte Android ierīcēm IFP.\n\n3. Touchback funkcionalitāte iPad, kopīgojot AirPlay.\n\n4. Gudra mērogošana.\n\n5. Iespēja mainīt apraides izmērus uz ierīces logu.\n\n6. Uzlabota stabilitāte Miracast.\n\n7. Novērstas dažādas kļūdas.",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(

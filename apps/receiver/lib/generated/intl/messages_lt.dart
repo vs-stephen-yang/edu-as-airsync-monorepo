@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'lt';
 
   static String m1(value) =>
-      "\nEkrano bendrinimas netrukus baigsis. Ar norėtumėte jį pratęsti 3 valandomis? Galite pratęsti iki ${value} kartų.";
+      "Ekrano bendrinimas netrukus baigsis. Ar norėtumėte jį pratęsti 3 valandomis? Galite pratęsti iki ${value} kartų.";
 
   static String m0(year, version) => "AirSync ©${year}. version ${version}";
 
@@ -212,6 +212,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Sutikti",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Priimti viską",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Atsisakyti",
     ),
@@ -358,12 +361,191 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
       "Priimkite visas užklausas",
     ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Atmetimo užklausa",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Uždarykite perdavimo įrenginio ryšį",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Išjunkite \"Cast\" įrenginio jutiklinį grąžinimą",
+        ),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Įgalinkite perdavimo įrenginio jutiklinį grąžinimą",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Uždarykite atsisiuntimo siuntėjo programos meniu",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage(
+          "Uždarykite perdavimo įrenginių sąrašą",
+        ),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Uždaryti moderatorių sąrašą",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Uždarykite srautinio perdavimo nuorodų meniu",
+        ),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Dialogo langas Uždaryti ryšio būseną",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
+      "Sutinku su EULA",
+    ),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Nesutinka su EULA",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atšaukti išeinantį moderatoriaus režimą",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Patvirtinkite išeinantį moderatoriaus režimą",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Nepratęskite liejimo laiko",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Prailginkite liejimo laiką",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Uždaryti grupės atmetimo pranešimą",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Ryšio klaida, patikrinkite įrenginio tinklo nustatymą",
+        ),
     "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
       "Tik vietinis ryšys",
     ),
-    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
-      "\nIšplėskite srautinio perdavimo funkcijas",
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atšaukimo dialogo langas",
     ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Patvirtinimo dialogo langas",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Sumažinkite greito prisijungimo meniu",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Sumažinkite srautinio perdavimo QR kodo meniu",
+        ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Perjungti moderatoriaus režimą",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite atsisiuntimo siuntėjo programos meniu",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite perdavimo įrenginių sąrašą",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti moderatorių sąrašą",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti nustatymų meniu",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite srautinio perdavimo QR kodo meniu",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite srautinį spartųjį meniu",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Perduokite įrenginį šiam dalyviui",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Glaudus dalyvių ryšys",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Atjunkite šį dalyvį",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Uždarykite veidrodinio atspindžio dalyvio ryšį",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Pasidalinkite šio dalyvio veidrodžiu",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Sustabdyti veidrodinio dalyvio transliaciją",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Bendrinti šio dalyvio ekrane",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Dalyvio srautinio perdavimo sustabdymas",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Įgalinti šio dalyvio jutiklinį grąžinimą",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Išjungti šio dalyvio prisilietimą",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Išskleisti pateikties valdiklį",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimizuoti pateikties valdymą",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Nutildyti pristatymą",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Sustabdyti pristatymą",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti transliacijos nustatymų meniu",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite ryšio nustatymų meniu",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Pasirinkite %s",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite įrenginio nustatymų meniu",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti teisinės strategijos parametrų meniu",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Nustatymų meniu užrakintas",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage(
+          "Automatinio priėmimo įjungimas / išjungimas",
+        ),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage(
+          "Įjungti / išjungti reikalaujamą prieigos kodą",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Pasirinkite %s",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti nustatymų meniu Kas naujo",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "piktograma kas naujo",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "\"Miracast\" įjungimas / išjungimas",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite veidrodinio atspindžio nustatymų meniu",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("\"AirPlay\" perjungimas"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage("Perduoti į įrenginius perjungti"),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Išplėskite srautinio perdavimo funkcijas",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("\"Google Cast\" perjungimas"),
     "v3_lbl_streaming_shortcut_menu_locked":
         MessageLookupByLibrary.simpleMessage(
           "Srautinio perdavimo nuorodų meniu užrakintas",
@@ -371,6 +553,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
       "Sutraukti srautinio perdavimo funkcijas",
     ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("\"Miracast\" perjungimas"),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Išplėskite srautinio perdavimo rodinį",
     ),
@@ -394,6 +578,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
       "Garso nutildymo išjungimas",
     ),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Uždaryti",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Tik interneto ryšys。",
+    ),
+    "v3_main_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Ryšio klaida, patikrinkite įrenginio tinklo nustatymą。",
+        ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Ryšio klaida, patikrinkite įrenginio tinklo nustatymą。",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Tik LAN ryšys, patikrinkite įrenginio tinklo nustatymą。",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Nepavyko aptikti interneto ryšio. Prisijunkite prie „Wi-Fi“ arba intraneto tinklo ir bandykite dar kartą.",
     ),
@@ -610,7 +812,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas naujo"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-      "\n\"AirSync\" yra \"ViewSonic\" patentuotas belaidžio ekrano bendrinimo sprendimas. Kai naudojamas su \"AirSync\" siuntėju, jis leidžia sklandžiai bendrinti ekraną iš vartotojo įrenginio į \"ViewSonic\" interaktyvius ekranus.\n\nNaujos šio leidimo funkcijos: \n\n1. Moderatoriaus režimas dabar palaiko atspindėjimą.\n\n2. Integracija su ViewSonic Manager per Manager nuotolinio valdymo pultą.\n\n3. PWA versijos siuntėjas, skirtas \"Chromebook\" įrenginiams, skirtas ekrano bendrinimui internete.\n\n4. 9 padalintų ekranų palaikymas pasirinktuose modeliuose.\n\n5. Palaikykite ekrano plėtinį su jutikliniu grąžinimu. \n\n6. Pagerintas stabilumas.\n\n7. Klaidos ištaisytos.",
+      "\"AirSync\" yra \"ViewSonic\" patentuotas belaidžio ekrano bendrinimo sprendimas. Kai naudojamas su \"AirSync\" siuntėju, jis leidžia sklandžiai bendrinti ekraną iš vartotojo įrenginio į \"ViewSonic\" interaktyvius ekranus.\n\nNaujos šio leidimo funkcijos: \n\n1. Moderatoriaus režimas dabar palaiko atspindėjimą.\n\n2. Integracija su ViewSonic Manager per Manager nuotolinio valdymo pultą.\n\n3. PWA versijos siuntėjas, skirtas \"Chromebook\" įrenginiams, skirtas ekrano bendrinimui internete.\n\n4. 9 padalintų ekranų palaikymas pasirinktuose modeliuose.\n\n5. Palaikykite ekrano plėtinį su jutikliniu grąžinimu. \n\n6. Pagerintas stabilumas.\n\n7. Klaidos ištaisytos.",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(

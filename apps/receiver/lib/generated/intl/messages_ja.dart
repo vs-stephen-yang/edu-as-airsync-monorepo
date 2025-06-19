@@ -24,6 +24,26 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
+    "eula_disagree": MessageLookupByLibrary.simpleMessage("拒否"),
+    "eula_title": MessageLookupByLibrary.simpleMessage("AirSync エンドユーザー使用許諾契約"),
+    "main_content_display_code": MessageLookupByLibrary.simpleMessage(
+      "ディスプレイコード",
+    ),
+    "main_content_one_time_password": MessageLookupByLibrary.simpleMessage(
+      "ワンタイムパスワード",
+    ),
+    "main_status_go_background": MessageLookupByLibrary.simpleMessage(
+      "AirSync アプリはバックグラウンドで実行中です。",
+    ),
+    "main_status_remaining_time": MessageLookupByLibrary.simpleMessage(
+      "%02d 分 : %02d 秒",
+    ),
+    "update_install_now": MessageLookupByLibrary.simpleMessage("今すぐインストール"),
+    "update_message": MessageLookupByLibrary.simpleMessage(
+      "新しいバージョンのソフトウェアが利用可能になりました。",
+    ),
+    "update_title": MessageLookupByLibrary.simpleMessage("AirSync のアップデート"),
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage("許可"),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒否"),
     "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("有効"),
@@ -314,5 +334,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage("他の参加者を待っています。"),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("次の番"),
+    "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
+      "システム更新をダウンロードしています。",
+    ),
   };
 }
