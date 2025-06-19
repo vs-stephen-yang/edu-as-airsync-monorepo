@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -120,6 +121,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
     if (!await WebRTCHelper().isAccessibilityServiceAllowed()) {
       // if AccessibilityService not enabled, show dialog to ask permission.
       if (context.mounted) {
+        final sc = ScrollController();
         BuildContext buildContext = context;
         await showDialog(
             context: buildContext,
@@ -129,9 +131,13 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
               return AlertDialog(
                 backgroundColor: Colors.white,
                 title: Text(S.of(context).v3_present_touch_back_dialog_title),
-                content: SingleChildScrollView(
-                  child: Text(
-                    S.of(context).v3_present_touch_back_dialog_description,
+                content: V3Scrollbar(
+                  controller: sc,
+                  child: SingleChildScrollView(
+                    controller: sc,
+                    child: Text(
+                      S.of(context).v3_present_touch_back_dialog_description,
+                    ),
                   ),
                 ),
                 actions: <Widget>[
