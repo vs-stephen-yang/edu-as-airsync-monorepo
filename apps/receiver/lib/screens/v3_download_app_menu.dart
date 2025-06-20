@@ -511,8 +511,8 @@ class LandscapeWidget extends StatelessWidget {
                               const Gap(8),
                               Container(
                                 width: 400,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
                                 decoration: ShapeDecoration(
                                   shape: RoundedRectangleBorder(
                                     side: BorderSide(
@@ -523,29 +523,27 @@ class LandscapeWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                                child: Stack(
-                                  alignment: Alignment.centerLeft,
+                                child: Row(
                                   children: [
-                                    Text(
-                                      AppConfig.of(context)!
-                                          .settings
-                                          .appStoreUrl,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: context
-                                            .tokens.color.vsdslColorOnSurface,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500,
+                                    Expanded(
+                                      child: Text(
+                                        AppConfig.of(context)!
+                                            .settings
+                                            .appStoreUrl,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: context
+                                              .tokens.color.vsdslColorOnSurface,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: SvgPicture.asset(
-                                        'assets/images/ic_store_magnifier.svg',
-                                        excludeFromSemantics: true,
-                                        width: 33,
-                                        height: 33,
-                                      ),
+                                    SvgPicture.asset(
+                                      'assets/images/ic_store_magnifier.svg',
+                                      excludeFromSemantics: true,
+                                      width: 33,
+                                      height: 33,
                                     ),
                                   ],
                                 ),
@@ -580,8 +578,8 @@ class LandscapeWidget extends StatelessWidget {
                               const Gap(8),
                               Container(
                                 width: 400,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
                                 decoration: ShapeDecoration(
                                   shape: RoundedRectangleBorder(
                                     side: BorderSide(
@@ -592,27 +590,25 @@ class LandscapeWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                                child: Stack(
-                                  alignment: Alignment.centerLeft,
+                                child: Row(
                                   children: [
-                                    Text(
-                                      '${AppConfig.of(context)!.settings.appStoreUrl}?r',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: context
-                                            .tokens.color.vsdslColorOnSurface,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500,
+                                    Expanded(
+                                      child: Text(
+                                        '${AppConfig.of(context)!.settings.appStoreUrl}?r',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: context
+                                              .tokens.color.vsdslColorOnSurface,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: SvgPicture.asset(
-                                        'assets/images/ic_store_magnifier.svg',
-                                        excludeFromSemantics: true,
-                                        width: 33,
-                                        height: 33,
-                                      ),
+                                    SvgPicture.asset(
+                                      'assets/images/ic_store_magnifier.svg',
+                                      excludeFromSemantics: true,
+                                      width: 33,
+                                      height: 33,
                                     ),
                                   ],
                                 ),
@@ -674,7 +670,7 @@ class LandscapeWidget extends StatelessWidget {
                   Expanded(
                     flex: 11,
                     child: Padding(
-                      padding: const EdgeInsets.only( bottom: 10),
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: V3Scrollbar(
                         controller: rightScrollController,
                         child: SingleChildScrollView(
