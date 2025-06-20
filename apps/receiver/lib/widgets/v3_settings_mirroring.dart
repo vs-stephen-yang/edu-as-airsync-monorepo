@@ -26,7 +26,7 @@ class V3SettingsMirroring extends StatelessWidget {
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isMirroringLock,
         isDisableFromNotSupport: mirrorStateProvider.miracastSupport &&
-            mirrorStateProvider.isVB005AndDFSChannel,
+            mirrorStateProvider.isSpecifiedModuleAndDFSChannel,
         child: Consumer<MirrorStateProvider>(
           builder: (context, mirrorStateProvider, _) {
             toggleAirPlayCode(bool value) {
@@ -149,10 +149,10 @@ class V3SettingsMirroring extends StatelessWidget {
                       identifier: 'v3_qa_shortcuts_miracast',
                       excludeSemantics: false,
                       isDisable:
-                          disable || mirrorStateProvider.isVB005AndDFSChannel,
+                          disable || mirrorStateProvider.isSpecifiedModuleAndDFSChannel,
                       name: S.of(context).v3_shortcuts_miracast,
                       mirrorEnabled: mirrorStateProvider.miracastEnabled &&
-                          !mirrorStateProvider.isVB005AndDFSChannel,
+                          !mirrorStateProvider.isSpecifiedModuleAndDFSChannel,
                       callback: () {
                         if (mirrorStateProvider.miracastEnabled) {
                           mirrorStateProvider.stopMiracast();

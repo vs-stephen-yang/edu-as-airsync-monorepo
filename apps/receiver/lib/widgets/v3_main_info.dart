@@ -227,7 +227,7 @@ class V3MainInfo extends StatelessWidget {
 
   Widget _buildMiracastInstructionRow(BuildContext context) {
     return Consumer<MirrorStateProvider>(builder: (_, provider, __) {
-      return provider.isVB005AndDFSChannel
+      return provider.isSpecifiedModuleAndDFSChannel
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start, // 保持頂部對齊
               children: [

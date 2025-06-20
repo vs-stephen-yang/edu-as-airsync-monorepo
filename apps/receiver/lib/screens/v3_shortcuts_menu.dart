@@ -345,14 +345,14 @@ class V3ShortcutsMenu extends StatelessWidget {
                                             child: IconButton(
                                               icon: Opacity(
                                                 opacity: mirrorStateProvider
-                                                        .isVB005AndDFSChannel
+                                                        .isSpecifiedModuleAndDFSChannel
                                                     ? 0.32
                                                     : 1,
                                                 child: SvgPicture.asset(
                                                   mirrorStateProvider
                                                               .miracastEnabled &&
                                                           !mirrorStateProvider
-                                                              .isVB005AndDFSChannel
+                                                              .isSpecifiedModuleAndDFSChannel
                                                       ? 'assets/images/ic_switch_on.svg'
                                                       : 'assets/images/ic_switch_off.svg',
                                                 ),
@@ -385,7 +385,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                                       ),
                                     ),
                                     if (mirrorStateProvider
-                                        .isVB005AndDFSChannel)
+                                        .isSpecifiedModuleAndDFSChannel)
                                       Container(
                                         height: 40,
                                         decoration: BoxDecoration(

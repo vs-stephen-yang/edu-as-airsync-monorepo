@@ -56,9 +56,9 @@ class MirrorStateProvider extends ChangeNotifier
 
   String get pinCode => _pinCode;
 
-  get isVB005AndDFSChannel => _isVB005AndDFSChannel;
+  get isSpecifiedModuleAndDFSChannel => _isSpecifiedModuleAndDFSChannel;
 
-  bool _isVB005AndDFSChannel = false;
+  bool _isSpecifiedModuleAndDFSChannel = false;
 
   final InstanceInfoProvider _instanceInfoProvider;
 
@@ -378,7 +378,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startMiracast({bool updatePreference = true}) async {
-    if (!_miracastSupport || _isVB005AndDFSChannel) return;
+    if (!_miracastSupport || _isSpecifiedModuleAndDFSChannel) return;
 
     log.info('startMiracast');
     await _flutterMirrorPlugin?.startMiracast(_deviceName);
@@ -458,19 +458,19 @@ class MirrorStateProvider extends ChangeNotifier
         (flavor == 'ifp' && deviceType != 'dvLED') || (flavor == 'edla');
 
     if (_miracastSupport) {
-      await channel.invokeMethod("startVB005DFSChannelMonitor");
-      const EventChannel('com.mvbcast.crosswalk/wifi_helper_vb005_dfs_channel')
+      await channel.invokeMethod("startSpecifiedModuleDFSChannelMonitor");
+      const EventChannel('com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel')
           .receiveBroadcastStream()
           .listen((event) async {
         if (event is bool) {
-          _isVB005AndDFSChannel = event;
+          _isSpecifiedModuleAndDFSChannel = event;
           notifyListeners();
           if (_miracastEnabled) {
-            if (_isVB005AndDFSChannel) {
-              log.info('stop miracast feature (VB005 DFS Channel)');
+            if (_isSpecifiedModuleAndDFSChannel) {
+              log.info('stop miracast feature (Specified Module DFS Channel)');
               await stopMiracast(updatePreference: false);
             } else {
-              log.info('start miracast feature (VB005 DFS Channel)');
+              log.info('start miracast feature (Specified Module DFS Channel)');
               await startMiracast(updatePreference: false);
             }
           }
