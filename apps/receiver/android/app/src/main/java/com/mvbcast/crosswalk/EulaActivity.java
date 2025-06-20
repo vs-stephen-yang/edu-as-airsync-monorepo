@@ -165,8 +165,8 @@ public class EulaActivity extends FlutterActivity {
                 .setMethodCallHandler((call, result) -> {
                     if (call.method.equals("getFlavor")) {
                         result.success(BuildConfig.FLAVOR_channel);
-                    } else if (call.method.equals("startVB005DFSChannelMonitor")) {
-                        WifiHelper.getInstance().initVB005DFSChannelMonitor(EulaActivity.this, binaryMessenger);
+                    } else if (call.method.equals("startSpecifiedModuleDFSChannelMonitor")) {
+                        WifiHelper.getInstance().initSpecifiedModuleDFSChannelMonitor(EulaActivity.this, binaryMessenger);
                         result.success("N/A");
                     } else {
                         result.success("N/A");

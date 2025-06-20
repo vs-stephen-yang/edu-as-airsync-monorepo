@@ -56,6 +56,14 @@ public class WifiHelper {
     /**
      * @noinspection FieldCanBeLocal
      */
+    private final int VB004_VENDOR_ID = 0xA69C;
+    /**
+     * @noinspection FieldCanBeLocal
+     */
+    private final int VB004_PRODUCT_ID = 0x8801;
+    /**
+     * @noinspection FieldCanBeLocal
+     */
     private final int VB005_VENDOR_ID = 0x0BDA;
     /**
      * @noinspection FieldCanBeLocal
@@ -70,23 +78,23 @@ public class WifiHelper {
     private BroadcastReceiver usbReceiver;
     private EventChannel.EventSink mWiFiHelperEventSink;
     private boolean mIsMonitorUSB = false;
-    private boolean mIsVB005Found = false;
-    private boolean mIsVB005AndDFSChannel = false;
-    private Boolean mLastIsVB005AndDFSChannel;
+    private boolean mIsSpecifiedWirelessModuleFound = false;
+    private boolean mIsSpecifiedModuleAndDFSChannel = false;
+    private Boolean mLastSpecifiedModuleAndDFSChannel;
 
-    public void initVB005DFSChannelMonitor(Activity activity, BinaryMessenger binaryMessenger) {
-        new EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_helper_vb005_dfs_channel")
+    public void initSpecifiedModuleDFSChannelMonitor(Activity activity, BinaryMessenger binaryMessenger) {
+        new EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel")
                 .setStreamHandler(new EventChannel.StreamHandler() {
                     @Override
                     public void onListen(Object arguments, EventChannel.EventSink events) {
                         mWiFiHelperEventSink = events;
-                        mLastIsVB005AndDFSChannel = null;
+                        mLastSpecifiedModuleAndDFSChannel = null;
                     }
 
                     @Override
                     public void onCancel(Object arguments) {
                         mWiFiHelperEventSink = null;
-                        mLastIsVB005AndDFSChannel = null;
+                        mLastSpecifiedModuleAndDFSChannel = null;
                     }
                 });
 
@@ -136,19 +144,20 @@ public class WifiHelper {
     private void checkConnectedUsbDevices(Activity activity) {
         UsbManager usbManager = (UsbManager) activity.getApplicationContext().getSystemService(Context.USB_SERVICE);
         if (usbManager != null) {
-            boolean foundVB005 = false;
+            boolean foundSpecifiedWirelessModule = false;
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             if (!deviceList.isEmpty()) {
                 for (UsbDevice device : deviceList.values()) {
                     int vendorId = device.getVendorId();
                     int productId = device.getProductId();
-                    if (vendorId == VB005_VENDOR_ID && productId == VB005_PRODUCT_ID) {
-                        foundVB005 = true;
+                    if ((vendorId == VB004_VENDOR_ID && productId == VB004_PRODUCT_ID) ||
+                            (vendorId == VB005_VENDOR_ID && productId == VB005_PRODUCT_ID)) {
+                        foundSpecifiedWirelessModule = true;
                         break;
                     }
                 }
             }
-            mIsVB005Found = foundVB005;
+            mIsSpecifiedWirelessModuleFound = foundSpecifiedWirelessModule;
         }
     }
 
@@ -177,10 +186,10 @@ public class WifiHelper {
         }
         // invoke method to update UI when status changes
         if (mWiFiHelperEventSink != null) {
-            if (mLastIsVB005AndDFSChannel == null ||
-                    mLastIsVB005AndDFSChannel != mIsVB005AndDFSChannel) {
-                mLastIsVB005AndDFSChannel = mIsVB005AndDFSChannel;
-                mWiFiHelperEventSink.success(mIsVB005AndDFSChannel);
+            if (mLastSpecifiedModuleAndDFSChannel == null ||
+                    mLastSpecifiedModuleAndDFSChannel != mIsSpecifiedModuleAndDFSChannel) {
+                mLastSpecifiedModuleAndDFSChannel = mIsSpecifiedModuleAndDFSChannel;
+                mWiFiHelperEventSink.success(mIsSpecifiedModuleAndDFSChannel);
             }
         }
     }
@@ -189,15 +198,15 @@ public class WifiHelper {
         WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         // check if VB-005 is connected and get channel from WifiInfo
-        if (mIsVB005Found && wifiInfo != null && wifiInfo.getNetworkId() != -1) {
+        if (mIsSpecifiedWirelessModuleFound && wifiInfo != null && wifiInfo.getNetworkId() != -1) {
             // get frequency from WifiInfo
             int frequency = wifiInfo.getFrequency();
             // get channel from frequency
             int channel = convertFrequencyToChannel(frequency);
             // check if channel is in DFS channel list
-            mIsVB005AndDFSChannel = mDFSChannel.contains(channel);
+            mIsSpecifiedModuleAndDFSChannel = mDFSChannel.contains(channel);
         } else {
-            mIsVB005AndDFSChannel = false;
+            mIsSpecifiedModuleAndDFSChannel = false;
         }
     }
 
