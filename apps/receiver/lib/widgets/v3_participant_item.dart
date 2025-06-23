@@ -43,7 +43,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
     if (rtcConnector.isModeratorShare) {
       // find the remoteShareConnector with same clientId as rtcConnector.
       ChannelProvider channelProvider =
-          Provider.of<ChannelProvider>(context, listen: false);
+          Provider.of<ChannelProvider>(context, listen: true);
       int index = channelProvider.remoteShareConnectors
           .indexWhere((item) => item.clientId == rtcConnector.clientId);
       if (index != -1) {
@@ -112,14 +112,12 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        child: AutoSizeText(
-                          rtcConnector.senderName ?? '',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: context.tokens.color.vsdslColorOnSurface,
-                          ),
+                      AutoSizeText(
+                        rtcConnector.senderName ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: context.tokens.color.vsdslColorOnSurface,
                         ),
                       ),
                       if (widget.isForMenuUse && status.isNotEmpty) ...[
@@ -130,7 +128,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
                             fontSize: 9,
                             fontWeight: FontWeight.w600,
                             color: (isWaiting)
-                                ? context.tokens.color.vsdslColorSurface400
+                                ? context.tokens.color.vsdslColorOnSurfaceVariant
                                 : (isCasting)
                                     ? context
                                         .tokens.color.vsdslColorSecondaryVariant
@@ -305,8 +303,8 @@ class ParticipantStandbyFeature extends StatelessWidget {
             ),
           ),
         ),
-        Gap(context.tokens.spacing.vsdslSpacingSm.left),
         if (isForMenuUse && rtcConnector.senderPlatform != 'web') ...[
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
           V3Focus(
             label: S.of(context).v3_lbl_participant_cast_device,
             identifier: 'v3_qa_participant_cast_device',
