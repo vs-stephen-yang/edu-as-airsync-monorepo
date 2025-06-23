@@ -22,7 +22,7 @@ option(UVGRTP_DISABLE_WERROR "Ignore compiler warnings" ON)
 
 option(UVGRTP_DISABLE_TESTS    "Do not build unit tests" OFF)
 option(UVGRTP_DISABLE_EXAMPLES "Do not build examples" OFF)
-option(UVGRTP_DISABLE_INSTALL  "Do not install anything from uvgRTP" OFF)
+option(UVGRTP_DISABLE_INSTALL  "Do not install anything from uvgRTP" ON)
 
 option(UVGRTP_DOWNLOAD_CRYPTO  "Download headers for Crypto++ if they are missing" OFF)
 
@@ -32,6 +32,8 @@ option(UVGRTP_RELEASE_COMMIT "Explicitly say that this is a release version in v
 option(DISABLE_CRYPTO "Do not build uvgRTP with crypto enabled" OFF)
 option(DISABLE_PRINTS "Do not print anything from uvgRTP" OFF)
 option(DISABLE_WERROR "Ignore compiler warnings" OFF)
+
+option(UVGRTP_ENABLE_SRTP "Enable SRTP support" OFF)
 
 # offer some backwards compatibility for old flags
 if (DISABLE_CRYPTO)
@@ -210,6 +212,13 @@ endif()
 if (UVGRTP_DISABLE_PRINTS)
     list(APPEND UVGRTP_CXX_FLAGS "-D__RTP_SILENT__")
     target_compile_definitions(${PROJECT_NAME} PRIVATE __RTP_SILENT__)
+endif()
+
+
+if (UVGRTP_ENABLE_SRTP)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE __RTP_CRYPTO__)
+        target_link_libraries(${PROJECT_NAME} PRIVATE cryptopp)
+        message(STATUS "SRTP enabled with Crypto++")
 endif()
 
 if (UNIX)
