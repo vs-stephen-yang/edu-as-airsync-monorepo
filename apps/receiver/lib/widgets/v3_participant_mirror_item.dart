@@ -46,9 +46,9 @@ class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
     if (mirrorRequest.mirrorState == MirrorState.idle) {
       return const SizedBox.shrink();
     } else {
-      return SizedBox(
+      return Container(
+        alignment: Alignment.center,
         width: widget.isForMenuUse ? 358 : 283,
-        height: 34,
         child: Row(
           children: [
             SvgPicture.asset(
@@ -60,46 +60,86 @@ class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
             ),
             Gap(context.tokens.spacing.vsdslSpacingSm.left),
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    height: 18,
-                    child: AutoSizeText(
-                      mirrorRequest.deviceName,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnSurface,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+                  Container(
+                    constraints: BoxConstraints(minHeight: 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AutoSizeText(
+                          mirrorRequest.deviceName,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: context.tokens.color.vsdslColorOnSurface,
+                          ),
+                        ),
+                        if (widget.isForMenuUse && status.isNotEmpty) ...[
+                          Gap(context.tokens.spacing.vsdslSpacingXs.top),
+                          AutoSizeText(
+                            status,
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w600,
+                              color: (isCasting)
+                                  ? context
+                                      .tokens.color.vsdslColorSecondaryVariant
+                                  : context
+                                      .tokens.color.vsdslColorSuccessVariant,
+                            ),
+                            textAlign: TextAlign.center,
+                            minFontSize: 8,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                  if (widget.isForMenuUse && status.isNotEmpty) ...[
-                    Gap(context.tokens.spacing.vsdslSpacingXs.top),
-                    AutoSizeText(
-                      status,
-                      style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
-                        color: (isCasting)
-                            ? context.tokens.color.vsdslColorSecondaryVariant
-                            : context.tokens.color.vsdslColorSuccessVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                      minFontSize: 8,
-                    ),
-                  ],
+                  Gap(context.tokens.spacing.vsdslSpacing2xl.left),
+                  itemParticipant,
                 ],
               ),
             ),
-            Gap(context.tokens.spacing.vsdslSpacing2xl.left),
-            itemParticipant,
+            if (!isCasting)
+              V3Focus(
+                label: S.of(context).v3_lbl_participant_mirror_close,
+                identifier: 'v3_qa_participant_mirror_close',
+                child: SizedBox(
+                  width: 27,
+                  height: 27,
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/images/ic_participant_close.svg',
+                    ),
+                    style: IconButton.styleFrom(
+                      elevation: 10.0,
+                      shadowColor:
+                          context.tokens.color.vsdslColorOpacityNeutralXs,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      EasyThrottle.throttle(
+                          'sendPresenterRemove', const Duration(seconds: 1),
+                          () {
+                        _sendPresenterRemove(context, mirrorId);
+                      });
+                    },
+                  ),
+                ),
+              ),
           ],
         ),
       );
     }
+  }
+
+  _sendPresenterRemove(BuildContext context, String mirrorId) async {
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    mirrorStateProvider.stopAcceptedMirror(mirrorId, removeUserEvent: true);
   }
 }
 
@@ -116,12 +156,12 @@ class ParticipantStandbyFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         V3Focus(
           label: S.of(context).v3_lbl_participant_mirror_share,
           identifier: 'v3_qa_participant_mirror_share',
           child: SizedBox(
-            width: isForMenuUse ? 105 : 66,
             height: 27,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -131,7 +171,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: context.tokens.radii.vsdslRadiusFull,
                 ),
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.symmetric(horizontal: 10),
               ),
               onPressed: () {
                 EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
@@ -143,10 +183,10 @@ class ParticipantStandbyFeature extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isForMenuUse) ...[
-                    Gap(context.tokens.spacing.vsdslSpacingSm.left),
                     SizedBox(
                       child: SvgPicture.asset(
                         'assets/images/ic_arrow_to_screen.svg',
+                        excludeFromSemantics: true,
                         width: 16,
                         height: 16,
                         colorFilter: ColorFilter.mode(
@@ -157,48 +197,17 @@ class ParticipantStandbyFeature extends StatelessWidget {
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   ],
-                  Expanded(
-                    child: Text(
-                      S.of(context).v3_participant_item_share,
-                      textAlign:
-                          isForMenuUse ? TextAlign.left : TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                      ),
+                  Text(
+                    S.of(context).v3_participant_item_share,
+                    textAlign: isForMenuUse ? TextAlign.left : TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-        ),
-        Gap(context.tokens.spacing.vsdslSpacingSm.left),
-        V3Focus(
-          label: S.of(context).v3_lbl_participant_mirror_close,
-          identifier: 'v3_qa_participant_mirror_close',
-          child: SizedBox(
-            width: 27,
-            height: 27,
-            child: IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/ic_participant_close.svg',
-              ),
-              style: IconButton.styleFrom(
-                elevation: 10.0,
-                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: () {
-                EasyThrottle.throttle(
-                    'sendPresenterRemove', const Duration(seconds: 1), () {
-                  _sendPresenterRemove(context);
-                });
-              },
             ),
           ),
         ),
@@ -210,12 +219,6 @@ class ParticipantStandbyFeature extends StatelessWidget {
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
     mirrorStateProvider.setAcceptMirrorId(mirrorId);
-  }
-
-  _sendPresenterRemove(BuildContext context) async {
-    final mirrorStateProvider =
-        Provider.of<MirrorStateProvider>(context, listen: false);
-    mirrorStateProvider.stopAcceptedMirror(mirrorId, removeUserEvent: true);
   }
 }
 
@@ -230,6 +233,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         V3Focus(
           label: S.of(context).v3_lbl_participant_mirror_stop,
