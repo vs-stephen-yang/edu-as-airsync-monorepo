@@ -169,16 +169,48 @@ rtp_error_t uvgrtp::media_stream::init_connection()
         UVG_LOG_INFO("Not binding, receiving is not possible");
     }
 
-    /* Set the default UDP send/recv buffer sizes to 4MB as on Windows
-     * the default size is way too small for a larger video conference */
-    int buf_size = 4 * 1024 * 1024;
+    /*
+     * Dynamically probe and set the largest acceptable UDP receive buffer size.
+     *
+     * Many platforms (especially Linux/macOS/iOS/Android) limit the default socket buffer
+     * sizes to relatively small values (e.g., 64KB), which can be insufficient for
+     * high-bitrate or bursty traffic such as large video conferences over RTP/UDP.
+     *
+     * This logic performs a binary search to find the maximum value that can be
+     * successfully applied via SO_RCVBUF, then applies that value to both SO_SNDBUF
+     * and SO_RCVBUF.
+     *
+     * Note: some systems will silently halve the requested buffer size (e.g., Linux),
+     * and others (like Android) may have hidden platform constraints. This search helps
+     * determine a safe upper bound.
+     */
 
-    if ((ret = socket_->setsockopt(SOL_SOCKET, SO_SNDBUF, (const char*)&buf_size, sizeof(int))) != RTP_OK)
+    int min_buf = 64 * 1024;       // Start probing at 64KB
+    int max_buf = 2 * 1024 * 1024; // Cap at 2MB
+    int current = min_buf;
+
+    while (min_buf <= max_buf)
+    {
+        current = (min_buf + max_buf) / 2;
+        int result = socket_->setsockopt(SOL_SOCKET, SO_RCVBUF, (const char *)&current, sizeof(int));
+
+        if (result == 0)
+        {
+            min_buf = current + 1;
+        }
+        else
+        {
+            max_buf = current - 1;
+        }
+    }
+    UVG_LOG_INFO("Max UDP buffer size is %d", max_buf);
+
+    if ((ret = socket_->setsockopt(SOL_SOCKET, SO_SNDBUF, (const char*)&max_buf, sizeof(int))) != RTP_OK)
     {
         return ret;
     }
 
-    if ((ret = socket_->setsockopt(SOL_SOCKET, SO_RCVBUF, (const char*)&buf_size, sizeof(int))) != RTP_OK)
+    if ((ret = socket_->setsockopt(SOL_SOCKET, SO_RCVBUF, (const char*)&max_buf, sizeof(int))) != RTP_OK)
     {
         return ret;
     }
