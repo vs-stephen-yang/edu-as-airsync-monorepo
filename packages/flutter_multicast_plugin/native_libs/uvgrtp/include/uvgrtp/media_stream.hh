@@ -386,6 +386,8 @@ namespace uvgrtp {
              * \return SSRC value
              */
             uint32_t get_ssrc() const;
+            uint32_t get_srtp_roc();
+            void set_srtp_roc(uint32_t roc);
 
         private:
             /* Initialize the connection by initializing the socket

@@ -1153,3 +1153,13 @@ void uvgrtp::media_stream::holepuncher()
         }
     }  
 }
+
+uint32_t uvgrtp::media_stream::get_srtp_roc()
+{
+    return srtp_->get_local_roc();
+}
+
+void uvgrtp::media_stream::set_srtp_roc(uint32_t roc)
+{
+    srtp_->set_remote_roc(roc);
+}

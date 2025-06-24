@@ -31,7 +31,7 @@ void RtpReceiverCore::start(const std::string &ip, int port, std::vector<uint8_t
 
         stream->add_srtp_ctx(key.data(), salt.data());
         stream->configure_ctx(RCC_REMOTE_SSRC, ssrc);
-//        stream->set_srtp_roc(roc);
+        stream->set_srtp_roc(roc);
 //        stream->enable_network_stats(true);
 
         std::vector<uint8_t> latest_sps, latest_pps, current_au;
