@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +203,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                     navService.goBack();
                                   }
                                 },
-                                child: Text(
+                                child: V3AutoHyphenatingText(
                                   S.current
                                       .v3_touchback_restart_bluetooth_btn_cancel,
                                   style: TextStyle(
@@ -246,7 +247,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                     navService.goBack();
                                   }
                                 },
-                                child: Text(
+                                child: V3AutoHyphenatingText(
                                   S.current
                                       .v3_touchback_restart_bluetooth_btn_restart,
                                   style: TextStyle(

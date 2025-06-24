@@ -1,9 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/focus_text_button.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 
 class TitleBar extends StatefulWidget {
@@ -30,7 +30,7 @@ class _TitleBarStates extends State<TitleBar> {
               Image.asset('assets/images/ic_launcher.png', height: 46),
               const Padding(
                 padding: EdgeInsets.only(left: 10),
-                child: Text(
+                child: V3AutoHyphenatingText(
                   'AirSync',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -46,7 +46,7 @@ class _TitleBarStates extends State<TitleBar> {
                     debugCounter = 0;
                   }
                 },
-                child: Text(
+                child: V3AutoHyphenatingText(
                   'Ver ${appConfig?.appVersion ?? ' '}',
                   style: const TextStyle(
                     color: AppColors.primaryWhiteA50,
@@ -59,9 +59,8 @@ class _TitleBarStates extends State<TitleBar> {
               const TextClock(),
             ],
           ),
-          AutoSizeText(
+          V3AutoHyphenatingText(
             AppConfig.of(context)?.settings.airSyncUrl ?? '',
-            maxLines: 1,
             style: const TextStyle(fontSize: 40),
           ),
         ],

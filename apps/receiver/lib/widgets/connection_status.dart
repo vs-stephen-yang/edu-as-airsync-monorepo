@@ -7,6 +7,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -220,7 +221,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
                                       highlightColor: Colors.transparent,
                                       focusNode: primaryFocusNode,
                                       onTap: () => Navigator.pop(context),
-                                      child: Text(
+                                      child: V3AutoHyphenatingText(
                                         S
                                             .of(context)
                                             .v3_main_connection_dialog_close,

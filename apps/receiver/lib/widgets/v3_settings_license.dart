@@ -1,6 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class V3SettingsLicense extends StatelessWidget {
           child: V3SettingMenuFocusSingleChildScrollView(
             primaryFocus: true,
             children: [
-              Text(
+              V3AutoHyphenatingText(
                 settingsProvider.license?.license ??
                     S.of(context).v3_settings_privacy_policy_description,
                 style: TextStyle(

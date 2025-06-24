@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
@@ -263,7 +264,7 @@ class V3Toast {
               ),
               const SizedBox(width: 2.6),
             ],
-            Text(
+            V3AutoHyphenatingText(
               message,
               style: TextStyle(
                 fontSize: 9,
@@ -355,14 +356,13 @@ class V3Toast {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 2),
                   ),
-                  Text(
+                  V3AutoHyphenatingText(
                     message,
                     style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w400,
                       color: color ?? Colors.white,
                     ),
-                    maxLines: 2,
                   ),
                 ],
               ),

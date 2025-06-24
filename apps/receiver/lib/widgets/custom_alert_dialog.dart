@@ -1,7 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
@@ -42,7 +42,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(
+              V3AutoHyphenatingText(
                 widget.description,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -63,7 +63,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       widget.onNegative.call();
                       navService.goBack();
                     },
-                    child: AutoSizeText(
+                    child: V3AutoHyphenatingText(
                       S.of(context).moderator_cancel,
                       style: const TextStyle(color: AppColors.primaryGrey),
                     ),
@@ -81,7 +81,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       navService.goBack();
                       widget.onPositive.call();
                     },
-                    child: AutoSizeText(
+                    child: V3AutoHyphenatingText(
                       widget.positiveButton,
                       style: const TextStyle(color: Colors.white),
                     ),

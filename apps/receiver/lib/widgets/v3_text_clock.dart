@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class _V3TextClockState extends State<V3TextClock> {
   Widget build(BuildContext context) {
     return Consumer<PrefLanguageProvider>(
       builder: (_, prefLanguageProvider, __) {
-        return Text(
+        return V3AutoHyphenatingText(
           DateFormat('hh:mma', prefLanguageProvider.locale?.languageCode)
               .format(DateTime.now()),
           style: TextStyle(

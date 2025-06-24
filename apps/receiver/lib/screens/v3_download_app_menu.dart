@@ -1,7 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +66,7 @@ class PortraitWidget extends StatelessWidget {
                   Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.symmetric(vertical: 13),
-                    child: AutoSizeText(
+                    child: V3AutoHyphenatingText(
                       S.of(context).v3_download_app_title,
                       style: TextStyle(
                         fontSize: 19,
@@ -81,7 +81,7 @@ class PortraitWidget extends StatelessWidget {
                     color: context.tokens.color.vsdslColorOutline,
                   ),
                   const Gap(30),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_download_app_desktop_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -91,7 +91,7 @@ class PortraitWidget extends StatelessWidget {
                     ),
                   ),
                   const Gap(3),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_download_app_for_desktop_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -138,7 +138,7 @@ class PortraitWidget extends StatelessWidget {
                         ),
                         const Gap(5),
                         Expanded(
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             S.of(context).v3_download_app_desktop,
                             style: TextStyle(
                               color: context.tokens.color.vsdslColorPrimary,
@@ -168,7 +168,7 @@ class PortraitWidget extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             AppConfig.of(context)!.settings.appStoreUrl,
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -191,7 +191,7 @@ class PortraitWidget extends StatelessWidget {
                   Row(
                     children: [
                       const Spacer(),
-                      Text(
+                      V3AutoHyphenatingText(
                         S.of(context).v3_download_app_desktop_hint,
                         textAlign: TextAlign.right,
                         style: TextStyle(
@@ -209,7 +209,7 @@ class PortraitWidget extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             'Install MacOS via App Store',
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -240,7 +240,7 @@ class PortraitWidget extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             '${AppConfig.of(context)!.settings.appStoreUrl}?r',
                             textAlign: TextAlign.left,
                             style: TextStyle(
@@ -263,7 +263,7 @@ class PortraitWidget extends StatelessWidget {
                   Row(
                     children: [
                       const Spacer(),
-                      Text(
+                      V3AutoHyphenatingText(
                         S.of(context).v3_download_app_desktop_store_hint,
                         textAlign: TextAlign.right,
                         style: TextStyle(
@@ -286,7 +286,7 @@ class PortraitWidget extends StatelessWidget {
                           ),
                         ),
                         const Gap(13),
-                        Text(
+                        V3AutoHyphenatingText(
                           S.of(context).v3_download_app_or,
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorSurface500,
@@ -304,7 +304,7 @@ class PortraitWidget extends StatelessWidget {
                     ),
                   ),
                   const Gap(21),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_download_app_mobile_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -314,7 +314,7 @@ class PortraitWidget extends StatelessWidget {
                     ),
                   ),
                   const Gap(3),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_download_app_for_mobile_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -408,7 +408,7 @@ class LandscapeWidget extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 13),
-              child: AutoSizeText(
+              child: V3AutoHyphenatingText(
                 textAlign: TextAlign.center,
                 S.of(context).v3_download_app_title,
                 style: TextStyle(
@@ -435,7 +435,7 @@ class LandscapeWidget extends StatelessWidget {
                           controller: leftScrollController,
                           child: Column(
                             children: [
-                              Text(
+                              V3AutoHyphenatingText(
                                 S.of(context).v3_download_app_desktop_title,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -445,7 +445,7 @@ class LandscapeWidget extends StatelessWidget {
                                 ),
                               ),
                               const Gap(11),
-                              Text(
+                              V3AutoHyphenatingText(
                                 S.of(context).v3_download_app_for_desktop_desc,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -494,7 +494,7 @@ class LandscapeWidget extends StatelessWidget {
                                     ),
                                     const Gap(5),
                                     Expanded(
-                                      child: Text(
+                                      child: V3AutoHyphenatingText(
                                         S.of(context).v3_download_app_desktop,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
@@ -526,7 +526,7 @@ class LandscapeWidget extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: Text(
+                                      child: V3AutoHyphenatingText(
                                         AppConfig.of(context)!
                                             .settings
                                             .appStoreUrl,
@@ -551,7 +551,7 @@ class LandscapeWidget extends StatelessWidget {
                               const Gap(3),
                               SizedBox(
                                 width: 400,
-                                child: Text(
+                                child: V3AutoHyphenatingText(
                                   S.of(context).v3_download_app_desktop_hint,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
@@ -564,7 +564,7 @@ class LandscapeWidget extends StatelessWidget {
                               const Gap(25),
                               SizedBox(
                                 width: 400,
-                                child: Text(
+                                child: V3AutoHyphenatingText(
                                   S.of(context).v3_download_app_desktop_store,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
@@ -593,7 +593,7 @@ class LandscapeWidget extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: Text(
+                                      child: V3AutoHyphenatingText(
                                         '${AppConfig.of(context)!.settings.appStoreUrl}?r',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
@@ -616,7 +616,7 @@ class LandscapeWidget extends StatelessWidget {
                               const Gap(3),
                               SizedBox(
                                 width: 400,
-                                child: Text(
+                                child: V3AutoHyphenatingText(
                                   S
                                       .of(context)
                                       .v3_download_app_desktop_store_hint,
@@ -651,7 +651,7 @@ class LandscapeWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 13),
-                        Text(
+                        V3AutoHyphenatingText(
                           S.of(context).v3_download_app_or,
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorSurface500,
@@ -681,7 +681,7 @@ class LandscapeWidget extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
                               children: [
-                                Text(
+                                V3AutoHyphenatingText(
                                   S.of(context).v3_download_app_mobile_title,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -692,7 +692,7 @@ class LandscapeWidget extends StatelessWidget {
                                   ),
                                 ),
                                 const Gap(11),
-                                Text(
+                                V3AutoHyphenatingText(
                                   S.of(context).v3_download_app_for_mobile_desc,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

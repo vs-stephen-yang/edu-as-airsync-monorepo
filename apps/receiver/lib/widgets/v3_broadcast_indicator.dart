@@ -1,6 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -61,7 +62,7 @@ class _V3BroadcastIndicatorState extends ConsumerState {
                     ),
                     SizedBox(
                         width: context.tokens.spacing.vsdslSpacingXs.left),
-                    Text(
+                    V3AutoHyphenatingText(
                       S.of(context).v3_broadcast_indicator,
                       style: TextStyle(
                         fontSize: 9,

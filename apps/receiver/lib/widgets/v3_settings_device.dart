@@ -10,6 +10,7 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
@@ -114,7 +115,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 
   Widget _buildTextDesc(BuildContext context, String text) {
-    return Text(
+    return V3AutoHyphenatingText(
       text,
       style: TextStyle(
         fontSize: 9,
@@ -335,7 +336,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     return Row(
       children: [
         Expanded(
-          child: Text(
+          child: V3AutoHyphenatingText(
             S.of(context).v3_settings_invite_group,
             style: TextStyle(
               color: context.tokens.color.vsdslColorOnSurfaceInverse,
@@ -610,7 +611,7 @@ class CustomDropdownState extends State<CustomDropdown> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
-                                      child: Text(
+                                      child: V3AutoHyphenatingText(
                                         option.value,
                                         style: TextStyle(
                                           fontSize: 9,
@@ -620,8 +621,6 @@ class CustomDropdownState extends State<CustomDropdown> {
                                               : context.tokens.color
                                                   .vsdslColorOnSurface,
                                         ),
-                                        maxLines: 5,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     if (isSelected)
@@ -702,10 +701,8 @@ class CustomDropdownState extends State<CustomDropdown> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
-                  child: Text(
+                  child: V3AutoHyphenatingText(
                     widget.selectedValue,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 9,
                       color: context.tokens.color.vsdslColorOnSurface

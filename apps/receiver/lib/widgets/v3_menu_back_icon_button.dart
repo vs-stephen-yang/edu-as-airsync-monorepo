@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class V3MenuBackIconButton extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.only(
                     right: context.tokens.spacing.vsdslSpacingXs.right)),
-            Text(
+            V3AutoHyphenatingText(
               title,
               style: TextStyle(
                 color: context.tokens.color.vsdslColorOnSurfaceInverse,

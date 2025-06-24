@@ -1,4 +1,5 @@
 import 'package:display_flutter/widgets/focus_icon_button.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
@@ -74,7 +75,7 @@ class MenuDialog extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 5),
-                            child: Text(
+                            child: V3AutoHyphenatingText(
                               topTitleText ?? '',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),

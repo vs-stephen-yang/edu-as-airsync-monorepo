@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
@@ -102,68 +103,62 @@ class V3CustomDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: SizedBox(
-                              height: 40,
-                              child: V3Focus(
-                                label: item1Label,
-                                identifier: item1Identifier,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor:
-                                        context.tokens.color.vsdslColorPrimary,
-                                    backgroundColor: Colors.white,
-                                    // remove onFocused color, this is also ripple color
-                                    overlayColor: Colors.transparent,
-                                    side: BorderSide(
-                                      color: context
-                                          .tokens.color.vsdslColorPrimary,
-                                      width: 1,
-                                    ),
-                                    textStyle: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    padding: EdgeInsets.zero,
+                            child: V3Focus(
+                              label: item1Label,
+                              identifier: item1Identifier,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor:
+                                      context.tokens.color.vsdslColorPrimary,
+                                  backgroundColor: Colors.white,
+                                  // remove onFocused color, this is also ripple color
+                                  overlayColor: Colors.transparent,
+                                  side: BorderSide(
+                                    color: context
+                                        .tokens.color.vsdslColorPrimary,
+                                    width: 1,
                                   ),
-                                  onPressed: onItem1,
-                                  child: AutoSizeText(
-                                    item1,
-                                    maxLines: 1,
+                                  textStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
                                   ),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                onPressed: onItem1,
+                                child: AutoSizeText(
+                                  item1,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),
                           ),
                           const Gap(8),
                           Expanded(
-                            child: SizedBox(
-                              height: 40,
-                              child: V3Focus(
-                                label: item2Label,
-                                identifier: item2Identifier,
-                                child: ElevatedButton(
-                                  focusNode: primaryFocusNode,
-                                  style: ElevatedButton.styleFrom(
-                                    elevation: 5.0,
-                                    shadowColor:
-                                        context.tokens.color.vsdslColorPrimary,
-                                    foregroundColor: context.tokens.color
-                                        .vsdslColorOnSurfaceInverse,
-                                    backgroundColor:
-                                        context.tokens.color.vsdslColorPrimary,
-                                    // remove onFocused color, this is also ripple color
-                                    overlayColor: Colors.transparent,
-                                    textStyle: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    padding: EdgeInsets.zero,
+                            child: V3Focus(
+                              label: item2Label,
+                              identifier: item2Identifier,
+                              child: ElevatedButton(
+                                focusNode: primaryFocusNode,
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 5.0,
+                                  shadowColor:
+                                      context.tokens.color.vsdslColorPrimary,
+                                  foregroundColor: context.tokens.color
+                                      .vsdslColorOnSurfaceInverse,
+                                  backgroundColor:
+                                      context.tokens.color.vsdslColorPrimary,
+                                  // remove onFocused color, this is also ripple color
+                                  overlayColor: Colors.transparent,
+                                  textStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  onPressed: onItem2,
-                                  child: AutoSizeText(
-                                    item2,
-                                    maxLines: 1,
-                                  ),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                onPressed: onItem2,
+                                child: AutoSizeText(
+                                  item2,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),

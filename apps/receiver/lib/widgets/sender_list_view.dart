@@ -2,6 +2,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/sender_item.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +28,7 @@ class _SenderListViewState extends State<SenderListView> {
               channelProvider.remoteScreenConnectors.isEmpty
           ? Container(
               alignment: Alignment.center,
-              child: Text(
+              child: V3AutoHyphenatingText(
                 S.of(context).main_settings_share_to_sender_limit_desc,
                 style: const TextStyle(color: AppColors.toggleBg),
               ),

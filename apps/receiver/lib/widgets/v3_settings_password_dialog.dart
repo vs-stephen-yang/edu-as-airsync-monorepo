@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,7 +146,7 @@ class _V3SettingsPasswordContentState extends State<V3SettingsPasswordContent> {
                 size: 16,
                 color: context.tokens.color.vsdslColorError,
               ),
-              Text(
+              V3AutoHyphenatingText(
                 S.of(context).v3_setting_passcode_error_description,
                 textAlign: TextAlign.center,
                 style: TextStyle(

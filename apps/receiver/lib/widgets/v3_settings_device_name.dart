@@ -6,6 +6,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/utility/V3TextFieldShortcutsHandler.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
@@ -93,15 +94,13 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                         ),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             S.of(context).v3_settings_device_name,
                             style: const TextStyle(
                               color: Colors.white,
                               height: 1.5,
                               fontSize: 12,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
                           ),
                         ),
                       ),
@@ -155,7 +154,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                               child: Padding(
                                 padding:
                                     const EdgeInsets.only(top: 4, right: 30),
-                                child: Text(
+                                child: V3AutoHyphenatingText(
                                   _errorText!,
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(

@@ -11,6 +11,7 @@ import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
@@ -289,7 +290,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                   const Gap(24),
                   Expanded(
                     child: SingleChildScrollView(
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.of(context).v3_group_dialog_no_device_message,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontSize: 16,
@@ -338,7 +339,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                         removeOverlay();
                         onConfirm?.call();
                       },
-                      child: Text(S.of(context).v3_moderator_disable_mirror_ok),
+                      child: V3AutoHyphenatingText(S.of(context).v3_moderator_disable_mirror_ok),
                     ),
                   ),
                 ],
@@ -605,7 +606,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       opacity: isBroadcastingToGroup ? 1.0 : 0.3,
       child: Container(
         padding: const EdgeInsets.only(left: 8),
-        child: Text(
+        child: V3AutoHyphenatingText(
           '${S.of(context).v3_settings_display_group} (${groupNotifier.selectedList.length}/10)',
           textAlign: TextAlign.left,
           style: TextStyle(

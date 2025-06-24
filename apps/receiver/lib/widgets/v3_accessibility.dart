@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class V3Accessibility extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(
+          child: V3AutoHyphenatingText(
             S.of(context).v3_settings_resize_text_size,
             style: TextStyle(
               color: context.tokens.color.vsdslColorOnSurfaceInverse,

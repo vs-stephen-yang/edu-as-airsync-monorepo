@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_cast_devices_view.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
@@ -42,7 +43,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                       const Gap(13),
                       Container(
                         alignment: Alignment.center,
-                        child: Text(
+                        child: V3AutoHyphenatingText(
                           S.of(context).v3_cast_to_device_menu_title,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -90,7 +91,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                                                 ),
                                                 SizedBox(
                                                   width: 50,
-                                                  child: Text(
+                                                  child: V3AutoHyphenatingText(
                                                     S
                                                         .of(context)
                                                         .v3_cast_to_device_menu_or,
@@ -163,7 +164,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                                         ),
                                         SizedBox(
                                           width: 50,
-                                          child: Text(
+                                          child: V3AutoHyphenatingText(
                                             S
                                                 .of(context)
                                                 .v3_cast_to_device_menu_or,
@@ -249,7 +250,7 @@ class V3QrCodeInstruction extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    V3AutoHyphenatingText(
                       S.of(context).v3_cast_to_device_menu_quick_connect1,
                       style: TextStyle(
                         fontSize: 21,
@@ -258,7 +259,7 @@ class V3QrCodeInstruction extends StatelessWidget {
                       ),
                     ),
                     const Gap(5),
-                    Text(
+                    V3AutoHyphenatingText(
                       S.of(context).v3_cast_to_device_menu_quick_connect2,
                       style: TextStyle(
                         fontSize: 21,

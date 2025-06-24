@@ -2,6 +2,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/participant_item.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class ParticipantListView extends StatelessWidget {
               HybridConnectionList().getRtcConnectorMap().isEmpty) {
             return Container(
               alignment: Alignment.center,
-              child: Text(
+              child: V3AutoHyphenatingText(
                 S.of(context).moderator_presentersLimit,
               ),
             );

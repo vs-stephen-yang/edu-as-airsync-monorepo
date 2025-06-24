@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -6,6 +5,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_custom_dialog.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
@@ -92,14 +92,13 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: AutoSizeText(
+                      child: V3AutoHyphenatingText(
                         S.of(context).v3_moderator_mode,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: context.tokens.color.vsdslColorOnSurface,
                         ),
-                        maxLines: 2,
                       ),
                     ),
                     Consumer<ChannelProvider>(

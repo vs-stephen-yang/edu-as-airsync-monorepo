@@ -1,4 +1,5 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
@@ -35,14 +36,12 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
           children: [
             Expanded(
               flex: 1,
-              child: Text(
+              child: V3AutoHyphenatingText(
                 title,
                 style: TextStyle(
                   color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   fontSize: 12,
                 ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 5,
               ),
             ),
             const SizedBox(width: 8),
@@ -55,15 +54,13 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   constraints: const BoxConstraints(minHeight: 48),
                   padding: const EdgeInsets.symmetric(vertical: 4), // 添加垂直內邊距
-                  child: Text(
+                  child: V3AutoHyphenatingText(
                     trialling,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurfaceInverse
                           .withValues(alpha: disable ? 0.32 : 1),
                       fontSize: 12,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2, // 允許顯示最多兩行
                     textAlign: TextAlign.right, // 確保文字右對齊
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
@@ -93,7 +94,7 @@ class CastToDevices extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(
+                        child: V3AutoHyphenatingText(
                           S.of(context).v3_settings_broadcast_devices,
                           style: TextStyle(
                             color:
@@ -207,7 +208,7 @@ class CastToBoards extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(
+                        child: V3AutoHyphenatingText(
                           S.of(context).v3_settings_broadcast_boards,
                           style: TextStyle(
                             color:

@@ -5,6 +5,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,8 +52,9 @@ class _OverlayTabState extends State<OverlayTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(S.of(context).main_settings_device_name),
-                    Text(_deviceName, style: textStyle),
+                    V3AutoHyphenatingText(
+                        S.of(context).main_settings_device_name),
+                    V3AutoHyphenatingText(_deviceName, style: textStyle),
                   ],
                 ),
                 Container(
@@ -63,15 +65,17 @@ class _OverlayTabState extends State<OverlayTab> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(S.of(context).main_content_display_code),
-                    Text(_displayCode, style: textStyle),
+                    V3AutoHyphenatingText(
+                        S.of(context).main_content_display_code),
+                    V3AutoHyphenatingText(_displayCode, style: textStyle),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(S.of(context).main_content_one_time_password),
-                    Text(_otp, style: textStyle),
+                    V3AutoHyphenatingText(
+                        S.of(context).main_content_one_time_password),
+                    V3AutoHyphenatingText(_otp, style: textStyle),
                   ],
                 ),
               ],

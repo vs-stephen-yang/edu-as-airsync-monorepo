@@ -12,6 +12,7 @@ import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/instance_name_editor_dialog.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -241,7 +242,7 @@ class _SettingsState extends State<Settings> {
                   return ListTile(
                     onTap: _listSettings[index].callback,
                     leading: _listSettings[index].icon,
-                    title: Text(
+                    title: V3AutoHyphenatingText(
                       _listSettings[index].itemName,
                       style: const TextStyle(fontSize: 18),
                     ),
