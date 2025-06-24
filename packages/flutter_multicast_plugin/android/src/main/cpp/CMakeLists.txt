@@ -99,6 +99,8 @@ set(CMAKE_MODULE_PATH "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/share/cmake" $
 set(GStreamer_USE_STATIC_LIBS ON)
 set(GStreamer_EXTRA_DEPS gstreamer-app-1.0 gstreamer-video-1.0)
 
+set(GStreamer_JAVA_SRC_DIR "../main/java")
+
 find_package(GStreamerMobile REQUIRED COMPONENTS
         app
         coreelements

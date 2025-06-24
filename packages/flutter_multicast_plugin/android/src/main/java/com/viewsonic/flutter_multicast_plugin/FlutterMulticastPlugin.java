@@ -11,8 +11,6 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import org.freedesktop.gstreamer.GStreamer;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -47,10 +45,21 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
         channel.setMethodCallHandler(this);
 
         textureRegistry = flutterPluginBinding.getTextureRegistry();
+
+        // 使用反射來初始化 GStreamer，避免編譯時依賴
+        initializeGStreamerIfAvailable(flutterPluginBinding.getApplicationContext());
+    }
+
+    private void initializeGStreamerIfAvailable(android.content.Context context) {
         try {
-            GStreamer.init(flutterPluginBinding.getApplicationContext());
+            Class<?> gstreamerClass = Class.forName("org.freedesktop.gstreamer.GStreamer");
+            java.lang.reflect.Method initMethod = gstreamerClass.getMethod("init", android.content.Context.class);
+            initMethod.invoke(null, context);
+            Log.d(TAG, "GStreamer initialized successfully via reflection");
+        } catch (ClassNotFoundException e) {
+            Log.w(TAG, "GStreamer Java class not found, will initialize in native layer");
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "Failed to initialize GStreamer via reflection", e);
         }
     }
 
