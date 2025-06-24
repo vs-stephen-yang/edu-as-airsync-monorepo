@@ -85,9 +85,10 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Container(
                         constraints: const BoxConstraints(
                           minHeight: 44,
@@ -105,9 +106,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                         ),
                       ),
                     ),
-                    Spacer(),
                     Expanded(
-                      flex: 2,
+                      flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -153,7 +153,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                             Flexible(
                               child: Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 4, right: 30),
+                                    const EdgeInsets.only(top: 4, right: 20),
                                 child: V3AutoHyphenatingText(
                                   _errorText!,
                                   textAlign: TextAlign.right,
