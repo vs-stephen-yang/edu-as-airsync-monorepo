@@ -1,6 +1,7 @@
 #pragma once
 
 #include "util.hh"
+#include "network_stats.hh"
 
 #include <unordered_map>
 #include <memory>
@@ -30,6 +31,9 @@ namespace uvgrtp {
     class socket;
     class socketfactory;
     class rtcp_reader;
+
+    class SRTPNetworkStats;
+    struct NetworkStatsResult;
 
     namespace frame {
         struct rtp_frame;
@@ -388,6 +392,11 @@ namespace uvgrtp {
             uint32_t get_ssrc() const;
             uint32_t get_srtp_roc();
             void set_srtp_roc(uint32_t roc);
+
+            void enable_network_stats(bool enable = true);
+
+            NetworkStatsResult get_network_stats() const;
+            void reset_network_stats();
 
         private:
             /* Initialize the connection by initializing the socket

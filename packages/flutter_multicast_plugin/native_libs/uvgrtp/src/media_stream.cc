@@ -1163,3 +1163,31 @@ void uvgrtp::media_stream::set_srtp_roc(uint32_t roc)
 {
     srtp_->set_remote_roc(roc);
 }
+
+
+uvgrtp::NetworkStatsResult uvgrtp::media_stream::get_network_stats() const
+{
+    if (srtp_)
+    {
+        return srtp_->get_network_stats();
+    }
+
+    NetworkStatsResult empty_result = {};
+    return empty_result;
+}
+
+void uvgrtp::media_stream::enable_network_stats(bool enable)
+{
+    if (srtp_)
+    {
+        srtp_->enable_network_stats(enable);
+    }
+}
+
+void uvgrtp::media_stream::reset_network_stats()
+{
+    if (srtp_)
+    {
+        srtp_->reset_network_stats();
+    }
+}

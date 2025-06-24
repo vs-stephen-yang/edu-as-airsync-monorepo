@@ -32,7 +32,7 @@ void RtpReceiverCore::start(const std::string &ip, int port, std::vector<uint8_t
         stream->add_srtp_ctx(key.data(), salt.data());
         stream->configure_ctx(RCC_REMOTE_SSRC, ssrc);
         stream->set_srtp_roc(roc);
-//        stream->enable_network_stats(true);
+       stream->enable_network_stats(true);
 
         std::vector<uint8_t> latest_sps, latest_pps, current_au;
         uint32_t frame_count = 0;
@@ -58,28 +58,23 @@ void RtpReceiverCore::start(const std::string &ip, int port, std::vector<uint8_t
 
             frame_count++;
 
-            // std::string payload = std::string((char*)frame->payload, frame->payload_len);
-            // ALOGI("Receive SRTP frame. Payload: %s", payload.c_str());
-            // uvgrtp::frame::dealloc_frame(frame);
-            // continue;
-
             // 新增：每100個 frame 輸出網路統計
-//            if (frame_count % 100 == 0) {
-//                auto network_stats = stream->get_network_stats();
-//
-//                ALOGI("=== NETWORK STATISTICS (Frame %u) ===", frame_count);
-//                ALOGI("Network Received: %u", network_stats.network_received);
-//                ALOGI("Network Expected: %u", network_stats.network_expected);
-//                ALOGI("Network Lost: %u", network_stats.network_lost);
-//                ALOGI("Network Loss Rate: %.2f%%", network_stats.network_loss_rate);
-//                ALOGI("Size Errors: %u", network_stats.size_errors);
-//                ALOGI("Auth Failures: %u", network_stats.auth_failures);
-//                ALOGI("Replay Attacks: %u", network_stats.replay_attacks);
-//                ALOGI("Decrypt Success: %u", network_stats.decrypt_success);
-//                ALOGI("Duplicate Packets: %u", network_stats.duplicate_packets);
-//                ALOGI("Out-of-order Packets: %u", network_stats.out_of_order_packets);
-//                ALOGI("=========================================");
-//            }
+           if (frame_count % 100 == 0) {
+               auto network_stats = stream->get_network_stats();
+
+               ALOGI("=== NETWORK STATISTICS (Frame %u) ===", frame_count);
+               ALOGI("Network Received: %u", network_stats.network_received);
+               ALOGI("Network Expected: %u", network_stats.network_expected);
+               ALOGI("Network Lost: %u", network_stats.network_lost);
+               ALOGI("Network Loss Rate: %.2f%%", network_stats.network_loss_rate);
+               ALOGI("Size Errors: %u", network_stats.size_errors);
+               ALOGI("Auth Failures: %u", network_stats.auth_failures);
+               ALOGI("Replay Attacks: %u", network_stats.replay_attacks);
+               ALOGI("Decrypt Success: %u", network_stats.decrypt_success);
+               ALOGI("Duplicate Packets: %u", network_stats.duplicate_packets);
+               ALOGI("Out-of-order Packets: %u", network_stats.out_of_order_packets);
+               ALOGI("=========================================");
+           }
 
 
             int nal_type = find_first_nalu_type(frame->payload, frame->payload_len);

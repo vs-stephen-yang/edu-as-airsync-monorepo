@@ -5,6 +5,7 @@
 
 
 #include "media_stream.hh"  // media streamer class
+#include "network_stats.hh"
 #include "session.hh"       // session class
 #include "context.hh"       // context class
 #include "rtcp.hh"          // RTCP
