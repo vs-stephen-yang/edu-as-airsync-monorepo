@@ -84,15 +84,19 @@ class V3PresentWaitPrompt extends StatelessWidget {
                         ),
                       ),
                     if (channelProvider.moderatorStatus)
-                      V3CustomWhiteButton(
-                        label: S.of(context).v3_lbl_moderator_disconnect,
-                        identifier: 'v3_qa_moderator_disconnect',
-                        buttonSize: Size(isMobile ? 300 : 240, 48),
-                        text: S.of(context).v3_main_moderator_disconnect,
-                        onPressed: () {
-                          trackEvent('click_disconnect', EventCategory.session);
-                          channelProvider.presentEnd();
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: V3CustomWhiteButton(
+                          label: S.of(context).v3_lbl_moderator_disconnect,
+                          identifier: 'v3_qa_moderator_disconnect',
+                          buttonSize: Size(isMobile ? 300 : 240, 50),
+                          text: S.of(context).v3_main_moderator_disconnect,
+                          onPressed: () {
+                            trackEvent(
+                                'click_disconnect', EventCategory.session);
+                            channelProvider.presentEnd();
+                          },
+                        ),
                       ),
                   ],
                 )),

@@ -190,31 +190,28 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 56,
-                        child: V3CustomTextFormField(
-                          label: S.of(context).v3_lbl_main_moderator_input_hint,
-                          identifier: 'v3_qa_main_moderator_input_hint',
-                          key: nameKey,
-                          controller: _nameController,
-                          focusNode: _nameFocusNode,
-                          hintText: S.of(context).v3_main_moderator_input_hint,
-                          maxTextLength: 20,
-                          inputFormatter: const [],
-                          onFieldChanged: (text) {
-                            if (text.isNotEmpty) {
-                              buttonKey.currentState!.setEnable(true);
-                            } else {
-                              buttonKey.currentState!.setEnable(false);
-                            }
-                            setState(() {});
-                          },
-                          onFieldSubmitted: (String value) async {
-                            if (buttonKey.currentState!.isButtonEnabled) {
-                              await _clickPresent();
-                            }
-                          },
-                        ),
+                      V3CustomTextFormField(
+                        label: S.of(context).v3_lbl_main_moderator_input_hint,
+                        identifier: 'v3_qa_main_moderator_input_hint',
+                        key: nameKey,
+                        controller: _nameController,
+                        focusNode: _nameFocusNode,
+                        hintText: S.of(context).v3_main_moderator_input_hint,
+                        maxTextLength: 20,
+                        inputFormatter: const [],
+                        onFieldChanged: (text) {
+                          if (text.isNotEmpty) {
+                            buttonKey.currentState!.setEnable(true);
+                          } else {
+                            buttonKey.currentState!.setEnable(false);
+                          }
+                          setState(() {});
+                        },
+                        onFieldSubmitted: (String value) async {
+                          if (buttonKey.currentState!.isButtonEnabled) {
+                            await _clickPresent();
+                          }
+                        },
                       ),
                       const Padding(padding: EdgeInsets.only(bottom: 10)),
                       MergeSemantics(
