@@ -58,19 +58,17 @@ class V3CustomDialog extends StatelessWidget {
                     context.tokens.color.vsdslColorOnSurfaceInverse,
                 elevation: 16.0,
                 shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Scrollbar(
-                        thumbVisibility: true,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const Gap(27),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: AutoSizeText(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                AutoSizeText(
                                   title,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -80,12 +78,8 @@ class V3CustomDialog extends StatelessWidget {
                                         context.tokens.color.vsdslColorNeutral,
                                   ),
                                 ),
-                              ),
-                              const Gap(13),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 13),
-                                child: AutoSizeText(
+                                const Gap(13),
+                                AutoSizeText(
                                   content,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -95,16 +89,13 @@ class V3CustomDialog extends StatelessWidget {
                                         context.tokens.color.vsdslColorNeutral,
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 13, right: 13, bottom: 20),
-                      child: Row(
+                      const Gap(8),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
@@ -123,7 +114,7 @@ class V3CustomDialog extends StatelessWidget {
                                     side: BorderSide(
                                       color: context
                                           .tokens.color.vsdslColorPrimary,
-                                      width: 1.5,
+                                      width: 1,
                                     ),
                                     textStyle: const TextStyle(
                                       fontSize: 12,
@@ -132,7 +123,10 @@ class V3CustomDialog extends StatelessWidget {
                                     padding: EdgeInsets.zero,
                                   ),
                                   onPressed: onItem1,
-                                  child: AutoSizeText(item1),
+                                  child: AutoSizeText(
+                                    item1,
+                                    maxLines: 1,
+                                  ),
                                 ),
                               ),
                             ),
@@ -163,15 +157,18 @@ class V3CustomDialog extends StatelessWidget {
                                     padding: EdgeInsets.zero,
                                   ),
                                   onPressed: onItem2,
-                                  child: AutoSizeText(item2),
+                                  child: AutoSizeText(
+                                    item2,
+                                    maxLines: 1,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
