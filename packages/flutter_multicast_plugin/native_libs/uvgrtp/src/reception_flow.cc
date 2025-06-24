@@ -267,13 +267,14 @@ uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(std::shared_ptr<std
     // Check if the source ssrc in the frame matches the remote ssrc that we want to pull frames from
     uvgrtp::frame::rtp_frame* frame = nullptr;
     frames_mtx_.lock();
-    if (!frames_.empty()) {
+    while (!frames_.empty())
+    {
         frame = frames_.front();
-        if ( frame && frame->header.ssrc == remote_ssrc.get()->load()) {
-            frames_.erase(frames_.begin());
-        }
-        else {
-            frame = nullptr;
+        frames_.pop_front();
+        if (frame && frame->header.ssrc == remote_ssrc.get()->load())
+        {
+            UVG_LOG_DEBUG("frame ssrc: %u, remote_ssrc: %u, return", frame->header.ssrc, remote_ssrc.get()->load());
+            break; // 找到匹配的，跳出循環
         }
     }
     frames_mtx_.unlock();
@@ -295,14 +296,14 @@ uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms,
         return nullptr;
     // Check if the source ssrc in the frame matches the remote ssrc that we want to pull frames from
     uvgrtp::frame::rtp_frame* frame = nullptr;
-    frames_mtx_.lock();
-    if (!frames_.empty()) {
+    while (!frames_.empty())
+    {
         frame = frames_.front();
-        if (frame && frame->header.ssrc == remote_ssrc.get()->load()) {
-            frames_.pop_front();
-        }
-        else {
-            frame = nullptr;
+        frames_.pop_front();
+        if (frame && frame->header.ssrc == remote_ssrc.get()->load())
+        {
+            UVG_LOG_DEBUG("frame ssrc: %u, remote_ssrc: %u, return", frame->header.ssrc, remote_ssrc.get()->load());
+            break; // 找到匹配的，跳出循環
         }
     }
     frames_mtx_.unlock();
