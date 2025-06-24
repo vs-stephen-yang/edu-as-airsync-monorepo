@@ -1,11 +1,11 @@
 #include "reception_flow.hh"
 
-#include "uvgrtp/util.hh"
 #include "uvgrtp/frame.hh"
+#include "uvgrtp/util.hh"
 
-#include "socket.hh"
 #include "debug.hh"
 #include "random.hh"
+#include "socket.hh"
 #include "uvgrtp/rtcp.hh"
 
 #include "global.hh"
@@ -30,39 +30,34 @@
 
 constexpr size_t DEFAULT_INITIAL_BUFFER_SIZE = 4194304;
 
-uvgrtp::reception_flow::reception_flow(bool ipv6) :
-    frames_({}),
-    hooks_({}),
-    should_stop_(true),
-    receiver_(nullptr),
-    user_hook_arg_(nullptr),
-    user_hook_(nullptr),
-    packet_handlers_({}),
-    poll_timeout_ms_(100),
-    ring_buffer_(),
-    ring_read_index_(-1), // invalid first index that will increase to a valid one
-    last_ring_write_index_(-1),
-    socket_(),
-    buffer_size_kbytes_(DEFAULT_INITIAL_BUFFER_SIZE),
-    payload_size_(MAX_IPV4_PAYLOAD),
-    active_(false),
-    ipv6_(ipv6)
-{
+uvgrtp::reception_flow::reception_flow(bool ipv6) : frames_({}),
+                                                    hooks_({}),
+                                                    should_stop_(true),
+                                                    receiver_(nullptr),
+                                                    user_hook_arg_(nullptr),
+                                                    user_hook_(nullptr),
+                                                    packet_handlers_({}),
+                                                    poll_timeout_ms_(100),
+                                                    ring_buffer_(),
+                                                    ring_read_index_(-1), // invalid first index that will increase to a valid one
+                                                    last_ring_write_index_(-1),
+                                                    socket_(),
+                                                    buffer_size_kbytes_(DEFAULT_INITIAL_BUFFER_SIZE),
+                                                    payload_size_(MAX_IPV4_PAYLOAD),
+                                                    active_(false),
+                                                    ipv6_(ipv6) {
     create_ring_buffer();
 }
 
-uvgrtp::reception_flow::~reception_flow()
-{
+uvgrtp::reception_flow::~reception_flow() {
     hooks_.clear();
     destroy_ring_buffer();
     clear_frames();
 }
 
-void uvgrtp::reception_flow::clear_frames()
-{
+void uvgrtp::reception_flow::clear_frames() {
     frames_mtx_.lock();
-    for (auto& frame : frames_)
-    {
+    for (auto& frame : frames_) {
         (void)uvgrtp::frame::dealloc_frame(frame);
     }
 
@@ -70,67 +65,53 @@ void uvgrtp::reception_flow::clear_frames()
     frames_mtx_.unlock();
 }
 
-void uvgrtp::reception_flow::create_ring_buffer()
-{
+void uvgrtp::reception_flow::create_ring_buffer() {
     destroy_ring_buffer();
     size_t elements = buffer_size_kbytes_ / payload_size_;
 
-    for (size_t i = 0; i < elements; ++i)
-    {
+    for (size_t i = 0; i < elements; ++i) {
         uint8_t* data = new uint8_t[payload_size_];
-        if (data)
-        {
-            ring_buffer_.push_back({ data, 0});
-        }
-        else
-        {
+        if (data) {
+            ring_buffer_.push_back({data, 0});
+        } else {
             UVG_LOG_ERROR("Failed to allocate memory for ring buffer");
         }
     }
 }
 
-void uvgrtp::reception_flow::destroy_ring_buffer()
-{
-    for (size_t i = 0; i < ring_buffer_.size(); ++i)
-    {
-        if (ring_buffer_.at(i).data)
-        {
+void uvgrtp::reception_flow::destroy_ring_buffer() {
+    for (size_t i = 0; i < ring_buffer_.size(); ++i) {
+        if (ring_buffer_.at(i).data) {
             delete[] ring_buffer_.at(i).data;
         }
     }
     ring_buffer_.clear();
 }
 
-void uvgrtp::reception_flow::set_buffer_size(const ssize_t& value)
-{
+void uvgrtp::reception_flow::set_buffer_size(const ssize_t& value) {
     std::lock_guard<std::mutex> lg(ring_mutex_);
     buffer_size_kbytes_ = value;
     create_ring_buffer();
 }
 
-ssize_t uvgrtp::reception_flow::get_buffer_size() const
-{
+ssize_t uvgrtp::reception_flow::get_buffer_size() const {
     return buffer_size_kbytes_;
 }
 
-void uvgrtp::reception_flow::set_payload_size(const size_t& value)
-{
+void uvgrtp::reception_flow::set_payload_size(const size_t& value) {
     payload_size_ = value;
     create_ring_buffer();
 }
 
-void uvgrtp::reception_flow::set_poll_timeout_ms(int timeout_ms)
-{
+void uvgrtp::reception_flow::set_poll_timeout_ms(int timeout_ms) {
     poll_timeout_ms_ = timeout_ms;
 }
 
-int uvgrtp::reception_flow::get_poll_timeout_ms()
-{
+int uvgrtp::reception_flow::get_poll_timeout_ms() {
     return poll_timeout_ms_;
 }
 
-rtp_error_t uvgrtp::reception_flow::start(std::shared_ptr<uvgrtp::socket> socket, int rce_flags)
-{
+rtp_error_t uvgrtp::reception_flow::start(std::shared_ptr<uvgrtp::socket> socket, int rce_flags) {
     std::lock_guard<std::mutex> lg(active_mutex_);
     if (active_) {
         return RTP_OK;
@@ -170,8 +151,7 @@ rtp_error_t uvgrtp::reception_flow::start(std::shared_ptr<uvgrtp::socket> socket
     return RTP_ERROR::RTP_OK;
 }
 
-rtp_error_t uvgrtp::reception_flow::stop()
-{    
+rtp_error_t uvgrtp::reception_flow::stop() {
     std::lock_guard<std::mutex> lg(active_mutex_);
     if (!active_) {
         return RTP_OK;
@@ -179,13 +159,11 @@ rtp_error_t uvgrtp::reception_flow::stop()
     should_stop_ = true;
     process_cond_.notify_all();
 
-    if (receiver_ != nullptr && receiver_->joinable())
-    {
+    if (receiver_ != nullptr && receiver_->joinable()) {
         receiver_->join();
     }
 
-    if (processor_ != nullptr && processor_->joinable())
-    {
+    if (processor_ != nullptr && processor_->joinable()) {
         processor_->join();
     }
 
@@ -195,25 +173,21 @@ rtp_error_t uvgrtp::reception_flow::stop()
 }
 
 rtp_error_t uvgrtp::reception_flow::install_receive_hook(
-    void *arg,
-    void (*hook)(void *, uvgrtp::frame::rtp_frame *),
-    uint32_t remote_ssrc
-)
-{
+    void* arg,
+    void (*hook)(void*, uvgrtp::frame::rtp_frame*),
+    uint32_t remote_ssrc) {
     std::lock_guard<std::mutex> lg(hooks_mutex_);
     if (!hook)
         return RTP_INVALID_VALUE;
 
-    receive_pkt_hook new_hook = { arg, hook };
+    receive_pkt_hook new_hook = {arg, hook};
     hooks_[remote_ssrc] = new_hook;
 
     return RTP_OK;
 }
 
-uvgrtp::frame::rtp_frame *uvgrtp::reception_flow::pull_frame()
-{
-    while (frames_.empty() && !should_stop_)
-    {
+uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame() {
+    while (frames_.empty() && !should_stop_) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 
@@ -230,14 +204,12 @@ uvgrtp::frame::rtp_frame *uvgrtp::reception_flow::pull_frame()
     return frame;
 }
 
-uvgrtp::frame::rtp_frame *uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms)
-{
+uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms) {
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    while (frames_.empty() && 
-        !should_stop_ &&
-        timeout_ms > std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count())
-    {
+    while (frames_.empty() &&
+           !should_stop_ &&
+           timeout_ms > std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
@@ -254,10 +226,8 @@ uvgrtp::frame::rtp_frame *uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms)
     return frame;
 }
 
-uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc)
-{
-    while (frames_.empty() && !should_stop_)
-    {
+uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc) {
+    while (frames_.empty() && !should_stop_) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 
@@ -267,12 +237,10 @@ uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(std::shared_ptr<std
     // Check if the source ssrc in the frame matches the remote ssrc that we want to pull frames from
     uvgrtp::frame::rtp_frame* frame = nullptr;
     frames_mtx_.lock();
-    while (!frames_.empty())
-    {
+    while (!frames_.empty()) {
         frame = frames_.front();
         frames_.pop_front();
-        if (frame && frame->header.ssrc == remote_ssrc.get()->load())
-        {
+        if (frame && frame->header.ssrc == remote_ssrc.get()->load()) {
             UVG_LOG_DEBUG("frame ssrc: %u, remote_ssrc: %u, return", frame->header.ssrc, remote_ssrc.get()->load());
             break; // 找到匹配的，跳出循環
         }
@@ -281,14 +249,12 @@ uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(std::shared_ptr<std
     return frame;
 }
 
-uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms, std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc)
-{
+uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms, std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc) {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     while (frames_.empty() &&
-        !should_stop_ &&
-        timeout_ms > std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count())
-    {
+           !should_stop_ &&
+           timeout_ms > std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
@@ -296,12 +262,10 @@ uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms,
         return nullptr;
     // Check if the source ssrc in the frame matches the remote ssrc that we want to pull frames from
     uvgrtp::frame::rtp_frame* frame = nullptr;
-    while (!frames_.empty())
-    {
+    while (!frames_.empty()) {
         frame = frames_.front();
         frames_.pop_front();
-        if (frame && frame->header.ssrc == remote_ssrc.get()->load())
-        {
+        if (frame && frame->header.ssrc == remote_ssrc.get()->load()) {
             UVG_LOG_DEBUG("frame ssrc: %u, remote_ssrc: %u, return", frame->header.ssrc, remote_ssrc.get()->load());
             break; // 找到匹配的，跳出循環
         }
@@ -311,8 +275,7 @@ uvgrtp::frame::rtp_frame* uvgrtp::reception_flow::pull_frame(ssize_t timeout_ms,
 }
 
 rtp_error_t uvgrtp::reception_flow::install_handler(int type, std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc,
-    std::function<rtp_error_t(void*, int, uint8_t*, size_t, frame::rtp_frame** out)> handler, void* args)
-{
+                                                    std::function<rtp_error_t(void*, int, uint8_t*, size_t, frame::rtp_frame** out)> handler, void* args) {
     uint32_t ssrc = remote_ssrc.get()->load();
     handlers_mutex_.lock();
     switch (type) {
@@ -356,16 +319,14 @@ rtp_error_t uvgrtp::reception_flow::install_handler(int type, std::shared_ptr<st
 }
 
 rtp_error_t uvgrtp::reception_flow::install_getter(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc,
-    std::function<rtp_error_t(uvgrtp::frame::rtp_frame**)> getter)
-{
+                                                   std::function<rtp_error_t(uvgrtp::frame::rtp_frame**)> getter) {
     handlers_mutex_.lock();
-    packet_handlers_[remote_ssrc.get()->load() ].getter = getter;
+    packet_handlers_[remote_ssrc.get()->load()].getter = getter;
     handlers_mutex_.unlock();
     return RTP_OK;
 }
 
-rtp_error_t uvgrtp::reception_flow::remove_handlers(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc)
-{
+rtp_error_t uvgrtp::reception_flow::remove_handlers(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc) {
     std::lock_guard<std::mutex> lg(handlers_mutex_);
     size_t removed = packet_handlers_.erase(remote_ssrc.get()->load());
     if (removed == 1) {
@@ -374,8 +335,7 @@ rtp_error_t uvgrtp::reception_flow::remove_handlers(std::shared_ptr<std::atomic<
     return RTP_INVALID_VALUE;
 }
 
-void uvgrtp::reception_flow::return_frame(uvgrtp::frame::rtp_frame *frame)
-{
+void uvgrtp::reception_flow::return_frame(uvgrtp::frame::rtp_frame* frame) {
     uint32_t ssrc = frame->header.ssrc;
 
     // 1. Check if there is only one hook installed -> no socket muxing
@@ -387,15 +347,13 @@ void uvgrtp::reception_flow::return_frame(uvgrtp::frame::rtp_frame *frame)
         recv_hook hook = pkt_hook.hook;
         void* arg = pkt_hook.arg;
         hook(arg, frame);
-    }
-    else if (hooks_.find(ssrc) != hooks_.end()) {
+    } else if (hooks_.find(ssrc) != hooks_.end()) {
         /* Socket multiplexing: Hook found */
         receive_pkt_hook pkt_hook = hooks_[ssrc];
         recv_hook hook = pkt_hook.hook;
         void* arg = pkt_hook.arg;
         hook(arg, frame);
-    }
-    else {
+    } else {
         frames_mtx_.lock();
         frames_.push_back(frame);
         frames_mtx_.unlock();
@@ -428,8 +386,7 @@ void uvgrtp::reception_flow::return_user_pkt(uint8_t* pkt, uint32_t len)
     }
 }
 */
-void uvgrtp::reception_flow::receiver(std::shared_ptr<uvgrtp::socket> socket)
-{
+void uvgrtp::reception_flow::receiver(std::shared_ptr<uvgrtp::socket> socket) {
     int read_packets = 0;
 
 #ifdef _WIN32
@@ -461,17 +418,15 @@ void uvgrtp::reception_flow::receiver(std::shared_ptr<uvgrtp::socket> socket)
 
         if (pfds->revents & POLLIN) {
             // we write as many packets as socket has in the buffer
-            while (!should_stop_)
-            {
+            while (!should_stop_) {
                 ssize_t next_write_index = next_buffer_location(last_ring_write_index_);
 
                 rtp_error_t ret = socket->recvfrom(ring_buffer_[next_write_index].data, payload_size_,
-                    MSG_DONTWAIT, &ring_buffer_[next_write_index].read);
+                                                   MSG_DONTWAIT, &ring_buffer_[next_write_index].read);
 
                 if (ret == RTP_INTERRUPTED || ring_buffer_[next_write_index].read == 0) {
                     break;
-                }
-                else if (ret != RTP_OK) {
+                } else if (ret != RTP_OK) {
                     UVG_LOG_ERROR("recvfrom(2) failed! Reception flow cannot continue %d!", ret);
                     should_stop_ = true;
                     break;
@@ -494,45 +449,40 @@ void uvgrtp::reception_flow::receiver(std::shared_ptr<uvgrtp::socket> socket)
     UVG_LOG_DEBUG("Total read packets from buffer: %li", read_packets);
 }
 
-void uvgrtp::reception_flow::process_packet(int rce_flags)
-{
+void uvgrtp::reception_flow::process_packet(int rce_flags) {
     std::unique_lock<std::mutex> lk(wait_mtx_);
 
     int processed_packets = 0;
 
-    while (!should_stop_)
-    {
+    while (!should_stop_) {
         // go to sleep waiting for something to process
-        process_cond_.wait(lk); 
+        process_cond_.wait(lk);
 
-        if (should_stop_)
-        {
+        if (should_stop_) {
             break;
         }
 
         // process all available reads in one go
-        while (ring_read_index_ != last_ring_write_index_)
-        {
+        while (ring_read_index_ != last_ring_write_index_) {
             // first update the read location
             ring_read_index_ = next_buffer_location(ring_read_index_);
 
-            if (ring_buffer_[ring_read_index_].read > 0)
-            {
+            if (ring_buffer_[ring_read_index_].read > 0) {
                 /* When processing a packet, the following checks are done
                  * 1. If there is only a single set of handlers installed, there is no socket multiplexing. All packets
                  *    to to this handler
                  * 2. Check the SSRC of the packets. This field is in the same place for RTP and ZRTP, octets 8-11. For RTCP, it is
                  *    in octets 4-7
                  * 3. If there is no SSRC match for any of the handlers, this either a holepuncher or a user packet.
-                 * 4. SSRC match found -> Determine which protocol this packet belongs to. RTCP packets can be told apart from RTP packets via 
+                 * 4. SSRC match found -> Determine which protocol this packet belongs to. RTCP packets can be told apart from RTP packets via
                  *    bits 8-15. ZRTP packets can be told apart from others via their 2 first bits being 0 and the Magic Cookie
                  *    field being 0x5a525450. Holepuncher packets contain 0x00 payload. However, holepunching is
-                 *    not needed if RTCP is enabled. 
+                 *    not needed if RTCP is enabled.
                  * 5. After determining the correct protocol, hand out the packet to the correct handler(s) if it exists. */
-                
+
                 uint8_t* ptr = (uint8_t*)ring_buffer_[ring_read_index_].data;
-                //sockaddr_in from = ring_buffer_[ring_read_index_].from;
-                //sockaddr_in6 from6 = ring_buffer_[ring_read_index_].from6;
+                // sockaddr_in from = ring_buffer_[ring_read_index_].from;
+                // sockaddr_in6 from6 = ring_buffer_[ring_read_index_].from6;
                 uint32_t rtp_ssrc = ntohl(*(uint32_t*)&ptr[8]);
                 uint32_t rtcp_ssrc = ntohl(*(uint32_t*)&ptr[4]);
                 bool rtcp_pkt = false;
@@ -541,13 +491,11 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
                 if (packet_handlers_.size() == 1) {
                     /* No socket multiplexing: All packets are given to this handler */
                     handlers = &packet_handlers_.begin()->second;
-                }
-                else if (packet_handlers_.find(rtcp_ssrc) != packet_handlers_.end()) {
+                } else if (packet_handlers_.find(rtcp_ssrc) != packet_handlers_.end()) {
                     /* Socket multiplexing: RTCP packet */
                     handlers = &packet_handlers_[rtcp_ssrc];
                     rtcp_pkt = true;
-                }
-                else if (packet_handlers_.find(rtp_ssrc) != packet_handlers_.end()) {
+                } else if (packet_handlers_.find(rtp_ssrc) != packet_handlers_.end()) {
                     /* Socket multiplexing: RTP/ZRTP packet */
                     handlers = &packet_handlers_[rtp_ssrc];
                 }
@@ -564,7 +512,7 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
                      * 1. SSRC is in octets 4-7                         -> RTCP packet
                      * 2. Version 0 and Magic Cookie is 0x5a525450      -> ZRTP packet
                      * 3. Version is 2                                  -> RTP packet     (or SRTP)
-                     * 4. Version is 3                                  -> Keep-Alive/Holepuncher 
+                     * 4. Version is 3                                  -> Keep-Alive/Holepuncher
                      * 5. Otherwise                                     -> User packet, DISABLED */
                     if (rtcp_pkt && (rce_flags & RCE_RTCP_MUX)) {
                         uint8_t pt = (uint8_t)ptr[1]; // Packet type
@@ -579,15 +527,13 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
                         if (handlers->zrtp.handler != nullptr) {
                             retval = handlers->zrtp.handler(nullptr, rce_flags, &ptr[0], size, &frame);
                         }
-                    }
-                    else if (version == 0x2) {
+                    } else if (version == 0x2) {
                         retval = RTP_PKT_MODIFIED;
 
                         /* Create RTP header */
                         if (handlers->rtp.handler != nullptr) {
                             retval = handlers->rtp.handler(nullptr, rce_flags, &ptr[0], size, &frame);
-                        }
-                        else {
+                        } else {
                             /* Received a packet but RTP handler is not installed.
                              * This should only happen when ZRTP is enabled. If the remote stream is done first, they start sending
                              * media already before we have handled the last ZRTP ConfACK packet. This should not be a problem
@@ -617,8 +563,7 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
                             /* Last, if one or more packets are ready, return them to the user */
                             if (retval == RTP_PKT_READY) {
                                 return_frame(frame);
-                            }
-                            else if (retval == RTP_MULTIPLE_PKTS_READY && handlers->getter != nullptr) {
+                            } else if (retval == RTP_MULTIPLE_PKTS_READY && handlers->getter != nullptr) {
                                 while (handlers->getter(&frame) == RTP_PKT_READY) {
                                     return_frame(frame);
                                 }
@@ -632,8 +577,7 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
                     /* DISABLED else {
                         return_user_pkt(&ptr[0], (uint32_t)size);
                     }*/
-                }
-                else {
+                } else {
                     /* No SSRC match found -> Holepuncher or user packet */
                     if (version == 0x3) {
                         UVG_LOG_DEBUG("Holepuncher packet");
@@ -645,15 +589,13 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
                 // to make sure we don't process this packet again
                 ring_buffer_[ring_read_index_].read = 0;
                 ++processed_packets;
-            }
-            else
-            {
-#ifndef NDEBUG 
+            } else {
+#ifndef NDEBUG
 #ifndef __RTP_SILENT__
                 ssize_t write = last_ring_write_index_;
                 ssize_t read = ring_read_index_;
-                UVG_LOG_DEBUG("Found invalid frame in read buffer: %li. R: %lli, W: %lli", 
-                    ring_buffer_[ring_read_index_].read, read, write);
+                UVG_LOG_DEBUG("Found invalid frame in read buffer: %li. R: %lli, W: %lli",
+                              ring_buffer_[ring_read_index_].read, read, write);
 #endif
 #endif
             }
@@ -663,38 +605,34 @@ void uvgrtp::reception_flow::process_packet(int rce_flags)
     UVG_LOG_DEBUG("Total processed packets: %li", processed_packets);
 }
 
-ssize_t uvgrtp::reception_flow::next_buffer_location(ssize_t current_location)
-{
-/*
-#ifndef NDEBUG
-    if (current_location + 1 == ring_buffer_.size())
-    {
-        ssize_t read = ring_read_index_;
-        ssize_t write = last_ring_write_index_;
-        UVG_LOG_DEBUG("Ring buffer (%lli) rotation. R: %lli, W: %lli", ring_buffer_.size(), read, write);
-    }
-#endif // !NDEBUG
-*/
+ssize_t uvgrtp::reception_flow::next_buffer_location(ssize_t current_location) {
+    /*
+    #ifndef NDEBUG
+        if (current_location + 1 == ring_buffer_.size())
+        {
+            ssize_t read = ring_read_index_;
+            ssize_t write = last_ring_write_index_;
+            UVG_LOG_DEBUG("Ring buffer (%lli) rotation. R: %lli, W: %lli", ring_buffer_.size(), read, write);
+        }
+    #endif // !NDEBUG
+    */
 
     // rotates to beginning after buffer end
     return (current_location + 1) % ring_buffer_.size();
 }
 
-void uvgrtp::reception_flow::increase_buffer_size(ssize_t next_write_index)
-{
+void uvgrtp::reception_flow::increase_buffer_size(ssize_t next_write_index) {
     // create new buffer spaces if the process/read hasn't freed any spots on the ring buffer
-    if (next_write_index == ring_read_index_)
-    {
+    if (next_write_index == ring_read_index_) {
         // increase the buffer size by 25%
         ssize_t increase = ring_buffer_.size() / 4;
         if (increase == 0) // just so there is some increase
             ++increase;
 
         UVG_LOG_DEBUG("Reception buffer ran out, increasing the buffer size: %lli -> %lli",
-            ring_buffer_.size(), ring_buffer_.size() + increase);
-        for (unsigned int i = 0; i < increase; ++i)
-        {
-            ring_buffer_.insert(ring_buffer_.begin() + next_write_index, { new uint8_t[payload_size_] , -1 });
+                      ring_buffer_.size(), ring_buffer_.size() + increase);
+        for (unsigned int i = 0; i < increase; ++i) {
+            ring_buffer_.insert(ring_buffer_.begin() + next_write_index, {new uint8_t[payload_size_], -1});
         }
 
         // this works, because we have just added increase amount of spaces
@@ -702,14 +640,13 @@ void uvgrtp::reception_flow::increase_buffer_size(ssize_t next_write_index)
     }
 }
 
-int uvgrtp::reception_flow::clear_stream_from_flow(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc)
-{
+int uvgrtp::reception_flow::clear_stream_from_flow(std::shared_ptr<std::atomic<std::uint32_t>> remote_ssrc) {
     std::scoped_lock hlg(hooks_mutex_, handlers_mutex_);
     uint32_t ssrc = remote_ssrc.get()->load();
     // Clear all the data structures
     hooks_.erase(ssrc);
     packet_handlers_.erase(ssrc);
-    
+
     // If all the data structures are empty, return 1 which means that there is no streams left for this reception_flow
     // and it can be safely deleted
     if (hooks_.empty() && packet_handlers_.empty()) {
@@ -718,8 +655,7 @@ int uvgrtp::reception_flow::clear_stream_from_flow(std::shared_ptr<std::atomic<s
     return 0;
 }
 
-rtp_error_t uvgrtp::reception_flow::update_remote_ssrc(uint32_t old_remote_ssrc, uint32_t new_remote_ssrc)
-{
+rtp_error_t uvgrtp::reception_flow::update_remote_ssrc(uint32_t old_remote_ssrc, uint32_t new_remote_ssrc) {
     std::scoped_lock hlg(hooks_mutex_, handlers_mutex_);
     if (packet_handlers_.find(old_remote_ssrc) != packet_handlers_.end()) {
         handler handlers = packet_handlers_[old_remote_ssrc];

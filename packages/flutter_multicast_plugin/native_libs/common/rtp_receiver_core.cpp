@@ -1,27 +1,24 @@
 #include "rtp_receiver_core.h"
 #include "log.h"
-#include <uvgrtp/lib.hh>
 #include <cstring>
 #include <iostream>
+#include <uvgrtp/lib.hh>
 
 constexpr int RECEIVER_WAIT_TIME_MS = 100;
 
 RtpReceiverCore::RtpReceiverCore() : running_(false) {}
 
-RtpReceiverCore::~RtpReceiverCore()
-{
+RtpReceiverCore::~RtpReceiverCore() {
     stop();
 }
 
-void RtpReceiverCore::start(const std::string &ip, int port, std::vector<uint8_t> &key, std::vector<uint8_t> &salt, uint32_t ssrc, uint32_t roc, AUCallback callback)
-{
+void RtpReceiverCore::start(const std::string& ip, int port, std::vector<uint8_t>& key, std::vector<uint8_t>& salt, uint32_t ssrc, uint32_t roc, AUCallback callback) {
     if (running_)
         return;
 
     running_ = true;
 
-    receiver_thread_ = std::thread([key, salt, ip, port, ssrc, roc, callback, this]() mutable
-                                   {
+    receiver_thread_ = std::thread([key, salt, ip, port, ssrc, roc, callback, this]() mutable {
         uvgrtp::context ctx;
         auto session = ctx.create_session(ip);
         auto stream = session->create_stream(port, RTP_FORMAT_H264, RCE_SRTP | RCE_SRTP_KMNGMNT_USER | RCE_RECEIVE_ONLY);
@@ -32,7 +29,7 @@ void RtpReceiverCore::start(const std::string &ip, int port, std::vector<uint8_t
         stream->add_srtp_ctx(key.data(), salt.data());
         stream->configure_ctx(RCC_REMOTE_SSRC, ssrc);
         stream->set_srtp_roc(roc);
-       stream->enable_network_stats(true);
+        stream->enable_network_stats(true);
 
         std::vector<uint8_t> latest_sps, latest_pps, current_au;
         uint32_t frame_count = 0;
@@ -114,8 +111,7 @@ void RtpReceiverCore::start(const std::string &ip, int port, std::vector<uint8_t
         ctx.destroy_session(session); });
 }
 
-void RtpReceiverCore::stop()
-{
+void RtpReceiverCore::stop() {
     running_ = false;
     if (receiver_thread_.joinable())
         receiver_thread_.join();

@@ -12,11 +12,11 @@
 
 #else
 // 非 Android 平台（如 iOS）只宣告，不定義
-void ALOGV(const char *fmt, ...);
-void ALOGD(const char *fmt, ...);
-void ALOGI(const char *fmt, ...);
-void ALOGW(const char *fmt, ...);
-void ALOGE(const char *fmt, ...);
+void ALOGV(const char* fmt, ...);
+void ALOGD(const char* fmt, ...);
+void ALOGI(const char* fmt, ...);
+void ALOGW(const char* fmt, ...);
+void ALOGE(const char* fmt, ...);
 #endif
 
 #endif // COMMON_LOG_H_
