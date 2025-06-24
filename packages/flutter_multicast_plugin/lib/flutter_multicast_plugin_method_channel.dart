@@ -42,8 +42,22 @@ class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform
   }
 
   @override
-  Future<int> receiveStart({required int roc}) async {
-    final result = await methodChannel.invokeMethod('receiveStart', {'roc': roc});
+  Future<int> receiveStart({
+    required String ip,
+    required int port,
+    required int ssrc,
+    required List<int> key,
+    required List<int> salt,
+    required int roc
+  }) async {
+    final result = await methodChannel.invokeMethod('receiveStart', {
+      'ip': ip,
+      'port': port,
+      'ssrc': ssrc,
+      'key': key,
+      'salt': salt,
+      'roc': roc
+    });
     return result as int;
   }
 

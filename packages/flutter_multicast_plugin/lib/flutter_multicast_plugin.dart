@@ -29,8 +29,22 @@ class FlutterMulticastPlugin {
     return FlutterMulticastPluginPlatform.instance.stopCapture();
   }
 
-  static Future<int> receiveStart({required int roc}) {
-    return FlutterMulticastPluginPlatform.instance.receiveStart(roc: roc);
+  static Future<int> receiveStart({
+    required String ip,
+    required int port,
+    required int ssrc,
+    required List<int> key,
+    required List<int> salt,
+    required int roc
+  }) {
+    return FlutterMulticastPluginPlatform.instance.receiveStart(
+        ip: ip,
+        port: port,
+        ssrc: ssrc,
+        key: key,
+        salt: salt,
+        roc: roc
+    );
   }
 
   static Future<void> receiveStop() {

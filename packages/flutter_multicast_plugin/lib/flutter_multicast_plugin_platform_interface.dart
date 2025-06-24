@@ -38,7 +38,14 @@ abstract class FlutterMulticastPluginPlatform extends PlatformInterface {
     throw UnimplementedError('stopCapture() has not been implemented.');
   }
 
-  Future<int> receiveStart({required int roc}) {
+  Future<int> receiveStart({
+    required String ip,
+    required int port,
+    required int ssrc,
+    required List<int> key,
+    required List<int> salt,
+    required int roc
+  }) {
     throw UnimplementedError('receiveStart() has not been implemented.');
   }
 
