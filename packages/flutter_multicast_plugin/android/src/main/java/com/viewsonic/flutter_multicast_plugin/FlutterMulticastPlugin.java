@@ -97,11 +97,18 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             }
             case "receiveStart": {
+                String ip = call.argument("ip");
+                Integer port = call.argument("port");
+                Integer ssrc = call.argument("ssrc");
+                byte[] key = call.argument("key");
+                byte[] salt = call.argument("salt");
                 Number rocNumber = call.argument("roc");
-                if (rocNumber == null) {
-                    result.error("INVALID_ARGUMENT", "ROC parameter is required", null);
+
+                if (ip == null || port == null || key == null || salt == null || ssrc == null || rocNumber == null) {
+                    result.error("MISSING_ARGUMENT", "One or more arguments are missing or null", null);
                     return;
                 }
+
                 long roc = rocNumber.longValue();
 
                 entry = textureRegistry.createSurfaceTexture();
@@ -110,7 +117,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 long textureId = entry.id();
                 surface = new Surface(surfaceTexture);
 
-                NativeBridge.receiveStart(surface, roc);
+                NativeBridge.receiveStart(surface, ip, port, key, salt, ssrc, roc);
                 result.success(textureId);
                 break;
             }
