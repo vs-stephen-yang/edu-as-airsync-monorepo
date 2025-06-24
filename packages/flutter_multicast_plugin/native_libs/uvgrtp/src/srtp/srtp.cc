@@ -173,3 +173,13 @@ bool uvgrtp::srtp::authenticate_rtp() const
 {
     return authenticate_rtp_;
 }
+
+uint32_t uvgrtp::srtp::get_local_roc()
+{
+    return get_local_ctx()->roc;
+}
+
+void uvgrtp::srtp::set_remote_roc(uint32_t roc)
+{
+    remote_srtp_ctx_->roc = roc;
+}
