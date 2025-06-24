@@ -44,6 +44,9 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
       label: widget.label,
       identifier: widget.identifier,
       child: TextFormField(
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: null,
         controller: widget.controller,
         focusNode: widget.focusNode,
         enabled: widget.enable,
