@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -105,7 +106,7 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                         width: 16,
                         height: 16,
                       ),
-                      label: Text(
+                      label: V3AutoHyphenatingText(
                         remoteScreenConnector.isTouchEnabled
                             ? S.of(context).v3_cast_to_device_touch_back_disable
                             : S.of(context).v3_cast_to_device_touch_back,

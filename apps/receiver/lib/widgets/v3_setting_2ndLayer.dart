@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -162,7 +163,6 @@ class _WarningMessagesContainerState extends State<_WarningMessagesContainer> {
         if (widget.isDisable)
           _WarningMessage(
             message: S.of(context).v3_settings_feature_locked,
-            maxLines: 2,
           ),
         if (widget.isDisable && widget.isDisableFromNotSupport) const Gap(8),
         if (widget.isDisableFromNotSupport)
@@ -196,13 +196,9 @@ class _WarningMessagesContainerState extends State<_WarningMessagesContainer> {
 }
 
 class _WarningMessage extends StatelessWidget {
-  const _WarningMessage({
-    required this.message,
-    this.maxLines,
-  });
+  const _WarningMessage({required this.message});
 
   final String message;
-  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -225,14 +221,13 @@ class _WarningMessage extends StatelessWidget {
             ),
             Gap(context.tokens.spacing.vsdslSpacingLg.right),
             Expanded(
-              child: Text(
+              child: V3AutoHyphenatingText(
                 message,
                 style: TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w400,
                   color: context.tokens.color.vsdslColorWarning,
                 ),
-                maxLines: maxLines,
               ),
             ),
           ],
@@ -252,7 +247,7 @@ class _EnergySavingWidget extends StatelessWidget {
         color: context.tokens.color.vsdslColorSurface900,
       ),
       padding: context.tokens.spacing.vsdslSpacingXl,
-      child: Text(
+      child: V3AutoHyphenatingText(
         S.of(context).v3_settings_broadcast_screen_energy_saving,
         style: TextStyle(
           color: context.tokens.color.vsdslColorOnTertiary,

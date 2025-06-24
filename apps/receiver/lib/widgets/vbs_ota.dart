@@ -5,6 +5,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -100,7 +101,7 @@ class _VbsOTAState extends State<VbsOTA> {
                   );
                 },
               ),
-              Text(
+              V3AutoHyphenatingText(
                 S.of(context).main_auto_startup,
                 style: const TextStyle(fontSize: 12),
               ),
@@ -127,7 +128,7 @@ class _VbsOTAState extends State<VbsOTA> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
+                        V3AutoHyphenatingText(
                           S.of(context).vbs_ota_progress_msg,
                           style: const TextStyle(fontSize: 10),
                         ),

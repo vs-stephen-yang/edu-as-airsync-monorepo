@@ -4,6 +4,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -73,7 +74,7 @@ class _StatusBarState extends State<StatusBar> {
                                   .replaceFirst('%02d', min)
                                   .replaceFirst('%02d', sec);
                               return StatusBar.showReamingTime.value
-                                  ? Text(
+                                  ? V3AutoHyphenatingText(
                                       time,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -107,7 +108,7 @@ class _StatusBarState extends State<StatusBar> {
                             ? AppColors.primaryGreyTran
                             : AppColors.primaryGrey,
                       ),
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.of(context).main_limit_time_message,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,

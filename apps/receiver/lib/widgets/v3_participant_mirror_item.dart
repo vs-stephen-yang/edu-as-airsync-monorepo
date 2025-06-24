@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
@@ -197,7 +198,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   ],
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_participant_item_share,
                     textAlign: isForMenuUse ? TextAlign.left : TextAlign.center,
                     style: TextStyle(

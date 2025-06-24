@@ -1,4 +1,5 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -41,14 +42,12 @@ class V3SettingMenuItemToggleTile extends StatelessWidget {
             children: [
               // 使用 Expanded 來處理文字溢出
               Expanded(
-                child: Text(
+                child: V3AutoHyphenatingText(
                   title,
                   style: TextStyle(
                     color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     fontSize: 12,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 5,
                 ),
               ),
               const SizedBox(width: 8),

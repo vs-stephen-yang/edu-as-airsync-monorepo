@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                     _debugCounter = 0;
                   }
                 },
-                child: AutoSizeText(
+                child: V3AutoHyphenatingText(
                   S.of(context).v3_shortcuts_menu_title,
                   style: TextStyle(
                     fontSize: 14,

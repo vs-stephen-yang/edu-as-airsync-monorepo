@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
@@ -102,7 +103,7 @@ class V3SettingsMirroring extends StatelessWidget {
                           ),
                           Gap(context.tokens.spacing.vsdslSpacingSm.right),
                           Flexible(
-                            child: Text(
+                            child: V3AutoHyphenatingText(
                               S
                                   .of(context)
                                   .v3_settings_mirroring_require_passcode,
@@ -211,7 +212,7 @@ class V3SettingsMirroring extends StatelessWidget {
                           ),
                           Gap(context.tokens.spacing.vsdslSpacingSm.right),
                           Flexible(
-                            child: Text(
+                            child: V3AutoHyphenatingText(
                               S.of(context).v3_settings_mirroring_auto_accept,
                               style: TextStyle(
                                 fontSize: 12,
@@ -228,7 +229,7 @@ class V3SettingsMirroring extends StatelessWidget {
                                 context.tokens.spacing.vsdslSpacingSm.bottom,
                             left: 20 +
                                 context.tokens.spacing.vsdslSpacingSm.right),
-                        child: Text(
+                        child: V3AutoHyphenatingText(
                           S.of(context).v3_settings_mirroring_auto_accept_desc,
                           style: TextStyle(
                             fontSize: 12,
@@ -284,7 +285,7 @@ class MirroringItem extends StatelessWidget {
           children: [
             Expanded(
               flex: 1,
-              child: Text(
+              child: V3AutoHyphenatingText(
                 name,
                 style: TextStyle(
                   color: context.tokens.color.vsdslColorOnSurfaceInverse,

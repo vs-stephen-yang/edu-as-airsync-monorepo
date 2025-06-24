@@ -1,3 +1,4 @@
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -35,7 +36,7 @@ class _FocusSingleChildScrollViewState
         child: SingleChildScrollView(
           controller: _scrollController,
           padding: const EdgeInsets.all(5),
-          child: Text(
+          child: V3AutoHyphenatingText(
             widget.textContent,
             style: TextStyle(
               color: widget.textColor ?? Colors.white,

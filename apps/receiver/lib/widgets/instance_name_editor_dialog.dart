@@ -5,6 +5,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/widgets/custom_text_form_field.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -62,7 +63,7 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              V3AutoHyphenatingText(
                 S.of(context).main_settings_device_name_title,
                 style: const TextStyle(fontSize: 20),
               ),

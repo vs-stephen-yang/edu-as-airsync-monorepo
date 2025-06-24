@@ -6,6 +6,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -90,7 +91,7 @@ class AppOTADialogState extends State<AppOTADialog>
                     ),
                   ),
                   const Gap(20),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).update_title,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurface,
@@ -105,7 +106,7 @@ class AppOTADialogState extends State<AppOTADialog>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                V3AutoHyphenatingText(
                   S.of(context).update_message,
                   style: TextStyle(
                     color: context.tokens.color.vsdslColorInfo,
@@ -134,7 +135,7 @@ class AppOTADialogState extends State<AppOTADialog>
                         (BuildContext context, double value, Widget? child) {
                       return Align(
                         alignment: Alignment.bottomRight,
-                        child: Text(
+                        child: V3AutoHyphenatingText(
                           '${(value * 100).toInt()}%',
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorInfo,
@@ -198,7 +199,7 @@ class AppOTADialogState extends State<AppOTADialog>
                 ]
               : null,
         ),
-        child: Text(
+        child: V3AutoHyphenatingText(
           text,
           style: TextStyle(color: textColor),
         ),

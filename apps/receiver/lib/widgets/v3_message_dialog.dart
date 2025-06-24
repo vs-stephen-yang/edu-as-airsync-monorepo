@@ -2,6 +2,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,7 +54,7 @@ class V3MessageDialog extends ConsumerWidget {
                 const SizedBox(height: 12),
               ],
               if (dialogState.title != null)
-                Text(
+                V3AutoHyphenatingText(
                   dialogState.title!,
                   style: TextStyle(
                     color: context.tokens.color.vsdslColorNeutral,
@@ -65,7 +66,7 @@ class V3MessageDialog extends ConsumerWidget {
               if (dialogState.content != null)
                 Expanded(
                   child: SingleChildScrollView(
-                    child: Text(
+                    child: V3AutoHyphenatingText(
                       dialogState.content!,
                       style: dialogState.contentStyle ??
                           TextStyle(
@@ -120,7 +121,7 @@ class V3MessageDialog extends ConsumerWidget {
                           ref.read(dialogProvider.notifier).hideDialog();
                           dialogState.onCancel?.call();
                         },
-                        child: Text(dialogState.cancelText!),
+                        child: V3AutoHyphenatingText(dialogState.cancelText!),
                       ),
                     ),
                   const SizedBox(width: 8),
@@ -164,7 +165,7 @@ class V3MessageDialog extends ConsumerWidget {
                           ref.read(dialogProvider.notifier).hideDialog();
                           dialogState.onConfirm?.call();
                         },
-                        child: Text(dialogState.confirmText!),
+                        child: V3AutoHyphenatingText(dialogState.confirmText!),
                       ),
                     ),
                 ],

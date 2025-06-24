@@ -3,6 +3,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
@@ -78,7 +79,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           ),
                         ),
                       ),
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.of(context).v3_instruction_share_screen,
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -108,7 +109,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                 context.tokens.spacing.vsdslSpacingSm.left),
                             child: Consumer<InstanceInfoProvider>(
                               builder: (_, instanceInfoProvider, __) {
-                                return AutoSizeText(
+                                return V3AutoHyphenatingText(
                                   instanceInfoProvider.deviceName,
                                   style: TextStyle(
                                     fontSize: 19,
@@ -152,7 +153,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                         padding: EdgeInsets.only(
                                             left: context.tokens.spacing
                                                 .vsdslSpacingSm.left),
-                                        child: AutoSizeText(
+                                        child: V3AutoHyphenatingText(
                                           S
                                               .of(context)
                                               .v3_settings_local_connection_only,
@@ -253,7 +254,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                           : Colors.transparent,
                                     ),
                                     alignment: Alignment.center,
-                                    child: Text(
+                                    child: V3AutoHyphenatingText(
                                       index == 0
                                           ? S
                                               .of(context)

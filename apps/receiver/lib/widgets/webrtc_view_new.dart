@@ -12,6 +12,7 @@ import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/toast.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -252,7 +253,7 @@ class WebRTCViewState extends State<WebRTCView> {
                     if (ChannelProvider.isModeratorMode)
                       Column(
                         children: <Widget>[
-                          Text(
+                          V3AutoHyphenatingText(
                             S.of(context).main_wait_up_next,
                             style: const TextStyle(
                               fontWeight: FontWeight.w700,
@@ -262,7 +263,7 @@ class WebRTCViewState extends State<WebRTCView> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Text(
+                          V3AutoHyphenatingText(
                             widget.rtcConnector.senderNameWithEllipsis,
                             style: const TextStyle(
                               color: AppColors.primaryBlue,
@@ -283,7 +284,7 @@ class WebRTCViewState extends State<WebRTCView> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    V3AutoHyphenatingText(
                       S.of(context).main_wait_title,
                       style: const TextStyle(
                         color: AppColors.primaryBlue,
@@ -297,7 +298,7 @@ class WebRTCViewState extends State<WebRTCView> {
             ),
           IgnorePointer(
             ignoring: true,
-            child: Text(
+            child: V3AutoHyphenatingText(
               debugOverlayText,
               style: const TextStyle(
                 color: Colors.red,

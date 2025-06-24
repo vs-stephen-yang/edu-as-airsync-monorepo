@@ -2,6 +2,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/oss_licenses.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
@@ -49,7 +50,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
           ),
           ConstrainedBox(
             constraints: BoxConstraints(minHeight: 26),
-            child: Text(
+            child: V3AutoHyphenatingText(
               S.of(context).v3_settings_open_source_license,
               style: TextStyle(
                 color: context.tokens.color.vsdslColorOnSurfaceInverse,
@@ -112,7 +113,7 @@ class V3SettingMenuListTile extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: V3AutoHyphenatingText(
                     name,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurfaceInverse,

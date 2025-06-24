@@ -1,10 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_accessibility.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
@@ -165,7 +165,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
           // 頂部標題
           Padding(
             padding: const EdgeInsets.only(left: 13, top: 13),
-            child: AutoSizeText(
+            child: V3AutoHyphenatingText(
               S.of(context).main_settings_title,
               style: TextStyle(
                   fontSize: 14,
@@ -281,7 +281,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
+                  child: V3AutoHyphenatingText(
                     S.of(context).v3_settings_version(DateTime.now().year,
                         AppConfig.of(context)?.appVersion ?? ''),
                     semanticsLabel: "v3_qa_settings_version_text",
@@ -365,7 +365,7 @@ class _SubTittleButton extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                child: Text(
+                child: V3AutoHyphenatingText(
                   text,
                   style: const TextStyle(
                     fontSize: 12,

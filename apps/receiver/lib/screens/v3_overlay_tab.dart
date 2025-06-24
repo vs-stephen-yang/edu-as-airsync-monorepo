@@ -6,6 +6,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +115,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
                           ),
                         ),
                         const SizedBox(width: 3),
-                        Text(
+                        V3AutoHyphenatingText(
                           _deviceName,
                           style: textStyle,
                         ),
@@ -129,7 +130,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
                           ),
                         ),
                         const SizedBox(width: 3),
-                        Text(
+                        V3AutoHyphenatingText(
                           _getDisplayCodeVisualIdentity(_displayCode),
                           style: textStyle,
                         ),
@@ -144,7 +145,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
                           ),
                         ),
                         const SizedBox(width: 3),
-                        Text(
+                        V3AutoHyphenatingText(
                           _otp,
                           style: textStyle,
                         ),

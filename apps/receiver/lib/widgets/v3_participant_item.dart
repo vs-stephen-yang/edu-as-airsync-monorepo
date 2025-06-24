@@ -8,6 +8,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
@@ -289,7 +290,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   ],
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_participant_item_share,
                     textAlign: isForMenuUse ? TextAlign.left : TextAlign.center,
                     style: TextStyle(
@@ -507,7 +508,7 @@ class ParticipantReceivingFeature extends StatelessWidget {
                     height: 16,
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_cast_to_device_touch_back,
                     style: TextStyle(
                       fontSize: 12,
@@ -646,7 +647,7 @@ class ParticipantControllingFeature extends StatelessWidget {
                     height: 16,
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  Text(
+                  V3AutoHyphenatingText(
                     S.of(context).v3_cast_to_device_touch_back_disable,
                     style: TextStyle(
                       fontSize: 12,

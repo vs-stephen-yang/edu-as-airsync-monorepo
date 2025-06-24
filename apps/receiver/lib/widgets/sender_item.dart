@@ -3,6 +3,7 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +58,7 @@ class _SenderItemState extends State<SenderItem>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
+                  V3AutoHyphenatingText(
                     remoteScreenConnector.senderNameWithEllipsis,
                     style: const TextStyle(fontSize: 16),
                   ),

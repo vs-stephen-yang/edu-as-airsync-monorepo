@@ -1,6 +1,6 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -113,7 +113,7 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                           ),
                           Gap(context.tokens.spacing.vsdslSpacingSm.right),
                           Expanded(
-                            child: Text(
+                            child: V3AutoHyphenatingText(
                               key.title,
                               style: TextStyle(
                                 fontSize: 12,
@@ -137,7 +137,7 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                               if (key.subtitleIcon != null) key.subtitleIcon!,
                               Gap(context.tokens.spacing.vsdslSpacingXs.right),
                               Expanded(
-                                child: AutoSizeText(
+                                child: V3AutoHyphenatingText(
                                   key.subtitle!,
                                   style: TextStyle(
                                     fontSize: 9,

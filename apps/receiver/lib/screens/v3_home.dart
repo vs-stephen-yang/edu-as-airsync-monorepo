@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:display_flutter/app_manager_config.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -9,6 +10,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/wifi_status_util.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_group_host_view.dart';
@@ -37,10 +39,13 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
   late StreamSubscription _wifiStatusSubscription;
   bool _lastWifiStatus = false;
+  late Future<void> initOperation;
 
   @override
   void initState() {
+    initOperation = initHyphenation();
     super.initState();
+
     WidgetsBinding.instance.addObserver(this);
     AppOverlayTab().setupOverlayTabHandler(context);
     Provider.of<ChannelProvider>(context, listen: false).startChannelProvider();
@@ -119,43 +124,50 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
         }
       },
       child: Scaffold(
-        body: ConstrainedBox(
-          constraints: const BoxConstraints.expand(),
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              const V3StreamingView(),
-              ValueListenableBuilder(
-                valueListenable: V3Home.isShowHeaderFooterBar,
-                builder: (_, bool value, __) {
-                  return value
-                      ? Stack(
-                          fit: StackFit.expand,
-                          children: <Widget>[
-                            Container(
-                              color: const Color(0xFFEAEBF1),
-                            ),
-                            const V3FooterBar(),
-                            const V3HeaderBar(),
-                          ],
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
-              ValueListenableBuilder(
-                valueListenable: V3Home.isShowDisplayCode,
-                builder: (_, bool value, __) {
-                  return value ? const V3MainInfo() : const SizedBox();
-                },
-              ),
-              const V3FeatureSet(),
-              const V3AuthorizePrompt(),
-              const V3GroupRejectPrompt(),
-              const V3GroupHostView(),
-              const V3MessageDialog(),
-            ],
-          ),
-        ),
+        body: FutureBuilder(
+            future: initOperation,
+            builder: (_, AsyncSnapshot<void> snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Container();
+              }
+              return ConstrainedBox(
+                constraints: const BoxConstraints.expand(),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    const V3StreamingView(),
+                    ValueListenableBuilder(
+                      valueListenable: V3Home.isShowHeaderFooterBar,
+                      builder: (_, bool value, __) {
+                        return value
+                            ? Stack(
+                                fit: StackFit.expand,
+                                children: <Widget>[
+                                  Container(
+                                    color: const Color(0xFFEAEBF1),
+                                  ),
+                                  const V3FooterBar(),
+                                  const V3HeaderBar(),
+                                ],
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: V3Home.isShowDisplayCode,
+                      builder: (_, bool value, __) {
+                        return value ? const V3MainInfo() : const SizedBox();
+                      },
+                    ),
+                    const V3FeatureSet(),
+                    const V3AuthorizePrompt(),
+                    const V3GroupRejectPrompt(),
+                    const V3GroupHostView(),
+                    const V3MessageDialog(),
+                  ],
+                ),
+              );
+            }),
       ),
     );
   }
@@ -164,7 +176,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: V3AutoHyphenatingText(message)),
       );
   }
 }

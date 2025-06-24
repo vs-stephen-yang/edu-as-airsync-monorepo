@@ -5,6 +5,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 
@@ -199,7 +200,7 @@ class _CountdownText extends StatelessWidget {
       stream: ConnectionTimer.getInstance().remainingTimeTimeout.stream,
       builder: (context, AsyncSnapshot<int> snapshot) {
         final value = snapshot.data ?? ConnectionTimer.hintStartTimeSec;
-        return Text(
+        return V3AutoHyphenatingText(
           Duration(seconds: value).toString().split('.').first.padLeft(8, "0"),
           textAlign: TextAlign.center,
           style: TextStyle(

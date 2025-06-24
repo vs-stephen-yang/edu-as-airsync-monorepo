@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,7 @@ class _TextClockState extends State<TextClock> {
         final time =
             DateFormat('hh:mm a', prefLanguageProvider.locale?.languageCode)
                 .format(now);
-        return Text(
+        return V3AutoHyphenatingText(
           time,
           style: const TextStyle(
             color: AppColors.primaryWhiteA50,

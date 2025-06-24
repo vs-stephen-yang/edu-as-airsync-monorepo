@@ -5,6 +5,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:display_flutter/widgets/sender_list_view.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -56,11 +57,13 @@ class _SenderMenuViewState extends State<SenderMenuView> {
                       onPressed: () {
                         editMode.value = false;
                       },
-                      child: Text(S.of(context).moderator_cancel),
+                      child:
+                          V3AutoHyphenatingText(S.of(context).moderator_cancel),
                     ),
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text(S.of(context).moderator_remove),
+                      child:
+                          V3AutoHyphenatingText(S.of(context).moderator_remove),
                     ),
                   ],
                 )

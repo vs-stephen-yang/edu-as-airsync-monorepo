@@ -1,6 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,7 +29,7 @@ class V3SettingsWhatsNew extends StatelessWidget {
                 ),
                 const Gap(12),
                 Center(
-                  child: Text(
+                  child: V3AutoHyphenatingText(
                     'v${AppConfig.of(context)?.appVersion ?? ''}',
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurfaceInverse,
@@ -37,7 +38,7 @@ class V3SettingsWhatsNew extends StatelessWidget {
                   ),
                 ),
                 const Gap(16),
-                Text(
+                V3AutoHyphenatingText(
                   sprintf(S.of(context).v3_settings_whats_new_content,
                       ['v${AppConfig.of(context)?.appVersion ?? ''}']),
                   textAlign: TextAlign.start,

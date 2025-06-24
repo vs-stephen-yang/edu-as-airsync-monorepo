@@ -8,6 +8,7 @@ import 'package:display_flutter/utility/toast.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/loading_icon.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_toast/motion_toast.dart';
 
@@ -41,7 +42,7 @@ class ParticipantItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
+                  V3AutoHyphenatingText(
                     rtcConnector.senderNameWithEllipsis,
                     style: const TextStyle(fontSize: 16),
                   ),
