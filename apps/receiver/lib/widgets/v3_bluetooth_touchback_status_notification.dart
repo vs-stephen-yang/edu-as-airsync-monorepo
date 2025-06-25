@@ -122,51 +122,51 @@ class RestartBluetoothWidget extends StatelessWidget {
               backgroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
               elevation: 16.0,
               shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 27),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              S.current.v3_touchback_restart_bluetooth_title,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: context.tokens.color.vsdslColorNeutral,
+              child: Container(
+                padding: const EdgeInsets.all(17),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                S.current.v3_touchback_restart_bluetooth_title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.tokens.color.vsdslColorNeutral,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 13),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 13),
-                            child: Text(
-                              S.current.v3_touchback_restart_bluetooth_message,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: context.tokens.color.vsdslColorNeutral,
+                            const Gap(13),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 13),
+                              child: Text(
+                                S.current
+                                    .v3_touchback_restart_bluetooth_message,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: context.tokens.color.vsdslColorNeutral,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          // 底部間距
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
-                    child: Row(
+                    const Gap(13),
+                    Row(
                       children: [
                         Expanded(
                           child: SizedBox(
-                            width: 108,
                             height: 40,
                             child: V3Focus(
                               label: S
@@ -186,10 +186,6 @@ class RestartBluetoothWidget extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                   // remove onFocused color, this is also ripple color
                                   overlayColor: Colors.transparent,
-                                  textStyle: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
                                   padding: EdgeInsets.zero,
                                 ),
                                 onPressed: () {
@@ -203,6 +199,8 @@ class RestartBluetoothWidget extends StatelessWidget {
                                   style: TextStyle(
                                     color: context
                                         .tokens.color.vsdslColorSecondary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -212,7 +210,6 @@ class RestartBluetoothWidget extends StatelessWidget {
                         Gap(8),
                         Expanded(
                           child: SizedBox(
-                            width: 108,
                             height: 40,
                             child: V3Focus(
                               label: S
@@ -232,10 +229,6 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       context.tokens.color.vsdslColorPrimary,
                                   // remove onFocused color, this is also ripple color
                                   overlayColor: Colors.transparent,
-                                  textStyle: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
                                   padding: EdgeInsets.zero,
                                 ),
                                 onPressed: () {
@@ -244,16 +237,22 @@ class RestartBluetoothWidget extends StatelessWidget {
                                     navService.goBack();
                                   }
                                 },
-                                child: Text(S.current
-                                    .v3_touchback_restart_bluetooth_btn_restart),
+                                child: Text(
+                                  S.current
+                                      .v3_touchback_restart_bluetooth_btn_restart,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
