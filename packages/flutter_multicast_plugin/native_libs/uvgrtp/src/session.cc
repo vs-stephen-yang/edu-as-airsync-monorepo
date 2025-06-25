@@ -118,6 +118,11 @@ uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t
     uvgrtp::media_stream* stream =
         new uvgrtp::media_stream(cname_, remote_address_, local_address_, src_port, dst_port, fmt, sf_, rce_flags);
 
+    if (!multicast_address_.empty()) {
+        UVG_LOG_DEBUG("[Set multicast] multicast address %s pass to stream", multicast_address_.c_str());
+        stream->set_multicast_address(multicast_address_);
+    }
+
     if (rce_flags & RCE_SRTP) {
 
         if (rce_flags & RCE_SRTP_REPLAY_PROTECTION)
@@ -205,4 +210,8 @@ rtp_error_t uvgrtp::session::destroy_stream(uvgrtp::media_stream *stream)
 std::string& uvgrtp::session::get_key()
 {
     return remote_address_;
+}
+
+void uvgrtp::session::set_multicast_address(const std::string& multicast_addr) {
+    multicast_address_ = multicast_addr;
 }

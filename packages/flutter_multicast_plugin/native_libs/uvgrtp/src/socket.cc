@@ -116,7 +116,7 @@ bool uvgrtp::socket::is_multicast(sockaddr_in& local_address)
     return (ntohl(addr) & 0xF0000000) == 0xE0000000;
 }
 
-rtp_error_t uvgrtp::socket::bind(sockaddr_in& local_address)
+rtp_error_t uvgrtp::socket::bind(sockaddr_in& local_address, const std::string& interface_addr)
 {
     local_address_ = local_address;
 
@@ -176,7 +176,13 @@ rtp_error_t uvgrtp::socket::bind(sockaddr_in& local_address)
         // Join multicast membership
         struct ip_mreq mreq{};
         mreq.imr_multiaddr.s_addr = local_address_.sin_addr.s_addr;
-        mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+
+        if (!interface_addr.empty()) {
+            mreq.imr_interface.s_addr = inet_addr(interface_addr.c_str());
+            UVG_LOG_INFO("[Set multicast] Joining multicast group with interface %s", interface_addr.c_str());
+        } else {
+            mreq.imr_interface.s_addr = htonl(INADDR_ANY);  // 原有邏輯
+        }
 
         if (::setsockopt(socket_, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0) {
 #ifdef _WIN32

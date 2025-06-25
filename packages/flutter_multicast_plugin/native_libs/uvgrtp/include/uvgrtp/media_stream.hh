@@ -398,6 +398,8 @@ namespace uvgrtp {
         NetworkStatsResult get_network_stats() const;
         void reset_network_stats();
 
+        void set_multicast_address(const std::string& multicast_addr);
+
       private:
         /* Initialize the connection by initializing the socket
          * and binding ourselves to specified interface and creating
@@ -441,6 +443,7 @@ namespace uvgrtp {
         sockaddr_in6 remote_sockaddr_ip6_;
         std::string remote_address_;
         std::string local_address_;
+        std::string multicast_address_;
         uint16_t src_port_;
         uint16_t dst_port_;
         bool ipv6_;

@@ -90,7 +90,7 @@ namespace uvgrtp {
              * Return RTP_OK on success
              * Return RTP_BIND_ERROR if the bind failed */
             rtp_error_t bind(short family, unsigned host, short port);
-            rtp_error_t bind(sockaddr_in& local_address);
+            rtp_error_t bind(sockaddr_in& local_address, const std::string& interface_addr = "");
             rtp_error_t bind_ip6(sockaddr_in6& local_address);
 
             /* Check if the given address is IPv4 or IPv6

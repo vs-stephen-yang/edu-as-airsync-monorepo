@@ -103,7 +103,15 @@ rtp_error_t uvgrtp::media_stream::init_connection() {
     sockaddr_in multicast_sockaddr_;
     bool multicast = false;
 
-    if (ipv6_ && src_port_ != 0 && local_address_ != "") {
+    if (!multicast_address_.empty() && src_port_ != 0) {
+        sockaddr_in multicast_sockaddr = uvgrtp::socket::create_sockaddr(AF_INET, multicast_address_, src_port_);
+        if (uvgrtp::socket::is_multicast(multicast_sockaddr)) {
+            UVG_LOG_DEBUG("[Set multicast] use custom multicast address");
+            socket_ = sfp_->create_new_socket(2, src_port_, multicast_address_);
+            new_socket_ = true;
+            multicast = true;
+        }
+    } else if (ipv6_ && src_port_ != 0 && local_address_ != "") {
         multicast_sockaddr6_ = uvgrtp::socket::create_ip6_sockaddr(local_address_, src_port_);
         if (uvgrtp::socket::is_multicast(multicast_sockaddr6_)) {
             socket_ = sfp_->create_new_socket(2, src_port_);
@@ -1117,4 +1125,8 @@ void uvgrtp::media_stream::reset_network_stats() {
     if (srtp_) {
         srtp_->reset_network_stats();
     }
+}
+
+void uvgrtp::media_stream::set_multicast_address(const std::string& multicast_addr) {
+    multicast_address_ = multicast_addr;
 }
