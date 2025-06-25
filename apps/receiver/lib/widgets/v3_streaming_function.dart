@@ -445,6 +445,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
     final unsupportedModels = [
       'IFP105',
       'IFP52_K', //IFP52-1A/B
+      'IFP50_3',
     ];
     // 轉成大寫後比較以防大小寫錯誤
     final normalizedModel = deviceModel.toUpperCase();
