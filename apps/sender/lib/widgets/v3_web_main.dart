@@ -21,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -112,98 +111,69 @@ class V3WebMain extends StatelessWidget {
     return StatefulBuilder(builder: (context, setState) {
       final isSmallScreen = !isBigThan768(context);
       return (showUnsupportedMassage && !supportedBrowsers)
-          ? (isSmallScreen)
-              ? Container(
-                  color: context.tokens.color.vsdswColorWarning,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+          ? Container(
+              color: context.tokens.color.vsdswColorWarning,
+              padding: EdgeInsets.symmetric(
+                  horizontal: 24, vertical: isSmallScreen ? 16 : 0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: 48),
+                child: Wrap(
+                  direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
+                  alignment: WrapAlignment.center,
+                  spacing: 24,
+                  runAlignment: isSmallScreen
+                      ? WrapAlignment.start
+                      : WrapAlignment.center,
+                  runSpacing: 0,
+                  crossAxisAlignment: isSmallScreen
+                      ? WrapCrossAlignment.start
+                      : WrapCrossAlignment.center,
+                  children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: isSmallScreen
+                            ? MediaQuery.of(context).size.width - 48
+                            : double.infinity,
+                      ),
+                      child: Text(
                         S.current.v3_main_web_nonsupport,
                         style: TextStyle(
                           color: context.tokens.color.vsdswColorOnWarning,
                           fontSize: 14,
                         ),
                       ),
-                      const Gap(24),
-                      IntrinsicWidth(
-                        child: InkWell(
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 32,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              S.current.v3_main_web_nonsupport_confirm,
-                              style: TextStyle(
-                                color: context.tokens.color.vsdswColorWarning,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              showUnsupportedMassage = false;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(
-                  height: 48,
-                  color: context.tokens.color.vsdswColorWarning,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        S.current.v3_main_web_nonsupport,
-                        style: TextStyle(
-                          color: context.tokens.color.vsdswColorOnWarning,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const Gap(24),
-                      InkWell(
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 32,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            S.current.v3_main_web_nonsupport_confirm,
-                            style: TextStyle(
-                              color: context.tokens.color.vsdswColorWarning,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                    ),
+                    InkWell(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 67,
+                        height: 32,
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        onTap: () {
-                          setState(() {
-                            showUnsupportedMassage = false;
-                          });
-                        },
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          S.current.v3_main_web_nonsupport_confirm,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdswColorWarning,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                )
+                      onTap: () {
+                        setState(() {
+                          showUnsupportedMassage = false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            )
           : const SizedBox();
     });
   }
