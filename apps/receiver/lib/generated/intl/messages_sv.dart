@@ -209,7 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Acceptera",
     ),
     "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
-      "\nAcceptera alla",
+      "Acceptera alla",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("Neka"),
     "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("På"),
@@ -416,7 +416,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Välj %s",
     ),
     "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
-      "\nAvbryt Dialogrutan ",
+      "Avbryt Dialogrutan ",
     ),
     "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
       "Dialogrutan Bekräfta",
@@ -438,7 +438,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Öppna listan över castade enheter",
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
-      "\nÖppna moderatorlistan",
+      "Öppna moderatorlistan",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Öppna inställningsmenyn",
@@ -612,7 +612,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Slå på/av Miracast",
     ),
     "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
-      "\nÖppna inställningsmenyn för spegling",
+      "Öppna inställningsmenyn för spegling",
     ),
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "Airplay touchback",
@@ -655,7 +655,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Slå på ljudet",
     ),
     "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
-      "\nAvbryt Dialogrutan ",
+      "Avbryt Dialogrutan ",
     ),
     "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
       "Bekräfta",
@@ -680,7 +680,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_main_local_connection_only_dialog_desc":
         MessageLookupByLibrary.simpleMessage(
-          "\nEndast LAN-anslutning, kontrollera enhetens nätverksinställning。",
+          "Endast LAN-anslutning, kontrollera enhetens nätverksinställning。",
         ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Kan inte upptäcka en internetanslutning. Anslut till ett Wi-Fi- eller intranätsnätverk och försök igen.",
@@ -957,7 +957,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_state_hidConnected_message":
         MessageLookupByLibrary.simpleMessage("Hid ansluten"),
     "v3_touchback_state_hidConnecting_message":
-        MessageLookupByLibrary.simpleMessage("\nHid anslutning"),
+        MessageLookupByLibrary.simpleMessage("Hid anslutning"),
     "v3_touchback_state_hidProfileServiceStartedSuccess_message":
         MessageLookupByLibrary.simpleMessage("Hid-profiltjänsten har startat"),
     "v3_touchback_state_hidProfileServiceStarting_message":
