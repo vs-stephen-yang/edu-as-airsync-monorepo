@@ -14,7 +14,7 @@ extern "C" JNIEXPORT jboolean JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_startRtpStream(JNIEnv *env, jobject thiz, jstring ip, jint port, jbyteArray jKey, jbyteArray jSalt, jint ssrc)
 {
     const char *c_ip = env->GetStringUTFChars(ip, nullptr);
-    int flags = RCE_SEND_ONLY | RCE_SRTP | RCE_SRTP_KMNGMNT_USER;
+    int flags = RCE_SEND_ONLY | RCE_SRTP | RCE_SRTP_KMNGMNT_USER | RCE_SRTP_AUTHENTICATE_RTP;
 
     ctx = new uvgrtp::context();
     sess = ctx->create_session(c_ip);
