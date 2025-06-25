@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -37,6 +38,7 @@ class V3CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
     return Stack(
       children: [
         Positioned(
@@ -63,9 +65,10 @@ class V3CustomDialog extends StatelessWidget {
                   child: Column(
                     children: [
                       Expanded(
-                        child: Scrollbar(
-                          thumbVisibility: true,
+                        child: V3Scrollbar(
+                          controller: scrollController,
                           child: SingleChildScrollView(
+                            controller: scrollController,
                             child: Column(
                               children: [
                                 AutoSizeText(

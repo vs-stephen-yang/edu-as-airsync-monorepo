@@ -142,7 +142,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                       if (!isLandscape) ...[
                         Expanded(
                           flex: 15,
-                          child: Scrollbar(
+                          child: V3Scrollbar(
                             controller: scrollController,
                             child: SingleChildScrollView(
                               controller: scrollController,
@@ -241,7 +241,7 @@ class V3QrCodeInstruction extends StatelessWidget {
           const V3QrCodeImage(size: 120),
           const Gap(20),
           Expanded(
-            child: Scrollbar(
+            child: V3Scrollbar(
               controller: scrollController,
               child: SingleChildScrollView(
                 controller: scrollController,
