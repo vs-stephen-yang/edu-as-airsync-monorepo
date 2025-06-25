@@ -106,14 +106,14 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             }
             case "receiveStart": {
-                String ip = call.argument("ip");
+                String multicastIp = call.argument("ip");
                 Integer port = call.argument("port");
                 Integer ssrc = call.argument("ssrc");
                 byte[] key = call.argument("key");
                 byte[] salt = call.argument("salt");
                 Number rocNumber = call.argument("roc");
 
-                if (ip == null || port == null || key == null || salt == null || ssrc == null || rocNumber == null) {
+                if (multicastIp == null || port == null || key == null || salt == null || ssrc == null || rocNumber == null) {
                     result.error("MISSING_ARGUMENT", "One or more arguments are missing or null", null);
                     return;
                 }
@@ -126,7 +126,9 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 long textureId = entry.id();
                 surface = new Surface(surfaceTexture);
 
-                NativeBridge.receiveStart(surface, ip, port, key, salt, ssrc, roc);
+                // TODO: get all interface local IP
+                String[] localIps = {"172.21.10.181", "123.1.3.2"};
+                NativeBridge.receiveStart(surface, localIps,multicastIp, port, key, salt, ssrc, roc);
                 result.success(textureId);
                 break;
             }
