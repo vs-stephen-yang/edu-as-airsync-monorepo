@@ -444,6 +444,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               : () {
                   settingsProvider.setPage(SettingPageState.deviceName);
                 },
+          // Trialling is device name, should not use - to confuse user
+          autoHyphenate: false,
           trialling: AppPreferences().instanceName,
           disable: settingsProvider.isDeviceSettingLock);
 
