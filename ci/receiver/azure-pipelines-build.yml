@@ -2,19 +2,11 @@ trigger: none
 pr: none
 
 pool:
-  vmImage: macos-latest
+  name: "AirSync macOS Pool"
 
 variables:
-  - name: Flutter.Version
-    value: "3.24.2"
   - name: Flutter.Bin
-    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
-  - name: FlutterSdkPlatform
-    value: "macos"
-  - name: PUB_CACHE
-    value: $(Pipeline.Workspace)/.pub-cache
-  - name: GRADLE_USER_HOME
-    value: $(Pipeline.Workspace)/.gradle
+    value: fvm flutter
   - name: GRADLE_OPTS
     value: "-Dorg.gradle.jvmargs=-Xmx5g"
   - name: Flutter.Verbose
@@ -107,21 +99,6 @@ jobs:
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
-      - task: JavaToolInstaller@0
-        inputs:
-          versionSpec: "17"
-          jdkArchitectureOption: "x64"
-          jdkSourceOption: "PreInstalled"
-
-      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/$(FlutterSdkPlatform)/flutter_$(FlutterSdkPlatform)_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
-        displayName: Download the flutter SDK
-
-      - task: ExtractFiles@1
-        displayName: Extract the flutter SDK
-        inputs:
-          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
-          destinationFolder: "$(Pipeline.Workspace)/flutter"
-
       - task: MavenAuthenticate@0
         displayName: "Provides maven credentials for Azure Artifacts"
         inputs:
@@ -138,22 +115,9 @@ jobs:
             Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$username"
             Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$password"
 
-      - task: Cache@2
-        enabled: "false"
-        displayName: Configure Gradle caching
-        inputs:
-          key: 'gradle | "$(Agent.OS)" | android/**/build.gradle'
-          restoreKeys: |
-            gradle | "$(Agent.OS)"
-            gradle
-          path: $(GRADLE_USER_HOME)
-
       - script: $(Flutter.Bin) pub get
         displayName: Download packages
 
-      - script: $(Flutter.Bin) analyze --no-fatal-infos
-        enabled: "true"
-        displayName: Run lint checks
 
       # Build Single APK
       - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
@@ -170,10 +134,6 @@ jobs:
         displayName: Build App Bundle
         condition: eq(variables['appbundle'], true)
 
-      # Stop Gradle daemon
-      - script: ./gradlew --stop
-        displayName: Stop Gradle daemon
-        workingDirectory: "$(Build.SourcesDirectory)/android/"
 
       # Uploading debug symbols
       - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
