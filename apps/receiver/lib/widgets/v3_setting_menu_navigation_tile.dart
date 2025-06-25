@@ -14,6 +14,7 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
     required this.disable,
     required this.label,
     required this.identifier,
+    this.autoHyphenate = true,
   });
 
   final String title;
@@ -23,6 +24,7 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
   final bool disable;
   final String label;
   final String identifier;
+  final bool autoHyphenate;
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +56,27 @@ class V3SettingMenuNavigationTile extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   constraints: const BoxConstraints(minHeight: 48),
                   padding: const EdgeInsets.symmetric(vertical: 4), // 添加垂直內邊距
-                  child: V3AutoHyphenatingText(
-                    trialling,
-                    style: TextStyle(
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse
-                          .withValues(alpha: disable ? 0.32 : 1),
-                      fontSize: 12,
-                    ),
-                    textAlign: TextAlign.right, // 確保文字右對齊
-                  ),
+                  child: autoHyphenate
+                      ? V3AutoHyphenatingText(
+                          trialling,
+                          style: TextStyle(
+                            color: context
+                                .tokens.color.vsdslColorOnSurfaceInverse
+                                .withValues(alpha: disable ? 0.32 : 1),
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.right,
+                        )
+                      : Text(
+                          trialling,
+                          style: TextStyle(
+                            color: context
+                                .tokens.color.vsdslColorOnSurfaceInverse
+                                .withValues(alpha: disable ? 0.32 : 1),
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
                 ),
               ),
             ),

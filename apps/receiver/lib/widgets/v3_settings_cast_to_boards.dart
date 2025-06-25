@@ -555,6 +555,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                     right: context.tokens.spacing.vsdslSpacingSm.right)),
             Expanded(
               flex: 2,
+              // Trialling is device name, should not use - to confuse user
               child: Text(
                 client.deviceName(),
                 style: TextStyle(
@@ -586,6 +587,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             ),
           ),
         Flexible(
+          // Trialling is display code, should not use - to confuse user
           child: Text(
             unavailable
                 ? S.of(context).v3_settings_device_unavailable

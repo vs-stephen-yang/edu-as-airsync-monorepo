@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -63,7 +64,7 @@ class V3Instruction extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(
                               left: context.tokens.spacing.vsdslSpacingSm.left),
-                          child: AutoSizeText(
+                          child: AutoHyphenatingText(
                             S.of(context).v3_settings_local_connection_only,
                             style: context
                                 .tokens.textStyle.airsyncFontSubtitle600
@@ -89,7 +90,7 @@ class V3Instruction extends StatelessWidget {
             runSpacing: 10, // 垂直間距（行之間）
             crossAxisAlignment: WrapCrossAlignment.center, // 垂直居中對齊
             children: [
-              AutoSizeText(
+              AutoHyphenatingText(
                 S.of(context).v3_instruction_share_screen,
                 style: context.tokens.textStyle.airsyncFontTitle.apply(
                     color: context.tokens.color.vsdslColorOnSurface,
@@ -130,6 +131,7 @@ class V3Instruction extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // This is will contain web link, should not use - to confuse user
                         AutoSizeText.rich(
                           _buildTextSpan(
                             fullText: isInternet &&
@@ -264,7 +266,7 @@ class V3Instruction extends StatelessWidget {
             Gap(context.tokens.spacing.vsdslSpacingMd.left),
             Expanded(
               // 添加 Expanded 來確保內容不會溢出
-              child: AutoSizeText(
+              child: AutoHyphenatingText(
                 S.of(context).v3_instruction2,
                 style: context.tokens.textStyle.airsyncFontTitle.apply(
                   color: context.tokens.color.vsdslColorOnSurface,
@@ -280,7 +282,8 @@ class V3Instruction extends StatelessWidget {
               builder: (_, instanceInfoProvider, __) {
             return Semantics(
               identifier: 'v3_qa_display_code',
-              child: AutoSizeText(
+              // Trialling is display code, should not use - to confuse user
+              child: Text(
                 _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
                 style: context.tokens.textStyle.airsyncFontDisplay.apply(
                   color: context.tokens.color.vsdslColorOnSurface,
@@ -303,12 +306,11 @@ class V3Instruction extends StatelessWidget {
             ),
             Gap(context.tokens.spacing.vsdslSpacingMd.left),
             Expanded(
-              child: AutoSizeText(
+              child: AutoHyphenatingText(
                 S.of(context).v3_instruction3,
                 style: context.tokens.textStyle.airsyncFontTitle.apply(
                   color: context.tokens.color.vsdslColorOnSurface,
                 ),
-                maxLines: 2,
               ),
             ),
           ],
@@ -325,7 +327,8 @@ class V3Instruction extends StatelessWidget {
                   builder: (_, otp, __) {
                     return Semantics(
                       identifier: 'v3_qa_otp_code',
-                      child: AutoSizeText(
+                      // Trialling is otp code , should not use - to confuse user
+                      child: Text(
                         otp,
                         style:
                             context.tokens.textStyle.airsyncFontDisplay.apply(
