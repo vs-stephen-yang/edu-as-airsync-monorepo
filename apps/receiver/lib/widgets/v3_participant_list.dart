@@ -1,3 +1,4 @@
+import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -21,62 +22,74 @@ class V3ParticipantList extends StatelessWidget {
     return Consumer2<ChannelProvider, MirrorStateProvider>(
       builder: (context, channelProvider, mirrorProvider, child) {
         if (!ChannelProvider.isModeratorMode) {
-          return Column(
-            mainAxisAlignment: ChannelProvider.isModeratorMode
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
-            children: [
-              if (ChannelProvider.isModeratorMode) ...[
-                AutoSizeText.rich(
-                  TextSpan(children: [
-                    TextSpan(
-                      text: S.of(context).v3_participants_title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: context.tokens.color.vsdslColorOnSurface,
+          final sc = ScrollController();
+          return Center(
+            child: V3Scrollbar(
+              controller: sc,
+              child: SingleChildScrollView(
+                controller: sc,
+                padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).textScaler.scale(1.0) > 1
+                        ? 5.0
+                        : 0),
+                child: Column(
+                  mainAxisAlignment: ChannelProvider.isModeratorMode
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: [
+                    if (ChannelProvider.isModeratorMode) ...[
+                      AutoSizeText.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                            text: S.of(context).v3_participants_title,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: context.tokens.color.vsdslColorOnSurface,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxHybridConnection})',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: context.tokens.color.vsdslColorOnSurface,
+                            ),
+                          )
+                        ]),
+                        textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 133),
+                    ],
+                    SvgPicture.asset(
+                      ChannelProvider.isModeratorMode
+                          ? 'assets/images/ic_moderator_people.svg'
+                          : 'assets/images/ic_moderator_screen.svg',
+                      excludeFromSemantics: true,
+                      width: 126,
+                      height: 110,
                     ),
-                    TextSpan(
-                      text:
-                          ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxHybridConnection})',
+                    SizedBox(
+                      height: ChannelProvider.isModeratorMode
+                          ? context.tokens.spacing.vsdslSpacing2xl.top
+                          : context.tokens.spacing.vsdslSpacingXl.top,
+                    ),
+                    AutoHyphenatingText(
+                      HybridConnectionList.maxHybridSplitScreen == 9
+                          ? S.of(context).v3_participants_desc_maximum_9
+                          : S.of(context).v3_participants_desc,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: context.tokens.color.vsdslColorOnSurface,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                       ),
-                    )
-                  ]),
-                  textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 133),
-              ],
-              SvgPicture.asset(
-                ChannelProvider.isModeratorMode
-                    ? 'assets/images/ic_moderator_people.svg'
-                    : 'assets/images/ic_moderator_screen.svg',
-                excludeFromSemantics: true,
-                width: 126,
-                height: 110,
               ),
-              SizedBox(
-                height: ChannelProvider.isModeratorMode
-                    ? context.tokens.spacing.vsdslSpacing2xl.top
-                    : context.tokens.spacing.vsdslSpacingXl.top,
-              ),
-              AutoSizeText(
-                HybridConnectionList.maxHybridSplitScreen == 9
-                    ? S.of(context).v3_participants_desc_maximum_9
-                    : S.of(context).v3_participants_desc,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                ),
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              ),
-            ],
+            ),
           );
         } else {
           final ScrollController scrollController = ScrollController();
