@@ -5,6 +5,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/bluetooth_touchback_status.dart';
@@ -106,6 +107,7 @@ class RestartBluetoothWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -127,38 +129,45 @@ class RestartBluetoothWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Text(
-                                S.current.v3_touchback_restart_bluetooth_title,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.tokens.color.vsdslColorNeutral,
+                      child: V3Scrollbar(
+                        controller: scrollController,
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  S.current
+                                      .v3_touchback_restart_bluetooth_title,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        context.tokens.color.vsdslColorNeutral,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const Gap(13),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 13),
-                              child: Text(
-                                S.current
-                                    .v3_touchback_restart_bluetooth_message,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: context.tokens.color.vsdslColorNeutral,
+                              const Gap(13),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 13),
+                                child: Text(
+                                  S.current
+                                      .v3_touchback_restart_bluetooth_message,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color:
+                                        context.tokens.color.vsdslColorNeutral,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
