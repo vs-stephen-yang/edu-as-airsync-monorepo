@@ -419,6 +419,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
       "Tik vietinis ryšys",
     ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Pasirinkite kalbą",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Pasirinkite %s",
+    ),
     "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
       "Atšaukimo dialogo langas",
     ),
@@ -452,6 +458,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
       "Atidarykite srautinį spartųjį meniu",
+    ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Slankiojo ryšio informacijos skirtukas",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Išplėsti perdangos meniu",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Sumažinti perdangos meniu",
     ),
     "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
       "Perduokite įrenginį šiam dalyviui",
@@ -496,8 +511,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
       "Sustabdyti pristatymą",
     ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Prieinamumas",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Grįžti į ankstesnį puslapį",
+    ),
     "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
       "Atidaryti transliacijos nustatymų meniu",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti transliavimo lentų meniu",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite transliavimo įrenginių meniu",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Atidarykite transliaciją, kad būtų rodomas grupės meniu",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Transliacija"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Pasirinkite %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Patvirtinkite, kad nė vienas įrenginys nepasirinktas.",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Pasirinkite %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Sutaupyti"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
+        MessageLookupByLibrary.simpleMessage("Pasirinkite %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Uždaryti nustatymų meniu",
     ),
     "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
       "Atidarykite ryšio nustatymų meniu",
@@ -505,8 +553,42 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
       "Pasirinkite %s",
     ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage(
+          "Autorizacijos režimo įjungimas / išjungimas",
+        ),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
+          "Automatinio užpildymo OTP režimo įjungimas / išjungimas",
+        ),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage(
+          "Automatinio paleidimo režimo įjungimas / išjungimas",
+        ),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Pakeiskite įrenginio pavadinimą",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Uždaryti įrenginio pavadinimo parametrą",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Išsaugokite įrenginio pavadinimą",
+    ),
     "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Atidarykite įrenginio nustatymų meniu",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Įjunkite / išjunkite išmanųjį mastelio keitimo jungiklį",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Įveskite įrenginio pavadinimą",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Atidarykite ekrano transliavimo išskleidžiamąjį meniu",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Pasirinkite %s",
     ),
     "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Atidaryti teisinės strategijos parametrų meniu",
@@ -522,8 +604,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Įjungti / išjungti reikalaujamą prieigos kodą",
         ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Daugiau informacijos apie transliaciją į Vaizdinės reklamos grupę",
+        ),
     "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
       "Pasirinkite %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Įjunkite / išjunkite ekrano kodo perjungimą",
     ),
     "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "Atidaryti nustatymų meniu Kas naujo",
@@ -531,11 +620,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
       "piktograma kas naujo",
     ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "\"AirPlay\" įjungimas / išjungimas",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "\"Google Cast\" įjungimas / išjungimas",
+    ),
     "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
       "\"Miracast\" įjungimas / išjungimas",
     ),
     "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Atidarykite veidrodinio atspindžio nustatymų meniu",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "\"Airplay\" jutiklinis ryšys",
     ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("\"AirPlay\" perjungimas"),
@@ -578,6 +676,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
       "Garso nutildymo išjungimas",
     ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atšaukimo dialogo langas",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Patvirtinimo dialogo langas",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Atšaukti"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Paleisti"),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "Uždaryti",
     ),
@@ -598,6 +706,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Nepavyko aptikti interneto ryšio. Prisijunkite prie „Wi-Fi“ arba intraneto tinklo ir bandykite dar kartą.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "\"Miracast\" dabar nepasiekiamas. Dabartinis \"Wi-Fi\" kanalas nepalaiko ekrano perdavimo.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Slaptažodis",
@@ -673,6 +784,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "Įveskite prieigos kodą, kad atrakintumėte nustatymus",
     ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Prieinamumas",
+    ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Transliuoti IFP ekraną visada.",
     ),
@@ -734,6 +848,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Įrenginio pavadinimas",
+    ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Įrenginio pavadinimas negali būti tuščias",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Išsaugoti",
@@ -809,6 +926,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic yra įsipareigojusi saugoti jūsų privatumą ir rimtai žiūri į asmens duomenų tvarkymą. Toliau pateikta privatumo politika išsamiai paaiškina, kaip ViewSonic tvarkys jūsų asmens duomenis, kai jie bus surinkti per jūsų naudojimąsi svetaine. ViewSonic saugo jūsų informaciją naudodama saugumo technologijas ir laikosi politikos, kuri neleidžia neteisėtai naudoti jūsų asmens duomenų. Naudodamiesi šia svetaine, sutinkate su jūsų informacijos rinkimu ir naudojimu.  \n\nSvetainės, į kurias galite patekti iš ViewSonic.com, gali turėti savo privatumo politiką, kuri gali skirtis nuo ViewSonic politikos. Prašome peržiūrėti tų svetainių privatumo politiką, kad gautumėte išsamią informaciją apie tai, kaip jos gali naudoti informaciją, surinktą jums lankantis.  \n\nSpustelėkite šias nuorodas, kad sužinotumėte daugiau apie mūsų privatumo politiką.  ",
     ),
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Teksto dydžio keitimas",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("XLarge"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Didelis",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Įprastas",
+    ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas naujo"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
@@ -828,6 +956,56 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Veidrodinis atvaizdavimas",
+    ),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Vienu metu galite paliesti tik vieną įrenginį.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Prisilietimas prie %s?",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "\"TouchBack\" išjungtas.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Susieti nepavyko. \"TouchBack\" nesuaktyvintas. Bandykite dar kartą",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Atšaukti"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Paleisti"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Operacijos skirtasis laikas. Išjunkite ir iš naujo paleiskite \"Bluetooth\" funkciją dideliame ekrane, tada iš naujo paleiskite jutiklinį ryšį.",
+    ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Baigėsi veikimo laikas, iš naujo paleiskite \"Bluetooth\"",
+        ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Įrenginių paieška"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Įrenginys rado sėkmę"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Įrenginio suporuota sėkmė"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Įrenginių susiejimas"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Slėpti prisijungus"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Paslėpė ryšį"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "\"Hid Profile Service\" pradėjo sėkmę",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage(
+          "\"Hid Profile\" paslaugos paleidimas",
+        ),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Inicijuotas"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Inicializuojama"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Dabar galite valdyti %s nuotoliniu būdu iš IFP.",
     ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Laukiama, kol šis dalyvis pasidalins savo ekranu",

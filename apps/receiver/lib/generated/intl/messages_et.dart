@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'et';
 
+  static String m1(value) =>
+      "Ekraani jagamine on lõppemas. Kas soovite seda 3 tunni võrra pikendada? Saate pikendada kuni ${value} korda.";
+
   static String m0(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -231,8 +234,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Tagasiside",
     ),
+    "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
+      "Ekraani jagamine on lõppenud.",
+    ),
+    "v3_casting_time_countdown": m1,
+    "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Ärge pikendage",
+    ),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Laiendada"),
+    "v3_casting_time_extend_success_toast":
+        MessageLookupByLibrary.simpleMessage("Pikendatud 3 tunni võrra."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Skaneeri QR-kood oma iOS-i või Android-seadmega allalaadimiseks",
+    ),
+    "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
+      "Parima kasutuskogemuse tagamiseks",
+    ),
+    "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
+      "*Käsitsi paigaldaja",
+    ),
+    "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
+      "Installige MacOS App Store\'i kaudu",
+    ),
+    "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
+      "*Ainult MacOS-i jaoks",
+    ),
+    "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
+      "Töölaud",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
       "Laadi alla saatjarakendus",
@@ -248,6 +276,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
       "Skaneerige QR-kood koheseks juurdepääsuks.",
+    ),
+    "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
+      "Mobiil",
     ),
     "v3_download_app_or": MessageLookupByLibrary.simpleMessage("VÕI"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
@@ -308,6 +339,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Toetab jagamist AirPlay, Google Cast või Miracast kaudu",
     ),
+    "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+      "Ekraani jagamine on lõppemas. Vajadusel taaskäivitage ekraani jagamine.",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Võta vastu kõik taotlused",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage(
+          "Laiendage voogesituse funktsiooni",
+        ),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Ahenda voogesituse funktsioon"),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Internetiühendust ei õnnestunud tuvastada. Palun ühendage Wi-Fi või intraneti võrguga ja proovige uuesti.",
     ),
@@ -366,6 +409,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-kood",
+    ),
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+      "Tühista",
+    ),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
+      "Tühista",
+    ),
+    "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
+      "Kinnita",
+    ),
+    "v3_setting_passcode_error_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Kehtetu parool, proovige uuesti.",
+        ),
+    "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+      "Seadete avamiseks sisestage pääsukood",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Edasta IFP lähtekraan kogu aeg.",
@@ -438,6 +497,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Hoia kood nähtaval ekraani ülaosas, isegi teistele rakendustele lülitudes ja ekraani jagamisel.",
         ),
+    "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
+      "Nutikas skaleerimine",
+    ),
+    "v3_settings_device_smart_scaling_desc": MessageLookupByLibrary.simpleMessage(
+      "Reguleerige ekraani suurust automaatselt, et maksimeerida ekraaniruumi kasutamist. Pilt võib olla veidi moonutatud.",
+    ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
       "Pole saadaval",
     ),
@@ -497,6 +562,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_version": m0,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Mis on uut"),
+    "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
+      "AirSync %s\n\nAirSync on ViewSonicu patenteeritud juhtmevaba ekraanijagamislahendus. Kui seda kasutatakse koos AirSynci saatjaga, võimaldab see kasutajatel oma ekraane sujuvalt jagada ViewSonicu interaktiivsete ekraanidega.\n\nSee väljalase sisaldab järgmisi uusi funktsioone.\n\n1. ViewSonicu LED-ekraanide tugi.\n\n2. Touchback-funktsioon Android-seadmetele IFP-s.\n\n3. Touchbacki funktsioon iPadidele AirPlay kaudu jagamisel.\n\n4. Nutikas skaleerimine.\n\n5. Võimalus muuta seadmesse ülekandmise akna suurust.\n\n6. Miracasti suurem stabiilsus.\n\n7. Parandatud mitmesugused vead.",
+    ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(
       "Edastage seadmetele",
