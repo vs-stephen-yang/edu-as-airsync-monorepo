@@ -10,6 +10,9 @@
 #include <cstring>
 #include <iostream>
 
+#include <iomanip>
+#include <sstream>
+
 #define MAX_OFF 10000
 
 uvgrtp::srtp::srtp(int rce_flags) : base_srtp(),
@@ -17,6 +20,30 @@ uvgrtp::srtp::srtp(int rce_flags) : base_srtp(),
                                     network_stats_(nullptr) {}
 
 uvgrtp::srtp::~srtp() {}
+
+std::string hex_dump(const uint8_t* data, size_t len) {
+    std::ostringstream oss;
+    for (size_t i = 0; i < len; ++i) {
+        oss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i];
+    }
+    return oss.str();
+}
+
+inline bool verify_hmac_sha1(const uint8_t* key, size_t key_len,
+                             const uint8_t* data, size_t data_len,
+                             uint32_t roc,
+                             const uint8_t* expected_tag, size_t tag_len) {
+    uint8_t computed_tag[UVG_AUTH_TAG_LENGTH] = {0};
+
+    auto hmac_sha1 = uvgrtp::crypto::hmac::sha1(key, key_len);
+    hmac_sha1.update(data, data_len);
+    hmac_sha1.update(reinterpret_cast<const uint8_t*>(&roc), sizeof(roc));
+    hmac_sha1.final(computed_tag, tag_len);
+
+    UVG_LOG_DEBUG("[DEBUG Auth] Auth roc = %d, Digest: %s, origin Tag: %s", roc, hex_dump(computed_tag, 10).c_str(), hex_dump(expected_tag, 10).c_str());
+
+    return memcmp(computed_tag, expected_tag, tag_len) == 0;
+}
 
 rtp_error_t uvgrtp::srtp::encrypt(uint32_t ssrc, uint16_t seq, uint8_t* buffer, size_t len) {
     if (use_null_cipher_)
@@ -69,12 +96,33 @@ rtp_error_t uvgrtp::srtp::recv_packet_handler(void* args, int rce_flags, uint8_t
     /* Calculate authentication tag for the packet and compare it against the one we received */
     if (srtp->authenticate_rtp()) {
         uint8_t digest[10] = {0};
-        auto hmac_sha1 = uvgrtp::crypto::hmac::sha1(remote_ctx->auth_key, UVG_AUTH_LENGTH);
-        hmac_sha1.update(frame->dgram, frame->dgram_size - UVG_AUTH_TAG_LENGTH);
-        hmac_sha1.update((uint8_t*)&remote_ctx->roc, sizeof(remote_ctx->roc));
-        hmac_sha1.final((uint8_t*)digest, UVG_AUTH_TAG_LENGTH);
-        if (memcmp(digest, &frame->dgram[frame->dgram_size - UVG_AUTH_TAG_LENGTH], UVG_AUTH_TAG_LENGTH)) {
-            UVG_LOG_ERROR("Authentication tag mismatch!");
+
+        bool auth_ok = verify_hmac_sha1(
+            remote_ctx->auth_key,
+            UVG_AUTH_LENGTH,
+            frame->dgram,
+            frame->dgram_size - UVG_AUTH_TAG_LENGTH,
+            remote_ctx->roc,
+            &frame->dgram[frame->dgram_size - UVG_AUTH_TAG_LENGTH],
+            UVG_AUTH_TAG_LENGTH);
+
+        if (!auth_ok) {
+            UVG_LOG_DEBUG("[DEBUG Auth] Authentication tag mismatch!");
+
+            auth_ok = verify_hmac_sha1(
+                remote_ctx->auth_key,
+                UVG_AUTH_LENGTH,
+                frame->dgram,
+                frame->dgram_size - UVG_AUTH_TAG_LENGTH,
+                remote_ctx->roc + 1,
+                &frame->dgram[frame->dgram_size - UVG_AUTH_TAG_LENGTH],
+                UVG_AUTH_TAG_LENGTH);
+
+            if (auth_ok) {
+                UVG_LOG_DEBUG("[DEBUG Auth] tag match, roc++");
+                remote_ctx->roc++;
+            }
+
             // 新增：統計認證失敗
             if (srtp->network_stats_) {
                 srtp->network_stats_->record_auth_failed(seq);
