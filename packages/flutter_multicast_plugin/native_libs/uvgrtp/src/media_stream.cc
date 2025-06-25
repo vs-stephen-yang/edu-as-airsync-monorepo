@@ -130,10 +130,10 @@ rtp_error_t uvgrtp::media_stream::init_connection() {
     /* If the given local address is not a multicast address, get the socket */
     if (!multicast) {
         socket_ = sfp_->get_socket_ptr(2, src_port_);
-        if (!socket_) {
-            UVG_LOG_DEBUG("No socket found");
-            return RTP_GENERIC_ERROR;
-        }
+    }
+    if (!socket_) {
+        UVG_LOG_DEBUG("No socket found");
+        return RTP_GENERIC_ERROR;
     }
 
     // if (!(rce_flags_ & RCE_RECEIVE_ONLY) && remote_address_ != "" && dst_port_ != 0)

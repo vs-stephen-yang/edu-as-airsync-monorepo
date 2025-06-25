@@ -89,7 +89,9 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int typ
         used_sockets_.push_back(socket);
         if (port != 0) {
             UVG_LOG_DEBUG("[Set multicast] create new socket with bind address %s", bind_address.c_str());
-            bind_socket(socket, port, bind_address);
+            if (bind_socket(socket, port, bind_address) != RTP_OK) {
+                return nullptr;
+            }
         }
 
         // If the socket is a type 2 (non-RTCP) socket, install a reception_flow

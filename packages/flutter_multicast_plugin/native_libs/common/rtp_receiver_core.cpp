@@ -38,8 +38,6 @@ void RtpReceiverCore::start(
             if (!stream)
                 return;
 
-            // log_key("SRTP Key", key.data, 16);
-            // log_key("SRTP Salt", salt_ptr, 14);
             stream->add_srtp_ctx(key.data(), salt.data());
             stream->configure_ctx(RCC_REMOTE_SSRC, ssrc);
             stream->set_srtp_roc(roc);
