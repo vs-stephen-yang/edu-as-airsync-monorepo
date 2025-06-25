@@ -20,7 +20,22 @@ variables:
   - group: "sentry-airsync-receiver"
 
 jobs:
+  - job: QualityCheck
+    displayName: Quality Check (Lint and Test)
+    steps:
+      - checkout: self
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Get packages
+
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Run flutter analyze
+
+      - script: $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
+        displayName: Run flutter test
+
   - job: Build
+    dependsOn: QualityCheck
     strategy:
       maxParallel: 4
       matrix:
