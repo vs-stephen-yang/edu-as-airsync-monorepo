@@ -1,7 +1,6 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_dialog_action_buttons.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -39,6 +38,7 @@ class V3CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bigTextScalar = MediaQuery.of(context).textScaler.scale(1.0) > 1.0;
     final ScrollController scrollController = ScrollController();
     return Stack(
       children: [
@@ -72,7 +72,7 @@ class V3CustomDialog extends StatelessWidget {
                             controller: scrollController,
                             child: Column(
                               children: [
-                                AutoSizeText(
+                                V3AutoHyphenatingText(
                                   title,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -83,7 +83,7 @@ class V3CustomDialog extends StatelessWidget {
                                   ),
                                 ),
                                 const Gap(13),
-                                AutoSizeText(
+                                Text(
                                   content,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -99,72 +99,35 @@ class V3CustomDialog extends StatelessWidget {
                         ),
                       ),
                       const Gap(8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: V3Focus(
-                              label: item1Label,
-                              identifier: item1Identifier,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor:
-                                      context.tokens.color.vsdslColorPrimary,
-                                  backgroundColor: Colors.white,
-                                  // remove onFocused color, this is also ripple color
-                                  overlayColor: Colors.transparent,
-                                  side: BorderSide(
-                                    color: context
-                                        .tokens.color.vsdslColorPrimary,
-                                    width: 1,
-                                  ),
-                                  textStyle: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                ),
-                                onPressed: onItem1,
-                                child: AutoSizeText(
-                                  item1,
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const Gap(8),
-                          Expanded(
-                            child: V3Focus(
-                              label: item2Label,
-                              identifier: item2Identifier,
-                              child: ElevatedButton(
-                                focusNode: primaryFocusNode,
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 5.0,
-                                  shadowColor:
-                                      context.tokens.color.vsdslColorPrimary,
-                                  foregroundColor: context.tokens.color
-                                      .vsdslColorOnSurfaceInverse,
-                                  backgroundColor:
-                                      context.tokens.color.vsdslColorPrimary,
-                                  // remove onFocused color, this is also ripple color
-                                  overlayColor: Colors.transparent,
-                                  textStyle: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                ),
-                                onPressed: onItem2,
-                                child: AutoSizeText(
-                                  item2,
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      V3DialogActionButtons(
+                        leftButton: V3ButtonInfo(
+                          text: item1,
+                          label: item1Label,
+                          identifier: item1Identifier,
+                          onTap: onItem1,
+                          backgroundColor: Colors.white,
+                          borderColor: context.tokens.color.vsdslColorPrimary,
+                          textColor: context.tokens.color.vsdslColorPrimary,
+                          padding: EdgeInsets.all(bigTextScalar ? 5 : 0),
+                          textStyle: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                        rightButton: V3ButtonInfo(
+                          text: item2,
+                          label: item2Label,
+                          identifier: item2Identifier,
+                          onTap: onItem2,
+                          backgroundColor:
+                              context.tokens.color.vsdslColorPrimary,
+                          textColor:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                          shadowColor: context.tokens.color.vsdslColorPrimary,
+                          focusNode: primaryFocusNode,
+                          padding: EdgeInsets.all(bigTextScalar ? 5 : 0),
+                          textStyle: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                      )
                     ],
                   ),
                 ),

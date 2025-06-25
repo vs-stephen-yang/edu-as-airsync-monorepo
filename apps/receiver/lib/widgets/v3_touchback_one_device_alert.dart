@@ -1,7 +1,8 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_dialog_action_buttons.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -51,6 +52,7 @@ class PortraitWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sc = ScrollController();
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 193),
       child: Container(
@@ -73,115 +75,70 @@ class PortraitWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  V3AutoHyphenatingText(
-                    sprintf(
-                        S.of(context).v3_touchback_alert_title, [deviceName]),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: context.tokens.color
-                          .vsdslColorNeutral /* AirSync-color-neutral */,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Gap(13),
-                  V3AutoHyphenatingText(
-                    S.of(context).v3_touchback_alert_message,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: context.tokens.color
-                          .vsdslColorNeutral /* AirSync-color-neutral */,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: V3Focus(
-                    label: S.of(context).v3_lbl_touchback_one_device_cancel,
-                    identifier: 'v3_qa_touchback_one_device_cancel',
-                    child: InkWell(
-                      child: Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 29),
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 2,
-                              color: context.tokens.color.vsdslColorSecondary,
-                            ),
-                            borderRadius: BorderRadius.circular(9999),
-                          ),
-                        ),
-                        child: Text(
-                          S
-                              .of(context)
-                              .v3_touchback_restart_bluetooth_btn_cancel,
+            Expanded(
+              child: V3Scrollbar(
+                controller: sc,
+                child: SingleChildScrollView(
+                  controller: sc,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        V3AutoHyphenatingText(
+                          sprintf(
+                              S.of(context).v3_touchback_alert_title, [deviceName]),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: context.tokens.color.vsdslColorSecondary,
-                            fontSize: 12,
+                            color: context.tokens.color
+                                .vsdslColorNeutral /* AirSync-color-neutral */,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      onTap: () {
-                        if (navService.canPop()) {
-                          navService.goBack();
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                const Gap(8),
-                Expanded(
-                  child: V3Focus(
-                    label: S.of(context).v3_lbl_touchback_one_device_confirm,
-                    identifier: 'v3_qa_touchback_one_device_confirm',
-                    child: InkWell(
-                      child: Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 29),
-                        decoration: ShapeDecoration(
-                          color: context.tokens.color.vsdslColorPrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(9999),
-                          ),
-                        ),
-                        child: Text(
-                          S.of(context).moderator_confirm,
+                        const Gap(13),
+                        V3AutoHyphenatingText(
+                          S.of(context).v3_touchback_alert_message,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                          style: TextStyle(
+                            color: context.tokens.color
+                                .vsdslColorNeutral /* AirSync-color-neutral */,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                      ),
-                      onTap: () {
-                        onConfirm?.call();
-                        if (navService.canPop()) {
-                          navService.goBack();
-                        }
-                      },
+                      ],
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
+            V3DialogActionButtons(
+              leftButton: V3ButtonInfo(
+                text: S.of(context).v3_touchback_restart_bluetooth_btn_cancel,
+                label: S.of(context).v3_lbl_touchback_one_device_cancel,
+                identifier: 'v3_qa_touchback_one_device_cancel',
+                onTap: () {
+                  if (navService.canPop()) navService.goBack();
+                },
+                backgroundColor: Colors.transparent,
+                borderColor: context.tokens.color.vsdslColorSecondary,
+                textColor: context.tokens.color.vsdslColorSecondary,
+              ),
+              rightButton: V3ButtonInfo(
+                text: S.of(context).moderator_confirm,
+                label: S.of(context).v3_lbl_touchback_one_device_confirm,
+                identifier: 'v3_qa_touchback_one_device_confirm',
+                onTap: () {
+                  onConfirm?.call();
+                  if (navService.canPop()) navService.goBack();
+                },
+                backgroundColor: context.tokens.color.vsdslColorPrimary,
+                textColor: Colors.white,
+              ),
+            )
           ],
         ),
       ),
