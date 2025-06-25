@@ -104,77 +104,76 @@ class PortraitWidget extends StatelessWidget {
               ),
             ),
             Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                V3Focus(
-                  label: S.current.v3_lbl_touchback_one_device_cancel,
-                  identifier: 'v3_qa_touchback_one_device_cancel',
-                  child: InkWell(
-                    child: Container(
-                      width: 108,
-                      height: 40,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 29),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 2,
-                            color: context.tokens.color.vsdslColorSecondary,
+                Expanded(
+                  child: V3Focus(
+                    label: S.current.v3_lbl_touchback_one_device_cancel,
+                    identifier: 'v3_qa_touchback_one_device_cancel',
+                    child: InkWell(
+                      child: Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 29),
+                        decoration: ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 2,
+                              color: context.tokens.color.vsdslColorSecondary,
+                            ),
+                            borderRadius: BorderRadius.circular(9999),
                           ),
-                          borderRadius: BorderRadius.circular(9999),
+                        ),
+                        child: Text(
+                          S.current.v3_touchback_restart_bluetooth_btn_cancel,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdslColorSecondary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        S.current.moderator_cancel,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: context.tokens.color.vsdslColorSecondary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      onTap: () {
+                        if (navService.canPop()) {
+                          navService.goBack();
+                        }
+                      },
                     ),
-                    onTap: () {
-                      if (navService.canPop()) {
-                        navService.goBack();
-                      }
-                    },
                   ),
                 ),
                 const Gap(8),
-                V3Focus(
-                  label: S.current.v3_lbl_touchback_one_device_confirm,
-                  identifier: 'v3_qa_touchback_one_device_confirm',
-                  child: InkWell(
-                    child: Container(
-                      width: 108,
-                      height: 40,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 29),
-                      decoration: ShapeDecoration(
-                        color: context.tokens.color.vsdslColorPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9999),
+                Expanded(
+                  child: V3Focus(
+                    label: S.current.v3_lbl_touchback_one_device_confirm,
+                    identifier: 'v3_qa_touchback_one_device_confirm',
+                    child: InkWell(
+                      child: Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 29),
+                        decoration: ShapeDecoration(
+                          color: context.tokens.color.vsdslColorPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9999),
+                          ),
+                        ),
+                        child: Text(
+                          S.current.moderator_confirm,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        S.current.moderator_confirm,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      onTap: () {
+                        onConfirm?.call();
+                        if (navService.canPop()) {
+                          navService.goBack();
+                        }
+                      },
                     ),
-                    onTap: () {
-                      onConfirm?.call();
-                      if (navService.canPop()) {
-                        navService.goBack();
-                      }
-                    },
                   ),
                 ),
               ],
