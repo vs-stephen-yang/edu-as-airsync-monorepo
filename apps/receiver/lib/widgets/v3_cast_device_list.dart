@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/v3_cast_device_item.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -52,9 +53,8 @@ class V3CastDeviceList extends StatelessWidget {
             SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
             Expanded(
               child: channelProvider.remoteScreenConnectors.isNotEmpty
-                  ? Scrollbar(
+                  ? V3Scrollbar(
                       controller: scrollController,
-                      thumbVisibility: true,
                       child: ListView.separated(
                         controller: scrollController,
                         itemCount:

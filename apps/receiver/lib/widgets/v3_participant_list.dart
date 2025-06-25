@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_participant_item.dart';
 import 'package:display_flutter/widgets/v3_participant_mirror_item.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -107,9 +108,8 @@ class V3ParticipantList extends StatelessWidget {
               ),
               SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
               Expanded(
-                child: Scrollbar(
+                child: V3Scrollbar(
                   controller: scrollController,
-                  thumbVisibility: true,
                   child: ListView.separated(
                     controller: scrollController,
                     itemCount: HybridConnectionList().getConnectionCount(),
