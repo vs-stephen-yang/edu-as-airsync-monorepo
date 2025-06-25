@@ -184,7 +184,7 @@
   "v3_present_idle_download_virtual_audio_device": "Laadi alla saatjarakendus",
   "v3_present_select_screen_mac_audio_driver": "Heli ei saa jagada. Laadige alla ja installige helidraiver.",
   "v3_main_download_mac_pkg_label": "Parima kasutajakogemuse saamiseks!",
-  "v3_main_download_mac_store": "\nApp Store",
+  "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Või installige kaudu",
   "v3_setting_app_version_independent": "AirSync © {year}. versioon {version} (Ind.)",
   "v3_lbl_main_present_action": "Esita järgmine",
@@ -208,7 +208,7 @@
   "v3_lbl_download_menu_minimal": "menüü minimaalne",
   "v3_lbl_setting": "Seaded",
   "v3_lbl_setting_menu_back": "Tagasi eelmisesse menüüsse",
-  "v3_lbl_setting_menu_close": "\nSulgege seadete menüü",
+  "v3_lbl_setting_menu_close": "Sulgege seadete menüü",
   "v3_lbl_setting_update_close": "Sulge värskendusdialoog",
   "v3_lbl_setting_software_update_now_action": "Värskenda kohe",
   "v3_lbl_setting_software_update_fail_close": "Sulge värskendustõrke dialoog",
@@ -229,7 +229,7 @@
   "v3_lbl_moderator_back": "Mine tagasi",
   "v3_lbl_select_role_share": "Jagage ekraani",
   "v3_lbl_select_role_receive": "Võtke vastu ekraan",
-  "v3_lbl_select_screen_ios_back": "\nMine tagasi",
+  "v3_lbl_select_screen_ios_back": "Mine tagasi",
   "v3_lbl_select_screen_ios_start_sharing": "Alusta jagamist",
   "v3_lbl_select_screen_close": "Sulge ekraani valik",
   "v3_lbl_select_screen_audio": "Arvuti heli jagamine",
@@ -252,5 +252,10 @@
   "v3_present_touch_back_dialog_title": "Luba tagasilöök",
   "v3_present_touch_back_dialog_description": "Kui lubate ekraani jagamise, jäädvustab AirSync ajutiselt teie ekraani sisu ja edastab selle valitud ekraanile (nt IFP).Tagasilöögi lubamiseks vajab AirSync juurdepääsetavuse teenuse luba, et lubada ekraanilt kaugjuhtimist.AirSync ei kogu teie isikuandmeid ega jälgi teie tegevust. Seda luba kasutatakse ainult puutejuhtimise funktsiooni lubamiseks.",
   "v3_present_touch_back_dialog_not_now": "Mitte praegu",
-  "v3_present_touch_back_dialog_allow": "Lubama"
+  "v3_present_touch_back_dialog_allow": "Lubama",
+  "v3_exit_title": "Kas sa tõesti tahad loobuda?",
+  "v3_exit_action_cancel": "Tühista",
+  "v3_exit_action_exit": "Mine välja",
+  "v3_lbl_exit_action_cancel": "Tühista",
+  "v3_lbl_exit_action_exit": "Mine välja"
 }

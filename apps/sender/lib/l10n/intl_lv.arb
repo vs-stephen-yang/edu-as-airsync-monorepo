@@ -252,5 +252,10 @@
   "v3_present_touch_back_dialog_title": "Atļaut pieskārienu",
   "v3_present_touch_back_dialog_description": "Iespējojot ekrāna koplietošanu, AirSync īslaicīgi uztver un pārraidīs jūsu ekrāna saturu uz izvēlēto displeju (piemēram, IFP).Lai iespējotu Touchback, AirSync ir nepieciešama pieejamības pakalpojuma atļauja, lai atļautu tālvadības pulti no displeja.AirSync neapkopo jūsu personas datus un neuzrauga jūsu darbības. Šī atļauja tiek izmantota tikai, lai iespējotu skārienvadības līdzekli.",
   "v3_present_touch_back_dialog_not_now": "Ne tagad",
-  "v3_present_touch_back_dialog_allow": "Atļaut"
+  "v3_present_touch_back_dialog_allow": "Atļaut",
+  "v3_exit_title": "Vai jūs tiešām vēlaties atmest?",
+  "v3_exit_action_cancel": "Atcelt",
+  "v3_exit_action_exit": "Ej ārā",
+  "v3_lbl_exit_action_cancel": "Atcelt",
+  "v3_lbl_exit_action_exit": "Ej ārā"
 }

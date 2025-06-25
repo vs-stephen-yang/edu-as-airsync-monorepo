@@ -190,6 +190,38 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Uenig"),
         "v3_eula_title":
             MessageLookupByLibrary.simpleMessage("Slutbrugerlicensaftale"),
+        "v3_lbl_device_list_button_device_list":
+            MessageLookupByLibrary.simpleMessage("Enhedsliste"),
+        "v3_lbl_device_list_next":
+            MessageLookupByLibrary.simpleMessage("Næste"),
+        "v3_lbl_main_download":
+            MessageLookupByLibrary.simpleMessage("Download afsender-app"),
+        "v3_lbl_main_moderator_input_hint":
+            MessageLookupByLibrary.simpleMessage("Skriv dit navn"),
+        "v3_lbl_main_privacy":
+            MessageLookupByLibrary.simpleMessage("Privatlivspolitik"),
+        "v3_lbl_moderator_disconnect":
+            MessageLookupByLibrary.simpleMessage("Koble fra"),
+        "v3_lbl_select_screen_ios_start_sharing":
+            MessageLookupByLibrary.simpleMessage("Start deling"),
+        "v3_lbl_select_screen_share":
+            MessageLookupByLibrary.simpleMessage("Del skærm"),
+        "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("Indstillinger"),
+        "v3_lbl_setting_privacy_policy":
+            MessageLookupByLibrary.simpleMessage("Privatlivspolitik"),
+        "v3_lbl_setting_software_update_deny_action":
+            MessageLookupByLibrary.simpleMessage("Senere"),
+        "v3_lbl_setting_software_update_fail_ok":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_lbl_setting_software_update_no_available":
+            MessageLookupByLibrary.simpleMessage(
+                "Ingen opdatering tilgængelig"),
+        "v3_lbl_setting_software_update_no_available_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_lbl_setting_software_update_now_action":
+            MessageLookupByLibrary.simpleMessage("Opdatér nu"),
+        "v3_lbl_setting_software_update_positive_action":
+            MessageLookupByLibrary.simpleMessage("Opdatér"),
         "v3_main_accessibility":
             MessageLookupByLibrary.simpleMessage("Tilgængelighed"),
         "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -226,6 +258,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("AirSync-app"),
         "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
             "Problemfri skærmdeling med ét klik."),
+        "v3_main_download_mac_store":
+            MessageLookupByLibrary.simpleMessage("App Store"),
         "v3_main_download_mac_subtitle":
             MessageLookupByLibrary.simpleMessage("macOS 10.15+"),
         "v3_main_download_mac_title":
@@ -294,6 +328,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Forstået!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Skærmdeling er stoppet. Samlet delingstid %s."),
+        "v3_present_idle_download_virtual_audio_device":
+            MessageLookupByLibrary.simpleMessage("Download"),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("Moderator er lukket"),
         "v3_present_moderator_exited_action":
@@ -352,6 +388,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Resterende tid"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Start deling"),
+        "v3_setting_accessibility":
+            MessageLookupByLibrary.simpleMessage("Tilgængelighed"),
         "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Søg efter opdateringer"),

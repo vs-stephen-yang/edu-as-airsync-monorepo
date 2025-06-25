@@ -188,6 +188,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Ei nõustu"),
         "v3_eula_title": MessageLookupByLibrary.simpleMessage(
             "Lõppkasutaja litsentsileping"),
+        "v3_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("Tühista"),
+        "v3_exit_action_exit":
+            MessageLookupByLibrary.simpleMessage("Mine välja"),
+        "v3_exit_title": MessageLookupByLibrary.simpleMessage(
+            "Kas sa tõesti tahad loobuda?"),
         "v3_lbl_change_language":
             MessageLookupByLibrary.simpleMessage("Keele muutmine"),
         "v3_lbl_device_list_button_device_list":
@@ -201,6 +207,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Hankige Maci sõltumatu versioon"),
         "v3_lbl_download_menu_minimal":
             MessageLookupByLibrary.simpleMessage("menüü minimaalne"),
+        "v3_lbl_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("Tühista"),
+        "v3_lbl_exit_action_exit":
+            MessageLookupByLibrary.simpleMessage("Mine välja"),
         "v3_lbl_main_display_code":
             MessageLookupByLibrary.simpleMessage("Tüüp Kuvakood"),
         "v3_lbl_main_display_code_remove":
@@ -251,7 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_select_screen_close":
             MessageLookupByLibrary.simpleMessage("Sulge ekraani valik"),
         "v3_lbl_select_screen_ios_back":
-            MessageLookupByLibrary.simpleMessage("\nMine tagasi"),
+            MessageLookupByLibrary.simpleMessage("Mine tagasi"),
         "v3_lbl_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Alusta jagamist"),
         "v3_lbl_select_screen_share":
@@ -266,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_setting_menu_back":
             MessageLookupByLibrary.simpleMessage("Tagasi eelmisesse menüüsse"),
         "v3_lbl_setting_menu_close":
-            MessageLookupByLibrary.simpleMessage("\nSulgege seadete menüü"),
+            MessageLookupByLibrary.simpleMessage("Sulgege seadete menüü"),
         "v3_lbl_setting_privacy_policy":
             MessageLookupByLibrary.simpleMessage("Privaatsuspoliitika"),
         "v3_lbl_setting_select":
@@ -344,7 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_download_mac_pkg_label": MessageLookupByLibrary.simpleMessage(
             "Parima kasutajakogemuse saamiseks!"),
         "v3_main_download_mac_store":
-            MessageLookupByLibrary.simpleMessage("\nApp Store"),
+            MessageLookupByLibrary.simpleMessage("App Store"),
         "v3_main_download_mac_store_label":
             MessageLookupByLibrary.simpleMessage("Või installige kaudu"),
         "v3_main_download_mac_subtitle":

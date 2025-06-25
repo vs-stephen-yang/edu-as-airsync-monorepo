@@ -176,6 +176,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("拒否"),
         "v3_eula_title": MessageLookupByLibrary.simpleMessage("エンドユーザー使用許諾契約"),
+        "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("キャンセル"),
+        "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("終了"),
+        "v3_exit_title": MessageLookupByLibrary.simpleMessage("終了してもよろしいですか？"),
         "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage("言語の変更"),
         "v3_lbl_device_list_button_device_list":
             MessageLookupByLibrary.simpleMessage("デバイスリスト"),
@@ -186,6 +189,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mac 独立版を入手"),
         "v3_lbl_download_menu_minimal":
             MessageLookupByLibrary.simpleMessage("メニューを最小化"),
+        "v3_lbl_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("キャンセル"),
+        "v3_lbl_exit_action_exit": MessageLookupByLibrary.simpleMessage("終了"),
         "v3_lbl_main_display_code":
             MessageLookupByLibrary.simpleMessage("ディスプレイコードを入力"),
         "v3_lbl_main_display_code_remove":

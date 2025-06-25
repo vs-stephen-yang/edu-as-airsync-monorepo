@@ -195,6 +195,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nesutinku"),
         "v3_eula_title": MessageLookupByLibrary.simpleMessage(
             "Galutinio vartotojo licencijos sutartis"),
+        "v3_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("Atšaukti"),
+        "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("Išeiti"),
+        "v3_exit_title":
+            MessageLookupByLibrary.simpleMessage("Ar tikrai norite mesti?"),
         "v3_lbl_change_language":
             MessageLookupByLibrary.simpleMessage("Kalbos keitimas"),
         "v3_lbl_device_list_button_device_list":
@@ -208,6 +213,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Gaukite nepriklausomą \"Mac\" versiją"),
         "v3_lbl_download_menu_minimal":
             MessageLookupByLibrary.simpleMessage("Minimalus meniu"),
+        "v3_lbl_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("Atšaukti"),
+        "v3_lbl_exit_action_exit":
+            MessageLookupByLibrary.simpleMessage("Išeiti"),
         "v3_lbl_main_display_code":
             MessageLookupByLibrary.simpleMessage("Įveskite rodomą kodą"),
         "v3_lbl_main_display_code_remove":
