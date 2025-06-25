@@ -78,6 +78,7 @@ rtp_error_t uvgrtp::srtp::recv_packet_handler(void* args, int rce_flags, uint8_t
     auto remote_ctx = srtp->get_remote_ctx();
     auto frame = *out;
     uint16_t seq = frame->header.seq;
+    uint32_t used_roc = remote_ctx->roc;
 
     // 新增：網路層統計 - 記錄收到的封包
     if (srtp->network_stats_) {
@@ -109,25 +110,41 @@ rtp_error_t uvgrtp::srtp::recv_packet_handler(void* args, int rce_flags, uint8_t
         if (!auth_ok) {
             UVG_LOG_DEBUG("[DEBUG Auth] Authentication tag mismatch!");
 
-            auth_ok = verify_hmac_sha1(
-                remote_ctx->auth_key,
-                UVG_AUTH_LENGTH,
-                frame->dgram,
-                frame->dgram_size - UVG_AUTH_TAG_LENGTH,
-                remote_ctx->roc + 1,
-                &frame->dgram[frame->dgram_size - UVG_AUTH_TAG_LENGTH],
-                UVG_AUTH_TAG_LENGTH);
+            std::vector<uint32_t> roc_candidates = {
+                remote_ctx->roc + 1, // rollover
+                remote_ctx->roc - 1  // out of order
+            };
 
-            if (auth_ok) {
-                UVG_LOG_DEBUG("[DEBUG Auth] tag match, roc++");
-                remote_ctx->roc++;
+            for (uint32_t candidate_roc : roc_candidates) {
+                auth_ok = verify_hmac_sha1(
+                    remote_ctx->auth_key,
+                    UVG_AUTH_LENGTH,
+                    frame->dgram,
+                    frame->dgram_size - UVG_AUTH_TAG_LENGTH,
+                    candidate_roc,
+                    &frame->dgram[frame->dgram_size - UVG_AUTH_TAG_LENGTH],
+                    UVG_AUTH_TAG_LENGTH);
+
+                if (auth_ok) {
+                    UVG_LOG_DEBUG("[DEBUG Auth] tag match, roc = %d", candidate_roc);
+                    used_roc = candidate_roc;
+
+                    if (candidate_roc == remote_ctx->roc + 1) {
+                        remote_ctx->roc++;
+                        UVG_LOG_DEBUG("[DEBUG Auth] roc++");
+                    }
+                    break;
+                }
             }
 
-            // 新增：統計認證失敗
-            if (srtp->network_stats_) {
-                srtp->network_stats_->record_auth_failed(seq);
+            // 只有在所有重試都失敗時才返回錯誤
+            if (!auth_ok) {
+                // 新增：統計認證失敗
+                if (srtp->network_stats_) {
+                    srtp->network_stats_->record_auth_failed(seq);
+                }
+                return RTP_GENERIC_ERROR;
             }
-            return RTP_GENERIC_ERROR;
         }
 
         if (srtp->is_replayed_packet(digest)) {
@@ -154,11 +171,7 @@ rtp_error_t uvgrtp::srtp::recv_packet_handler(void* args, int rce_flags, uint8_t
     uint64_t index = 0;
 
     UVG_LOG_DEBUG("======== SRTP decrypt======== seq = %d, roc= %d", seq, (uint64_t)remote_ctx->roc);
-    if (ts == remote_ctx->rts && (uint16_t)(seq + MAX_OFF) < MAX_OFF) {
-        index = (((uint64_t)remote_ctx->roc - 1) << 16) + seq;
-    } else {
-        index = (((uint64_t)remote_ctx->roc) << 16) + seq;
-    }
+    index = (((uint64_t)used_roc) << 16) + seq;
 
     /* Sequence number has wrapped around, update rollover Counter */
     if (seq == 0xffff) {
