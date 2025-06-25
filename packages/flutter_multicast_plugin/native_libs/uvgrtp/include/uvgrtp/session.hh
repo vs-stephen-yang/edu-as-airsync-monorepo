@@ -106,11 +106,15 @@ namespace uvgrtp {
             std::string& get_key();
             /// \endcond
 
+            void set_multicast_address(const std::string& multicast_addr);
+
         private:
             /* Each RTP multimedia session shall have one ZRTP session from which all session are derived */
             std::shared_ptr<uvgrtp::zrtp> zrtp_;
 
             std::string generic_address_;
+
+            std::string multicast_address_;
 
             /* Each RTP multimedia session is always IP-specific */
             std::string remote_address_;

@@ -20,7 +20,10 @@ void RtpReceiverCore::start(const std::string& ip, int port, std::vector<uint8_t
 
     receiver_thread_ = std::thread([key, salt, ip, port, ssrc, roc, callback, this]() mutable {
         uvgrtp::context ctx;
-        auto session = ctx.create_session(ip);
+        // TODO: try all interface ip
+        std::string interface_ip = "172.21.10.181";
+        auto session = ctx.create_session(interface_ip);
+        session->set_multicast_address(ip);
         auto stream = session->create_stream(port, RTP_FORMAT_H264, RCE_SRTP | RCE_SRTP_AUTHENTICATE_RTP | RCE_SRTP_KMNGMNT_USER | RCE_RECEIVE_ONLY);
         if (!stream) {
             return;

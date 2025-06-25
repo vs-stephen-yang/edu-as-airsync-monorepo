@@ -45,14 +45,14 @@ namespace uvgrtp {
              *
              * Param type 1 RTCP socket, 2 for any other type of a socket
              * Return the created socket on success, nullptr otherwise */
-            std::shared_ptr<uvgrtp::socket> create_new_socket(int , uint16_t port);
+            std::shared_ptr<uvgrtp::socket> create_new_socket(int , uint16_t port, const std::string& bind_address = "");
 
             /* Bind socket to the local IP address and given port
              * 
              * Param soc pointer to socket
              * Param port port to bind into
              * Return RTP OK on success */
-            rtp_error_t bind_socket(std::shared_ptr<uvgrtp::socket> soc, uint16_t port);
+            rtp_error_t bind_socket(std::shared_ptr<uvgrtp::socket> soc, uint16_t port, const std::string& bind_address = "");
 
             /* Bind socket any address and given port
              *

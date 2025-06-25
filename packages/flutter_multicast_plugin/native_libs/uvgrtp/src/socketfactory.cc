@@ -43,7 +43,7 @@ uvgrtp::socketfactory::~socketfactory()
 
 rtp_error_t uvgrtp::socketfactory::set_local_interface(std::string local_addr)
 {
-
+    UVG_LOG_DEBUG("[Set multicast] use addr %s to set interface", local_addr.c_str());
     local_address_ = local_addr;
     // check IP address family
     struct addrinfo hint, * res = NULL;
@@ -63,7 +63,7 @@ rtp_error_t uvgrtp::socketfactory::set_local_interface(std::string local_addr)
     return RTP_OK;
 }
 
-std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port)
+std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address)
 {
     rtp_error_t ret = RTP_OK;
     std::shared_ptr<uvgrtp::socket> socket = std::make_shared<uvgrtp::socket>(rce_flags_);
@@ -88,7 +88,8 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int typ
 
         used_sockets_.push_back(socket);
         if (port != 0) {
-            bind_socket(socket, port);
+            UVG_LOG_DEBUG("[Set multicast] create new socket with bind address %s", bind_address.c_str());
+            bind_socket(socket, port, bind_address);
         }
 
         // If the socket is a type 2 (non-RTCP) socket, install a reception_flow
@@ -108,11 +109,15 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int typ
     return nullptr;
 }
 
-rtp_error_t uvgrtp::socketfactory::bind_socket(std::shared_ptr<uvgrtp::socket> soc, uint16_t port)
+rtp_error_t uvgrtp::socketfactory::bind_socket(std::shared_ptr<uvgrtp::socket> soc, uint16_t port, const std::string& bind_address)
 {
     rtp_error_t ret = RTP_OK;
     sockaddr_in6 bind_addr6;
     sockaddr_in bind_addr;
+
+    std::string effective_address = bind_address.empty() ? local_address_ : bind_address;
+    bool is_custom_multicast = !bind_address.empty();
+    UVG_LOG_DEBUG("[Set multicast] effective_address is %s, is_custom_multicast %d", effective_address.c_str(), is_custom_multicast);
 
     // First check if the address is a multicast address. If the address is a multicast address, several
     // streams can bind to the same port
@@ -129,10 +134,16 @@ rtp_error_t uvgrtp::socketfactory::bind_socket(std::shared_ptr<uvgrtp::socket> s
         }
     }
     else {
-        bind_addr = uvgrtp::socket::create_sockaddr(AF_INET, local_address_, port);
+        bind_addr = uvgrtp::socket::create_sockaddr(AF_INET, effective_address, port);
         if (uvgrtp::socket::is_multicast(bind_addr)) {
-            UVG_LOG_INFO("The used address %s is a multicast address", local_address_.c_str());
-            ret = soc->bind(bind_addr);
+            UVG_LOG_INFO("The used address %s is a multicast address", effective_address.c_str());
+            if (is_custom_multicast) {
+                // 自定義 multicast 地址：使用 local_address_ 作為接口
+                ret = soc->bind(bind_addr, local_address_);
+            } else {
+                // 原有邏輯：直接綁定（會使用 INADDR_ANY 作為接口）
+                ret = soc->bind(bind_addr);
+            }
         }
         else if (!is_port_in_use(port)) {
             ret = soc->bind(bind_addr);
