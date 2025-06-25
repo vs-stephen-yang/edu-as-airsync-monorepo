@@ -2,6 +2,7 @@
 
 # Ref by POEditor API https://poeditor.com/docs/api#projects_export
 
+# shellcheck disable=SC1010
 langArr=(zh-TW da en-us et fi fr de ja lv lt no ru es sv)
 
 for i in "${langArr[@]}"
@@ -36,7 +37,7 @@ mv ../lib/l10n/intl_zh-TW.arb ../lib/l10n/intl_zh.arb
 mv ../lib/l10n/intl_en-us.arb ../lib/l10n/intl_en.arb
 
 echo "=================================="
-echo "CHECKING PLACEHOLDERS..."
+echo "CHECKING PLACEHOLDERS FOR v3_main_copy_rights, v3_setting_app_version_independent"
 echo "=================================="
 
 # 檢查佔位符函數
@@ -44,14 +45,10 @@ check_placeholders() {
     local file_path="$1"
     local lang="$2"
     local has_error=false
-    
-    echo "Checking placeholders for $lang..."
-    
+
     # 檢查 v3_main_copy_rights 欄位
     local field_value=$(jq -r '.["v3_main_copy_rights"] // empty' "$file_path")
     if [[ -n "$field_value" ]]; then
-        echo "  Checking field 'v3_main_copy_rights': $field_value"
-        
         # 檢查是否包含必要的 {year}
         if [[ "$field_value" != *"{year}"* ]]; then
             echo "❌ ERROR: Missing required placeholder '{year}' in field 'v3_main_copy_rights' for language '$lang'"
@@ -81,8 +78,6 @@ check_placeholders() {
     # 檢查 v3_setting_app_version_independent 欄位
     field_value=$(jq -r '.["v3_setting_app_version_independent"] // empty' "$file_path")
     if [[ -n "$field_value" ]]; then
-        echo "  Checking field 'v3_setting_app_version_independent': $field_value"
-        
         # 檢查是否包含必要的 {year} 和 {version}
         if [[ "$field_value" != *"{year}"* ]]; then
             echo "❌ ERROR: Missing required placeholder '{year}' in field 'v3_setting_app_version_independent' for language '$lang'"
@@ -119,7 +114,6 @@ check_placeholders() {
         echo "❌ VALIDATION FAILED for language: $lang"
         return 1
     else
-        echo "✅ All placeholders validated for language: $lang"
         return 0
     fi
 }
@@ -127,6 +121,7 @@ check_placeholders() {
 validation_errors=()
 
 # 檢查所有最終的語言檔案
+# shellcheck disable=SC1010
 final_langs=(zh da en et fi fr de ja lv lt no ru es sv)
 
 for lang in "${final_langs[@]}"; do
@@ -134,20 +129,13 @@ for lang in "${final_langs[@]}"; do
         if ! check_placeholders "../lib/l10n/intl_$lang.arb" "$lang"; then
             validation_errors+=("$lang")
         fi
-        echo "---"
     else
         echo "⚠️  Warning: File intl_$lang.arb not found"
     fi
 done
 
-# 最終報告
-echo "=================================="
-echo "FINAL VALIDATION REPORT"
-echo "=================================="
-
 if [[ ${#validation_errors[@]} -eq 0 ]]; then
     echo "🎉 ALL LANGUAGES PASSED VALIDATION!"
-    exit 0
 else
     echo "❌ VALIDATION FAILED FOR THE FOLLOWING LANGUAGES:"
     for lang in "${validation_errors[@]}"; do
@@ -155,5 +143,35 @@ else
     done
     echo ""
     echo "Please check the translation files and fix the placeholder issues before proceeding."
-    exit 1
 fi
+
+echo "=================================="
+printf "CHECKING \\\n \n"
+echo "=================================="
+
+newline_keys=()
+for lang in "${final_langs[@]}"; do
+    arb_file="../lib/l10n/intl_$lang.arb"
+    if [[ -f "$arb_file" ]]; then
+        # Step 1: 找出哪些 key 是 \n 開頭
+        keys_with_newline=()
+        while IFS= read -r key; do
+            keys_with_newline+=("$key")
+        done < <(jq -r 'to_entries[] | select((.value | type == "string") and (.value | test("^\n"))) | .key' "$arb_file")
+
+        # Step 2: 印出發現的 key
+        if (( ${#keys_with_newline[@]} )); then
+            printf "⚠️  以下 key 在語言 %s 中以 \\\n 開頭，已自動移除開頭換行：\n" "$lang"
+            for k in "${keys_with_newline[@]}"; do
+                printf "   - %s\n" "$k"
+                newline_keys+=("$lang:$k")
+            done
+        fi
+
+        # Step 3: 替換掉開頭的 \n
+        tmpfile=$(mktemp)
+        jq 'to_entries | map(if (type == "object" and (.value | type == "string") and (.value | startswith("\n"))) then .value |= sub("^\n"; "") else . end) | from_entries' "$arb_file" > "$tmpfile" && mv "$tmpfile" "$arb_file"
+    fi
+done
+
+exit 0

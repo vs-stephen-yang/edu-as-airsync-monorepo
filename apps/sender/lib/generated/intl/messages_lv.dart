@@ -196,6 +196,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nepiekrītu"),
         "v3_eula_title": MessageLookupByLibrary.simpleMessage(
             "Galalietotāja licences līgums"),
+        "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Atcelt"),
+        "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("Ej ārā"),
+        "v3_exit_title": MessageLookupByLibrary.simpleMessage(
+            "Vai jūs tiešām vēlaties atmest?"),
         "v3_lbl_change_language":
             MessageLookupByLibrary.simpleMessage("Valodas maiņa"),
         "v3_lbl_device_list_button_device_list":
@@ -209,6 +213,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Iegūstiet Mac neatkarīgo versiju"),
         "v3_lbl_download_menu_minimal":
             MessageLookupByLibrary.simpleMessage("Minimāla ēdienkarte"),
+        "v3_lbl_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("Atcelt"),
+        "v3_lbl_exit_action_exit":
+            MessageLookupByLibrary.simpleMessage("Ej ārā"),
         "v3_lbl_main_display_code":
             MessageLookupByLibrary.simpleMessage("Tipa displeja kods"),
         "v3_lbl_main_display_code_remove":

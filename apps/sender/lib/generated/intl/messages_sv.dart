@@ -189,6 +189,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Avböj"),
         "v3_eula_title": MessageLookupByLibrary.simpleMessage(
             "Licensavtal för slutanvändare"),
+        "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Avbryt"),
+        "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("Avsluta"),
+        "v3_exit_title":
+            MessageLookupByLibrary.simpleMessage("Vill du verkligen sluta?"),
         "v3_lbl_change_language":
             MessageLookupByLibrary.simpleMessage("Ändra språk"),
         "v3_lbl_device_list_button_device_list":
@@ -202,6 +206,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Skaffa den oberoende Mac-versionen"),
         "v3_lbl_download_menu_minimal":
             MessageLookupByLibrary.simpleMessage("Minimal meny"),
+        "v3_lbl_exit_action_cancel":
+            MessageLookupByLibrary.simpleMessage("Avbryt"),
+        "v3_lbl_exit_action_exit":
+            MessageLookupByLibrary.simpleMessage("Avsluta"),
         "v3_lbl_main_display_code":
             MessageLookupByLibrary.simpleMessage("Skriv in Visningskod"),
         "v3_lbl_main_display_code_remove":
@@ -269,7 +277,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_setting_menu_close":
             MessageLookupByLibrary.simpleMessage("Stäng inställningsmenyn"),
         "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
-            "\nv3_lbl_setting_privacy_policy"),
+            "v3_lbl_setting_privacy_policy"),
         "v3_lbl_setting_select":
             MessageLookupByLibrary.simpleMessage("Välj %s"),
         "v3_lbl_setting_software_update_deny_action":

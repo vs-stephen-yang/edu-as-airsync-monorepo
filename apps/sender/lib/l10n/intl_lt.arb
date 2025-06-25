@@ -252,5 +252,10 @@
   "v3_present_touch_back_dialog_title": "Leisti \"Touchback\"",
   "v3_present_touch_back_dialog_description": "Leisti \"Touchback\"\nKai įgalinsite ekrano bendrinimą, \"AirSync\" laikinai užfiksuos ir perduos ekrano turinį į pasirinktą ekraną (pvz., IFP).Kad įgalintų jutiklinį grąžinimą, \"AirSync\" reikalauja pritaikymo neįgaliesiems paslaugos leidimo, kad būtų galima leisti nuotolinį valdymą iš ekrano.\"AirSync\" nerenka jūsų asmeninių duomenų ir nestebi jūsų veiksmų. Šis leidimas naudojamas tik jutiklinio valdymo funkcijai įjungti.",
   "v3_present_touch_back_dialog_not_now": "Ne dabar",
-  "v3_present_touch_back_dialog_allow": "Leisti"
+  "v3_present_touch_back_dialog_allow": "Leisti",
+  "v3_exit_title": "Ar tikrai norite mesti?",
+  "v3_exit_action_cancel": "Atšaukti",
+  "v3_exit_action_exit": "Išeiti",
+  "v3_lbl_exit_action_cancel": "Atšaukti",
+  "v3_lbl_exit_action_exit": "Išeiti"
 }
