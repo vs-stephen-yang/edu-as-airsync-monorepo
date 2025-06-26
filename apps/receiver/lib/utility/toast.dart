@@ -1,6 +1,6 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_toast/motion_toast.dart';
 
@@ -58,7 +58,7 @@ class Toast {
               borderRadius: BorderRadius.circular(
                   20), // Change the border radius of the Toast
             ),
-            child: AutoSizeText(
+            child: V3AutoHyphenatingText(
               message,
               style: const TextStyle(color: Colors.white),
             ),
@@ -111,10 +111,7 @@ class Toast {
     MotionToast toast = MotionToast(
       primaryColor: Colors.grey,
       description: Center(
-        child: AutoSizeText(
-          message,
-          maxLines: 1,
-        ),
+        child: V3AutoHyphenatingText(message),
       ),
       displaySideBar: false,
       position: MotionToastPosition.bottom,
