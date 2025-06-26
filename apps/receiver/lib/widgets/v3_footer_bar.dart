@@ -49,8 +49,8 @@ class V3FooterBar extends StatelessWidget {
                   final lock = settingsProvider.isSettingsLock;
                   return V3Focus(
                     label: lock
-                        ? S.current.v3_lbl_settings_menu_locked
-                        : S.current.v3_lbl_open_menu_settings,
+                        ? S.of(context).v3_lbl_settings_menu_locked
+                        : S.of(context).v3_lbl_open_menu_settings,
                     identifier: lock
                         ? 'v3_qa_menu_settings_locked'
                         : 'v3_qa_menu_settings',

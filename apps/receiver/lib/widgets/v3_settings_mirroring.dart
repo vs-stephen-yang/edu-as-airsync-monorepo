@@ -42,7 +42,7 @@ class V3SettingsMirroring extends StatelessWidget {
             return Column(
               children: [
                 MirroringItem(
-                    label: S.current.v3_lbl_shortcuts_airplay,
+                    label: S.of(context).v3_lbl_shortcuts_airplay,
                     identifier: 'v3_qa_shortcuts_airplay',
                     excludeSemantics: false,
                     isDisable: disable,
@@ -119,7 +119,7 @@ class V3SettingsMirroring extends StatelessWidget {
                   ),
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
                 MirroringItem(
-                    label: S.current.v3_lbl_shortcuts_google_cast,
+                    label: S.of(context).v3_lbl_shortcuts_google_cast,
                     identifier: 'v3_qa_shortcuts_google_cast',
                     excludeSemantics: false,
                     isDisable: disable,
@@ -145,7 +145,7 @@ class V3SettingsMirroring extends StatelessWidget {
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
                 if (mirrorStateProvider.miracastSupport)
                   MirroringItem(
-                      label: S.current.v3_lbl_shortcuts_miracast,
+                      label: S.of(context).v3_lbl_shortcuts_miracast,
                       identifier: 'v3_qa_shortcuts_miracast',
                       excludeSemantics: false,
                       isDisable:

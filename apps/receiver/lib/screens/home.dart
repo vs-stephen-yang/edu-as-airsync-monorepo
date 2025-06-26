@@ -542,7 +542,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              sprintf(S.current.main_mirror_from_client, [
+                              sprintf(S.of(context).main_mirror_from_client, [
                                 mirrorRequestIdles.toList()[index].mirrorId
                               ]),
                               style: const TextStyle(fontSize: 24),

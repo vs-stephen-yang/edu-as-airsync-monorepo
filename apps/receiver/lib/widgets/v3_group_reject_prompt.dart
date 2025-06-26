@@ -142,7 +142,7 @@ class V3GroupRejectPrompt extends ConsumerWidget {
                                           width: context.tokens.spacing
                                               .vsdslSpacingSm.left),
                                       AutoSizeText(
-                                        '${currentRejectList[index].deviceName()} ${S.current.v3_group_reject_invited}',
+                                        '${currentRejectList[index].deviceName()} ${S.of(context).v3_group_reject_invited}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: context.tokens.color

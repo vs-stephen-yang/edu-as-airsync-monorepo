@@ -82,7 +82,7 @@ class PortraitWidget extends StatelessWidget {
                   ),
                   const Gap(30),
                   Text(
-                    S.current.v3_download_app_desktop_title,
+                    S.of(context).v3_download_app_desktop_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorNeutral,
@@ -92,7 +92,7 @@ class PortraitWidget extends StatelessWidget {
                   ),
                   const Gap(3),
                   Text(
-                    S.current.v3_download_app_for_desktop_desc,
+                    S.of(context).v3_download_app_for_desktop_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurfaceVariant,
@@ -139,7 +139,7 @@ class PortraitWidget extends StatelessWidget {
                         const Gap(5),
                         Expanded(
                           child: Text(
-                            S.current.v3_download_app_desktop,
+                            S.of(context).v3_download_app_desktop,
                             style: TextStyle(
                               color: context.tokens.color.vsdslColorPrimary,
                               fontSize: 21,
@@ -192,7 +192,7 @@ class PortraitWidget extends StatelessWidget {
                     children: [
                       const Spacer(),
                       Text(
-                        S.current.v3_download_app_desktop_hint,
+                        S.of(context).v3_download_app_desktop_hint,
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color:
@@ -264,7 +264,7 @@ class PortraitWidget extends StatelessWidget {
                     children: [
                       const Spacer(),
                       Text(
-                        S.current.v3_download_app_desktop_store_hint,
+                        S.of(context).v3_download_app_desktop_store_hint,
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color:
@@ -287,7 +287,7 @@ class PortraitWidget extends StatelessWidget {
                         ),
                         const Gap(13),
                         Text(
-                          S.current.v3_download_app_or,
+                          S.of(context).v3_download_app_or,
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorSurface500,
                             fontSize: 12,
@@ -305,7 +305,7 @@ class PortraitWidget extends StatelessWidget {
                   ),
                   const Gap(21),
                   Text(
-                    S.current.v3_download_app_mobile_title,
+                    S.of(context).v3_download_app_mobile_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorNeutral,
@@ -315,7 +315,7 @@ class PortraitWidget extends StatelessWidget {
                   ),
                   const Gap(3),
                   Text(
-                    S.current.v3_download_app_for_mobile_desc,
+                    S.of(context).v3_download_app_for_mobile_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurfaceVariant,
@@ -362,7 +362,7 @@ class PortraitWidget extends StatelessWidget {
             right: 13,
             bottom: 13,
             child: V3Focus(
-              label: S.current.v3_lbl_close_download_app_menu,
+              label: S.of(context).v3_lbl_close_download_app_menu,
               identifier: 'v3_qa_close_download_app_menu',
               child: SizedBox(
                 width: 33,
@@ -436,7 +436,7 @@ class LandscapeWidget extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                S.current.v3_download_app_desktop_title,
+                                S.of(context).v3_download_app_desktop_title,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: context.tokens.color.vsdslColorNeutral,
@@ -446,7 +446,7 @@ class LandscapeWidget extends StatelessWidget {
                               ),
                               const Gap(11),
                               Text(
-                                S.current.v3_download_app_for_desktop_desc,
+                                S.of(context).v3_download_app_for_desktop_desc,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: context
@@ -495,7 +495,7 @@ class LandscapeWidget extends StatelessWidget {
                                     const Gap(5),
                                     Expanded(
                                       child: Text(
-                                        S.current.v3_download_app_desktop,
+                                        S.of(context).v3_download_app_desktop,
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           color: context
@@ -552,7 +552,7 @@ class LandscapeWidget extends StatelessWidget {
                               SizedBox(
                                 width: 400,
                                 child: Text(
-                                  S.current.v3_download_app_desktop_hint,
+                                  S.of(context).v3_download_app_desktop_hint,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
                                     color: context.tokens.color
@@ -565,7 +565,7 @@ class LandscapeWidget extends StatelessWidget {
                               SizedBox(
                                 width: 400,
                                 child: Text(
-                                  S.current.v3_download_app_desktop_store,
+                                  S.of(context).v3_download_app_desktop_store,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: context
@@ -617,7 +617,9 @@ class LandscapeWidget extends StatelessWidget {
                               SizedBox(
                                 width: 400,
                                 child: Text(
-                                  S.current.v3_download_app_desktop_store_hint,
+                                  S
+                                      .of(context)
+                                      .v3_download_app_desktop_store_hint,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
                                     color: context.tokens.color
@@ -650,7 +652,7 @@ class LandscapeWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 13),
                         Text(
-                          S.current.v3_download_app_or,
+                          S.of(context).v3_download_app_or,
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorSurface500,
                             fontSize: 12,
@@ -680,7 +682,7 @@ class LandscapeWidget extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  S.current.v3_download_app_mobile_title,
+                                  S.of(context).v3_download_app_mobile_title,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color:
@@ -691,7 +693,7 @@ class LandscapeWidget extends StatelessWidget {
                                 ),
                                 const Gap(11),
                                 Text(
-                                  S.current.v3_download_app_for_mobile_desc,
+                                  S.of(context).v3_download_app_for_mobile_desc,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: context.tokens.color
@@ -750,7 +752,7 @@ class LandscapeWidget extends StatelessWidget {
           right: 13,
           bottom: 13,
           child: V3Focus(
-            label: S.current.v3_lbl_close_download_app_menu,
+            label: S.of(context).v3_lbl_close_download_app_menu,
             identifier: 'v3_qa_close_download_app_menu',
             child: SizedBox(
               width: 33,

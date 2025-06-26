@@ -139,11 +139,15 @@ class V3Instruction extends StatelessWidget {
                                     .v3_instruction1a
                                     .replaceAll('airsync.net', airsync)
                                     .replaceAll(
-                                        S.current.v3_instruction1b
+                                        S
+                                            .of(context)
+                                            .v3_instruction1b
                                             .toLowerCase(),
                                         '')
                                     .replaceAll(
-                                        S.current.v3_cast_to_device_menu_or
+                                        S
+                                            .of(context)
+                                            .v3_cast_to_device_menu_or
                                             .toLowerCase(),
                                         '')
                                 : S.of(context).v3_instruction1b,
@@ -169,7 +173,9 @@ class V3Instruction extends StatelessWidget {
                             children: [
                               AutoSizeText.rich(
                                 _buildTextSpan(
-                                  fullText: S.current.v3_cast_to_device_menu_or
+                                  fullText: S
+                                      .of(context)
+                                      .v3_cast_to_device_menu_or
                                       .toLowerCase(),
                                   formatTexts: [airsync],
                                   formatStyle: TextStyle(
@@ -209,7 +215,7 @@ class V3Instruction extends StatelessWidget {
                                         Flexible(
                                           // 添加 Flexible 讓文本可以縮小
                                           child: AutoSizeText(
-                                            S.current.v3_download_app_title,
+                                            S.of(context).v3_download_app_title,
                                             style: context.tokens.textStyle
                                                 .airsyncFontTitle
                                                 .apply(

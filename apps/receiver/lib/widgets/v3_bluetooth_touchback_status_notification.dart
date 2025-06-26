@@ -63,7 +63,7 @@ class _V3BluetoothStatusNotificationState
           });
         } else if (value.show) {
           return StatusCard(
-            statusMessage: value.statusMessage ?? "",
+            statusMessage: value.getStatusMessage(context),
             progressPercent: value.percent,
           );
         }
@@ -379,40 +379,40 @@ class BluetoothProgress {
   final double percent;
 
   BluetoothProgress({this.status, required this.percent}); // 範圍 0.0 ~ 1.0
-  get statusMessage {
+  String getStatusMessage(BuildContext context) {
     String message = '';
     switch (status) {
       case BluetoothTouchbackStatus.initializing:
-        message = S.current.v3_touchback_state_initializing_message;
+        message = S.of(context).v3_touchback_state_initializing_message;
         break;
       case BluetoothTouchbackStatus.hidProfileServiceStarting:
         message =
-            S.current.v3_touchback_state_hidProfileServiceStarting_message;
+            S.of(context).v3_touchback_state_hidProfileServiceStarting_message;
         break;
       case BluetoothTouchbackStatus.hidProfileServiceStartedSuccess:
         message = S
             .current.v3_touchback_state_hidProfileServiceStartedSuccess_message;
         break;
       case BluetoothTouchbackStatus.deviceFinding:
-        message = S.current.v3_touchback_state_deviceFinding_message;
+        message = S.of(context).v3_touchback_state_deviceFinding_message;
         break;
       case BluetoothTouchbackStatus.deviceFoundSuccess:
-        message = S.current.v3_touchback_state_deviceFoundSuccess_message;
+        message = S.of(context).v3_touchback_state_deviceFoundSuccess_message;
         break;
       case BluetoothTouchbackStatus.devicePairing:
-        message = S.current.v3_touchback_state_devicePairing_message;
+        message = S.of(context).v3_touchback_state_devicePairing_message;
         break;
       case BluetoothTouchbackStatus.devicePairedSuccess:
-        message = S.current.v3_touchback_state_devicePairedSuccess_message;
+        message = S.of(context).v3_touchback_state_devicePairedSuccess_message;
         break;
       case BluetoothTouchbackStatus.hidConnecting:
-        message = S.current.v3_touchback_state_hidConnecting_message;
+        message = S.of(context).v3_touchback_state_hidConnecting_message;
         break;
       case BluetoothTouchbackStatus.hidConnected:
-        message = S.current.v3_touchback_state_hidConnected_message;
+        message = S.of(context).v3_touchback_state_hidConnected_message;
         break;
       case BluetoothTouchbackStatus.initialized:
-        message = S.current.v3_touchback_state_initialized_message;
+        message = S.of(context).v3_touchback_state_initialized_message;
         break;
       case BluetoothTouchbackStatus.closedByUser:
       case BluetoothTouchbackStatus.adapterEnabling:

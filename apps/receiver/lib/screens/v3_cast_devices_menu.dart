@@ -42,7 +42,7 @@ class V3CastDevicesMenu extends StatelessWidget {
                     right: 13,
                     bottom: 13,
                     child: V3Focus(
-                      label: S.current.v3_lbl_close_feature_set_cast_device,
+                      label: S.of(context).v3_lbl_close_feature_set_cast_device,
                       identifier: 'v3_qa_close_feature_set_cast_device',
                       child: SizedBox(
                         width: 33,

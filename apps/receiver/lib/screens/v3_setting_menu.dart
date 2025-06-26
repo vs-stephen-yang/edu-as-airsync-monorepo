@@ -190,7 +190,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           _SubTittleButton(
-                            label: S.current.v3_lbl_settings_device_setting,
+                            label: S.of(context).v3_lbl_settings_device_setting,
                             identifier: "v3_qa_settings_device_setting",
                             index: 0,
                             state: SettingPageState.deviceSetting,
@@ -201,7 +201,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 5)),
                           _SubTittleButton(
-                            label: S.current.v3_lbl_settings_accessibility,
+                            label: S.of(context).v3_lbl_settings_accessibility,
                             identifier: "v3_qa_settings_accessibility",
                             index: 1,
                             state: SettingPageState.accessibility,
@@ -212,7 +212,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 5)),
                           _SubTittleButton(
-                            label: S.current.v3_lbl_settings_broadcast,
+                            label: S.of(context).v3_lbl_settings_broadcast,
                             identifier: "v3_qa_settings_broadcast",
                             index: 2,
                             state: SettingPageState.broadcast,
@@ -223,7 +223,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 5)),
                           _SubTittleButton(
-                            label: S.current.v3_lbl_shortcuts_mirroring,
+                            label: S.of(context).v3_lbl_shortcuts_mirroring,
                             identifier: "v3_qa_shortcuts_mirroring",
                             index: 3,
                             state: SettingPageState.mirroring,
@@ -234,7 +234,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 5)),
                           _SubTittleButton(
-                            label: S.current.v3_lbl_settings_connectivity,
+                            label: S.of(context).v3_lbl_settings_connectivity,
                             identifier: "v3_qa_settings_connectivity",
                             index: 4,
                             state: SettingPageState.connectivity,
@@ -245,7 +245,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 5)),
                           _SubTittleButton(
-                            label: S.current.v3_lbl_settings_whats_new,
+                            label: S.of(context).v3_lbl_settings_whats_new,
                             identifier: "v3_qa_settings_whats_new",
                             index: 5,
                             state: SettingPageState.whatsNew,
@@ -256,7 +256,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 5)),
                           _SubTittleButton(
-                            label: S.current.v3_lbl_settings_legal_policy,
+                            label: S.of(context).v3_lbl_settings_legal_policy,
                             identifier: "v3_qa_settings_legal_policy",
                             index: 6,
                             state: SettingPageState.legalPolicy,
@@ -293,7 +293,7 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                   ),
                 ),
                 V3Focus(
-                  label: S.current.v3_lbl_settings_close_icon,
+                  label: S.of(context).v3_lbl_settings_close_icon,
                   identifier: "v3_qa_settings_close_icon",
                   child: SizedBox(
                     width: 33,

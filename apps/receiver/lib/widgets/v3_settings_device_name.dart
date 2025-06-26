@@ -114,7 +114,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           V3Focus(
-                            label: S.current.v3_lbl_settings_enter_device_name,
+                            label:
+                                S.of(context).v3_lbl_settings_enter_device_name,
                             identifier: "v3_qa_settings_enter_device_name",
                             child: () {
                               return V3TextFieldShortcutsHandler(
@@ -169,7 +170,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                       ),
                     ),
                     V3Focus(
-                      label: S.current.v3_lbl_settings_device_name_close,
+                      label: S.of(context).v3_lbl_settings_device_name_close,
                       identifier: "v3_qa_settings_device_name_close",
                       child: Visibility(
                         visible: _isEditing,
@@ -269,7 +270,7 @@ class _SaveButton extends StatelessWidget {
       builder: (context, value, child) {
         final enable = value.text.isNotEmpty && isValid();
         return V3SettingMenuSubItemFocus(
-          label: S.current.v3_lbl_settings_device_name_save,
+          label: S.of(context).v3_lbl_settings_device_name_save,
           identifier: "v3_qa_settings_device_name_save",
           child: InkWell(
             focusNode: focusNode,

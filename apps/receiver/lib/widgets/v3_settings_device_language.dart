@@ -45,7 +45,7 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
                   controller: scrollController,
                   padding: const EdgeInsets.only(right: 8), // 為滾動條留出空間
                   child: V3SettingsRadioGroup(
-                    label: S.current.v3_lbl_main_language_title_item,
+                    label: S.of(context).v3_lbl_main_language_title_item,
                     identifier: "v3_qa_main_language_title_item",
                     hasSubFocusItem: true,
                     focusOnInit: openedWithLogicalKey,

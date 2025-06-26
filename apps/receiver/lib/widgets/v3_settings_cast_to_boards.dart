@@ -290,7 +290,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                   Expanded(
                     child: SingleChildScrollView(
                       child: Text(
-                        S.current.v3_group_dialog_no_device_message,
+                        S.of(context).v3_group_dialog_no_device_message,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -338,7 +338,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                         removeOverlay();
                         onConfirm?.call();
                       },
-                      child: Text(S.current.v3_moderator_disable_mirror_ok),
+                      child: Text(S.of(context).v3_moderator_disable_mirror_ok),
                     ),
                   ),
                 ],
@@ -508,7 +508,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       margin: const EdgeInsets.only(right: 8, left: 8),
       child: V3SettingMenuListItemFocus(
         label: sprintf(
-            S.current.v3_lbl_settings_broadcast_to_display_group_item,
+            S.of(context).v3_lbl_settings_broadcast_to_display_group_item,
             [client.deviceName()]),
         identifier: sprintf("v3_qa_settings_broadcast_to_display_group_item_%s",
             [client.deviceName()]),
@@ -587,7 +587,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         Flexible(
           child: Text(
             unavailable
-                ? S.current.v3_settings_device_unavailable
+                ? S.of(context).v3_settings_device_unavailable
                 : client.displayCode(),
             style: TextStyle(
               fontSize: 12,

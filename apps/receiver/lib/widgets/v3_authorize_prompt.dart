@@ -404,7 +404,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                 final request =
                                     mirrorRequestIdles.toList()[index];
                                 final deviceDisplayName = sprintf(
-                                    S.current.main_mirror_from_client,
+                                    S.of(context).main_mirror_from_client,
                                     [request.deviceName]);
 
                                 return RequestRow(
@@ -575,7 +575,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                             final request = authRequestIdles[index];
                             final deviceName = request.entries.first.key;
                             final deviceDisplayName = sprintf(
-                                S.current.main_mirror_from_client,
+                                S.of(context).main_mirror_from_client,
                                 [deviceName]);
 
                             return RequestRow(
