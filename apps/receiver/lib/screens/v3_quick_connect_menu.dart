@@ -79,7 +79,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                         ),
                       ),
                       child: Text(
-                        S.current.v3_instruction_share_screen,
+                        S.of(context).v3_instruction_share_screen,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: context.tokens.color.vsdslColorOnSurface,
@@ -329,7 +329,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           Expanded(
                             // 添加 Expanded 包装 AutoSizeText
                             child: AutoSizeText(
-                              S.current.v3_quick_connect_menu_bottom_msg,
+                              S.of(context).v3_quick_connect_menu_bottom_msg,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: context

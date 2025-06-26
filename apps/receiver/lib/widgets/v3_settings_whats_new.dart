@@ -38,7 +38,7 @@ class V3SettingsWhatsNew extends StatelessWidget {
                 ),
                 const Gap(16),
                 Text(
-                  sprintf(S.current.v3_settings_whats_new_content,
+                  sprintf(S.of(context).v3_settings_whats_new_content,
                       ['v${AppConfig.of(context)?.appVersion ?? ''}']),
                   textAlign: TextAlign.start,
                   style: TextStyle(

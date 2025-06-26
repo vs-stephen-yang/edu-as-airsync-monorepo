@@ -149,7 +149,7 @@ class AppOTADialogState extends State<AppOTADialog>
             actions: [
               if (status == UpdateStatus.updateDownloaded)
                 _updateDialogButton(
-                  text: S.current.update_install_now,
+                  text: S.of(context).update_install_now,
                   textColor: Colors.white,
                   backgroundColor: context.tokens.color.vsdslColorPrimary,
                   onPressed: () {

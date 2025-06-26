@@ -115,7 +115,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                   Visibility(
                     visible: !isCollapsed,
                     child: V3Focus(
-                      label: S.current.v3_lbl_streaming_airplay_touchback,
+                      label: S.of(context).v3_lbl_streaming_airplay_touchback,
                       identifier: 'v3_qa_streaming_airplay_touchback',
                       child: SizedBox(
                         width: 27,
@@ -396,7 +396,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                   .value = BluetoothProgress(percent: 0.0);
                               V3Toast().makeBluetoothStateToast(
                                 context,
-                                sprintf(S.current.v3_touchback_success_message,
+                                sprintf(
+                                    S.of(context).v3_touchback_success_message,
                                     [connection.deviceName]),
                                 widget.index,
                                 _layerLink,
@@ -417,7 +418,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                               .addPostFrameCallback((_) async {
                             V3Toast().makeBluetoothStateToast(
                               context,
-                              S.current.v3_touchback_fail_message,
+                              S.of(context).v3_touchback_fail_message,
                               widget.index,
                               _layerLink,
                               color: context.tokens.color.vsdslColorError,

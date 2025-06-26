@@ -80,7 +80,8 @@ class PortraitWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    sprintf(S.current.v3_touchback_alert_title, [deviceName]),
+                    sprintf(
+                        S.of(context).v3_touchback_alert_title, [deviceName]),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: context.tokens.color
@@ -91,7 +92,7 @@ class PortraitWidget extends StatelessWidget {
                   ),
                   const Gap(13),
                   Text(
-                    S.current.v3_touchback_alert_message,
+                    S.of(context).v3_touchback_alert_message,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: context.tokens.color
@@ -107,7 +108,7 @@ class PortraitWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: V3Focus(
-                    label: S.current.v3_lbl_touchback_one_device_cancel,
+                    label: S.of(context).v3_lbl_touchback_one_device_cancel,
                     identifier: 'v3_qa_touchback_one_device_cancel',
                     child: InkWell(
                       child: Container(
@@ -124,7 +125,9 @@ class PortraitWidget extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          S.current.v3_touchback_restart_bluetooth_btn_cancel,
+                          S
+                              .of(context)
+                              .v3_touchback_restart_bluetooth_btn_cancel,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorSecondary,
@@ -144,7 +147,7 @@ class PortraitWidget extends StatelessWidget {
                 const Gap(8),
                 Expanded(
                   child: V3Focus(
-                    label: S.current.v3_lbl_touchback_one_device_confirm,
+                    label: S.of(context).v3_lbl_touchback_one_device_confirm,
                     identifier: 'v3_qa_touchback_one_device_confirm',
                     child: InkWell(
                       child: Container(
@@ -158,7 +161,7 @@ class PortraitWidget extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          S.current.moderator_confirm,
+                          S.of(context).moderator_confirm,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
