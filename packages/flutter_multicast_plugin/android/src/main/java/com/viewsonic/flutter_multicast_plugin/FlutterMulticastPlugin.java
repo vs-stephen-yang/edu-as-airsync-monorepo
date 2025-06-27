@@ -21,6 +21,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.TextureRegistry;
 
+import java.util.List;
+
 /** FlutterMulticastPlugin */
 public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
     private MethodChannel channel;
@@ -126,9 +128,9 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 long textureId = entry.id();
                 surface = new Surface(surfaceTexture);
 
-                // TODO: get all interface local IP
-                String[] localIps = {"172.21.10.181", "123.1.3.2"};
-                NativeBridge.receiveStart(surface, localIps,multicastIp, port, key, salt, ssrc, roc);
+                List<String> localIps = NetworkUtils.getAllLocalIPv4s();
+                String[] ipArray = localIps.toArray(new String[0]);
+                NativeBridge.receiveStart(surface, ipArray, multicastIp, port, key, salt, ssrc, roc);
                 result.success(textureId);
                 break;
             }
