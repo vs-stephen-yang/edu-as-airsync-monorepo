@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
@@ -123,7 +123,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                 kIsWeb ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               if (kIsWeb) ...[
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   S.of(context).v3_main_moderator_title,
                   style: TextStyle(
                     fontSize: 32,
@@ -134,7 +134,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                   ),
                 ),
                 const Padding(padding: EdgeInsets.only(bottom: 8)),
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   S.of(context).v3_main_moderator_subtitle,
                   style: TextStyle(
                     fontSize: 18,
@@ -158,7 +158,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                   ),
                 ),
                 const Padding(padding: EdgeInsets.only(bottom: 24)),
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   channelProvider.currentRole == JoinIntentType.remoteScreen
                       ? S.of(context).v3_main_receive_app_title
                       : S.of(context).v3_main_moderator_app_title,
@@ -169,7 +169,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                   ),
                 ),
                 const Padding(padding: EdgeInsets.only(bottom: 8)),
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   channelProvider.currentRole == JoinIntentType.remoteScreen
                       ? S.of(context).v3_main_receive_app_subtitle
                       : S.of(context).v3_main_moderator_app_subtitle,
@@ -228,7 +228,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                                     left: context
                                         .tokens.spacing.vsdswSpacing2xs.left)),
                             Expanded(
-                              child: AutoSizeText(
+                              child: V3AutoHyphenatingText(
                                 S.of(context).v3_main_moderator_input_limit,
                                 style: TextStyle(
                                   color:
@@ -324,7 +324,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                     Icons.info,
                     color: Colors.amber,
                   ),
-                  AutoSizeText(
+                  V3AutoHyphenatingText(
                     S.of(context).moderator_fill_out,
                     style: const TextStyle(color: Colors.black),
                   ),

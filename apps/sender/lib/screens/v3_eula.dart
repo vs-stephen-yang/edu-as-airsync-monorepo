@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_exit_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_focus_single_child_scroll_view.dart';
@@ -14,8 +15,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
-class V3Eula extends StatelessWidget {
+class V3Eula extends StatefulWidget {
   const V3Eula({super.key});
+
+  @override
+  State<StatefulWidget> createState() => V3EulaState();
+}
+
+class V3EulaState extends State<V3Eula> {
+  late Future<void> initOperation;
+
+  @override
+  void initState() {
+    super.initState();
+    initOperation = initHyphenation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,170 +44,181 @@ class V3Eula extends StatelessWidget {
       });
     }
     return Scaffold(
-      body: ConstrainedBox(
-        constraints: const BoxConstraints.expand(),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            const V3Background(),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Container(
-                width: 546,
-                height: 504,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: context.tokens.radii.vsdswRadiusXl,
-                  ),
-                  color: context.tokens.color.vsdswColorSurface100,
-                  shadows: context.tokens.shadow.vsdswShadowNeutralXl,
-                ),
-                child: Column(
+      body: FutureBuilder(
+          future: initOperation,
+          builder: (_, AsyncSnapshot<void> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return ConstrainedBox(
+                constraints: const BoxConstraints.expand(),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
+                    const V3Background(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                      child: AutoSizeText(
-                        S.of(context).v3_eula_title,
-                        style: TextStyle(
-                          color: context.tokens.color.vsdswColorOnInfo,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
+                      padding: const EdgeInsets.all(8),
+                      child: Container(
+                        width: 546,
+                        height: 504,
+                        decoration: ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: context.tokens.radii.vsdswRadiusXl,
+                          ),
+                          color: context.tokens.color.vsdswColorSurface100,
+                          shadows: context.tokens.shadow.vsdswShadowNeutralXl,
                         ),
-                        maxLines: 1,
-                      ),
-                    ),
-                    Container(
-                      height: 1,
-                      color: context.tokens.color.vsdswColorOutline,
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: FutureBuilder<String>(
-                          future: _loadEulaFromAssets(),
-                          builder: (context, snapshot) {
-                            String content;
-                            if (snapshot.connectionState ==
-                                    ConnectionState.done &&
-                                snapshot.data != null) {
-                              content = snapshot.data as String;
-                            } else {
-                              content = S.of(context).v3_eula_title;
-                            }
-                            return V3FocusSingleChildScrollView(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 24),
-                                  child: AutoSizeText(
-                                    content,
-                                    style: TextStyle(
-                                      color: context
-                                          .tokens.color.vsdswColorOnSurface,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(24, 24, 24, 24),
+                              child: V3AutoHyphenatingText(
+                                S.of(context).v3_eula_title,
+                                style: TextStyle(
+                                  color: context.tokens.color.vsdswColorOnInfo,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: context.tokens.color.vsdswColorOutline,
+                            ),
+                            const SizedBox(height: 8),
+                            Expanded(
+                              child: Directionality(
+                                textDirection: TextDirection.ltr,
+                                child: FutureBuilder<String>(
+                                  future: _loadEulaFromAssets(),
+                                  builder: (context, snapshot) {
+                                    String content;
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                        snapshot.data != null) {
+                                      content = snapshot.data as String;
+                                    } else {
+                                      content = S.of(context).v3_eula_title;
+                                    }
+                                    return V3FocusSingleChildScrollView(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 24),
+                                          child: V3AutoHyphenatingText(
+                                            content,
+                                            style: TextStyle(
+                                              color: context.tokens.color
+                                                  .vsdswColorOnSurface,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: context.tokens.color.vsdswColorOutline,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(30, 16, 30, 40),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 108,
+                                    height: 48,
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        side: BorderSide(
+                                            color: context.tokens.color.vsdswColorPrimary,
+                                            width: 1),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(25),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        trackEvent(
+                                            'click_eula', EventCategory.system,
+                                            target: 'decline');
+                                        // return to home screen.
+                                        if (Platform.isIOS) {
+                                          // todo: may not pass Apple review, need add some dialog to let user known?
+                                          exit(0);
+                                        } else if (Platform.isWindows ||
+                                            Platform.isMacOS) {
+                                          // Windows: workable
+                                          // macOS: workable.
+                                          FlutterWindowClose.closeWindow();
+                                        } else {
+                                          // Android : workable.
+                                          // macOS: workable.
+                                          // Windows: not workable
+                                          SystemNavigator.pop();
+                                        }
+                                      },
+                                      child: V3AutoHyphenatingText(
+                                        S.of(context).v3_eula_disagree,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: context
+                                              .tokens.color.vsdswColorPrimary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 1,
-                      color: context.tokens.color.vsdswColorOutline,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(30, 16, 30, 40),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: 108,
-                            height: 48,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                side: BorderSide(
-                                    color:
-                                        context.tokens.color.vsdswColorPrimary,
-                                    width: 1),
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(25),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                trackEvent('click_eula', EventCategory.system,
-                                    target: 'decline');
-                                // return to home screen.
-                                if (Platform.isIOS) {
-                                  // todo: may not pass Apple review, need add some dialog to let user known?
-                                  exit(0);
-                                } else if (Platform.isWindows ||
-                                    Platform.isMacOS) {
-                                  // Windows: workable
-                                  // macOS: workable.
-                                  FlutterWindowClose.closeWindow();
-                                } else {
-                                  // Android : workable.
-                                  // macOS: workable.
-                                  // Windows: not workable
-                                  SystemNavigator.pop();
-                                }
-                              },
-                              child: AutoSizeText(
-                                S.of(context).v3_eula_disagree,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: context.tokens.color.vsdswColorPrimary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          SizedBox(
-                            width: 108,
-                            height: 48,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 5.0,
-                                shadowColor:
-                                    context.tokens.color.vsdswColorPrimary,
-                                foregroundColor:
-                                    context.tokens.color.vsdswColorOnPrimary,
-                                backgroundColor:
-                                    context.tokens.color.vsdswColorPrimary,
-                                textStyle: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                padding: EdgeInsets.zero,
-                              ),
-                              onPressed: () {
-                                trackEvent('click_eula', EventCategory.system,
-                                    target: 'accept');
+                                  const SizedBox(width: 8),
+                                  SizedBox(
+                                    width: 108,
+                                    height: 48,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 5.0,
+                                        shadowColor: context.tokens.color.vsdswColorPrimary,
+                                        foregroundColor: context.tokens.color.vsdswColorOnPrimary,
+                                        backgroundColor: context.tokens.color.vsdswColorPrimary,
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                      onPressed: () {
+                                        trackEvent(
+                                            'click_eula', EventCategory.system,
+                                            target: 'accept');
 
-                                AppPreferences().setShowEULA(false);
-                                navService.pushNamedAndRemoveUntil('/v3home');
-                              },
-                              child: AutoSizeText(S.of(context).v3_eula_agree),
-                            ),
+                                        AppPreferences().setShowEULA(false);
+                                    navService.pushNamedAndRemoveUntil(
+                                        '/v3home');
+                                  },
+                                  child: V3AutoHyphenatingText(S
+                                      .of(context)
+                                      .v3_eula_agree),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      }),
     );
   }
 

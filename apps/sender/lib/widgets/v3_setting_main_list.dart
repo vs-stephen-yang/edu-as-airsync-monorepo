@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
@@ -10,6 +9,7 @@ import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -81,10 +81,8 @@ class V3SettingMainList extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: AutoSizeText(
+                              child: V3AutoHyphenatingText(
                                 settings[index].itemTitle,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
@@ -114,13 +112,12 @@ class V3SettingMainList extends StatelessWidget {
             );
           }),
         ),
-        AutoSizeText(
+        V3AutoHyphenatingText(
           VersionUtil.isOpenVersion
               ? S.of(context).v3_setting_app_version_independent(
                   DateTime.now().year, AppConfig.of(context)?.appVersion)
               : S.of(context).v3_setting_app_version(
                   DateTime.now().year, AppConfig.of(context)?.appVersion),
-          minFontSize: 9,
           textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: isAppMode ? 14 : 10,

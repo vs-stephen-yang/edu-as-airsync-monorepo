@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentSelectRoleDemo extends StatelessWidget {
@@ -24,7 +26,7 @@ class V3PresentSelectRoleDemo extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        V3AutoHyphenatingText(
           S.of(context).v3_main_select_role_title,
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -34,30 +36,22 @@ class V3PresentSelectRoleDemo extends StatelessWidget {
             letterSpacing: -0.24,
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: isMobile ? 32 : 60)),
+        Gap(isMobile ? 32 : 60),
         isMobile
             ? useColumn
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildButtons(
-                        context,
-                        presentStateProvider,
-                        const Size(343, 194),
-                        const Size(108, 94)),
+                    children: _buildButtons(context, presentStateProvider,
+                        const Size(343, 194), const Size(108, 94)),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildButtons(
-                        context,
-                        presentStateProvider,
-                        const Size(343, 194),
-                        const Size(108, 94)),
+                    children: _buildButtons(context, presentStateProvider,
+                        const Size(343, 194), const Size(108, 94)),
                   )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildButtons(
-                    context,
-                    presentStateProvider,
+                children: _buildButtons(context, presentStateProvider,
                     const Size(300, 300), const Size(138, 120))),
       ],
     );
@@ -121,7 +115,7 @@ class RoleButton extends StatelessWidget {
         height: buttonSize.height,
         decoration: BoxDecoration(
           color: context.tokens.color.vsdswColorSurface100,
-          border: Border.all(color: Colors.white),
+          border: Border.all(color: context.tokens.color.vsdswColorOutline),
           borderRadius: BorderRadius.circular(24),
           boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
         ),
@@ -132,9 +126,9 @@ class RoleButton extends StatelessWidget {
             SizedBox(
                 width: iconSize.width,
                 height: iconSize.height,
-                child: SvgPicture.asset(iconPath)),
+                child: ExcludeSemantics(child: SvgPicture.asset(iconPath),)),
             const SizedBox(height: 16),
-            Text(
+            V3AutoHyphenatingText(
               name,
               style: TextStyle(
                 color: context.tokens.color.vsdswColorOnSurface,

@@ -1,7 +1,9 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 
 class V3CustomTextFormField extends StatefulWidget {
   const V3CustomTextFormField({
@@ -97,21 +99,25 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
 
   Row? _errorWidget(BuildContext context) {
     if (_errorText != null && _errorText!.isNotEmpty) {
-      return Row(children: [
-        SizedBox(
-          width: 16,
-          height: 16,
-          child: SvgPicture.asset('assets/images/v3_ic_display_code_error.svg'),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(right: 4),
-        ),
-        Text(
-          _errorText!,
-          style: TextStyle(
-              fontSize: 12, color: context.tokens.color.vsdswColorError),
-        )
-      ]);
+      return Row(
+        children: [
+          SizedBox(
+            width: 16,
+            height: 16,
+            child:
+            SvgPicture.asset('assets/images/v3_ic_display_code_error.svg'),
+          ),
+          const Gap(4),
+          SizedBox(
+            width: 250,
+            child: V3AutoHyphenatingText(
+              _errorText!,
+              style: TextStyle(
+                  fontSize: 12, color: context.tokens.color.vsdswColorError),
+            ),
+          ),
+        ],
+      );
     }
 
     return null;

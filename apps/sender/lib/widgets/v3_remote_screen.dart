@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/resizable_draggable_widget.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -141,7 +142,7 @@ class _RemoteVideoView extends State<RemoteVideoView> {
         );
       } else {
         return SizedBox(
-          child: Text(
+          child: V3AutoHyphenatingText(
             S.of(context).remote_screen_wait,
             style: const TextStyle(
               color: Colors.black,

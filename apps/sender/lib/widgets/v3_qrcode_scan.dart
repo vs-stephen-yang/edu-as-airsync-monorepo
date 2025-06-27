@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
-                    child: Text(
+                    child: V3AutoHyphenatingText(
                       S.current.v3_scan_qr_reminder,
                       textAlign: TextAlign.center,
                       style: TextStyle(

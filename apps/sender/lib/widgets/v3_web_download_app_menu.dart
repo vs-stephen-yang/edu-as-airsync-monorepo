@@ -1,8 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -24,8 +24,7 @@ class V3DownloadAppMenu extends StatelessWidget {
             }
           },
           child: Container(
-            width: 512,
-            height: 507,
+            constraints: BoxConstraints(maxWidth: 512, maxHeight: 507),
             decoration: BoxDecoration(
                 color: context.tokens.color.vsdswColorSurface100,
                 borderRadius: context.tokens.radii.vsdswRadius2xl,
@@ -39,58 +38,63 @@ class V3DownloadAppMenu extends StatelessWidget {
                 ]),
             child: Stack(
               alignment: Alignment.center,
+              fit: StackFit.expand,
               children: [
-                Positioned(
-                  top: 80,
-                  child: AutoSizeText(
-                    S.of(context).v3_main_download_app_dialog_title,
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdswColorOnSurface,
+                LayoutBuilder(builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraints.maxHeight),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          V3AutoHyphenatingText(
+                            S.of(context).v3_main_download_app_dialog_title,
+                            style: TextStyle(
+                              fontSize: 21,
+                              fontWeight: FontWeight.w600,
+                              color: context.tokens.color.vsdswColorOnSurface,
+                            ),
+                          ),
+                          QrImageView(
+                            data: AppConfig.of(context)!.settings.appStoreUrl,
+                            version: QrVersions.auto,
+                            size: 144,
+                          ),
+                          Wrap(
+                            spacing: 13,
+                            runSpacing: 13,
+                            children: [
+                              ExcludeSemantics(
+                                child: SvgPicture.asset(
+                                  'assets/images/ic_store_appstore.svg',
+                                  width: 120,
+                                  height: 38,
+                                ),
+                              ),
+                              ExcludeSemantics(
+                                child: SvgPicture.asset(
+                                  'assets/images/ic_store_google_play.svg',
+                                  width: 120,
+                                  height: 38,
+                                ),
+                              ),
+                            ],
+                          ),
+                          V3AutoHyphenatingText(
+                            S.of(context).v3_main_download_app_dialog_desc,
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color:
+                                    context.tokens.color.vsdswColorSurface400),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                Positioned(
-                  top: 135,
-                  child: QrImageView(
-                    data: AppConfig.of(context)!.settings.appStoreUrl,
-                    version: QrVersions.auto,
-                    size: 144,
-                  ),
-                ),
-                Positioned(
-                  bottom: 151,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ExcludeSemantics(
-                        child: SvgPicture.asset(
-                          'assets/images/ic_store_appstore.svg',
-                          width: 120,
-                          height: 38,
-                        ),
-                      ),
-                      const SizedBox(width: 13),
-                      ExcludeSemantics(
-                        child: SvgPicture.asset(
-                          'assets/images/ic_store_google_play.svg',
-                          width: 120,
-                          height: 38,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                    bottom: 108,
-                    child: AutoSizeText(
-                      S.of(context).v3_main_download_app_dialog_desc,
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: context.tokens.color.vsdswColorSurface400),
-                    )),
+                  );
+                }),
                 Positioned(
                   right: 13,
                   bottom: 13,

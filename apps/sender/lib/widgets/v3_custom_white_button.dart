@@ -1,4 +1,5 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,7 @@ class V3CustomWhiteButton extends StatelessWidget {
                     ),
                   ]),
               child: Center(
-                child: Text(
+                child: V3AutoHyphenatingText(
                   text,
                   style: TextStyle(
                     color: context.tokens.color.vsdswColorPrimary, // 文字顏色

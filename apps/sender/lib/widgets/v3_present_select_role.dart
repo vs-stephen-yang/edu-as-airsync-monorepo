@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
@@ -37,63 +38,54 @@ class V3PresentSelectRole extends StatelessWidget {
         child: LayoutBuilder(builder: (context, constraints) {
           final screenHeight = MediaQuery.of(context).size.height;
           return ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: screenHeight,
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      S.of(context).v3_main_select_role_title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdswColorOnSurface,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.24,
-                      ),
-                    ),
-                    Flexible(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 5,
-                          maxHeight: isMobile ? 32 : 60,
-                        ),
-                        child: Gap(isMobile ? 32 : 60),
-                      ),
-                    ),
-                    isMobile
-                        ? useColumn
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: _buildButtons(
-                                    context,
-                                    presentStateProvider,
-                                    channelProvider,
-                                    const Size(343, 194),
-                                    const Size(108, 94)),
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: _buildButtons(
-                                    context,
-                                    presentStateProvider,
-                                    channelProvider,
-                                    const Size(343, 194),
-                                    const Size(108, 94)),
-                              )
+            constraints: BoxConstraints(
+              minHeight: screenHeight,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                V3AutoHyphenatingText(
+                  S.of(context).v3_main_select_role_title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdswColorOnSurface,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.24,
+                  ),
+                ),
+                Gap(isMobile ? 32 : 60),
+                isMobile
+                    ? useColumn
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: _buildButtons(
+                                context,
+                                presentStateProvider,
+                                channelProvider,
+                                const Size(343, 194),
+                                const Size(108, 94)),
+                          )
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: _buildButtons(
                                 context,
                                 presentStateProvider,
                                 channelProvider,
-                                const Size(300, 300),
-                                const Size(138, 120))),
-                  ],
-                ),
-              ));
+                                const Size(343, 194),
+                                const Size(108, 94)),
+                          )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: _buildButtons(
+                            context,
+                            presentStateProvider,
+                            channelProvider,
+                            const Size(300, 300),
+                            const Size(138, 120))),
+              ],
+            ),
+          );
         }),
       ),
     );
@@ -213,7 +205,7 @@ class RoleButton extends StatelessWidget {
                   height: iconSize.height,
                   child: ExcludeSemantics(child: SvgPicture.asset(iconPath))),
               const SizedBox(height: 16),
-              Text(
+              V3AutoHyphenatingText(
                 name,
                 style: TextStyle(
                   color: context.tokens.color.vsdswColorOnSurface,

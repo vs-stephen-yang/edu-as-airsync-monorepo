@@ -352,6 +352,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
+                        // To avoid misinterpreting the hyphen (“-”), use plain text instead.
                         title: Text(
                           _getDisplayCodeVisualIdentity(displayList[index]),
                           style: const TextStyle(fontSize: 16),

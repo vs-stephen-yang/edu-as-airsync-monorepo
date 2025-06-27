@@ -14,6 +14,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:flutter/foundation.dart';
@@ -190,7 +191,7 @@ class V3PresentSelectScreen extends StatelessWidget {
                 Padding(padding: context.tokens.spacing.vsdswSpacingLg),
                 SizedBox(
                   width: 327,
-                  child: Text(
+                  child: V3AutoHyphenatingText(
                     S.of(context).present_select_screen_ios_restart_description,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -254,7 +255,7 @@ class _CountDownTextState extends State<CountDownText> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return V3AutoHyphenatingText(
       '${S.of(context).v3_select_screen_ios_countdown} 0:$countdown',
       textAlign: TextAlign.center,
       style: TextStyle(
@@ -332,8 +333,7 @@ class SelectScreenDialog extends Dialog {
       type: MaterialType.transparency,
       child: Center(
         child: Container(
-          width: 1081,
-          height: 661,
+          constraints: const BoxConstraints(maxHeight: 661, maxWidth: 1081),
           decoration: ShapeDecoration(
             color: context.tokens.color.vsdswColorSurface100,
             shape: RoundedRectangleBorder(
@@ -354,7 +354,7 @@ class SelectScreenDialog extends Dialog {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        V3AutoHyphenatingText(
                           S.of(context).present_role_cast_screen,
                           style: TextStyle(
                             color: context.tokens.color.vsdswColorOnSurface,
@@ -364,7 +364,7 @@ class SelectScreenDialog extends Dialog {
                           ),
                         ),
                         const Gap(8),
-                        Text(
+                        V3AutoHyphenatingText(
                           sprintf(S.current.v3_present_select_screen_subtitle,
                               [hostName]),
                           style: TextStyle(
@@ -429,86 +429,84 @@ class SelectScreenDialog extends Dialog {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 33),
                                 constraints:
-                                    const BoxConstraints.expand(height: 48),
-                                child: TabBar(
-                                  onTap: (index) async {
-                                    _selectedSource = null;
-                                    if (index == 2) {
-                                      if (isExtensionEnable) {
-                                        _isExtensionSelected = true;
+                                    const BoxConstraints(maxHeight: 48),
+                                child: SingleChildScrollView(
+                                  child: TabBar(
+                                    onTap: (index) async {
+                                      _selectedSource = null;
+                                      if (index == 2) {
+                                        if (isExtensionEnable) {
+                                          _isExtensionSelected = true;
+                                        } else {
+                                          tabController.animateTo(
+                                              tabController.previousIndex);
+                                        }
                                       } else {
-                                        tabController.animateTo(
-                                            tabController.previousIndex);
+                                        _isExtensionSelected = false;
+                                        Future.delayed(
+                                            const Duration(milliseconds: 300),
+                                            () {
+                                          _getSources(index == 0
+                                              ? SourceType.Screen
+                                              : SourceType.Window);
+                                        });
                                       }
-                                    } else {
-                                      _isExtensionSelected = false;
-                                      Future.delayed(
-                                          const Duration(milliseconds: 300),
-                                          () {
-                                        _getSources(index == 0
-                                            ? SourceType.Screen
-                                            : SourceType.Window);
+                                      switch (index) {
+                                        case 0:
+                                          annotationModel.presentSourceType =
+                                              SourceType.Screen;
+                                          break;
+                                        case 1:
+                                          annotationModel.presentSourceType =
+                                              SourceType.Window;
+                                          break;
+                                        case 2:
+                                          annotationModel.presentSourceType =
+                                              null;
+                                          break;
+                                      }
+                                      setState(() {
+                                        if (index == 1) {
+                                          enableAudioCheckbox = false;
+                                        } else {
+                                          enableAudioCheckbox = true;
+                                        }
                                       });
-                                    }
-                                    switch (index) {
-                                      case 0:
-                                        annotationModel.presentSourceType =
-                                            SourceType.Screen;
-                                        break;
-                                      case 1:
-                                        annotationModel.presentSourceType =
-                                            SourceType.Window;
-                                        break;
-                                      case 2:
-                                        annotationModel.presentSourceType =
-                                            null;
-                                        break;
-                                    }
-                                    setState(() {
-                                      if (index == 1) {
-                                        enableAudioCheckbox = false;
-                                      } else {
-                                        enableAudioCheckbox = true;
-                                      }
-                                    });
-                                  },
-                                  tabs: [
-                                    V3Focus(
-                                      identifier: 'v3_qa_select_screen_entire',
-                                      child: Tab(
+                                    },
+                                    tabs: [
+                                      V3Focus(
+                                        identifier:
+                                            'v3_qa_select_screen_entire',
                                         child: buildTabWidget(
                                             context,
                                             S.current
                                                 .present_select_screen_entire),
                                       ),
-                                    ),
-                                    V3Focus(
-                                      identifier: 'v3_qa_select_screen_window',
-                                      child: Tab(
+                                      V3Focus(
+                                        identifier:
+                                            'v3_qa_select_screen_window',
                                         child: buildTabWidget(
                                             context,
                                             S.current
                                                 .present_select_screen_window),
                                       ),
-                                    ),
-                                    V3Focus(
-                                      identifier:
-                                          'v3_qa_select_screen_extension',
-                                      child: Tab(
+                                      V3Focus(
+                                        identifier:
+                                            'v3_qa_select_screen_extension',
                                         child: buildTabWidget(
                                             context,
                                             S.current
                                                 .v3_present_select_screen_extension,
                                             enable: isExtensionEnable),
                                       ),
-                                    ),
-                                  ],
-                                  labelColor:
-                                      context.tokens.color.vsdswColorSecondary,
-                                  unselectedLabelColor:
-                                      context.tokens.color.vsdswColorOnSurface,
-                                  indicatorColor:
-                                      context.tokens.color.vsdswColorPrimary,
+                                    ],
+                                    labelColor: context
+                                        .tokens.color.vsdswColorSecondary,
+                                    unselectedLabelColor: context
+                                        .tokens.color.vsdswColorOnSurface,
+                                    indicatorColor:
+                                        context.tokens.color.vsdswColorPrimary,
+                                  ),
                                 ),
                               ),
                               const Gap(8),
@@ -535,7 +533,7 @@ class SelectScreenDialog extends Dialog {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 33),
                                 constraints:
-                                    BoxConstraints.expand(height: bottomHeight),
+                                    BoxConstraints(maxHeight: bottomHeight),
                                 child: SingleChildScrollView(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -543,50 +541,45 @@ class SelectScreenDialog extends Dialog {
                                     children: <Widget>[
                                       if (platformIsDesktop &&
                                           enableAudioCheckbox) ...[
-                                        SizedBox(
-                                          height: 48,
-                                          child: Row(
-                                            children: [
-                                              V3Focus(
-                                                identifier:
-                                                    'v3_qa_select_screen_audio',
-                                                child: Checkbox(
-                                                  semanticLabel: S
-                                                      .of(context)
-                                                      .v3_lbl_select_screen_audio,
-                                                  value: _systemAudio,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            2.0),
-                                                  ),
-                                                  side: WidgetStateBorderSide
-                                                      .resolveWith(
-                                                    (states) => BorderSide(
-                                                        width: 1.0,
-                                                        color: (!displayAudioDriverWarning)
-                                                            ? context
-                                                                .tokens
-                                                                .color
-                                                                .vsdswColorPrimary
-                                                            : context
-                                                                .tokens
-                                                                .color
-                                                                .vsdswColorDisabled),
-                                                  ),
-                                                  onChanged:
-                                                      (!displayAudioDriverWarning)
-                                                          ? (bool? value) {
-                                                              setState(() {
-                                                                _systemAudio =
-                                                                    value!;
-                                                              });
-                                                            }
-                                                          : null,
+                                        Row(
+                                          children: [
+                                            V3Focus(
+                                              identifier:
+                                                  'v3_qa_select_screen_audio',
+                                              child: Checkbox(
+                                                semanticLabel: S
+                                                    .of(context)
+                                                    .v3_lbl_select_screen_audio,
+                                                value: _systemAudio,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          2.0),
                                                 ),
+                                                side: WidgetStateBorderSide
+                                                    .resolveWith(
+                                                  (states) => BorderSide(
+                                                      width: 1.0,
+                                                      color: (!displayAudioDriverWarning)
+                                                          ? context.tokens.color
+                                                              .vsdswColorPrimary
+                                                          : context.tokens.color
+                                                              .vsdswColorDisabled),
+                                                ),
+                                                onChanged:
+                                                    (!displayAudioDriverWarning)
+                                                        ? (bool? value) {
+                                                            setState(() {
+                                                              _systemAudio =
+                                                                  value!;
+                                                            });
+                                                          }
+                                                        : null,
                                               ),
-                                              const Gap(8),
-                                              Text(
+                                            ),
+                                            const Gap(8),
+                                            Flexible(
+                                              child: V3AutoHyphenatingText(
                                                 S.current
                                                     .v3_present_select_screen_share_audio,
                                                 style: TextStyle(
@@ -598,23 +591,22 @@ class SelectScreenDialog extends Dialog {
                                                         : context.tokens.color
                                                             .vsdswColorDisabled),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                         if (displayAudioDriverWarning)
-                                          SizedBox(
-                                            height: 48,
-                                            child: MergeSemantics(
-                                              child: Row(
-                                                children: [
-                                                  const Gap(8),
-                                                  SvgPicture.asset(
-                                                    width: 16,
-                                                    height: 16,
-                                                    'assets/images/v3_ic_audio_driver_warning.svg',
-                                                  ),
-                                                  const Gap(8),
-                                                  Text(
+                                          MergeSemantics(
+                                            child: Row(
+                                              children: [
+                                                const Gap(8),
+                                                SvgPicture.asset(
+                                                  width: 16,
+                                                  height: 16,
+                                                  'assets/images/v3_ic_audio_driver_warning.svg',
+                                                ),
+                                                const Gap(8),
+                                                Flexible(
+                                                  child: V3AutoHyphenatingText(
                                                     S.current
                                                         .v3_present_select_screen_mac_audio_driver,
                                                     style: TextStyle(
@@ -625,86 +617,81 @@ class SelectScreenDialog extends Dialog {
                                                             .color
                                                             .vsdswColorWarning),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                       ],
-                                      SizedBox(
-                                        height: 48,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            createButton(
-                                              label: S
-                                                  .of(context)
-                                                  .v3_lbl_select_screen_cancel,
-                                              identifier:
-                                                  'v3_qa_select_screen_cancel',
-                                              text: S
-                                                  .of(context)
-                                                  .present_select_screen_cancel,
-                                              textColor: context.tokens.color
-                                                  .vsdswColorPrimary,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              borderColor: context.tokens.color
-                                                  .vsdswColorSecondary,
-                                              onPressed: () {
-                                                cancel();
-                                              },
-                                            ),
-                                            createButton(
-                                              label: S
-                                                  .of(context)
-                                                  .v3_lbl_select_screen_share,
-                                              identifier:
-                                                  'v3_qa_select_screen_share',
-                                              text: S.current
-                                                  .v3_main_select_role_share,
-                                              textColor: sourceSelected
-                                                  ? context.tokens.color
-                                                      .vsdswColorOnPrimary
-                                                  : context.tokens.color
-                                                      .vsdswColorOnDisabled,
-                                              backgroundColor: sourceSelected
-                                                  ? context.tokens.color
-                                                      .vsdswColorPrimary
-                                                  : context.tokens.color
-                                                      .vsdswColorDisabled,
-                                              onPressed: () {
-                                                if (!sourceSelected) {
-                                                  return;
-                                                }
-                                                ChannelProvider
-                                                    channelProvider = Provider
-                                                        .of<ChannelProvider>(
-                                                            context,
-                                                            listen: false);
-                                                if (channelProvider
-                                                    .isConnectAvailable()) {
-                                                  _ok(
-                                                      _selectedSource,
-                                                      _systemAudio,
-                                                      _isExtensionSelected);
-                                                } else {
-                                                  Toast.makeFeatureReconnectToast(
-                                                      channelProvider
-                                                          .reconnectState,
-                                                      channelProvider
-                                                                  .reconnectState ==
-                                                              ChannelReconnectState
-                                                                  .reconnecting
-                                                          ? S.current
-                                                              .main_feature_reconnecting_toast
-                                                          : S.current
-                                                              .main_feature_reconnect_fail_toast);
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          createButton(
+                                            label: S
+                                                .of(context)
+                                                .v3_lbl_select_screen_cancel,
+                                            identifier:
+                                                'v3_qa_select_screen_cancel',
+                                            text: S
+                                                .of(context)
+                                                .present_select_screen_cancel,
+                                            textColor: context
+                                                .tokens.color.vsdswColorPrimary,
+                                            backgroundColor: Colors.transparent,
+                                            borderColor: context.tokens.color
+                                                .vsdswColorSecondary,
+                                            onPressed: () {
+                                              cancel();
+                                            },
+                                          ),
+                                          createButton(
+                                            label: S
+                                                .of(context)
+                                                .v3_lbl_select_screen_share,
+                                            identifier:
+                                                'v3_qa_select_screen_share',
+                                            text: S.current
+                                                .v3_main_select_role_share,
+                                            textColor: sourceSelected
+                                                ? context.tokens.color
+                                                    .vsdswColorOnPrimary
+                                                : context.tokens.color
+                                                    .vsdswColorOnDisabled,
+                                            backgroundColor: sourceSelected
+                                                ? context.tokens.color
+                                                    .vsdswColorPrimary
+                                                : context.tokens.color
+                                                    .vsdswColorDisabled,
+                                            onPressed: () {
+                                              if (!sourceSelected) {
+                                                return;
+                                              }
+                                              ChannelProvider channelProvider =
+                                                  Provider.of<ChannelProvider>(
+                                                      context,
+                                                      listen: false);
+                                              if (channelProvider
+                                                  .isConnectAvailable()) {
+                                                _ok(
+                                                    _selectedSource,
+                                                    _systemAudio,
+                                                    _isExtensionSelected);
+                                              } else {
+                                                Toast.makeFeatureReconnectToast(
+                                                    channelProvider
+                                                        .reconnectState,
+                                                    channelProvider
+                                                                .reconnectState ==
+                                                            ChannelReconnectState
+                                                                .reconnecting
+                                                        ? S.current
+                                                            .main_feature_reconnecting_toast
+                                                        : S.current
+                                                            .main_feature_reconnect_fail_toast);
+                                              }
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -727,14 +714,11 @@ class SelectScreenDialog extends Dialog {
 
   Widget buildTabWidget(BuildContext context, String text,
       {bool enable = true}) {
-    return Container(
-      alignment: Alignment.center,
-      width: 338.67,
-      height: 48,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: V3AutoHyphenatingText(
             text,
             style: TextStyle(
               fontSize: 16,
@@ -745,17 +729,17 @@ class SelectScreenDialog extends Dialog {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const Gap(4),
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(
-              color: context.tokens.color.vsdswColorTertiary,
-              borderRadius: BorderRadius.all(Radius.circular(18.0)),
-            ),
-          )
-        ],
-      ),
+        ),
+        const Gap(4),
+        Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(
+            color: context.tokens.color.vsdswColorTertiary,
+            borderRadius: BorderRadius.all(Radius.circular(18.0)),
+          ),
+        )
+      ],
     );
   }
 
@@ -799,7 +783,7 @@ class SelectScreenDialog extends Dialog {
                   color: backgroundColor,
                   borderRadius: BorderRadius.circular(9999),
                 ),
-          child: Text(
+          child: V3AutoHyphenatingText(
             text,
             style: TextStyle(color: textColor),
           ),
@@ -969,7 +953,7 @@ class ScreenExtensionPage extends StatelessWidget {
             child: Lottie.asset('assets/lottie_files/screen_extension.json'),
           ),
           const Gap(32),
-          Text(
+          V3AutoHyphenatingText(
             S.current.v3_present_select_screen_extension_desc,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -981,7 +965,7 @@ class ScreenExtensionPage extends StatelessWidget {
           ),
           const Gap(8),
           SizedBox(
-            child: Text(
+            child: V3AutoHyphenatingText(
               S.current.v3_present_select_screen_extension_desc2,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -1087,13 +1071,15 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
             ),
           ),
           const Gap(8),
-          Text(
-            sourceName,
-            style: TextStyle(
-                fontSize: 16,
-                color: context.tokens.color.vsdswColorOnSurface,
-                fontWeight:
-                    widget.selected ? FontWeight.bold : FontWeight.normal),
+          Flexible(
+            child: V3AutoHyphenatingText(
+              sourceName,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: context.tokens.color.vsdswColorOnSurface,
+                  fontWeight:
+                      widget.selected ? FontWeight.bold : FontWeight.normal),
+            ),
           ),
         ],
       ),

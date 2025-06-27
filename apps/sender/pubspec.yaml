@@ -72,7 +72,6 @@ dependencies:
   synchronized: ^3.3.0+3
   connectivity_plus: ^5.0.1
   bonsoir: ^5.1.10
-  auto_size_text: ^3.0.0
   flutter_svg: ^2.0.10+1
   qr_code_scanner_plus: ^2.0.10+1
   wakelock_plus: ^1.2.8
@@ -127,6 +126,7 @@ dependencies:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/mixin-network-flutter-plugins
       path: packages/desktop_multi_window
       ref: release-0.20-3
+  auto_hyphenating_text: ^0.3.0
   # ViewSonic plug-in
 
 dependency_overrides:

@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -40,7 +39,7 @@ class V3Toast {
           SizedBox(width: context.tokens.spacing.vsdswSpacingXs.left),
           SizedBox(
             width: 246,
-            child: AutoSizeText.rich(
+            child: Text.rich(
               _buildSharingTimeTextSpan(
                 fullText: fullText,
                 sharingTime: sharingTime,
@@ -51,8 +50,6 @@ class V3Toast {
                   color: context.tokens.color.vsdswColorSecondary,
                 ),
               ),
-              maxFontSize: 16,
-              minFontSize: 5,
               maxLines: 2,
               style: TextStyle(
                 // fontSize: 16,

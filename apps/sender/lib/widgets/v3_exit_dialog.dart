@@ -16,6 +16,7 @@ class _V3ExitDialogState extends State<V3ExitDialog> {
     return PopScope(
       canPop: false,
       child: AlertDialog(
+        // Can not use V3AutoHyphenatingText
         title: Text(S.of(context).v3_exit_title),
         actions: [
           V3Focus(
@@ -34,6 +35,7 @@ class _V3ExitDialogState extends State<V3ExitDialog> {
                   ),
                 ),
               ),
+              // Can not use V3AutoHyphenatingText
               child: Text(S.of(context).v3_exit_action_exit),
             ),
           ),
@@ -54,6 +56,7 @@ class _V3ExitDialogState extends State<V3ExitDialog> {
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
+              // Can not use V3AutoHyphenatingText
               child: Text(S.of(context).v3_exit_action_cancel),
             ),
           ),

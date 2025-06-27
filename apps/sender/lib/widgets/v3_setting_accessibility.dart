@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_text_scale_provider.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,7 @@ class TextSizeDropdownState extends State<TextSizeDropdown> {
         children: [
           Row(
             children: [
-              Text(
+              V3AutoHyphenatingText(
                 S.current.v3_setting_accessibility_text_size,
                 style: TextStyle(
                   color: context.tokens.color.vsdswColorOnSurfaceInverse,
@@ -157,7 +158,7 @@ class _SizeDropdownState extends State<SizeDropdown> {
                       children: [
                         SizedBox(
                           width: 100,
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             option.name,
                             style: TextStyle(
                               color: isSelected
@@ -208,7 +209,7 @@ class _SizeDropdownState extends State<SizeDropdown> {
           ),
           child: Row(
             children: [
-              Expanded(child: Text(_selected.name)),
+              Expanded(child: V3AutoHyphenatingText(_selected.name)),
               SvgPicture.asset('assets/images/v3_ic_accessibility_arrow.svg'),
             ],
           ),

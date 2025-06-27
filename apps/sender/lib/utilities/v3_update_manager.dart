@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +140,9 @@ class V3UpdateManager {
         builder: (context) => PopScope(
               canPop: false,
               child: CupertinoAlertDialog(
+                // Can not use V3AutoHyphenatingText
                 title: Text(_dialogTittle(context, status)),
+                // Can not use V3AutoHyphenatingText
                 content: Text(_dialogDescription(context, status)),
                 actions: [
                   if (status == CompareVersionResult.userChoose)
@@ -147,6 +150,7 @@ class V3UpdateManager {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
+                      // Can not use V3AutoHyphenatingText
                       child: Text(
                           S.of(context).v3_setting_software_update_deny_action,
                           style: const TextStyle(
@@ -161,6 +165,7 @@ class V3UpdateManager {
                         launchUrl(Uri.parse(
                             'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
                       },
+                      // Can not use V3AutoHyphenatingText
                       child: Text(
                           status == CompareVersionResult.forceUpgrade
                               ? S
@@ -177,6 +182,7 @@ class V3UpdateManager {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
+                      // Can not use V3AutoHyphenatingText
                       child: Text(
                           S
                               .of(context)
@@ -199,8 +205,9 @@ class V3UpdateManager {
         builder: (context) => PopScope(
             canPop: false,
             child: AlertDialog(
-              title: Text(_dialogTittle(context, status)),
-              content: Text(_dialogDescription(context, status)),
+              title: V3AutoHyphenatingText(_dialogTittle(context, status)),
+              content:
+                  V3AutoHyphenatingText(_dialogDescription(context, status)),
               actions: [
                 if (status == CompareVersionResult.userChoose)
                   V3Focus(
@@ -212,7 +219,7 @@ class V3UpdateManager {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                           S.of(context).v3_setting_software_update_deny_action),
                     ),
                   ),
@@ -230,7 +237,7 @@ class V3UpdateManager {
                         unawaited(launchUrl(Uri.parse(
                             'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast')));
                       },
-                      child: Text(S
+                      child: V3AutoHyphenatingText(S
                           .of(context)
                           .v3_setting_software_update_positive_action),
                     ),
@@ -246,7 +253,7 @@ class V3UpdateManager {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(S
+                      child: V3AutoHyphenatingText(S
                           .of(context)
                           .v3_setting_software_update_no_available_action),
                     ),
@@ -289,6 +296,7 @@ class V3UpdateManager {
                     padding: EdgeInsets.only(
                         top: context.tokens.spacing.vsdswSpacingMd.top),
                     child: Center(
+                      // Can not use V3AutoHyphenatingText
                       child: Text(
                         _dialogTittle(context, status),
                         textAlign: TextAlign.center,
@@ -310,7 +318,7 @@ class V3UpdateManager {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    V3AutoHyphenatingText(
                       _dialogDescription(context, status),
                       style: TextStyle(
                         color: context.tokens.color.vsdswColorOnSurface,
@@ -452,7 +460,7 @@ class V3UpdateManager {
                   ]
                 : null,
           ),
-          child: Text(
+          child: V3AutoHyphenatingText(
             text,
             style: TextStyle(color: textColor),
           ),
@@ -490,7 +498,7 @@ class V3UpdateManager {
                     padding: EdgeInsets.only(
                         top: context.tokens.spacing.vsdswSpacingMd.top),
                     child: Center(
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.of(context).v3_setting_software_update,
                         textAlign: TextAlign.center,
                       ),
@@ -505,7 +513,7 @@ class V3UpdateManager {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    V3AutoHyphenatingText(
                         '${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
                     const Spacer(),
                     const Divider(),

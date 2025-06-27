@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,7 +46,7 @@ class AppRetain extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: V3AutoHyphenatingText(message)),
       );
   }
 }
