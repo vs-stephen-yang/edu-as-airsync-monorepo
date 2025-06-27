@@ -16,11 +16,27 @@ class RtpReceiverCore {
     RtpReceiverCore();
     ~RtpReceiverCore();
 
-    void start(const std::vector<std::string>& local_ips, const std::string& multicast_ip, int port, std::vector<uint8_t> key, std::vector<uint8_t> salt, uint32_t ssrc, uint32_t roc, AUCallback callback);
+    void start(const std::vector<std::string>& local_ips, const std::string& multicast_ip, int port, std::vector<uint8_t>& key, std::vector<uint8_t>& salt, uint32_t ssrc, uint32_t roc, AUCallback callback);
     void stop();
 
   private:
-    std::vector<std::thread> receiver_threads_;
-    std::atomic<bool> running_ = false;
-    std::atomic<bool> active_found_ = false;
+    std::thread receiver_thread_;
+    std::atomic<bool> running_;
+
+    std::string detect_best_interface(const std::vector<std::string>& candidate_local_ips,
+                                      const std::string& multicast_ip,
+                                      int port,
+                                      std::vector<uint8_t>& key,
+                                      std::vector<uint8_t>& salt,
+                                      uint32_t ssrc,
+                                      uint32_t roc);
+
+    void start_rtp_receiver_with_interface(const std::string& interface_ip,
+                                           const std::string& multicast_ip,
+                                           int port,
+                                           std::vector<uint8_t>& key,
+                                           std::vector<uint8_t>& salt,
+                                           uint32_t ssrc,
+                                           uint32_t roc,
+                                           AUCallback callback);
 };

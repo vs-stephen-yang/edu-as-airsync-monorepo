@@ -154,6 +154,7 @@ set(COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../native_libs/common")
 
 set(COMMON_SRC
         ${COMMON_DIR}/rtp_receiver_core.cpp
+        ${COMMON_DIR}/ip_pktinfo_detector.cpp
         ${COMMON_DIR}/gst_video_pipeline.cpp
 )
 

@@ -63,11 +63,12 @@ rtp_error_t uvgrtp::socketfactory::set_local_interface(std::string local_addr)
     return RTP_OK;
 }
 
-std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address)
+std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::finalize_socket_creation(
+    std::shared_ptr<uvgrtp::socket> socket,
+    int type, uint16_t port,
+    const std::string& bind_address)
 {
     rtp_error_t ret = RTP_OK;
-    std::shared_ptr<uvgrtp::socket> socket = std::make_shared<uvgrtp::socket>(rce_flags_);
-
     if (ipv6_) {
         ret = socket->init(AF_INET6, SOCK_DGRAM, 0);
     }
@@ -109,6 +110,24 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int typ
     }
     
     return nullptr;
+}
+
+std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address)
+{
+    std::shared_ptr<uvgrtp::socket> socket = std::make_shared<uvgrtp::socket>(rce_flags_);
+    return finalize_socket_creation(socket, type, port, bind_address);
+}
+
+std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address, bool is_detection, int expected_interface)
+{
+    if (!is_detection) {
+        // 不是檢測模式，直接調用原有方法
+        return create_new_socket(type, port, bind_address);
+    }
+
+    // 檢測模式：創建檢測 socket
+    std::shared_ptr<uvgrtp::socket> socket = std::make_shared<uvgrtp::socket>(rce_flags_, is_detection, expected_interface);
+    return finalize_socket_creation(socket, type, port, bind_address);
 }
 
 rtp_error_t uvgrtp::socketfactory::bind_socket(std::shared_ptr<uvgrtp::socket> soc, uint16_t port, const std::string& bind_address)

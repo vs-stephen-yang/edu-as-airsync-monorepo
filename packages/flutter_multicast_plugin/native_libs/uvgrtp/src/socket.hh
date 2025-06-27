@@ -73,9 +73,18 @@ namespace uvgrtp {
         packet_handler_vec handler = nullptr;
     };
 
+    struct packet_info {
+        uint8_t data[2048];
+        size_t data_len;
+        sockaddr_in sender;
+        int received_interface;
+        bool has_interface_info;
+    };
+
     class socket {
         public:
             socket(int rce_flags);
+            socket(int rce_flags, bool is_detection, int expected_interface);
             ~socket();
 
             /* Create socket using "family", "type" and "protocol"
@@ -185,6 +194,7 @@ namespace uvgrtp {
             static bool is_multicast(sockaddr_in& local_address);
             static bool is_multicast(sockaddr_in6& local_address);
 
+            rtp_error_t enable_packet_info();
 
         private:
 
@@ -199,6 +209,17 @@ namespace uvgrtp {
             /* __sendtov() does the same as __sendto but it combines multiple buffers into one frame and sends them */
             rtp_error_t __sendtov(sockaddr_in& addr, sockaddr_in6& addr6, bool ipv6, buf_vec& buffers, int send_flags, int *bytes_sent);
             rtp_error_t __sendtov(sockaddr_in& addr, sockaddr_in6& addr6, bool ipv6, uvgrtp::pkt_vec& buffers, int send_flags, int *bytes_sent);
+
+            rtp_error_t recvfrom_with_filtering(uint8_t *buf, size_t buf_len, int recv_flags, sockaddr_in *sender, int *bytes_read);
+            rtp_error_t recv_with_interface_info(packet_info& info);
+
+#ifdef _WIN32
+            LPFN_WSARECVMSG WSARecvMsg_ = nullptr;
+            void load_wsarecvmsg();
+            rtp_error_t recv_with_interface_info_windows(packet_info& info);
+#else
+            rtp_error_t recv_with_interface_info_linux(packet_info& info);
+#endif
 
             socket_t socket_;
             //sockaddr_in remote_address_;
@@ -217,6 +238,9 @@ namespace uvgrtp {
 
             /* __sendtov() calls these handlers in order before sending the packet */
             std::multimap<std::shared_ptr<std::atomic<std::uint32_t>>, socket_packet_handler> vec_handlers_;
+
+            bool is_detection_socket_ = false;
+            int expected_interface_ = 0;
 
 #ifndef NDEBUG
             uint64_t sent_packets_ = 0;
