@@ -1,64 +1,55 @@
 #include "uvgrtp/session.hh"
 
-#include "uvgrtp/media_stream.hh"
-#include "socketfactory.hh"
 #include "crypto.hh"
-#include "zrtp.hh"
 #include "debug.hh"
-
+#include "socketfactory.hh"
+#include "uvgrtp/media_stream.hh"
+#include "zrtp.hh"
 
 uvgrtp::session::session(std::string cname, std::string addr, std::shared_ptr<uvgrtp::socketfactory> sfp) :
 #ifdef __RTP_CRYPTO__
-    zrtp_(nullptr),
+                                                                                                            zrtp_(nullptr),
 #endif
-    generic_address_(addr),
-    remote_address_(""),
-    local_address_(""),
-    cname_(cname),
-    sf_(sfp)
-{
+                                                                                                            generic_address_(addr),
+                                                                                                            remote_address_(""),
+                                                                                                            local_address_(""),
+                                                                                                            cname_(cname),
+                                                                                                            sf_(sfp) {
     sf_->set_local_interface(generic_address_);
 }
 
-uvgrtp::session::session(std::string cname, std::string remote_addr, std::string local_addr, std::shared_ptr<uvgrtp::socketfactory> sfp):
+uvgrtp::session::session(std::string cname, std::string remote_addr, std::string local_addr, std::shared_ptr<uvgrtp::socketfactory> sfp) :
 #ifdef __RTP_CRYPTO__
-    zrtp_(nullptr),
+                                                                                                                                           zrtp_(nullptr),
 #endif
-    generic_address_(""),
-    remote_address_(remote_addr),
-    local_address_(local_addr),
-    cname_(cname),
-    sf_(sfp)
-{
+                                                                                                                                           generic_address_(""),
+                                                                                                                                           remote_address_(remote_addr),
+                                                                                                                                           local_address_(local_addr),
+                                                                                                                                           cname_(cname),
+                                                                                                                                           sf_(sfp) {
     sf_->set_local_interface(local_addr);
 }
 
-uvgrtp::session::~session()
-{
-    for (auto&i : streams_) {
+uvgrtp::session::~session() {
+    for (auto& i : streams_) {
         (void)destroy_stream(i.second);
     }
     streams_.clear();
     sf_ = nullptr;
 }
 
-uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t port, rtp_format_t fmt, int rce_flags, bool is_detection, int expected_interface)
-{
-    if (rce_flags & RCE_RECEIVE_ONLY)
-    {
+uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t port, rtp_format_t fmt, int rce_flags, bool is_detection, int expected_interface) {
+    if (rce_flags & RCE_RECEIVE_ONLY) {
         return create_stream(port, 0, fmt, rce_flags, is_detection, expected_interface);
-    }
-    else if (rce_flags & RCE_SEND_ONLY)
-    {
+    } else if (rce_flags & RCE_SEND_ONLY) {
         return create_stream(0, port, fmt, rce_flags, is_detection, expected_interface);
     }
-    
+
     UVG_LOG_WARN("You haven't specified the purpose of port with rce_flags. Using it as destination port and not binding");
     return create_stream(0, port, fmt, rce_flags, is_detection, expected_interface);
 }
 
-uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t dst_port, rtp_format_t fmt, int rce_flags, bool is_detection, int expected_interface)
-{
+uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t dst_port, rtp_format_t fmt, int rce_flags, bool is_detection, int expected_interface) {
     if (rce_flags & RCE_OBSOLETE) {
         UVG_LOG_WARN("You are using a flag that has either been removed or has been enabled by default. Consider updating RCE flags");
     }
@@ -70,51 +61,40 @@ uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t
     }
 
     // select which address the one address we got as a parameter is
-    if (generic_address_ != "")
-    {
-        if (rce_flags & RCE_RECEIVE_ONLY)
-        {
+    if (generic_address_ != "") {
+        if (rce_flags & RCE_RECEIVE_ONLY) {
             local_address_ = generic_address_;
-        }
-        else
-        {
+        } else {
             remote_address_ = generic_address_;
         }
-    }
-    else if ((rce_flags & RCE_RECEIVE_ONLY) && local_address_ == "")
-    {
+    } else if ((rce_flags & RCE_RECEIVE_ONLY) && local_address_ == "") {
         UVG_LOG_ERROR("RCE_RECEIVE_ONLY requires local address!");
         rtp_errno = RTP_INVALID_VALUE;
-        return  nullptr;
-    }
-    else if ((rce_flags & RCE_SEND_ONLY) && remote_address_ == "")
-    {
+        return nullptr;
+    } else if ((rce_flags & RCE_SEND_ONLY) && remote_address_ == "") {
         UVG_LOG_ERROR("RCE_SEND_ONLY requires remote address!");
         rtp_errno = RTP_INVALID_VALUE;
-        return  nullptr;
+        return nullptr;
     }
 
-    if ((rce_flags & RCE_RECEIVE_ONLY) && src_port == 0)
-    {
+    if ((rce_flags & RCE_RECEIVE_ONLY) && src_port == 0) {
         UVG_LOG_ERROR("RCE_RECEIVE_ONLY requires source port!");
         rtp_errno = RTP_INVALID_VALUE;
-        return  nullptr;
+        return nullptr;
     }
 
-    if ((rce_flags & RCE_SEND_ONLY) && dst_port == 0)
-    {
+    if ((rce_flags & RCE_SEND_ONLY) && dst_port == 0) {
         UVG_LOG_ERROR("RCE_SEND_ONLY requires destination port!");
         rtp_errno = RTP_INVALID_VALUE;
-        return  nullptr;
+        return nullptr;
     }
 
-    if (rce_flags & RCE_SRTP && !uvgrtp::crypto::enabled()) 
-    {
+    if (rce_flags & RCE_SRTP && !uvgrtp::crypto::enabled()) {
         UVG_LOG_ERROR("RCE_SRTP requires inclusion of Crypto++ during compilation!");
         rtp_errno = RTP_GENERIC_ERROR;
         return nullptr;
     }
-    
+
     uvgrtp::media_stream* stream =
         new uvgrtp::media_stream(cname_, remote_address_, local_address_, src_port, dst_port, fmt, sf_, rce_flags, is_detection, expected_interface);
 
@@ -135,8 +115,8 @@ uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t
         session_mtx_.unlock();
 
         /* With flags RCE_SRTP_KMNGMNT_ZRTP enabled, start ZRTP negotiation automatically.  NOTE! This only works when
-         * not doing socket multiplexing. 
-         * 
+         * not doing socket multiplexing.
+         *
          * More info on flags: When using ZRTP, you have the following options:
          * 1. Use flags RCE_SRTP + RCE_SRTP_KMNGMNT_ZRTP + negotiation mode flag
          *     -> This way ZRTP negotiation is started automatically
@@ -191,8 +171,7 @@ uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t
     return stream;
 }
 
-rtp_error_t uvgrtp::session::destroy_stream(uvgrtp::media_stream *stream)
-{
+rtp_error_t uvgrtp::session::destroy_stream(uvgrtp::media_stream* stream) {
     if (!stream)
         return RTP_INVALID_VALUE;
 
@@ -207,8 +186,7 @@ rtp_error_t uvgrtp::session::destroy_stream(uvgrtp::media_stream *stream)
     return RTP_OK;
 }
 
-std::string& uvgrtp::session::get_key()
-{
+std::string& uvgrtp::session::get_key() {
     return remote_address_;
 }
 
