@@ -34,36 +34,39 @@
 
 uvgrtp::media_stream::media_stream(std::string cname, std::string remote_addr,
                                    std::string local_addr, uint16_t src_port, uint16_t dst_port, rtp_format_t fmt,
-                                   std::shared_ptr<uvgrtp::socketfactory> sfp, int rce_flags) : key_(uvgrtp::random::generate_32()),
-                                                                                                srtp_(nullptr),
-                                                                                                srtcp_(nullptr),
-                                                                                                socket_(nullptr),
-                                                                                                rtp_(nullptr),
-                                                                                                rtcp_(nullptr),
-                                                                                                zrtp_(nullptr),
-                                                                                                sfp_(sfp),
-                                                                                                remote_sockaddr_(),
-                                                                                                remote_sockaddr_ip6_(),
-                                                                                                remote_address_(remote_addr),
-                                                                                                local_address_(local_addr),
-                                                                                                src_port_(src_port),
-                                                                                                dst_port_(dst_port),
-                                                                                                ipv6_(false),
-                                                                                                fmt_(fmt),
-                                                                                                new_socket_(false),
-                                                                                                rce_flags_(rce_flags),
-                                                                                                initialized_(false),
-                                                                                                reception_flow_(nullptr),
-                                                                                                media_(nullptr),
-                                                                                                holepuncher_(nullptr),
-                                                                                                cname_(cname),
-                                                                                                fps_numerator_(30),
-                                                                                                fps_denominator_(1),
-                                                                                                ssrc_(std::make_shared<std::atomic<std::uint32_t>>(uvgrtp::random::generate_32())),
-                                                                                                remote_ssrc_(std::make_shared<std::atomic<std::uint32_t>>(ssrc_.get()->load() + 1)),
-                                                                                                snd_buf_size_(-1),
-                                                                                                rcv_buf_size_(-1),
-                                                                                                multicast_ttl_(-1) {
+                                   std::shared_ptr<uvgrtp::socketfactory> sfp, int rce_flags,
+                                   bool is_detection, int expected_interface) : key_(uvgrtp::random::generate_32()),
+                                                                                               srtp_(nullptr),
+                                                                                               srtcp_(nullptr),
+                                                                                               socket_(nullptr),
+                                                                                               rtp_(nullptr),
+                                                                                               rtcp_(nullptr),
+                                                                                               zrtp_(nullptr),
+                                                                                               sfp_(sfp),
+                                                                                               remote_sockaddr_(),
+                                                                                               remote_sockaddr_ip6_(),
+                                                                                               remote_address_(remote_addr),
+                                                                                               local_address_(local_addr),
+                                                                                               src_port_(src_port),
+                                                                                               dst_port_(dst_port),
+                                                                                               ipv6_(false),
+                                                                                               fmt_(fmt),
+                                                                                               new_socket_(false),
+                                                                                               rce_flags_(rce_flags),
+                                                                                               initialized_(false),
+                                                                                               reception_flow_(nullptr),
+                                                                                               media_(nullptr),
+                                                                                               holepuncher_(nullptr),
+                                                                                               cname_(cname),
+                                                                                               fps_numerator_(30),
+                                                                                               fps_denominator_(1),
+                                                                                               ssrc_(std::make_shared<std::atomic<std::uint32_t>>(uvgrtp::random::generate_32())),
+                                                                                               remote_ssrc_(std::make_shared<std::atomic<std::uint32_t>>(ssrc_.get()->load() + 1)),
+                                                                                               snd_buf_size_(-1),
+                                                                                               rcv_buf_size_(-1),
+                                                                                               multicast_ttl_(-1),
+                                                                                               is_detection_stream_(is_detection),
+                                                                                               expected_interface_(expected_interface) {
 }
 
 uvgrtp::media_stream::~media_stream() {
@@ -107,7 +110,7 @@ rtp_error_t uvgrtp::media_stream::init_connection() {
         sockaddr_in multicast_sockaddr = uvgrtp::socket::create_sockaddr(AF_INET, multicast_address_, src_port_);
         if (uvgrtp::socket::is_multicast(multicast_sockaddr)) {
             UVG_LOG_DEBUG("[Set multicast] use custom multicast address");
-            socket_ = sfp_->create_new_socket(2, src_port_, multicast_address_);
+            socket_ = sfp_->create_new_socket(2, src_port_, multicast_address_, is_detection_stream_, expected_interface_);
             new_socket_ = true;
             multicast = true;
         }

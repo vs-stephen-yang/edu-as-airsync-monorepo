@@ -58,7 +58,8 @@ namespace uvgrtp {
       public:
         /// \cond DO_NOT_DOCUMENT
         media_stream(std::string cname, std::string remote_addr, std::string local_addr, uint16_t src_port, uint16_t dst_port,
-                     rtp_format_t fmt, std::shared_ptr<uvgrtp::socketfactory> sfp, int rce_flags);
+                     rtp_format_t fmt, std::shared_ptr<uvgrtp::socketfactory> sfp, int rce_flags,
+                     bool is_detection = false, int expected_interface = 0);
         ~media_stream();
 
         /* Initialize traditional RTP session.
@@ -478,6 +479,9 @@ namespace uvgrtp {
         int snd_buf_size_;
         int rcv_buf_size_;
         int multicast_ttl_;
+
+        bool is_detection_stream_ = false;
+        int expected_interface_;
     };
 } // namespace uvgrtp
 

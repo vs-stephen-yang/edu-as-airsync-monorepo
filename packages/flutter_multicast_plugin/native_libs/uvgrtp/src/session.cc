@@ -42,22 +42,22 @@ uvgrtp::session::~session()
     sf_ = nullptr;
 }
 
-uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t port, rtp_format_t fmt, int rce_flags)
+uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t port, rtp_format_t fmt, int rce_flags, bool is_detection, int expected_interface)
 {
     if (rce_flags & RCE_RECEIVE_ONLY)
     {
-        return create_stream(port, 0, fmt, rce_flags);
+        return create_stream(port, 0, fmt, rce_flags, is_detection, expected_interface);
     }
     else if (rce_flags & RCE_SEND_ONLY)
     {
-        return create_stream(0, port, fmt, rce_flags);
+        return create_stream(0, port, fmt, rce_flags, is_detection, expected_interface);
     }
     
     UVG_LOG_WARN("You haven't specified the purpose of port with rce_flags. Using it as destination port and not binding");
-    return create_stream(0, port, fmt, rce_flags);
+    return create_stream(0, port, fmt, rce_flags, is_detection, expected_interface);
 }
 
-uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t dst_port, rtp_format_t fmt, int rce_flags)
+uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t dst_port, rtp_format_t fmt, int rce_flags, bool is_detection, int expected_interface)
 {
     if (rce_flags & RCE_OBSOLETE) {
         UVG_LOG_WARN("You are using a flag that has either been removed or has been enabled by default. Consider updating RCE flags");
@@ -116,7 +116,7 @@ uvgrtp::media_stream* uvgrtp::session::create_stream(uint16_t src_port, uint16_t
     }
     
     uvgrtp::media_stream* stream =
-        new uvgrtp::media_stream(cname_, remote_address_, local_address_, src_port, dst_port, fmt, sf_, rce_flags);
+        new uvgrtp::media_stream(cname_, remote_address_, local_address_, src_port, dst_port, fmt, sf_, rce_flags, is_detection, expected_interface);
 
     if (!multicast_address_.empty()) {
         UVG_LOG_DEBUG("[Set multicast] multicast address %s pass to stream", multicast_address_.c_str());

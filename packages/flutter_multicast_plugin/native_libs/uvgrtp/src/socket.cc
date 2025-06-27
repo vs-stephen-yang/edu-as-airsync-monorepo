@@ -13,14 +13,17 @@
 #include <Ws2tcpip.h>
 #include <ws2def.h>
 #include <ws2ipdef.h>
+#include <mswsock.h>
 #else
 #include <unistd.h>
 #include <poll.h>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <sys/uio.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 #endif
 
 #if defined(__MINGW32__) || defined(__MINGW64__)
@@ -41,6 +44,23 @@ uvgrtp::socket::socket(int rce_flags) :
     local_ip6_address_(),
     ipv6_(false),
     rce_flags_(rce_flags),
+#ifdef _WIN32
+    buffers_()
+#else
+    header_(),
+    chunks_()
+#endif
+{}
+
+// socket.cc - 新增構造函數實作
+uvgrtp::socket::socket(int rce_flags, bool is_detection, int expected_interface_) :
+    socket_(0),
+    local_address_(),
+    local_ip6_address_(),
+    ipv6_(false),
+    rce_flags_(rce_flags),
+    is_detection_socket_(is_detection),        // 新增
+    expected_interface_(expected_interface_),   // 新增
 #ifdef _WIN32
     buffers_()
 #else
@@ -85,6 +105,14 @@ rtp_error_t uvgrtp::socket::init(short family, int type, int protocol)
 
     WSAIoctl(socket_, _WSAIOW(IOC_VENDOR, 12), &bNewBehavior, sizeof(bNewBehavior), NULL, 0, &dwBytesReturned, NULL, NULL);
 #endif
+
+     // 新增：如果是檢測 socket，啟用 IP_PKTINFO
+    if (is_detection_socket_) {
+        if (enable_packet_info() != RTP_OK) {
+            UVG_LOG_WARN("Failed to enable IP_PKTINFO for detection socket");
+            // 不返回錯誤，因為即使沒有 IP_PKTINFO，socket 仍然可以工作
+        }
+    }
 
     return RTP_OK;
 }
@@ -890,6 +918,11 @@ rtp_error_t uvgrtp::socket::recv(uint8_t *buf, size_t buf_len, int recv_flags, i
 
 rtp_error_t uvgrtp::socket::__recvfrom(uint8_t *buf, size_t buf_len, int recv_flags, sockaddr_in *sender, int *bytes_read)
 {
+    if (is_detection_socket_) {
+        // 檢測模式：使用接口過濾
+        return recvfrom_with_filtering(buf, buf_len, recv_flags, sender, bytes_read);
+    }
+
     socklen_t len      = sizeof(sockaddr_in);
     
 #ifndef _WIN32
@@ -1028,3 +1061,180 @@ rtp_error_t uvgrtp::socket::recvfrom(uint8_t *buf, size_t buf_len, int recv_flag
 {
     return __recvfrom(buf, buf_len, recv_flags, nullptr, nullptr);
 }
+
+rtp_error_t uvgrtp::socket::enable_packet_info() {
+#ifdef _WIN32
+    DWORD enable = 1;
+    UVG_LOG_DEBUG("[RECV Detect] enable packet info on Windows: %d", expected_interface_);
+    if (::setsockopt(socket_, IPPROTO_IP, IP_PKTINFO, (char*)&enable, sizeof(enable)) < 0) {
+        UVG_LOG_ERROR("[RECV Detect] Failed to enable packet info on Windows: %d", expected_interface_);
+        return RTP_GENERIC_ERROR;
+    }
+    load_wsarecvmsg();
+#else
+    int enable = 1;
+    UVG_LOG_DEBUG("[RECV Detect] enable packet info on Linux: %d", expected_interface_);
+    if (::setsockopt(socket_, IPPROTO_IP, IP_PKTINFO, &enable, sizeof(enable)) < 0) {
+        UVG_LOG_ERROR("[RECV Detect] Failed to enable packet info on Linux: %d", expected_interface_);
+        return RTP_GENERIC_ERROR;
+    }
+#endif
+    return RTP_OK;
+}
+
+rtp_error_t uvgrtp::socket::recvfrom_with_filtering(uint8_t *buf, size_t buf_len, int recv_flags, sockaddr_in *sender, int *bytes_read) {
+    while (true) {
+        packet_info info;
+        auto result = recv_with_interface_info(info);
+
+        if (result != RTP_OK) {
+            return result;
+        }
+
+        // 檢查是否為期望的接口
+        if (!info.has_interface_info) {
+            UVG_LOG_DEBUG("[RECV Detect] %d No interface info available, accepting packet", expected_interface_);
+        } else if (info.received_interface != expected_interface_) {
+            UVG_LOG_DEBUG("[RECV Detect] Packet from interface %d, expected %d, dropping", 
+                          info.received_interface, expected_interface_);
+            continue;  // 不是期望的接口，丟棄並繼續接收
+        }
+
+        UVG_LOG_DEBUG("[RECV Detect] Packet from interface %d, expected %d, keep", info.received_interface, expected_interface_);
+
+        // 是期望的接口或無法檢測接口，接受此封包
+        if (info.data_len <= buf_len) {
+            memcpy(buf, info.data, info.data_len);
+            set_bytes(bytes_read, static_cast<int>(info.data_len));
+            if (sender) {
+                *sender = info.sender;
+            }
+            return RTP_OK;
+        } else {
+            UVG_LOG_ERROR("[RECV Detect] Buffer too small for received packet");
+            return RTP_GENERIC_ERROR;
+        }
+    }
+}
+
+rtp_error_t uvgrtp::socket::recv_with_interface_info(packet_info& info) {
+#ifdef _WIN32
+    return recv_with_interface_info_windows(info);
+#else
+    return recv_with_interface_info_linux(info);
+#endif
+}
+
+#ifdef _WIN32
+rtp_error_t uvgrtp::socket::recv_with_interface_info_windows(packet_info& info) {
+    if (!wsarecvmsg_loaded_ || !WSARecvMsg_) {
+        // Fallback 到標準接收
+        int bytes_read;
+        auto result = __recvfrom(info.data, sizeof(info.data), 0, &info.sender, &bytes_read);
+        if (result == RTP_OK) {
+            info.data_len = bytes_read;
+            info.has_interface_info = false;
+        }
+        return result;
+    }
+
+    WSABUF wsabuf;
+    wsabuf.buf = (char*)info.data;
+    wsabuf.len = sizeof(info.data);
+
+    WSAMSG msg;
+    char control_buf[1024];
+
+    memset(&msg, 0, sizeof(msg));
+    msg.name = (SOCKADDR*)&info.sender;
+    msg.namelen = sizeof(info.sender);
+    msg.lpBuffers = &wsabuf;
+    msg.dwBufferCount = 1;
+    msg.Control.buf = control_buf;
+    msg.Control.len = sizeof(control_buf);
+
+    DWORD bytes_received = 0;
+    int result = WSARecvMsg_(socket_, &msg, &bytes_received, NULL, NULL);
+
+    if (result == SOCKET_ERROR) {
+        int error = WSAGetLastError();
+        if (error == WSAEWOULDBLOCK) {
+            return RTP_INTERRUPTED;
+        }
+        UVG_LOG_ERROR("[RECV Detect] WSARecvMsg failed: %d", error);
+        return RTP_GENERIC_ERROR;
+    }
+
+    info.data_len = bytes_received;
+    info.has_interface_info = false;
+
+    // 解析控制信息
+    WSACMSGHDR* cmsg = WSA_CMSG_FIRSTHDR(&msg);
+    while (cmsg != NULL) {
+        if (cmsg->cmsg_level == IPPROTO_IP && cmsg->cmsg_type == IP_PKTINFO) {
+            IN_PKTINFO* pkt_info = (IN_PKTINFO*)WSA_CMSG_DATA(cmsg);
+
+            // 設定介面索引
+            info.received_interface = pkt_info->ipi_ifindex;
+            info.has_interface_info = true;
+
+            // 目標地址（通常是 multicast 地址）
+            char addr_str[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &pkt_info->ipi_addr, addr_str, INET_ADDRSTRLEN);
+
+            UVG_LOG_DEBUG("[RECV Detect] Windows: Received on interface index %u, target: %s", pkt_info->ipi_ifindex, addr_str);
+            break;
+        }
+        cmsg = WSA_CMSG_NXTHDR(&msg, cmsg);
+    }
+
+    return RTP_OK;
+}
+#endif
+
+#ifndef _WIN32
+rtp_error_t uvgrtp::socket::recv_with_interface_info_linux(packet_info& info) {
+    struct iovec iov;
+    struct msghdr msg;
+    char control_buf[1024];
+
+    iov.iov_base = info.data;
+    iov.iov_len = sizeof(info.data);
+
+    memset(&msg, 0, sizeof(msg));
+    msg.msg_name = &info.sender;
+    msg.msg_namelen = sizeof(info.sender);
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = control_buf;
+    msg.msg_controllen = sizeof(control_buf);
+
+    ssize_t result = ::recvmsg(socket_, &msg, MSG_DONTWAIT);
+
+    if (result < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            return RTP_INTERRUPTED;
+        }
+        UVG_LOG_ERROR("[RECV Detect] recvmsg failed: %s", strerror(errno));
+        return RTP_GENERIC_ERROR;
+    }
+
+    info.data_len = result;
+    info.has_interface_info = false;
+
+    // 解析控制信息
+    struct cmsghdr* cmsg;
+    for (cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg = CMSG_NXTHDR(&msg, cmsg)) {
+        if (cmsg->cmsg_level == IPPROTO_IP && cmsg->cmsg_type == IP_PKTINFO) {
+            struct in_pktinfo* pkt_info = (struct in_pktinfo*)CMSG_DATA(cmsg);
+            info.received_interface = pkt_info->ipi_ifindex;
+            info.has_interface_info = true;
+
+            UVG_LOG_DEBUG("[RECV Detect] Linux: Received on interface %d", info.received_interface);
+            break;
+        }
+    }
+
+    return RTP_OK;
+}
+#endif
