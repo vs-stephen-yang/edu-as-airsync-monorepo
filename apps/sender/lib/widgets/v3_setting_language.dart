@@ -1,8 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +66,7 @@ class V3SettingLanguage extends StatelessWidget {
                                       .tokens.spacing.vsdswSpacingXs.right,
                                 ),
                               ),
-                              AutoSizeText(
+                              V3AutoHyphenatingText(
                                 key,
                                 style: TextStyle(
                                   fontSize: 14,

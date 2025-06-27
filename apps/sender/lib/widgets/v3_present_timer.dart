@@ -17,26 +17,31 @@ class V3PresentTimer extends StatelessWidget {
         ValueListenableBuilder(
           valueListenable: countHoursValue,
           builder: (BuildContext context, int value, Widget? child) {
+            // To avoid misinterpreting the hyphen (“-”), use plain text instead.
             return Text(
               value.toString().padLeft(2, '0'),
               style: textStyle32,
             );
           },
         ),
+        // To avoid misinterpreting the hyphen (“-”), use plain text instead.
         Text(':', style: textStyle32),
         ValueListenableBuilder(
           valueListenable: countMinutesValue,
           builder: (BuildContext context, int value, Widget? child) {
+            // To avoid misinterpreting the hyphen (“-”), use plain text instead.
             return Text(
               value.toString().padLeft(2, '0'),
               style: textStyle32,
             );
           },
         ),
+        // To avoid misinterpreting the hyphen (“-”), use plain text instead.
         Text(':', style: textStyle32),
         ValueListenableBuilder(
           valueListenable: countSecondsValue,
           builder: (BuildContext context, int value, Widget? child) {
+            // To avoid misinterpreting the hyphen (“-”), use plain text instead.
             return Text(
               value.toString().padLeft(2, '0'),
               style: textStyle32,

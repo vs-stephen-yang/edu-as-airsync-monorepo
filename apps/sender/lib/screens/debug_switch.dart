@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/utilities/share_log.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Restart the program to apply the changes.")));
+        content: V3AutoHyphenatingText("Restart the program to apply the changes.")));
   }
 
   void _showDebugOverlayChanged(bool value) async {
@@ -162,7 +163,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
       onPressed: () {
         shareLogs();
       },
-      child: const Text('Get Logs'),
+      child: const V3AutoHyphenatingText('Get Logs'),
     );
 
     return MenuDialog(
@@ -179,43 +180,43 @@ class _DebugSwitchState extends State<DebugSwitch> {
                 child: Column(
                   children: [
                     SwitchListTile(
-                      title: const Text('Show Debug Overlay'),
+                      title: const V3AutoHyphenatingText('Show Debug Overlay'),
                       value: _showDebugOverlay, // Use static value
                       onChanged: _showDebugOverlayChanged,
                     ),
                     SwitchListTile(
-                        title: const Text('video_quality_first'),
+                        title: const V3AutoHyphenatingText('video_quality_first'),
                         value: _isVideoQualityFirst,
                         onChanged: _changeVideoProfile),
-                    Text(
+                    V3AutoHyphenatingText(
                       "minBitrateKbps: $_minBitrateKbps",
                       style: const TextStyle(fontSize: 14, color: Colors.red),
                     ),
-                    Text("maxBitrateKbps: $_maxBitrateKbps",
+                    V3AutoHyphenatingText("maxBitrateKbps: $_maxBitrateKbps",
                         style:
                             const TextStyle(fontSize: 14, color: Colors.red)),
                     SwitchListTile(
-                        title: const Text('ICE Gathering Continually'),
+                        title: const V3AutoHyphenatingText('ICE Gathering Continually'),
                         value: _iceGatheringContinually,
                         onChanged: _changeGatheringPolicy),
                     SwitchListTile(
-                        title: const Text('Verbose Log'),
+                        title: const V3AutoHyphenatingText('Verbose Log'),
                         value: _isLogVerbose,
                         onChanged: _changeLogVerbose),
                     SwitchListTile(
-                        title: const Text('Enable RTC Stats Logs'),
+                        title: const V3AutoHyphenatingText('Enable RTC Stats Logs'),
                         value: _enableRTCStatsLogs,
                         onChanged: (value) {
                           _changeRTCLogs(WebRTCLogType.stats, value);
                         }),
                     SwitchListTile(
-                        title: const Text('Enable RTC Event Logs'),
+                        title: const V3AutoHyphenatingText('Enable RTC Event Logs'),
                         value: _enableRTCEventLogs,
                         onChanged: (value) {
                           _changeRTCLogs(WebRTCLogType.event, value);
                         }),
                     if (_rtcLogsDir != '')
-                      Text(
+                      V3AutoHyphenatingText(
                         _rtcLogsDir,
                         style: const TextStyle(fontSize: 14, color: Colors.red),
                       ),

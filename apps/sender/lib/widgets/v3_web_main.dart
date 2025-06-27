@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -12,6 +11,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
@@ -135,7 +135,7 @@ class V3WebMain extends StatelessWidget {
                             ? MediaQuery.of(context).size.width - 48
                             : double.infinity,
                       ),
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.current.v3_main_web_nonsupport,
                         style: TextStyle(
                           color: context.tokens.color.vsdswColorOnWarning,
@@ -155,7 +155,7 @@ class V3WebMain extends StatelessWidget {
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
+                        child: V3AutoHyphenatingText(
                           S.current.v3_main_web_nonsupport_confirm,
                           style: TextStyle(
                             color: context.tokens.color.vsdswColorWarning,
@@ -294,7 +294,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
           identifier: 'v3_qa_${entry.key}',
           selected: (entry.key == prefLanguageProvider.language),
           excludeSemantics: true,
-          child: Text(
+          child: V3AutoHyphenatingText(
             entry.key,
             style: TextStyle(
               fontSize: 14,
@@ -361,7 +361,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
               ),
               if (widget.showLanguageOnSurface) const SizedBox(width: 8),
               if (widget.showLanguageOnSurface)
-                Text(
+                V3AutoHyphenatingText(
                   prefLanguageProvider.language,
                   style: TextStyle(
                     fontSize: !isBigThan768(context) ? 12 : 14,
@@ -499,10 +499,8 @@ class ResponsiveHeader extends StatelessWidget {
                           ),
                         if (!isSmallScreen)
                           Flexible(
-                            child: AutoSizeText(
+                            child: V3AutoHyphenatingText(
                               S.of(context).v3_main_download,
-                              minFontSize: 5.0,
-                              overflow: TextOverflow.visible,
                               style: TextStyle(
                                 color: context.tokens.color.vsdswColorOnPrimary,
                                 fontSize: 14,

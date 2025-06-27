@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/foundation.dart';
@@ -24,8 +24,10 @@ class V3PresentWaitPrompt extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: isMobile ? 359 : 504,
-          height: isMobile ? 360 : 332,
+          constraints: BoxConstraints(
+            maxWidth: isMobile ? 359 : 504,
+            maxHeight: isMobile ? 360 : 332,
+          ),
           decoration: BoxDecoration(
             color: context.tokens.color.vsdswColorSurface100,
             borderRadius: context.tokens.radii.vsdswRadius2xl,
@@ -39,8 +41,7 @@ class V3PresentWaitPrompt extends StatelessWidget {
               mainAxisMargin: 10,
               child: SingleChildScrollView(
                 controller: sc,
-                child: IntrinsicHeight(
-                    child: Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (!isMobile)
@@ -75,7 +76,8 @@ class V3PresentWaitPrompt extends StatelessWidget {
                                     .withOpacity(0.2),
                               ),
                             ]),
-                        child: AutoSizeText(
+                        // To avoid misinterpreting the hyphen (“-”), use plain text instead.
+                        child: Text(
                           channelProvider.randomName,
                           style: TextStyle(
                             color: context.tokens.color.vsdswColorOnSurface,
@@ -99,7 +101,7 @@ class V3PresentWaitPrompt extends StatelessWidget {
                         ),
                       ),
                   ],
-                )),
+                ),
               ),
             ),
           ),
@@ -120,7 +122,7 @@ class WaitingText extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         children: [
-          Text(
+          V3AutoHyphenatingText(
             isModerator
                 ? S.of(context).v3_main_moderator_wait
                 : S.of(context).v3_main_authorize_wait,

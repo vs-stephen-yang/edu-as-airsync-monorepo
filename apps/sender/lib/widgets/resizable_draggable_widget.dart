@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 
 class ResizableDraggableWidget extends StatefulWidget {
   final double halfScreen;
@@ -241,10 +243,6 @@ class ExpandedContentWidget extends StatelessWidget {
       width: 2,
       color: context.tokens.color.vsdswColorOnSurface,
     );
-    final gap = SizedBox(width: context.tokens.spacing.vsdswSpacingSm.right);
-    final textPadding =
-        SizedBox(width: context.tokens.spacing.vsdswSpacingXs.right);
-
     return Container(
       width: width,
       height: height,
@@ -258,15 +256,15 @@ class ExpandedContentWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          gap,
+          Gap(context.tokens.spacing.vsdswSpacingXs.right),
           _buildIcon('assets/images/ic_drag.svg', context),
-          textPadding,
+          Gap(context.tokens.spacing.vsdswSpacingXs.right),
           Flexible(child: _buildText(context)),
-          textPadding,
+          Gap(context.tokens.spacing.vsdswSpacingXs.right),
           _buildStopButton(context),
-          // gap,
+          // Gap(context.tokens.spacing.vsdswSpacingXs.right),
           _buildMinimizeButton(context),
-          gap,
+          Gap(context.tokens.spacing.vsdswSpacingXs.right),
         ],
       ),
     );
@@ -291,16 +289,20 @@ class ExpandedContentWidget extends StatelessWidget {
   }
 
   Widget _buildText(BuildContext context) {
-    return AutoSizeText(
-      text,
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
-        color: context.tokens.color.vsdswColorOnSurface,
+    final sc = ScrollController();
+    return V3Scrollbar(
+      controller: sc,
+      child: SingleChildScrollView(
+        controller: sc,
+        child: V3AutoHyphenatingText(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: context.tokens.color.vsdswColorOnSurface,
+          ),
+        ),
       ),
-      maxLines: 1,
-      minFontSize: 5,
-      overflow: TextOverflow.ellipsis,
     );
   }
 

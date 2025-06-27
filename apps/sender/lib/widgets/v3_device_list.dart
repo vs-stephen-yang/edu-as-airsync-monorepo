@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
@@ -12,6 +11,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,52 +87,41 @@ class _V3DeviceListState extends State<V3DeviceList> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
+                Stack(
+                  alignment: AlignmentDirectional.center,
                   children: [
-                    const Spacer(flex: 1),
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: Text(
-                          S.of(context).main_device_list,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: context.tokens.color.vsdswColorOnSurface,
-                            fontSize: 20,
-                          ),
+                    Center(
+                      child: V3AutoHyphenatingText(
+                        S.of(context).main_device_list,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: context.tokens.color.vsdswColorOnSurface,
+                          fontSize: 20,
                         ),
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          V3Focus(
-                            identifier: 'v3_qa_device_list_close',
-                            child: SizedBox(
-                              width: (Platform.isAndroid || Platform.isIOS)
-                                  ? 48
-                                  : 28,
-                              height: (Platform.isAndroid || Platform.isIOS)
-                                  ? 48
-                                  : 28,
-                              child: InkWell(
-                                onTap: () {
-                                  _presentStateProvider.presentMainPage();
-                                },
-                                child: Icon(
-                                  size: 20.0,
-                                  Icons.close,
-                                  semanticLabel:
-                                      S.of(context).v3_lbl_device_list_close,
-                                  color:
-                                      context.tokens.color.vsdswColorOnSurface,
-                                ),
-                              ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: V3Focus(
+                        identifier: 'v3_qa_device_list_close',
+                        child: SizedBox(
+                          width:
+                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
+                          height:
+                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
+                          child: InkWell(
+                            onTap: () {
+                              _presentStateProvider.presentMainPage();
+                            },
+                            child: Icon(
+                              size: 20.0,
+                              Icons.close,
+                              semanticLabel:
+                                  S.of(context).v3_lbl_device_list_close,
+                              color: context.tokens.color.vsdswColorOnSurface,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ],
@@ -240,7 +229,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 )
               ],
             ),
-            child: Text(
+            child: V3AutoHyphenatingText(
               text,
               style: TextStyle(
                 color: enable
@@ -301,6 +290,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                       : null,
                   'assets/images/ic_device_list_screen.svg'),
               const Gap(8),
+              // To avoid misinterpreting the hyphen (“-”), use plain text instead.
               Text(
                 airSyncBonsoirService.name,
                 style: style,
@@ -317,6 +307,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 excludeFromSemantics: true,
               ),
               const Gap(8),
+              // To avoid misinterpreting the hyphen (“-”), use plain text instead.
               Text(
                 airSyncBonsoirService.displayCode,
                 textAlign: TextAlign.left,
@@ -366,6 +357,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
+                    // To avoid misinterpreting the hyphen (“-”), use plain text instead.
                     child: Text(
                       airSyncBonsoirService.name,
                       style: TextStyle(
@@ -382,6 +374,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
+                    // To avoid misinterpreting the hyphen (“-”), use plain text instead.
                     child: Text(
                       airSyncBonsoirService.displayCode,
                       style: TextStyle(
@@ -471,7 +464,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
   }
 }
 
-class DialogView extends Dialog {
+class DialogView extends StatelessWidget {
   final String title;
   final String? errorMessage;
   final Function(String) onConnect;
@@ -486,66 +479,50 @@ class DialogView extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Dialog(
+      alignment: Alignment.center,
+      backgroundColor: context.tokens.color.vsdswColorSurface100,
+      shadowColor: context.tokens.color.vsdswColorOpacityNeutralMd,
+      shape: RoundedRectangleBorder(
+        borderRadius: context.tokens.radii.vsdswRadius2xl,
+      ),
+      insetPadding: const EdgeInsets.all(8),
       child: Container(
         padding: context.tokens.spacing.vsdswSpacingLg,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
         constraints: BoxConstraints(
           maxWidth: isMobile() ? 359 : 504,
           maxHeight: isMobile() ? 284 : 296,
         ),
-        decoration: ShapeDecoration(
-          color: context.tokens.color.vsdswColorSurface100,
-          shape: RoundedRectangleBorder(
-            borderRadius: context.tokens.radii.vsdswRadius2xl,
-          ),
-          shadows: [
-            BoxShadow(
-              color: context.tokens.color.vsdswColorOpacityNeutralMd,
-              blurRadius: 16,
-              offset: Offset(0, 8),
-              spreadRadius: 0,
-            )
-          ],
-        ),
-        child: SizedBox.expand(
-          child: Container(
-            color: context.tokens.color.vsdswColorSurface100,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Gap(20),
-                    const Spacer(),
-                    AutoSizeText(
-                      title,
-                      minFontSize: 20,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdswColorOnSurface,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    Material(
-                      child: InkWell(
-                        onTap: onClose,
-                        child: Container(
-                          color: context.tokens.color.vsdswColorSurface100,
-                          child: Icon(
-                            size: 20.0,
-                            Icons.close,
-                            color: context.tokens.color.vsdswColorOnSurface,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: InkWell(
+                onTap: onClose,
+                child: Container(
+                  color: context.tokens.color.vsdswColorSurface100,
+                  child: Icon(
+                    size: 20.0,
+                    Icons.close,
+                    color: context.tokens.color.vsdswColorOnSurface,
+                  ),
                 ),
-                const Gap(24),
-                Container(
-                  constraints:
-                      isMobile() ? null : const BoxConstraints(maxWidth: 300),
+              ),
+            ),
+            Column(
+              children: [
+                V3AutoHyphenatingText(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: context.tokens.color.vsdswColorOnSurface,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Gap(20),
+                Expanded(
                   child: OTPInputWidget(
                     errorMessage: errorMessage,
                     onTap: onConnect,
@@ -553,7 +530,7 @@ class DialogView extends Dialog {
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -599,109 +576,112 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        color: context.tokens.color.vsdswColorSurface100,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: isMobile()
-                  ? context.tokens.spacing.vsdswSpacingSm
-                  : const EdgeInsets.only(
-                      top: 32, bottom: 16, left: 32, right: 32),
-              height: 56,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.only(left: 16),
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: context.tokens.color.vsdswColorSurface100,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                      width: 1,
-                      color: widget.errorMessage == null
-                          ? context.tokens.color.vsdswColorSecondaryVariant
-                          : context.tokens.color.vsdswColorError),
-                  borderRadius: BorderRadius.circular(9999),
-                ),
-                shadows: [
-                  BoxShadow(
-                    color: widget.errorMessage == null
-                        ? context.tokens.color.vsdswColorSurface200
-                        : const Color(0xFFFFD9DF),
-                    blurRadius: 0,
-                    offset: const Offset(0, 0),
-                    spreadRadius: 4,
-                  )
-                ],
-              ),
-              child: TextFormField(
-                controller: _controller,
-                focusNode: focusNode,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
-                  labelText: focusNode.hasFocus
-                      ? null
-                      : S.current.device_list_enter_pin,
-                  labelStyle: TextStyle(
-                    color: context.tokens.color.vsdswColorOnDisabled,
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 0.11,
+    final sc = ScrollController();
+    return V3Scrollbar(
+      controller: sc,
+      child: SingleChildScrollView(
+        controller: sc,
+        padding: EdgeInsets.all(8),
+        child: Container(
+          constraints: isMobile() ? null : BoxConstraints(maxWidth: 300),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(
+                    vertical: context.tokens.spacing.vsdswSpacingSm.top),
+                height: 56,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 16),
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  color: context.tokens.color.vsdswColorSurface100,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                        width: 1,
+                        color: widget.errorMessage == null
+                            ? context.tokens.color.vsdswColorSecondaryVariant
+                            : context.tokens.color.vsdswColorError),
+                    borderRadius: BorderRadius.circular(9999),
                   ),
-                  border: InputBorder.none,
-                  // 去掉底線
-                  enabledBorder: InputBorder.none,
-                  // 去掉底線
-                  focusedBorder: InputBorder.none, // 去掉底線
+                  shadows: [
+                    BoxShadow(
+                      color: widget.errorMessage == null
+                          ? context.tokens.color.vsdswColorSurface200
+                          : const Color(0xFFFFD9DF),
+                      blurRadius: 0,
+                      offset: const Offset(0, 0),
+                      spreadRadius: 4,
+                    )
+                  ],
                 ),
-                onChanged: _onChanged,
+                child: TextFormField(
+                  controller: _controller,
+                  focusNode: focusNode,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(
+                    labelText: focusNode.hasFocus
+                        ? null
+                        : S.current.device_list_enter_pin,
+                    labelStyle: TextStyle(
+                      color: context.tokens.color.vsdswColorOnDisabled,
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 0.11,
+                    ),
+                    border: InputBorder.none,
+                    // 去掉底線
+                    enabledBorder: InputBorder.none,
+                    // 去掉底線
+                    focusedBorder: InputBorder.none, // 去掉底線
+                  ),
+                  onChanged: _onChanged,
+                ),
               ),
-            ),
-            if (widget.errorMessage != null)
-              createErrorWidget(widget.errorMessage!),
-            buildButton(
-              buildContext: context,
-              text: S.current.v3_device_list_dialog_connect,
-              enable: buttonEnable,
-              onTap: () {
-                if (!buttonEnable) return;
-                widget.onTap.call(_controller.text);
-              },
-            )
-          ],
+              if (widget.errorMessage != null)
+                createErrorWidget(widget.errorMessage!),
+              buildButton(
+                buildContext: context,
+                text: S.current.v3_device_list_dialog_connect,
+                enable: buttonEnable,
+                onTap: () {
+                  if (!buttonEnable) return;
+                  widget.onTap.call(_controller.text);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget createErrorWidget(String errorMsg) {
-    return Container(
-      height: 16,
-      margin: const EdgeInsets.only(left: 16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-              width: 16, height: 16, 'assets/images/ic_device_list_error.svg'),
-          const SizedBox(width: 4),
-          Text(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+            width: 16, height: 16, 'assets/images/ic_device_list_error.svg'),
+        const SizedBox(width: 4),
+        Expanded(
+          child: V3AutoHyphenatingText(
             errorMsg,
             style: TextStyle(
               color: context.tokens.color.vsdswColorError,
               fontSize: 12,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
-              height: 0.10,
+              // This causes V3AutoHyphenatingText to fail to wrap into two lines.
+              // height: 0.10,
               letterSpacing: 0.24,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -710,48 +690,42 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
       required bool enable,
       required String text,
       required GestureTapCallback onTap}) {
-    return Material(
+    return InkWell(
+      onTap: enable ? onTap : null,
       child: Container(
-        color: context.tokens.color.vsdswColorSurface100,
-        child: InkWell(
-          onTap: enable ? onTap : null,
-          child: Container(
-            margin: isMobile()
-                ? const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6)
-                : const EdgeInsets.only(top: 22, left: 32, right: 32),
-            alignment: Alignment.center,
-            height: 48,
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
+        margin: EdgeInsets.symmetric(
+            vertical: context.tokens.spacing.vsdswSpacingSm.top),
+        alignment: Alignment.center,
+        height: 48,
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: enable
+              ? buildContext.tokens.color.vsdswColorPrimary
+              : buildContext.tokens.color.vsdswColorDisabled,
+          shape: RoundedRectangleBorder(
+            borderRadius: buildContext.tokens.radii.vsdswRadiusFull,
+          ),
+          shadows: [
+            BoxShadow(
               color: enable
-                  ? buildContext.tokens.color.vsdswColorPrimary
-                  : buildContext.tokens.color.vsdswColorDisabled,
-              shape: RoundedRectangleBorder(
-                borderRadius: buildContext.tokens.radii.vsdswRadiusFull,
-              ),
-              shadows: [
-                BoxShadow(
-                  color: enable
-                      ? context.tokens.color.vsdswColorOpacityPrimaryLg
-                      : context.tokens.color.vsdswColorOpacityNeutralMd,
-                  blurRadius: 24,
-                  offset: const Offset(0, 16),
-                  spreadRadius: 0,
-                )
-              ],
-            ),
-            child: Text(
-              text,
-              style: TextStyle(
-                color: enable
-                    ? buildContext.tokens.color.vsdswColorOnPrimary
-                    : buildContext.tokens.color.vsdswColorOnDisabled,
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w500,
-                height: 0.07,
-              ),
-            ),
+                  ? buildContext.tokens.color.vsdswColorOpacityPrimaryLg
+                  : buildContext.tokens.color.vsdswColorOpacityNeutralMd,
+              blurRadius: enable ? 24 : 8,
+              offset: Offset(0, enable ? 16 : 4),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: V3AutoHyphenatingText(
+          text,
+          style: TextStyle(
+            color: enable
+                ? buildContext.tokens.color.vsdswColorOnPrimary
+                : buildContext.tokens.color.vsdswColorOnDisabled,
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+            height: 0.07,
           ),
         ),
       ),

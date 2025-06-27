@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
@@ -12,6 +13,7 @@ import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/v3_exit_dialog.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
@@ -28,6 +30,7 @@ class V3Home extends StatefulWidget {
 
 class _V3HomeState extends State<V3Home> {
   late final AppLifecycleListener _lifecycleListener;
+  late Future<void> initOperation;
   var _alertShowing = false;
 
   @override
@@ -37,6 +40,7 @@ class _V3HomeState extends State<V3Home> {
       onResume: _handleResume,
       onExitRequested: _handleExitRequest,
     );
+    initOperation = initHyphenation();
 
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
@@ -87,10 +91,18 @@ class _V3HomeState extends State<V3Home> {
         });
       }
     });
-    return const AppRetain(
+    return AppRetain(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: kIsWeb ? V3HomeWeb() : V3HomeApp(),
+        body: FutureBuilder(
+            future: initOperation,
+            builder: (_, AsyncSnapshot<void> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return kIsWeb ? V3HomeWeb() : V3HomeApp();
+              } else {
+                return CircularProgressIndicator();
+              }
+            }),
       ),
     );
   }
@@ -159,16 +171,21 @@ class _V3HomeState extends State<V3Home> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        final sc = ScrollController();
         return AlertDialog(
           backgroundColor: Colors.white,
+          // Can not use V3AutoHyphenatingText
           title: Text(S.of(context).main_notice_title),
           content: SizedBox(
             width: 100,
             height: 100,
-            child: Column(
-              children: [
-                Text(S.of(context).main_notice_not_support_description),
-              ],
+            child: V3Scrollbar(
+              controller: sc,
+              child: SingleChildScrollView(
+                controller: sc,
+                // Can not use V3AutoHyphenatingText
+                child: Text(S.of(context).main_notice_not_support_description),
+              ),
             ),
           ),
           actions: <Widget>[
@@ -194,6 +211,7 @@ class _V3HomeState extends State<V3Home> {
                       'https://apps.apple.com/tw/app/airsync-sender/id6453759985')));
                 }
               },
+              // Can not use V3AutoHyphenatingText
               child: Text(S.of(context).main_notice_positive_button),
             ),
           ],

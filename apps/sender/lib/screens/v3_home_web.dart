@@ -70,6 +70,7 @@ class _V3HomeWebState extends State<V3HomeWeb> {
           )
         : const Opacity(
             opacity: 0.0,
+            // Only for preloading Chinese fonts — plain Text is sufficient.
             child: Text('中文'),
           );
   }

@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -73,7 +74,7 @@ class _V3PresentIdleAudioDriverWarningState
                   children: [
                     Flexible(
                       flex: 2,
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.current.v3_present_select_screen_mac_audio_driver,
                         style: TextStyle(
                           fontSize:
@@ -105,7 +106,7 @@ class _V3PresentIdleAudioDriverWarningState
                             launchUrl(Uri.parse(
                                 'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
                           },
-                          child: Text(
+                          child: V3AutoHyphenatingText(
                             S.current
                                 .v3_present_idle_download_virtual_audio_device,
                             style: TextStyle(

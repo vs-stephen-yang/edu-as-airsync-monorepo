@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -70,7 +71,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
+          V3AutoHyphenatingText(
             S.of(context).v3_present_touch_back_allow,
             style: TextStyle(
               fontSize: 18,
@@ -130,11 +131,13 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
             builder: (_) {
               return AlertDialog(
                 backgroundColor: Colors.white,
+                // Can not use V3AutoHyphenatingText
                 title: Text(S.of(context).v3_present_touch_back_dialog_title),
                 content: V3Scrollbar(
                   controller: sc,
                   child: SingleChildScrollView(
                     controller: sc,
+                    // Can not use V3AutoHyphenatingText
                     child: Text(
                       S.of(context).v3_present_touch_back_dialog_description,
                     ),
@@ -151,6 +154,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
                         navService.goBack();
                       }
                     },
+                    // Can not use V3AutoHyphenatingText
                     child: Text(
                       S.of(context).v3_present_touch_back_dialog_not_now,
                       style: TextStyle(
@@ -174,6 +178,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
                         navService.goBack();
                       }
                     },
+                    // Can not use V3AutoHyphenatingText
                     child: Text(
                       S.of(context).v3_present_touch_back_dialog_allow,
                       style: TextStyle(

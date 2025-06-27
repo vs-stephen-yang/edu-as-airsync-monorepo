@@ -1,10 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/oss_licenses.dart';
 import 'package:display_cast_flutter/providers/pref_text_scale_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,7 +51,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    AutoSizeText(
+                    V3AutoHyphenatingText(
                       S.of(context).v3_setting_privacy_policy,
                       style: TextStyle(
                         color: context.tokens.color.vsdswColorOnSurfaceInverse,
@@ -90,7 +90,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                 vertical: context.tokens.spacing.vsdswSpacingXs.top,
                 horizontal: context.tokens.spacing.vsdswSpacingSm.left,
               ),
-              child: AutoSizeText(
+              child: V3AutoHyphenatingText(
                 S.of(context).v3_setting_open_source_license,
                 style: TextStyle(
                   color: context.tokens.color.vsdswColorOnSurfaceInverse,
@@ -138,7 +138,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: AutoSizeText(
+                                  child: V3AutoHyphenatingText(
                                     license.name,
                                     style: TextStyle(
                                       color: context.tokens.color

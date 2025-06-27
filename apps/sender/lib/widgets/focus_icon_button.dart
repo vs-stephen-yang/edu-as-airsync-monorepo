@@ -83,64 +83,66 @@ class _FocusIconButtonState extends State<FocusIconButton> {
           Matrix4 matrix4 = Matrix4.identity();
           matrix4.rotateX(widget.rotateX);
           matrix4.rotateY(widget.rotateY);
-          return IconButton(
-            focusNode: _focusNode,
-            icon: widget.icons != null
-                ? Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: hasFocus
-                          ? widget.iconFocusBackgroundColor ??
-                              widget.iconBackgroundColor
-                          : widget.iconBackgroundColor,
-                    ),
-                    child: Stack(
-                      children: [
-                        Transform(
-                          alignment: Alignment.center,
-                          transform: matrix4,
-                          child: Icon(
-                            widget.icons!,
-                            color: hasFocus
-                                ? widget.iconFocusForegroundColor ??
-                                    widget.iconForegroundColor
-                                : widget.iconForegroundColor,
-                            size: iconSize,
+          return ExcludeSemantics(
+            child: IconButton(
+              focusNode: _focusNode,
+              icon: widget.icons != null
+                  ? Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: hasFocus
+                            ? widget.iconFocusBackgroundColor ??
+                                widget.iconBackgroundColor
+                            : widget.iconBackgroundColor,
+                      ),
+                      child: Stack(
+                        children: [
+                          Transform(
+                            alignment: Alignment.center,
+                            transform: matrix4,
+                            child: Icon(
+                              widget.icons!,
+                              color: hasFocus
+                                  ? widget.iconFocusForegroundColor ??
+                                      widget.iconForegroundColor
+                                  : widget.iconForegroundColor,
+                              size: iconSize,
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Visibility(
-                            visible: widget.isAddGreenDot,
-                            child: const SizedBox(
-                              width: 10,
-                              height: 10,
-                              child: CircleAvatar(
-                                backgroundColor:
-                                    AppColors.iconFeatureOnGreenDot,
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Visibility(
+                              visible: widget.isAddGreenDot,
+                              child: const SizedBox(
+                                width: 10,
+                                height: 10,
+                                child: CircleAvatar(
+                                  backgroundColor:
+                                      AppColors.iconFeatureOnGreenDot,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                : hasFocus
-                    ? widget.childHasFocus ??
-                        widget.childNotFocus ??
-                        const SizedBox()
-                    : widget.childNotFocus ?? const SizedBox(),
-            iconSize: hasFocus ? widget.hasFocusSize : widget.notFocusSize,
-            splashRadius: widget.splashRadius,
-            focusColor: widget.focusColor,
-            onPressed: widget.onClick != null
-                ? () {
-                    _focusNode.requestFocus();
-                    widget.onClick?.call();
-                  }
-                : null,
+                        ],
+                      ),
+                    )
+                  : hasFocus
+                      ? widget.childHasFocus ??
+                          widget.childNotFocus ??
+                          const SizedBox()
+                      : widget.childNotFocus ?? const SizedBox(),
+              iconSize: hasFocus ? widget.hasFocusSize : widget.notFocusSize,
+              splashRadius: widget.splashRadius,
+              focusColor: widget.focusColor,
+              onPressed: widget.onClick != null
+                  ? () {
+                      _focusNode.requestFocus();
+                      widget.onClick?.call();
+                    }
+                  : null,
+            ),
           );
         },
       ),

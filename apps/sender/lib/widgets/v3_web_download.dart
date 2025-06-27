@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
@@ -6,6 +5,7 @@ import 'package:display_cast_flutter/utilities/dart_ui_web_fake.dart'
     if (dart.library.ui_web) 'dart:html' as html;
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_web_download_app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -66,7 +66,7 @@ class V3WebDownload extends StatelessWidget {
                   // 标题和描述
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: AutoSizeText(
+                    child: V3AutoHyphenatingText(
                       S.of(context).v3_main_download_title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -79,7 +79,7 @@ class V3WebDownload extends StatelessWidget {
                   const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: AutoSizeText(
+                    child: V3AutoHyphenatingText(
                       S.of(context).v3_main_download_desc,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -321,7 +321,7 @@ class DownloadWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   title,
                   style: TextStyle(
                     fontSize: 18,
@@ -329,7 +329,7 @@ class DownloadWidget extends StatelessWidget {
                     color: context.tokens.color.vsdswColorOnSurface,
                   ),
                 ),
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   subtitle,
                   style: TextStyle(
                     fontSize: 14,
@@ -354,8 +354,7 @@ class DownloadWidget extends StatelessWidget {
                           'assets/images/v3_ic_web_download_thumb.svg'),
                     ),
                     const Gap(4),
-                    Text(
-                      maxLines: 2,
+                    V3AutoHyphenatingText(
                       S.current.v3_main_download_mac_pkg_label,
                       style: TextStyle(
                           fontSize: 14,
@@ -390,7 +389,7 @@ class DownloadWidget extends StatelessWidget {
                       child: Semantics(
                         label: label,
                         child: ExcludeSemantics(
-                          child: AutoSizeText(action),
+                          child: V3AutoHyphenatingText(action),
                         ),
                       ),
                     ),
@@ -412,7 +411,7 @@ class DownloadWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ExcludeSemantics(
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.current.v3_main_download_mac_store_label,
                         style: TextStyle(
                             fontSize: 14,
@@ -429,7 +428,7 @@ class DownloadWidget extends StatelessWidget {
                         child: SizedBox(
                           height: 28,
                           child: ExcludeSemantics(
-                            child: Text(
+                            child: V3AutoHyphenatingText(
                               S.current.v3_main_download_mac_store,
                               style: TextStyle(
                                 fontSize: 14,
@@ -471,18 +470,16 @@ class DownloadWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AutoSizeText(
+                  V3AutoHyphenatingText(
                     title,
-                    maxLines: 2,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: context.tokens.color.vsdswColorOnSurface,
                     ),
                   ),
-                  AutoSizeText(
+                  V3AutoHyphenatingText(
                     subtitle,
-                    maxLines: 3,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -507,7 +504,7 @@ class DownloadWidget extends StatelessWidget {
                 ),
               ),
               Flexible(
-                child: Text(
+                child: V3AutoHyphenatingText(
                   S.current.v3_main_download_mac_pkg_label,
                   style: TextStyle(
                     fontSize: context.tokens.textStyle.vsdswLabelSm.fontSize,
@@ -546,7 +543,7 @@ class DownloadWidget extends StatelessWidget {
                 child: Semantics(
                   label: label,
                   child: ExcludeSemantics(
-                    child: AutoSizeText(action),
+                    child: V3AutoHyphenatingText(action),
                   ),
                 ),
               ),
@@ -565,7 +562,7 @@ class DownloadWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
-                child: Text(
+                child: V3AutoHyphenatingText(
                   S.current.v3_main_download_mac_store_label,
                   style: TextStyle(
                     fontSize: 14,
@@ -583,7 +580,7 @@ class DownloadWidget extends StatelessWidget {
                   child: InkWell(
                     onTap: onClick2,
                     child: Center(
-                      child: Text(
+                      child: V3AutoHyphenatingText(
                         S.current.v3_main_download_mac_store,
                         style: TextStyle(
                           fontSize: 14,

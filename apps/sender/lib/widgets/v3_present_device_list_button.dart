@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -18,7 +19,7 @@ class V3PresentDeviceListButton extends StatelessWidget {
       spacing: 8,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text(
+        V3AutoHyphenatingText(
           S.current.v3_device_list_button_text,
           textAlign: TextAlign.right,
           style: TextStyle(
@@ -68,7 +69,7 @@ class V3PresentDeviceListButton extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Text(
+                      V3AutoHyphenatingText(
                         S.current.v3_device_list_button_device_list,
                         style: TextStyle(
                           color: context.tokens.color.vsdswColorOnTertiary,

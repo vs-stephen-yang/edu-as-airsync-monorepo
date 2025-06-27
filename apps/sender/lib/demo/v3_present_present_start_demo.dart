@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_window/main.dart' as android_window;
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/annotation/window_utility.dart';
@@ -12,6 +11,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +99,7 @@ class _V3PresentPresentStartDemoState extends State<V3PresentPresentStartDemo> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (kIsWeb) ...[
-                AutoSizeText(
+                V3AutoHyphenatingText(
                   S.of(context).v3_main_presenting_message,
                   style: TextStyle(
                     fontSize: 16,

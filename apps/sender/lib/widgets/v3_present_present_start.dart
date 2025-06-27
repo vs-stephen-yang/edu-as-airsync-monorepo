@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_window/main.dart' as android_window;
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/annotation/window_utility.dart';
@@ -17,6 +16,7 @@ import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
 import 'package:display_cast_flutter/widgets/v3_touch_back_button.dart';
 import 'package:flutter/foundation.dart';
@@ -152,141 +152,146 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         fit: StackFit.expand,
         alignment: Alignment.center,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (kIsWeb) ...[
-                AutoSizeText(
-                  S.of(context).v3_main_presenting_message,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: context.tokens.color.vsdswColorOnSurfaceInverse,
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (kIsWeb) ...[
+                  V3AutoHyphenatingText(
+                    S.of(context).v3_main_presenting_message,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: context.tokens.color.vsdswColorOnSurfaceInverse,
+                    ),
                   ),
-                ),
-                SizedBox(height: context.tokens.spacing.vsdswSpacingMd.top),
-              ],
-              const V3PresentTimer(),
-              SizedBox(height: context.tokens.spacing.vsdswSpacingLg.top),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isAnnotationImplemented) ...[
-                    StatefulBuilder(builder: (context, setState) {
-                      return AnnotationButton(
-                        isOn: annotationOn,
-                        onClick: () async {
-                          // desktop annotation在didChangeAppLifecycleState去檢查是否開啟
-                          if (Platform.isAndroid) {
-                            setState(() {
-                              annotationOn = !annotationOn;
-                            });
-                          }
-                          await Future.delayed(
-                              const Duration(milliseconds: 100));
-                          await _startAnnotation(annotationModel);
-                          trackEvent(
-                              'click_annotation', EventCategory.annotation);
-                        },
-                      );
-                    }),
+                  SizedBox(height: context.tokens.spacing.vsdswSpacingMd.top),
+                ],
+                const V3PresentTimer(),
+                SizedBox(height: context.tokens.spacing.vsdswSpacingLg.top),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isAnnotationImplemented) ...[
+                      StatefulBuilder(builder: (context, setState) {
+                        return AnnotationButton(
+                          isOn: annotationOn,
+                          onClick: () async {
+                            // desktop annotation在didChangeAppLifecycleState去檢查是否開啟
+                            if (Platform.isAndroid) {
+                              setState(() {
+                                annotationOn = !annotationOn;
+                              });
+                            }
+                            await Future.delayed(
+                                const Duration(milliseconds: 100));
+                            await _startAnnotation(annotationModel);
+                            trackEvent(
+                                'click_annotation', EventCategory.annotation);
+                          },
+                        );
+                      }),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: context.tokens.spacing.vsdswSpacingMd.left,
+                        ),
+                      ),
+                    ],
+                    ValueListenableBuilder(
+                      valueListenable: presentingState,
+                      builder: (BuildContext context, value, Widget? child) {
+                        return V3Focus(
+                          label: !value
+                              ? S.current.v3_lbl_sharing_pause_on
+                              : S.current.v3_lbl_sharing_pause_off,
+                          identifier:
+                              'v3_qa_sharing_pause_${!value ? 'on' : 'off'}',
+                          button: true,
+                          child: CircleAvatar(
+                            key: pauseButtonKey, // 使用之前添加的 GlobalKey
+                            backgroundColor: !value
+                                ? context
+                                    .tokens.color.vsdswColorOnSurfaceInverse
+                                : context.tokens.color.vsdswColorSurface900,
+                            radius: kIsWeb ? 24 : 28,
+                            child: InkWell(
+                              onTap: () async {
+                                if (needRelaunchBroadcastUploadExtension) {
+                                  unawaited(WebRTCHelper()
+                                      .launchBroadcastUploadExtension());
+                                } else {
+                                  // Toggle current state
+                                  bool tempState = !presentingState.value;
+                                  trackEvent(
+                                      tempState
+                                          ? 'click_resume'
+                                          : 'click_pause',
+                                      EventCategory.session);
+
+                                  Rect? pauseBtnRec =
+                                      await getBtnRect(pauseButtonKey);
+                                  Rect? stopBtnRect =
+                                      await getBtnRect(stopButtonKey);
+
+                                  // Update state
+                                  presentingState.value = tempState;
+                                  unawaited(tempState
+                                      ? channelProvider.presentResume()
+                                      : channelProvider.presentPause(
+                                          pauseBtnRect: pauseBtnRec,
+                                          stopBtnRect: stopBtnRect));
+                                }
+                              },
+                              child: ExcludeSemantics(
+                                child: SvgPicture.asset(!value
+                                    ? 'assets/images/v3_ic_sharing_pause_on.svg'
+                                    : 'assets/images/v3_ic_sharing_pause_off.svg'),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                     Padding(
                       padding: EdgeInsets.only(
                         right: context.tokens.spacing.vsdswSpacingMd.left,
                       ),
                     ),
-                  ],
-                  ValueListenableBuilder(
-                    valueListenable: presentingState,
-                    builder: (BuildContext context, value, Widget? child) {
-                      return V3Focus(
-                        label: !value
-                            ? S.current.v3_lbl_sharing_pause_on
-                            : S.current.v3_lbl_sharing_pause_off,
-                        identifier:
-                            'v3_qa_sharing_pause_${!value ? 'on' : 'off'}',
-                        button: true,
-                        child: CircleAvatar(
-                          key: pauseButtonKey, // 使用之前添加的 GlobalKey
-                          backgroundColor: !value
-                              ? context.tokens.color.vsdswColorOnSurfaceInverse
-                              : context.tokens.color.vsdswColorSurface900,
-                          radius: kIsWeb ? 24 : 28,
-                          child: InkWell(
-                            onTap: () async {
-                              if (needRelaunchBroadcastUploadExtension) {
-                                unawaited(WebRTCHelper()
-                                    .launchBroadcastUploadExtension());
-                              } else {
-                                // Toggle current state
-                                bool tempState = !presentingState.value;
-                                trackEvent(
-                                    tempState ? 'click_resume' : 'click_pause',
-                                    EventCategory.session);
+                    V3Focus(
+                      label: S.current.v3_lbl_sharing_stop,
+                      identifier: 'v3_qa_sharing_stop',
+                      button: true,
+                      child: CircleAvatar(
+                        backgroundColor: context.tokens.color.vsdswColorError,
+                        radius: kIsWeb ? 24 : 28,
+                        child: InkWell(
+                          key: stopButtonKey,
+                          onTap: () {
+                            trackEvent('click_stop', EventCategory.session);
 
-                                Rect? pauseBtnRec =
-                                    await getBtnRect(pauseButtonKey);
-                                Rect? stopBtnRect =
-                                    await getBtnRect(stopButtonKey);
-
-                                // Update state
-                                presentingState.value = tempState;
-                                unawaited(tempState
-                                    ? channelProvider.presentResume()
-                                    : channelProvider.presentPause(
-                                        pauseBtnRect: pauseBtnRec,
-                                        stopBtnRect: stopBtnRect));
-                              }
-                            },
-                            child: ExcludeSemantics(
-                              child: SvgPicture.asset(!value
-                                  ? 'assets/images/v3_ic_sharing_pause_on.svg'
-                                  : 'assets/images/v3_ic_sharing_pause_off.svg'),
+                            channelProvider.presentStop();
+                            if (widget.isModeratorMode) {
+                              Provider.of<PresentStateProvider>(context,
+                                      listen: false)
+                                  .presentModeratorWaitPage();
+                            } else {
+                              channelProvider.presentEnd();
+                            }
+                          },
+                          child: ExcludeSemantics(
+                            child: Icon(
+                              Icons.stop,
+                              size: kIsWeb ? 24 : 28,
+                              color: context
+                                  .tokens.color.vsdswColorOnSurfaceInverse,
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: context.tokens.spacing.vsdswSpacingMd.left,
-                    ),
-                  ),
-                  V3Focus(
-                    label: S.current.v3_lbl_sharing_stop,
-                    identifier: 'v3_qa_sharing_stop',
-                    button: true,
-                    child: CircleAvatar(
-                      backgroundColor: context.tokens.color.vsdswColorError,
-                      radius: kIsWeb ? 24 : 28,
-                      child: InkWell(
-                        key: stopButtonKey,
-                        onTap: () {
-                          trackEvent('click_stop', EventCategory.session);
-
-                          channelProvider.presentStop();
-                          if (widget.isModeratorMode) {
-                            Provider.of<PresentStateProvider>(context,
-                                    listen: false)
-                                .presentModeratorWaitPage();
-                          } else {
-                            channelProvider.presentEnd();
-                          }
-                        },
-                        child: ExcludeSemantics(
-                          child: Icon(
-                            Icons.stop,
-                            size: kIsWeb ? 24 : 28,
-                            color:
-                                context.tokens.color.vsdswColorOnSurfaceInverse,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
           if (WebRTCUtil.showDebugOverlay)
             Positioned(
@@ -294,7 +299,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
               left: 30,
               child: IgnorePointer(
                 ignoring: true,
-                child: AutoSizeText(
+                // To avoid misinterpreting the hyphen (“-”), use plain text instead.
+                child: Text(
                   debugOverlayText,
                   style: const TextStyle(
                     color: Colors.red,

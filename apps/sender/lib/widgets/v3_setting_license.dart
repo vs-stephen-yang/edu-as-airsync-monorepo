@@ -1,7 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,7 +36,7 @@ class V3SettingLicense extends StatelessWidget {
                   Padding(
                       padding: EdgeInsets.only(
                           right: context.tokens.spacing.vsdswSpacingXs.right)),
-                  AutoSizeText(
+                  V3AutoHyphenatingText(
                     settingsProvider.license?.name ??
                         S.of(context).v3_setting_privacy_policy,
                     style: TextStyle(
@@ -57,7 +57,7 @@ class V3SettingLicense extends StatelessWidget {
               controller: sc,
               child: SingleChildScrollView(
                 controller: sc,
-                child: Text(
+                child: V3AutoHyphenatingText(
                   settingsProvider.license?.license ??
                       S.of(context).v3_setting_privacy_policy_description,
                   style: TextStyle(

@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_icons_icons.dart';
@@ -100,7 +101,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
                     color: Colors.white,
                   ),
                 )
-              : Text(
+              : V3AutoHyphenatingText(
                   widget.buttonText,
                   style: TextStyle(
                     color: isButtonEnabled

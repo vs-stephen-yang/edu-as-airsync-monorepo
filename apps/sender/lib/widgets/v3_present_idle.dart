@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:app_links/app_links.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -12,6 +11,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_audio_driver_warning.dart';
@@ -174,19 +174,18 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (kIsWeb) ...[
-                            AutoSizeText(
+                            V3AutoHyphenatingText(
                               S.of(context).v3_main_present_title,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 32,
                                 color: context.tokens.color.vsdswColorOnSurface,
                                 fontWeight: FontWeight.w700,
-                                // height: 0.04,
                                 letterSpacing: -0.32,
                               ),
                             ),
                             const Padding(padding: EdgeInsets.only(bottom: 8)),
-                            AutoSizeText(
+                            V3AutoHyphenatingText(
                               S.of(context).v3_main_present_subtitle,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -194,7 +193,6 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
                                 color: context
                                     .tokens.color.vsdswColorOnSurfaceVariant,
                                 fontWeight: FontWeight.w400,
-                                // height: 0.10,
                                 letterSpacing: -0.18,
                               ),
                             ),
@@ -228,7 +226,8 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
             bottom: 24,
             child: Align(
               alignment: Alignment.center,
-              child: AutoSizeText(
+              // To avoid misinterpreting the hyphen (“-”), use plain text instead.
+              child: Text(
                 'v${AppConfig.of(context)?.appVersion}',
                 style: TextStyle(
                   fontSize: 14.0,
