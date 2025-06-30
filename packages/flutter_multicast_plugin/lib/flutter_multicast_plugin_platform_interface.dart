@@ -40,11 +40,13 @@ abstract class FlutterMulticastPluginPlatform extends PlatformInterface {
 
   Future<int> receiveStart({
     required String ip,
-    required int port,
+    required int videoPort,
+    required int audioPort,
     required int ssrc,
     required List<int> key,
     required List<int> salt,
-    required int roc
+    required int videoRoc,
+    required int audioRoc
   }) {
     throw UnimplementedError('receiveStart() has not been implemented.');
   }

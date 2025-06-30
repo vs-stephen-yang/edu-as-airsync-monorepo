@@ -5,7 +5,7 @@ import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
 
 class RtpReceiver {
   /// 啟動 RTP 接收（呼叫原生的 NativeBridge.receiveStart）
-  static Future<int?> start(int roc) async {
+  static Future<int?> start(int videoRoc, int audioRoc) async {
     final String hexKey =
         'E1F97A0D3E018BE0D64FA32C06DE41390EC675AD498AFEEBB6960B3AABE6';
 
@@ -24,11 +24,13 @@ class RtpReceiver {
     try {
       final textureId = await FlutterMulticastPlugin.receiveStart(
         ip: '239.1.1.1',
-        port: 5004,
+        videoPort: 5004,
+        audioPort: 5005,
         ssrc: 1234564002,
         key: masterKey,
         salt: masterSalt,
-        roc: roc,
+        videoRoc: videoRoc,
+        audioRoc: audioRoc
       );
       return textureId;
     } on PlatformException catch (e) {
@@ -62,6 +64,7 @@ class _ReceiverHomeState extends State<ReceiverHome> {
   bool running = false;
   int? textureId;
   final TextEditingController _rocController = TextEditingController(text: '0');
+  final TextEditingController _audioRocController = TextEditingController(text: '0');
 
   void _toggleReceiver() async {
     if (running) {
@@ -74,14 +77,19 @@ class _ReceiverHomeState extends State<ReceiverHome> {
       // 取得 ROC 值
       final rocText = _rocController.text.trim();
       if (rocText.isEmpty) {
-        _showErrorDialog('請輸入 ROC 值');
+        _showErrorDialog('請輸入 video ROC 值');
+        return;
+      }
+      final audioRocText = _audioRocController.text.trim();
+      if (audioRocText.isEmpty) {
+        _showErrorDialog('請輸入 audio ROC 值');
         return;
       }
 
-      int roc;
+      int videoRoc;
       try {
-        roc = int.parse(rocText);
-        if (roc < 0) {
+        videoRoc = int.parse(rocText);
+        if (videoRoc < 0) {
           _showErrorDialog('ROC 值必須為非負整數');
           return;
         }
@@ -90,7 +98,19 @@ class _ReceiverHomeState extends State<ReceiverHome> {
         return;
       }
 
-      final id = await RtpReceiver.start(roc);
+      int audioRoc;
+      try {
+        audioRoc = int.parse(audioRocText);
+        if (audioRoc < 0) {
+          _showErrorDialog('ROC 值必須為非負整數');
+          return;
+        }
+      } catch (e) {
+        _showErrorDialog('ROC 值必須為有效的整數');
+        return;
+      }
+
+      final id = await RtpReceiver.start(videoRoc, audioRoc);
       if (id != null) {
         setState(() {
           running = true;
@@ -153,6 +173,20 @@ class _ReceiverHomeState extends State<ReceiverHome> {
                   decoration: const InputDecoration(
                     labelText: 'ROC 初始值',
                     hintText: '請輸入 ROC 值 (例如: 0, 5, 10)',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.numbers),
+                  ),
+                ),
+                TextField(
+                  controller: _audioRocController,
+                  enabled: !running, // 運行時禁用輸入
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // 只允許數字
+                  ],
+                  decoration: const InputDecoration(
+                    labelText: 'ROC 初始值',
+                    hintText: '請輸入 audio ROC 值 (例如: 0, 5, 10)',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.numbers),
                   ),
