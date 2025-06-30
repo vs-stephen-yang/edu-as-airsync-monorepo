@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +31,8 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
   bool _isStreaming = false;
 
   Future<void> _startRtp() async {
+    final status = await Permission.microphone.request();
+    print('Microphone permission status: $status');
     try {
       final String hexKey =
           'E1F97A0D3E018BE0D64FA32C06DE41390EC675AD498AFEEBB6960B3AABE6';
