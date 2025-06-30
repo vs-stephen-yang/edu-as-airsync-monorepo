@@ -5,7 +5,8 @@
 
 
 static uvgrtp::context *ctx = nullptr;
-static uvgrtp::media_stream *stream = nullptr;
+static uvgrtp::media_stream *videoStream = nullptr;
+static uvgrtp::media_stream *audioStream = nullptr;
 static uvgrtp::session *sess = nullptr;
 
 std::string to_hex_string(const std::vector<uint8_t> &data);
@@ -15,18 +16,18 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_startRtpStream(JNIEnv
 {
     const char *c_ip = env->GetStringUTFChars(ip, nullptr);
     int flags = RCE_SEND_ONLY | RCE_SRTP | RCE_SRTP_KMNGMNT_USER | RCE_SRTP_AUTHENTICATE_RTP;
+//    int flags = RCE_SEND_ONLY;
 
     ctx = new uvgrtp::context();
     sess = ctx->create_session(c_ip);
-    stream = sess->create_stream(port, RTP_FORMAT_H264, flags);
+    videoStream = sess->create_stream(port, RTP_FORMAT_H264, flags);
+    audioStream = sess->create_stream(port+1, RTP_FORMAT_OPUS, flags);
 
-    if (!stream)
+    if (!videoStream || !audioStream)
     {
         ALOGE("Failed to create RTP stream");
         return JNI_FALSE;
     }
-
-    stream->configure_ctx(RCC_DYN_PAYLOAD_TYPE, 96);
 
     std::vector<uint8_t> key(16);
     std::vector<uint8_t> salt(14);
@@ -37,14 +38,17 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_startRtpStream(JNIEnv
     ALOGI("SRTP sendKey: %s", to_hex_string(key).c_str());
     ALOGI("SRTP recvKey: %s", to_hex_string(salt).c_str());
     ALOGI("Calling add_srtp_ctx");
-    stream->add_srtp_ctx(key.data(), salt.data());
+    videoStream->add_srtp_ctx(key.data(), salt.data());
+    audioStream->add_srtp_ctx(key.data(), salt.data());
     ALOGI("Finished add_srtp_ctx");
 
     uint32_t native_ssrc = static_cast<uint32_t>(ssrc);
-    stream->configure_ctx(RCC_SSRC, native_ssrc);
+    videoStream->configure_ctx(RCC_SSRC, native_ssrc);
+    audioStream->configure_ctx(RCC_SSRC, native_ssrc);
 
     ALOGI("SRTP keys configured successfully");
-    stream->configure_ctx(RCC_DYN_PAYLOAD_TYPE, 96);
+    videoStream->configure_ctx(RCC_DYN_PAYLOAD_TYPE, 96);
+    audioStream->configure_ctx(RCC_DYN_PAYLOAD_TYPE, 97);
 
     ALOGI("RTP stream started to %s:%d", c_ip, port);
     env->ReleaseStringUTFChars(ip, c_ip);
@@ -55,23 +59,38 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_startRtpStream(JNIEnv
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendRtpFrame(JNIEnv *env, jobject thiz, jbyteArray frame)
 {
-    if (!stream)
+    if (!videoStream)
         return;
 
     jbyte *buf = env->GetByteArrayElements(frame, nullptr);
     jsize len = env->GetArrayLength(frame);
 
-    stream->push_frame(reinterpret_cast<uint8_t *>(buf), len, RTP_NO_FLAGS);
+    videoStream->push_frame(reinterpret_cast<uint8_t *>(buf), len, RTP_NO_FLAGS);
+    env->ReleaseByteArrayElements(frame, buf, JNI_ABORT);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendAudioRtpFrame(JNIEnv *env, jobject thiz, jbyteArray frame)
+{
+    if (!audioStream)
+        return;
+
+    jbyte *buf = env->GetByteArrayElements(frame, nullptr);
+    jsize len = env->GetArrayLength(frame);
+
+    audioStream->push_frame(reinterpret_cast<uint8_t *>(buf), len, RTP_NO_FLAGS);
     env->ReleaseByteArrayElements(frame, buf, JNI_ABORT);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_stopRtpStream(JNIEnv *env, jobject thiz)
 {
-    if (stream && ctx)
+    if (videoStream && audioStream && ctx)
     {
-        sess->destroy_stream(stream);
-        stream = nullptr;
+        sess->destroy_stream(videoStream);
+        sess->destroy_stream(audioStream);
+        videoStream = nullptr;
+        audioStream = nullptr;
 
         ctx->destroy_session(sess);
         sess = nullptr;

@@ -10,6 +10,8 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import android.content.pm.PackageManager;
+import android.Manifest;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -20,6 +22,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.TextureRegistry;
+
 
 import java.util.List;
 
@@ -88,6 +91,12 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             }
             case "startCapture": {
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    result.error("PERMISSION_DENIED", "Audio recording permission required for system audio capture", null);
+                    return;
+                }
+
                 if (activity != null) {
                     MediaProjectionManager projectionManager = (MediaProjectionManager) activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                     Intent captureIntent = projectionManager.createScreenCaptureIntent();
@@ -109,18 +118,21 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
             }
             case "receiveStart": {
                 String multicastIp = call.argument("ip");
-                Integer port = call.argument("port");
+                Integer videoPort = call.argument("videoPort");
+                Integer audioPort = call.argument("audioPort");
                 Integer ssrc = call.argument("ssrc");
                 byte[] key = call.argument("key");
                 byte[] salt = call.argument("salt");
-                Number rocNumber = call.argument("roc");
+                Number videorocNumber = call.argument("videoRoc");
+                Number audioRocNumber = call.argument("audioRoc");
 
-                if (multicastIp == null || port == null || key == null || salt == null || ssrc == null || rocNumber == null) {
+                if (multicastIp == null || videoPort == null || audioPort == null || key == null || salt == null || ssrc == null || videorocNumber == null || audioRocNumber == null) {
                     result.error("MISSING_ARGUMENT", "One or more arguments are missing or null", null);
                     return;
                 }
 
-                long roc = rocNumber.longValue();
+                long videoRoc = videorocNumber.longValue();
+                long audioRoc = audioRocNumber.longValue();
 
                 entry = textureRegistry.createSurfaceTexture();
                 SurfaceTexture surfaceTexture = entry.surfaceTexture();
@@ -130,7 +142,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
                 List<String> localIps = NetworkUtils.getAllLocalIPv4s();
                 String[] ipArray = localIps.toArray(new String[0]);
-                NativeBridge.receiveStart(surface, ipArray, multicastIp, port, key, salt, ssrc, roc);
+                NativeBridge.receiveStart(surface, ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc, videoRoc, audioRoc);
                 result.success(textureId);
                 break;
             }
