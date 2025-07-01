@@ -16,4 +16,8 @@ class GstAudioPipeline {
   private:
     GstElement* pipeline_ = nullptr;
     GstElement* appsrc_ = nullptr;
+    bool first_audio_received_ = false;
+    GstClockTime timestamp_ = 0;
+    GstClockTime sync_to_pipeline_time_();
+    bool should_resync_timestamp_();
 };

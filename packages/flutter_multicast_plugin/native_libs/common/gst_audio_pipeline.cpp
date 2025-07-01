@@ -13,6 +13,16 @@
 #include "gst_ios_init.h"
 #endif
 
+bool is_silence_frame(const std::vector<uint8_t>& opus_data) {
+    // 靜音幀通常很小 (3-10 bytes)
+    if (opus_data.size() <= 10) {
+        ALOGI("Small frame detected: %zu bytes", opus_data.size());
+        return true;
+    }
+
+    return false;
+}
+
 GstAudioPipeline::GstAudioPipeline() {}
 
 GstAudioPipeline::~GstAudioPipeline() {
@@ -256,6 +266,27 @@ bool GstAudioPipeline::init() {
 }
 
 void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
+    static const GstClockTime frame_duration = 20 * GST_MSECOND; // OPUS 20ms frame
+    static int frame_count = 0;
+
+    frame_count++;
+
+    if (!first_audio_received_) {
+        if (is_silence_frame(opus_data)) {
+            ALOGI("[push_opus] Dropping silence frame #%d", frame_count);
+            return;
+        } else {
+            first_audio_received_ = true;
+
+            timestamp_ = sync_to_pipeline_time_();
+        }
+    }
+
+    // 檢測中斷並決定是否重新同步
+    if (should_resync_timestamp_()) {
+        timestamp_ = sync_to_pipeline_time_();
+    }
+
     ALOGI("[push_opus] Attempting to push OPUS frame size: %zu", opus_data.size());
 
     // 創建 buffer
@@ -276,15 +307,13 @@ void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
     memcpy(map.data, opus_data.data(), opus_data.size());
     gst_buffer_unmap(buffer, &map);
 
-    // 設置音頻時間戳
-    static GstClockTime timestamp = 0;
-    static const GstClockTime frame_duration = 20 * GST_MSECOND; // OPUS 20ms frame
-
-    GST_BUFFER_PTS(buffer) = timestamp;
-    GST_BUFFER_DTS(buffer) = timestamp;
+    GST_BUFFER_PTS(buffer) = timestamp_;
+    GST_BUFFER_DTS(buffer) = timestamp_;
     GST_BUFFER_DURATION(buffer) = frame_duration;
 
-    timestamp += frame_duration;
+    ALOGI("[push_opus] Using timestamp: %.3f sec", (double)timestamp_ / GST_SECOND);
+
+    timestamp_ += frame_duration;
 
     // 推送 buffer
     GstFlowReturn ret = gst_app_src_push_buffer(GST_APP_SRC(appsrc_), buffer);
@@ -293,6 +322,34 @@ void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
     if (ret != GST_FLOW_OK) {
         ALOGI("[push_opus] ERROR: Push failed with: %s", gst_flow_get_name(ret));
     }
+}
+
+bool GstAudioPipeline::should_resync_timestamp_() {
+    // 定期檢查 timestamp 是否與 pipeline 時間差距過大
+    GstClock* clock = gst_pipeline_get_clock(GST_PIPELINE(pipeline_));
+    if (clock) {
+        GstClockTime pipeline_time = gst_clock_get_time(clock) - gst_element_get_base_time(pipeline_);
+        GstClockTime diff = std::abs((int64_t)pipeline_time - (int64_t)timestamp_);
+
+        gst_object_unref(clock);
+
+        if (diff > 500 * GST_MSECOND) {
+            return true;
+        }
+    }
+    return false;
+}
+
+GstClockTime GstAudioPipeline::sync_to_pipeline_time_() {
+    GstClock* clock = gst_pipeline_get_clock(GST_PIPELINE(pipeline_));
+    if (clock) {
+        GstClockTime current_time = gst_clock_get_time(clock);
+        GstClockTime base_time = gst_element_get_base_time(pipeline_);
+        timestamp_ = current_time - base_time;
+        gst_object_unref(clock);
+        ALOGI("[push_opus] *** SYNC TO PIPELINE: %.3f sec ***", (double)timestamp_ / GST_SECOND);
+    }
+    return timestamp_;
 }
 
 void GstAudioPipeline::stop() {
