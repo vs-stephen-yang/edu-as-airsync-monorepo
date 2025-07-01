@@ -82,8 +82,11 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStop(JNIEnv *,
         g_receiver->stop();
     if (g_pipeline)
         g_pipeline->stop();
+    if (g_audio_pipeline)
+        g_audio_pipeline->stop();
     g_receiver.reset();
     g_pipeline.reset();
+    g_audio_pipeline.reset();
 }
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved)
