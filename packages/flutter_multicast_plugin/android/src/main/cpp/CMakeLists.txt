@@ -161,6 +161,7 @@ set(COMMON_SRC
         ${COMMON_DIR}/ip_pktinfo_detector.cpp
         ${COMMON_DIR}/gst_video_pipeline.cpp
         ${COMMON_DIR}/gst_audio_pipeline.cpp
+        ${COMMON_DIR}/gst_util.cpp
 )
 
 # 加入 JNI 的 source
