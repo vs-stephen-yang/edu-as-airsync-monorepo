@@ -1,4 +1,5 @@
 #include "gst_video_pipeline.h"
+#include "gst_util.h"
 #include "log.h"
 #include <algorithm> // 用於 std::sort, std::min, std::max
 #include <cstring>   // 用於 memcpy, strcat
@@ -71,105 +72,6 @@ static GstFlowReturn on_new_video_sample(GstElement* appsink, gpointer user_data
 
     gst_sample_unref(sample);
     return GST_FLOW_OK;
-}
-
-static GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
-    const char* element_name = (const char*)user_data;
-
-    if (info->type & GST_PAD_PROBE_TYPE_BUFFER) {
-        GstBuffer* buffer = GST_PAD_PROBE_INFO_BUFFER(info);
-        GstMapInfo map;
-
-        if (gst_buffer_map(buffer, &map, GST_MAP_READ)) {
-            // 計算時間戳（秒）
-            gdouble pts_seconds = (gdouble)GST_BUFFER_PTS(buffer) / GST_SECOND;
-
-            ALOGI("🔍 [PROBE] %s:", element_name);
-            ALOGI("  📏 Size: %zu bytes", map.size);
-            ALOGI("  ⏰ PTS: %.3f sec (raw: %" G_GUINT64_FORMAT ")", pts_seconds, GST_BUFFER_PTS(buffer));
-
-            // 準備 Head 數據字符串 (前8個bytes)
-            std::string head_str = "";
-            for (gsize i = 0; i < 8 && i < map.size; i++) {
-                char temp[8];
-                snprintf(temp, sizeof(temp), "%02x ", map.data[i]);
-                head_str += temp;
-            }
-            ALOGI("  🔢 Head: %s", head_str.c_str());
-
-            // 如果數據夠長，顯示中間和結尾
-            if (map.size >= 16) {
-                // 中間8個bytes
-                gsize mid = map.size / 2;
-                std::string mid_str = "";
-                for (gsize i = 0; i < 8 && (mid + i) < map.size; i++) {
-                    char temp[8];
-                    snprintf(temp, sizeof(temp), "%02x ", map.data[mid + i]);
-                    mid_str += temp;
-                }
-                ALOGI("  🔢 Mid:  %s", mid_str.c_str());
-
-                // 結尾8個bytes
-                std::string tail_str = "";
-                for (gsize i = 0; i < 8; i++) {
-                    char temp[8];
-                    snprintf(temp, sizeof(temp), "%02x ", map.data[map.size - 8 + i]);
-                    tail_str += temp;
-                }
-                ALOGI("  🔢 Tail: %s", tail_str.c_str());
-            }
-
-            // 檢查是否為重複模式
-            bool isRepeatingPattern = true;
-            if (map.size > 8) {
-                for (gsize i = 1; i < 8 && i < map.size; i++) {
-                    if (map.data[i] != map.data[0]) {
-                        isRepeatingPattern = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isRepeatingPattern && map.size > 8) {
-                ALOGW("  ⚠️  WARNING: Repeating pattern detected!");
-            }
-
-            // 統計數據分佈
-            int histogram[256] = {0};
-            gsize sampleSize = std::min(map.size, (gsize)1000);
-            for (gsize i = 0; i < sampleSize; i++) {
-                histogram[map.data[i]]++;
-            }
-
-            // 找出最常見的字節值
-            int maxCount = 0;
-            int mostCommonByte = 0;
-            for (int i = 0; i < 256; i++) {
-                if (histogram[i] > maxCount) {
-                    maxCount = histogram[i];
-                    mostCommonByte = i;
-                }
-            }
-
-            double dominance = (double)maxCount / sampleSize * 100.0;
-            if (dominance > 90.0) {
-                ALOGW("  ⚠️  Data highly uniform: 0x%02x appears %.1f%% of time", mostCommonByte, dominance);
-            }
-
-            gst_buffer_unmap(buffer, &map);
-        }
-
-        // 取得當前 caps 資訊
-        GstCaps* caps = gst_pad_get_current_caps(pad);
-        if (caps) {
-            gchar* caps_str = gst_caps_to_string(caps);
-            ALOGI("  📝 Caps: %s", caps_str);
-            g_free(caps_str);
-            gst_caps_unref(caps);
-        }
-    }
-
-    return GST_PAD_PROBE_OK;
 }
 
 static void decodebin_pad_added_cb(GstElement* decodebin, GstPad* new_pad, gpointer user_data) {
