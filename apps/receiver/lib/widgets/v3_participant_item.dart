@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
@@ -129,7 +131,8 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
                             fontSize: 9,
                             fontWeight: FontWeight.w600,
                             color: (isWaiting)
-                                ? context.tokens.color.vsdslColorOnSurfaceVariant
+                                ? context
+                                    .tokens.color.vsdslColorOnSurfaceVariant
                                 : (isCasting)
                                     ? context
                                         .tokens.color.vsdslColorSecondaryVariant
@@ -235,7 +238,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
   }
 }
 
-class ParticipantStandbyFeature extends StatelessWidget {
+class ParticipantStandbyFeature extends _TextSizeAwareStateless {
   const ParticipantStandbyFeature({
     super.key,
     required this.rtcConnector,
@@ -248,7 +251,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
   final bool isForMenuUse;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWithTextSize(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -257,51 +260,69 @@ class ParticipantStandbyFeature extends StatelessWidget {
           identifier: 'v3_qa_participant_share',
           child: SizedBox(
             height: 27,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 5.0,
-                shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
-                backgroundColor: context.tokens.color.vsdslColorPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: context.tokens.radii.vsdslRadiusFull,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-              ),
-              onPressed: () {
-                EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
-                    () {
-                  _presenterOn(context, rtcConnector, presenterId);
-                });
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isForMenuUse) ...[
-                    SizedBox(
-                      child: SvgPicture.asset(
-                        'assets/images/ic_arrow_to_screen.svg',
-                        excludeFromSemantics: true,
-                        width: 16,
-                        height: 16,
-                        colorFilter: ColorFilter.mode(
-                            context.tokens.color.vsdslColorOnSurfaceInverse,
-                            BlendMode.srcIn),
-                      ),
+            child: showIcon
+                ? InkWell(
+                    onTap: () {
+                      EasyThrottle.throttle(
+                          'presenterOn', const Duration(seconds: 1), () {
+                        _presenterOn(context, rtcConnector, presenterId);
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      'assets/images/ic_moderator_share.svg',
+                      width: 26,
+                      height: 26,
                     ),
-                    Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  ],
-                  V3AutoHyphenatingText(
-                    S.of(context).v3_participant_item_share,
-                    textAlign: isForMenuUse ? TextAlign.left : TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  )
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5.0,
+                      shadowColor:
+                          context.tokens.color.vsdslColorOpacitySecondaryLg,
+                      backgroundColor: context.tokens.color.vsdslColorPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: context.tokens.radii.vsdslRadiusFull,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    onPressed: () {
+                      EasyThrottle.throttle(
+                          'presenterOn', const Duration(seconds: 1), () {
+                        _presenterOn(context, rtcConnector, presenterId);
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isForMenuUse) ...[
+                          SizedBox(
+                            child: SvgPicture.asset(
+                              'assets/images/ic_arrow_to_screen.svg',
+                              excludeFromSemantics: true,
+                              width: 16,
+                              height: 16,
+                              colorFilter: ColorFilter.mode(
+                                  context
+                                      .tokens.color.vsdslColorOnSurfaceInverse,
+                                  BlendMode.srcIn),
+                            ),
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                        ],
+                        V3AutoHyphenatingText(
+                          S.of(context).v3_participant_item_share,
+                          textAlign:
+                              isForMenuUse ? TextAlign.left : TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
         if (isForMenuUse && rtcConnector.senderPlatform != 'web') ...[
@@ -393,7 +414,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
   }
 }
 
-class ParticipantStreamingFeature extends StatelessWidget {
+class ParticipantStreamingFeature extends _TextSizeAwareStateless {
   const ParticipantStreamingFeature({
     super.key,
     required this.rtcConnector,
@@ -404,7 +425,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
   final String presenterId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWithTextSize(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -459,7 +480,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
   }
 }
 
-class ParticipantReceivingFeature extends StatelessWidget {
+class ParticipantReceivingFeature extends _TextSizeAwareStateless {
   const ParticipantReceivingFeature({
     super.key,
     required this.rtcConnector,
@@ -470,7 +491,7 @@ class ParticipantReceivingFeature extends StatelessWidget {
   final VoidCallback? callback;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWithTextSize(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     return Wrap(
@@ -481,44 +502,59 @@ class ParticipantReceivingFeature extends StatelessWidget {
           identifier: 'v3_qa_participant_touch_back',
           child: SizedBox(
             height: 27,
-            child: ElevatedButton(
-              onPressed: () {
-                EasyThrottle.throttle('touchBackOn', const Duration(seconds: 1),
-                    () {
-                  _touchBackOn(context);
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 5,
-                backgroundColor:
-                    context.tokens.color.vsdslColorOnSurfaceInverse,
-                shape: RoundedRectangleBorder(
-                  borderRadius: context.tokens.radii.vsdslRadiusFull,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                shadowColor: context.tokens.color.vsdslColorOnSurfaceInverse,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/ic_finger_touch.svg',
-                    excludeFromSemantics: true,
-                    width: 16,
-                    height: 16,
-                  ),
-                  Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  V3AutoHyphenatingText(
-                    S.of(context).v3_cast_to_device_touch_back,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurface,
+            child: showIcon
+                ? InkWell(
+                    onTap: () {
+                      EasyThrottle.throttle(
+                          'touchBackOn', const Duration(seconds: 1), () {
+                        _touchBackOn(context);
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      'assets/images/ic_moderator_touchback.svg',
+                      width: 26,
+                      height: 26,
+                    ),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      EasyThrottle.throttle(
+                          'touchBackOn', const Duration(seconds: 1), () {
+                        _touchBackOn(context);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      backgroundColor:
+                          context.tokens.color.vsdslColorOnSurfaceInverse,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: context.tokens.radii.vsdslRadiusFull,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      shadowColor:
+                          context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/ic_finger_touch.svg',
+                          excludeFromSemantics: true,
+                          width: 16,
+                          height: 16,
+                        ),
+                        Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                        V3AutoHyphenatingText(
+                          S.of(context).v3_cast_to_device_touch_back,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: context.tokens.color.vsdslColorOnSurface,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.top),
@@ -601,7 +637,7 @@ class ParticipantReceivingFeature extends StatelessWidget {
   }
 }
 
-class ParticipantControllingFeature extends StatelessWidget {
+class ParticipantControllingFeature extends _TextSizeAwareStateless {
   const ParticipantControllingFeature({
     super.key,
     required this.rtcConnector,
@@ -612,7 +648,7 @@ class ParticipantControllingFeature extends StatelessWidget {
   final VoidCallback? callback;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWithTextSize(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     return Wrap(
@@ -623,41 +659,53 @@ class ParticipantControllingFeature extends StatelessWidget {
           identifier: 'v3_qa_participant_touch_back_disable',
           child: SizedBox(
             height: 27,
-            child: ElevatedButton(
-              onPressed: () {
-                _touchBackOff(context);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 5,
-                backgroundColor:
-                    context.tokens.color.vsdslColorOnSurfaceInverse,
-                shape: RoundedRectangleBorder(
-                  borderRadius: context.tokens.radii.vsdslRadiusFull,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                shadowColor: context.tokens.color.vsdslColorOnSurfaceInverse,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/ic_finger_disable.svg',
-                    excludeFromSemantics: true,
-                    width: 16,
-                    height: 16,
-                  ),
-                  Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  V3AutoHyphenatingText(
-                    S.of(context).v3_cast_to_device_touch_back_disable,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorError,
+            child: showIcon
+                ? InkWell(
+                    onTap: () {
+                      _touchBackOff(context);
+                    },
+                    child: SvgPicture.asset(
+                      'assets/images/ic_moderator_untouchback.svg',
+                      width: 26,
+                      height: 26,
+                    ),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      _touchBackOff(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      backgroundColor:
+                          context.tokens.color.vsdslColorOnSurfaceInverse,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: context.tokens.radii.vsdslRadiusFull,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      shadowColor:
+                          context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/ic_finger_disable.svg',
+                          excludeFromSemantics: true,
+                          width: 16,
+                          height: 16,
+                        ),
+                        Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                        V3AutoHyphenatingText(
+                          S.of(context).v3_cast_to_device_touch_back_disable,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: context.tokens.color.vsdslColorError,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.top),
@@ -731,5 +779,27 @@ class ParticipantControllingFeature extends StatelessWidget {
           remoteShareConnector.sessionId!, remoteShareConnector.isTouchEnabled);
       callback?.call();
     }
+  }
+}
+
+abstract class _TextSizeAwareStateless extends StatelessWidget {
+  const _TextSizeAwareStateless({super.key});
+
+  ResizeTextSizeOption get textSize => AppPreferences().textSizeOption;
+
+  bool get showIcon =>
+      AppPreferences().textSizeOption != ResizeTextSizeOption.normal;
+
+  /// 子類實作這個方法，而不是直接 override build()
+  Widget buildWithTextSize(BuildContext context);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: AppPreferences().textSizeOptionNotifier,
+      builder: (context, _, __) {
+        return buildWithTextSize(context);
+      },
+    );
   }
 }

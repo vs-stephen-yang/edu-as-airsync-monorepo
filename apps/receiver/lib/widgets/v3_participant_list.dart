@@ -5,6 +5,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/widgets/v3_help_center.dart';
 import 'package:display_flutter/widgets/v3_participant_item.dart';
 import 'package:display_flutter/widgets/v3_participant_mirror_item.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
@@ -155,6 +156,7 @@ class V3ParticipantList extends StatelessWidget {
                   ),
                 ),
               ),
+              V3HelpCenterWidget(),
             ],
           );
         }

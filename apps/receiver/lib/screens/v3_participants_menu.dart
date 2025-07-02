@@ -41,7 +41,7 @@ class V3ParticipantsMenu extends StatelessWidget {
                       left: 13,
                       top: 27,
                       right: 13,
-                      bottom: 66,
+                      bottom: 23,
                       child: V3ParticipantList(isForMenuUse: true),
                     ),
                     Positioned(

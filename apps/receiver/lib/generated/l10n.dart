@@ -3510,6 +3510,166 @@ class S {
       args: [],
     );
   }
+
+  /// `Invite to share`
+  String get v3_help_center_share_title {
+    return Intl.message(
+      'Invite to share',
+      name: 'v3_help_center_share_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Devices sharing its screen to IFP.`
+  String get v3_help_center_share_title_sub {
+    return Intl.message(
+      'Devices sharing its screen to IFP.',
+      name: 'v3_help_center_share_title_sub',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast to device`
+  String get v3_help_center_cast_device_title {
+    return Intl.message(
+      'Cast to device',
+      name: 'v3_help_center_cast_device_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IFP casting its screen to devices.`
+  String get v3_help_center_cast_device_title_sub {
+    return Intl.message(
+      'IFP casting its screen to devices.',
+      name: 'v3_help_center_cast_device_title_sub',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Touchback`
+  String get v3_help_center_touchback_title {
+    return Intl.message(
+      'Touchback',
+      name: 'v3_help_center_touchback_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allowing user remote control.`
+  String get v3_help_center_touchback_title_sub {
+    return Intl.message(
+      'Allowing user remote control.',
+      name: 'v3_help_center_touchback_title_sub',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untouchback`
+  String get v3_help_center_untouchback_title {
+    return Intl.message(
+      'Untouchback',
+      name: 'v3_help_center_untouchback_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Detach touchback mode.`
+  String get v3_help_center_untouchback_title_sub {
+    return Intl.message(
+      'Detach touchback mode.',
+      name: 'v3_help_center_untouchback_title_sub',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fullscreen`
+  String get v3_help_center_fullscreen_title {
+    return Intl.message(
+      'Fullscreen',
+      name: 'v3_help_center_fullscreen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mute user`
+  String get v3_help_center_mute_user_title {
+    return Intl.message(
+      'Mute user',
+      name: 'v3_help_center_mute_user_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove user`
+  String get v3_help_center_remove_user_title {
+    return Intl.message(
+      'Remove user',
+      name: 'v3_help_center_remove_user_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop sharing`
+  String get v3_help_center_stop_share_title {
+    return Intl.message(
+      'Stop sharing',
+      name: 'v3_help_center_stop_share_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get v3_help_center_close {
+    return Intl.message(
+      'Close',
+      name: 'v3_help_center_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Help Center`
+  String get v3_help_center_title {
+    return Intl.message(
+      'Help Center',
+      name: 'v3_help_center_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Help center menu`
+  String get v3_lbl_open_help_center {
+    return Intl.message(
+      'Open Help center menu',
+      name: 'v3_lbl_open_help_center',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close help center`
+  String get v3_lbl_close_help_center {
+    return Intl.message(
+      'Close help center',
+      name: 'v3_lbl_close_help_center',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

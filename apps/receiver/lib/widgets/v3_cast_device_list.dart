@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/v3_cast_device_item.dart';
+import 'package:display_flutter/widgets/v3_help_center.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -73,6 +74,10 @@ class V3CastDeviceList extends StatelessWidget {
                   : const Center(
                       child: DeviceEmpty(),
                     ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: V3HelpCenterWidget(),
             ),
           ],
         );
