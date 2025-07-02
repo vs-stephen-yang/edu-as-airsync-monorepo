@@ -1,4 +1,5 @@
 import 'flutter_multicast_plugin_platform_interface.dart';
+import 'stream_roc_data.dart';
 
 class FlutterMulticastPlugin {
   static Future<bool> startRtpStream({
@@ -17,6 +18,10 @@ class FlutterMulticastPlugin {
       key: key,
       salt: salt,
     );
+  }
+
+  static Future<StreamRocData?> getStreamRoc() {
+    return FlutterMulticastPluginPlatform.instance.getStreamRoc();
   }
 
   static Future<void> stopRtpStream() {
