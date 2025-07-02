@@ -3,14 +3,16 @@ import 'flutter_multicast_plugin_platform_interface.dart';
 class FlutterMulticastPlugin {
   static Future<bool> startRtpStream({
     required String ip,
-    required int port,
+    required int videoPort,
+    required int audioPort,
     required int ssrc,
     required List<int> key,
     required List<int> salt,
   }) {
     return FlutterMulticastPluginPlatform.instance.startRtpStream(
       ip: ip,
-      port: port,
+      videoPort: videoPort,
+      audioPort: audioPort,
       ssrc: ssrc,
       key: key,
       salt: salt,

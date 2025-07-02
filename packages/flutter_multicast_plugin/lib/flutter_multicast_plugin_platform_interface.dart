@@ -18,7 +18,8 @@ abstract class FlutterMulticastPluginPlatform extends PlatformInterface {
 
   Future<bool> startRtpStream({
     required String ip,
-    required int port,
+    required int videoPort,
+    required int audioPort,
     required int ssrc,
     required List<int> key,
     required List<int> salt,

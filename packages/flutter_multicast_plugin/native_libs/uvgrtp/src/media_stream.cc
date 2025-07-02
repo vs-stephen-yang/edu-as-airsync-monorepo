@@ -114,6 +114,14 @@ rtp_error_t uvgrtp::media_stream::init_connection() {
             new_socket_ = true;
             multicast = true;
         }
+    } else if (!multicast_address_.empty() && dst_port_ != 0) {
+        sockaddr_in multicast_sockaddr = uvgrtp::socket::create_sockaddr(AF_INET, multicast_address_, dst_port_);
+        if (uvgrtp::socket::is_multicast(multicast_sockaddr)) {
+            UVG_LOG_DEBUG("[Set multicast] use custom multicast address");
+            socket_ = sfp_->create_new_socket(2, 0, multicast_address_, true);
+            new_socket_ = true;
+            multicast = true;
+        }
     } else if (ipv6_ && src_port_ != 0 && local_address_ != "") {
         multicast_sockaddr6_ = uvgrtp::socket::create_ip6_sockaddr(local_address_, src_port_);
         if (uvgrtp::socket::is_multicast(multicast_sockaddr6_)) {
@@ -141,11 +149,15 @@ rtp_error_t uvgrtp::media_stream::init_connection() {
 
     // if (!(rce_flags_ & RCE_RECEIVE_ONLY) && remote_address_ != "" && dst_port_ != 0)
     if (remote_address_ != "" && dst_port_ != 0) {
-        // no reason to fail sending even if binding fails so we set remote address first
-        if (ipv6_) {
-            remote_sockaddr_ip6_ = uvgrtp::socket::create_ip6_sockaddr(remote_address_, dst_port_);
+        if (!multicast_address_.empty() && multicast) {
+            remote_sockaddr_ = uvgrtp::socket::create_sockaddr(AF_INET, multicast_address_, dst_port_);
         } else {
-            remote_sockaddr_ = uvgrtp::socket::create_sockaddr(AF_INET, remote_address_, dst_port_);
+            // no reason to fail sending even if binding fails so we set remote address first
+            if (ipv6_) {
+                remote_sockaddr_ip6_ = uvgrtp::socket::create_ip6_sockaddr(remote_address_, dst_port_);
+            } else {
+                remote_sockaddr_ = uvgrtp::socket::create_sockaddr(AF_INET, remote_address_, dst_port_);
+            }
         }
         holepuncher_ = std::unique_ptr<uvgrtp::holepuncher>(new uvgrtp::holepuncher(socket_));
         holepuncher_->set_remote_address(remote_sockaddr_, remote_sockaddr_ip6_);

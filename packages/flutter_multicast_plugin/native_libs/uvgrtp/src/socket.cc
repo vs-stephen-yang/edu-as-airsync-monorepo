@@ -1177,3 +1177,48 @@ rtp_error_t uvgrtp::socket::recv_with_interface_info_linux(packet_info& info) {
     return RTP_OK;
 }
 #endif
+
+rtp_error_t uvgrtp::socket::set_multicast_send_interface(const std::string& interface_addr) {
+    if (interface_addr.empty()) {
+        UVG_LOG_WARN("Empty interface address provided");
+        return RTP_INVALID_VALUE;
+    }
+
+    struct in_addr send_interface;
+    if (inet_pton(AF_INET, interface_addr.c_str(), &send_interface) != 1) {
+        UVG_LOG_ERROR("Invalid IP address format: %s", interface_addr.c_str());
+        return RTP_INVALID_VALUE;
+    }
+
+    if (setsockopt(IPPROTO_IP, IP_MULTICAST_IF, (const char*)&send_interface, sizeof(send_interface)) < 0) {
+#ifdef _WIN32
+        win_get_last_error();
+#else
+        UVG_LOG_ERROR("Failed to set multicast send interface to %s: %s",
+                      interface_addr.c_str(), strerror(errno));
+#endif
+        return RTP_SOCKET_ERROR;
+    }
+
+    UVG_LOG_INFO("[Set multicast] Successfully set multicast send interface to %s", interface_addr.c_str());
+
+    sockaddr_in local_addr;
+    socklen_t addr_len = sizeof(local_addr);
+    if (getsockname(socket_, (struct sockaddr*)&local_addr, &addr_len) == 0) {
+        UVG_LOG_DEBUG("[Set multicast] Socket bound to: %s:%d",
+                      inet_ntoa(local_addr.sin_addr),
+                      ntohs(local_addr.sin_port));
+    } else {
+        UVG_LOG_DEBUG("[Set multicast] Socket not bound (normal for send-only)");
+    }
+
+    // 檢查當前的 multicast 接口設置
+    struct in_addr current_interface;
+    socklen_t opt_len = sizeof(current_interface);
+    if (getsockopt(socket_, IPPROTO_IP, IP_MULTICAST_IF,
+                   &current_interface, &opt_len) == 0) {
+        UVG_LOG_DEBUG("[Set multicast] Current multicast interface: %s",
+                      inet_ntoa(current_interface));
+    }
+    return RTP_OK;
+}

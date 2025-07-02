@@ -92,6 +92,13 @@ namespace uvgrtp {
          * return RTP_SOCKET_ERROR if creating the socket failed */
         rtp_error_t init(short family, int type, int protocol);
 
+        /**
+         * @brief Set multicast send interface for outgoing packets
+         * @param interface_addr IP address of the interface to use for sending
+         * @return RTP_OK on success, error code on failure
+         */
+        rtp_error_t set_multicast_send_interface(const std::string& interface_addr);
+
         /* Same as bind(2), assigns an address for the underlying socket object
          *
          * Return RTP_OK on success

@@ -51,7 +51,8 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
 
       final success = await FlutterMulticastPlugin.startRtpStream(
         ip: '239.1.1.1',
-        port: 5004,
+        videoPort: 5004,
+        audioPort: 5005,
         key: masterKey,
         salt: masterSalt,
         ssrc: 1234564002,

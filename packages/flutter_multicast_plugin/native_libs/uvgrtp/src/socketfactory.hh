@@ -45,7 +45,7 @@ namespace uvgrtp {
          *
          * Param type 1 RTCP socket, 2 for any other type of a socket
          * Return the created socket on success, nullptr otherwise */
-        std::shared_ptr<uvgrtp::socket> create_new_socket(int, uint16_t port, const std::string& bind_address = "");
+        std::shared_ptr<uvgrtp::socket> create_new_socket(int, uint16_t port, const std::string& bind_address = "", bool is_send_only = false);
         std::shared_ptr<uvgrtp::socket> create_new_socket(int, uint16_t port, const std::string& bind_address, bool is_detection, int expected_interface);
 
         /* Bind socket to the local IP address and given port
@@ -110,6 +110,6 @@ namespace uvgrtp {
         std::map<std::shared_ptr<uvgrtp::reception_flow>, std::shared_ptr<uvgrtp::socket>> reception_flows_;
         std::map<std::shared_ptr<uvgrtp::rtcp_reader>, uint16_t> rtcp_readers_to_ports_;
 
-        std::shared_ptr<uvgrtp::socket> finalize_socket_creation(std::shared_ptr<uvgrtp::socket> socket, int type, uint16_t port, const std::string& bind_address);
+        std::shared_ptr<uvgrtp::socket> finalize_socket_creation(std::shared_ptr<uvgrtp::socket> socket, int type, uint16_t port, const std::string& bind_address, bool is_send_only);
     };
 } // namespace uvgrtp

@@ -60,7 +60,8 @@ rtp_error_t uvgrtp::socketfactory::set_local_interface(std::string local_addr) {
 std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::finalize_socket_creation(
     std::shared_ptr<uvgrtp::socket> socket,
     int type, uint16_t port,
-    const std::string& bind_address) {
+    const std::string& bind_address,
+    bool is_send_only) {
     rtp_error_t ret = RTP_OK;
     if (ipv6_) {
         ret = socket->init(AF_INET6, SOCK_DGRAM, 0);
@@ -80,10 +81,17 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::finalize_socket_creation(
 #endif
 
         used_sockets_.push_back(socket);
-        if (port != 0) {
+        if (port != 0 && !is_send_only) {
             UVG_LOG_DEBUG("[Set multicast] create new socket with bind address %s", bind_address.c_str());
             if (bind_socket(socket, port, bind_address) != RTP_OK) {
                 return nullptr;
+            }
+        } else if (is_send_only && !local_address_.empty()) {
+            // 純發送端設置 multicast 接口（不 bind）
+            UVG_LOG_DEBUG("[Set multicast] create new socket with set send interface address %s", local_address_.c_str());
+            if (socket->set_multicast_send_interface(local_address_) != RTP_OK) {
+                UVG_LOG_WARN("Failed to set multicast send interface, will use default");
+                // 不返回錯誤，繼續執行
             }
         }
 
@@ -103,9 +111,9 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::finalize_socket_creation(
     return nullptr;
 }
 
-std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address) {
+std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address, bool is_send_only) {
     std::shared_ptr<uvgrtp::socket> socket = std::make_shared<uvgrtp::socket>(rce_flags_);
-    return finalize_socket_creation(socket, type, port, bind_address);
+    return finalize_socket_creation(socket, type, port, bind_address, is_send_only);
 }
 
 std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int type, uint16_t port, const std::string& bind_address, bool is_detection, int expected_interface) {
@@ -116,7 +124,7 @@ std::shared_ptr<uvgrtp::socket> uvgrtp::socketfactory::create_new_socket(int typ
 
     // 檢測模式：創建檢測 socket
     std::shared_ptr<uvgrtp::socket> socket = std::make_shared<uvgrtp::socket>(rce_flags_, is_detection, expected_interface);
-    return finalize_socket_creation(socket, type, port, bind_address);
+    return finalize_socket_creation(socket, type, port, bind_address, false);
 }
 
 rtp_error_t uvgrtp::socketfactory::bind_socket(std::shared_ptr<uvgrtp::socket> soc, uint16_t port, const std::string& bind_address) {
