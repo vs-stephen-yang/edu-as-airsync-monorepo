@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'flutter_multicast_plugin_platform_interface.dart';
+import 'stream_roc_data.dart';
 
 /// An implementation of [FlutterMulticastPluginPlatform] that uses method channels.
 class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform {
@@ -26,6 +27,16 @@ class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform
       'salt': salt,
     });
     return result == true;
+  }
+
+  Future<StreamRocData?> getStreamRoc() async {
+    try {
+      final result = await methodChannel.invokeMethod('getStreamRoc');
+      return StreamRocData.fromMap(Map<String, dynamic>.from(result));
+    } catch (e) {
+      print('Error getting ROC: $e');
+      return null;
+    }
   }
 
   @override

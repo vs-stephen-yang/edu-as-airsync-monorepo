@@ -76,7 +76,6 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_startRtpStream(JNIEnv
 
         // 建立 session，指定 local IP
         pair.session = ctx->create_session(local_ip);
-        // pair.session = ctx->create_session(c_ip);
         if (!pair.session) {
             ALOGE("Failed to create session for local IP: %s", local_ip.c_str());
             continue;
@@ -128,6 +127,56 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_startRtpStream(JNIEnv
     return JNI_TRUE;
 }
 
+extern "C" JNIEXPORT jobject JNICALL
+Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_getStreamRoc(JNIEnv *env, jobject thiz)
+{
+    if (streamPairs.empty()) {
+        ALOGE("No streams available");
+        return nullptr;
+    }
+
+    // 創建 HashMap 來存儲結果
+    jclass hashMapClass = env->FindClass("java/util/HashMap");
+    jmethodID hashMapInit = env->GetMethodID(hashMapClass, "<init>", "()V");
+    jmethodID hashMapPut = env->GetMethodID(hashMapClass, "put",
+        "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+
+    jobject hashMap = env->NewObject(hashMapClass, hashMapInit);
+
+    // 創建 Long 類的引用
+    jclass longClass = env->FindClass("java/lang/Long");
+    jmethodID longInit = env->GetMethodID(longClass, "<init>", "(J)V");
+
+    auto& pair = streamPairs[0];
+
+    if (pair.videoStream) {
+        uint32_t videoRoc = pair.videoStream->get_srtp_roc();
+        jstring videoKey = env->NewStringUTF("video");
+        jobject videoValue = env->NewObject(longClass, longInit, (jlong)videoRoc);
+        env->CallObjectMethod(hashMap, hashMapPut, videoKey, videoValue);
+
+        // 清理本地引用
+        env->DeleteLocalRef(videoKey);
+        env->DeleteLocalRef(videoValue);
+    }
+
+    if (pair.audioStream) {
+        uint32_t audioRoc = pair.audioStream->get_srtp_roc();
+        jstring audioKey = env->NewStringUTF("audio");
+        jobject audioValue = env->NewObject(longClass, longInit, (jlong)audioRoc);
+        env->CallObjectMethod(hashMap, hashMapPut, audioKey, audioValue);
+
+        // 清理本地引用
+        env->DeleteLocalRef(audioKey);
+        env->DeleteLocalRef(audioValue);
+    }
+
+    env->DeleteLocalRef(longClass);
+    env->DeleteLocalRef(hashMapClass);
+
+    return hashMap;
+}
+
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendRtpFrame(JNIEnv *env, jobject thiz, jbyteArray frame)
 {
@@ -156,7 +205,7 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendAudioRtpFrame(JNIEnv *env, jobject thiz, jbyteArray frame)
 {
     if (streamPairs.empty()) {
-        ALOGE("No video streams available");
+        ALOGE("No audio streams available");
         return;
     }
 

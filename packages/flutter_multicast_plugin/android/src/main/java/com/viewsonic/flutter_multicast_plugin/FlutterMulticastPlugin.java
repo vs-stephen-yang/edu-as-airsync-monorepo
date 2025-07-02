@@ -25,6 +25,7 @@ import io.flutter.view.TextureRegistry;
 
 
 import java.util.List;
+import java.util.Map;
 
 /** FlutterMulticastPlugin */
 public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
@@ -88,6 +89,21 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 String[] ipArray = localIps.toArray(new String[0]);
                 boolean success = NativeBridge.startRtpStream(ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc);
                 result.success(success);
+                break;
+            }
+            case "getStreamRoc": {
+                try {
+                    // 調用 native 方法
+                    Map<String, Object> rocData = NativeBridge.getStreamRoc();
+
+                    if (rocData != null && !rocData.isEmpty()) {
+                        result.success(rocData);
+                    } else {
+                        result.error("NO_STREAMS", "No streams available", null);
+                    }
+                } catch (Exception e) {
+                    result.error("ROC_ERROR", "Failed to get ROC data", e.getMessage());
+                }
                 break;
             }
             case "stopRtpStream": {
