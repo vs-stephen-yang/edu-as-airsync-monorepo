@@ -22,6 +22,7 @@ variables:
 jobs:
   - job: QualityCheck
     displayName: Quality Check (Lint and Test)
+    condition: true
     steps:
       - checkout: self
 
@@ -36,6 +37,7 @@ jobs:
 
   - job: Build
     dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
     strategy:
       maxParallel: 4
       matrix:
@@ -186,7 +188,7 @@ jobs:
             build/app/outputs/flutter-apk/*.apk
             build/app/outputs/bundle/**/*.aab
 
-          targetFolder: "$(Build.ArtifactStagingDirectory)/$(channel)"
+          targetFolder: "$(Build.ArtifactStagingDirectory)"
 
       # Rename single APK
       - task: PowerShell@2
@@ -194,7 +196,7 @@ jobs:
         condition: ne(variables['appbundle'], true)
         inputs:
           filePath: "ci/scripts/rename.ps1"
-          arguments: -Wd $(Build.ArtifactStagingDirectory)/$(channel) -Channel $(channel) -Target $(target) -Single
+          arguments: -Wd $(Build.ArtifactStagingDirectory) -Channel $(channel) -Target $(target) -Single
 
       # Rename split APKs
       - task: PowerShell@2
@@ -202,7 +204,7 @@ jobs:
         condition: eq(variables['splitPerAbi'], true)
         inputs:
           filePath: "ci/scripts/rename.ps1"
-          arguments: -Wd $(Build.ArtifactStagingDirectory)/$(channel) -Channel $(channel) -Target $(target) -Split
+          arguments: -Wd $(Build.ArtifactStagingDirectory) -Channel $(channel) -Target $(target) -Split
 
       # Rename bundle
       - task: PowerShell@2
@@ -210,12 +212,133 @@ jobs:
         condition: eq(variables['appbundle'], true)
         inputs:
           filePath: "ci/scripts/rename.ps1"
-          arguments: -Wd $(Build.ArtifactStagingDirectory)/$(channel) -Channel $(channel) -Target $(target) -Bundle
+          arguments: -Wd $(Build.ArtifactStagingDirectory) -Channel $(channel) -Target $(target) -Bundle
+
+      - task: PowerShell@2
+        displayName: Calculate Checksum
+        inputs:
+          targetType: 'inline'
+          script: |
+            # 1. Define the output checksum file
+            $out = "$(Build.ArtifactStagingDirectory)\checksums_$(target)_$(channel).md5"
+
+            # 2. Create or clear the file so it’s empty
+            #    This will overwrite any existing file or create a new one.
+            Set-Content -Path $out -Value "" -Encoding utf8
+
+            # 3. Find every .apk and .aab, compute MD5, and append to the now‐empty file
+            Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Recurse -File |
+              Where-Object { $_.Extension -ieq '.apk' -or $_.Extension -ieq '.aab' } |
+              ForEach-Object {
+                $hash = Get-FileHash -Path $_.FullName -Algorithm MD5
+                "{0}  {1}" -f $_.Name, $hash.Hash |
+                  Out-File -FilePath $out -Encoding utf8 -Append
+              }
+
 
       # Publish artifacts
-      - task: PublishBuildArtifacts@1
+      - task: PublishPipelineArtifact@1
         displayName: Publish build
         inputs:
-          pathToPublish: "$(Build.ArtifactStagingDirectory)"
-          ArtifactName: "$(target)"
-          Parallel: true
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: '$(target)_$(channel)'
+          publishLocation: 'pipeline'
+
+
+  - job: ReleaseNote
+    displayName: Generate Release Note
+    dependsOn: Build
+    condition: succeeded('Build')    
+    pool:
+      name: "AirSync macOS Pool"
+
+    steps:
+      - checkout: self
+        fetchDepth: 0
+        fetchTags: true
+        persistCredentials: "true"
+
+      # Download all per-flavor checksum artifacts
+      - task: DownloadPipelineArtifact@2
+        displayName: Download checksum files
+        inputs:
+          path: '$(Pipeline.Workspace)/md5'
+
+      # Merge all MD5 files into one combined file
+      - task: PowerShell@2
+        displayName: Concatenate MD5 lists
+        inputs:
+          targetType: 'inline'
+          script: |
+            $output = "checksums.md5"
+
+            # Initialize the output file with a header
+            "## File Checksums" | Out-File -FilePath $output -Encoding utf8
+
+            # Find all matching checksum files and merge their contents
+            Get-ChildItem -Path "$(Pipeline.Workspace)/md5" -Recurse -Filter 'checksums_*.md5' |
+              Sort-Object Name |
+              ForEach-Object {
+                Write-Host "Appending file: $($_.FullName)"
+                Get-Content -Path $_.FullName |
+                  Out-File -FilePath $output -Encoding utf8 -Append
+              }
+
+      # Generate CHANGELOG.md from Git log since last tag
+      - task: PowerShell@2
+        displayName: Generate CHANGELOG.md
+        inputs:
+          targetType: 'inline'
+          script: |
+            git fetch --tags
+            
+            $LAST_TAG = git describe --tags --abbrev=0 2>$null
+            if (-not $LAST_TAG) {
+              $LAST_TAG = git rev-list --max-parents=0 HEAD
+            }
+
+            $logPath = "CHANGELOG.md"
+
+            "## Changelog since $LAST_TAG" | Out-File -FilePath $logPath -Encoding utf8
+            "" | Out-File -FilePath $logPath -Encoding utf8 -Append
+
+            git log --pretty=format:"- %s" "$LAST_TAG..HEAD" |
+              Out-File -FilePath $logPath -Encoding utf8 -Append
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+      # 4. Combine CHANGELOG and checksum into a unified release note
+      - task: PowerShell@2
+        displayName: Generate RELEASE_NOTE.md
+        inputs:
+          targetType: 'inline'
+          script: |
+            $releaseNote = "RELEASE_NOTE.md"
+            $changelog = "CHANGELOG.md"
+            $checksums = "checksums.md5"
+
+            Get-Content $changelog |
+              Out-File -FilePath $releaseNote -Encoding utf8
+
+            "`n`n" | Out-File -FilePath $releaseNote -Encoding utf8 -Append
+
+            Get-Content $checksums |
+              Out-File -FilePath $releaseNote -Encoding utf8 -Append
+
+      # 5. Copy final output to artifact staging directory
+      - task: CopyFiles@2
+        displayName: Copy artifacts
+        inputs:
+          sourceFolder: '$(Build.SourcesDirectory)'
+          contents: |
+            RELEASE_NOTE.md
+            CHANGELOG.md
+            checksums.md5
+          targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      # 6. Publish final release note
+      - task: PublishPipelineArtifact@1
+        displayName: Publish release note
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: 'ReleaseNote'
