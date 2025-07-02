@@ -11,14 +11,16 @@ class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform
   @override
   Future<bool> startRtpStream({
     required String ip,
-    required int port,
+    required int videoPort,
+    required int audioPort,
     required int ssrc,
     required List<int> key,
     required List<int> salt,
   }) async {
     final result = await methodChannel.invokeMethod('startRtpStream', {
       'ip': ip,
-      'port': port,
+      'videoPort': videoPort,
+      'audioPort': audioPort,
       'ssrc': ssrc,
       'key': key,
       'salt': salt,

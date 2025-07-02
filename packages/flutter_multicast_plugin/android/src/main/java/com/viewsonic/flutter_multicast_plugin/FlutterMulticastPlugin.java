@@ -72,16 +72,21 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "startRtpStream": {
-                String ip = call.argument("ip");
-                Integer port = call.argument("port");
+                String multicastIp = call.argument("ip");
+                Integer videoPort = call.argument("videoPort");
+                Integer audioPort = call.argument("audioPort");
                 Integer ssrc = call.argument("ssrc");
                 byte[] key = call.argument("key");
                 byte[] salt = call.argument("salt");
-                if (ip == null || port == null || key == null || salt == null || ssrc == null) {
+
+                if (multicastIp == null || videoPort == null || audioPort == null || key == null || salt == null || ssrc == null) {
                     result.error("MISSING_ARGUMENT", "One or more arguments are missing or null", null);
                     return;
                 }
-                boolean success = NativeBridge.startRtpStream(ip, port, key, salt, ssrc);
+
+                List<String> localIps = NetworkUtils.getAllLocalIPv4s();
+                String[] ipArray = localIps.toArray(new String[0]);
+                boolean success = NativeBridge.startRtpStream(ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc);
                 result.success(success);
                 break;
             }

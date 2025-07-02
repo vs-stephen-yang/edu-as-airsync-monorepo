@@ -171,7 +171,7 @@ class _ReceiverHomeState extends State<ReceiverHome> {
                     FilteringTextInputFormatter.digitsOnly, // 只允許數字
                   ],
                   decoration: const InputDecoration(
-                    labelText: 'ROC 初始值',
+                    labelText: 'video ROC 初始值',
                     hintText: '請輸入 ROC 值 (例如: 0, 5, 10)',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.numbers),
@@ -185,7 +185,7 @@ class _ReceiverHomeState extends State<ReceiverHome> {
                     FilteringTextInputFormatter.digitsOnly, // 只允許數字
                   ],
                   decoration: const InputDecoration(
-                    labelText: 'ROC 初始值',
+                    labelText: 'audio ROC 初始值',
                     hintText: '請輸入 audio ROC 值 (例如: 0, 5, 10)',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.numbers),
