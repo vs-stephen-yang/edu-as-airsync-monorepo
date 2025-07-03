@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times. ";
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -238,7 +238,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
       "Screen sharing has ended.",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "Do not extend",
     ),
@@ -938,7 +938,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "Normal",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "What\'s new",
     ),

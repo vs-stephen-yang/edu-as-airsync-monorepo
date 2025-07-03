@@ -20,9 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
-  static String m1(value) => "螢幕分享即將結束，是否需要再延長一次(三小時)? 您可再延長${value}次。";
+  static String m0(value) => "螢幕分享即將結束，是否需要再延長一次(三小時)? 您可再延長${value}次。";
 
-  static String m0(year, version) => "AirSync ©${year}. 版本 ${version}";
+  static String m1(year, version) => "AirSync ©${year}. 版本 ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -194,7 +194,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "反控中",
     ),
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage("螢幕分享已結束。"),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "不延長",
     ),
@@ -744,7 +744,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "正常",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "What\'s New",
     ),

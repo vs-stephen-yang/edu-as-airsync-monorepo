@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'fr';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "Le partage d\'écran est sur le point de se terminer. Souhaitez-vous prolonger de 3 heures ? Vous pouvez prolonger jusqu\'à ${value} fois.";
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -246,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
       "Le partage d\'écran est terminé.",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "Ne pas prolonger",
     ),
@@ -936,7 +936,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "Normal",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Nouveautés"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
       "AirSync %s\n\nAirSync est une solution ViewSonic de partage d\'écran sans fil. Utilisé avec l\'émetteur AirSync, il permet un partage d\'écran fluide depuis l\'appareil de l\'utilisateur vers les écrans interactifs ViewSonic.\n\nNouvelles fonctionnalités de cette version :\n\n1. Le mode modérateur prend désormais en charge le mirroring.\n\n2. Intégration avec ViewSonic Manager via la télécommande Manager.\n\n3. Version PWA de l\'émetteur pour Chromebooks pour le partage d\'écran via internet.\n\n4. Prise en charge des écrans en 9-parties sur certains modèles.\n\n5. Stabilité améliorée.\n\n6. Correction de bugs.",

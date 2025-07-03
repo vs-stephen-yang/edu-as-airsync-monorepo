@@ -347,5 +347,21 @@
   "v3_lbl_settings_broadcast_to_display_group_checkbox": "Välj %s",
   "v3_lbl_settings_broadcast_to_display_group_save": "Spara",
   "v3_lbl_settings_broadcast_to_display_group_cast": "Skicka ut",
-  "v3_lbl_settings_broadcast_to_display_group_confirm": "Bekräfta att ingen enhet har valts."
+  "v3_lbl_settings_broadcast_to_display_group_confirm": "Bekräfta att ingen enhet har valts.",
+  "v3_help_center_share_title": "Bjud in till att dela",
+  "v3_help_center_share_title_sub": "Enheter som delar sin skärm med IFP.",
+  "v3_help_center_cast_device_title": "Casta till enhet",
+  "v3_help_center_cast_device_title_sub": "IFP castar sin skärm till enheter.",
+  "v3_help_center_touchback_title": "Touchback",
+  "v3_help_center_touchback_title_sub": "Tillåter fjärrkontroll för användaren.",
+  "v3_help_center_untouchback_title": "Ingen Touchback",
+  "v3_help_center_untouchback_title_sub": "Koppla bort touchback-läget.",
+  "v3_help_center_fullscreen_title": "Fullskärm",
+  "v3_help_center_mute_user_title": "Tysta användaren",
+  "v3_help_center_remove_user_title": "Ta bort användaren",
+  "v3_help_center_stop_share_title": "Sluta dela",
+  "v3_help_center_close": "Stäng",
+  "v3_help_center_title": "Hjälp Center",
+  "v3_lbl_open_help_center": "Öppna menyn i hjälpcentret",
+  "v3_lbl_close_help_center": "Stäng hjälpcentret"
 }
