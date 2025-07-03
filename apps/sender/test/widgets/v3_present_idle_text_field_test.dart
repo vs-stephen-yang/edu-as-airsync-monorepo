@@ -1,3 +1,4 @@
+import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
@@ -54,7 +55,9 @@ TestPlatformDetector mapTestPlatformToDetector(TestPlatform platform) {
   }
 }
 
-void main() {
+Future<void> main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  await initHyphenation();
   final platformVariants = ValueVariant<TestPlatform>({
     TestPlatform.macos,
     TestPlatform.windows,
@@ -123,7 +126,8 @@ void main() {
 
             // When encountering non-numeric characters, set errorMsg & do not update displayCode
             expect(lastDisplayCode, '');
-            expect(find.textContaining('Only accept numbers.'), findsOneWidget);
+            final result = findRichTextContaining('Only accept numbers.');
+            expect(result, isNotNull);
           });
         } else {
           // Filter out non-numeric characters
@@ -400,4 +404,30 @@ void main() {
       });
     });
   }
+}
+
+RichText? findRichTextContaining(String keyword) {
+  final elements = find.byType(RichText).evaluate();
+  for (final element in elements) {
+    final richText = element.widget as RichText;
+    final span = richText.text as TextSpan;
+    final text = extractText(span);
+    if (text.contains(keyword)) {
+      return richText;
+    }
+  }
+  return null;
+}
+
+String extractText(TextSpan span) {
+  final buffer = StringBuffer();
+  buffer.write(span.text ?? '');
+  if (span.children != null) {
+    for (final child in span.children!) {
+      if (child is TextSpan) {
+        buffer.write(extractText(child));
+      }
+    }
+  }
+  return buffer.toString();
 }
