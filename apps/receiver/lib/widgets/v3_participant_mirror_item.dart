@@ -11,6 +11,7 @@ import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 
 class V3ParticipantMirrorItem extends StatefulWidget {
@@ -237,7 +238,21 @@ class ParticipantStandbyFeature extends TextSizeAwareStateless {
   _presenterOn(BuildContext context, String mirrorId) {
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
-    mirrorStateProvider.setAcceptMirrorId(mirrorId);
+    if (HybridConnectionList().isPresenterStopStreaming()) {
+      if (HybridConnectionList().getPresentingCount() >=
+          HybridConnectionList.maxHybridSplitScreen) {
+        MotionToast(
+          primaryColor: Colors.grey,
+          description: AutoSizeText(
+            S.of(context).toast_maximum_split_screen,
+            maxLines: 1,
+          ),
+          displaySideBar: false,
+        ).show(context);
+        return;
+      }
+      mirrorStateProvider.setAcceptMirrorId(mirrorId);
+    }
   }
 }
 

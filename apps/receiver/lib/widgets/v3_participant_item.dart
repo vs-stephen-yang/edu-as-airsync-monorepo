@@ -378,7 +378,8 @@ class ParticipantStandbyFeature extends TextSizeAwareStateless {
           ?.show(context);
       return;
     }
-    if (HybridConnectionList().isPresenterStopStreaming(presenterId)) {
+    if (HybridConnectionList()
+        .isPresenterStopStreaming(clientId: presenterId)) {
       if (HybridConnectionList().getPresentingCount() >=
           HybridConnectionList.maxHybridSplitScreen) {
         MotionToast(
