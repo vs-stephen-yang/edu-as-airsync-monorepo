@@ -91,7 +91,8 @@ class AppOTADialogState extends State<AppOTADialog>
                     ),
                   ),
                   const Gap(20),
-                  V3AutoHyphenatingText(
+                  // title will expand the dialog, no need to use -
+                  Text(
                     S.of(context).update_title,
                     style: TextStyle(
                       color: context.tokens.color.vsdslColorOnSurface,
@@ -106,7 +107,8 @@ class AppOTADialogState extends State<AppOTADialog>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                V3AutoHyphenatingText(
+                // message will expand the dialog, no need to use -
+                Text(
                   S.of(context).update_message,
                   style: TextStyle(
                     color: context.tokens.color.vsdslColorInfo,
@@ -135,7 +137,8 @@ class AppOTADialogState extends State<AppOTADialog>
                         (BuildContext context, double value, Widget? child) {
                       return Align(
                         alignment: Alignment.bottomRight,
-                        child: V3AutoHyphenatingText(
+                        // Only for percentage, no need to use -
+                        child: Text(
                           '${(value * 100).toInt()}%',
                           style: TextStyle(
                             color: context.tokens.color.vsdslColorInfo,
