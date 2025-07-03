@@ -282,12 +282,14 @@ class HybridConnectionList {
     return false;
   }
 
-  bool isPresenterStopStreaming(String clientId) {
+  bool isPresenterStopStreaming({String clientId = ''}) {
     for (var connection in _hybridConnectionList.nonNulls) {
-      if (connection is RTCConnector &&
-          connection.clientId == clientId &&
-          (connection.presentationState.index) ==
-              PresentationState.stopStreaming.index) {
+      if ((connection is RTCConnector &&
+              connection.clientId == clientId &&
+              (connection.presentationState.index) ==
+                  PresentationState.stopStreaming.index) ||
+          (connection is MirrorRequest &&
+              connection.mirrorState == MirrorState.moderatorIdle)) {
         // stopStreaming
         return true;
       }
