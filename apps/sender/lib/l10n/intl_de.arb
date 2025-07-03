@@ -252,5 +252,10 @@
   "v3_present_touch_back_dialog_title": "Toucheingabe erlauben",
   "v3_present_touch_back_dialog_description": "Wenn Sie die Bildschirmfreigabe aktivieren, erfasst AirSync vorübergehend Ihren Bildschirminhalt und überträgt ihn an das ausgewählte Display (z. B. IFP).Um Touchback zu aktivieren, benötigt AirSync die Berechtigung für den Eingabehilfedienst, um die Fernsteuerung vom Display aus zu ermöglichen.AirSync sammelt keine personenbezogenen Daten und überwacht Ihre Aktionen nicht. Diese Berechtigung wird nur verwendet, um die Touch-Steuerungsfunktion zu aktivieren.",
   "v3_present_touch_back_dialog_not_now": "Nicht jetzt",
-  "v3_present_touch_back_dialog_allow": "Erlauben"
+  "v3_present_touch_back_dialog_allow": "Erlauben",
+  "v3_exit_title": "Möchten Sie wirklich aufhören?",
+  "v3_exit_action_cancel": "Abbrechen",
+  "v3_exit_action_exit": "Verlassen",
+  "v3_lbl_exit_action_cancel": "Abbrechen",
+  "v3_lbl_exit_action_exit": "Verlassen"
 }
