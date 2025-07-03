@@ -99,7 +99,7 @@
   "v3_main_display_code": "投影辨識碼",
   "v3_main_display_code_error": "投影辨識碼錯誤",
   "v3_main_password": "一次性密碼",
-  "v3_main_otp_error": "密碼錯誤",
+  "v3_main_otp_error": "僅接受數字",
   "v3_main_present_action": "請選擇分享方式",
   "v3_main_instance_not_found_or_offline": "找不到接收端或不在線上",
   "v3_main_display_code_invalid": "無效的投影辨識碼",
