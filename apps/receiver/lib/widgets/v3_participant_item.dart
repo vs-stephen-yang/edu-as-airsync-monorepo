@@ -238,7 +238,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
   }
 }
 
-class ParticipantStandbyFeature extends _TextSizeAwareStateless {
+class ParticipantStandbyFeature extends TextSizeAwareStateless {
   const ParticipantStandbyFeature({
     super.key,
     required this.rtcConnector,
@@ -414,7 +414,7 @@ class ParticipantStandbyFeature extends _TextSizeAwareStateless {
   }
 }
 
-class ParticipantStreamingFeature extends _TextSizeAwareStateless {
+class ParticipantStreamingFeature extends TextSizeAwareStateless {
   const ParticipantStreamingFeature({
     super.key,
     required this.rtcConnector,
@@ -480,7 +480,7 @@ class ParticipantStreamingFeature extends _TextSizeAwareStateless {
   }
 }
 
-class ParticipantReceivingFeature extends _TextSizeAwareStateless {
+class ParticipantReceivingFeature extends TextSizeAwareStateless {
   const ParticipantReceivingFeature({
     super.key,
     required this.rtcConnector,
@@ -637,7 +637,7 @@ class ParticipantReceivingFeature extends _TextSizeAwareStateless {
   }
 }
 
-class ParticipantControllingFeature extends _TextSizeAwareStateless {
+class ParticipantControllingFeature extends TextSizeAwareStateless {
   const ParticipantControllingFeature({
     super.key,
     required this.rtcConnector,
@@ -782,8 +782,8 @@ class ParticipantControllingFeature extends _TextSizeAwareStateless {
   }
 }
 
-abstract class _TextSizeAwareStateless extends StatelessWidget {
-  const _TextSizeAwareStateless({super.key});
+abstract class TextSizeAwareStateless extends StatelessWidget {
+  const TextSizeAwareStateless({super.key});
 
   ResizeTextSizeOption get textSize => AppPreferences().textSizeOption;
 
