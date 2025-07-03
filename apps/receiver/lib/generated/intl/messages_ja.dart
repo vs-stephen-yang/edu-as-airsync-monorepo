@@ -20,7 +20,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -314,7 +314,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic は、お客様のプライバシーの保護に努め、個人情報の取り扱いを真摯に取り扱います。以下のプライバシーポリシーは、ViewSonic が本ウェブサイトのご利用を通じてお客様の個人情報を収集した後、ViewSonic がお客様の個人情報をどのように取り扱うかについて詳しく説明しています。ViewSonic は、セキュリティ技術を使用してお客様の情報のプライバシーを維持し、お客様の個人情報の不正使用を防止するポリシーを遵守します。本ウェブサイトを利用することにより、お客様は、お客様の情報の収集および使用に同意するものとします。\n\nViewSonic.com からリンクするウェブサイトは、ViewSonic.com とは異なる独自のプライバシーポリシーを持っている場合があります。お客様がそのウェブサイトを訪問している間に収集された情報の使用方法に関する詳細情報については、それらのウェブサイトのプライバシーポリシーをご確認ください。\n\n当社のプライバシーポリシーの詳細については、以下のリンクにてご参照ください。",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("新着情報"),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(

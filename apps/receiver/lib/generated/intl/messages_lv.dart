@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'lv';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "Ekrāna koplietošana drīz beigsies. Vai vēlaties to pagarināt par 3 stundām? Varat pagarināt līdz ${value} reizēm.";
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -212,6 +212,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Pieņemt",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Pieņemt visu",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Noraidīt",
     ),
@@ -244,11 +247,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Touchback",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
+      "Ekrāna koplietošana ir beigusies.",
+    ),
+    "v3_casting_time_countdown": m0,
+    "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Nepagarināt",
+    ),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Pagarināt"),
     "v3_casting_time_extend_success_toast":
         MessageLookupByLibrary.simpleMessage("Pagarināts uz 3 stundām."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Nolasiet QR kodu ar savu iOS vai Android ierīci, lai lejupielādētu",
+    ),
+    "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
+      "Lai nodrošinātu vislabāko lietotāja pieredzi!",
+    ),
+    "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
+      "*Manuāla instalēšana",
+    ),
+    "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
+      "Instalējiet MacOS, izmantojot App Store",
+    ),
+    "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
+      "*Tikai MacOS",
+    ),
+    "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
+      "Darbvirsma",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
       "Lejupielādēt sūtītāja lietotni",
@@ -264,6 +289,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
       "Skenējiet QR kodu, lai iegūtu tūlītēju piekļuvi.",
+    ),
+    "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
+      "Mobilais",
     ),
     "v3_download_app_or": MessageLookupByLibrary.simpleMessage("VAI"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
@@ -327,8 +355,354 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "Ekrāna koplietošana drīz beigsies. Ja nepieciešams, lūdzu, restartējiet ekrāna koplietošanu.",
     ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Pieņemt pieprasījumu",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Pieņemt visus pieprasījumus",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Noraidīt pieprasījumu",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt sūtīšanas ierīces savienojumu",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Izslēgt touchback sūtīšanas ierīcei",
+        ),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt touchback sūtīšanas ierīcei",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt lejupielādes sūtītāja lietotnes izvēlni",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage(
+          "Aizvērt sūtīšanas ierīču sarakstu",
+        ),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt moderatoru sarakstu",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Aizvērt straumēšanas saīsņu izvēlni",
+        ),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt savienojuma statusa dialogu",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("Piekrīt EULA"),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Nepiekrist EULA",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atcelt moderatora režīma iziešanu",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Apstiprināt moderatora režīma iziešanu",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Nepagarināt sūtīšanas laiku",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Pagarināt sūtīšanas laiku",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt grupas noraidījuma paziņojumu",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Savienojuma kļūda，lūdzu, pārbaudiet ierīces tīkla iestatījumus",
+        ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Tikai lokālais savienojums",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Izvēlēties valodu",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Izvēlēties %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atcelt dialogu",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Apstiprināt dialogu",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Minimizēt ātrās savienošanas izvēlni",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Minimizēt straumēšanas QR koda izvēlni",
+        ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Pārslēgt moderatora režīmu",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Atvērt lejupielādes sūtītāja lietotnes izvēlni",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Atvērt sūtīšanas ierīču sarakstu",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Atvērt moderatoru sarakstu",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Atvērt iestatījumu izvēlni",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Atvērt straumēšanas QR koda izvēlni",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Atvērt straumēšanas saīsņu izvēlni",
+    ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Peldošā savienojuma informācijas cilne",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Izvērst pārklājuma izvēlni",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimizēt pārklājuma izvēlni",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Sūtīt ierīci šim dalībniekam",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt dalībnieka savienojumu",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Atvienot šo dalībnieku",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt spoguļa dalībnieka savienojumu",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Kopīgot šī dalībnieka spoguļa ekrānu",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Apturēt spoguļa dalībnieka straumēšanu",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Kopīgot šī dalībnieka ekrānu",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Apturēt dalībnieka straumēšanu",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt touchback šim dalībniekam",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Izslēgt touchback šim dalībniekam",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Izvērst prezentācijas vadību",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimizēt prezentācijas vadību",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Izslēgt prezentāciju",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Apturēt prezentāciju",
+    ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Pieejamība",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Atpakaļ uz iepriekšējo lapu",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Atvērt apraides iestatījumu izvēlni",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Atvērt apraides tāfeļu izvēlni",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Atvērt apraides ierīču izvēlni",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Atvērt apraidi uz displeju grupu izvēlni",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Apraidīt"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Izvēlēties %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Apstipriniet, ka neviena ierīce nav izvēlēta.",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Izvēlēties %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Saglabāt"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
+        MessageLookupByLibrary.simpleMessage("Izvēlēties %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt iestatījumu izvēlni",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Atvērt savienojuma iestatījumu izvēlni",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Izvēlēties %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage(
+          "Ieslēgt/izslēgt autorizācijas režīmu",
+        ),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
+          "Ieslēgt/izslēgt automātiskās OTP aizpildīšanas režīmu",
+        ),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage(
+          "Ieslēgt/izslēgt automātiskās palaišanas režīmu",
+        ),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Mainīt ierīces nosaukumu",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt ierīces nosaukuma iestatījumu",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Saglabāt ierīces nosaukumu",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Atvērt ierīces iestatījumu izvēlni",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Ieslēgt/izslēgt viedās mērogošanas pārslēgu",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Ievadiet ierīces nosaukumu",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Atvērt ekrāna apraides nolaižamo izvēlni",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Izvēlēties %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Atvērt juridiskās politikas iestatījumu izvēlni",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Iestatījumu izvēlne ir bloķēta",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage(
+          "Ieslēgt/izslēgt acceptera automatiskt",
+        ),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage(
+          "Ieslēgt/izslēgt pieprasīt piekļuves kodu",
+        ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Vairāk informācijas par apraidi uz displeju grupu",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Izvēlēties %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt/izslēgt skärmkod pārslēgu",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Atvērt jaunumu iestatījumu izvēlni",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "jaunumu ikona",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt/izslēgt AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt/izslēgt Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt/izslēgt Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Atvērt spoguļošanas iestatījumu izvēlni",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "AirPlay touchback",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay pārslēgs"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage("Pārslēgt sūtīšanu uz ierīcēm"),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Izvērst straumēšanas funkcijas",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast pārslēgs"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Straumēšanas saīsņu izvēlne ir bloķēta",
+        ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Sakļaut straumēšanas funkcijas",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast pārslēgs"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Izvērst straumēšanas skatu",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("Izvērst straumēšanas funkciju"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Sakļaut straumēšanas funkciju"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Sakļaut straumēšanas skatu",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Izslēgt skaņu",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Apturēt straumēšanu",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt skaņu",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atcelt dialogu",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Apstiprināt dialogu",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Atcelt"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Restartēt"),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Tikai interneta savienojums。",
+    ),
+    "v3_main_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Savienojuma kļūda，lūdzu, pārbaudiet ierīces tīkla iestatījumus。",
+        ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Savienojuma kļūda，lūdzu, pārbaudiet ierīces tīkla iestatījumus。",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Tikai LAN savienojums，lūdzu, pārbaudiet ierīces tīkla iestatījumus。",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Neizdevās konstatēt interneta savienojumu. Lūdzu, izveidojiet savienojumu ar Wi-Fi vai iekšējo tīklu un mēģiniet vēlreiz.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast pašlaik nav pieejams. Pašreizējais Wi-Fi kanāls neatbalsta ekrāna apraidi.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Piekļuves kods",
@@ -387,6 +761,25 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR kods",
+    ),
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+      "Atcelt",
+    ),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
+      "Notīrīt",
+    ),
+    "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
+      "Apstiprināt",
+    ),
+    "v3_setting_passcode_error_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Nederīga parole, lūdzu, mēģiniet vēlreiz.",
+        ),
+    "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+      "Ievadiet piekļuves kodu, lai atbloķētu iestatījumus",
+    ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Pieejamība",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Vienmēr pārraidīt avota IFP ekrānu.",
@@ -447,6 +840,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Ierīces nosaukums",
+    ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Ierīces nosaukums nevar būt tukšs",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Saglabāt",
@@ -522,7 +918,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic ir apņēmies aizsargāt jūsu privātumu un nopietni izturas pret personas datu apstrādi. Zemāk redzamā Privātuma politika detalizēti izskaidro, kā ViewSonic apstrādās jūsu personas datus pēc to iegūšanas, izmantojot tīmekļa vietni. ViewSonic nodrošina jūsu informācijas privātumu, izmantojot drošības tehnoloģijas, un ievēro politikas, kas novērš neatļautu jūsu personas datu izmantošanu. Izmantojot šo tīmekļa vietni, jūs piekrītat informācijas vākšanai un izmantošanai.  \n\nTīmekļa vietnēm, uz kurām jūs pārejat no ViewSonic.com, var būt sava privātuma politika, kas atšķiras no ViewSonic politikas. Lūdzu, iepazīstieties ar šo tīmekļa vietņu privātuma politikām, lai iegūtu detalizētu informāciju par to, kā tās var izmantot informāciju, kas iegūta jūsu apmeklējuma laikā.  \n\nLūdzu, noklikšķiniet uz šīm saitēm, lai uzzinātu vairāk par mūsu Privātuma politiku.  ",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Mainīt teksta izmēru",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("Ļoti liels"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Liels",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Normāls",
+    ),
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas jauns"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
       "AirSync %s\n\nAirSync ir patentēts bezvadu ekrāna koplietošanas risinājums no ViewSonic. Lietojot ar AirSync sūtītāju, tas ļauj lietotājiem nemanāmi koplietot savus ekrānus ar ViewSonic interaktīvajiem displejiem.\n\nŠajā laidienā ir iekļauti šādi jauni līdzekļi:\n\n1. Atbalsts ViewSonic LED displejiem.\n\n2. Touchback funkcionalitāte Android ierīcēm IFP.\n\n3. Touchback funkcionalitāte iPad, kopīgojot AirPlay.\n\n4. Gudra mērogošana.\n\n5. Iespēja mainīt apraides izmērus uz ierīces logu.\n\n6. Uzlabota stabilitāte Miracast.\n\n7. Novērstas dažādas kļūdas.",
@@ -541,6 +948,54 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Spoguļošana",
+    ),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Var izmantot touchback tikai vienai ierīcei vienlaikus.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback uz %s？",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack ir atspējots.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Pārošana neizdevās. TouchBack nav aktivizēts. Lūdzu, mēģiniet vēlreiz",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Atcelt"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Restartēt"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Darbības laiks ir beidzies. Lūdzu, izslēdziet un atkārtoti ieslēdziet Bluetooth funkciju uz lielā ekrāna, pēc tam restartējiet touchback.",
+    ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Darbības laiks ir beidzies, lūdzu, restartējiet Bluetooth",
+        ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Ierīces meklēšana"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Ierīce veiksmīgi atrasta"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Ierīce veiksmīgi sapārota"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Ierīces pārošana"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid savienots"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Hid savienojuma izveide"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Hid Profile Service veiksmīgi palaists",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage("Hid Profile Service palaišana"),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Inicializēts"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Inicializēšana"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Tagad varat attālināti vadīt %s no IFP.",
     ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Gaida, kamēr šis dalībnieks kopīgos savu ekrānu",

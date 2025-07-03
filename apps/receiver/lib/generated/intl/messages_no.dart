@@ -20,7 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'no';
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m0(value) =>
+      "Skjermdeling er i ferd med å avsluttes. Vil du forlenge den med 3 timer? Du kan forlenge opptil ${value} ganger.";
+
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -199,6 +202,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "update_title": MessageLookupByLibrary.simpleMessage("AirSync-oppdatering"),
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage("Godta"),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Godta alle",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Avslå",
     ),
@@ -231,8 +237,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Tilbakekobling",
     ),
+    "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
+      "Skjermdeling er avsluttet.",
+    ),
+    "v3_casting_time_countdown": m0,
+    "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Ikke forleng",
+    ),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Forleng"),
+    "v3_casting_time_extend_success_toast":
+        MessageLookupByLibrary.simpleMessage("Forlenget med 3 timer."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Skann QR-koden med din iOS- eller Android-enhet for å laste ned",
+    ),
+    "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
+      "For best brukeropplevelse!",
+    ),
+    "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
+      "*Manuell installasjon",
+    ),
+    "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
+      "Installer MacOS via App Store",
+    ),
+    "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
+      "*Kun for MacOS",
+    ),
+    "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
+      "Skrivebord",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
       "Last ned senderappen",
@@ -248,6 +279,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
       "Skann QR-koden for umiddelbar tilgang.",
+    ),
+    "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
+      "Mobil",
     ),
     "v3_download_app_or": MessageLookupByLibrary.simpleMessage("ELLER"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
@@ -306,8 +340,337 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Støtter deling via AirPlay, Google Cast eller Miracast",
     ),
+    "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+      "Skjermdeling er i ferd med å avsluttes. Start skjermdeling på nytt om nødvendig.",
+    ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Godta forespørsel",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Godta alle forespørsler",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Avslå forespørsel",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk cast-enhetstilkobling",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Deaktiver touchback for cast-enhet",
+        ),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Aktiver touchback for cast-enhet",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Lukk nedlast sender-app-meny",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage("Lukk cast-enhetsliste"),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Lukk moderatorliste",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage("Lukk strømmehutigmeny"),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk tilkoblingsstatus-dialog",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("Godta EULA"),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage("Avvis EULA"),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Avbryt avslutning av moderator-modus",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Bekreft avslutning av moderator-modus",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Ikke forleng castingtid",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Forleng castingtid",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk gruppeavvisningsvarsel",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Tilkoblingsfeil，sjekk enhetens nettverksinnstillinger",
+        ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Kun lokal tilkobling",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Velg språk",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Velg %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Avbryt dialog",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Bekreft dialog",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Minimer hurtigkoblingsmeny",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage("Minimer strømme QR-kodemeny"),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Bytt moderator-modus",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Åpne nedlast sender-app-meny",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Åpne cast-enhetsliste",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Åpne moderatorliste",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Åpne innstillingsmeny",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Åpne strømme QR-kodemeny",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Åpne strømmehutigmeny",
+    ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Flytende tilkoblingsinformasjon-fane",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Utvid overleggmeny",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimer overleggmeny",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Cast enhet til denne deltakeren",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk deltakerforbindelse",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Koble fra denne deltakeren",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk speildeltakerforbindelse",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Del til denne deltakerens speil",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Stopp speildeltakerens strømming",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Del til denne deltakerens skjerm",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Stopp deltakerens strømming",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Aktiver touchback for denne deltakeren",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Deaktiver touchback for denne deltakeren",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Utvid presentasjonskontroll",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimer presentasjonskontroll",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Slå av presentasjon",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Stopp presentasjon",
+    ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Tilgjengelighet",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Tilbake til forrige side",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Åpne kringkastingsinnstillingsmeny",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Åpne kringkastingsbrettmeny",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Åpne kringkastingsenhetsmeny",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Åpne kringkasting til displaygruppe-meny",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Kringkast"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Velg %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Bekreft at ingen enhet er valgt.",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Velg %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Lagre"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
+        MessageLookupByLibrary.simpleMessage("Velg %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Lukk innstillingsmeny",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Åpne tilkoblingsinnstillingsmeny",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Velg %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage("Slå på/av autorisasjonsmodus"),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage("Slå på/av autofyll OTP-modus"),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage("Slå på/av autooppstartmodus"),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Endre enhetsnavn",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk enhetsnavninnstilling",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Lagre enhetsnavn",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Åpne enhetsinnstillingsmeny",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Slå på/av smart skalering-bryter",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Skriv inn enhetsnavn",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Åpne skjermkringkasting rullegardinmeny",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Velg %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Åpne juridisk policy-innstillingsmeny",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Innstillingsmenyen er låst",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage("Slå på/av acceptera automatiskt"),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage("Slå på/av krever passord"),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Mer informasjon om kringkasting til displaygruppe",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Velg %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av skärmkod-bryter",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Åpne hva er nytt-innstillingsmeny",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "hva er nytt-ikon",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av AirPlay",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av Google Cast",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av Miracast",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Åpne speilingsinnstillingsmeny",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "AirPlay touchback",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay-bryter"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage("Cast til enheter-bryter"),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Utvid strømmefunksjoner",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast-bryter"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage("Strømmehurtigmeny er låst"),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Slå sammen strømmefunksjoner",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast-bryter"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Utvid strømmevisning",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("Utvid strømmefunksjon"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Slå sammen strømmefunksjon"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Slå sammen strømmevisning",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Slå av lyd",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Stopp strømming",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Slå på lyd",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Avbryt dialog",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Bekreft dialog",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Avbryt"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Start på nytt"),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Lukk",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Kun internettforbindelse。",
+    ),
+    "v3_main_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Tilkoblingsfeil，sjekk enhetens nettverksinnstillinger。",
+        ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Tilkoblingsfeil，sjekk enhetens nettverksinnstillinger。",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Kun LAN-tilkobling，sjekk enhetens nettverksinnstillinger。",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Kunne ikke oppdage en internettforbindelse. Vennligst koble til et Wi-Fi- eller intranett-nettverk og prøv igjen.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast ikke tilgjengelig nå. Nåværende Wi-Fi-kanal støtter ikke skjermcasting.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Passord",
@@ -364,6 +727,23 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-kode",
+    ),
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+      "Avbryt",
+    ),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage("Tøm"),
+    "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
+      "Bekreft",
+    ),
+    "v3_setting_passcode_error_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Ugyldig passord, vennligst prøv igjen.",
+        ),
+    "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+      "Skriv inn passord for å låse opp innstillinger",
+    ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Tilgjengelighet",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Send kilde-IFP-skjermen hele tiden.",
@@ -423,6 +803,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Enhetsnavn",
     ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Enhetsnavn kan ikke være tomt",
+    ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Lagre",
     ),
@@ -435,6 +818,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Hold koden synlig øverst på skjermen, selv når du bytter til andre apper og skjermdeling er aktiv.",
         ),
+    "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
+      "Smart skalering",
+    ),
+    "v3_settings_device_smart_scaling_desc": MessageLookupByLibrary.simpleMessage(
+      "Juster automatisk skjermstørrelsen for å maksimere bruken av skjermplassen. Bildet kan bli litt forvrengt.",
+    ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
       "Utilgjengelig",
     ),
@@ -492,9 +881,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic er forpliktet til å beskytte personvernet ditt og behandler håndtering av personopplysninger med stort alvor. Personvernreglene nedenfor beskriver hvordan ViewSonic behandler dine personopplysninger etter at de er samlet inn gjennom din bruk av nettstedet. ViewSonic opprettholder personvernet til informasjonen din ved å bruke sikkerhetsteknologier og følge retningslinjer som forhindrer uautorisert bruk av dine personopplysninger. Ved å bruke dette nettstedet samtykker du i innsamling og bruk av informasjonen din.\n\nNettsteder du lenker til fra ViewSonic.com kan ha sine egne personvernregler som kan avvike fra ViewSonics. Les gjennom disse nettsteders personvernregler for detaljert informasjon om hvordan de kan bruke informasjon samlet inn mens du besøker dem.\n\nKlikk på følgende lenker for å lære mer om våre personvernregler.",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Endre tekststørrelse",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("Ekstra stor"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Stor",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Normal",
+    ),
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "Hva er nytt",
+    ),
+    "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
+      "AirSync %s\n\nAirSync is a proprietary wireless screen-sharing solution from ViewSonic. When utilized with the AirSync sender, it allows users to seamlessly share their screens with ViewSonic interactive displays.\n\nThis release includes the following new features:\n\n1. Support for ViewSonic LED Displays.\n\n2. Touchback functionality for Android devices on IFP.\n\n3. Touchback functionality for iPads when sharing via AirPlay.\n\n4. Smart scaling.\n\n5. Capability to resize the cast to device window.\n\n6. Enhanced stability for Miracast.\n\n7. Fixed various bugs.",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(
@@ -511,6 +914,54 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("Speiling"),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Du kan bare touchback én enhet om gangen.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback til %s？",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack er deaktivert.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Paring mislyktes. TouchBack er ikke aktivert. Vennligst prøv igjen",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Avbryt"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Start på nytt"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Operasjonen har tidsavbrudd. Slå av og start Bluetooth-funksjonen på den store skjermen på nytt, og start deretter touchback på nytt.",
+    ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Operasjonen har tidsavbrudd, start Bluetooth på nytt",
+        ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Enhet finner"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Enhet funnet med suksess"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Enhet paret med suksess"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Enhet parer"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid tilkoblet"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Hid kobler til"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Hid Profile Service startet med suksess",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage("Hid Profile Service starter"),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Initialisert"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Initialiserer"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Du kan nå kontrollere %s eksternt fra IFP.",
+    ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Venter på at denne deltakeren skal dele skjermen",
     ),

@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'et';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "Ekraani jagamine on lõppemas. Kas soovite seda 3 tunni võrra pikendada? Saate pikendada kuni ${value} korda.";
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -202,6 +202,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Nõustu",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Nõustu kõigega",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Keeldu",
     ),
@@ -237,7 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
       "Ekraani jagamine on lõppenud.",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "Ärge pikendage",
     ),
@@ -342,8 +345,300 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
       "Ekraani jagamine on lõppemas. Vajadusel taaskäivitage ekraani jagamine.",
     ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Nõustu päringuga",
+    ),
     "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
       "Võta vastu kõik taotlused",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Keeldu päringust",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge seadme ühendus",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage("Keela seadme touchback"),
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Luba seadme touchback",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Sulge allalaaditava saatja rakenduse menüü",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage("Sulge seadmete nimekiri"),
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Sulge moderaatorite nimekiri",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage("Sulge voogedastuse otseteemenüü"),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge ühenduse oleku dialoog",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("Nõustu EULA-ga"),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Ei nõustu EULA-ga",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Tühista moderaatori režiimist väljumine",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Kinnita moderaatori režiimist väljumine",
+    ),
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Ära pikenda voogedastuse aega",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Pikenda voogedastuse aega",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge grupi keeldumise teavitus",
+    ),
+    "v3_lbl_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Ühenduse tõrge，palun kontrolli seadme võrgu seadeid",
+        ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Ainult kohalik ühendus",
+    ),
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Vali keel",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "Vali %s",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Tühista dialoog",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Kinnita dialoog",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Minimeeri kiire ühenduse menüü",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
+          "Minimeeri voogedastuse QR-koodi menüü",
+        ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Lülita moderaatori režiimi",
+    ),
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Ava allalaaditava saatja rakenduse menüü",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Ava seadmete nimekiri",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Ava moderaatorite nimekiri",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Ava seadete menüü",
+    ),
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Ava voogedastuse QR-koodi menüü",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Ava voogedastuse otseteemenüü",
+    ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Hõljuv ühenduse infokaart",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Laienda ülekatte menüü",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimeeri ülekatte menüü",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Saada seade sellele osalejale",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge osaleja ühendus",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Katkesta selle osaleja ühendus",
+    ),
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge peegeldatud osaleja ühendus",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "Jaga selle osaleja peegeldatud ekraanile",
+    ),
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Peata peegeldatud osaleja voogedastus",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Jaga selle osaleja ekraanile",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Peata osaleja voogedastus",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Luba sellele osalejale touchback",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Keela sellele osalejale touchback",
+        ),
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Laienda esitlusjuhtimine",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Minimeeri esitlusjuhtimine",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Vaigista esitlus",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Peata esitlus",
+    ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Juurdepääsetavus",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Tagasi eelmisele lehele",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Ava edastuse seadete menüü",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Ava edastustahvlite menüü",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Ava edastatavate seadmete menüü",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
+          "Ava edastus ekraanigrupile menüü",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Edasta"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("Vali %s"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Kinnita, et seadet pole valitud.",
+        ),
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("Vali %s"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Salvesta"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
+        MessageLookupByLibrary.simpleMessage("Vali %s"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Sulge seadete menüü",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Ava ühenduvuse seadete menüü",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "Vali %s",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita autoriseerimise režiim sisse/välja",
+        ),
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita automaatse OTP täitmise režiim sisse/välja",
+        ),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita automaatse käivitamise režiim sisse/välja",
+        ),
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Muuda seadme nime",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge seadme nime seade",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Salvesta seadme nimi",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Ava seadme seadete menüü",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita nutika skaleerimise lüliti sisse/välja",
+        ),
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Sisesta seadme nimi",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Ava ekraani edastuse rippmenüü",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "Vali %s",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Ava juriidilise poliitika seadete menüü",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Seadete menüü on lukustatud",
+    ),
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita acceptera automatiskt sisse/välja",
+        ),
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita nõua pääsukoodi sisse/välja",
+        ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
+          "Lisainfo ekraanigrupile edastamise kohta",
+        ),
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "Vali %s",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Lülita kuva koodi lüliti sisse/välja",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "Ava mis on uut seadete menüü",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "mis on uut ikoon",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "Lülita AirPlay sisse/välja",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Lülita Google Cast sisse/välja",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Lülita Miracast sisse/välja",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Ava peegeldamise seadete menüü",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "AirPlay touchback",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay lüliti"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage(
+          "Lülita seadmetesse saatmise lüliti",
+        ),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Laienda voogedastuse funktsioonid",
+    ),
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast lüliti"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
+          "Voogedastuse otseteemenüü on lukustatud",
+        ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Ahenda voogedastuse funktsioonid",
+    ),
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast lüliti"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Laienda voogedastuse vaade",
     ),
     "v3_lbl_streaming_view_function_expand":
         MessageLookupByLibrary.simpleMessage(
@@ -351,8 +646,51 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_streaming_view_function_minimize":
         MessageLookupByLibrary.simpleMessage("Ahenda voogesituse funktsioon"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Ahenda voogedastuse vaade",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Vaigista heli",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Peata voogedastus",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Lülita heli sisse",
+    ),
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Tühista dialoog",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Kinnita dialoog",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Tühista"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Taaskäivita"),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Sulge",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Ainult internetiühendus。",
+    ),
+    "v3_main_internet_connection_only_error":
+        MessageLookupByLibrary.simpleMessage(
+          "Ühenduse tõrge，palun kontrolli seadme võrgu seadeid。",
+        ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Ühenduse tõrge，palun kontrolli seadme võrgu seadeid。",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Ainult LAN-ühendus，palun kontrolli seadme võrgu seadeid。",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Internetiühendust ei õnnestunud tuvastada. Palun ühendage Wi-Fi või intraneti võrguga ja proovige uuesti.",
+    ),
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast pole hetkel saadaval. Praegune Wi-Fi kanal ei toeta ekraani edastamist.",
     ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Pääsukood",
@@ -426,6 +764,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "Seadete avamiseks sisestage pääsukood",
     ),
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Juurdepääsetavus",
+    ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Edasta IFP lähtekraan kogu aeg.",
     ),
@@ -484,6 +825,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Käivita AirSync automaatselt"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Seadme nimi",
+    ),
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Seadme nimi ei tohi olla tühi",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Salvesta",
@@ -560,7 +904,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic on pühendunud teie privaatsuse kaitsmisele ja käsitleb isikuandmete töötlemist tõsiselt. Allpool olev privaatsuspoliitika kirjeldab, kuidas ViewSonic töötleb teie isikuandmeid pärast nende kogumist ViewSonicu poolt teie veebisaidi kasutamise kaudu. ViewSonic kaitseb teie teavet turvatehnoloogiate abil ja järgib poliitikaid, mis takistavad teie isikuandmete volitamata kasutamist. Veebisaiti kasutades annate nõusoleku oma teabe kogumiseks ja kasutamiseks.  \n\nVeebisaidid, millele lingite ViewSonic.com-ist, võivad omada oma privaatsuspoliitikat, mis võib erineda ViewSonicu omast. Palun vaadake nende veebisaitide privaatsuspoliitikat, et saada üksikasjalikku teavet selle kohta, kuidas nad võivad teie teavet kasutada.  \n\nPalun klõpsake allolevatel linkidel, et saada rohkem teavet meie privaatsuspoliitika kohta.  ",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Muuda tekstisuurust",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("Väga suur"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Suur",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Tavaline",
+    ),
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Mis on uut"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
       "AirSync %s\n\nAirSync on ViewSonicu patenteeritud juhtmevaba ekraanijagamislahendus. Kui seda kasutatakse koos AirSynci saatjaga, võimaldab see kasutajatel oma ekraane sujuvalt jagada ViewSonicu interaktiivsete ekraanidega.\n\nSee väljalase sisaldab järgmisi uusi funktsioone.\n\n1. ViewSonicu LED-ekraanide tugi.\n\n2. Touchback-funktsioon Android-seadmetele IFP-s.\n\n3. Touchbacki funktsioon iPadidele AirPlay kaudu jagamisel.\n\n4. Nutikas skaleerimine.\n\n5. Võimalus muuta seadmesse ülekandmise akna suurust.\n\n6. Miracasti suurem stabiilsus.\n\n7. Parandatud mitmesugused vead.",
@@ -579,6 +934,54 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Peegeldamine",
+    ),
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Saad kasutada touchbacki ainult ühel seadmel korraga.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback seadmele %s？",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack on keelatud.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Sidumine ebaõnnestus. TouchBack pole aktiveeritud. Palun proovi uuesti",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Tühista"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Taaskäivita"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Toimingu ajapiirang. Lülita suurel ekraanil Bluetooth välja ja seejärel uuesti sisse, ning taaskäivita touchback.",
+    ),
+    "v3_touchback_restart_bluetooth_title":
+        MessageLookupByLibrary.simpleMessage(
+          "Toimingu ajapiirang, taaskäivita Bluetooth",
+        ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Seadme otsimine"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Seade leitud edukalt"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Seade seotud edukalt"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Seadme sidumine"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid ühendatud"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Hid ühendamine"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Hid Profile Service käivitatud edukalt",
+        ),
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage("Hid Profile Service käivitamine"),
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Alglaaditud"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Alglaadimine"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Nüüd saad juhtida seadet %s eemalt IFP kaudu.",
     ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Ootab selle osaleja ekraani jagamist",

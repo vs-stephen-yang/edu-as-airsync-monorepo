@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "La duplicación está por finalizar. ¿Deseas extenderla por 3 horas? Puedes extenderla hasta ${value} veces.";
 
-  static String m0(year, version) => "AirSync ©${year}. versión ${version}";
+  static String m1(year, version) => "AirSync ©${year}. versión ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -252,7 +252,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
       "La duplicación ha finalizado.",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "No extender",
     ),
@@ -935,7 +935,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "Normal",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Novedades"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
       "AirSync %s\n\nAirSync es la solución propietaria de ViewSonic para compartir pantalla de forma inalámbrica. Al utilizarlo con el transmisor AirSync, permite compartir la pantalla sin interrupciones desde el dispositivo del usuario a las pantallas interactivas de ViewSonic.\n\nNuevas funciones en esta versión:\n\n1. El modo moderador ahora admite duplicación de pantalla.\n\n2. Integración con ViewSonic Manager a través del control remoto de Manager.\n\n3. Versión PWA disponible para compartir pantalla desde Chromebook a través de internet.\n\n4. Soporte para pantalla dividida en 9 partes en modelos seleccionados.\n\n5. Mejoras en estabilidad.\n\n6. Corrección de errores.",

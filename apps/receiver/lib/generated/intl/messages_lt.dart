@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'lt';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "Ekrano bendrinimas netrukus baigsis. Ar norėtumėte jį pratęsti 3 valandomis? Galite pratęsti iki ${value} kartų.";
 
-  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -250,7 +250,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
       "Ekrano bendrinimas baigėsi.",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "Negalima pratęsti",
     ),
@@ -937,7 +937,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "Įprastas",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Kas naujo"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
       "\"AirSync\" yra \"ViewSonic\" patentuotas belaidžio ekrano bendrinimo sprendimas. Kai naudojamas su \"AirSync\" siuntėju, jis leidžia sklandžiai bendrinti ekraną iš vartotojo įrenginio į \"ViewSonic\" interaktyvius ekranus.\n\nNaujos šio leidimo funkcijos: \n\n1. Moderatoriaus režimas dabar palaiko atspindėjimą.\n\n2. Integracija su ViewSonic Manager per Manager nuotolinio valdymo pultą.\n\n3. PWA versijos siuntėjas, skirtas \"Chromebook\" įrenginiams, skirtas ekrano bendrinimui internete.\n\n4. 9 padalintų ekranų palaikymas pasirinktuose modeliuose.\n\n5. Palaikykite ekrano plėtinį su jutikliniu grąžinimu. \n\n6. Pagerintas stabilumas.\n\n7. Klaidos ištaisytos.",

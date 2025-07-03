@@ -20,10 +20,10 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'sv';
 
-  static String m1(value) =>
+  static String m0(value) =>
       "Skärmdelning är på väg att upphöra. Vill du förlänga den med 3 timmar? Du kan utöka upp till ${value} gånger.";
 
-  static String m0(year, version) => "AirSync © ${year}. version ${version}";
+  static String m1(year, version) => "AirSync © ${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -244,7 +244,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
       "Skärmdelningen har upphört.",
     ),
-    "v3_casting_time_countdown": m1,
+    "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
       "Förläng inte",
     ),
@@ -328,6 +328,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "avböjde din sändningsförfrågan, vänligen kontrollera inställningarna för sändning.",
     ),
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Casta till enhet",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
+          "IFP castar sin skärm till enheter.",
+        ),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Stäng"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Fullskärm",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Tysta användaren",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Ta bort användaren",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Bjud in till att dela",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Enheter som delar sin skärm med IFP.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Sluta dela",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Hjälp Center",
+    ),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Tillåter fjärrkontroll för användaren.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Ingen Touchback",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Koppla bort touchback-läget."),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Besök airsync.net eller öppna avsändarappen",
     ),
@@ -373,6 +413,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Stäng listan över cast-enheter"),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Stäng moderatorlistan",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Stäng hjälpcentret",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
         MessageLookupByLibrary.simpleMessage(
@@ -439,6 +482,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Öppna moderatorlistan",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Öppna menyn i hjälpcentret",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Öppna inställningsmenyn",
@@ -905,7 +951,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "Normal",
     ),
-    "v3_settings_version": m0,
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Nyheter"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
       "AirSync %s\nAirSync är en egenutvecklad trådlös skärmdelningslösning från ViewSonic. När den används med AirSync-sändaren möjliggör den smidig skärmdelning från användarens enhet till ViewSonics interaktiva skärmar.\nHuvudfunktioner:\n1.\tTrådlös skärmdelning.\n2.\tAutomatisk uppdelning av skärmar för flera presentatörer.\n3.\tModeratormodus för bättre kontroll under presentationer.\n4.\tSkärmspegling som stöder AirPlay, Google Cast och Miracast.\n5.\tCasta till enhet med fjärrkontroll.\n6.\tCasta till tavla för att sända skärmar till flera stora skärmar.\n7.\tAnnotation.\n8.\tInteragera med Windows-, macOS-, iOS-, Android- och webbversionen av AirSync-sändaren.\n9.\tTouchback stöds i Windows- och macOS-sändare.\n",
