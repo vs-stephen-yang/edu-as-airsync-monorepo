@@ -155,7 +155,7 @@ jobs:
       # Uploading debug symbols
       - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
         displayName: Uploading debug symbols
-        enabled: "false"
+        enabled: "true"
 
       - task: AndroidSigning@3
         displayName: Sign App - ifp
@@ -248,7 +248,7 @@ jobs:
   - job: ReleaseNote
     displayName: Generate Release Note
     dependsOn: Build
-    condition: succeeded('Build')    
+    condition: succeeded('Build')
     pool:
       name: "AirSync macOS Pool"
 
@@ -291,7 +291,7 @@ jobs:
           targetType: 'inline'
           script: |
             git fetch --tags
-            
+
             $LAST_TAG = git describe --tags --abbrev=0 2>$null
             if (-not $LAST_TAG) {
               $LAST_TAG = git rev-list --max-parents=0 HEAD
