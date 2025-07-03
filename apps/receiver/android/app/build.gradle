@@ -3,7 +3,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
-    id "io.sentry.android.gradle" version "4.11.0"
+    id "io.sentry.android.gradle" version "5.8.0"
 }
 
 // Region of Signing the app for release. Do NOT EDIT.
@@ -232,4 +232,8 @@ sentry {
     includeNativeSources = System.getenv('SENTRY_AUTH_TOKEN') != null
 
     includeSourceContext = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    autoInstallation {
+      enabled = false
+    }
 }
