@@ -6,6 +6,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_participant_item.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -144,7 +145,7 @@ class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
   }
 }
 
-class ParticipantStandbyFeature extends StatelessWidget {
+class ParticipantStandbyFeature extends TextSizeAwareStateless {
   const ParticipantStandbyFeature({
     super.key,
     required this.mirrorId,
@@ -155,7 +156,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
   final bool isForMenuUse;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWithTextSize(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -164,52 +165,69 @@ class ParticipantStandbyFeature extends StatelessWidget {
           identifier: 'v3_qa_participant_mirror_share',
           child: SizedBox(
             height: 27,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 5.0,
-                shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
-                backgroundColor: context.tokens.color.vsdslColorPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: context.tokens.radii.vsdslRadiusFull,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-              ),
-              onPressed: () {
-                EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
-                    () {
-                  _presenterOn(context, mirrorId);
-                });
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isForMenuUse) ...[
-                    SizedBox(
-                      child: SvgPicture.asset(
-                        'assets/images/ic_arrow_to_screen.svg',
-                        excludeFromSemantics: true,
-                        width: 16,
-                        height: 16,
-                        colorFilter: ColorFilter.mode(
-                          context.tokens.color.vsdslColorOnSurfaceInverse,
-                          BlendMode.srcIn,
-                        ),
-                      ),
+            child: showIcon
+                ? InkWell(
+                    onTap: () {
+                      EasyThrottle.throttle(
+                          'presenterOn', const Duration(seconds: 1), () {
+                        _presenterOn(context, mirrorId);
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      'assets/images/ic_moderator_share.svg',
+                      width: 26,
+                      height: 26,
                     ),
-                    Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  ],
-                  V3AutoHyphenatingText(
-                    S.of(context).v3_participant_item_share,
-                    textAlign: isForMenuUse ? TextAlign.left : TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  )
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5.0,
+                      shadowColor:
+                          context.tokens.color.vsdslColorOpacitySecondaryLg,
+                      backgroundColor: context.tokens.color.vsdslColorPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: context.tokens.radii.vsdslRadiusFull,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    onPressed: () {
+                      EasyThrottle.throttle(
+                          'presenterOn', const Duration(seconds: 1), () {
+                        _presenterOn(context, mirrorId);
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isForMenuUse) ...[
+                          SizedBox(
+                            child: SvgPicture.asset(
+                              'assets/images/ic_arrow_to_screen.svg',
+                              excludeFromSemantics: true,
+                              width: 16,
+                              height: 16,
+                              colorFilter: ColorFilter.mode(
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                        ],
+                        V3AutoHyphenatingText(
+                          S.of(context).v3_participant_item_share,
+                          textAlign:
+                              isForMenuUse ? TextAlign.left : TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
       ],
