@@ -137,7 +137,7 @@ class _V3HelpCenterWidgetState extends State<V3HelpCenterWidget> {
         subtitle: null,
       ),
       (
-        icon: 'assets/images/ic_moderator_untouchback.svg',
+        icon: 'assets/images/ic_moderator_stop_share.svg',
         title: S.of(context).v3_help_center_stop_share_title,
         subtitle: null,
       ),
