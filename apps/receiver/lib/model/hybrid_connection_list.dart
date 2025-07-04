@@ -49,6 +49,7 @@ class HybridConnectionList {
     'CDE92UW',
     'IFP53',
     'IFP51',
+    'IFP63',
   ];
 
   // the following device support 6 split screen
