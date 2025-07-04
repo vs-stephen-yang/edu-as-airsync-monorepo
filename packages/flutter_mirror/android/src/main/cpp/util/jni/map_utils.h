@@ -13,6 +13,10 @@ public:
             JNIEnv *env,
             jobject obj);
 
+    static std::map<std::string, std::pair<int, int>> toStdMapOfPair(
+            JNIEnv* env,
+            jobject mapObject);
+
 };
 
 } // namespace jni

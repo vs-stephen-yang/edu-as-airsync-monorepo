@@ -70,6 +70,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
     await methodChannel.invokeMethod('startAirplay', {
       "name": config.name,
       "security": config.security.name,
+      "airPlayResolutionMap": config.airPlayResolutionMap,
     });
   }
 

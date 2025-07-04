@@ -212,6 +212,12 @@ class _MyAppState extends State<MyApp>
     await _plugin.startAirplay(const AirplayConfig(
       name: "display-1",
       security: AirplaySecurity.none,
+      airPlayResolutionMap: {
+        "iPad":     {"width": 2560, "height": 1440},
+        "iPhone":   {"width": 1242, "height": 2688},
+        "Mac":      {"width": 2276, "height": 1280},
+        "unknown":  {"width": 1920, "height": 1080},
+      },
     ));
 
     // start googlecast
