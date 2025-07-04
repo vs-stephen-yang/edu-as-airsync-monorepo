@@ -20,6 +20,7 @@ variables:
     value: "--no-pub --obfuscate --split-debug-info=debug_info/"
   - name: CMAKE_BUILD_PARALLEL_LEVEL
     value: 4
+  - group: "sentry-airsync-sender"
 
 jobs:
   - job: QualityCheck
@@ -74,6 +75,11 @@ jobs:
         displayName: Build Windows app
         env:
           CMAKE_BUILD_PARALLEL_LEVEL: $(CMAKE_BUILD_PARALLEL_LEVEL)
+
+      # Uploading debug symbols
+      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
+        displayName: Uploading debug symbols
+        enabled: "true"
 
       - task: CopyFiles@2
         displayName: Copy Build Output
