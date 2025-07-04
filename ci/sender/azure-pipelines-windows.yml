@@ -6,10 +6,8 @@ trigger:
       - HotFix/*
 
 variables:
-  - name: Flutter.Version
-    value: "3.27.4"
   - name: Flutter.Bin
-    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+    value: fvm flutter
   - name: AdvancedInstaller.Bin
     value: 'C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com'
   - name: Installer.Dir
@@ -18,173 +16,131 @@ variables:
     value: "$(Build.SourcesDirectory)/build/windows/x64/runner/Release"
   - name: Package.Bin
     value: "$(Build.SourcesDirectory)/windows/scripts/package.ps1"
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate --split-debug-info=debug_info/"
+  - name: CMAKE_BUILD_PARALLEL_LEVEL
+    value: 4
 
 jobs:
-  - job: Build
+  - job: QualityCheck
+    displayName: Quality Check (Lint and Test)
+    condition: true
     pool:
-      vmImage: 'windows-2022'
+      name: "AirSync Windows Pool"
     steps:
       - checkout: self
-        persistCredentials: "true"
-        lfs: "true"
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Analyze code
+
+      - script: $(Flutter.Bin) test -j 8 --no-pub --coverage --branch-coverage
+        displayName: Run tests with coverage
+
+  - job: Build
+    displayName: Build App (Windows)
+    dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
+    pool:
+      name: "AirSync Windows Pool"
+
+    strategy:
+      matrix:
+        stage:
+          target: stage
+        production:
+          target: production
+
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: false
+        persistCredentials: true
 
       - task: PowerShell@2
-        displayName: Authenticates git repos
+        displayName: Authenticate Git Repos
         inputs:
-          targetType: 'inline'
+          targetType: inline
           script: |
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
-      # install flutter SDK
-      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
-        displayName: Download the flutter SDK
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
 
-      - task: ExtractFiles@1
-        displayName: Extract the flutter SDK
-        inputs:
-          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
-          destinationFolder: "$(Pipeline.Workspace)/flutter"
+      - script: $(Flutter.Bin) build windows -t ./lib/main_$(target).dart $(Flutter.Build.Options)
+        displayName: Build Windows app
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: $(CMAKE_BUILD_PARALLEL_LEVEL)
 
-      # build dev
-      - script: $(Flutter.Bin) build windows -t ./lib/main_dev.dart
-        displayName: Build dev
-
-      # copy dev
       - task: CopyFiles@2
-        displayName: Copy dev
+        displayName: Copy Build Output
         inputs:
           SourceFolder: "$(Build.Dir)"
-          contents: "**"
-          targetFolder: "$(Build.ArtifactStagingDirectory)/dev/"
+          Contents: "**"
+          TargetFolder: "$(Build.ArtifactStagingDirectory)"
 
-      # build stage
-      - script: $(Flutter.Bin) build windows -t ./lib/main_stage.dart
-        displayName: Build stage
-
-      # copy stage
-      - task: CopyFiles@2
-        displayName: Copy stage
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Build Artifact
         inputs:
-          SourceFolder: "$(Build.Dir)"
-          contents: "**"
-          targetFolder: "$(Build.ArtifactStagingDirectory)/stage/"
-
-      # build prod
-      - script: $(Flutter.Bin) build windows -t ./lib/main_production.dart
-        displayName: Build prod
-
-      # copy prod
-      - task: CopyFiles@2
-        displayName: Copy prod
-        inputs:
-          SourceFolder: "$(Build.Dir)"
-          contents: "**"
-          targetFolder: "$(Build.ArtifactStagingDirectory)/prod/"
-
-      # Publish artifacts
-      - task: PublishBuildArtifacts@1
-        displayName: Publish build
-        inputs:
-          pathToPublish: "$(Build.ArtifactStagingDirectory)"
-          artifactName: build
-          Parallel: true
+          targetPath: "$(Build.ArtifactStagingDirectory)"
+          artifact: "build_$(target)"
 
   - job: Package
+    displayName: Package Installer
     dependsOn: Build
+    condition: succeeded('Build')
     pool:
-      name: 'Windows Build Servers'
+      name: "Windows Build Servers"
       demands:
         - EVKey -equals 1
+
+    strategy:
+      matrix:
+        stage:
+          target: stage
+          packageEnv: stage
+        production:
+          target: production
+          packageEnv: prod
+
     steps:
       - checkout: self
-        lfs: "true"
+        fetchDepth: 1
+        fetchTags: false
 
-      - task: DownloadBuildArtifacts@0
-        displayName: 'Download build'
+      - task: DownloadPipelineArtifact@2
+        displayName: Download Build Artifact
         inputs:
-          artifactName: 'build'
-          downloadPath: '$(System.ArtifactsDirectory)'
+          artifact: "build_$(target)"
+          path: "$(System.ArtifactsDirectory)/build"
 
-      # restore dev
       - task: CopyFiles@2
-        displayName: Restore dev
+        displayName: Restore Build Output
         inputs:
           OverWrite: true
-          SourceFolder: "$(System.ArtifactsDirectory)/build/dev/"
-          contents: "**"
-          targetFolder: "$(Build.Dir)"
+          SourceFolder: "$(System.ArtifactsDirectory)/build"
+          Contents: "**"
+          TargetFolder: "$(Build.Dir)"
 
-      # package dev
       - task: PowerShell@2
-        displayName: 'Package dev'
+        displayName: Run Packaging Script
         inputs:
-          filePath: '"$(Package.Bin)"'
-          arguments: 'dev'
+          filePath: "$(Package.Bin)"
+          arguments: "$(packageEnv)"
           pwsh: true
 
-      # copy dev
       - task: CopyFiles@2
-        displayName: Copy dev
+        displayName: Copy Installer Output
         inputs:
           SourceFolder: "$(Installer.Dir)"
-          contents: "**"
-          targetFolder: "$(Build.ArtifactStagingDirectory)/package/dev"
+          Contents: "**"
+          TargetFolder: "$(Build.ArtifactStagingDirectory)/package"
 
-      # restore stage
-      - task: CopyFiles@2
-        displayName: Restore stage
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Package Artifact
         inputs:
-          OverWrite: true
-          SourceFolder: "$(System.ArtifactsDirectory)/build/stage/"
-          contents: "**"
-          targetFolder: "$(Build.Dir)"
-
-      # package stage
-      - task: PowerShell@2
-        displayName: 'Package stage'
-        inputs:
-          filePath: '"$(Package.Bin)"'
-          arguments: 'stage'
-          pwsh: true
-
-      # copy stage
-      - task: CopyFiles@2
-        displayName: Copy stage
-        inputs:
-          SourceFolder: "$(Installer.Dir)"
-          contents: "**"
-          targetFolder: "$(Build.ArtifactStagingDirectory)/package/stage"
-
-      # restore prod
-      - task: CopyFiles@2
-        displayName: Restore prod
-        inputs:
-          OverWrite: true
-          SourceFolder: "$(System.ArtifactsDirectory)/build/prod/"
-          contents: "**"
-          targetFolder: "$(Build.Dir)"
-
-      # package prod
-      - task: PowerShell@2
-        displayName: 'Package prod'
-        inputs:
-          filePath: '"$(Package.Bin)"'
-          arguments: 'prod'
-          pwsh: true
-
-      # copy prod
-      - task: CopyFiles@2
-        displayName: Copy prod
-        inputs:
-          SourceFolder: "$(Installer.Dir)"
-          contents: "**"
-          targetFolder: "$(Build.ArtifactStagingDirectory)/package/prod"
-
-        # Publish artifacts
-      - task: PublishBuildArtifacts@1
-        displayName: Publish package
-        inputs:
-          pathToPublish: "$(Build.ArtifactStagingDirectory)/package"
-          artifactName: package
-          Parallel: true
+          targetPath: "$(Build.ArtifactStagingDirectory)/package"
+          artifact: "package_$(target)"
