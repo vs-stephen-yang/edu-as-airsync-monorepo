@@ -64,6 +64,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
+  String? _deviceType;
   bool _miracastSupport = true;
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
@@ -97,6 +98,33 @@ class MirrorStateProvider extends ChangeNotifier
   bool get airPlayCodeEnable => _airplayCodeEnabled;
 
   Timer? _hidProfileTimeoutTimer;
+
+  static const List<String> _airPlayMaxResolutionFHD = [
+    'IFP52_1C',
+    'IFP34',
+  ];
+
+  Map<String, Map<String, int>> deviceMaxResolutions = {
+    "iPad":     {"width": 2560, "height": 1440},
+    "iPhone":   {"width": 2480, "height": 1396},
+    "Mac":      {"width": 2276, "height": 1280},
+    "unknown":  {"width": 1920, "height": 1080},
+  };
+
+  Map<String, Map<String, int>> getDeviceMaxResolutions(String? deviceType) {
+    if (MirrorStateProvider._airPlayMaxResolutionFHD.contains(deviceType)) {
+      return {
+        for (final key in deviceMaxResolutions.keys)
+          key: {"width": 1920, "height": 1080},
+      };
+    } else {
+      return deviceMaxResolutions;
+    }
+  }
+
+  static bool isAirPlayMaxResolutionFHD(String? deviceType) {
+    return MirrorStateProvider._airPlayMaxResolutionFHD.contains(deviceType) ? true : false;
+  }
 
   Future<void> setAirPlayCodeEnable(bool value) async {
     await _set(airplayCodeEnable: _airplayCodeEnabled = value);
@@ -328,6 +356,7 @@ class MirrorStateProvider extends ChangeNotifier
       security: _airplayCodeEnabled
           ? AirplaySecurity.onscreenCode
           : AirplaySecurity.none,
+      airPlayResolutionMap: getDeviceMaxResolutions(_deviceType),
     ));
     if (updatePreference) {
       await _set(airplayEnable: true);
@@ -451,11 +480,10 @@ class MirrorStateProvider extends ChangeNotifier
   Future<void> _initPlatformState() async {
     var channel = const MethodChannel('com.mvbcast.crosswalk/wifi_helper');
     String flavor = await channel.invokeMethod("getFlavor") ?? '';
-    var deviceType = await DeviceInfoVs.deviceType ?? '';
-    log.info('deviceType: $deviceType');
+    _deviceType = await DeviceInfoVs.deviceType ?? '';
     log.info('flavor: $flavor');
     _miracastSupport =
-        (flavor == 'ifp' && deviceType != 'dvLED') || (flavor == 'edla');
+        (flavor == 'ifp' && _deviceType != 'dvLED') || (flavor == 'edla');
 
     if (_miracastSupport) {
       await channel.invokeMethod("startSpecifiedModuleDFSChannelMonitor");
