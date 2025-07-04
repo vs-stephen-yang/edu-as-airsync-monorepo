@@ -6,19 +6,13 @@ trigger:
       - HotFix/*
 
 pool:
-  vmImage: macOS-latest
+  name: "AirSync macOS Pool"
 
 variables:
-  - name: Flutter.Version
-    value: "3.27.4"
   - name: Flutter.Bin
-    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
-  - name: FlutterSdkPlatform
-    value: "macos"
-  - name: PUB_CACHE
-    value: $(Pipeline.Workspace)/.pub-cache
+    value: fvm flutter
   - name: Dart.Bin
-    value: $(Pipeline.Workspace)/flutter/flutter/bin/dart
+    value: fvm dart
 
 jobs:
   - job: Build
@@ -34,9 +28,6 @@ jobs:
           flavor: 'prod'
           buildOptions: '--release -t ./lib/main_production.dart --source-maps --pwa-strategy=none'
 
-    pool:
-      vmImage: macOS-latest
-
     steps:
       - checkout: self
         persistCredentials: "true"
@@ -50,37 +41,15 @@ jobs:
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
-      - task: Cache@2
-        displayName: Configure flutter caching
-        enabled: false
-        inputs:
-          key: 'pubspec | "$(Agent.OS)" | pubspec.yaml, pubspec.lock'
-          restoreKeys: |
-            pubspec | "$(Agent.OS)"
-            pubspec
-          path: $(PUB_CACHE)
+      - script: $(Flutter.Bin) pub get
+        displayName: Download packages
 
-      # install flutter SDK
-      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/$(FlutterSdkPlatform)/flutter_$(FlutterSdkPlatform)_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
-        displayName: Download the flutter SDK
-
-      - task: ExtractFiles@1
-        displayName: Extract the flutter SDK
-        inputs:
-          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
-          destinationFolder: "$(Pipeline.Workspace)/flutter"
-
-      - script: $(Flutter.Bin) config --enable-web
-        displayName: Enable Flutter for web
-        workingDirectory: "$(Build.SourcesDirectory)"
-
-      - script: $(Flutter.Bin) analyze --no-fatal-infos
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
         enabled: false
         displayName: Run lint checks
-        workingDirectory: "$(Build.SourcesDirectory)"
 
       # Build
-      - script: $(Flutter.Bin) build web $(buildOptions)
+      - script: $(Flutter.Bin) build web --no-pub $(buildOptions)
         displayName: Build
 
       # Overwrite service-worker RESOURCES
@@ -97,10 +66,8 @@ jobs:
             !**/*.js.map
           targetFolder: "$(Build.ArtifactStagingDirectory)"
 
-      # Publish artifacts
-      - task: PublishBuildArtifacts@1
-        displayName: Publish build
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Build Artifact
         inputs:
-          pathToPublish: "$(Build.ArtifactStagingDirectory)"
-          artifactName: $(flavor)
-          Parallel: true
+          targetPath: "$(Build.ArtifactStagingDirectory)"
+          artifact: $(flavor)
