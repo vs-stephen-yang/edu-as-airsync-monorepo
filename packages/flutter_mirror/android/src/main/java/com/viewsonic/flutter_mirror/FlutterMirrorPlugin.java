@@ -197,10 +197,12 @@ public class FlutterMirrorPlugin implements
     } else if (call.method.equals("startAirplay")) {
       String name = call.argument("name");
       String security = call.argument("security");
+      Map<String, Map<String, Integer>> airPlayResolutionMap = (Map<String, Map<String, Integer>>) call.argument("airPlayResolutionMap");
 
       startAirplay(
           name,
-          security);
+          security,
+          airPlayResolutionMap);
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -294,12 +296,12 @@ public class FlutterMirrorPlugin implements
     mirrorReceiver_.startMirrorReplay(mirrorId, videoCodec, videoPath);
   }
 
-  private void startAirplay(String name, String security) {
+  private void startAirplay(String name, String security, Map<String, Map<String, Integer>> airPlayResolutionMap) {
     if (mirrorReceiver_ == null) {
       return;
     }
 
-    mirrorReceiver_.startAirplay(name, security);
+    mirrorReceiver_.startAirplay(name, security, airPlayResolutionMap);
   }
 
   private void stopAirplay() {

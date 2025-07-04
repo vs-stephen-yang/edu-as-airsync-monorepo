@@ -131,7 +131,8 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
     jlong instance,
     jstring jname,
     jstring jdevice_id,
-    jstring jsecurity) {
+    jstring jsecurity,
+    jobject jairPlayResolutionMap){
   assert(instance != 0);
   ALOGV("MirrorReceiver_startAirplayNative()");
 
@@ -148,6 +149,9 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
   config.enable_auth = (security == AirplaySecurity::kOnscreenCode);
   config.pin_expiry_sec = kAirplayPinExpirySec;
   config.use_external_dnssd = true;
+
+  auto resolutionMap = jni::MapUtils::toStdMapOfPair(env, jairPlayResolutionMap);
+  config.airplay_resolution_map = std::move(resolutionMap);
 
   receiver->StartAirplay(config);
 }

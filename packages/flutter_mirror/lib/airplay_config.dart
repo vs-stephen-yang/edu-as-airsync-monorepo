@@ -10,8 +10,11 @@ class AirplayConfig {
 
   final AirplaySecurity security;
 
+  final Map<String, Map<String, int>> airPlayResolutionMap;
+
   const AirplayConfig({
     required this.name,
     required this.security,
+    required this.airPlayResolutionMap,
   });
 }

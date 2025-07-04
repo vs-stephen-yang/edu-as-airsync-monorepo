@@ -72,16 +72,17 @@ public class MirrorReceiver implements
   }
 
   // start airplay
-  public void startAirplay(String name, String security) {
+  public void startAirplay(String name, String security, Map<String, Map<String, Integer>> airPlayResolutionMap) {
     assert instance_ != 0;
 
     String deviceId = NetUtils.getRandomMacAddress();
 
     startAirplayNative(
-        instance_,
-        name,
-        deviceId,
-        security);
+      instance_,
+      name,
+      deviceId,
+      security,
+      airPlayResolutionMap);
   }
 
   // stop airplay
@@ -365,10 +366,11 @@ public class MirrorReceiver implements
       String videoPath);
 
   private native void startAirplayNative(
-      long instance,
-      String name,
-      String deviceId,
-      String security);
+    long instance,
+    String name,
+    String deviceId,
+    String security,
+    Map<String, Map<String, Integer>> airPlayResolutionMap);
 
   private native void stopAirplayNative(
       long instance);
