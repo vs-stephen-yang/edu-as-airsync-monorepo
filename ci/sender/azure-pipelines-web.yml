@@ -13,6 +13,7 @@ variables:
     value: fvm flutter
   - name: Dart.Bin
     value: fvm dart
+  - group: "sentry-airsync-sender"
 
 jobs:
   - job: Build
@@ -51,6 +52,15 @@ jobs:
       # Build
       - script: $(Flutter.Bin) build web --no-pub $(buildOptions)
         displayName: Build
+
+      # Uploading debug symbols
+      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
+        displayName: Uploading debug symbols
+        enabled: "true"
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
 
       # Overwrite service-worker RESOURCES
       - script: $(Dart.Bin) $(Build.SourcesDirectory)/web/generate_assets.dart
