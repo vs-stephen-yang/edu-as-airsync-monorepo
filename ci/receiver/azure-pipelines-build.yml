@@ -156,6 +156,10 @@ jobs:
       - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
         displayName: Uploading debug symbols
         enabled: "true"
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
 
       - task: AndroidSigning@3
         displayName: Sign App - ifp
