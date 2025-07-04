@@ -42,7 +42,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
     static {
         System.loadLibrary("gstreamer_android");
-        System.loadLibrary("uvgrtp_android");
+        System.loadLibrary("multicast_android");
     }
 
     @Override

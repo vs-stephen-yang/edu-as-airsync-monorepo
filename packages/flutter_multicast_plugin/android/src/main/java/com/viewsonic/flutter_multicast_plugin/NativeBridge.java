@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class NativeBridge {
     static {
-        System.loadLibrary("uvgrtp_android");
+        System.loadLibrary("multicast_android");
     }
 
     public static native boolean startRtpStream(String[] localIps, String ip, int videoPort, int audioPort, byte[] key, byte[] salt, int ssrc);

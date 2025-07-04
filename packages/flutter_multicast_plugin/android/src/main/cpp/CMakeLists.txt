@@ -4,12 +4,12 @@ cmake_policy(SET CMP0079 NEW)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(uvgrtp_android)
+project(multicast_android)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # 設定 JNI 路徑
-set(JNI_LIB_NAME uvgrtp_android)
+set(JNI_LIB_NAME multicast_android)
 
 # ✅ 啟用 SRTP
 set(UVGRTP_ENABLE_SRTP ON CACHE BOOL "Enable SRTP")
@@ -166,8 +166,8 @@ set(COMMON_SRC
 
 # 加入 JNI 的 source
 add_library(${JNI_LIB_NAME} SHARED
-        uvgrtp_sender.cpp
-        uvgrtp_receiver.cpp
+        multicast_sender.cpp
+        multicast_receiver.cpp
 
         ${COMMON_SRC}
 )
