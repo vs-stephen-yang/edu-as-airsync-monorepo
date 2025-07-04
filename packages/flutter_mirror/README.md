@@ -70,12 +70,18 @@ See the `local-dependency-dev` branch for how to patch the build scripts.
 
 airplay
 
-1. cd to android/src/main/cpp/airplay\
-1. git clone https://viewsonic-ssi.visualstudio.com/Display%20App/_git/airplay
-1. git submodule init
-1. git submodule update
-1. Patch android/build.gradle to remove airplay dependency
-1. Patch android/src/main/cpp/airplay/CMakeLists.txt to add the local googlecast into the build
+1. cd to android/src/main/cpp/airplay
+1. `git clone https://viewsonic-ssi.visualstudio.com/Display%20App/_git/airplay`
+1. `git submodule init`
+1. `git submodule update`
+1. Patch `android/build.gradle` to remove airplay dependency
+1. Patch `android/src/main/cpp/airplay/CMakeLists.txt` to add the local airplay into the build
+1. There are some file changes required when using a local build of AirPlay. You need to apply these patches manually.
+   1. In `android/build.gradle` 
+      1. Remove the line `implementation 'com.viewsonic.airplay:airplay:0.18.0'`
+   1. In `android/src/main/cpp/airplay/CMakeLists.txt`
+      1. Change the line `#find_package(airplay REQUIRED CONFIG)` to `add_subdirectory(airplay)`
+      1. Change the line `airplay::airplayreceiver` to `airplayreceiver`  
 
 See the branch for how to patch the build scripts.
 
