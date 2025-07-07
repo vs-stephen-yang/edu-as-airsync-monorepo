@@ -1,15 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
-import 'package:display_flutter/model/text_scale_option.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
+import 'package:display_flutter/widgets/text_size_aware.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -780,27 +779,5 @@ class ParticipantControllingFeature extends TextSizeAwareStateless {
           remoteShareConnector.sessionId!, remoteShareConnector.isTouchEnabled);
       callback?.call();
     }
-  }
-}
-
-abstract class TextSizeAwareStateless extends StatelessWidget {
-  const TextSizeAwareStateless({super.key});
-
-  ResizeTextSizeOption get textSize => AppPreferences().textSizeOption;
-
-  bool get showIcon =>
-      AppPreferences().textSizeOption != ResizeTextSizeOption.normal;
-
-  /// 子類實作這個方法，而不是直接 override build()
-  Widget buildWithTextSize(BuildContext context);
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: AppPreferences().textSizeOptionNotifier,
-      builder: (context, _, __) {
-        return buildWithTextSize(context);
-      },
-    );
   }
 }
