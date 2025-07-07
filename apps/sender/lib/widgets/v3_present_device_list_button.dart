@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 
 class V3PresentDeviceListButton extends StatelessWidget {
   const V3PresentDeviceListButton({
@@ -15,78 +16,50 @@ class V3PresentDeviceListButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        V3AutoHyphenatingText(
-          S.current.v3_device_list_button_text,
-          textAlign: TextAlign.right,
-          style: TextStyle(
-            color: context.tokens.color.vsdswColorOnSurface,
-            fontSize: 16,
-            fontFamily: 'Inter',
+    return V3Focus(
+      label: S.current.v3_lbl_device_list_button_device_list,
+      identifier: 'v3_qa_device_list_button_device_list',
+      button: true,
+      child: ExcludeSemantics(
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            disabledBackgroundColor: context.tokens.color.vsdswColorDisabled,
+            backgroundColor: context.tokens.color.vsdswColorPrimary,
+            fixedSize: const Size(300, 48),
+            shape: RoundedRectangleBorder(
+              borderRadius: context.tokens.radii.vsdswRadiusFull,
+            ),
+            shadowColor: Colors.grey,
+            elevation: 8,
           ),
-        ),
-        V3Focus(
-          label: S.current.v3_lbl_device_list_button_device_list,
-          identifier: 'v3_qa_device_list_button_device_list',
-          button: true,
-          child: InkWell(
-            focusColor: Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-            onTap: onTap,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              height: 48, // 實際觸控範圍（符合 WCAG）
-              child: Container(
-                height: 32, // 實際看起來的按鈕高度
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: ShapeDecoration(
-                  color: context.tokens.color.vsdswColorTertiary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  shadows: [
-                    BoxShadow(
-                      color: context.tokens.color.vsdswColorOpacityNeutralSm,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    )
-                  ],
-                ),
-                child: ExcludeSemantics(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/images/ic_device_list_screen.svg',
-                        width: 16,
-                        height: 16,
-                        colorFilter: ColorFilter.mode(
-                          context.tokens.color.vsdswColorOnTertiary,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      V3AutoHyphenatingText(
-                        S.current.v3_device_list_button_device_list,
-                        style: TextStyle(
-                          color: context.tokens.color.vsdswColorOnTertiary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                          letterSpacing: 0.28,
-                        ),
-                      ),
-                    ],
-                  ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                'assets/images/ic_device_list_screen.svg',
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(
+                  context.tokens.color.vsdswColorOnTertiary,
+                  BlendMode.srcIn,
                 ),
               ),
-            ),
+              const Gap(8),
+              V3AutoHyphenatingText(
+                S.of(context).main_device_list,
+                style: TextStyle(
+                  color: context.tokens.color.vsdswColorOnTertiary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                  letterSpacing: 0.28,
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

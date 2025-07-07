@@ -205,13 +205,53 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
                             ),
                             Gap(35),
                           ],
-                          _inputTextFields(),
-                          _nextButton(channelProvider, demoProvider,
-                              presentStateProvider),
                           if (!kIsWeb) ...[
                             Gap(gap),
                             buildDeviceListButton(presentStateProvider),
+                            const Gap(16),
+                            SizedBox(
+                              width: 300,
+                              height: 17,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    child: Divider(
+                                      color: context
+                                          .tokens.color.vsdswColorOutline,
+                                    ),
+                                  ),
+                                  const Gap(12),
+                                  Text(
+                                    'or',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        height: 1.5,
+                                        color: context.tokens.color
+                                            .vsdswColorOnSurfaceVariant),
+                                    textHeightBehavior: TextHeightBehavior(
+                                      applyHeightToFirstAscent: false,
+                                      // Disable height for ascent
+                                      applyHeightToLastDescent:
+                                          true, // Apply height for descent
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const Gap(12),
+                                  Expanded(
+                                    child: Divider(
+                                      color: context
+                                          .tokens.color.vsdswColorOutline,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(16),
                           ],
+                          _inputTextFields(),
+                          _nextButton(channelProvider, demoProvider,
+                              presentStateProvider),
                         ],
                       ),
                     ),
