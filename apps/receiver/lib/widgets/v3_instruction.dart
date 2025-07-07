@@ -13,6 +13,7 @@ import 'package:display_flutter/screens/v3_download_app_menu.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/connection_status.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
+import 'package:display_flutter/widgets/multi_line_underline_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -214,10 +215,11 @@ class V3Instruction extends StatelessWidget {
                                           height: 23,
                                         ),
                                         const Gap(5),
-                                        Flexible(
-                                          // 添加 Flexible 讓文本可以縮小
-                                          child: AutoSizeText(
-                                            S.of(context).v3_download_app_title,
+                                        Expanded(
+                                          child: MultiLineUnderlineText(
+                                            text: S
+                                                .of(context)
+                                                .v3_download_app_title,
                                             style: context.tokens.textStyle
                                                 .airsyncFontTitle
                                                 .apply(
@@ -225,12 +227,11 @@ class V3Instruction extends StatelessWidget {
                                                   .vsdslColorOnSurface,
                                               fontWeightDelta:
                                                   FontWeight.w700.value,
-                                              decoration:
-                                                  TextDecoration.underline,
                                             ),
-                                            minFontSize: 12, // 設置最小字體大小
+                                            underlineColor: context.tokens.color
+                                                .vsdslColorOnSurface,
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
