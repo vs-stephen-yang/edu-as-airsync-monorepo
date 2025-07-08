@@ -80,7 +80,7 @@ airplay
    1. In `android/build.gradle` 
       1. Remove the line `implementation 'com.viewsonic.airplay:airplay:0.18.0'`
    1. In `android/src/main/cpp/airplay/CMakeLists.txt`
-      1. Change the line `#find_package(airplay REQUIRED CONFIG)` to `add_subdirectory(airplay)`
+      1. Change the line `find_package(airplay REQUIRED CONFIG)` to `add_subdirectory(airplay)`
       1. Change the line `airplay::airplayreceiver` to `airplayreceiver`  
 
 See the branch for how to patch the build scripts.
