@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
@@ -24,6 +25,8 @@ commonOverlayTabEntry(ConfigSettings settings) {
     }
 
     await DeviceFeatureAdapter.ensureInitialized();
+
+    await AppPreferences.ensureInitialized();
 
     FlutterError.onError = (FlutterErrorDetails details) async {
       log.severe('overlay tab details: $details');
@@ -62,6 +65,19 @@ class OverlayTabApp extends StatelessWidget {
             home: !DeviceFeatureAdapter.showOldUI
                 ? const V3OverlayTab()
                 : const OverlayTab(),
+            builder: (context, child) {
+              return ValueListenableBuilder(
+                valueListenable: AppPreferences().textSizeOptionNotifier,
+                builder: (context, _, __) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                        textScaler:
+                            TextScaler.linear(AppPreferences().textScale)),
+                    child: child!,
+                  );
+                },
+              );
+            },
           );
         },
       ),

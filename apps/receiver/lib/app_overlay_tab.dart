@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:android_window/main.dart' as android_window;
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class OverlayTabHandler {
   static const String nameSetMainInfo = 'set_main_info';
   static const String nameSetOtp = 'set_otp';
   static const String nameLaunchApp = 'launch_app';
+  static const String nameUpdateTextSize = 'update_text_size';
 
   static const String keyVisibility = 'visibility';
   static const String keyDeviceName = 'device_name';
@@ -90,6 +92,10 @@ class AppOverlayTab {
             await setOtpCode(channelProvider.otp.value);
           });
 
+          AppPreferences().textSizeOptionNotifier.addListener(() async {
+            await updateTextSize();
+          });
+
           return OverlayTabHandler.resultEmptyString;
       }
       return OverlayTabHandler.resultNullString;
@@ -128,6 +134,10 @@ class AppOverlayTab {
 
   Future<void> launchApp() async {
     await _postMessageToAndroidWindow(OverlayTabHandler.nameLaunchApp, {});
+  }
+
+  Future<void> updateTextSize() async {
+    await _postMessageToAndroidWindow(OverlayTabHandler.nameUpdateTextSize, {});
   }
 
   Future<Map<Object?, Object?>> _postMessageToAndroidWindow(

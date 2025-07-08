@@ -3,11 +3,12 @@ import 'dart:developer';
 import 'package:android_window/android_window.dart';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class V3OverlayTab extends StatefulWidget {
   const V3OverlayTab({super.key});
@@ -256,6 +257,16 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
             AndroidWindow.launchApp();
           } else {
             log('launch app with wrong data type: ${data.runtimeType}');
+          }
+          return OverlayTabHandler.resultEmptyString;
+
+        case OverlayTabHandler.nameUpdateTextSize:
+          if (data is Map<Object?, Object?>) {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.reload();
+            await AppPreferences().loadTextSizeOption();
+          } else {
+            log('Update text size with wrong data type: ${data.runtimeType}');
           }
           return OverlayTabHandler.resultEmptyString;
       }
