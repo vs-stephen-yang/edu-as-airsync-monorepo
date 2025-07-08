@@ -72,90 +72,95 @@ class V3CastDeviceItem extends _TextSizeAwareStateful {
                     ),
                   ],
                 ),
-                const Gap(16),
-                V3Focus(
-                  label: remoteScreenConnector.isTouchEnabled
-                      ? S.of(context).v3_lbl_cast_device_touchback_disable
-                      : S.of(context).v3_lbl_cast_device_touchback_enable,
-                  identifier: remoteScreenConnector.isTouchEnabled
-                      ? 'v3_qa_cast_device_touchback_disable_$index'
-                      : 'v3_qa_cast_device_touchback_enable_$index',
-                  child: SizedBox(
-                    height: 27 * AppPreferences().textScale,
-                    child: showIcon
-                        ? InkWell(
-                            onTap: () {
-                              if (remoteScreenConnector.isTouchEnabled) {
-                                remoteScreenConnector.isTouchEnabled = false;
-                              } else {
-                                remoteScreenConnector.isTouchEnabled = true;
-                              }
-                              channelProvider.remoteScreenServe
-                                  .enableRemoteControlBySessionId(
-                                      remoteScreenConnector.sessionId!,
-                                      remoteScreenConnector.isTouchEnabled);
-                              refreshWidget();
-                            },
-                            child: SvgPicture.asset(
-                              remoteScreenConnector.isTouchEnabled
-                                  ? 'assets/images/ic_moderator_untouchback.svg'
-                                  : 'assets/images/ic_moderator_touchback.svg',
-                              width: 26,
-                              height: 26,
-                            ),
-                          )
-                        : ElevatedButton.icon(
-                            onPressed: () {
-                              if (remoteScreenConnector.isTouchEnabled) {
-                                remoteScreenConnector.isTouchEnabled = false;
-                              } else {
-                                remoteScreenConnector.isTouchEnabled = true;
-                              }
-                              channelProvider.remoteScreenServe
-                                  .enableRemoteControlBySessionId(
-                                      remoteScreenConnector.sessionId!,
-                                      remoteScreenConnector.isTouchEnabled);
-                              refreshWidget();
-                            },
-                            icon: SvgPicture.asset(
-                              remoteScreenConnector.isTouchEnabled
-                                  ? 'assets/images/ic_finger_disable.svg'
-                                  : 'assets/images/ic_finger_touch.svg',
-                              excludeFromSemantics: true,
-                              width: 16,
-                              height: 16,
-                            ),
-                            label: V3AutoHyphenatingText(
-                              remoteScreenConnector.isTouchEnabled
-                                  ? S
-                                      .of(context)
-                                      .v3_cast_to_device_touch_back_disable
-                                  : S.of(context).v3_cast_to_device_touch_back,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: remoteScreenConnector.isTouchEnabled
-                                    ? context.tokens.color.vsdslColorError
-                                    : context.tokens.color.vsdslColorOnSurface,
+                if (channelProvider.remoteScreenServe.supportTouchEvent) ...[
+                  const Gap(16),
+                  V3Focus(
+                    label: remoteScreenConnector.isTouchEnabled
+                        ? S.of(context).v3_lbl_cast_device_touchback_disable
+                        : S.of(context).v3_lbl_cast_device_touchback_enable,
+                    identifier: remoteScreenConnector.isTouchEnabled
+                        ? 'v3_qa_cast_device_touchback_disable_$index'
+                        : 'v3_qa_cast_device_touchback_enable_$index',
+                    child: SizedBox(
+                      height: 27 * AppPreferences().textScale,
+                      child: showIcon
+                          ? InkWell(
+                              onTap: () {
+                                if (remoteScreenConnector.isTouchEnabled) {
+                                  remoteScreenConnector.isTouchEnabled = false;
+                                } else {
+                                  remoteScreenConnector.isTouchEnabled = true;
+                                }
+                                channelProvider.remoteScreenServe
+                                    .enableRemoteControlBySessionId(
+                                        remoteScreenConnector.sessionId!,
+                                        remoteScreenConnector.isTouchEnabled);
+                                refreshWidget();
+                              },
+                              child: SvgPicture.asset(
+                                remoteScreenConnector.isTouchEnabled
+                                    ? 'assets/images/ic_moderator_untouchback.svg'
+                                    : 'assets/images/ic_moderator_touchback.svg',
+                                width: 26,
+                                height: 26,
+                              ),
+                            )
+                          : ElevatedButton.icon(
+                              onPressed: () {
+                                if (remoteScreenConnector.isTouchEnabled) {
+                                  remoteScreenConnector.isTouchEnabled = false;
+                                } else {
+                                  remoteScreenConnector.isTouchEnabled = true;
+                                }
+                                channelProvider.remoteScreenServe
+                                    .enableRemoteControlBySessionId(
+                                        remoteScreenConnector.sessionId!,
+                                        remoteScreenConnector.isTouchEnabled);
+                                refreshWidget();
+                              },
+                              icon: SvgPicture.asset(
+                                remoteScreenConnector.isTouchEnabled
+                                    ? 'assets/images/ic_finger_disable.svg'
+                                    : 'assets/images/ic_finger_touch.svg',
+                                excludeFromSemantics: true,
+                                width: 16,
+                                height: 16,
+                              ),
+                              label: V3AutoHyphenatingText(
+                                remoteScreenConnector.isTouchEnabled
+                                    ? S
+                                        .of(context)
+                                        .v3_cast_to_device_touch_back_disable
+                                    : S
+                                        .of(context)
+                                        .v3_cast_to_device_touch_back,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: remoteScreenConnector.isTouchEnabled
+                                      ? context.tokens.color.vsdslColorError
+                                      : context
+                                          .tokens.color.vsdslColorOnSurface,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                elevation: 5,
+                                backgroundColor: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      context.tokens.radii.vsdslRadiusFull,
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: context
+                                        .tokens.spacing.vsdslSpacingSm.left),
+                                shadowColor:
+                                    context.tokens.color.vsdslColorNeutral,
                               ),
                             ),
-                            style: ElevatedButton.styleFrom(
-                              elevation: 5,
-                              backgroundColor: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    context.tokens.radii.vsdslRadiusFull,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: context
-                                      .tokens.spacing.vsdslSpacingSm.left),
-                              shadowColor:
-                                  context.tokens.color.vsdslColorNeutral,
-                            ),
-                          ),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
