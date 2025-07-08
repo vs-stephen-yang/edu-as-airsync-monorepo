@@ -69,6 +69,13 @@ class DeviceFeatureAdapter {
     'IFP62': {
       "maxHardwareDecodeSession": 1,
     },
+    'IFP33': {
+      // The IFP33 requires the frame height to be a multiple of 16 pixels.
+      // If this condition is not met, video artifacts appears.
+      // Set the capture size to 1920×1088 to satisfy the requirement that the height be a multiple of 16.
+      "overridePortraitCaptureSize": "1088x1920",
+      "overrideLandscapeCaptureSize": "1920x1088",
+    },
     'CDE30': {
       // to avoid green line issue see 66146 and 63865
       "overridePortraitCaptureSize": "736x1280",
