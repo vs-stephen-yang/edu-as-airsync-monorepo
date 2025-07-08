@@ -99,12 +99,12 @@ class MirrorStateProvider extends ChangeNotifier
 
   Timer? _hidProfileTimeoutTimer;
 
-  static const List<String> _airPlayMaxResolutionFHD = [
+  static const List<String> _fhdOnlyAirPlayModels = [
     'IFP52_1C',
     'IFP34',
   ];
 
-  Map<String, Map<String, int>> deviceMaxResolutions = {
+  Map<String, Map<String, int>> AirplayDeviceMaxResolutions = {
     "iPad":     {"width": 2560, "height": 1440},
     "iPhone":   {"width": 2480, "height": 1396},
     "Mac":      {"width": 2276, "height": 1280},
@@ -112,18 +112,14 @@ class MirrorStateProvider extends ChangeNotifier
   };
 
   Map<String, Map<String, int>> getDeviceMaxResolutions(String? deviceType) {
-    if (MirrorStateProvider._airPlayMaxResolutionFHD.contains(deviceType)) {
+    if (MirrorStateProvider._fhdOnlyAirPlayModels.contains(deviceType)) {
       return {
-        for (final key in deviceMaxResolutions.keys)
+        for (final key in AirplayDeviceMaxResolutions.keys)
           key: {"width": 1920, "height": 1080},
       };
     } else {
-      return deviceMaxResolutions;
+      return AirplayDeviceMaxResolutions;
     }
-  }
-
-  static bool isAirPlayMaxResolutionFHD(String? deviceType) {
-    return MirrorStateProvider._airPlayMaxResolutionFHD.contains(deviceType) ? true : false;
   }
 
   Future<void> setAirPlayCodeEnable(bool value) async {
