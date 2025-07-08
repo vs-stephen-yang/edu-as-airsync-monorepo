@@ -324,7 +324,9 @@ bool GstVideoPipeline::init(void* window_handle) {
 #else
     const char* desc =
         "appsrc name=mysrc is-live=true format=time caps=video/x-h264,stream-format=byte-stream,alignment=au ! "
-        "h264parse name=h264parse ! decodebin name=decodebin";
+        "h264parse name=h264parse ! "
+        "queue name=decode_queue max-size-buffers=5 max-size-time=167000000 leaky=2 ! "
+        "decodebin name=decodebin";
 #endif
 
     gst_debug_set_default_threshold(GST_LEVEL_WARNING);
