@@ -38,7 +38,7 @@ bool GstAudioPipeline::init() {
 #endif
 
 #ifdef __APPLE__
-    const char* desc ='';
+    const char* desc = "";
 #else
     const char* desc =
         "appsrc name=appsrc is-live=true format=time stream-type=stream caps=audio/x-opus,rate=48000,channels=1,channel-mapping-family=0 ! "

@@ -137,9 +137,6 @@ static void decodebin_pad_added_cb(GstElement* decodebin, GstPad* new_pad, gpoin
             (guintptr)pad_data->window_handle);
         ALOGI("Set Android window handle for glimagesink");
     }
-#else
-    // iOS: 讓 glimagesink 自己管理 window
-    ALOGI("iOS: glimagesink will create its own window");
 #endif
 
     ALOGI("[PAD_ADDED] Created videoconvert, capsfilter, and glsink");
@@ -317,11 +314,9 @@ bool GstVideoPipeline::init(void* window_handle) {
 #ifdef __APPLE__
     const char* desc =
         "appsrc name=mysrc is-live=true format=time caps=video/x-h264,stream-format=byte-stream,alignment=au ! "
-        "queue name=parse_queue max-size-buffers=3 max-size-time=100000000 leaky=2 ! "
         "h264parse name=h264parse config-interval=-1 ! "
         "queue name=decode_queue max-size-buffers=5 max-size-time=167000000 leaky=2 ! "
         "avdec_h264 name=avdec_h264 ! "
-        "queue name=convert_queue max-size-buffers=3 max-size-time=100000000 leaky=2 ! "
         "videoconvert name=videoconvert ! "
         "video/x-raw,format=BGRA ! "
         "queue name=sink_queue max-size-buffers=2 max-size-time=67000000 leaky=2 ! "

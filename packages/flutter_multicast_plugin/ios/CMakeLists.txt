@@ -77,7 +77,10 @@ target_link_libraries(gst_ios_init
 set(COMMON_DIR "${CMAKE_SOURCE_DIR}/../native_libs/common")
 set(COMMON_SRC
     ${COMMON_DIR}/gst_video_pipeline.cpp
+    ${COMMON_DIR}/gst_audio_pipeline.cpp
+    ${COMMON_DIR}/gst_util.cpp
     ${COMMON_DIR}/rtp_receiver_core.cpp
+    ${COMMON_DIR}/ip_pktinfo_detector.cpp
 )
 
 add_library(common STATIC ${COMMON_SRC})

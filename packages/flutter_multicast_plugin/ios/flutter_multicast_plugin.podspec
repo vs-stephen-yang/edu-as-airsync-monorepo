@@ -5,25 +5,56 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_multicast_plugin'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'A Flutter plugin for uvgRTP + GStreamer on iOS'
   s.description      = <<-DESC
-A new Flutter plugin project.
-                       DESC
+                        A Flutter plugin for uvgRTP + GStreamer on iOS
+                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
-  s.dependency 'Flutter'
   s.platform = :ios, '12.0'
+  s.static_framework = true
 
-  # Flutter.framework does not contain a i386 slice.
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
+  # 檢查 GStreamer 環境變數
+  gstreamer_root = ENV['GSTREAMER_SDK_IOS']
+  
+  if gstreamer_root.nil? || gstreamer_root.empty?
+    puts "❌ Error: GSTREAMER_SDK_IOS environment variable not set!"
+    puts "Please run: export GSTREAMER_SDK_IOS=/path/to/GStreamer.framework"
+    puts "Example: export GSTREAMER_SDK_IOS=/usr/local/gstreamer-ios/GStreamer.framework"
+    raise "GSTREAMER_SDK_IOS environment variable is required"
+  end
+  
+  unless Dir.exist?(gstreamer_root)
+    puts "❌ Error: GStreamer directory does not exist: #{gstreamer_root}"
+    puts "Please check your GSTREAMER_SDK_IOS path"
+    raise "Invalid GSTREAMER_SDK_IOS path: #{gstreamer_root}"
+  end
 
-  # If your plugin requires a privacy manifest, for example if it uses any
-  # required reason APIs, update the PrivacyInfo.xcprivacy file to describe your
-  # plugin's privacy impact, and then uncomment this line. For more information,
-  # see https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
-  # s.resource_bundles = {'flutter_multicast_plugin_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
+  gstreamer_search_path = File.dirname(gstreamer_root)
+  gstreamer_headers = "#{gstreamer_root}/Headers"
+
+  s.source_files = 'Classes/**/*.{h,m,mm}', 'native_src/gstreamer/*.{h,m,mm}'
+  s.public_header_files = 'Classes/**/*.h'
+
+  s.vendored_libraries = 'libs/*.a'
+
+  framework_flags = "-F\"#{gstreamer_search_path}\" -framework GStreamer"
+
+  s.dependency 'Flutter'
+  s.frameworks = 'Foundation', 'AVFoundation', 'CoreMedia', 'CoreVideo', 'AssetsLibrary', 'VideoToolbox', 'GStreamer'
+  s.libraries = 'iconv', 'c++'
+
+  s.pod_target_xcconfig = {
+    'CLANG_CXX_LIBRARY' => 'libc++',
+    'HEADER_SEARCH_PATHS' => "$(inherited) $(PODS_TARGET_SRCROOT)/../native_libs/common $(PODS_TARGET_SRCROOT)/../native_libs/uvgrtp/include #{gstreamer_headers}",
+    'FRAMEWORK_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\"",
+    'OTHER_LDFLAGS' => '$(inherited) #{framework_flags} -framework VideoToolbox -framework CoreVideo -framework CoreMedia'
+  }
+
+  s.user_target_xcconfig = {
+  'FRAMEWORK_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\"",
+  'OTHER_LDFLAGS' => "$(inherited) #{framework_flags}"
+}
 end
