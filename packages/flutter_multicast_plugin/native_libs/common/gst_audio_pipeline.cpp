@@ -45,9 +45,13 @@ bool GstAudioPipeline::init() {
                        "audioconvert name=audioconvert ! "
                        "osxaudiosink sync=false async=false";
 #else
-    const char* desc =
-        "appsrc name=appsrc is-live=true format=time stream-type=stream caps=audio/x-opus,rate=48000,channels=1,channel-mapping-family=0 ! "
-        "opusdec name=opusdec ! queue name=audio_buffer max-size-buffers=10 max-size-time=200000000 leaky=0 ! audioconvert name=audioconvert ! autoaudiosink";
+    const char* desc = "appsrc name=appsrc is-live=true format=time stream-type=stream "
+                       "caps=audio/x-opus,rate=48000,channels=1,channel-mapping-family=0 ! "
+                       "queue name=decode_queue max-size-buffers=10 max-size-time=200000000 leaky=2 ! "
+                       "opusdec name=opusdec ! "
+                       "queue name=audio_buffer max-size-buffers=15 max-size-time=300000000 leaky=1 ! "
+                       "audioconvert name=audioconvert ! "
+                       "autoaudiosink name=audiosink sync=false";
 #endif
 
     gst_debug_set_default_threshold(GST_LEVEL_WARNING);
