@@ -211,7 +211,6 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
                             const Gap(16),
                             SizedBox(
                               width: 300,
-                              height: 17,
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
@@ -223,7 +222,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
                                   ),
                                   const Gap(12),
                                   Text(
-                                    'or',
+                                    S.of(context).v3_main_present_or,
                                     style: TextStyle(
                                         fontSize: 15,
                                         height: 1.5,

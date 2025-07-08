@@ -501,6 +501,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Password invalid.",
     ),
     "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Next"),
+    "v3_main_present_or": MessageLookupByLibrary.simpleMessage("or"),
     "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
       "Follow the steps to get started.",
     ),

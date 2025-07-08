@@ -2600,6 +2600,11 @@ class S {
       args: [],
     );
   }
+
+  /// `or`
+  String get v3_main_present_or {
+    return Intl.message('or', name: 'v3_main_present_or', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
