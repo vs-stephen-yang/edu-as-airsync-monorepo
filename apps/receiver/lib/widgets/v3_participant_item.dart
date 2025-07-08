@@ -497,67 +497,69 @@ class ParticipantReceivingFeature extends TextSizeAwareStateless {
     return Wrap(
       alignment: WrapAlignment.spaceBetween,
       children: [
-        V3Focus(
-          label: S.of(context).v3_lbl_participant_touch_back,
-          identifier: 'v3_qa_participant_touch_back',
-          child: SizedBox(
-            height: 27,
-            child: showIcon
-                ? InkWell(
-                    onTap: () {
-                      EasyThrottle.throttle(
-                          'touchBackOn', const Duration(seconds: 1), () {
-                        _touchBackOn(context);
-                      });
-                    },
-                    child: SvgPicture.asset(
-                      'assets/images/ic_moderator_touchback.svg',
-                      width: 26,
-                      height: 26,
-                    ),
-                  )
-                : ElevatedButton(
-                    onPressed: () {
-                      EasyThrottle.throttle(
-                          'touchBackOn', const Duration(seconds: 1), () {
-                        _touchBackOn(context);
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 5,
-                      backgroundColor:
-                          context.tokens.color.vsdslColorOnSurfaceInverse,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: context.tokens.radii.vsdslRadiusFull,
+        if (channelProvider.remoteScreenServe.supportTouchEvent) ...[
+          V3Focus(
+            label: S.of(context).v3_lbl_participant_touch_back,
+            identifier: 'v3_qa_participant_touch_back',
+            child: SizedBox(
+              height: 27,
+              child: showIcon
+                  ? InkWell(
+                      onTap: () {
+                        EasyThrottle.throttle(
+                            'touchBackOn', const Duration(seconds: 1), () {
+                          _touchBackOn(context);
+                        });
+                      },
+                      child: SvgPicture.asset(
+                        'assets/images/ic_moderator_touchback.svg',
+                        width: 26,
+                        height: 26,
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      shadowColor:
-                          context.tokens.color.vsdslColorOnSurfaceInverse,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/ic_finger_touch.svg',
-                          excludeFromSemantics: true,
-                          width: 16,
-                          height: 16,
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        EasyThrottle.throttle(
+                            'touchBackOn', const Duration(seconds: 1), () {
+                          _touchBackOn(context);
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        backgroundColor:
+                            context.tokens.color.vsdslColorOnSurfaceInverse,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: context.tokens.radii.vsdslRadiusFull,
                         ),
-                        Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                        V3AutoHyphenatingText(
-                          S.of(context).v3_cast_to_device_touch_back,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: context.tokens.color.vsdslColorOnSurface,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        shadowColor:
+                            context.tokens.color.vsdslColorOnSurfaceInverse,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/ic_finger_touch.svg',
+                            excludeFromSemantics: true,
+                            width: 16,
+                            height: 16,
                           ),
-                        ),
-                      ],
+                          Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                          V3AutoHyphenatingText(
+                            S.of(context).v3_cast_to_device_touch_back,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: context.tokens.color.vsdslColorOnSurface,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
-        ),
-        Gap(context.tokens.spacing.vsdslSpacingSm.top),
+          Gap(context.tokens.spacing.vsdslSpacingSm.top),
+        ],
         V3Focus(
           label: S.of(context).v3_lbl_participant_disconnect,
           identifier: 'v3_qa_participant_disconnect',

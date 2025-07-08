@@ -5,11 +5,11 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
-import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
@@ -81,13 +81,26 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   final _channels = <String, RemoteControlChannel>{};
   int _nextChannelId = 0;
 
+  bool get supportTouchEvent => _supportTouchEvent;
+  bool _supportTouchEvent = false;
   double _screenWidth = defaultScreenWidth;
   double _screenHeight = defaultScreenHeight;
-  final _touchEventManager = TouchEventManager();
+  TouchEventManager? _touchEventManager;
 
   final _connectorChannels = <int, RemoteScreenConnector>{};
 
-  RemoteScreenServer();
+  RemoteScreenServer() {
+    initTouchEventManager();
+  }
+
+  Future<void> initTouchEventManager() async {
+    var channel = const MethodChannel('com.mvbcast.crosswalk/wifi_helper');
+    String flavor = await channel.invokeMethod("getFlavor") ?? '';
+    if (flavor == 'ifp' || flavor == 'edla') {
+      _touchEventManager = TouchEventManager();
+      _supportTouchEvent = true;
+    }
+  }
 
   Future startSfuServer(List<RtcIceServer>? iceServers) async {
     if (_sfuServerStarted) return;
@@ -103,7 +116,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   void _onControlChannelClosed(RemoteControlChannel channel) {
-    _touchEventManager.releaseEventSlotsByChannelId(channel.id);
+    _touchEventManager?.releaseEventSlotsByChannelId(channel.id);
     _channels.removeWhere((key, item) => item.id == channel.id);
   }
 
@@ -132,48 +145,48 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   Future<bool> startRemoteScreenPublisher() async {
     return _lock.synchronized(() async {
-        if (_ionSfuClient != null) {
-          return true;
-        }
-
-        _ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
-        roomId = _generateRoomId();
-        log.info('Start remote screen publisher for room $roomId');
-
-        _ionSfuClient = await _createIonSfuClient();
-
-        await updateScreenSize();
-        String? deviceType = await DeviceInfoVs.deviceType;
-
-        final captureResolution = getCaptureVideoResolution(
-          deviceType,
-          _screenWidth,
-          _screenHeight,
-        );
-        log.info(
-            'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
-
-        var constraints = Constraints.defaults;
-        // Note: ion-sdk-flutter currently hard-code H264, so the settings here
-        // are ineffective.
-        constraints.codec = "h264";
-        constraints.simulcast = false;
-        constraints.audio = false;
-        constraints.resolution = captureResolution.name;
-
-        bool capturePermission = await Helper.requestCapturePermission();
-        if (!capturePermission) {
-          return false;
-        }
-        bool backgroundPermission = await requestBackgroundPermission();
-        if (!backgroundPermission) {
-          return false;
-        }
-
-        _localStream =
-        await LocalStream.getDisplayMedia(constraints: constraints);
-        await _ionSfuClient?.publish(_localStream!);
+      if (_ionSfuClient != null) {
         return true;
+      }
+
+      _ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
+      roomId = _generateRoomId();
+      log.info('Start remote screen publisher for room $roomId');
+
+      _ionSfuClient = await _createIonSfuClient();
+
+      await updateScreenSize();
+      String? deviceType = await DeviceInfoVs.deviceType;
+
+      final captureResolution = getCaptureVideoResolution(
+        deviceType,
+        _screenWidth,
+        _screenHeight,
+      );
+      log.info(
+          'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+
+      var constraints = Constraints.defaults;
+      // Note: ion-sdk-flutter currently hard-code H264, so the settings here
+      // are ineffective.
+      constraints.codec = "h264";
+      constraints.simulcast = false;
+      constraints.audio = false;
+      constraints.resolution = captureResolution.name;
+
+      bool capturePermission = await Helper.requestCapturePermission();
+      if (!capturePermission) {
+        return false;
+      }
+      bool backgroundPermission = await requestBackgroundPermission();
+      if (!backgroundPermission) {
+        return false;
+      }
+
+      _localStream =
+          await LocalStream.getDisplayMedia(constraints: constraints);
+      await _ionSfuClient?.publish(_localStream!);
+      return true;
     });
   }
 
@@ -344,15 +357,12 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
 
     if (eventMessage.hasTouchEvent()) {
-      TouchEvent touchEvent = eventMessage.touchEvent;
-      _touchEventManager.setScreenSize(_screenWidth, _screenHeight);
-      _touchEventManager.handleTouchEvent(touchEvent, channelId);
+      _touchEventManager?.setScreenSize(_screenWidth, _screenHeight);
+      _touchEventManager?.handleTouchEvent(eventMessage.touchEvent, channelId);
     }
 
     if (eventMessage.hasKeyEvent()) {
-      KeyEvent event = eventMessage.keyEvent;
-
-      _touchEventManager.handleKeyEvent(event, channelId);
+      _touchEventManager?.handleKeyEvent(eventMessage.keyEvent, channelId);
     }
   }
 
