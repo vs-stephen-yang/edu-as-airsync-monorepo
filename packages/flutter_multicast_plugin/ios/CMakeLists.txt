@@ -135,6 +135,7 @@ target_link_libraries(MulticastBridge
 	"-framework VideoToolbox"
 	"-framework CoreVideo"
 	"-framework CoreMedia"
+	"-framework AudioToolbox"
     uvgrtp
     cryptopp
     common

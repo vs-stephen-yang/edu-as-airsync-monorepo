@@ -1,8 +1,10 @@
 #import "MulticastBridge.h"
 
+#import "gst_audio_pipeline.h"
 #import "gst_video_pipeline.h"
 #import "rtp_receiver_core.h"
 
+static std::unique_ptr<GstAudioPipeline> g_audio_pipeline;
 static std::unique_ptr<GstVideoPipeline> g_pipeline;
 static std::unique_ptr<RtpReceiverCore> g_receiver;
 
@@ -64,27 +66,28 @@ static std::unique_ptr<RtpReceiverCore> g_receiver;
             NSLog(@"[MulticastBridge] ❌ Failed to initialize GStreamer pipeline");
             return;
         }
-        NSLog(@"[MulticastBridge] ✅ GStreamer pipeline initialized");
+
+        g_audio_pipeline = std::make_unique<GstAudioPipeline>();
+        if (!g_audio_pipeline->init()) {
+            NSLog(@"[MulticastBridge] ❌ Failed to initialize GStreamer audio pipeline");
+            return;
+        }
 
         // 5. 建立 RTP receiver
         g_receiver = std::make_unique<RtpReceiverCore>();
 
         // 6. 定義視訊回調函數
         auto video_callback = [](const std::vector<uint8_t> &au) {
-            NSLog(@"[MulticastBridge] Video callback triggered with AU size: %zu", au.size());
             if (g_pipeline) {
                 g_pipeline->push_au(au);
-                NSLog(@"[MulticastBridge] Video AU pushed to pipeline");
-            } else {
-                NSLog(@"[MulticastBridge] ❌ g_pipeline is null in video callback!");
             }
         };
 
         // 7. 定義音訊回調函數
         auto audio_callback = [](const std::vector<uint8_t> &au) {
-            NSLog(@"[MulticastBridge] Audio callback triggered with AU size: %zu", au.size());
-            // 如果需要處理音訊，在這裡加入邏輯
-            // 目前暫時只記錄
+            if (g_audio_pipeline) {
+                g_audio_pipeline->push_opus_frame(au);
+            }
         };
 
         // 8. 啟動 RTP 接收
@@ -106,12 +109,16 @@ static std::unique_ptr<RtpReceiverCore> g_receiver;
 + (void)receiveStop {
     if (g_receiver) {
         g_receiver->stop();
-        g_receiver.reset();
     }
     if (g_pipeline) {
         g_pipeline->stop();
-        g_pipeline.reset();
     }
+    if (g_audio_pipeline) {
+        g_audio_pipeline->stop();
+    }
+    g_receiver.reset();
+    g_pipeline.reset();
+    g_audio_pipeline.reset();
 }
 
 @end

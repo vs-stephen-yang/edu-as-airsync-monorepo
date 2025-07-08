@@ -43,14 +43,14 @@ Pod::Spec.new do |s|
   framework_flags = "-F\"#{gstreamer_search_path}\" -framework GStreamer"
 
   s.dependency 'Flutter'
-  s.frameworks = 'Foundation', 'AVFoundation', 'CoreMedia', 'CoreVideo', 'AssetsLibrary', 'VideoToolbox', 'GStreamer'
+  s.frameworks = 'Foundation', 'AVFoundation', 'AudioToolbox', 'CoreMedia', 'CoreVideo', 'AssetsLibrary', 'VideoToolbox', 'GStreamer'
   s.libraries = 'iconv', 'c++'
 
   s.pod_target_xcconfig = {
     'CLANG_CXX_LIBRARY' => 'libc++',
     'HEADER_SEARCH_PATHS' => "$(inherited) $(PODS_TARGET_SRCROOT)/../native_libs/common $(PODS_TARGET_SRCROOT)/../native_libs/uvgrtp/include #{gstreamer_headers}",
     'FRAMEWORK_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\"",
-    'OTHER_LDFLAGS' => '$(inherited) #{framework_flags} -framework VideoToolbox -framework CoreVideo -framework CoreMedia'
+    'OTHER_LDFLAGS' => '$(inherited) #{framework_flags} -framework VideoToolbox -framework AudioToolbox -framework CoreVideo -framework CoreMedia'
   }
 
   s.user_target_xcconfig = {

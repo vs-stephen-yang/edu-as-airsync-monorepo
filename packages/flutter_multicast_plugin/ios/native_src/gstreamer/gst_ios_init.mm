@@ -1,32 +1,34 @@
+#include "gst_ios_init.h"
 #import <Foundation/Foundation.h>
 #include <gst/gst.h>
-#include "gst_ios_init.h"
 
 G_BEGIN_DECLS
 
 /* 你的 pipeline 需要的插件 */
 GST_PLUGIN_STATIC_DECLARE(coreelements);
 GST_PLUGIN_STATIC_DECLARE(app);
-GST_PLUGIN_STATIC_DECLARE(videoparsersbad);    // h264parse
-GST_PLUGIN_STATIC_DECLARE(libav);              // avdec_h264
-GST_PLUGIN_STATIC_DECLARE(videoconvertscale);  // videoconvert (新版本)
-GST_PLUGIN_STATIC_DECLARE(applemedia);         // iosglimagesink
+GST_PLUGIN_STATIC_DECLARE(videoparsersbad);   // h264parse
+GST_PLUGIN_STATIC_DECLARE(libav);             // avdec_h264
+GST_PLUGIN_STATIC_DECLARE(videoconvertscale); // videoconvert (新版本)
+GST_PLUGIN_STATIC_DECLARE(applemedia);        // iosglimagesink
 GST_PLUGIN_STATIC_DECLARE(opengl);
 GST_PLUGIN_STATIC_DECLARE(playback);
 GST_PLUGIN_STATIC_DECLARE(videotestsrc);
 GST_PLUGIN_STATIC_DECLARE(x264);
-
+GST_PLUGIN_STATIC_DECLARE(opus);
+GST_PLUGIN_STATIC_DECLARE(opusparse);
+GST_PLUGIN_STATIC_DECLARE(osxaudio);
+GST_PLUGIN_STATIC_DECLARE(audioconvert);
 
 G_END_DECLS
 
-void gst_ios_init(void)
-{
+void gst_ios_init(void) {
     static gboolean initialized = FALSE;
-    
+
     if (initialized) {
         return;
     }
-    
+
     // 設定基本環境變數
     NSString *resources = [[NSBundle mainBundle] resourcePath];
     const gchar *resources_dir = [resources UTF8String];
@@ -47,6 +49,10 @@ void gst_ios_init(void)
     GST_PLUGIN_STATIC_REGISTER(playback);
     GST_PLUGIN_STATIC_REGISTER(videotestsrc);
     GST_PLUGIN_STATIC_REGISTER(x264);
-    
+    GST_PLUGIN_STATIC_REGISTER(opus);
+    GST_PLUGIN_STATIC_REGISTER(opusparse);
+    GST_PLUGIN_STATIC_REGISTER(osxaudio);
+    GST_PLUGIN_STATIC_REGISTER(audioconvert);
+
     initialized = TRUE;
 }
