@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:android_window/main.dart' as android_window;
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
-import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,14 +16,12 @@ class OverlayTabHandler {
   static const String nameGetVisibility = 'get_visibility';
   static const String nameSetMainInfo = 'set_main_info';
   static const String nameSetOtp = 'set_otp';
-  static const String nameSetLanguage = 'set_language';
   static const String nameLaunchApp = 'launch_app';
 
   static const String keyVisibility = 'visibility';
   static const String keyDeviceName = 'device_name';
   static const String keyDisplayCode = 'display_code';
   static const String keyOtpCode = 'otp_code';
-  static const String keyLanguage = 'language';
 
   static const String valueVisible = 'visible';
   static const String valueInvisible = 'invisible';
@@ -73,19 +70,13 @@ class AppOverlayTab {
           ChannelProvider channelProvider =
               Provider.of<ChannelProvider>(buildContext, listen: false);
 
-          PrefLanguageProvider languageProvider =
-              Provider.of<PrefLanguageProvider>(buildContext, listen: false);
-
           InstanceInfoProvider instanceInfoProvider =
               Provider.of<InstanceInfoProvider>(buildContext, listen: false);
 
           await _postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
             OverlayTabHandler.keyDisplayCode: instanceInfoProvider.displayCode,
-            OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
-                ? channelProvider.otp.value
-                : 'XXXX',
-            OverlayTabHandler.keyLanguage: languageProvider.language,
+            OverlayTabHandler.keyOtpCode: channelProvider.otp.value,
           });
 
           instanceInfoProvider.addListener(() async {
@@ -96,32 +87,8 @@ class AppOverlayTab {
           });
 
           channelProvider.otp.addListener(() async {
-            await setOtpCode(channelProvider.isEyeOpen.value
-                ? channelProvider.otp.value
-                : 'XXXX');
+            await setOtpCode(channelProvider.otp.value);
           });
-
-          channelProvider.isEyeOpen.addListener(() async {
-            await setOtpCode(channelProvider.isEyeOpen.value
-                ? channelProvider.otp.value
-                : 'XXXX');
-          });
-
-          languageProvider.addListener(() async {
-            await setLanguage(languageProvider.language);
-          });
-          //
-          // Home.showTitleBottomBar.addListener(() {
-          //   if (!Home.showTitleBottomBar.value) {
-          //     launchApp();
-          //   }
-          // });
-          //
-          // V3Home.isShowHeaderFooterBar.addListener(() {
-          //   if (!V3Home.isShowHeaderFooterBar.value) {
-          //     launchApp();
-          //   }
-          // });
 
           return OverlayTabHandler.resultEmptyString;
       }
@@ -157,11 +124,6 @@ class AppOverlayTab {
   Future<void> setOtpCode(String otpCode) async {
     await _postMessageToAndroidWindow(
         OverlayTabHandler.nameSetOtp, {OverlayTabHandler.keyOtpCode: otpCode});
-  }
-
-  Future<void> setLanguage(String language) async {
-    await _postMessageToAndroidWindow(OverlayTabHandler.nameSetLanguage,
-        {OverlayTabHandler.keyLanguage: language});
   }
 
   Future<void> launchApp() async {

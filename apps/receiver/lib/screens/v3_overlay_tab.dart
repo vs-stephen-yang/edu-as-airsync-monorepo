@@ -8,7 +8,6 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 class V3OverlayTab extends StatefulWidget {
   const V3OverlayTab({super.key});
@@ -203,9 +202,6 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
               _displayCode = info[OverlayTabHandler.keyDisplayCode] ?? '';
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';
-              Provider.of<PrefLanguageProvider>(context, listen: false)
-                  .setLanguage(
-                      info[OverlayTabHandler.keyLanguage] ?? 'English');
             });
           } else {
             log('set init value with wrong data type: ${data.runtimeType}');
@@ -252,19 +248,6 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
             });
           } else {
             log('set otp with wrong data type: ${data.runtimeType}');
-          }
-          return OverlayTabHandler.resultEmptyString;
-
-        case OverlayTabHandler.nameSetLanguage:
-          if (data is Map<Object?, Object?>) {
-            setState(() {
-              var info = Map<String, String>.from(data);
-              Provider.of<PrefLanguageProvider>(context, listen: false)
-                  .setLanguage(
-                      info[OverlayTabHandler.keyLanguage] ?? 'English');
-            });
-          } else {
-            log('set language with wrong data type: ${data.runtimeType}');
           }
           return OverlayTabHandler.resultEmptyString;
 
