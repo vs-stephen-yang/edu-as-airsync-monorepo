@@ -100,6 +100,8 @@ class MirrorStateProvider extends ChangeNotifier
   Timer? _hidProfileTimeoutTimer;
 
   static const List<String> _fhdOnlyAirPlayModels = [
+    'IFP52_K',
+    'IFP52_1B',
     'IFP52_1C',
     'IFP34',
   ];
@@ -107,7 +109,7 @@ class MirrorStateProvider extends ChangeNotifier
   Map<String, Map<String, int>> AirplayDeviceMaxResolutions = {
     "iPad":     {"width": 2560, "height": 1440},
     "iPhone":   {"width": 2480, "height": 1396},
-    "Mac":      {"width": 2276, "height": 1280},
+    "Mac":      {"width": 1920, "height": 1080},
     "unknown":  {"width": 1920, "height": 1080},
   };
 
