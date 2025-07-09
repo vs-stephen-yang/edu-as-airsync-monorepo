@@ -36,7 +36,6 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
     private TextureRegistry textureRegistry;
 
     private Surface surface;
-    private TextureRegistry.SurfaceTextureEntry entry;
     private Activity activity;
     private static final int REQUEST_CODE_MEDIA_PROJECTION = 1001;
 
@@ -176,11 +175,10 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 long videoRoc = videorocNumber.longValue();
                 long audioRoc = audioRocNumber.longValue();
 
-                entry = textureRegistry.createSurfaceTexture();
-                SurfaceTexture surfaceTexture = entry.surfaceTexture();
-                surfaceTexture.setDefaultBufferSize(1920, 1080);
-                long textureId = entry.id();
-                surface = new Surface(surfaceTexture);
+                TextureRegistry.SurfaceProducer producer = textureRegistry.createSurfaceProducer();
+                producer.setSize(1920, 1080);
+                Surface surface = producer.getSurface();
+                long textureId = producer.id();
 
                 List<String> localIps = NetworkUtils.getAllLocalIPv4s();
                 String[] ipArray = localIps.toArray(new String[0]);
