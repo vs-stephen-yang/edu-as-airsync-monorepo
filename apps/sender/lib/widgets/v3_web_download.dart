@@ -119,8 +119,15 @@ class V3WebDownload extends StatelessWidget {
                       action: S.of(context).v3_main_download_action_download,
                       isMac: true,
                       onClick: () {
-                        launchUrl(Uri.parse(
-                            AppConfig.of(context)!.settings.appStoreUrl));
+                        String userAgent =
+                        html.window.navigator.userAgent.toLowerCase();
+                        if (userAgent.contains("mac os")) {
+                          launchUrl(Uri.parse(
+                              AppConfig.of(context)!.settings.appStoreUrl));
+                        } else {
+                          launchUrl(Uri.parse(
+                              macLink.replaceAll("macappstore", "https")));
+                        }
                       },
                       onClick2: () {
                         String userAgent =
