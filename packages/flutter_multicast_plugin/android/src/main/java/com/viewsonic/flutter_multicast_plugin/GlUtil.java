@@ -3,6 +3,9 @@ package com.viewsonic.flutter_multicast_plugin;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class GlUtil {
     public static final float[] IDENTITY_MATRIX = {
             1, 0, 0, 0,

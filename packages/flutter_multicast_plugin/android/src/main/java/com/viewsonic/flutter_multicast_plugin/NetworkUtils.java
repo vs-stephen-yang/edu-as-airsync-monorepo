@@ -1,5 +1,7 @@
 package com.viewsonic.flutter_multicast_plugin;
 
+import androidx.annotation.Keep;
+
 import java.net.NetworkInterface;
 import java.net.InetAddress;
 import java.util.Collections;
@@ -7,8 +9,8 @@ import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Keep
 public class NetworkUtils {
-
     public static List<String> getAllLocalIPv4s() {
         List<String> ipList = new ArrayList<>();
 

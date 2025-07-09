@@ -1,7 +1,10 @@
 package com.viewsonic.flutter_multicast_plugin;
 
+import androidx.annotation.Keep;
+
 import java.util.Map;
 
+@Keep
 public class NativeBridge {
     static {
         System.loadLibrary("multicast_android");

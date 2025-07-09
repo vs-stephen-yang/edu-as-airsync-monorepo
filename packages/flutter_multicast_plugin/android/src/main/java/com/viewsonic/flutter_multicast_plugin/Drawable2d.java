@@ -1,9 +1,12 @@
 package com.viewsonic.flutter_multicast_plugin;
 
+import androidx.annotation.Keep;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+@Keep
 public class Drawable2d {
     public enum Prefab {
         FULL_RECTANGLE
