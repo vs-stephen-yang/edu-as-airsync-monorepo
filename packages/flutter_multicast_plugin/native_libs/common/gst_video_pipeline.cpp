@@ -10,7 +10,7 @@
 #include <map>    // 用於 std::map
 #include <string> // 用於 std::string
 #include <vector> // 用於 std::vector
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
 #include "gst_ios_init.h"
 #endif
 
@@ -305,13 +305,13 @@ static void decodebin_pad_added_cb(GstElement* decodebin, GstPad* new_pad, gpoin
 }
 
 bool GstVideoPipeline::init(void* window_handle) {
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
     gst_ios_init();
 #else
     gst_init(nullptr, nullptr);
 #endif
 
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
     const char* desc =
         "appsrc name=mysrc is-live=true format=time caps=video/x-h264,stream-format=byte-stream,alignment=au ! "
         "h264parse name=h264parse config-interval=-1 ! "
@@ -347,7 +347,7 @@ bool GstVideoPipeline::init(void* window_handle) {
         return false;
     }
 
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
     // iOS: 設定 appsink callback
     GstElement* appsink = gst_bin_get_by_name(GST_BIN(pipeline_), "videosink");
     if (appsink) {
