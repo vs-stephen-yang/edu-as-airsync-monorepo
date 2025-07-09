@@ -215,7 +215,7 @@ class V3Instruction extends StatelessWidget {
                                           height: 23,
                                         ),
                                         const Gap(5),
-                                        Expanded(
+                                        Flexible(
                                           child: MultiLineUnderlineText(
                                             text: S
                                                 .of(context)
