@@ -106,21 +106,21 @@ class MirrorStateProvider extends ChangeNotifier
     'IFP34',
   ];
 
-  Map<String, Map<String, int>> AirplayDeviceMaxResolutions = {
+  Map<String, Map<String, int>> airplayDeviceMaxResolutions = {
     "iPad":     {"width": 2560, "height": 1440},
     "iPhone":   {"width": 2480, "height": 1396},
-    "Mac":      {"width": 1920, "height": 1080},
+    "Mac":      {"width": 2276, "height": 1280},
     "unknown":  {"width": 1920, "height": 1080},
   };
 
   Map<String, Map<String, int>> getDeviceMaxResolutions(String? deviceType) {
     if (MirrorStateProvider._fhdOnlyAirPlayModels.contains(deviceType)) {
       return {
-        for (final key in AirplayDeviceMaxResolutions.keys)
+        for (final key in airplayDeviceMaxResolutions.keys)
           key: {"width": 1920, "height": 1080},
       };
     } else {
-      return AirplayDeviceMaxResolutions;
+      return airplayDeviceMaxResolutions;
     }
   }
 
