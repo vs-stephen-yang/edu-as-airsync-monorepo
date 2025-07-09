@@ -10,7 +10,7 @@
 #include <map>    // 用於 std::map
 #include <string> // 用於 std::string
 #include <vector> // 用於 std::vector
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
 #include "gst_ios_init.h"
 #endif
 
@@ -31,13 +31,13 @@ GstAudioPipeline::~GstAudioPipeline() {
 }
 
 bool GstAudioPipeline::init() {
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
     gst_ios_init();
 #else
     gst_init(nullptr, nullptr);
 #endif
 
-#ifdef __APPLE__
+#ifdef PLATFORM_IOS
     const char* desc = "appsrc name=appsrc is-live=true format=time stream-type=stream caps=audio/x-opus,rate=48000,channels=1,channel-mapping-family=0 ! "
                        "queue name=decode_queue max-size-buffers=20 leaky=2 ! "
                        "opusdec name=opusdec ! "
