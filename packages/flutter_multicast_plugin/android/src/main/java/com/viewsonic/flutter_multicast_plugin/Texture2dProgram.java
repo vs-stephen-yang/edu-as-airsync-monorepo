@@ -3,8 +3,11 @@ package com.viewsonic.flutter_multicast_plugin;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
+import androidx.annotation.Keep;
+
 import java.nio.FloatBuffer;
 
+@Keep
 public class Texture2dProgram {
     public static final int TEXTURE_EXTERNAL_OES = 0;
 

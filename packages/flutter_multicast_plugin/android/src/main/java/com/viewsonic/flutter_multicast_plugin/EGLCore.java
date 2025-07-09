@@ -11,6 +11,9 @@ import android.opengl.EGLSurface;
 import android.util.Log;
 import android.view.Surface;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class EGLCore {
     private static final String TAG = "EGLCore";
 

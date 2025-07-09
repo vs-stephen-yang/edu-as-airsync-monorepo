@@ -1,12 +1,13 @@
 package com.viewsonic.flutter_multicast_plugin;
 
-import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGLSurface;
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 import android.view.Surface;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class WindowSurface {
     private static final String TAG = "WindowSurface";
 

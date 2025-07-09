@@ -36,6 +36,7 @@ import android.media.AudioFormat;
 import android.media.AudioPlaybackCaptureConfiguration;
 import android.media.AudioRecord;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -46,6 +47,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Keep
 public class ScreenCaptureService extends Service {
     private static final String TAG = "ScreenCaptureService";
     private static final String CHANNEL_ID = "screen_capture_channel";

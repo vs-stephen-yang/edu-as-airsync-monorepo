@@ -2,8 +2,11 @@ package com.viewsonic.flutter_multicast_plugin;
 
 import android.opengl.GLES20;
 
+import androidx.annotation.Keep;
+
 import java.nio.FloatBuffer;
 
+@Keep
 public class FullFrameRect {
     private Texture2dProgram program;
     private Drawable2d drawable;
