@@ -377,30 +377,27 @@ bool GstVideoPipeline::init(void* window_handle) {
     GstMessage* msg;
 
     while ((msg = gst_bus_pop(bus)) != NULL) {
+        GError* g_error = NULL;
+        char* details = NULL;
+
         switch (GST_MESSAGE_TYPE(msg)) {
-            case GST_MESSAGE_ERROR: {
-                GError* g_error;
-                gchar* debug_info;
-                gst_message_parse_error(msg, &g_error, &debug_info);
-                ALOGE("GStreamer ERROR: %s", g_error->message);
-                ALOGE("GStreamer DEBUG: %s", debug_info ? debug_info : "No debug info");
-                g_error_free(g_error);
-                g_free(debug_info);
+            case GST_MESSAGE_ERROR:
+                details = parse_gst_message_details(msg, &g_error, TRUE);
+                ALOGE("GStreamer ERROR: %s", details);
                 break;
-            }
-            case GST_MESSAGE_WARNING: {
-                GError* warning;
-                gchar* debug_info;
-                gst_message_parse_warning(msg, &warning, &debug_info);
-                ALOGW("GStreamer WARNING: %s", warning->message);
-                ALOGW("GStreamer DEBUG: %s", debug_info ? debug_info : "No debug info");
-                g_error_free(warning);
-                g_free(debug_info);
+            case GST_MESSAGE_WARNING:
+                details = parse_gst_message_details(msg, &g_error, FALSE);
+                ALOGW("GStreamer WARNING: %s", details);
                 break;
-            }
             default:
                 break;
         }
+
+        if (details)
+            g_free(details);
+        if (g_error)
+            g_error_free(g_error);
+
         gst_message_unref(msg);
     }
     gst_object_unref(bus);
