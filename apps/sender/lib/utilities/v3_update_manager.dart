@@ -437,33 +437,21 @@ class V3UpdateManager {
     return V3Focus(
       label: label,
       identifier: identifier,
-      child: InkWell(
-        onTap: onPressed,
-        child: Container(
-          alignment: Alignment.center,
-          width: 105,
-          height: 48,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: backgroundColor,
+      child: Material(
+        color: Colors.transparent,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor,
+            foregroundColor: textColor,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            elevation: backgroundColor == Colors.transparent ? 0 : 6,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9999),
             ),
-            shadows: backgroundColor != Colors.transparent
-                ? [
-                    BoxShadow(
-                      color: backgroundColor.withOpacity(0.31),
-                      blurRadius: 24,
-                      offset: const Offset(0, 16),
-                      spreadRadius: 0,
-                    )
-                  ]
-                : null,
+            shadowColor: backgroundColor.withValues(alpha: 0.31),
           ),
-          child: V3AutoHyphenatingText(
-            text,
-            style: TextStyle(color: textColor),
-          ),
+          child: Text(text),
         ),
       ),
     );
