@@ -40,19 +40,16 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
     private static final int REQUEST_CODE_MEDIA_PROJECTION = 1001;
 
     private static final String TAG = "FlutterMulticastPlugin";
-    private boolean nativeLibrariesLoaded = false;
-    private void loadNativeLibraries() {
-      if (!nativeLibrariesLoaded) {
+
+    static {
         try {
           System.loadLibrary("gstreamer_android");
           System.loadLibrary("multicast_android");
-          nativeLibrariesLoaded = true;
           Log.d(TAG, "Native libraries loaded successfully");
         } catch (UnsatisfiedLinkError e) {
           Log.e(TAG, "Failed to load native library", e);
           throw e;
         }
-      }
     }
 
     @Override
@@ -63,7 +60,6 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
         textureRegistry = flutterPluginBinding.getTextureRegistry();
 
         // 使用反射來初始化 GStreamer，避免編譯時依賴
-        loadNativeLibraries();
         initializeGStreamerIfAvailable(flutterPluginBinding.getApplicationContext());
     }
 
@@ -82,15 +78,6 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        if (!nativeLibrariesLoaded) {
-          try {
-            loadNativeLibraries();
-          } catch (UnsatisfiedLinkError e) {
-            result.error("NATIVE_LIBRARY_ERROR", "Failed to load native libraries", e.getMessage());
-            return;
-          }
-        }
-
         switch (call.method) {
             case "startRtpStream": {
                 String multicastIp = call.argument("ip");
