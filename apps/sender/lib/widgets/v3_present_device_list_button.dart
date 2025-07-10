@@ -21,42 +21,50 @@ class V3PresentDeviceListButton extends StatelessWidget {
       identifier: 'v3_qa_device_list_button_device_list',
       button: true,
       child: ExcludeSemantics(
-        child: ElevatedButton(
-          onPressed: onTap,
-          style: ElevatedButton.styleFrom(
-            disabledBackgroundColor: context.tokens.color.vsdswColorDisabled,
-            backgroundColor: context.tokens.color.vsdswColorPrimary,
-            fixedSize: const Size(300, 48),
-            shape: RoundedRectangleBorder(
-              borderRadius: context.tokens.radii.vsdswRadiusFull,
-            ),
-            shadowColor: Colors.grey,
-            elevation: 8,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: 48,
+            minWidth: 300,
+            maxWidth: 300,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                'assets/images/ic_device_list_screen.svg',
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(
-                  context.tokens.color.vsdswColorOnTertiary,
-                  BlendMode.srcIn,
-                ),
+          child: ElevatedButton(
+            onPressed: onTap,
+            style: ElevatedButton.styleFrom(
+              disabledBackgroundColor: context.tokens.color.vsdswColorDisabled,
+              backgroundColor: context.tokens.color.vsdswColorPrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: context.tokens.radii.vsdswRadiusFull,
               ),
-              const Gap(8),
-              V3AutoHyphenatingText(
-                S.of(context).main_device_list,
-                style: TextStyle(
-                  color: context.tokens.color.vsdswColorOnTertiary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                  letterSpacing: 0.28,
+              shadowColor: Colors.grey,
+              elevation: 8,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/images/ic_device_list_screen.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(
+                    context.tokens.color.vsdswColorOnTertiary,
+                    BlendMode.srcIn,
+                  ),
                 ),
-              ),
-            ],
+                const Gap(8),
+                Flexible(
+                  child: V3AutoHyphenatingText(
+                    S.of(context).main_device_list,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnTertiary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                      letterSpacing: 0.28,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
