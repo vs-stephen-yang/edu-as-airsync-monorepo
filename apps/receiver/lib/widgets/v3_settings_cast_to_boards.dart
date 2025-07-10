@@ -554,7 +554,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                 padding: EdgeInsets.only(
                     right: context.tokens.spacing.vsdslSpacingSm.right)),
             Expanded(
-              flex: 2,
+              flex: 11,
               // Trialling is device name, should not use - to confuse user
               child: Text(
                 client.deviceName(),
@@ -563,10 +563,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                     color: context.tokens.color.vsdslColorOnSurfaceInverse),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: displayCodeWidget(client, context),
-            )
+            displayCodeWidget(client, context)
           ],
         ),
       ),
@@ -576,29 +573,35 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
   Widget displayCodeWidget(GroupListItem client, BuildContext context) {
     final bool unavailable =
         client.invitedState() == InvitedToGroupOption.ignore.value.toString();
-    return Row(
-      children: [
-        if (unavailable)
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: SvgPicture.asset(
-              'assets/images/ic_device_unavailable.svg',
+
+    final isNormal =
+        AppPreferences().textSizeOption == ResizeTextSizeOption.normal;
+    return Flexible(
+      flex: isNormal ? 7 : 4,
+      child: Row(
+        children: [
+          if (unavailable)
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: SvgPicture.asset(
+                'assets/images/ic_device_unavailable.svg',
+              ),
+            ),
+          Flexible(
+            // Trialling is display code, should not use - to confuse user
+            child: V3AutoHyphenatingText(
+              unavailable
+                  ? S.of(context).v3_settings_device_unavailable
+                  : client.displayCode(),
+              style: TextStyle(
+                fontSize: 12,
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+              ),
             ),
           ),
-        Flexible(
-          // Trialling is display code, should not use - to confuse user
-          child: Text(
-            unavailable
-                ? S.of(context).v3_settings_device_unavailable
-                : client.displayCode(),
-            style: TextStyle(
-              fontSize: 12,
-              color: context.tokens.color.vsdslColorOnSurfaceInverse,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
