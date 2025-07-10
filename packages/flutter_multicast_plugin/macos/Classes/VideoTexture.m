@@ -14,8 +14,6 @@
     _bufferSemaphore = dispatch_semaphore_create(1);
     _lastWidth = 0;
     _lastHeight = 0;
-    _lastUpdateTime = 0;
-    _droppedFrameCount = 0;
     _displayBuffer = NULL;
     _workingBuffer = NULL;
     [self createInitialBuffer];
@@ -54,10 +52,6 @@
                              .height = height,
                              .width = width,
                              .rowBytes = bytesPerRow};
-
-    // BGRA 格式的顏色值
-    Pixel_8888 fillColor = {b, g, r, a};
-    vImageBufferFill_ARGB8888(&vBuffer, fillColor, kvImageNoFlags);
   }
 
   CVPixelBufferUnlockBaseAddress(buffer, 0);
@@ -127,7 +121,6 @@
   }
 
   if (dispatch_semaphore_wait(_bufferSemaphore, DISPATCH_TIME_NOW) != 0) {
-    _droppedFrameCount++;
     return;
   }
 
@@ -185,11 +178,17 @@
 }
 
 - (CVPixelBufferRef)copyPixelBuffer {
-  if (_displayBuffer) {
-    CVPixelBufferRetain(_displayBuffer);
-    return _displayBuffer;
+  if (dispatch_semaphore_wait(_bufferSemaphore, DISPATCH_TIME_NOW) != 0) {
+    return nil;
   }
-  return nil;
+
+  CVPixelBufferRef buffer = _displayBuffer;
+  if (buffer) {
+    CVPixelBufferRetain(buffer);
+  }
+
+  dispatch_semaphore_signal(_bufferSemaphore);
+  return buffer;
 }
 
 - (BOOL)copyDataWithvImage:(const uint8_t *)srcData
@@ -218,9 +217,6 @@
 }
 
 - (void)dealloc {
-  NSLog(@"[VideoTexture] Deallocating, total dropped frames: %ld",
-        _droppedFrameCount);
-
   if (_displayBuffer) {
     CVPixelBufferRelease(_displayBuffer);
     _displayBuffer = NULL;
