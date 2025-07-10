@@ -15,9 +15,6 @@
 #include "log.h"
 #include "rtp_receiver_core.h"
 
-static std::thread receiver_thread;
-static std::atomic<bool> running{false};
-
 static std::unique_ptr<RtpReceiverCore> g_receiver;
 static std::unique_ptr<GstVideoPipeline> g_pipeline;
 static std::unique_ptr<GstAudioPipeline> g_audio_pipeline;
