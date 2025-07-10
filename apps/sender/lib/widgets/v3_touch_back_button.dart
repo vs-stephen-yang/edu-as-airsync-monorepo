@@ -71,12 +71,14 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          V3AutoHyphenatingText(
-            S.of(context).v3_present_touch_back_allow,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              color: context.tokens.color.vsdswColorOnSurfaceInverse,
+          Flexible(
+            child: V3AutoHyphenatingText(
+              S.of(context).v3_present_touch_back_allow,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                color: context.tokens.color.vsdswColorOnSurfaceInverse,
+              ),
             ),
           ),
           Padding(

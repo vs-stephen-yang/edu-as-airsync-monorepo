@@ -349,7 +349,13 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           //   ),
           // ),
           if (WebRTCHelper().showTouchBack())
-            const Positioned(bottom: 8, child: V3TouchBackButton()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: V3TouchBackButton(),
+              ),
+            ),
         ],
       ),
     );
