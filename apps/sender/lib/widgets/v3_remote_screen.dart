@@ -116,41 +116,44 @@ class _RemoteVideoView extends State<RemoteVideoView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-      if (_isVideoAvailable(channelProvider)) {
-        return NotificationListener<SizeChangedLayoutNotification>(
-          onNotification: (notification) {
-            channelProvider.remoteScreenClient!.onVideoSizeChanged();
-            return true;
-          },
-          child: KeyboardListener(
-            focusNode: _focusNode,
-            autofocus: true,
-            onKeyEvent: (KeyEvent event) {
-              channelProvider.remoteScreenClient?.onKeyDown(event);
+    return Consumer<ChannelProvider>(
+      builder: (_, channelProvider, __) {
+        if (_isVideoAvailable(channelProvider)) {
+          return NotificationListener<SizeChangedLayoutNotification>(
+            onNotification: (notification) {
+              channelProvider.remoteScreenClient!.onVideoSizeChanged();
+              return true;
             },
-            child: Listener(
-              onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
-              onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
-              onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
-              child: RTCVideoView(
-                channelProvider.remoteScreenClient!.remoteScreenRenderer,
-                key: channelProvider.remoteScreenClient!.rtcWidgetKey,
+            child: KeyboardListener(
+              focusNode: _focusNode,
+              autofocus: true,
+              onKeyEvent: (KeyEvent event) {
+                channelProvider.remoteScreenClient?.onKeyDown(event);
+              },
+              child: Listener(
+                onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
+                onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
+                onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
+                child: RTCVideoView(
+                  channelProvider.remoteScreenClient!.remoteScreenRenderer,
+                  key: channelProvider.remoteScreenClient!.rtcWidgetKey,
+                ),
               ),
             ),
-          ),
-        );
-      } else {
-        return SizedBox(
-          child: V3AutoHyphenatingText(
-            S.of(context).remote_screen_wait,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 24,
+          );
+        } else {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: V3AutoHyphenatingText(
+              S.of(context).remote_screen_wait,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+              ),
             ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      },
+    );
   }
 }
