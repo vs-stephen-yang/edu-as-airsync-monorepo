@@ -106,3 +106,22 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
 
     return GST_PAD_PROBE_OK;
 }
+
+char* parse_gst_message_details(GstMessage* msg, GError** out_error, gboolean is_error) {
+    gchar* debug_info = NULL;
+    *out_error = NULL;
+
+    if (is_error)
+        gst_message_parse_error(msg, out_error, &debug_info);
+    else
+        gst_message_parse_warning(msg, out_error, &debug_info);
+
+    gchar* result = g_strdup_printf("%s\n%s",
+                                    (*out_error && (*out_error)->message) ? (*out_error)->message : "No message",
+                                    debug_info ? debug_info : "No debug info");
+
+    if (debug_info)
+        g_free(debug_info);
+
+    return result; // caller must g_free(result), and also g_error_free(*out_error)
+}
