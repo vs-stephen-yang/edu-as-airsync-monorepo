@@ -39,7 +39,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat(reverse: false);
+    );
 
     _animation = CurvedAnimation(
       parent: _controller,
@@ -64,6 +64,11 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
   void setLoadingState(bool loading) {
     setState(() {
       isButtonLoading = loading;
+      if (loading) {
+        _controller.repeat();
+      } else {
+        _controller.stop();
+      }
     });
   }
 
