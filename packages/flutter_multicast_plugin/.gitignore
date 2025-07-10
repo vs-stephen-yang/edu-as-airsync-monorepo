@@ -34,3 +34,4 @@ build/
 
 android/src/main/java/org/freedesktop/
 ios/libs/
+macos/libs/
