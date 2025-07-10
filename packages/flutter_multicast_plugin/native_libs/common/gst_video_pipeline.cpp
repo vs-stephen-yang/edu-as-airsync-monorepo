@@ -321,6 +321,16 @@ bool GstVideoPipeline::init(void* window_handle) {
         "video/x-raw,format=BGRA ! "
         "queue name=sink_queue max-size-buffers=2 max-size-time=67000000 leaky=2 ! "
         "appsink name=videosink emit-signals=true sync=false async=false max-buffers=1 drop=true";
+#elif defined(PLATFORM_MACOS)
+    const char* desc =
+        "appsrc name=mysrc is-live=true format=time caps=video/x-h264,stream-format=byte-stream,alignment=au ! "
+        "h264parse name=h264parse config-interval=-1 ! "
+        "queue name=decode_queue max-size-buffers=5 max-size-time=167000000 leaky=2 ! "
+        "avdec_h264 name=avdec_h264 ! "
+        "videoconvert name=videoconvert ! "
+        "video/x-raw,format=BGRA ! "
+        "queue name=sink_queue max-size-buffers=2 max-size-time=67000000 leaky=2 ! "
+        "appsink name=videosink emit-signals=true sync=false async=false max-buffers=1 drop=true";
 #else
     const char* desc =
         "appsrc name=mysrc is-live=true format=time caps=video/x-h264,stream-format=byte-stream,alignment=au ! "
@@ -347,7 +357,7 @@ bool GstVideoPipeline::init(void* window_handle) {
         return false;
     }
 
-#ifdef PLATFORM_IOS
+#ifdef __APPLE__
     // iOS: 設定 appsink callback
     GstElement* appsink = gst_bin_get_by_name(GST_BIN(pipeline_), "videosink");
     if (appsink) {
@@ -448,12 +458,12 @@ bool GstVideoPipeline::init(void* window_handle) {
 }
 
 void GstVideoPipeline::push_au(const std::vector<uint8_t>& au) {
-    ALOGI("[push_au] Attempting to push AU size: %zu", au.size());
+    // ALOGI("[push_au] Attempting to push AU size: %zu", au.size());
 
     // 檢查 appsrc 狀態
     GstState state;
     gst_element_get_state(appsrc_, &state, NULL, 0);
-    ALOGI("[push_au] appsrc state: %d", state);
+    // ALOGI("[push_au] appsrc state: %d", state);
 
     // 創建 buffer
     GstBuffer* buffer = gst_buffer_new_allocate(NULL, au.size(), NULL);
@@ -485,12 +495,12 @@ void GstVideoPipeline::push_au(const std::vector<uint8_t>& au) {
 
     // 推送並檢查返回值
     GstFlowReturn ret = gst_app_src_push_buffer(GST_APP_SRC(appsrc_), buffer);
-    ALOGI("[push_au] Push result: %d (%s)", ret, gst_flow_get_name(ret));
+    // ALOGI("[push_au] Push result: %d (%s)", ret, gst_flow_get_name(ret));
 
     if (ret != GST_FLOW_OK) {
         ALOGI("[push_au] ERROR: Push failed with: %s", gst_flow_get_name(ret));
     } else {
-        ALOGI("[push_au] SUCCESS: Buffer pushed successfully");
+        // ALOGI("[push_au] SUCCESS: Buffer pushed successfully");
     }
 }
 
