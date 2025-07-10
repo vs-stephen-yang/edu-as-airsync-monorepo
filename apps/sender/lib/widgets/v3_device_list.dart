@@ -87,12 +87,12 @@ class _V3DeviceListState extends State<V3DeviceList> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Stack(
-                  alignment: AlignmentDirectional.center,
+                Row(
                   children: [
-                    Center(
+                    Expanded(
                       child: V3AutoHyphenatingText(
                         S.of(context).main_device_list,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: context.tokens.color.vsdswColorOnSurface,
@@ -100,26 +100,22 @@ class _V3DeviceListState extends State<V3DeviceList> {
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: V3Focus(
-                        identifier: 'v3_qa_device_list_close',
-                        child: SizedBox(
-                          width:
-                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
-                          height:
-                              (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
-                          child: InkWell(
-                            onTap: () {
-                              _presentStateProvider.presentMainPage();
-                            },
-                            child: Icon(
-                              size: 20.0,
-                              Icons.close,
-                              semanticLabel:
-                                  S.of(context).v3_lbl_device_list_close,
-                              color: context.tokens.color.vsdswColorOnSurface,
-                            ),
+                    V3Focus(
+                      identifier: 'v3_qa_device_list_close',
+                      child: SizedBox(
+                        width: (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
+                        height:
+                            (Platform.isAndroid || Platform.isIOS) ? 48 : 28,
+                        child: InkWell(
+                          onTap: () {
+                            _presentStateProvider.presentMainPage();
+                          },
+                          child: Icon(
+                            size: 20.0,
+                            Icons.close,
+                            semanticLabel:
+                                S.of(context).v3_lbl_device_list_close,
+                            color: context.tokens.color.vsdswColorOnSurface,
                           ),
                         ),
                       ),
@@ -493,42 +489,41 @@ class DialogView extends StatelessWidget {
           maxWidth: isMobile() ? 359 : 504,
           maxHeight: isMobile() ? 284 : 296,
         ),
-        child: Stack(
-          alignment: AlignmentDirectional.center,
+        child: Column(
           children: [
-            Align(
-              alignment: AlignmentDirectional.topEnd,
-              child: InkWell(
-                onTap: onClose,
-                child: Container(
-                  color: context.tokens.color.vsdswColorSurface100,
-                  child: Icon(
-                    size: 20.0,
-                    Icons.close,
-                    color: context.tokens.color.vsdswColorOnSurface,
-                  ),
-                ),
-              ),
-            ),
-            Column(
+            Row(
               children: [
-                V3AutoHyphenatingText(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: context.tokens.color.vsdswColorOnSurface,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: V3AutoHyphenatingText(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: context.tokens.color.vsdswColorOnSurface,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const Gap(20),
-                Expanded(
-                  child: OTPInputWidget(
-                    errorMessage: errorMessage,
-                    onTap: onConnect,
+                InkWell(
+                  onTap: onClose,
+                  child: Container(
+                    color: context.tokens.color.vsdswColorSurface100,
+                    child: Icon(
+                      size: 20.0,
+                      Icons.close,
+                      color: context.tokens.color.vsdswColorOnSurface,
+                    ),
                   ),
                 ),
               ],
+            ),
+            const Gap(20),
+            Expanded(
+              child: OTPInputWidget(
+                errorMessage: errorMessage,
+                onTap: onConnect,
+              ),
             ),
           ],
         ),
