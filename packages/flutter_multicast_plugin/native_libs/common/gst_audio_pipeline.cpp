@@ -79,12 +79,12 @@ bool GstAudioPipeline::init() {
     while ((msg = gst_bus_pop(bus)) != NULL) {
         switch (GST_MESSAGE_TYPE(msg)) {
             case GST_MESSAGE_ERROR: {
-                GError* error;
+                GError* g_error;
                 gchar* debug_info;
-                gst_message_parse_error(msg, &error, &debug_info);
-                ALOGE("GStreamer ERROR: %s", error->message);
+                gst_message_parse_error(msg, &g_error, &debug_info);
+                ALOGE("GStreamer ERROR: %s", g_error->message);
                 ALOGE("GStreamer DEBUG: %s", debug_info ? debug_info : "No debug info");
-                g_error_free(error);
+                g_error_free(g_error);
                 g_free(debug_info);
                 break;
             }
