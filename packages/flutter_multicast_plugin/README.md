@@ -1,17 +1,23 @@
 # flutter_multicast_plugin
 
-A new Flutter plugin project.
+## Download and install GStreamer binaries
+### Android
+1.	Visit the [GStreamer Android Releases page](https://gstreamer.freedesktop.org/download/#android)
+2.	Download the “Universal” tarball, for example: `gstreamer-1.0-android-universal-1.24.2.tar.xz`
+3.	Extract it to a desired location, for example: 
+    ```
+    tar -xf gstreamer-1.0-android-universal-1.24.2.tar.xz -C ~/SDKs/
+    ```
 
-## Getting Started
+### iOS
+1.	Visit the [GStreamer iOS Releases page](https://gstreamer.freedesktop.org/download/#ios)
+2.	Download the “Universal” tarball, for example: `gstreamer-1.0-devel-1.26.3-ios-universal.pkg`
+3.	Install it to a desired location
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+### macOS
+1.	Visit the [GStreamer macOS Releases page](https://gstreamer.freedesktop.org/download/#macos)
+2.	Install both `runtime` and `development` installer
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
 
 ## Android Native Build Instructions
 This Flutter plugin uses Android native C++ code that integrates the following components:
@@ -74,3 +80,51 @@ The build process generates static libraries in the `ios/libs/` directory:
 `libuvgrtp.a` - uvgRTP transport library  
 `libcommon.a` - Common utilities and GStreamer pipeline  
 `libgst_ios_init.a` - GStreamer iOS initialization
+
+## macOS Native Build Instructions
+This Flutter plugin uses macOS native C++ code that integrates the following components:
+- uvgRTP – RTP transport (with SRTP support)
+- Crypto++ – Encryption library used for SRTP
+- GStreamer macOS SDK – H.264 decoding and rendering
+- macOS Frameworks – VideoToolbox, CoreVideo, CoreMedia for hardware acceleration
+
+### Required Environment Variable
+Before building, set the following environment variable to point to your GStreamer macOS SDK path:
+```
+export GSTREAMER_SDK_MACOS=/path/to/GStreamer.framework
+```
+
+### Building Native Libraries
+Navigate to the `macos/` directory and use the provided build script:
+```
+cd macos/
+```
+
+#### Full Build (Clean & Configure)
+Performs a complete build with CMake configuration:
+```bash
+./build.sh
+# or explicitly
+./build.sh --clean
+```
+
+#### Fast Build (Incremental)
+Skips CMake configuration and performs incremental build:
+```bash
+./build.sh --fast
+# or short form
+./build.sh -f
+```
+
+**Build Options**
+
+`--clean` / `-c`: Complete build (default) - removes previous build files and reconfigures CMake  
+`--fast` / `-f`: Fast build - reuses existing CMake configuration for quicker builds
+
+**Note:** Fast build requires a previous successful full build. If no CMake configuration exists, the script will prompt you to run a full build first.
+
+**Build Output**
+The build process generates static libraries in the `macos/libs/` directory:  
+`libcryptopp.a` - Crypto++ encryption library  
+`libuvgrtp.a` - uvgRTP transport library  
+`libcommon.a` - Common utilities and GStreamer pipeline  
