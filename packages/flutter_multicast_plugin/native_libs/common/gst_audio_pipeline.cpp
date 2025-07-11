@@ -79,31 +79,9 @@ bool GstAudioPipeline::init() {
 
     gst_element_set_state(pipeline_, GST_STATE_NULL);
 
-    // 檢查 bus 上的錯誤
+    // register bus handler
     GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline_));
-    GstMessage* msg;
-
-    while ((msg = gst_bus_pop(bus)) != NULL) {
-        char* details = NULL;
-
-        switch (GST_MESSAGE_TYPE(msg)) {
-            case GST_MESSAGE_ERROR:
-                details = parse_gst_message_details(msg, TRUE);
-                ALOGE("GStreamer ERROR: %s", details);
-                break;
-            case GST_MESSAGE_WARNING:
-                details = parse_gst_message_details(msg, FALSE);
-                ALOGW("GStreamer WARNING: %s", details);
-                break;
-            default:
-                break;
-        }
-
-        if (details)
-            g_free(details);
-
-        gst_message_unref(msg);
-    }
+    gst_bus_set_sync_handler(bus, (GstBusSyncHandler)bus_sync_handler, this, nullptr);
     gst_object_unref(bus);
 
     ALOGI("Setting pipeline to READY state...");
