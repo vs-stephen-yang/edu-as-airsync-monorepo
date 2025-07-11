@@ -14,7 +14,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
 
 SPEC CHECKSUMS:
-  flutter_multicast_plugin: 6598f77c67903366635f74420cedc962dbefe10c
+  flutter_multicast_plugin: 83c3a4d8c71477bf913f4c3eee2fc602c5de14df
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
 
 PODFILE CHECKSUM: 236401fc2c932af29a9fcf0e97baeeb2d750d367

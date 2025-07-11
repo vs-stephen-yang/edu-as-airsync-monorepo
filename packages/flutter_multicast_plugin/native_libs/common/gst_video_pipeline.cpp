@@ -61,7 +61,7 @@ static GstFlowReturn on_new_video_sample(GstElement* appsink, gpointer user_data
         // 計算 stride
         size_t stride = width * 4; // BGRA = 4 bytes per pixel
 
-        ALOGI("📹 Updating Flutter texture: %dx%d, stride=%zu, size=%zu",
+        ALOGD("📹 Updating Flutter texture: %dx%d, stride=%zu, size=%zu",
               width, height, stride, map.size);
 
         // 呼叫新的 C 函數更新 texture
@@ -437,7 +437,7 @@ bool GstVideoPipeline::init(void* window_handle) {
             GstPad* srcpad = gst_element_get_static_pad(elem, "src");
             if (srcpad) {
                 gst_pad_add_probe(srcpad, GST_PAD_PROBE_TYPE_BUFFER, enhanced_probe_callback, (gpointer)name, nullptr);
-                ALOGI("Added probe to %s", name);
+                ALOGD("Added probe to %s", name);
                 gst_object_unref(srcpad);
             }
             gst_object_unref(elem);
@@ -468,14 +468,14 @@ void GstVideoPipeline::push_au(const std::vector<uint8_t>& au) {
     // 創建 buffer
     GstBuffer* buffer = gst_buffer_new_allocate(NULL, au.size(), NULL);
     if (!buffer) {
-        ALOGI("[push_au] ERROR: Failed to allocate buffer!");
+        ALOGE("[push_au] ERROR: Failed to allocate buffer!");
         return;
     }
 
     // 映射和複製數據
     GstMapInfo map;
     if (!gst_buffer_map(buffer, &map, GST_MAP_WRITE)) {
-        ALOGI("[push_au] ERROR: Failed to map buffer!");
+        ALOGE("[push_au] ERROR: Failed to map buffer!");
         gst_buffer_unref(buffer);
         return;
     }
@@ -498,9 +498,7 @@ void GstVideoPipeline::push_au(const std::vector<uint8_t>& au) {
     // ALOGI("[push_au] Push result: %d (%s)", ret, gst_flow_get_name(ret));
 
     if (ret != GST_FLOW_OK) {
-        ALOGI("[push_au] ERROR: Push failed with: %s", gst_flow_get_name(ret));
-    } else {
-        // ALOGI("[push_au] SUCCESS: Buffer pushed successfully");
+        ALOGE("[push_au] ERROR: Push failed with: %s", gst_flow_get_name(ret));
     }
 }
 

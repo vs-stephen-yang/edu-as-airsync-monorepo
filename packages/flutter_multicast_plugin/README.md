@@ -128,3 +128,31 @@ The build process generates static libraries in the `macos/libs/` directory:
 `libcryptopp.a` - Crypto++ encryption library  
 `libuvgrtp.a` - uvgRTP transport library  
 `libcommon.a` - Common utilities and GStreamer pipeline  
+
+#### 🔹 Optional: Set Log Level (for iOS/macOS logging)
+
+To control the verbosity of native log output (e.g., `ALOGD`, `ALOGW`), set the `LOG_LEVEL` environment variable **before building**:
+
+```bash
+export LOG_LEVEL=LOG_LEVEL_WARN
+```
+
+Available levels:
+- LOG_LEVEL_VERBOSE (0)
+- LOG_LEVEL_DEBUG   (1)
+- LOG_LEVEL_INFO    (2)
+- LOG_LEVEL_WARN    (3)
+- LOG_LEVEL_ERROR   (4)
+- LOG_LEVEL_NONE    (5)
+
+This value is passed:
+- To CMake via -DLOG_LEVEL=... (used by common/log.h)
+- To CocoaPods via OTHER_CFLAGS (used by .mm sources in iOS/macOS)
+
+⚠️ After changing LOG_LEVEL, you must re-run pod install for iOS/macOS:
+
+```bash
+cd example/macos  # or example/ios
+rm -rf Pods Podfile.lock
+LOG_LEVEL=LOG_LEVEL_WARN pod install
+```

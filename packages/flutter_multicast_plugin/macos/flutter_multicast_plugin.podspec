@@ -53,12 +53,14 @@ Pod::Spec.new do |s|
   s.frameworks = 'Foundation', 'AVFoundation', 'AudioToolbox', 'CoreMedia', 'CoreVideo', 'VideoToolbox', 'GStreamer'
   s.libraries = 'iconv', 'c++'
 
+  log_level = ENV['LOG_LEVEL'] || 'LOG_LEVEL_WARN'
   s.pod_target_xcconfig = {
     'CLANG_CXX_LIBRARY' => 'libc++',
     'HEADER_SEARCH_PATHS' => "$(inherited) $(PODS_TARGET_SRCROOT)/../native_libs/common $(PODS_TARGET_SRCROOT)/../native_libs/uvgrtp/include #{gstreamer_headers}",
     'FRAMEWORK_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\"",
     'OTHER_LDFLAGS' => '$(inherited) #{framework_flags} -framework VideoToolbox -framework AudioToolbox -framework CoreVideo -framework CoreMedia',
-    'LD_RUNPATH_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\" @executable_path/../Frameworks"
+    'LD_RUNPATH_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\" @executable_path/../Frameworks",
+    'OTHER_CFLAGS' => "-DLOG_LEVEL=#{log_level}"
   }
 
   s.user_target_xcconfig = {

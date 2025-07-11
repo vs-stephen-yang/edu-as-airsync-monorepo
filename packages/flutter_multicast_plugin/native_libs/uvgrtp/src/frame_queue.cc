@@ -425,7 +425,6 @@ void uvgrtp::frame_queue::enqueue_finalize(uvgrtp::buf_vec& tmp)
 
 inline void uvgrtp::frame_queue::update_sync_point()
 {
-    //UVG_LOG_DEBUG("Updating framerate sync point");
     frames_since_sync_ = 0;
     fps_sync_point_ = std::chrono::high_resolution_clock::now();
 }

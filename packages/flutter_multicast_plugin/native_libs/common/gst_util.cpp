@@ -19,9 +19,9 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
             // 計算時間戳（秒）
             gdouble pts_seconds = (gdouble)GST_BUFFER_PTS(buffer) / GST_SECOND;
 
-            ALOGI("🔍 [PROBE] %s:", element_name);
-            ALOGI("  📏 Size: %zu bytes", map.size);
-            ALOGI("  ⏰ PTS: %.3f sec (raw: %" G_GUINT64_FORMAT ")", pts_seconds, GST_BUFFER_PTS(buffer));
+            ALOGD("🔍 [PROBE] %s:", element_name);
+            ALOGD("  📏 Size: %zu bytes", map.size);
+            ALOGD("  ⏰ PTS: %.3f sec (raw: %" G_GUINT64_FORMAT ")", pts_seconds, GST_BUFFER_PTS(buffer));
 
             // 準備 Head 數據字符串 (前8個bytes)
             std::string head_str = "";
@@ -30,7 +30,7 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
                 snprintf(temp, sizeof(temp), "%02x ", map.data[i]);
                 head_str += temp;
             }
-            ALOGI("  🔢 Head: %s", head_str.c_str());
+            ALOGD("  🔢 Head: %s", head_str.c_str());
 
             // 如果數據夠長，顯示中間和結尾
             if (map.size >= 16) {
@@ -42,7 +42,7 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
                     snprintf(temp, sizeof(temp), "%02x ", map.data[mid + i]);
                     mid_str += temp;
                 }
-                ALOGI("  🔢 Mid:  %s", mid_str.c_str());
+                ALOGD("  🔢 Mid:  %s", mid_str.c_str());
 
                 // 結尾8個bytes
                 std::string tail_str = "";
@@ -51,7 +51,7 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
                     snprintf(temp, sizeof(temp), "%02x ", map.data[map.size - 8 + i]);
                     tail_str += temp;
                 }
-                ALOGI("  🔢 Tail: %s", tail_str.c_str());
+                ALOGD("  🔢 Tail: %s", tail_str.c_str());
             }
 
             // 檢查是否為重複模式
@@ -72,7 +72,7 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
         GstCaps* caps = gst_pad_get_current_caps(pad);
         if (caps) {
             gchar* caps_str = gst_caps_to_string(caps);
-            ALOGI("  📝 Caps: %s", caps_str);
+            ALOGD("  📝 Caps: %s", caps_str);
             g_free(caps_str);
             gst_caps_unref(caps);
         }

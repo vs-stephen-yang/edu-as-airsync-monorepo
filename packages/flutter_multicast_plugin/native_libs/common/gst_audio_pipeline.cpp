@@ -185,7 +185,7 @@ void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
 
     if (!first_audio_received_) {
         if (is_silence_frame(opus_data)) {
-            ALOGI("[push_opus] Dropping silence frame #%d", frame_count);
+            ALOGD("[push_opus] Dropping silence frame #%d", frame_count);
             return;
         } else {
             first_audio_received_ = true;
@@ -199,19 +199,19 @@ void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
         timestamp_ = sync_to_pipeline_time_();
     }
 
-    ALOGI("[push_opus] Attempting to push OPUS frame size: %zu", opus_data.size());
+    ALOGD("[push_opus] Attempting to push OPUS frame size: %zu", opus_data.size());
 
     // 創建 buffer
     GstBuffer* buffer = gst_buffer_new_allocate(NULL, opus_data.size(), NULL);
     if (!buffer) {
-        ALOGI("[push_opus] ERROR: Failed to allocate buffer!");
+        ALOGE("[push_opus] ERROR: Failed to allocate buffer!");
         return;
     }
 
     // 映射和複製數據
     GstMapInfo map;
     if (!gst_buffer_map(buffer, &map, GST_MAP_WRITE)) {
-        ALOGI("[push_opus] ERROR: Failed to map buffer!");
+        ALOGE("[push_opus] ERROR: Failed to map buffer!");
         gst_buffer_unref(buffer);
         return;
     }
@@ -223,16 +223,16 @@ void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
     GST_BUFFER_DTS(buffer) = timestamp_;
     GST_BUFFER_DURATION(buffer) = frame_duration;
 
-    ALOGI("[push_opus] Using timestamp: %.3f sec", (double)timestamp_ / GST_SECOND);
+    ALOGD("[push_opus] Using timestamp: %.3f sec", (double)timestamp_ / GST_SECOND);
 
     timestamp_ += frame_duration;
 
     // 推送 buffer
     GstFlowReturn ret = gst_app_src_push_buffer(GST_APP_SRC(appsrc_), buffer);
-    ALOGI("[push_opus] Push result: %d (%s)", ret, gst_flow_get_name(ret));
+    ALOGD("[push_opus] Push result: %d (%s)", ret, gst_flow_get_name(ret));
 
     if (ret != GST_FLOW_OK) {
-        ALOGI("[push_opus] ERROR: Push failed with: %s", gst_flow_get_name(ret));
+        ALOGE("[push_opus] ERROR: Push failed with: %s", gst_flow_get_name(ret));
     }
 }
 
