@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/widgets/v3_broadcast_indicator.dart';
 import 'package:display_flutter/widgets/v3_text_clock.dart';
 import 'package:flutter/material.dart';
@@ -66,11 +67,35 @@ class V3Status extends StatelessWidget {
             } else {
               networkIconName = 'ic_network_disconnect.svg';
             }
-            return Image(
-              excludeFromSemantics: true,
-              height: 27,
-              width: 27,
-              image: Svg('assets/images/$networkIconName'),
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image(
+                  excludeFromSemantics: true,
+                  height: 27,
+                  width: 27,
+                  image: Svg('assets/images/$networkIconName'),
+                ),
+                if (connectivityProvider.ssidName != null)
+                  MultiWindowLayout(
+                    builder: (_, __, SplitScreenRatio splitScreenRatio, ___,
+                        ____, _____) {
+                      if (splitScreenRatio.index >=
+                          SplitScreenRatio.twoThirds.index) {
+                        return Text(
+                          connectivityProvider.ssidName!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: context.tokens.color.vsdslColorOnSurface,
+                          ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    },
+                  ),
+              ],
             );
           },
         ),

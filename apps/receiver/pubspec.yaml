@@ -82,6 +82,7 @@ dependencies:
   ntp: ^2.0.0
   synchronized: ^3.3.0
   auto_hyphenating_text: ^0.3.0
+  network_info_plus: ^6.1.4
 
   # ViewSonic plug-in
   app_ota_flutter:
