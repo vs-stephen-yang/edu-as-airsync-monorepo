@@ -377,16 +377,15 @@ bool GstVideoPipeline::init(void* window_handle) {
     GstMessage* msg;
 
     while ((msg = gst_bus_pop(bus)) != NULL) {
-        GError* g_error = NULL;
         char* details = NULL;
 
         switch (GST_MESSAGE_TYPE(msg)) {
             case GST_MESSAGE_ERROR:
-                details = parse_gst_message_details(msg, &g_error, TRUE);
+                details = parse_gst_message_details(msg, TRUE);
                 ALOGE("GStreamer ERROR: %s", details);
                 break;
             case GST_MESSAGE_WARNING:
-                details = parse_gst_message_details(msg, &g_error, FALSE);
+                details = parse_gst_message_details(msg, FALSE);
                 ALOGW("GStreamer WARNING: %s", details);
                 break;
             default:
@@ -395,8 +394,6 @@ bool GstVideoPipeline::init(void* window_handle) {
 
         if (details)
             g_free(details);
-        if (g_error)
-            g_error_free(g_error);
 
         gst_message_unref(msg);
     }
