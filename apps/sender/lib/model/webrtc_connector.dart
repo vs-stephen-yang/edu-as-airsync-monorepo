@@ -806,6 +806,18 @@ class WebRTCConnector {
         : _trackHeight;
   }
 
+  /// Estimate video bitrate (in Mbps) based on resolution,
+  /// using linear interpolation between:
+  /// - FHD (1920x1080): 5 Mbps
+  /// - UHD/4K (3840x2160): 27 Mbps
+  ///
+  /// Formula:
+  /// bitrate = 5 + 22 × ((W×H - FHD_PIXELS) / DELTA_PIXELS)
+  ///
+  /// To reduce runtime overhead, we precompute constants:
+  /// - FHD_PIXELS = 1920 × 1080 = 2073600
+  /// - UHD_PIXELS = 3840 × 2160 = 8294400
+  /// - DELTA_PIXELS = UHD_PIXELS - FHD_PIXELS = 6220800
   int _calculateBitrateWithScreenScaling({
     required double actualWidth,
     required double actualHeight,
@@ -813,11 +825,22 @@ class WebRTCConnector {
     double baseWidth = 1920,
     double baseHeight = 1080,
   }) {
-    final scaleW = actualWidth / baseWidth;
-    final scaleH = actualHeight / baseHeight;
-    final supportMaxScreenRatio = 5.0 / 4.0;    // A common screen aspect ratio with the greatest height at the same width is 5:4.
-    final scaleBitrate = (scaleW * scaleH).clamp(1.0, supportMaxScreenRatio);
-    return (baseBitrateKbps * 1000 * scaleBitrate).toInt();
+    const int bitrateDelta = 22;            // 27Mbps - 5Mbps
+    const int scale = 1000000;              // Mbps → bps
+
+    bool baseResolutionIsFhd = baseWidth == 1920 && baseHeight == 1080;
+    int basePixels = baseResolutionIsFhd? 2073600: baseWidth.toInt() * baseHeight.toInt();
+    int pixelRange = baseResolutionIsFhd? 6220800: 8294400 - basePixels; // 6220800 for FHD to 4K, or 8294400 for FHD to UHD
+    int baseBitrateScaled = baseResolutionIsFhd? 31104000: baseBitrateKbps * pixelRange ~/ 6220800; // 5Mbps * 6220800 for FHD, or scaled for other resolutions
+
+    int pixels = (actualWidth * actualHeight).toInt();
+    int numerator = baseBitrateScaled + bitrateDelta * (pixels - basePixels);
+    int bitrateBps = (numerator * scale ~/ pixelRange);
+
+    print('[UG] baseResolutionIsFhd: $baseResolutionIsFhd, actualWidth: $actualWidth, actualHeight: $actualHeight, '
+          'calculated bitrate: ${bitrateBps / 1000000} Mbps');
+
+    return bitrateBps;
   }
 
   Future<bool> updateEncodingPreset(Preset preset) async {
