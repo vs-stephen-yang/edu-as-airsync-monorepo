@@ -85,6 +85,7 @@ set(COMMON_SRC
 
 add_library(common STATIC ${COMMON_SRC})
 target_compile_definitions(common PRIVATE PLATFORM_IOS)
+target_compile_definitions(common PRIVATE LOG_LEVEL=${LOG_LEVEL})
 
 target_include_directories(common 
     PUBLIC
@@ -114,7 +115,7 @@ target_link_libraries(common
         z
 )
 
-# ======= UvgRtpBridge.mm (Objective-C++) =========
+# ======= MulticastBridge.mm (Objective-C++) =========
 set(BRIDGE_SRC
     ${CMAKE_SOURCE_DIR}/Classes/MulticastBridge.mm
 )

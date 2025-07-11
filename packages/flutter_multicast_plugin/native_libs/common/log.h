@@ -1,6 +1,17 @@
 #ifndef COMMON_LOG_H_
 #define COMMON_LOG_H_
 
+#ifndef LOG_LEVEL
+#define LOG_LEVEL 1 // 預設 DEBUG
+#endif
+
+#define LOG_LEVEL_VERBOSE 0
+#define LOG_LEVEL_DEBUG 1
+#define LOG_LEVEL_INFO 2
+#define LOG_LEVEL_WARN 3
+#define LOG_LEVEL_ERROR 4
+#define LOG_LEVEL_NONE 5
+
 #if defined(__ANDROID__)
 #include <android/log.h>
 #define LOG_TAG "Common"

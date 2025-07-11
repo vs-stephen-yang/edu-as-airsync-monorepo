@@ -134,7 +134,6 @@ void RtpReceiverCore::start_rtp_receiver_with_interface(const std::string& inter
         uint32_t frame_count = 0;
 
         auto find_first_nalu_type = [](const uint8_t* data, size_t size) -> int {
-            ALOGI("find first nalu type");
             int nal_type = -1;
             if (size >= 5 &&
                 data[0] == 0x00 &&
@@ -175,7 +174,7 @@ void RtpReceiverCore::start_rtp_receiver_with_interface(const std::string& inter
             int nal_type = find_first_nalu_type(frame->payload, frame->payload_len);
             if (nal_type == -1)
                 continue;
-            ALOGI("First 4 bytes of payload: %02x %02x %02x %02x (NAL type: %d)",
+            ALOGD("First 4 bytes of payload: %02x %02x %02x %02x (NAL type: %d)",
                   frame->payload[0], frame->payload[1],
                   frame->payload[2], frame->payload[3],
                   nal_type);

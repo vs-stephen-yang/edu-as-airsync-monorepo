@@ -65,6 +65,7 @@ set(COMMON_SRC
 
 add_library(common STATIC ${COMMON_SRC})
 target_compile_definitions(common PRIVATE PLATFORM_MACOS)
+target_compile_definitions(common PRIVATE LOG_LEVEL=${LOG_LEVEL})
 
 target_include_directories(common 
     PUBLIC

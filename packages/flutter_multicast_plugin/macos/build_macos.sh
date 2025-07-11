@@ -12,6 +12,13 @@ UVGRTP_SRC=../native_libs/uvgrtp
 # 預設為完整 build
 CLEAN_BUILD=true
 
+if [[ -n "$LOG_LEVEL" ]]; then
+  echo "📣 使用 LOG_LEVEL=$LOG_LEVEL"
+else
+  echo "⚠️  未設定 LOG_LEVEL，使用預設值"
+  LOG_LEVEL="LOG_LEVEL_DEBUG"
+fi
+
 # 解析參數
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -50,7 +57,8 @@ if [ "$CLEAN_BUILD" = true ]; then
       -DCMAKE_OSX_DEPLOYMENT_TARGET=10.14 \
       -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
       -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_VERBOSE_MAKEFILE=ON
+      -DCMAKE_VERBOSE_MAKEFILE=ON \
+      -DLOG_LEVEL=$LOG_LEVEL
 else
     echo "⚡ 執行快速 build (重用現有 CMake 設定)"
     # 只確保輸出目錄存在
