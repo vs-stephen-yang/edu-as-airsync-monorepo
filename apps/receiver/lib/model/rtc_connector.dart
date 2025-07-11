@@ -482,7 +482,7 @@ class RTCConnector {
   }
 
   int getFullHeight(bool isFullHeight) {
-    int fullHeight = isFullHeight? 1536 : 540;
+    int fullHeight = isFullHeight? 2160 : 540;
     return fullHeight;
   }
 

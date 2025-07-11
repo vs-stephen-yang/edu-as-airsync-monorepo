@@ -19,8 +19,9 @@ import 'package:synchronized/synchronized.dart';
 import 'package:uuid/uuid.dart';
 import 'package:window_size/window_size.dart';
 
-const defaultScreenWidth = 1920.0;
-const defaultScreenHeight = 1536.0;
+const bool isMaxResolution4K = true;
+const defaultScreenWidth = isMaxResolution4K? 3840.0 : 1920.0;
+const defaultScreenHeight = isMaxResolution4K? 2160.0 : 1536.0;
 const int roomIdLength = 8;
 
 class RemoteControlChannel {
