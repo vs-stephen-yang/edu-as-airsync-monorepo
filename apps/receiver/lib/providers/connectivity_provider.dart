@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 class ConnectivityProvider extends ChangeNotifier {
   static const platform =
@@ -21,6 +22,9 @@ class ConnectivityProvider extends ChangeNotifier {
 
   get signalStrength => _signalStrength;
   int _signalStrength = -1;
+
+  String? get ssidName => _ssidName;
+  String? _ssidName;
 
   Future<bool> checkInternetConnection() async {
     if (_connectionStatus == ConnectivityResult.none) {
@@ -59,8 +63,10 @@ class ConnectivityProvider extends ChangeNotifier {
     _connectionStatus = result;
     if (_connectionStatus == ConnectivityResult.wifi) {
       await _getWifiSignalStrength();
+      await _getWifiSSIDName();
     } else {
       _signalStrength = -1;
+      _ssidName = null;
     }
     notifyListeners();
   }
@@ -72,6 +78,18 @@ class ConnectivityProvider extends ChangeNotifier {
     } on PlatformException catch (e) {
       _signalStrength = -1;
       log.severe("Failed to get Wi-Fi signal strength", e);
+    }
+  }
+
+  Future<void> _getWifiSSIDName() async {
+    try {
+      final info = NetworkInfo();
+      String? ssid = await info.getWifiName();
+      _ssidName = ssid?.replaceAll('"', '');
+      log.info('Wifi ssidName: $_ssidName');
+    } on PlatformException catch (e) {
+      _ssidName = null;
+      log.severe("Failed to get Wi-Fi SSID name", e);
     }
   }
 }
