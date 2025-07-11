@@ -2,7 +2,7 @@
 #import <Accelerate/Accelerate.h>
 
 @interface VideoTexture ()
-@property(nonatomic) CVPixelBufferRef displayBuffer; // 專門給 Flutter 顯示的
+@property(atomic) CVPixelBufferRef displayBuffer;    // 專門給 Flutter 顯示的
 @property(nonatomic) CVPixelBufferRef workingBuffer; // 正在處理的
 @end
 
@@ -166,9 +166,9 @@
       CVPixelBufferUnlockBaseAddress(_workingBuffer, 0);
 
       if (success) {
-        CVPixelBufferRef oldDisplay = _displayBuffer;
-        _displayBuffer = _workingBuffer;
-        _workingBuffer = oldDisplay;
+        CVPixelBufferRef old = self.displayBuffer;
+        self.displayBuffer = _workingBuffer;
+        _workingBuffer = old;
       }
     }
 
@@ -178,16 +178,10 @@
 }
 
 - (CVPixelBufferRef)copyPixelBuffer {
-  if (dispatch_semaphore_wait(_bufferSemaphore, DISPATCH_TIME_NOW) != 0) {
-    return nil;
-  }
-
-  CVPixelBufferRef buffer = _displayBuffer;
+  CVPixelBufferRef buffer = self.displayBuffer;
   if (buffer) {
     CVPixelBufferRetain(buffer);
   }
-
-  dispatch_semaphore_signal(_bufferSemaphore);
   return buffer;
 }
 
