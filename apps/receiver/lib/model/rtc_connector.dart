@@ -98,6 +98,11 @@ class RTCConnector {
     'IFP52_1C',
   ];
 
+  static const List<String> _fhdOnlyWebRtcModels = [
+    'IFP50_3',
+    'IFP50_3_9850',
+  ];
+
   RTCPeerConnection? _pc;
 
   RTCPeerConnection? get pc => _pc;
@@ -488,6 +493,9 @@ class RTCConnector {
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
     if (isMtk9950Model(deviceType) && (attenderCount > 1)) {
+      return 1080;
+    }
+    if (_fhdOnlyWebRtcModels.contains(deviceType)) {
       return 1080;
     }
     return 0;   // no limitation
