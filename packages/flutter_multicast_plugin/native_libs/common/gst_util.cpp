@@ -65,32 +65,6 @@ GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gp
                 }
             }
 
-            if (isRepeatingPattern && map.size > 8) {
-                ALOGW("  ⚠️  WARNING: Repeating pattern detected!");
-            }
-
-            // 統計數據分佈
-            int histogram[256] = {0};
-            gsize sampleSize = std::min(map.size, (gsize)1000);
-            for (gsize i = 0; i < sampleSize; i++) {
-                histogram[map.data[i]]++;
-            }
-
-            // 找出最常見的字節值
-            int maxCount = 0;
-            int mostCommonByte = 0;
-            for (int i = 0; i < 256; i++) {
-                if (histogram[i] > maxCount) {
-                    maxCount = histogram[i];
-                    mostCommonByte = i;
-                }
-            }
-
-            double dominance = (double)maxCount / sampleSize * 100.0;
-            if (dominance > 90.0) {
-                ALOGW("  ⚠️  Data highly uniform: 0x%02x appears %.1f%% of time", mostCommonByte, dominance);
-            }
-
             gst_buffer_unmap(buffer, &map);
         }
 
