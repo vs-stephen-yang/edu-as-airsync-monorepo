@@ -382,31 +382,9 @@ bool GstVideoPipeline::init(void* window_handle) {
     }
 #endif
 
-    // 檢查 bus 上的錯誤
+    // register bus handler
     GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline_));
-    GstMessage* msg;
-
-    while ((msg = gst_bus_pop(bus)) != NULL) {
-        char* details = NULL;
-
-        switch (GST_MESSAGE_TYPE(msg)) {
-            case GST_MESSAGE_ERROR:
-                details = parse_gst_message_details(msg, TRUE);
-                ALOGE("GStreamer ERROR: %s", details);
-                break;
-            case GST_MESSAGE_WARNING:
-                details = parse_gst_message_details(msg, FALSE);
-                ALOGW("GStreamer WARNING: %s", details);
-                break;
-            default:
-                break;
-        }
-
-        if (details)
-            g_free(details);
-
-        gst_message_unref(msg);
-    }
+    gst_bus_set_sync_handler(bus, (GstBusSyncHandler)bus_sync_handler, this, nullptr);
     gst_object_unref(bus);
 
     // 等待 pipeline 完全初始化

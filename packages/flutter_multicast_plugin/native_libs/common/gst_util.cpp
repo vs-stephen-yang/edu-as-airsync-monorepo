@@ -102,3 +102,26 @@ char* parse_gst_message_details(GstMessage* msg, gboolean is_error) {
 
     return result; // caller must g_free(result), and also g_error_free(*out_error)
 }
+
+GstBusSyncReply bus_sync_handler(GstBus*, GstMessage* msg, gpointer) {
+    char* details = NULL;
+
+    switch (GST_MESSAGE_TYPE(msg)) {
+        case GST_MESSAGE_ERROR:
+            details = parse_gst_message_details(msg, TRUE);
+            ALOGE("GStreamer ERROR: %s", details);
+            break;
+        case GST_MESSAGE_WARNING:
+            details = parse_gst_message_details(msg, FALSE);
+            ALOGW("GStreamer WARNING: %s", details);
+            break;
+        default:
+            break;
+    }
+
+    if (details)
+        g_free(details);
+
+    // Important: return to let the message continue flowing
+    return GST_BUS_PASS;
+}
