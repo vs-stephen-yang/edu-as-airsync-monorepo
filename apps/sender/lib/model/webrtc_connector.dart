@@ -83,12 +83,12 @@ class WebRTCConnector {
   ChangePresentQuality? _pendingChangePresentQuality;
 
   static const bool _isMaxResolution4K = true;
-  double _screenWidth = _isMaxResolution4K? 3840.0: 1920.0;
-  double _screenHeight = _isMaxResolution4K? 2160.0: 1536.0;
-  static const int _maxTrackWidth = _isMaxResolution4K? 3840: 1920;
-  static const int _maxTrackHeight = _isMaxResolution4K? 2160: 1536;
-  int _trackWidth = _maxTrackWidth;
-  int _trackHeight = _maxTrackHeight;
+  double _screenWidth = 1920.0;
+  double _screenHeight = 1536.0;
+  int _maxTrackWidth = 1920;
+  int _maxTrackHeight = 1536;
+  int _trackWidth = 1920;
+  int _trackHeight = 1536;
   int _actualWidth = 1920;
   int _actualHeight = 1080;
   int _decodeHeightLimit = 0;
@@ -407,6 +407,12 @@ class WebRTCConnector {
         // On Web, we need to apply minFrameRate to avoid static content
         // delay or black screen issue.
         if (kIsWeb) {
+          _screenWidth = _isMaxResolution4K? 3840.0: 1920.0;
+          _screenHeight = _isMaxResolution4K? 2160.0: 1536.0;
+          _maxTrackWidth = _isMaxResolution4K? 3840: 1920;
+          _maxTrackHeight = _isMaxResolution4K? 2160: 1536;
+          _trackWidth = _isMaxResolution4K? 3840: 1920;
+          _trackHeight = _isMaxResolution4K? 2160: 1536;
           _applyWebMinFrameRateWorkaround(track);
         }
       }
@@ -836,9 +842,6 @@ class WebRTCConnector {
     int pixels = (actualWidth * actualHeight).toInt();
     int numerator = baseBitrateScaled + bitrateDelta * (pixels - basePixels);
     int bitrateBps = (numerator * scale ~/ pixelRange);
-
-    print('[UG] baseResolutionIsFhd: $baseResolutionIsFhd, actualWidth: $actualWidth, actualHeight: $actualHeight, '
-          'calculated bitrate: ${bitrateBps / 1000000} Mbps');
 
     return bitrateBps;
   }
