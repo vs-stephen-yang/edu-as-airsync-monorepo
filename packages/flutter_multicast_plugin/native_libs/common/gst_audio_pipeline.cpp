@@ -7,7 +7,8 @@
 #include <gst/app/gstappsrc.h>
 #include <gst/video/videooverlay.h>
 #include <iostream>
-#include <map>    // 用於 std::map
+#include <map> // 用於 std::map
+#include <mutex>
 #include <string> // 用於 std::string
 #include <vector> // 用於 std::vector
 #ifdef PLATFORM_IOS
@@ -156,6 +157,21 @@ bool GstAudioPipeline::init() {
 }
 
 void GstAudioPipeline::push_opus_frame(const std::vector<uint8_t>& opus_data) {
+    std::lock_guard<std::mutex> lock(pipeline_mutex_);
+
+    if (!pipeline_ || !appsrc_) {
+        ALOGW("[push_au] Skip: pipeline or appsrc is not ready");
+        return;
+    }
+
+    // 檢查 appsrc 狀態
+    GstState state;
+    gst_element_get_state(appsrc_, &state, NULL, 0);
+    if (state < GST_STATE_PLAYING) {
+        ALOGW("[push_au] Skip: appsrc state is %d, not PLAYING", state);
+        return;
+    }
+
     static const GstClockTime frame_duration = 20 * GST_MSECOND; // OPUS 20ms frame
     static int frame_count = 0;
 
@@ -249,4 +265,12 @@ void GstAudioPipeline::stop() {
         pipeline_ = nullptr;
     }
     appsrc_ = nullptr;
+}
+
+void GstAudioPipeline::on_pipeline_error() {
+    std::lock_guard<std::mutex> lock(pipeline_mutex_);
+
+    ALOGE("[Audio] Pipeline error received — restarting...");
+    stop();
+    init();
 }

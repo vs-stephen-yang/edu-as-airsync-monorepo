@@ -1,10 +1,12 @@
 #pragma once
 
+#include "gst_pipeline_observer.h"
 #include <gst/app/gstappsrc.h>
 #include <gst/gst.h>
+#include <mutex>
 #include <vector>
 
-class GstVideoPipeline {
+class GstVideoPipeline : public GstPipelineObserver {
   public:
     GstVideoPipeline();
     ~GstVideoPipeline();
@@ -14,7 +16,11 @@ class GstVideoPipeline {
     void push_au(const std::vector<uint8_t>& au);
     void stop();
 
+    void on_pipeline_error() override;
+
   private:
     GstElement* pipeline_ = nullptr;
     GstElement* appsrc_ = nullptr;
+    std::mutex pipeline_mutex_;
+    void* window_handle_ = nullptr;
 };

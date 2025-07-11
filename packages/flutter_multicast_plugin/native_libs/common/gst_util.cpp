@@ -1,4 +1,5 @@
 #include "gst_util.h"
+#include "gst_pipeline_observer.h"
 #include "log.h"
 #include <algorithm>
 #include <glib.h>
@@ -103,13 +104,17 @@ char* parse_gst_message_details(GstMessage* msg, gboolean is_error) {
     return result; // caller must g_free(result), and also g_error_free(*out_error)
 }
 
-GstBusSyncReply bus_sync_handler(GstBus*, GstMessage* msg, gpointer) {
+GstBusSyncReply bus_sync_handler(GstBus*, GstMessage* msg, gpointer user_data) {
     char* details = NULL;
+    GstPipelineObserver* observer = static_cast<GstPipelineObserver*>(user_data);
 
     switch (GST_MESSAGE_TYPE(msg)) {
         case GST_MESSAGE_ERROR:
             details = parse_gst_message_details(msg, TRUE);
             ALOGE("GStreamer ERROR: %s", details);
+
+            if (observer)
+                observer->on_pipeline_error();
             break;
         case GST_MESSAGE_WARNING:
             details = parse_gst_message_details(msg, FALSE);

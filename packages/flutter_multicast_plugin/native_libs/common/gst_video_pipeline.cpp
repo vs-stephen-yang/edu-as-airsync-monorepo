@@ -7,7 +7,8 @@
 #include <gst/app/gstappsrc.h>
 #include <gst/video/videooverlay.h>
 #include <iostream>
-#include <map>    // 用於 std::map
+#include <map> // 用於 std::map
+#include <mutex>
 #include <string> // 用於 std::string
 #include <vector> // 用於 std::vector
 #ifdef PLATFORM_IOS
@@ -372,6 +373,7 @@ bool GstVideoPipeline::init(void* window_handle) {
     // Android: 準備 user_data
     PadAddedData* pad_data = new PadAddedData();
     pad_data->window_handle = window_handle;
+    window_handle_ = window_handle;
 
     GstElement* decodebin = gst_bin_get_by_name(GST_BIN(pipeline_), "decodebin");
     if (decodebin) {
@@ -436,12 +438,20 @@ bool GstVideoPipeline::init(void* window_handle) {
 }
 
 void GstVideoPipeline::push_au(const std::vector<uint8_t>& au) {
-    // ALOGI("[push_au] Attempting to push AU size: %zu", au.size());
+    std::lock_guard<std::mutex> lock(pipeline_mutex_);
+
+    if (!pipeline_ || !appsrc_) {
+        ALOGW("[push_au] Skip: pipeline or appsrc is not ready");
+        return;
+    }
 
     // 檢查 appsrc 狀態
     GstState state;
     gst_element_get_state(appsrc_, &state, NULL, 0);
-    // ALOGI("[push_au] appsrc state: %d", state);
+    if (state < GST_STATE_PLAYING) {
+        ALOGW("[push_au] Skip: appsrc state is %d, not PLAYING", state);
+        return;
+    }
 
     // 創建 buffer
     GstBuffer* buffer = gst_buffer_new_allocate(NULL, au.size(), NULL);
@@ -487,4 +497,12 @@ void GstVideoPipeline::stop() {
         pipeline_ = nullptr;
     }
     appsrc_ = nullptr;
+}
+
+void GstVideoPipeline::on_pipeline_error() {
+    std::lock_guard<std::mutex> lock(pipeline_mutex_);
+    ALOGE("Pipeline error received — restarting...");
+
+    stop();
+    init(window_handle_);
 }
