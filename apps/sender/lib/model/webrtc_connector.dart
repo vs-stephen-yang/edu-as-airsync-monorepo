@@ -82,10 +82,11 @@ class WebRTCConnector {
   bool _streamPublished = false;
   ChangePresentQuality? _pendingChangePresentQuality;
 
-  double _screenWidth = 1920.0;
-  double _screenHeight = 1536.0;
-  static const int _maxTrackWidth = 1920;
-  static const int _maxTrackHeight = 1536;
+  static const bool _isMaxResolution4K = true;
+  double _screenWidth = _isMaxResolution4K? 3840.0: 1920.0;
+  double _screenHeight = _isMaxResolution4K? 2160.0: 1536.0;
+  static const int _maxTrackWidth = _isMaxResolution4K? 3840: 1920;
+  static const int _maxTrackHeight = _isMaxResolution4K? 2160: 1536;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
