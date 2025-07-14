@@ -49,7 +49,6 @@ class V3HomeApp extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
-                  const V3Background(),
                   V3PresentStateMachine(
                     presentStateProvider: presentStateProvider,
                     demoProvider: demoProvider,
@@ -57,6 +56,7 @@ class V3HomeApp extends StatelessWidget {
                   if (presentStateProvider.currentState == ViewState.idle &&
                       (demoProvider.state == V3DemoViewState.idle ||
                           demoProvider.state == V3DemoViewState.off)) ...[
+                    const V3Background(),
                     const QRCodeConnect(),
                     const SettingMenu(),
                   ]
