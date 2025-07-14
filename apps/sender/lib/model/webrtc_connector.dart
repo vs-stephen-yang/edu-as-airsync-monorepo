@@ -82,13 +82,12 @@ class WebRTCConnector {
   bool _streamPublished = false;
   ChangePresentQuality? _pendingChangePresentQuality;
 
-  static const bool _isMaxResolution4K = true;
   double _screenWidth = 1920.0;
   double _screenHeight = 1536.0;
-  int _maxTrackWidth = 1920;
-  int _maxTrackHeight = 1536;
-  int _trackWidth = 1920;
-  int _trackHeight = 1536;
+  static int _maxTrackWidth = 1920;
+  static int _maxTrackHeight = 1536;
+  int _trackWidth = _maxTrackWidth;
+  int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
   int _actualHeight = 1080;
   int _decodeHeightLimit = 0;
@@ -407,12 +406,10 @@ class WebRTCConnector {
         // On Web, we need to apply minFrameRate to avoid static content
         // delay or black screen issue.
         if (kIsWeb) {
-          _screenWidth = _isMaxResolution4K? 3840.0: 1920.0;
-          _screenHeight = _isMaxResolution4K? 2160.0: 1536.0;
-          _maxTrackWidth = _isMaxResolution4K? 3840: 1920;
-          _maxTrackHeight = _isMaxResolution4K? 2160: 1536;
-          _trackWidth = _isMaxResolution4K? 3840: 1920;
-          _trackHeight = _isMaxResolution4K? 2160: 1536;
+          _screenWidth = 3840.0;
+          _screenHeight = 2160.0;
+          _maxTrackWidth = 3840;
+          _maxTrackHeight = 2160;
           _applyWebMinFrameRateWorkaround(track);
         }
       }
@@ -812,18 +809,6 @@ class WebRTCConnector {
         : _trackHeight;
   }
 
-  /// Estimate video bitrate (in Mbps) based on resolution,
-  /// using linear interpolation between:
-  /// - FHD (1920x1080): 5 Mbps
-  /// - UHD/4K (3840x2160): 27 Mbps
-  ///
-  /// Formula:
-  /// bitrate = 5 + 22 × ((W×H - FHD_PIXELS) / DELTA_PIXELS)
-  ///
-  /// To reduce runtime overhead, we precompute constants:
-  /// - FHD_PIXELS = 1920 × 1080 = 2073600
-  /// - UHD_PIXELS = 3840 × 2160 = 8294400
-  /// - DELTA_PIXELS = UHD_PIXELS - FHD_PIXELS = 6220800
   int _calculateBitrateWithScreenScaling({
     required double actualWidth,
     required double actualHeight,
@@ -831,19 +816,26 @@ class WebRTCConnector {
     double baseWidth = 1920,
     double baseHeight = 1080,
   }) {
-    const int bitrateDelta = 22;            // 27Mbps - 5Mbps
-    const int scale = 1000000;              // Mbps → bps
+    const int fhdPixels = 2073600;
+    const int maxPixels = 8294400;    // 3840 x 2160
+    const double fhdSlope = 3.535;    // ≈ 22,000,000 / 6,220,800
+    final int actualPixels = (actualWidth * actualHeight).toInt();
 
-    bool baseResolutionIsFhd = baseWidth == 1920 && baseHeight == 1080;
-    int basePixels = baseResolutionIsFhd? 2073600: baseWidth.toInt() * baseHeight.toInt();
-    int pixelRange = baseResolutionIsFhd? 6220800: 8294400 - basePixels; // 6220800 for FHD to 4K, or 8294400 for FHD to UHD
-    int baseBitrateScaled = baseResolutionIsFhd? 31104000: baseBitrateKbps * pixelRange ~/ 6220800; // 5Mbps * 6220800 for FHD, or scaled for other resolutions
+    // fast path: FHD@5Mbps using slope to determine bitrate (default)
+    if (baseWidth == 1920 &&
+        baseHeight == 1080 &&
+        baseBitrateKbps == 5000) {
+      // Bitrate = 5_000_000 + (pixels - 2073600) * slope
+      return (5000000 + ((actualPixels - fhdPixels) * fhdSlope)).round();
+    }
 
-    int pixels = (actualWidth * actualHeight).toInt();
-    int numerator = baseBitrateScaled + bitrateDelta * (pixels - basePixels);
-    int bitrateBps = (numerator * scale ~/ pixelRange);
-
-    return bitrateBps;
+    // general case: linear interpolation between FHD and UHD (fallback)
+    final int basePixels = (baseWidth * baseHeight).toInt();
+    final int pixelRange = maxPixels - basePixels;
+    final int baseBitrateBps = baseBitrateKbps * 1000;
+    final int baseBitrateScaled = baseBitrateBps * pixelRange;
+    final int numerator = baseBitrateScaled + 22000000 * (actualPixels - basePixels);
+    return numerator ~/ pixelRange;
   }
 
   Future<bool> updateEncodingPreset(Preset preset) async {
