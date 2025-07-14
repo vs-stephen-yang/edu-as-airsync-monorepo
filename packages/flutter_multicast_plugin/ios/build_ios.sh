@@ -7,8 +7,6 @@ set -o pipefail
 ARCH=arm64
 SDK=iphoneos
 BUILD_DIR=build
-CRYPTOPP_SRC=../native_libs/cryptopp
-UVGRTP_SRC=../native_libs/uvgrtp
 
 # 預設為完整 build
 CLEAN_BUILD=true
