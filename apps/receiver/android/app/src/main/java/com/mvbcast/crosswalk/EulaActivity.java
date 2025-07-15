@@ -199,9 +199,11 @@ public class EulaActivity extends FlutterActivity {
         new io.flutter.plugin.common.EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_status_events")
                 .setStreamHandler(new io.flutter.plugin.common.EventChannel.StreamHandler() {
                     private BroadcastReceiver wifiStateReceiver;
+                    private Context applicationContext;
 
                     @Override
                     public void onListen(Object arguments, io.flutter.plugin.common.EventChannel.EventSink events) {
+                        applicationContext = getApplicationContext();
                         wifiStateReceiver = new BroadcastReceiver() {
                             @Override
                             public void onReceive(Context context, Intent intent) {
@@ -219,13 +221,13 @@ public class EulaActivity extends FlutterActivity {
                             }
                         };
                         IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-                        registerReceiver(wifiStateReceiver, intentFilter);
+                        applicationContext.registerReceiver(wifiStateReceiver, intentFilter);
                     }
 
                     @Override
                     public void onCancel(Object arguments) {
-                        if (wifiStateReceiver != null) {
-                            unregisterReceiver(wifiStateReceiver);
+                        if (wifiStateReceiver != null && applicationContext != null) {
+                            applicationContext.unregisterReceiver(wifiStateReceiver);
                             wifiStateReceiver = null;
                         }
                     }
