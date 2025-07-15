@@ -13,6 +13,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -106,26 +107,34 @@ public class WifiHelper {
     }
 
     public void registerUsbReceiver(Activity activity) {
-        usbReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action) ||
-                        UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                    if (mIsMonitorUSB) {
-                        checkConnectedUsbDevices(activity);
+        if (usbReceiver == null) {
+            usbReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action) ||
+                            UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                        if (mIsMonitorUSB) {
+                            checkConnectedUsbDevices(activity);
+                        }
                     }
                 }
-            }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        activity.registerReceiver(usbReceiver, filter);
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+            filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+            activity.getApplicationContext().registerReceiver(usbReceiver, filter);
+        }
     }
 
     public void unregisterUsbReceiver(Activity activity) {
-        activity.unregisterReceiver(usbReceiver);
+        if (usbReceiver != null) {
+            try {
+                activity.getApplicationContext().unregisterReceiver(usbReceiver);
+            } catch (IllegalArgumentException e) {
+                Log.w("WifiHelper", "Receiver has already been unregistered.");
+            }
+        }
     }
 
     /**
