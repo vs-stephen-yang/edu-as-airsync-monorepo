@@ -816,26 +816,36 @@ class WebRTCConnector {
     double baseWidth = 1920,
     double baseHeight = 1080,
   }) {
-    const int fhdPixels = 2073600;
-    const int maxPixels = 8294400;    // 3840 x 2160
-    const double fhdSlope = 3.535;    // ≈ 22,000,000 / 6,220,800
     final int actualPixels = (actualWidth * actualHeight).toInt();
+    const int commonBasePixels = 2073600;            // 1920 x 1080
+    const int maxPixels = 8294400;                   // 3840 x 2160
+    const int minBitrateBps = 5000000;               // 5 Mbps
+    const double slope = 3.535;                      // ≈ 22,000,000 / 6,220,800
+
+    final bool isCommonConfig = (baseBitrateKbps == 27000 && baseWidth == 1920 && baseHeight == 1080);
 
     // fast path: FHD@5Mbps using slope to determine bitrate (default)
-    if (baseWidth == 1920 &&
-        baseHeight == 1080 &&
-        baseBitrateKbps == 5000) {
-      // Bitrate = 5_000_000 + (pixels - 2073600) * slope
-      return (5000000 + ((actualPixels - fhdPixels) * fhdSlope)).round();
+    if (isCommonConfig) {
+      if (actualPixels <= commonBasePixels) return minBitrateBps;
+      if (actualPixels >= maxPixels) return baseBitrateKbps * 1000;
+      // bitrate = 5_000_000 + (pixels - basePixels) * slope
+      return (minBitrateBps + ((actualPixels - commonBasePixels) * slope)).round();
     }
 
-    // general case: linear interpolation between FHD and UHD (fallback)
+    // fallback: baseWidth, baseHeight, and baseBitrateKbps are not common
     final int basePixels = (baseWidth * baseHeight).toInt();
+    const int minBitrateKbps = 5000;
+    final int lowBitrateBps = minBitrateKbps * 1000;
+    final int highBitrateBps = baseBitrateKbps * 1000;
     final int pixelRange = maxPixels - basePixels;
-    final int baseBitrateBps = baseBitrateKbps * 1000;
-    final int baseBitrateScaled = baseBitrateBps * pixelRange;
-    final int numerator = baseBitrateScaled + 22000000 * (actualPixels - basePixels);
-    return numerator ~/ pixelRange;
+    final int pixelDelta = actualPixels - basePixels;
+
+    if (actualPixels <= basePixels) return lowBitrateBps;
+    if (actualPixels >= maxPixels) return highBitrateBps;
+
+    final int bitrateDelta = highBitrateBps - lowBitrateBps;
+    final int interpolatedBps = lowBitrateBps + (bitrateDelta * pixelDelta ~/ pixelRange);
+    return interpolatedBps;
   }
 
   Future<bool> updateEncodingPreset(Preset preset) async {
