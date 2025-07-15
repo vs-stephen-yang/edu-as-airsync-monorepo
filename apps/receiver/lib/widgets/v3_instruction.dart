@@ -377,7 +377,6 @@ class V3Instruction extends StatelessWidget {
             }),
           ],
         ),
-        SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
       ],
     );
   }
