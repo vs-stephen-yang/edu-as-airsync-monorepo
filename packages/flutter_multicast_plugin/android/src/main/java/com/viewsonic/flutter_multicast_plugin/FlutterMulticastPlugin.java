@@ -30,13 +30,14 @@ import java.util.Map;
 
 /** FlutterMulticastPlugin */
 @Keep
-public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
+public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener, SurfaceCallbackHandler.SurfaceLifecycleListener {
     private MethodChannel channel;
 
     private TextureRegistry textureRegistry;
 
     private Surface surface;
     private Activity activity;
+    private SurfaceCallbackHandler surfaceHandler;
     private static final int REQUEST_CODE_MEDIA_PROJECTION = 1001;
 
     private static final String TAG = "FlutterMulticastPlugin";
@@ -164,17 +165,31 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
                 TextureRegistry.SurfaceProducer producer = textureRegistry.createSurfaceProducer();
                 producer.setSize(1920, 1080);
-                Surface surface = producer.getSurface();
-                long textureId = producer.id();
+                surfaceHandler = new SurfaceCallbackHandler(producer, this);
+                Surface surface = surfaceHandler.getSurface();
+                long textureId = surfaceHandler.getTextureId();
 
                 List<String> localIps = NetworkUtils.getAllLocalIPv4s();
                 String[] ipArray = localIps.toArray(new String[0]);
                 NativeBridge.receiveStart(surface, ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc, videoRoc, audioRoc);
+
+                surfaceHandler.setActive(true);
+
                 result.success(textureId);
                 break;
             }
             case "receiveStop": {
+                if (surfaceHandler != null) {
+                    surfaceHandler.setActive(false);
+                }
+
                 NativeBridge.receiveStop();
+
+                if (surfaceHandler != null) {
+                    surfaceHandler.release();
+                    surfaceHandler = null;
+                }
+
                 result.success(null);
                 break;
             }
@@ -220,5 +235,19 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onSurfaceReady(Surface surface) {
+        Log.d(TAG, "Surface ready - reinitializing video pipeline");
+        NativeBridge.reinitializeVideoPipeline(surface);
+    }
+
+    @Override
+    public void onSurfaceDestroyed() {
+        Log.d(TAG, "Surface destroyed - pausing video pipeline");
+        if (surfaceHandler != null && surfaceHandler.isActive()) {
+            NativeBridge.pauseVideoPipeline();
+        }
     }
 }

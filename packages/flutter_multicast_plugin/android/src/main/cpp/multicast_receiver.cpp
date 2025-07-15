@@ -86,6 +86,26 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStop(
   g_audio_pipeline.reset();
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_pauseVideoPipeline(
+    JNIEnv *, jobject) {
+  ALOGD("Pausing video pipeline for surface destruction");
+  if (g_pipeline) {
+    g_pipeline->pause();
+  }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_reinitializeVideoPipeline(
+    JNIEnv *env, jobject thiz, jobject surface) {
+  ALOGD("Reinitializing video pipeline with new surface");
+  if (g_pipeline) {
+    ANativeWindow *native_window = ANativeWindow_fromSurface(env, surface);
+    g_pipeline->reinitialize(native_window);
+    ANativeWindow_release(native_window);
+  }
+}
+
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
   java_vm = vm;
 

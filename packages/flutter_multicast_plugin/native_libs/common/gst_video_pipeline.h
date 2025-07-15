@@ -15,6 +15,8 @@ class GstVideoPipeline : public GstPipelineObserver {
     bool init(void* window_handle);
     void push_au(const std::vector<uint8_t>& au);
     void stop();
+    void pause();
+    void reinitialize(void* window_handle);
 
     void on_pipeline_error() override;
 
@@ -23,4 +25,6 @@ class GstVideoPipeline : public GstPipelineObserver {
     GstElement* appsrc_ = nullptr;
     std::mutex pipeline_mutex_;
     void* window_handle_ = nullptr;
+    std::atomic<bool> is_paused_{false};
+    std::atomic<bool> is_reinitializing_{false};
 };

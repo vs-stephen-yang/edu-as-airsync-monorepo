@@ -13,4 +13,6 @@ public class NativeBridge {
     public static native void stopRtpStream();
     public static native void receiveStart(Object surface, String[] localIps, String ip, int videoPort, int audioPort, byte[] key, byte[] salt, int ssrc, long videoRoc, long audioRoc);
     public static native void receiveStop();
+    public static native void pauseVideoPipeline();
+    public static native void reinitializeVideoPipeline(Object surface);
 }
