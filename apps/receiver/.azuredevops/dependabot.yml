@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # Flutter / Dart
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "deps"
+      - "flutter"
+
+  # Android (Gradle)
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "deps"
+      - "android"
+
+  # iOS (CocoaPods)
+  - package-ecosystem: "cocoapods"
+    directory: "/ios"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "deps"
+      - "ios"
+
+registries:
+  my-pub:
+    type: "pub-registry"
+    url: "https://pub.my_corp_local"
+    token: "PAT:${{ ADO_PAT_DEPENDABOT }}"
