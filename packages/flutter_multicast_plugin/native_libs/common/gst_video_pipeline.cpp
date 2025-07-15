@@ -440,6 +440,10 @@ bool GstVideoPipeline::init(void* window_handle) {
 void GstVideoPipeline::push_au(const std::vector<uint8_t>& au) {
     std::lock_guard<std::mutex> lock(pipeline_mutex_);
 
+    if (is_paused_ || is_reinitializing_) {
+        return;
+    }
+
     if (!pipeline_ || !appsrc_) {
         ALOGW("[push_au] Skip: pipeline or appsrc is not ready");
         return;
@@ -505,4 +509,57 @@ void GstVideoPipeline::on_pipeline_error() {
 
     stop();
     init(window_handle_);
+}
+
+void GstVideoPipeline::pause() {
+    std::lock_guard<std::mutex> lock(pipeline_mutex_);
+    ALOGD("Pausing pipeline to prepare for surface destruction");
+
+    if (is_paused_) {
+        return;
+    }
+
+    is_paused_ = true;
+
+    if (pipeline_) {
+        // 快速停止渲染，避免寫入已銷毀的 Surface
+        gst_element_set_state(pipeline_, GST_STATE_PAUSED);
+
+        // 移除 glimagesink 以完全停止 Surface 操作
+        GstElement* glsink = gst_bin_get_by_name(GST_BIN(pipeline_), "glsink");
+        if (glsink) {
+            gst_element_set_state(glsink, GST_STATE_NULL);
+            gst_object_unref(glsink);
+        }
+    }
+
+    ALOGD("Pipeline paused safely");
+}
+
+void GstVideoPipeline::reinitialize(void* new_window_handle) {
+    std::lock_guard<std::mutex> lock(pipeline_mutex_);
+
+    if (is_reinitializing_) {
+        ALOGW("Already reinitializing, skipping");
+        return;
+    }
+
+    is_reinitializing_ = true;
+    ALOGD("Reinitializing pipeline with new window");
+
+    // 完全重建 pipeline
+    if (pipeline_) {
+        gst_element_set_state(pipeline_, GST_STATE_NULL);
+        gst_object_unref(pipeline_);
+        pipeline_ = nullptr;
+        appsrc_ = nullptr;
+    }
+
+    // 重新初始化
+    bool success = init(new_window_handle);
+
+    is_paused_ = false;
+    is_reinitializing_ = false;
+
+    ALOGD("Reinitialization %s", success ? "succeeded" : "failed");
 }
