@@ -775,7 +775,7 @@ class WebRTCConnector {
         encoding.maxBitrate = _calculateBitrateWithScreenScaling(
           actualWidth: _actualWidth.toDouble(),
           actualHeight: _actualHeight.toDouble(),
-          baseBitrateKbps: preset.parameters.maxBitrateKbps.toInt(),
+          uhdMaxBitrateKbps: preset.parameters.maxBitrateKbps.toInt(),
         );
 
         // On Android, because ScreenCapture cannot specify the capture frame rate,
@@ -812,7 +812,7 @@ class WebRTCConnector {
   int _calculateBitrateWithScreenScaling({
     required double actualWidth,
     required double actualHeight,
-    required int baseBitrateKbps,
+    required int uhdMaxBitrateKbps,
     double baseWidth = 1920,
     double baseHeight = 1080,
   }) {
@@ -822,21 +822,21 @@ class WebRTCConnector {
     const int minBitrateBps = 5000000;               // 5 Mbps
     const double slope = 3.535;                      // ≈ 22,000,000 / 6,220,800
 
-    final bool isCommonConfig = (baseBitrateKbps == 27000 && baseWidth == 1920 && baseHeight == 1080);
+    final bool isCommonConfig = (uhdMaxBitrateKbps == 27000 && baseWidth == 1920 && baseHeight == 1080);
 
     // fast path: FHD@5Mbps using slope to determine bitrate (default)
     if (isCommonConfig) {
       if (actualPixels <= commonBasePixels) return minBitrateBps;
-      if (actualPixels >= maxPixels) return baseBitrateKbps * 1000;
+      if (actualPixels >= maxPixels) return uhdMaxBitrateKbps * 1000;
       // bitrate = 5_000_000 + (pixels - basePixels) * slope
       return (minBitrateBps + ((actualPixels - commonBasePixels) * slope)).round();
     }
 
-    // fallback: baseWidth, baseHeight, and baseBitrateKbps are not common
+    // fallback: baseWidth, baseHeight, and uhdMaxBitrateKbps are not common
     final int basePixels = (baseWidth * baseHeight).toInt();
     const int minBitrateKbps = 5000;
     final int lowBitrateBps = minBitrateKbps * 1000;
-    final int highBitrateBps = baseBitrateKbps * 1000;
+    final int highBitrateBps = uhdMaxBitrateKbps * 1000;
     final int pixelRange = maxPixels - basePixels;
     final int pixelDelta = actualPixels - basePixels;
 

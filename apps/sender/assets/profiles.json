@@ -9,7 +9,7 @@
           "description": "maintain video quality between fair and good",
           "parameters": {
             "minBitrateKbps": 3000,
-            "maxBitrateKbps": 5000
+            "maxBitrateKbps": 27000
           }
         }
       ]
@@ -23,7 +23,7 @@
           "description": "maintain video smoothness and good quality when bandwidth is sufficient",
           "parameters": {
             "minBitrateKbps": 0,
-            "maxBitrateKbps": 5000
+            "maxBitrateKbps": 27000
           }
         }
       ]
