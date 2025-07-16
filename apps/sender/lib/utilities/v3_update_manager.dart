@@ -205,9 +205,10 @@ class V3UpdateManager {
         builder: (context) => PopScope(
             canPop: false,
             child: AlertDialog(
-              title: V3AutoHyphenatingText(_dialogTittle(context, status)),
-              content:
-                  V3AutoHyphenatingText(_dialogDescription(context, status)),
+              // Can not use V3AutoHyphenatingText
+              title: Text(_dialogTittle(context, status)),
+              // Can not use V3AutoHyphenatingText
+              content: Text(_dialogDescription(context, status)),
               actions: [
                 if (status == CompareVersionResult.userChoose)
                   V3Focus(
@@ -219,7 +220,8 @@ class V3UpdateManager {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: V3AutoHyphenatingText(
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(
                           S.of(context).v3_setting_software_update_deny_action),
                     ),
                   ),
@@ -237,7 +239,8 @@ class V3UpdateManager {
                         unawaited(launchUrl(Uri.parse(
                             'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast')));
                       },
-                      child: V3AutoHyphenatingText(S
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(S
                           .of(context)
                           .v3_setting_software_update_positive_action),
                     ),
@@ -253,7 +256,8 @@ class V3UpdateManager {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: V3AutoHyphenatingText(S
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(S
                           .of(context)
                           .v3_setting_software_update_no_available_action),
                     ),
