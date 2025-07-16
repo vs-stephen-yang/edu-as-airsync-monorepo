@@ -50,7 +50,7 @@
         android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher"
         android:label="AirSync"
-        android:resizeableActivity="false">
+        android:resizeableActivity="true">
         <service
             android:name=".AirSyncSettingService"
             android:enabled="true"
