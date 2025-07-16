@@ -9,7 +9,6 @@ import 'package:display_flutter/screens/v3_overlay_tab.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/theme_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
-import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,7 +28,8 @@ commonOverlayTabEntry(ConfigSettings settings) {
     await AppPreferences.ensureInitialized();
 
     FlutterError.onError = (FlutterErrorDetails details) async {
-      log.severe('overlay tab details: $details');
+      await Sentry.captureException(details.exception,
+          stackTrace: details.stack);
     };
 
     runApp(Tokens(tokens: DefaultTokens(), child: const OverlayTabApp()));
