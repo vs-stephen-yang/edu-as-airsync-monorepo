@@ -333,10 +333,6 @@ public class RtspClient
 
   // SET_PARAMETER - wfd_uibc_setting
   private void handleUibcSetting(RtspRequestMessage rParams) {
-    if (!isWindowsSource_) {
-      return;
-    }
-
     if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_SETTING))) {
       // uibSetting e.g. "enable\r\n"
       String uibcSetting = rParams.bodyMap.get(KEY_WFD_UIBC_SETTING);
@@ -575,12 +571,8 @@ public class RtspClient
   }
 
   private String getUibcCaps() {
-    // Currently, UIBC is only supported for Windows source.
-    if (isWindowsSource_) {
-      return "input_category_list=HIDC;hidc_cap_list=Keyboard/USB, Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB;port=none";
-    } else {
-      return "none";
-    }
+    return "input_category_list=HIDC;hidc_cap_list=Keyboard/USB, Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB;port=none";
+
   }
 
   private void startRTPReceiver() {
