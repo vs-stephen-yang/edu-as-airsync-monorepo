@@ -130,13 +130,16 @@ class V3EulaState extends State<V3Eula> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  SizedBox(
-                                    width: 108,
-                                    height: 48,
+                                  Container(
+                                    constraints: BoxConstraints(
+                                      minWidth: 108,
+                                      minHeight: 48,
+                                    ),
                                     child: TextButton(
                                       style: TextButton.styleFrom(
                                         side: BorderSide(
-                                            color: context.tokens.color.vsdswColorPrimary,
+                                            color: context
+                                                .tokens.color.vsdswColorPrimary,
                                             width: 1),
                                         shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
@@ -176,15 +179,20 @@ class V3EulaState extends State<V3Eula> {
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  SizedBox(
-                                    width: 108,
-                                    height: 48,
+                                  Container(
+                                    constraints: BoxConstraints(
+                                      minWidth: 108,
+                                      minHeight: 48,
+                                    ),
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         elevation: 5.0,
-                                        shadowColor: context.tokens.color.vsdswColorPrimary,
-                                        foregroundColor: context.tokens.color.vsdswColorOnPrimary,
-                                        backgroundColor: context.tokens.color.vsdswColorPrimary,
+                                        shadowColor: context
+                                            .tokens.color.vsdswColorPrimary,
+                                        foregroundColor: context
+                                            .tokens.color.vsdswColorOnPrimary,
+                                        backgroundColor: context
+                                            .tokens.color.vsdswColorPrimary,
                                         textStyle: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
@@ -197,28 +205,27 @@ class V3EulaState extends State<V3Eula> {
                                             target: 'accept');
 
                                         AppPreferences().setShowEULA(false);
-                                    navService.pushNamedAndRemoveUntil(
-                                        '/v3home');
-                                  },
-                                  child: V3AutoHyphenatingText(S
-                                      .of(context)
-                                      .v3_eula_agree),
-                                ),
+                                        navService
+                                            .pushNamedAndRemoveUntil('/v3home');
+                                      },
+                                      child: V3AutoHyphenatingText(
+                                          S.of(context).v3_eula_agree),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      }),
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          }),
     );
   }
 
