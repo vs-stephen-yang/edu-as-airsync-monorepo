@@ -1,3 +1,4 @@
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,7 +29,7 @@ class _V3FocusSingleChildScrollViewStage
   @override
   Widget build(BuildContext context) {
     return Focus(
-      child: RawScrollbar(
+      child: V3Scrollbar(
         controller: _scrollController,
         thumbVisibility: true,
         thumbColor: widget.thumbColor,
