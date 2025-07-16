@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -49,13 +48,38 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
             _showCastDeviceMenuDialog(context);
           }
         });
+
         final isFullFeature = featureCount == 2;
+
+        final connectionCount = HybridConnectionList().getConnectionCount();
+        final remoteScreenConnectors =
+            channelProvider.remoteScreenConnectors.length;
+        final remoteScreenConnectorsNotEmpty = remoteScreenConnectors != 0;
+        final remoteScreenConnectionFull =
+            channelProvider.remoteScreenConnectionFull;
+
+        final bigTextScalar =
+            MediaQuery.of(context).textScaler.scale(1.0) > 1.0;
+        final textSizePadding = bigTextScalar ? 8.0 : 0.0;
+
+        final featureWidth = 40.0;
+
+        final anyOverThreeDigits =
+            remoteScreenConnectors >= 100 || connectionCount >= 100;
+
+        var countPadding = textSizePadding;
+        var containerWidth = 51.0 + textSizePadding;
+        if (anyOverThreeDigits) {
+          countPadding = textSizePadding + 10;
+          containerWidth = 53.0 + countPadding + 3;
+        }
+
         return showModerator || showCastDevice
             ? Positioned(
                 left: 0,
                 bottom: 80,
                 child: SizedBox(
-                  width: 41,
+                  width: containerWidth,
                   height: isFullFeature ? 123 : 68,
                   child: Stack(
                     children: [
@@ -64,7 +88,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                         left: 0,
                         bottom: 0,
                         child: Container(
-                          width: 32,
+                          width: featureWidth,
                           height: isFullFeature ? 123 : 68,
                           decoration: BoxDecoration(
                             color:
@@ -83,7 +107,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           left: 0,
                           bottom: 0,
                           child: Container(
-                            width: 32,
+                            width: featureWidth,
                             height: isFullFeature ? 123 : 68,
                             decoration: BoxDecoration(
                               color: context.tokens.color.vsdslColorSurface300,
@@ -101,7 +125,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           left: 0,
                           bottom: _isModeratorOnScreen ? 61.5 : 0,
                           child: Container(
-                            width: 32,
+                            width: featureWidth,
                             height: 61.5,
                             decoration: BoxDecoration(
                               color: context.tokens.color.vsdslColorSurface300,
@@ -135,7 +159,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                                 Positioned(
                                   top: 20,
                                   left: 3,
-                                  right: 10,
+                                  right: 15.0 + countPadding,
                                   child: SizedBox(
                                     width: 27,
                                     height: 27,
@@ -159,32 +183,9 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                                 Positioned(
                                   right: 0,
                                   top: 0,
-                                  child:
-                                      // needs to be circle
-                                      Container(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 16,
-                                      minHeight: 16,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFF5D80ED),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    padding: const EdgeInsets.all(2),
-                                    child: Center(
-                                      child: AutoSizeText(
-                                        HybridConnectionList()
-                                            .getConnectionCount()
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                          color: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
-                                        ),
-                                      ),
-                                    ),
+                                  child: CircleCountBadge(
+                                    count: connectionCount,
+                                    countPadding: countPadding,
                                   ),
                                 ),
                               ],
@@ -196,7 +197,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           top: 61,
                           left: 5,
                           child: Container(
-                            width: 21,
+                            width: 31,
                             height: 1,
                             color: context.tokens.color.vsdslColorOutline,
                           ),
@@ -218,44 +219,23 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                             ),
                             child: Stack(
                               children: [
-                                if (channelProvider
-                                    .remoteScreenConnectors.isNotEmpty)
+                                if (remoteScreenConnectorsNotEmpty)
                                   Positioned(
                                     right: 0,
                                     top: 0,
-                                    child: Container(
-                                      constraints: const BoxConstraints(
-                                        minWidth: 16,
-                                        minHeight: 16,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: (channelProvider
-                                                .remoteScreenConnectionFull)
-                                            ? context
-                                                .tokens.color.vsdslColorError
-                                            : const Color(0xFF5D80ED),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      padding: const EdgeInsets.all(2),
-                                      child: Center(
-                                        child: AutoSizeText(
-                                          channelProvider
-                                              .remoteScreenConnectors.length
-                                              .toString(),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: context.tokens.color
-                                                .vsdslColorOnSurfaceInverse,
-                                          ),
-                                        ),
-                                      ),
+                                    child: CircleCountBadge(
+                                      countPadding: countPadding,
+                                      count: remoteScreenConnectors,
+                                      backgroundColor:
+                                          (remoteScreenConnectionFull)
+                                              ? context
+                                                  .tokens.color.vsdslColorError
+                                              : const Color(0xFF5D80ED),
                                     ),
                                   ),
                                 Positioned(
                                   left: 3,
-                                  right: 10,
+                                  right: 15.0 + countPadding,
                                   bottom: 20,
                                   child: SizedBox(
                                     width: 27,
@@ -322,5 +302,43 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
         _isCastDeviceOnScreen = false;
       });
     });
+  }
+}
+
+class CircleCountBadge extends StatelessWidget {
+  final int count;
+  final double countPadding;
+  final Color backgroundColor;
+  final Color textColor;
+
+  const CircleCountBadge({
+    super.key,
+    required this.count,
+    this.countPadding = 0.0,
+    this.backgroundColor = const Color(0xFF5D80ED),
+    this.textColor = Colors.white,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 18.0 + countPadding,
+      height: 18.0 + countPadding,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        shape: BoxShape.circle,
+      ),
+      padding: EdgeInsets.zero,
+      alignment: Alignment.center,
+      child: Text(
+        count.toString(),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: textColor,
+        ),
+      ),
+    );
   }
 }
