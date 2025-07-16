@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.mvbcast.crosswalk.EulaActivity;
 
@@ -47,12 +48,12 @@ public class SystemImageOTAHelper {
             if (mBroadCastReceiver == null) {
                 mBroadCastReceiver = new BroadCastReceiver();
             }
-            activity.registerReceiver(mBroadCastReceiver, new IntentFilter("com.mvbcast.download.progress"));
+            activity.getApplicationContext().registerReceiver(mBroadCastReceiver, new IntentFilter("com.mvbcast.download.progress"));
 
             if (mDownloadBinder == null) {
                 Intent intent = new Intent(activity, UpgradeVersionService.class);
-                activity.startService(intent);
-                activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+                activity.getApplicationContext().startService(intent);
+                activity.getApplicationContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
                 bindOTAConnection = true;
             }
         }
@@ -61,11 +62,21 @@ public class SystemImageOTAHelper {
     public void unregisterBroadcastReceiver(Activity activity) {
         if (Build.MODEL.equals("VBS100")) {
             if (mBroadCastReceiver != null) {
-                activity.unregisterReceiver(mBroadCastReceiver);
+                try {
+                    activity.getApplicationContext().unregisterReceiver(mBroadCastReceiver);
+                } catch (Exception e) {
+                    Log.w("SystemImageOTAHelper", "Receiver has already been unregistered.");
+                }
+                mBroadCastReceiver = null;
             }
 
             if (bindOTAConnection) {
-                activity.unbindService(mConnection);
+                bindOTAConnection = false;
+                try {
+                    activity.getApplicationContext().unbindService(mConnection);
+                } catch (Exception e) {
+                    Log.w("SystemImageOTAHelper", "ServiceConnection has already been unbind.");
+                }
             }
         }
     }
