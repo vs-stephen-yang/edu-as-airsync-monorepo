@@ -31,4 +31,4 @@ registries:
   my-pub:
     type: "pub-registry"
     url: "https://pub.my_corp_local"
-    token: "PAT:${{ ADO_PAT_DEPENDABOT }}"
+    token: "${{ secrets.ADO_PAT_DEPENDABOT }}"
