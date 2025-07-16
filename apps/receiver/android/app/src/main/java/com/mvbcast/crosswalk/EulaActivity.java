@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -16,6 +18,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.Size;
+import android.view.Display;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -32,6 +36,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -44,6 +50,7 @@ public class EulaActivity extends FlutterActivity {
     private MethodChannel mVbsOTA;
     private static MethodChannel mAlarmOTA;
     private VSApiHandler vsApiHandler;
+    private MethodChannel multiWindowChannel;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -232,6 +239,35 @@ public class EulaActivity extends FlutterActivity {
                         }
                     }
                 });
+
+        multiWindowChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/multi_window_mode");
+        multiWindowChannel.setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("getRealScreenResolution")) {
+                        Size resolution = getRealScreenResolution(this);
+                        Map<String, Integer> map = new HashMap<>();
+                        map.put("width", resolution.getWidth());
+                        map.put("height", resolution.getHeight());
+                        result.success(map);
+                    } else {
+                        result.notImplemented();
+                    }
+                });
+    }
+
+    private Size getRealScreenResolution(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowManager windowManager = context.getSystemService(WindowManager.class);
+            Rect bounds = windowManager.getMaximumWindowMetrics().getBounds();
+            return new Size(bounds.width(), bounds.height());
+        } else {
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = windowManager.getDefaultDisplay();
+            Point point = new Point();
+            // getRealSize() → 取得螢幕物理解析度（包含 navigation bar、status bar 空間）
+            // getSize() → 只會算可用空間（不含 navigation bar）
+            display.getRealSize(point);
+            return new Size(point.x, point.y);
+        }
     }
 
     @Override
@@ -245,6 +281,15 @@ public class EulaActivity extends FlutterActivity {
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         WifiHelper.getInstance().registerUsbReceiver(EulaActivity.this);
+    }
+
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode);
+        // https://developer.android.com/develop/ui/views/layout/support-multi-window-mode?hl=zh-tw
+        if (multiWindowChannel != null) {
+            multiWindowChannel.invokeMethod("onMultiWindowChanged", isInMultiWindowMode);
+        }
     }
 
     @Override

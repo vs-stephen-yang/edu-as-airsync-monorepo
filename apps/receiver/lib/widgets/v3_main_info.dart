@@ -5,6 +5,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
@@ -23,6 +24,11 @@ class V3MainInfo extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final bool isLandscape = constraints.maxWidth > constraints.maxHeight;
 
+      final isInMultiWindow =
+          context.read<MultiWindowProvider>().isInMultiWindow;
+      print('**** isInMultiWindow $isInMultiWindow');
+      print(
+          '**** SplitScreenRatio (${context.read<MultiWindowProvider>().getSplitScreenRatio(Size(constraints.maxWidth, constraints.maxHeight)).name})');
       return Container(
         alignment: Alignment.center,
         margin: isLandscape
