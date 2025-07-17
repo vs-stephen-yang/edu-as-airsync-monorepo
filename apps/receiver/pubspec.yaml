@@ -119,7 +119,7 @@ dependencies:
   android_window:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window
-      ref: v0.4.0-10
+      ref: v0.4.0-11
   flutter_launcher_icons: ^0.14.1
   # ViewSonic plug-in
 
