@@ -13,6 +13,13 @@ file(GLOB CRYPTOPP_SRC "${CRYPTOPP_SRC_DIR}/*.cpp")
 add_library(cryptopp STATIC ${CRYPTOPP_SRC})
 target_include_directories(cryptopp PUBLIC ${CRYPTOPP_SRC_DIR})
 
+target_compile_definitions(cryptopp PRIVATE
+    CRYPTOPP_DISABLE_ASM
+    CRYPTOPP_DISABLE_AVX
+    CRYPTOPP_DISABLE_AVX2
+    CRYPTOPP_DISABLE_SSE4
+)
+
 # ======= uvgRTP ===============
 set(UVGRTP_DIR "${CMAKE_SOURCE_DIR}/../native_libs/uvgrtp")
 
