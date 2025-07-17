@@ -334,6 +334,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "atsisakė jūsų transliacijos užklausos, patikrinkite transliacijos nustatymus.",
     ),
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Perduoti į įrenginį",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
+          "IFP perduoda savo ekraną į įrenginius.",
+        ),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Uždaryti"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Visas ekranas",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Nutildyti vartotoją",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Pašalinti vartotoją",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Kvietimas bendrinti",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Įrenginiai, bendrinantys ekraną su IFP.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Bendrinimo sustabdymas",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Pagalbos Centras",
+    ),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Leidimas vartotojui valdyti nuotolinio valdymo pultą.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Ne Touchback",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Ne Touchback"),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Apsilankykite airsync.net arba atidarykite siuntėjo programėlę",
     ),
@@ -383,6 +423,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Uždaryti moderatorių sąrašą",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Uždaryti pagalbos centrą",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
         MessageLookupByLibrary.simpleMessage(
@@ -449,6 +492,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Atidaryti moderatorių sąrašą",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Atidaryti pagalbos centro meniu",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Atidaryti nustatymų meniu",

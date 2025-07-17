@@ -322,6 +322,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "avslo forespørselen om sending, vennligst sjekk kringkastingsinnstillingene.",
     ),
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Kast til enhet",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
+          "IFP kaster skjermen sin til enheter.",
+        ),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Lukk"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Fullskjerm",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Demp bruker",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Fjern  ",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Inviter til deling",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Enheter deler skjermen sin til IFP.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Stopp deling",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Hjelpesenter",
+    ),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Berøringstilbakemelding",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Tillater brukeren å fjernstyre.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Fjern berøringstilbakemelding",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Koble fra berøringsstyring."),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Besøk airsync.net eller åpne senderappen",
     ),
@@ -369,6 +409,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Lukk cast-enhetsliste"),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Lukk moderatorliste",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Lukk hjelpesenter",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
         MessageLookupByLibrary.simpleMessage("Lukk strømmehutigmeny"),
@@ -427,6 +470,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Åpne moderatorliste",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Åpne hjelpesenter-meny",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Åpne innstillingsmeny",

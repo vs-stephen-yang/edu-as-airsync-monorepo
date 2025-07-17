@@ -347,5 +347,21 @@
   "v3_lbl_settings_broadcast_to_display_group_checkbox": "Izvēlēties %s",
   "v3_lbl_settings_broadcast_to_display_group_save": "Saglabāt",
   "v3_lbl_settings_broadcast_to_display_group_cast": "Apraidīt",
-  "v3_lbl_settings_broadcast_to_display_group_confirm": "Apstipriniet, ka neviena ierīce nav izvēlēta."
+  "v3_lbl_settings_broadcast_to_display_group_confirm": "Apstipriniet, ka neviena ierīce nav izvēlēta.",
+  "v3_help_center_share_title": "Uzaicināt dalīties",
+  "v3_help_center_share_title_sub": "Ierīces, kas koplieto savu ekrānu ar IFP.",
+  "v3_help_center_cast_device_title": "Pārraidīt uz ierīci",
+  "v3_help_center_cast_device_title_sub": "IFP casting its screen to devices.",
+  "v3_help_center_touchback_title": "Touchback",
+  "v3_help_center_touchback_title_sub": "Atļaut lietotāja tālvadību.",
+  "v3_help_center_untouchback_title": "Nē Touchback",
+  "v3_help_center_untouchback_title_sub": "Nē Touchback",
+  "v3_help_center_fullscreen_title": "Pilnekrāna režīms",
+  "v3_help_center_mute_user_title": "Izslēgt lietotāju",
+  "v3_help_center_remove_user_title": "Lietotāja noņemšana",
+  "v3_help_center_stop_share_title": "Koplietošanas pārtraukšana",
+  "v3_help_center_close": "Aizvērt",
+  "v3_help_center_title": "Palīdzības Centrs",
+  "v3_lbl_open_help_center": "Palīdzības centra izvēlnes atvēršana",
+  "v3_lbl_close_help_center": "Aizvērt palīdzības centru"
 }

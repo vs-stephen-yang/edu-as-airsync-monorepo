@@ -334,6 +334,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "noraidīja jūsu pārraides pieprasījumu, lūdzu, pārbaudiet pārraides iestatījumus.",
     ),
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Pārraidīt uz ierīci",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
+          "IFP casting its screen to devices.",
+        ),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Aizvērt"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Pilnekrāna režīms",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Izslēgt lietotāju",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Lietotāja noņemšana",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Uzaicināt dalīties",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Ierīces, kas koplieto savu ekrānu ar IFP.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Koplietošanas pārtraukšana",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Palīdzības Centrs",
+    ),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Atļaut lietotāja tālvadību.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Nē Touchback",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Nē Touchback"),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Apmeklējiet airsync.net vai atveriet sūtītāja lietotni",
     ),
@@ -383,6 +423,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Aizvērt moderatoru sarakstu",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Aizvērt palīdzības centru",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
         MessageLookupByLibrary.simpleMessage(
@@ -447,6 +490,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Atvērt moderatoru sarakstu",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Palīdzības centra izvēlnes atvēršana",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Atvērt iestatījumu izvēlni",

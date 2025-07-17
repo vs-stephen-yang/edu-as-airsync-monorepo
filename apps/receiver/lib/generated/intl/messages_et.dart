@@ -324,6 +324,44 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "keeldus teie edastustaotlusest, palun kontrollige edastusseadeid.",
     ),
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Ülekandmine seadmesse",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
+          "IFP edastab oma ekraani seadmetesse.",
+        ),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Sulgema"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Täisekraan",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Vaigista kasutaja",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Eemalda kasutaja",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Kutsu jagama",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Seadmed, mis jagavad oma ekraani IFP-ga.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Ühiskasutuse lõpetamine",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage("Abi Keskus"),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Kasutaja kaugjuhtimise lubamine.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Ei Touchback",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Ei Touchback"),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Külastage airsync.net või avage saatjarakendus",
     ),
@@ -369,6 +407,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Sulge seadmete nimekiri"),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Sulge moderaatorite nimekiri",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Sulge abikeskus",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
         MessageLookupByLibrary.simpleMessage("Sulge voogedastuse otseteemenüü"),
@@ -431,6 +472,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Ava moderaatorite nimekiri",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Ava abikeskuse menüü",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Ava seadete menüü",
