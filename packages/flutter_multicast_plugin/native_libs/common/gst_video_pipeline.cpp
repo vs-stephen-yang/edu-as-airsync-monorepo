@@ -533,16 +533,13 @@ void GstVideoPipeline::pause() {
         }
     }
 
+    release_window_handle_();
+
     ALOGD("Pipeline paused safely");
 }
 
 void GstVideoPipeline::reinitialize(void* new_window_handle) {
     std::lock_guard<std::mutex> lock(pipeline_mutex_);
-
-    if (is_reinitializing_) {
-        ALOGW("Already reinitializing, skipping");
-        return;
-    }
 
     is_reinitializing_ = true;
     ALOGD("Reinitializing pipeline with new window");
