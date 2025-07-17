@@ -250,5 +250,10 @@
   "v3_present_touch_back_dialog_title": "允許反控您的設備",
   "v3_present_touch_back_dialog_description": "當您分享螢幕時，AirSync 將擷取您的螢幕內容並將其傳輸到選定的顯示器（例如 IFP）。若要啟用反控設備端功能，AirSync 需要被賦予輔助功能服務權限，才能允許從顯示器進行遠端控制。AirSync 不會收集您的個人數據或監控您的操作行為。此權限僅用於啟用反控功能。",
   "v3_present_touch_back_dialog_not_now": "現在不要",
-  "v3_present_touch_back_dialog_allow": "允許"
+  "v3_present_touch_back_dialog_allow": "允許",
+  "v3_exit_title": "確定離開？",
+  "v3_exit_action_cancel": "取消",
+  "v3_exit_action_exit": "離開",
+  "v3_lbl_exit_action_cancel": "取消",
+  "v3_lbl_exit_action_exit": "離開"
 }

@@ -257,5 +257,6 @@
   "v3_exit_action_cancel": "キャンセル",
   "v3_exit_action_exit": "終了",
   "v3_lbl_exit_action_cancel": "キャンセル",
-  "v3_lbl_exit_action_exit": "終了"
+  "v3_lbl_exit_action_exit": "終了",
+  "v3_main_present_or": "または"
 }
