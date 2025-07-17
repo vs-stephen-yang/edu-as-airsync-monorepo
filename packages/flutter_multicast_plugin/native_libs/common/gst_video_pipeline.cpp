@@ -13,6 +13,8 @@
 #include <vector> // 用於 std::vector
 #ifdef PLATFORM_IOS
 #include "gst_ios_init.h"
+#elif defined(__ANDROID__)
+#include <android/native_window.h>
 #endif
 
 // 宣告 C 介面函數
@@ -20,10 +22,12 @@ extern "C" {
 void update_flutter_texture_from_cpp(const uint8_t* data, size_t width, size_t height, size_t stride);
 }
 
+#ifdef __ANDROID__
 struct PadAddedData {
-    void* window_handle;
+    ANativeWindow* window_handle;
     // 可以加入其他需要的參數
 };
+#endif
 
 GstVideoPipeline::GstVideoPipeline() {}
 
@@ -332,7 +336,7 @@ bool GstVideoPipeline::init(void* window_handle) {
         "video/x-raw,format=BGRA ! "
         "queue name=sink_queue max-size-buffers=2 max-size-time=67000000 leaky=2 ! "
         "appsink name=videosink emit-signals=true sync=false async=false max-buffers=1 drop=true";
-#else
+#elif defined(__ANDROID__)
     const char* desc =
         "appsrc name=mysrc is-live=true format=time caps=video/x-h264,stream-format=byte-stream,alignment=au ! "
         "h264parse name=h264parse ! "
@@ -369,11 +373,14 @@ bool GstVideoPipeline::init(void* window_handle) {
         ALOGE("Failed to find appsink element");
         return false;
     }
-#else
+#elif defined(__ANDROID__)
     // Android: 準備 user_data
+    ANativeWindow* window = reinterpret_cast<ANativeWindow*>(window_handle);
+    ANativeWindow_acquire(window);
+
     PadAddedData* pad_data = new PadAddedData();
-    pad_data->window_handle = window_handle;
-    window_handle_ = window_handle;
+    pad_data->window_handle = window;
+    window_handle_ = window;
 
     GstElement* decodebin = gst_bin_get_by_name(GST_BIN(pipeline_), "decodebin");
     if (decodebin) {
@@ -501,6 +508,8 @@ void GstVideoPipeline::stop() {
         pipeline_ = nullptr;
     }
     appsrc_ = nullptr;
+
+    release_window_handle_();
 }
 
 void GstVideoPipeline::on_pipeline_error() {
@@ -508,7 +517,9 @@ void GstVideoPipeline::on_pipeline_error() {
     ALOGE("Pipeline error received — restarting...");
 
     stop();
+#ifdef __ANDROID__
     init(window_handle_);
+#endif
 }
 
 void GstVideoPipeline::pause() {
@@ -559,4 +570,14 @@ void GstVideoPipeline::reinitialize(void* new_window_handle) {
     is_reinitializing_ = false;
 
     ALOGD("Reinitialization %s", success ? "succeeded" : "failed");
+}
+
+void GstVideoPipeline::release_window_handle_() {
+#ifdef __ANDROID__
+    if (window_handle_) {
+        ANativeWindow_release(window_handle_);
+        window_handle_ = nullptr;
+        ALOGD("Released ANativeWindow handle");
+    }
+#endif
 }
