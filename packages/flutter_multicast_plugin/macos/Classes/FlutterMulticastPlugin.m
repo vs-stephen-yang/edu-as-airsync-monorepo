@@ -1,4 +1,5 @@
 #import "FlutterMulticastPlugin.h"
+#import "gst_macos_init.h"
 #import "MulticastBridge.h"
 #import "VideoTexture.h"
 
@@ -6,12 +7,17 @@
 #import <ifaddrs.h>
 #import <net/if.h>
 
+void set_plugin_instance(FlutterMulticastPlugin *instance);
+
 @implementation FlutterMulticastPlugin {
     VideoTexture *_videoTexture;
     NSObject<FlutterTextureRegistry> *_textureRegistry;
     int64_t _textureId;
 }
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
+    NSLog(@"🔧 Flutter plugin registering...");
+    gst_macos_init();
+    NSLog(@"🔧 gst_macos_init() completed");
     FlutterMethodChannel *channel =
         [FlutterMethodChannel methodChannelWithName:@"flutter_multicast_plugin"
                                     binaryMessenger:[registrar messenger]];
@@ -184,3 +190,11 @@
 }
 
 @end
+
+static FlutterMulticastPlugin *g_plugin_instance = nil;
+
+void set_plugin_instance(FlutterMulticastPlugin *instance) { g_plugin_instance = instance; }
+
+void notify_flutter_video_resolution(int width, int height) {
+    
+}

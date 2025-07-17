@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_multicast_plugin'
   s.version          = '0.0.1'
-  s.summary          = 'A Flutter plugin for uvgRTP + GStreamer on iOS'
+  s.summary          = 'A Flutter plugin for uvgRTP + GStreamer on macOS'
   s.description      = <<-DESC
-                        A Flutter plugin for uvgRTP + GStreamer on iOS
+                        A Flutter plugin for uvgRTP + GStreamer on macOS
                         DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
@@ -26,46 +26,41 @@ Pod::Spec.new do |s|
   s.platform = :osx, '10.14'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.static_framework = true
-
-  gstreamer_root = ENV['GSTREAMER_SDK_MACOS']
   
-  if gstreamer_root.nil? || gstreamer_root.empty?
-    puts "❌ Error: GSTREAMER_SDK_MACOS environment variable not set!"
-    puts "Please run: export GSTREAMER_SDK_MACOS=/path/to/GStreamer.framework"
-    raise "GSTREAMER_SDK_MACOS environment variable is required"
-  end
-  
-  unless Dir.exist?(gstreamer_root)
-    puts "❌ Error: GStreamer directory does not exist: #{gstreamer_root}"
-    puts "Please check your GSTREAMER_SDK_MACOS path"
-    raise "Invalid GSTREAMER_SDK_MACOS path: #{gstreamer_root}"
-  end
-
-  gstreamer_search_path = File.dirname(gstreamer_root)
-  gstreamer_headers = "#{gstreamer_root}/Headers"
-
   s.source_files = 'Classes/**/*.{h,m,mm}', 'native_src/gstreamer/*.{h,m,mm}'
   s.public_header_files = 'Classes/**/*.h'
+  
+  s.frameworks = 'Foundation', 'AVFoundation', 'AudioToolbox', 'CoreMedia', 'CoreVideo', 'VideoToolbox'
 
-  s.vendored_libraries = 'libs/*.a'
+  # 只連結系統庫
+  s.libraries = 'iconv', 'c++', 'z', 'bz2', 'resolv'
+  
+  # 使用相對路徑的 vendored_libraries
+  s.vendored_libraries = [
+    'libs/*.a',
+    'gstreamer-dylibs/*.dylib'
+  ]
 
-  framework_flags = "-F\"#{gstreamer_search_path}\" -framework GStreamer"
-  s.frameworks = 'Foundation', 'AVFoundation', 'AudioToolbox', 'CoreMedia', 'CoreVideo', 'VideoToolbox', 'GStreamer'
-  s.libraries = 'iconv', 'c++'
+  s.resources = ['gstreamer-frameworks']
 
   log_level = ENV['LOG_LEVEL'] || 'LOG_LEVEL_WARN'
   s.pod_target_xcconfig = {
-    'CLANG_CXX_LIBRARY' => 'libc++',
-    'HEADER_SEARCH_PATHS' => "$(inherited) $(PODS_TARGET_SRCROOT)/../native_libs/common $(PODS_TARGET_SRCROOT)/../native_libs/uvgrtp/include #{gstreamer_headers}",
-    'FRAMEWORK_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\"",
-    'OTHER_LDFLAGS' => '$(inherited) #{framework_flags} -framework VideoToolbox -framework AudioToolbox -framework CoreVideo -framework CoreMedia',
-    'LD_RUNPATH_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\" @executable_path/../Frameworks",
-    'OTHER_CFLAGS' => "-DLOG_LEVEL=#{log_level}"
+    'HEADER_SEARCH_PATHS' => "$(inherited) $(PODS_TARGET_SRCROOT)/../native_libs/common $(PODS_TARGET_SRCROOT)/../native_libs/uvgrtp/include $(PODS_TARGET_SRCROOT)/gstreamer-headers",
+    'OTHER_LDFLAGS' => '$(inherited) -framework VideoToolbox -framework AudioToolbox -framework CoreVideo -framework CoreMedia -Wl,-rpath,@loader_path/../Resources -L$(PODS_TARGET_SRCROOT)/macos/gstreamer-dylibs/',
+    'LD_RUNPATH_SEARCH_PATHS' => [
+      '$(inherited)',
+      '@executable_path/../Resources/gstreamer-frameworks/lib',
+      '@executable_path/../Resources/gstreamer-frameworks/gstreamer-1.0'
+    ].join(' '),
+    'OTHER_CFLAGS' => "-DLOG_LEVEL=LOG_LEVEL_WARN",
+    'DEFINES_MODULE' => 'YES'
   }
 
   s.user_target_xcconfig = {
-    'FRAMEWORK_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\"",
-    'OTHER_LDFLAGS' => "$(inherited) #{framework_flags}",
-    'LD_RUNPATH_SEARCH_PATHS' => "$(inherited) \"#{gstreamer_search_path}\" @executable_path/../Frameworks"
+    'LD_RUNPATH_SEARCH_PATHS' => [
+      '$(inherited)',
+      '@executable_path/../Resources/gstreamer-frameworks/lib',
+      '@executable_path/../Resources/gstreamer-frameworks/gstreamer-1.0'
+    ].join(' ')
   }
 end
