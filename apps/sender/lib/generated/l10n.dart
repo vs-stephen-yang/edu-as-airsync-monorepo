@@ -19,20 +19,17 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(
-      _current != null,
-      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
-    );
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -45,10 +42,8 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -78,7 +73,12 @@ class S {
 
   /// `Password`
   String get main_password {
-    return Intl.message('Password', name: 'main_password', desc: '', args: []);
+    return Intl.message(
+      'Password',
+      name: 'main_password',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Please enter one-time password`
@@ -93,7 +93,12 @@ class S {
 
   /// `Next`
   String get main_present {
-    return Intl.message('Next', name: 'main_present', desc: '', args: []);
+    return Intl.message(
+      'Next',
+      name: 'main_present',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Touchback`
@@ -108,12 +113,22 @@ class S {
 
   /// `Language`
   String get main_language {
-    return Intl.message('Language', name: 'main_language', desc: '', args: []);
+    return Intl.message(
+      'Language',
+      name: 'main_language',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Settings`
   String get main_setting {
-    return Intl.message('Settings', name: 'main_setting', desc: '', args: []);
+    return Intl.message(
+      'Settings',
+      name: 'main_setting',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Knowledge Base`
@@ -268,7 +283,12 @@ class S {
 
   /// `Name`
   String get moderator_name {
-    return Intl.message('Name', name: 'moderator_name', desc: '', args: []);
+    return Intl.message(
+      'Name',
+      name: 'moderator_name',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Please wait while the moderator selects presenters...`
@@ -283,7 +303,12 @@ class S {
 
   /// `EXIT`
   String get moderator_exit {
-    return Intl.message('EXIT', name: 'moderator_exit', desc: '', args: []);
+    return Intl.message(
+      'EXIT',
+      name: 'moderator_exit',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Field required`
@@ -498,7 +523,12 @@ class S {
 
   /// `Back`
   String get moderator_back {
-    return Intl.message('Back', name: 'moderator_back', desc: '', args: []);
+    return Intl.message(
+      'Back',
+      name: 'moderator_back',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Accepts only letters and numbers.`
@@ -793,7 +823,12 @@ class S {
 
   /// `Agree`
   String get v3_eula_agree {
-    return Intl.message('Agree', name: 'v3_eula_agree', desc: '', args: []);
+    return Intl.message(
+      'Agree',
+      name: 'v3_eula_agree',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Disagree`
@@ -2088,7 +2123,12 @@ class S {
 
   /// `Settings`
   String get v3_lbl_setting {
-    return Intl.message('Settings', name: 'v3_lbl_setting', desc: '', args: []);
+    return Intl.message(
+      'Settings',
+      name: 'v3_lbl_setting',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Back to previous menu`
@@ -2603,7 +2643,12 @@ class S {
 
   /// `or`
   String get v3_main_present_or {
-    return Intl.message('or', name: 'v3_main_present_or', desc: '', args: []);
+    return Intl.message(
+      'or',
+      name: 'v3_main_present_or',
+      desc: '',
+      args: [],
+    );
   }
 }
 
