@@ -39,8 +39,8 @@ flutter:
         pluginClass: FlutterMulticastPlugin
       ios:
         pluginClass: FlutterMulticastPlugin
-#      macos:
-#        pluginClass: FlutterMulticastPlugin
+      macos:
+        pluginClass: FlutterMulticastPlugin
 #      windows:
 #        pluginClass: FlutterMulticastPluginCApi
 

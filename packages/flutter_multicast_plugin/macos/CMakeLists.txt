@@ -57,9 +57,6 @@ endif()
 # Headers (等同於 include/gstreamer-1.0)
 include_directories(${GST_FRAMEWORK}/Headers)
 
-# Libraries (libgstreamer-1.0.a 等都在這)
-link_directories(${GST_FRAMEWORK}/Libraries)
-
 # ======= Common (GStreamer + RTP Receiver core) =========
 set(COMMON_DIR "${CMAKE_SOURCE_DIR}/../native_libs/common")
 set(COMMON_SRC
@@ -84,59 +81,7 @@ target_include_directories(common
 
 target_link_libraries(common
     PUBLIC
-		gst_macos_init
-		"-framework GStreamer"
-		"-framework VideoToolbox"
-		"-framework CoreVideo"
-		"-framework CoreMedia"
-        gstapp-1.0
-        gstreamer-1.0
-        gstbase-1.0
-        gstvideo-1.0
-        gstpbutils-1.0
-        gstcontroller-1.0
-        gstgl-1.0
-        gobject-2.0
-        glib-2.0
-        intl
-        z
-)
-
-# ======= MulticastBridge.mm (Objective-C++) =========
-set(BRIDGE_SRC
-    ${CMAKE_SOURCE_DIR}/Classes/MulticastBridge.mm
-)
-
-add_library(MulticastBridge STATIC ${BRIDGE_SRC})
-
-# include headers for bridge
-target_include_directories(MulticastBridge
-    PRIVATE
-    ${COMMON_DIR}
-    ${CRYPTOPP_SRC_DIR}
-    ${UVGRTP_DIR}/include
-    ${GST_INCLUDE_DIRS}
-)
-
-target_link_libraries(MulticastBridge
-	gst_macos_init
-	"-framework GStreamer"
 	"-framework VideoToolbox"
 	"-framework CoreVideo"
 	"-framework CoreMedia"
-	"-framework AudioToolbox"
-    uvgrtp
-    cryptopp
-    common
-    gstapp-1.0
-    gstreamer-1.0
-    gstbase-1.0
-    gstvideo-1.0
-    gstpbutils-1.0
-    gstcontroller-1.0
-    gstgl-1.0
-    gobject-2.0
-    glib-2.0
-    intl
-    z
 )
