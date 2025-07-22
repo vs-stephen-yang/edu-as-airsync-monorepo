@@ -105,8 +105,7 @@ class ChannelProvider extends ChangeNotifier {
   bool get remoteScreenConnectionFull =>
       _remoteScreenConnectors.length >= maxRemoteScreenConnection;
 
-  RemoteScreenServer get remoteScreenServe => _remoteScreenServe;
-  final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
+  RemoteScreenServer get remoteScreenServe => _remoteScreenProvider.server;
 
   List<RemoteScreenConnector> get remoteScreenConnectors =>
       _remoteScreenConnectors;
@@ -247,7 +246,7 @@ class ChannelProvider extends ChangeNotifier {
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
     getIceServersForDirect() => Future.value(<RtcIceServer>[]);
     _remoteScreenProvider = RemoteScreenProvider(
-        _remoteScreenServe, _instanceInfo.ipAddress, removeSender);
+        RemoteScreenServer(), _instanceInfo.ipAddress, removeSender);
 
     _load().then((_) {
       if (_isSenderMode) {
@@ -356,7 +355,7 @@ class ChannelProvider extends ChangeNotifier {
 
     _channelServer.onIpAddressChange(ipAddress);
 
-    _remoteScreenServe.recreateIonSfuClient();
+    _remoteScreenProvider.recreateIonSfuClient();
   }
 
   _onTunnelStatusChange(TunnelStatus status) {
@@ -468,7 +467,7 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     log.info('Starting remote screen');
 
-    if (_remoteScreenServe.isRemoteScreenPublisherStarted()) {
+    if (_remoteScreenProvider.isRemoteScreenPublisherStarted()) {
       _isGroupMode = fromGroup ?? _isGroupMode;
       _isShareMode = fromShare ?? _isShareMode;
       _isSenderMode = fromSender ?? _isSenderMode;
@@ -482,8 +481,8 @@ class ChannelProvider extends ChangeNotifier {
     _save();
     final iceServers = await _getIceServers();
 
-    await _remoteScreenServe.startSfuServer(iceServers);
-    bool result = await _remoteScreenServe.startRemoteScreenPublisher();
+    await _remoteScreenProvider.startSfuServer(iceServers);
+    bool result = await _remoteScreenProvider.startRemoteScreenPublisher();
     if (!result) {
       removeSender(fromSender: true, fromGroup: true);
       return stopRemoteScreenPublisher();
@@ -500,7 +499,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void stopRemoteScreenPublisher() {
-    _remoteScreenServe.stopRemoteScreenPublisher();
+    _remoteScreenProvider.stopRemoteScreenPublisher();
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {

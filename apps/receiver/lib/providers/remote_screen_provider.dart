@@ -5,6 +5,7 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 enum RemoteScreenType { rtc, multicast }
 
 class RemoteScreenProvider {
+  RemoteScreenServer get server => _server;
   final RemoteScreenServer _server;
   final String _ipAddress;
   final void Function({
@@ -62,5 +63,25 @@ class RemoteScreenProvider {
 
     RtcScreenConnector c = connector as RtcScreenConnector;
     _server.removeConnector(c);
+  }
+
+  recreateIonSfuClient() {
+    _server.recreateIonSfuClient();
+  }
+
+  bool isRemoteScreenPublisherStarted() {
+    return _server.isRemoteScreenPublisherStarted();
+  }
+
+  Future startSfuServer(List<RtcIceServer>? iceServers) {
+    return _server.startSfuServer(iceServers);
+  }
+
+  Future<bool> startRemoteScreenPublisher() {
+    return _server.startRemoteScreenPublisher();
+  }
+
+  void stopRemoteScreenPublisher() {
+    return _server.stopRemoteScreenPublisher();
   }
 }
