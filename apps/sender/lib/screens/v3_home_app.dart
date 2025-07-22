@@ -22,6 +22,7 @@ import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_cast_flutter/widgets/v3_remote_screen.dart';
+import 'package:display_cast_flutter/widgets/v3_viewsonic_logo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,6 +50,7 @@ class V3HomeApp extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
+                  const V3Background(),
                   V3PresentStateMachine(
                     presentStateProvider: presentStateProvider,
                     demoProvider: demoProvider,
@@ -56,7 +58,7 @@ class V3HomeApp extends StatelessWidget {
                   if (presentStateProvider.currentState == ViewState.idle &&
                       (demoProvider.state == V3DemoViewState.idle ||
                           demoProvider.state == V3DemoViewState.off)) ...[
-                    const V3Background(),
+                    const V3ViewsonicLogo(),
                     const QRCodeConnect(),
                     const SettingMenu(),
                   ]
