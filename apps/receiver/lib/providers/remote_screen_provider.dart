@@ -1,8 +1,7 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
-
-enum RemoteScreenType { rtc, multicast }
+import 'package:display_flutter/model/remote_screen.dart';
 
 class RemoteScreenProvider {
   RemoteScreenServer get server => _server;
