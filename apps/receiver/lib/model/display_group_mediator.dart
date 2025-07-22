@@ -1,6 +1,6 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
-import 'package:display_flutter/model/remote_screen_server.dart';
+import 'package:display_flutter/providers/remote_screen_provider.dart';
 
 abstract class DisplayGroupMediator {
   Future<RemoteScreenConnector> createRemoteScreenConnector(
@@ -8,46 +8,18 @@ abstract class DisplayGroupMediator {
 }
 
 class DisplayGroupMediatorObject implements DisplayGroupMediator {
-  final RemoteScreenServer _server;
-  final String _ipAddress;
+  final RemoteScreenProvider _remoteScreenProvider;
   final Future<List<RtcIceServer>?> Function() _getIceServersForDirect;
-  final void Function({
-    bool? fromGroup,
-    bool? fromShare,
-    bool? fromSender,
-    RemoteScreenConnector? remoteScreenConnector,
-    bool kick,
-  }) _connectorDisconnectCallback;
 
-  DisplayGroupMediatorObject(this._server, this._ipAddress,
-      this._getIceServersForDirect, this._connectorDisconnectCallback);
-
-  RemoteScreenConnector _createConnector(Channel channel) {
-    return RemoteScreenConnector(
-      channel,
-      _server.roomId,
-      _ipAddress,
-      _server.roomPort,
-      JoinDisplayMessage('123'),
-    );
-  }
+  DisplayGroupMediatorObject(this._remoteScreenProvider, this._getIceServersForDirect);
 
   @override
   Future<RemoteScreenConnector> createRemoteScreenConnector(
       Channel channel, StartRemoteScreenMessage message) async {
-    final connector = _createConnector(channel);
-    connector.onDisconnect = (() async {
-      _connectorDisconnectCallback(
-        fromSender: true,
-        remoteScreenConnector: connector,
-        kick: false,
-      );
-    });
-    // Use ServerManager to handle connector creation and server update
-    _server.addConnector(connector);
+    final connector = _remoteScreenProvider.createRemoteScreenConnector(channel, JoinDisplayMessage('123'));
 
     final iceServers = await _getIceServersForDirect();
-    connector.onStartRemoteScreen(
+    await connector.onStartRemoteScreen(
       message,
       iceServers,
     );

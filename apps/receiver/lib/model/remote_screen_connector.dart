@@ -9,10 +9,7 @@ enum RemotePresentationState {
   streaming,
 }
 
-class RemoteScreenConnector {
-  String roomId;
-  String? host;
-  int port;
+abstract class RemoteScreenConnector {
   Channel channel;
   RemotePresentationState remotePresentationState =
       RemotePresentationState.stopStreaming;
@@ -26,9 +23,6 @@ class RemoteScreenConnector {
   bool isDeleted = false;
   bool isTouchEnabled = false;
 
-  Function(String message)? _signalHandler;
-  final Completer _signalHandlerCompleter = Completer();
-
   String get senderNameWithEllipsis {
     String result = senderName ?? '';
     if (result.length > 10) {
@@ -41,9 +35,6 @@ class RemoteScreenConnector {
 
   RemoteScreenConnector(
     this.channel,
-    this.roomId,
-    this.host,
-    this.port,
     JoinDisplayMessage message,
   ) {
     clientId = message.clientId;
@@ -55,6 +46,11 @@ class RemoteScreenConnector {
       await _onChannelState(state);
     });
   }
+
+  Future<void> onStartRemoteScreen(
+      StartRemoteScreenMessage message, List<RtcIceServer>? iceServers);
+
+  void processSignalFromPeer(String message);
 
   Future<void> _onChannelState(ChannelState state) async {
     switch (state) {
@@ -71,10 +67,28 @@ class RemoteScreenConnector {
   }
 
   sendRemoteScreenState(RemoteScreenStatus status) {
-    final acceptedMessage = RemoteScreenStatusMessage(_sessionId, status);
-    channel.send(acceptedMessage);
+    final remoteStatusMsg = RemoteScreenStatusMessage(_sessionId, status);
+    channel.send(remoteStatusMsg);
   }
+}
 
+class RtcScreenConnector extends RemoteScreenConnector {
+  String roomId;
+  String? host;
+  int port;
+
+  Function(String message)? _signalHandler;
+  final Completer _signalHandlerCompleter = Completer();
+
+  RtcScreenConnector(
+    Channel channel,
+    this.roomId,
+    this.host,
+    this.port,
+    JoinDisplayMessage message,
+  ) : super(channel, message);
+
+  @override
   onStartRemoteScreen(
     StartRemoteScreenMessage message,
     List<RtcIceServer>? iceServers,
@@ -104,6 +118,7 @@ class RemoteScreenConnector {
     }
   }
 
+  @override
   void processSignalFromPeer(String message) {
     _signalHandler?.call(message);
   }
@@ -122,4 +137,18 @@ class RemoteScreenConnector {
       onDisconnect?.call();
     }
   }
+}
+
+class MulticastScreenConnector extends RemoteScreenConnector {
+  MulticastScreenConnector(super.channel, super.msg);
+
+  @override
+  Future<void> onStartRemoteScreen(
+      StartRemoteScreenMessage message, List<RtcIceServer>? iceServers) {
+    // TODO: implement onStartRemoteScreen
+    throw UnimplementedError();
+  }
+
+  @override
+  void processSignalFromPeer(String message) {}
 }

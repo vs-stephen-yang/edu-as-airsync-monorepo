@@ -25,6 +25,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/providers/remote_screen_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_info.dart';
@@ -177,6 +178,8 @@ class ChannelProvider extends ChangeNotifier {
 
   late ChannelServer _channelServer;
 
+  late RemoteScreenProvider _remoteScreenProvider;
+
   final NetworkDiagnostic _networkDiagnostic = NetworkDiagnostic();
 
   set isAuthorizeMode(bool value) {
@@ -240,6 +243,11 @@ class ChannelProvider extends ChangeNotifier {
       reportTunnelConnectResult: _networkDiagnostic.reportTunnelConnectResult,
       reportWebTransportCertDate: _networkDiagnostic.reportWebTransportCertDate,
     );
+
+    // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
+    getIceServersForDirect() => Future.value(<RtcIceServer>[]);
+    _remoteScreenProvider = RemoteScreenProvider(
+        _remoteScreenServe, _instanceInfo.ipAddress, removeSender);
 
     _load().then((_) {
       if (_isSenderMode) {
@@ -599,22 +607,9 @@ class ChannelProvider extends ChangeNotifier {
               sendJoinDisplayRejectMessage(channel);
               return;
             }
-            remoteScreenConnector = RemoteScreenConnector(
-                channel,
-                _remoteScreenServe.roomId,
-                _instanceInfo.ipAddress,
-                _remoteScreenServe.roomPort,
-                msg);
-            remoteScreenConnector?.onDisconnect = (() async {
-              removeSender(
-                fromSender: true,
-                remoteScreenConnector: remoteScreenConnector,
-                kick: false,
-              );
-            });
+            remoteScreenConnector =
+                _remoteScreenProvider.createRemoteScreenConnector(channel, msg);
             _remoteScreenConnectors.add(remoteScreenConnector!);
-
-            _remoteScreenServe.addConnector(remoteScreenConnector!);
           }
           notifyListeners();
           break;
@@ -661,22 +656,10 @@ class ChannelProvider extends ChangeNotifier {
           if (rtcConnector.isModeratorShare) {
             final joinMessage = JoinDisplayMessage(rtcConnector.clientId);
 
-            remoteScreenConnector = RemoteScreenConnector(
-                channel,
-                _remoteScreenServe.roomId,
-                _instanceInfo.ipAddress,
-                _remoteScreenServe.roomPort,
-                joinMessage);
-            remoteScreenConnector?.onDisconnect = (() async {
-              removeSender(
-                fromShare: true,
-                remoteScreenConnector: remoteScreenConnector,
-                kick: false,
-              );
-            });
+            remoteScreenConnector = _remoteScreenProvider
+                .createRemoteScreenConnector(channel, joinMessage);
             _remoteShareConnectors.add(remoteScreenConnector!);
 
-            _remoteScreenServe.addConnector(remoteScreenConnector!);
             final iceServers = await _getIceServers();
 
             await remoteScreenConnector?.onStartRemoteScreen(
@@ -903,7 +886,7 @@ class ChannelProvider extends ChangeNotifier {
             remoteScreenConnector
                 .sendRemoteScreenState(RemoteScreenStatus.kicked);
           }
-          _remoteScreenServe.removeConnector(_remoteScreenConnectors[index]);
+          _remoteScreenProvider.removeConnector(_remoteScreenConnectors[index]);
           _remoteScreenConnectors.removeAt(index);
         }
       }
@@ -914,7 +897,7 @@ class ChannelProvider extends ChangeNotifier {
             remoteScreenConnector
                 .sendRemoteScreenState(RemoteScreenStatus.kicked);
           }
-          _remoteScreenServe.removeConnector(_remoteShareConnectors[index]);
+          _remoteScreenProvider.removeConnector(_remoteShareConnectors[index]);
           _remoteShareConnectors.removeAt(index);
         }
       }
@@ -1034,8 +1017,8 @@ class ChannelProvider extends ChangeNotifier {
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
     getIceServersForDirect() => Future.value(<RtcIceServer>[]);
 
-    var mediator = DisplayGroupMediatorObject(_remoteScreenServe,
-        _instanceInfo.ipAddress, getIceServersForDirect, removeSender);
+    var mediator = DisplayGroupMediatorObject(
+        _remoteScreenProvider, getIceServersForDirect);
 
     _displayGroupHost ??= DisplayGroupHost(mediator);
 
