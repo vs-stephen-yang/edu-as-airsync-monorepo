@@ -21,31 +21,28 @@ class V3MainInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final bool isLandscape = constraints.maxWidth > constraints.maxHeight;
-
-      final isInMultiWindow =
-          context.read<MultiWindowProvider>().isInMultiWindow;
-      print('**** isInMultiWindow $isInMultiWindow');
-      print(
-          '**** SplitScreenRatio (${context.read<MultiWindowProvider>().getSplitScreenRatio(Size(constraints.maxWidth, constraints.maxHeight)).name})');
-      return Container(
-        alignment: Alignment.center,
-        margin: isLandscape
-            ? const EdgeInsets.symmetric(vertical: 106, horizontal: 53)
-            : const EdgeInsets.symmetric(vertical: 120, horizontal: 29),
-        decoration: _buildContainerDecoration(context),
-        child: Consumer<ConnectivityProvider>(
+    return MultiWindowLayout(
+      builder: (context, constraints, ratio, isMultiWindow, isPortrait,
+          isFloatWindow) {
+        return Container(
+          alignment: Alignment.center,
+          margin: !isPortrait
+              ? const EdgeInsets.symmetric(vertical: 106, horizontal: 53)
+              : const EdgeInsets.symmetric(vertical: 120, horizontal: 29),
+          decoration: _buildContainerDecoration(context),
+          child: Consumer<ConnectivityProvider>(
             builder: (_, connectivityProvider, __) {
-          return connectivityProvider.connectionStatus ==
-                  ConnectivityResult.none
-              ? const V3NoNetworkStatus()
-              : isLandscape
-                  ? _buildLandscapeContent(context)
-                  : _buildPortraitContent(context);
-        }),
-      );
-    });
+              return connectivityProvider.connectionStatus ==
+                      ConnectivityResult.none
+                  ? const V3NoNetworkStatus()
+                  : !isPortrait
+                      ? _buildLandscapeContent(context)
+                      : _buildPortraitContent(context);
+            },
+          ),
+        );
+      },
+    );
   }
 
   ShapeDecoration _buildContainerDecoration(BuildContext context) {
