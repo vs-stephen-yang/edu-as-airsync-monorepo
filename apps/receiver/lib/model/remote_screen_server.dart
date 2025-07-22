@@ -87,7 +87,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   double _screenHeight = defaultScreenHeight;
   TouchEventManager? _touchEventManager;
 
-  final _connectorChannels = <int, RemoteScreenConnector>{};
+  final _connectorChannels = <int, RtcScreenConnector>{};
 
   RemoteScreenServer() {
     initTouchEventManager();
@@ -296,7 +296,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     });
   }
 
-  void addConnector(RemoteScreenConnector connector) async {
+  void addConnector(RtcScreenConnector connector) async {
     // Check if the connector already exists in the map.
     if (_connectorChannels.containsValue(connector)) {
       log.warning('Channel already exists for connector');
@@ -315,7 +315,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     }
   }
 
-  void removeConnector(RemoteScreenConnector connector) async {
+  void removeConnector(RtcScreenConnector connector) async {
     connector.registerSignalHandler(null);
 
     try {
