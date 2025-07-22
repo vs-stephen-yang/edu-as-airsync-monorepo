@@ -19,6 +19,7 @@ import 'package:display_flutter/model/display_group_video_view.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/network_diagnostic.dart';
+import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';

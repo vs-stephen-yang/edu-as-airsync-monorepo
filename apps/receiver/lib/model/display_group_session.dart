@@ -1,5 +1,6 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/display_group_video_view.dart';
+import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_client.dart';
 import 'package:display_flutter/utility/log.dart';
 
@@ -7,18 +8,31 @@ class DisplayGroupSession {
   bool get isVideoAvailable => _isVideoAvailable;
   bool _isVideoAvailable = false;
 
-  DisplayGroupVideoView? get videoView => _remoteScreenClient == null
-      ? null
-      : DisplayGroupVideoView(
-          _remoteScreenClient!.remoteScreenRenderer,
-          _remoteScreenClient!.rtcWidgetKey,
+  DisplayGroupVideoView? get videoView {
+    if (_remoteScreenClient == null) {
+      return null;
+    }
+
+    switch (_remoteScreenType) {
+      case RemoteScreenType.rtc:
+        final rtcClient = _remoteScreenClient as RtcScreenClient;
+        return DisplayGroupVideoView(
+          rtcClient.remoteScreenRenderer,
+          rtcClient.rtcWidgetKey,
         );
+      case RemoteScreenType.multicast:
+        // TODO: implement it
+    }
+
+    return null;
+  }
 
   void Function(ChannelState? state)? onChannelStateChange;
   void Function(String hostName, String displayCode)? onInvitation;
   void Function()? onWebRtcClose;
 
   final Channel _channel;
+  late RemoteScreenType _remoteScreenType;
 
   RemoteScreenClient? _remoteScreenClient;
 
@@ -76,12 +90,16 @@ class DisplayGroupSession {
         // TODO:
         break;
       case ChannelMessageType.remoteScreenInfo:
-        await _onRemoteScreenInfo(message as RemoteScreenInfoMessage);
+        if (_remoteScreenType == RemoteScreenType.rtc && _remoteScreenClient is RtcScreenClient) {
+          await _onRemoteScreenInfo(message as RemoteScreenInfoMessage);
+        }
         break;
       case ChannelMessageType.remoteScreenSignal:
         final signalMessage = message as RemoteScreenSignalMessage;
-
-        _remoteScreenClient?.handleSignalMessage(signalMessage.signal!);
+        if (_remoteScreenType == RemoteScreenType.rtc && _remoteScreenClient is RtcScreenClient) {
+          final rtcClient = _remoteScreenClient as RtcScreenClient;
+          rtcClient.handleSignalMessage(signalMessage.signal!);
+        }
         break;
       default:
         break;
@@ -89,6 +107,7 @@ class DisplayGroupSession {
   }
 
   void _onInviteMessage(InviteDisplayGroupMessage message) {
+    _remoteScreenType = parseRemoteScreenType(message.connectionType);
     onInvitation?.call(
       message.hostName ?? '',
       message.displayCode ?? '',
@@ -96,14 +115,22 @@ class DisplayGroupSession {
   }
 
   void _startRemoteScreen() {
-    _remoteScreenClient = RemoteScreenClient(_channel);
+    switch (_remoteScreenType) {
+      case RemoteScreenType.rtc:
+        _remoteScreenClient = RtcScreenClient(_channel);
+        break;
+      case RemoteScreenType.multicast:
+        _remoteScreenClient = MulticastScreenClient(_channel);
+        break;
+    }
     _remoteScreenClient?.sendStartRemoteScreenMessage();
   }
 
   Future<void> _onRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
-    await _remoteScreenClient?.handleRemoteScreenInfo(
+    final rtcClient = _remoteScreenClient as RtcScreenClient;
+    await rtcClient.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
       infoMessage.ionSfuRoom!.iceServers,

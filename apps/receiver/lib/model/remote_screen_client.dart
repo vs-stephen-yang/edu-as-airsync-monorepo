@@ -4,29 +4,67 @@ import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-// import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 
-class RemoteScreenClient {
+abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel);
 
   final Channel? _channel;
   final String _sessionId = const Uuid().v4();
+
+  bool _textureSizeChanged = false;
+
+  Future sendStartRemoteScreenMessage() async {
+    final msg = StartRemoteScreenMessage(_sessionId);
+    _channel?.send(msg);
+  }
+
+  Future sendRemoteScreenState(RemoteScreenStatus status) async {
+    final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
+    _channel?.send(stateMessage);
+  }
+
+  onVideoSizeChanged() {
+    _textureSizeChanged = true;
+  }
+
+  void onTouchStart(PointerEvent event) {
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_START, event);
+  }
+
+  void onTouchMove(PointerEvent event) {
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
+  }
+
+  void onTouchEnd(PointerEvent event) {
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_END, event);
+  }
+
+  void onTouchEvent(
+    pb.TouchEvent_TouchEventType eventType,
+    PointerEvent event,
+  );
+
+  Future remove();
+}
+
+class RtcScreenClient extends RemoteScreenClient {
   Client? _client;
   RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
   RTCDataChannel? _dataChannel;
   GlobalKey get rtcWidgetKey => _rtcWidgetKey;
   final GlobalKey _rtcWidgetKey = GlobalKey();
-  bool _textureSizeChanged = false;
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
   bool _isFirstConnected = true;
 
   RemoteScreenChannelSignal? _channelSignal;
+
+  RtcScreenClient(super.channel);
 
   onDataChannelState(RTCDataChannelState state) {
     log.info('Remote screen: Data channel state ${state.name}');
@@ -36,7 +74,7 @@ class RemoteScreenClient {
     }
   }
 
-// send signal messages to the peer via the channel
+  // send signal messages to the peer via the channel
   void _sendSignalMessageToPeer(String message) {
     _channel?.send(
       RemoteScreenSignalMessage(_sessionId, message),
@@ -127,16 +165,7 @@ class RemoteScreenClient {
     _channelSignal?.onPeerMessage(signal);
   }
 
-  Future sendStartRemoteScreenMessage() async {
-    final msg = StartRemoteScreenMessage(_sessionId);
-    _channel?.send(msg);
-  }
-
-  Future sendRemoteScreenState(RemoteScreenStatus status) async {
-    final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
-    _channel?.send(stateMessage);
-  }
-
+  @override
   Future remove() async {
     if (_remoteScreenRenderer.textureId != null) {
       _remoteScreenRenderer.srcObject = null;
@@ -147,10 +176,6 @@ class RemoteScreenClient {
     log.info('Remote screen: Closing client');
     _client?.close();
     _client = null;
-  }
-
-  onVideoSizeChanged() {
-    _textureSizeChanged = true;
   }
 
   void updateTextureInfo() {
@@ -180,18 +205,7 @@ class RemoteScreenClient {
     }
   }
 
-  void onTouchStart(PointerEvent event) {
-    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_START, event);
-  }
-
-  void onTouchMove(PointerEvent event) {
-    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
-  }
-
-  void onTouchEnd(PointerEvent event) {
-    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_END, event);
-  }
-
+  @override
   void onTouchEvent(
     pb.TouchEvent_TouchEventType eventType,
     PointerEvent event,
@@ -222,5 +236,20 @@ class RemoteScreenClient {
     _dataChannel?.send(
       RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()),
     );
+  }
+}
+
+class MulticastScreenClient extends RemoteScreenClient {
+  MulticastScreenClient(super.channel);
+
+  @override
+  Future remove() {
+    // TODO: implement remove
+    throw UnimplementedError();
+  }
+
+  @override
+  void onTouchEvent(pb.TouchEvent_TouchEventType eventType, PointerEvent event) {
+    // TODO: implement onTouchEvent
   }
 }

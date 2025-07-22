@@ -1,8 +1,10 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/remote_screen_provider.dart';
 
 abstract class DisplayGroupMediator {
+  RemoteScreenType getRemoteScreenType();
   Future<RemoteScreenConnector> createRemoteScreenConnector(
       Channel channel, StartRemoteScreenMessage message);
 }
@@ -26,5 +28,10 @@ class DisplayGroupMediatorObject implements DisplayGroupMediator {
     );
 
     return connector;
+  }
+
+  @override
+  getRemoteScreenType() {
+    return _remoteScreenProvider.remoteScreenType;
   }
 }
