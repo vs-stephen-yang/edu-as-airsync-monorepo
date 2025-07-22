@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class MultiWindowProvider extends ChangeNotifier {
   static const MethodChannel _channel =
@@ -50,11 +51,22 @@ class MultiWindowProvider extends ChangeNotifier {
     );
     debugPrint('**** ratio $ratio');
     return switch (ratio) {
-      <= 0.34 => SplitScreenRatio.oneThird,
-      > 0.33 && <= 0.5 => SplitScreenRatio.half,
-      > 0.5 && <= 0.65 => SplitScreenRatio.twoThirds,
+      < 0.5 => SplitScreenRatio.oneThird,
+      >= 0.5 && < 0.65 => SplitScreenRatio.half,
+      >= 0.65 => SplitScreenRatio.twoThirds,
       _ => SplitScreenRatio.none
     };
+  }
+
+  bool _isFloatWindow(Size appSize) {
+    if (_isInMultiWindow) {
+      final appHeight = appSize.height *
+          PlatformDispatcher.instance.views.first.devicePixelRatio;
+      if (appHeight != _realScreenSize.height) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> _handleMultiWindowChange(MethodCall call) async {
@@ -78,5 +90,54 @@ extension SplitScreenRatioExt on SplitScreenRatio {
       case SplitScreenRatio.none:
         return "None";
     }
+  }
+}
+
+extension MultiWindowContext on BuildContext {
+  MultiWindowProvider get multiWindow => watch<MultiWindowProvider>();
+
+  bool get isInMultiWindow => multiWindow.isInMultiWindow;
+
+  SplitScreenRatio get splitScreenRatio =>
+      multiWindow.getSplitScreenRatio(MediaQuery.of(this).size);
+
+  // 目前是不正確的，待調整
+  bool get isFloatWindow =>
+      multiWindow._isFloatWindow(MediaQuery.of(this).size);
+}
+
+typedef MultiWindowLayoutBuilder = Widget Function(
+  BuildContext context,
+  BoxConstraints constraints,
+  SplitScreenRatio splitScreenRatio,
+  bool isInMultiWindow,
+  bool isPortrait,
+  bool isFloatWindow,
+);
+
+class MultiWindowLayout extends StatelessWidget {
+  final MultiWindowLayoutBuilder builder;
+
+  const MultiWindowLayout({super.key, required this.builder});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final ratio = context.splitScreenRatio;
+        final isMultiWindow = context.isInMultiWindow;
+        final isPortrait =
+            constraints.maxWidth < constraints.maxHeight && !isMultiWindow;
+        final isFloatWindow = context.isFloatWindow;
+        return builder(
+          context,
+          constraints,
+          ratio,
+          isMultiWindow,
+          isPortrait,
+          isFloatWindow,
+        );
+      },
+    );
   }
 }
