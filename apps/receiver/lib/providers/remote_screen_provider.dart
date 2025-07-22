@@ -84,4 +84,20 @@ class RemoteScreenProvider {
   void stopRemoteScreenPublisher() {
     return _server.stopRemoteScreenPublisher();
   }
+
+  onStartRemoteScreen(
+      RemoteScreenConnector connector,
+      StartRemoteScreenMessage message,
+      List<RtcIceServer>? iceServers,
+      ) async {
+    switch (remoteScreenType) {
+      case RemoteScreenType.rtc:
+        RtcScreenConnector c = connector as RtcScreenConnector;
+        c.onStartRemoteScreen(message, iceServers);
+        break;
+      case RemoteScreenType.multicast:
+        // TODO: get multicastInfo and call multicastConnector.onStartRemoteScreen
+        break;
+    }
+  }
 }

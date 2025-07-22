@@ -661,10 +661,10 @@ class ChannelProvider extends ChangeNotifier {
 
             final iceServers = await _getIceServers();
 
-            await remoteScreenConnector?.onStartRemoteScreen(
-              message as StartRemoteScreenMessage,
-              iceServers,
-            );
+            await _remoteScreenProvider.onStartRemoteScreen(
+                remoteScreenConnector!,
+                message as StartRemoteScreenMessage,
+                iceServers);
             notifyListeners();
 
             break;
@@ -673,10 +673,12 @@ class ChannelProvider extends ChangeNotifier {
           if (_isSenderMode) {
             final iceServers = await _getIceServers();
 
-            await remoteScreenConnector?.onStartRemoteScreen(
-              message as StartRemoteScreenMessage,
-              iceServers,
-            );
+            if (remoteScreenConnector != null) {
+              await _remoteScreenProvider.onStartRemoteScreen(
+                  remoteScreenConnector!,
+                  message as StartRemoteScreenMessage,
+                  iceServers);
+            }
             notifyListeners();
           } else {
             await remoteScreenConnector

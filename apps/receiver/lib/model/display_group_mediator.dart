@@ -19,7 +19,8 @@ class DisplayGroupMediatorObject implements DisplayGroupMediator {
     final connector = _remoteScreenProvider.createRemoteScreenConnector(channel, JoinDisplayMessage('123'));
 
     final iceServers = await _getIceServersForDirect();
-    await connector.onStartRemoteScreen(
+    await _remoteScreenProvider.onStartRemoteScreen(
+      connector,
       message,
       iceServers,
     );
