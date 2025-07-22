@@ -47,9 +47,6 @@ abstract class RemoteScreenConnector {
     });
   }
 
-  Future<void> onStartRemoteScreen(
-      StartRemoteScreenMessage message, List<RtcIceServer>? iceServers);
-
   void processSignalFromPeer(String message);
 
   Future<void> _onChannelState(ChannelState state) async {
@@ -88,7 +85,6 @@ class RtcScreenConnector extends RemoteScreenConnector {
     JoinDisplayMessage message,
   ) : super(channel, message);
 
-  @override
   onStartRemoteScreen(
     StartRemoteScreenMessage message,
     List<RtcIceServer>? iceServers,
@@ -142,7 +138,6 @@ class RtcScreenConnector extends RemoteScreenConnector {
 class MulticastScreenConnector extends RemoteScreenConnector {
   MulticastScreenConnector(super.channel, super.msg);
 
-  @override
   Future<void> onStartRemoteScreen(
       StartRemoteScreenMessage message, List<RtcIceServer>? iceServers) {
     // TODO: implement onStartRemoteScreen
