@@ -16,7 +16,7 @@
     <ROW Property="ProductCode" Value="1033:{0E41D677-D0BE-4756-9910-EA3740811789} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="AirSync Sender"/>
-    <ROW Property="ProductVersion" Value="3.5.3.42863" Options="20"/>
+    <ROW Property="ProductVersion" Value="3.7.8.44897" Options="20"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{08FD1E6A-15AB-4AB9-882F-E0AD81C4D601}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME#DefaultBuild_1:Windows 9x/ME#ReleaseBuild_1:Windows 9x/ME" ValueLocId="-"/>
@@ -56,19 +56,20 @@
     <ROW Component="AI_IA_ENABLE" ComponentId="{A319836F-BA19-4C77-B55C-E7BDDF31293B}" Directory_="APPDIR" Attributes="260" KeyPath="AI_IA_ENABLE" Options="1"/>
     <ROW Component="APPDIR" ComponentId="{65CC1664-DF5F-4669-ADF1-C2A16799FE5D}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="AirSync_Sender.exe" ComponentId="{78575E77-7E7F-42EB-ADF1-6353527D3308}" Directory_="APPDIR" Attributes="256" KeyPath="AirSync_Sender.exe"/>
-    <ROW Component="AirSync_Sender.exp" ComponentId="{521D7D9E-5DCF-4808-80AA-C38CB7EC34E2}" Directory_="APPDIR" Attributes="0" KeyPath="AirSync_Sender.exp" Type="0"/>
     <ROW Component="AssetManifest.bin" ComponentId="{28215972-C7FA-4F67-A927-56EF4B2E185A}" Directory_="flutter_assets_Dir" Attributes="0" KeyPath="AssetManifest.bin" Type="0"/>
     <ROW Component="CupertinoIcons.ttf" ComponentId="{580AD59B-FDB1-48DC-9500-24BFC770F7E6}" Directory_="assets_1_Dir" Attributes="0" Type="0"/>
     <ROW Component="CustomIcons.ttf" ComponentId="{AB8B82DA-2AEE-4DC8-940E-95B07772397F}" Directory_="fonts_Dir" Attributes="0" Type="0"/>
     <ROW Component="ProductInformation" ComponentId="{4B1841DC-601F-47AA-89A4-610F5A65E9D1}" Directory_="APPDIR" Attributes="260" KeyPath="Version"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{8A6E9F44-DB30-4AE3-9A31-A96F629A8E58}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="WinSparkle.dll" ComponentId="{87F32BC1-E763-4220-AC41-370A997067F1}" Directory_="APPDIR" Attributes="256" KeyPath="WinSparkle.dll"/>
     <ROW Component="ad.png" ComponentId="{036315A3-5B40-4BBC-BF08-9E625ACA8BA1}" Directory_="png_Dir" Attributes="0" KeyPath="ad.png" Type="0"/>
     <ROW Component="app.so" ComponentId="{6EEEA41B-FDDF-48CE-A357-D7CD30EB66D3}" Directory_="data_Dir" Attributes="0" KeyPath="app.so" Type="0"/>
+    <ROW Component="app_links_plugin.dll" ComponentId="{93971628-CB3C-4AAB-98F7-B963240B5887}" Directory_="APPDIR" Attributes="256" KeyPath="app_links_plugin.dll"/>
+    <ROW Component="auto_updater_windows_plugin.dll" ComponentId="{D2240D48-049B-4B2C-992F-634B377570CD}" Directory_="APPDIR" Attributes="256" KeyPath="auto_updater_windows_plugin.dll"/>
     <ROW Component="bonsoir_windows_plugin.dll" ComponentId="{A8F31CDE-2EAA-4157-94BA-93BD80AA25F9}" Directory_="APPDIR" Attributes="256" KeyPath="bonsoir_windows_plugin.dll"/>
     <ROW Component="connectivity_plus_plugin.dll" ComponentId="{CC521518-7BE0-4389-BCFC-B225BC864ABE}" Directory_="APPDIR" Attributes="256" KeyPath="connectivity_plus_plugin.dll"/>
     <ROW Component="desktop_multi_window_plugin.dll" ComponentId="{CE2D6A2F-8D2F-444C-8A9F-52D96F894399}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_multi_window_plugin.dll"/>
     <ROW Component="desktop_screenstate_plugin.dll" ComponentId="{50E79E90-D696-4EEC-8859-CB173AA1A513}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_screenstate_plugin.dll"/>
-    <ROW Component="desktop_window_plugin.dll" ComponentId="{5C80C07D-A9D1-4482-AF19-C271D2711E9F}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
     <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{12BBAEAE-F47D-409E-97E5-783BF339FBC4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
     <ROW Component="flutter_virtual_display_plugin.dll" ComponentId="{A80DDE0B-1AD6-4FAC-B463-2DB273CB292B}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_virtual_display_plugin.dll"/>
     <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{7BE6E933-AD6E-4E4D-AAFC-D915EA00FC30}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
@@ -81,8 +82,11 @@
     <ROW Component="libwebrtc.dll" ComponentId="{1D51C5E6-5F93-44D1-B646-A305D8D05B30}" Directory_="APPDIR" Attributes="256" KeyPath="libwebrtc.dll"/>
     <ROW Component="msvcp140.dll" ComponentId="{23249871-6713-42B8-9882-26ACF4BD7D2B}" Directory_="APPDIR" Attributes="256" KeyPath="msvcp140.dll"/>
     <ROW Component="no_sleep.js" ComponentId="{6137EDBF-0961-43B4-BFC4-2275285C08BD}" Directory_="assets_2_Dir" Attributes="0" KeyPath="no_sleep.js" Type="0"/>
+    <ROW Component="permission_handler_windows_plugin.dll" ComponentId="{514FDDFE-3352-4E79-B4A2-87AEE8BC8AA9}" Directory_="APPDIR" Attributes="256" KeyPath="permission_handler_windows_plugin.dll"/>
     <ROW Component="profiles.json" ComponentId="{1970CE3B-6233-499E-AB6B-8FB3BA9DDE82}" Directory_="assets_Dir" Attributes="0" KeyPath="profiles.json" Type="0"/>
     <ROW Component="screen_extension.json" ComponentId="{AF649E01-BD34-4A3C-8FF2-B983339BD8F3}" Directory_="lottie_files_Dir" Attributes="0" KeyPath="screen_extension.json" Type="0"/>
+    <ROW Component="screen_retriever_windows_plugin.dll" ComponentId="{D25D8405-22AE-4530-8F4C-0772EFE18A95}" Directory_="APPDIR" Attributes="256" KeyPath="screen_retriever_windows_plugin.dll"/>
+    <ROW Component="sentry.dll" ComponentId="{560C2184-E8D4-4AD6-A212-81F7ADFB0D74}" Directory_="APPDIR" Attributes="256" KeyPath="sentry.dll"/>
     <ROW Component="share_plus_plugin.dll" ComponentId="{D6C731BB-8FEE-493E-A5A7-4497C6FD455E}" Directory_="APPDIR" Attributes="256" KeyPath="share_plus_plugin.dll"/>
     <ROW Component="system_tray_plugin.dll" ComponentId="{266B0A14-26BD-4FCF-89B7-8787E9DF9660}" Directory_="APPDIR" Attributes="256" KeyPath="system_tray_plugin.dll"/>
     <ROW Component="updater.exe" ComponentId="{79C846D7-470C-49C0-854C-DCBFAD4170CC}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
@@ -90,6 +94,7 @@
     <ROW Component="vcruntime140.dll" ComponentId="{7D964E36-BAEF-4697-9748-6D927C4B8E2E}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140.dll"/>
     <ROW Component="vcruntime140_1.dll" ComponentId="{E175E220-6237-43EF-B4E3-F43F53F3CC58}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140_1.dll"/>
     <ROW Component="virtualdisplayservice.exe" ComponentId="{D5C5A453-89C4-4A0B-91DB-78978786B1D6}" Directory_="APPDIR" Attributes="256" KeyPath="virtualdisplayservice.exe"/>
+    <ROW Component="window_manager_plugin.dll" ComponentId="{B038C02F-A85B-491B-892F-432D637F08BB}" Directory_="APPDIR" Attributes="256" KeyPath="window_manager_plugin.dll"/>
     <ROW Component="window_size_plugin.dll" ComponentId="{705B5D9F-82C3-4E27-9D8F-3F312ACD610E}" Directory_="APPDIR" Attributes="256" KeyPath="window_size_plugin.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
@@ -376,7 +381,6 @@
     <ROW File="zw.png" Component_="ad.png" FileName="zw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\zw.png" SelfReg="false"/>
     <ROW File="ink_sparkle.frag" Component_="ink_sparkle.frag" FileName="INK_SP~1.FRA|ink_sparkle.frag" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\shaders\ink_sparkle.frag" SelfReg="false"/>
     <ROW File="icudtl.dat" Component_="app.so" FileName="icudtl.dat" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\icudtl.dat" SelfReg="false"/>
-    <ROW File="desktop_window_plugin.dll" Component_="desktop_window_plugin.dll" FileName="DESKTO~1.DLL|desktop_window_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\desktop_window_plugin.dll" SelfReg="false"/>
     <ROW File="flutter_input_injection_plugin.dll" Component_="flutter_input_injection_plugin.dll" FileName="FLUTTE~1.DLL|flutter_input_injection_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_input_injection_plugin.dll" SelfReg="false"/>
     <ROW File="flutter_webrtc_plugin.dll" Component_="flutter_webrtc_plugin.dll" FileName="FLUTTE~2.DLL|flutter_webrtc_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_webrtc_plugin.dll" SelfReg="false"/>
     <ROW File="flutter_windows.dll" Component_="flutter_windows.dll" FileName="FLUTTE~3.DLL|flutter_windows.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_windows.dll" SelfReg="false"/>
@@ -399,26 +403,12 @@
     <ROW File="launcher.exe" Component_="launcher.exe" FileName="launcher.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\launcher.exe" SelfReg="false" DigSign="true"/>
     <ROW File="share_plus_plugin.dll" Component_="share_plus_plugin.dll" FileName="SHARE_~1.DLL|share_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\share_plus_plugin.dll" SelfReg="false"/>
     <ROW File="virtualdisplayservice.exe" Component_="virtualdisplayservice.exe" FileName="VIRTUA~1.EXE|virtual-display-service.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\virtual-display-service.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="AirSync_Sender.exp" Component_="AirSync_Sender.exp" FileName="AIRSYN~1.EXP|AirSync_Sender.exp" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exp" SelfReg="false"/>
-    <ROW File="AirSync_Sender.lib" Component_="AirSync_Sender.exp" FileName="AIRSYN~1.LIB|AirSync_Sender.lib" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.lib" SelfReg="false"/>
-    <ROW File="bitsdojo_window_windows_plugin.lib" Component_="AirSync_Sender.exp" FileName="BITSDO~1.LIB|bitsdojo_window_windows_plugin.lib" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\bitsdojo_window_windows_plugin.lib" SelfReg="false"/>
-    <ROW File="AssetManifest.bin.json" Component_="AssetManifest.bin" FileName="ASSETM~2.JSO|AssetManifest.bin.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.bin.json" SelfReg="false"/>
-    <ROW File="ic_annotation_close.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~1.SVG|ic_annotation_close.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_close.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_drag.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~2.SVG|ic_annotation_drag.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_drag.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_eraser.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~3.SVG|ic_annotation_eraser.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_eraser.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_minimize.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~4.SVG|ic_annotation_minimize.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_minimize.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_pen.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~5.SVG|ic_annotation_pen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_pen.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_stroke_medium.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~6.SVG|ic_annotation_stroke_medium.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_stroke_medium.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_stroke_thick.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~7.SVG|ic_annotation_stroke_thick.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_stroke_thick.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_stroke_thin.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~8.SVG|ic_annotation_stroke_thin.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_stroke_thin.svg" SelfReg="false"/>
-    <ROW File="ic_annotation_trash.svg" Component_="ic_activate_off.svg" FileName="IC_ANN~9.SVG|ic_annotation_trash.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_annotation_trash.svg" SelfReg="false"/>
     <ROW File="ic_device_list_error.svg" Component_="ic_activate_off.svg" FileName="IC_DEV~1.SVG|ic_device_list_error.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_device_list_error.svg" SelfReg="false"/>
     <ROW File="ic_device_list_qrcode.svg" Component_="ic_activate_off.svg" FileName="IC_DEV~2.SVG|ic_device_list_qrcode.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_device_list_qrcode.svg" SelfReg="false"/>
     <ROW File="ic_device_list_screen.svg" Component_="ic_activate_off.svg" FileName="IC_DEV~3.SVG|ic_device_list_screen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_device_list_screen.svg" SelfReg="false"/>
     <ROW File="ic_logo_airsync.svg" Component_="ic_activate_off.svg" FileName="IC_LOG~1.SVG|ic_logo_airsync.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_airsync.svg" SelfReg="false"/>
     <ROW File="ic_logo_airsync_icon.ico" Component_="ic_activate_off.svg" FileName="IC_LOG~1.ICO|ic_logo_airsync_icon.ico" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_airsync_icon.ico" SelfReg="false"/>
     <ROW File="ic_logo_airsync_icon.png" Component_="ic_activate_off.svg" FileName="IC_LOG~3.PNG|ic_logo_airsync_icon.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_airsync_icon.png" SelfReg="false"/>
-    <ROW File="ic_logo_viewsonic.png" Component_="ic_activate_off.svg" FileName="IC_LOG~4.PNG|ic_logo_viewsonic.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic.png" SelfReg="false"/>
     <ROW File="ic_logo_viewsonic_mobile.png" Component_="ic_activate_off.svg" FileName="IC_LOG~5.PNG|ic_logo_viewsonic_mobile.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic_mobile.png" SelfReg="false"/>
     <ROW File="ic_logo_viewsonic_web.png" Component_="ic_activate_off.svg" FileName="IC_LOG~6.PNG|ic_logo_viewsonic_web.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic_web.png" SelfReg="false"/>
     <ROW File="ic_menu_minimal.svg" Component_="ic_activate_off.svg" FileName="IC_MEN~1.SVG|ic_menu_minimal.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_menu_minimal.svg" SelfReg="false"/>
@@ -457,13 +447,47 @@
     <ROW File="v3_ic_switch_on.svg" Component_="ic_activate_off.svg" FileName="V3_IC~22.SVG|v3_ic_switch_on.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_switch_on.svg" SelfReg="false"/>
     <ROW File="screen_extension.json" Component_="screen_extension.json" FileName="SCREEN~1.JSO|screen_extension.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\lottie_files\screen_extension.json" SelfReg="false"/>
     <ROW File="vsdslspinnersty1.json" Component_="screen_extension.json" FileName="VSDSL-~1.JSO|vsdsl-spinner-sty1.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\lottie_files\vsdsl-spinner-sty1.json" SelfReg="false"/>
-    <ROW File="ViewSonicMVBEULA20230508.txt" Component_="profiles.json" FileName="VIEWSO~1.TXT|ViewSonic-MVB-EULA-20230508.txt" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\ViewSonic-MVB-EULA-20230508.txt" SelfReg="false"/>
     <ROW File="InterVariable.ttf" Component_="CustomIcons.ttf" FileName="INTERV~1.TTF|InterVariable.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\InterVariable.ttf" SelfReg="false"/>
-    <ROW File="NOTICES" Component_="AssetManifest.bin" FileName="NOTICES" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\NOTICES" SelfReg="false"/>
     <ROW File="no_sleep.js" Component_="no_sleep.js" FileName="no_sleep.js" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\wakelock_plus\assets\no_sleep.js" SelfReg="false"/>
     <ROW File="desktop_multi_window_plugin.dll" Component_="desktop_multi_window_plugin.dll" FileName="DESKTO~2.DLL|desktop_multi_window_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\desktop_multi_window_plugin.dll" SelfReg="false"/>
     <ROW File="desktop_screenstate_plugin.dll" Component_="desktop_screenstate_plugin.dll" FileName="DESKTO~3.DLL|desktop_screenstate_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\desktop_screenstate_plugin.dll" SelfReg="false"/>
     <ROW File="system_tray_plugin.dll" Component_="system_tray_plugin.dll" FileName="SYSTEM~1.DLL|system_tray_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\system_tray_plugin.dll" SelfReg="false"/>
+    <ROW File="app_links_plugin.dll" Component_="app_links_plugin.dll" FileName="APP_LI~1.DLL|app_links_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\app_links_plugin.dll" SelfReg="false"/>
+    <ROW File="auto_updater_windows_plugin.dll" Component_="auto_updater_windows_plugin.dll" FileName="AUTO_U~1.DLL|auto_updater_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\auto_updater_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="ic_drag.svg" Component_="ic_activate_off.svg" FileName="ic_drag.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_drag.svg" SelfReg="false"/>
+    <ROW File="ic_expend.svg" Component_="ic_activate_off.svg" FileName="IC_EXP~1.SVG|ic_expend.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_expend.svg" SelfReg="false"/>
+    <ROW File="ic_logo_viewsonic_desktop.png" Component_="ic_activate_off.svg" FileName="IC_LOG~7.PNG|ic_logo_viewsonic_desktop.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic_desktop.png" SelfReg="false"/>
+    <ROW File="ic_minimize.svg" Component_="ic_activate_off.svg" FileName="IC_MIN~1.SVG|ic_minimize.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_minimize.svg" SelfReg="false"/>
+    <ROW File="v3_ic_accessibility_arrow.svg" Component_="ic_activate_off.svg" FileName="V3_IC~23.SVG|v3_ic_accessibility_arrow.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_accessibility_arrow.svg" SelfReg="false"/>
+    <ROW File="v3_ic_accessibility_selected.svg" Component_="ic_activate_off.svg" FileName="V3_IC~24.SVG|v3_ic_accessibility_selected.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_accessibility_selected.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_arrow_bottom.svg" Component_="ic_activate_off.svg" FileName="V3_IC~25.SVG|v3_ic_annotation_arrow_bottom.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_arrow_bottom.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_arrow_top.svg" Component_="ic_activate_off.svg" FileName="V3_IC~26.SVG|v3_ic_annotation_arrow_top.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_arrow_top.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_close.svg" Component_="ic_activate_off.svg" FileName="V3_IC~27.SVG|v3_ic_annotation_close.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_close.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_drag.svg" Component_="ic_activate_off.svg" FileName="V3_IC~28.SVG|v3_ic_annotation_drag.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_drag.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_eraser.svg" Component_="ic_activate_off.svg" FileName="V3_IC~29.SVG|v3_ic_annotation_eraser.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_eraser.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_eraser_disable.svg" Component_="ic_activate_off.svg" FileName="V3_IC~30.SVG|v3_ic_annotation_eraser_disable.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_eraser_disable.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_expand.svg" Component_="ic_activate_off.svg" FileName="V3_IC~31.SVG|v3_ic_annotation_expand.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_expand.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_extend.svg" Component_="ic_activate_off.svg" FileName="V3_IC~32.SVG|v3_ic_annotation_extend.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_extend.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_minimize.svg" Component_="ic_activate_off.svg" FileName="V3_IC~33.SVG|v3_ic_annotation_minimize.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_minimize.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_on.svg" Component_="ic_activate_off.svg" FileName="V3_IC~34.SVG|v3_ic_annotation_on.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_on.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_pen.svg" Component_="ic_activate_off.svg" FileName="V3_IC~35.SVG|v3_ic_annotation_pen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_pen.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_pen_disable.svg" Component_="ic_activate_off.svg" FileName="V3_IC~36.SVG|v3_ic_annotation_pen_disable.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_pen_disable.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_shrink.svg" Component_="ic_activate_off.svg" FileName="V3_IC~37.SVG|v3_ic_annotation_shrink.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_shrink.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_stroke_medium.svg" Component_="ic_activate_off.svg" FileName="V3_IC~38.SVG|v3_ic_annotation_stroke_medium.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_stroke_medium.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_stroke_thick.svg" Component_="ic_activate_off.svg" FileName="V3_IC~39.SVG|v3_ic_annotation_stroke_thick.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_stroke_thick.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_stroke_thin.svg" Component_="ic_activate_off.svg" FileName="V3_IC~40.SVG|v3_ic_annotation_stroke_thin.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_stroke_thin.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_trash.svg" Component_="ic_activate_off.svg" FileName="V3_IC~41.SVG|v3_ic_annotation_trash.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_trash.svg" SelfReg="false"/>
+    <ROW File="v3_ic_audio_driver_warning.svg" Component_="ic_activate_off.svg" FileName="V3_IC~42.SVG|v3_ic_audio_driver_warning.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_audio_driver_warning.svg" SelfReg="false"/>
+    <ROW File="v3_ic_web_download_thumb.svg" Component_="ic_activate_off.svg" FileName="V3_IC~43.SVG|v3_ic_web_download_thumb.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_web_download_thumb.svg" SelfReg="false"/>
+    <ROW File="v3_ic_web_main_download.svg" Component_="ic_activate_off.svg" FileName="V3_IC~44.SVG|v3_ic_web_main_download.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_web_main_download.svg" SelfReg="false"/>
+    <ROW File="ViewSonicAirSyncEULA20241115.txt" Component_="profiles.json" FileName="VIEWSO~2.TXT|ViewSonic-AirSync-EULA-20241115.txt" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\ViewSonic-AirSync-EULA-20241115.txt" SelfReg="false"/>
+    <ROW File="webtransport_cert_hashes.json" Component_="profiles.json" FileName="WEBTRA~1.JSO|webtransport_cert_hashes.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\webtransport_cert_hashes.json" SelfReg="false"/>
+    <ROW File="NotoSansTCRegular.ttf" Component_="CustomIcons.ttf" FileName="NOTOSA~1.TTF|NotoSansTC-Regular.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\NotoSansTC-Regular.ttf" SelfReg="false"/>
+    <ROW File="permission_handler_windows_plugin.dll" Component_="permission_handler_windows_plugin.dll" FileName="PERMIS~1.DLL|permission_handler_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\permission_handler_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="screen_retriever_windows_plugin.dll" Component_="screen_retriever_windows_plugin.dll" FileName="SCREEN~1.DLL|screen_retriever_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\screen_retriever_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="sentry.dll" Component_="sentry.dll" FileName="sentry.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\sentry.dll" SelfReg="false"/>
+    <ROW File="window_manager_plugin.dll" Component_="window_manager_plugin.dll" FileName="WINDOW~2.DLL|window_manager_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\window_manager_plugin.dll" SelfReg="false"/>
+    <ROW File="WinSparkle.dll" Component_="WinSparkle.dll" FileName="WINSPA~1.DLL|WinSparkle.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\WinSparkle.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiEmbeddedUIComponent">
     <ROW MsiEmbeddedUI="embeddeduiproxy" FileName="embeddeduiproxy.dll" Attributes="3" MessageFilter="201359327" Data="&lt;AI_HOME&gt;bin\x86\embeddeduiproxy.dll"/>
@@ -488,7 +512,7 @@
     <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
-   <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="0" UseSha256="1" Subject="CN=ViewSonic International Corporation, O=ViewSonic International Corporation, S=New Taipei City, C=TW, SERIALNUMBER=23553019, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=TW" Store="User\MY"/>
+    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="0" UseSha256="1" Subject="CN=ViewSonic International Corporation, O=ViewSonic International Corporation, S=New Taipei City, C=TW, SERIALNUMBER=23553019, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=TW" Store="User\MY"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DynamicPropertyComponent">
     <ROW Property="ProductVersion" Type="2" SourcePath="AirSync_Sender.exe"/>
@@ -603,7 +627,6 @@
     <ROW Feature_="MainFeature" Component_="CupertinoIcons.ttf"/>
     <ROW Feature_="MainFeature" Component_="ad.png"/>
     <ROW Feature_="MainFeature" Component_="ink_sparkle.frag"/>
-    <ROW Feature_="MainFeature" Component_="desktop_window_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="flutter_input_injection_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="flutter_webrtc_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="flutter_windows.dll"/>
@@ -619,13 +642,19 @@
     <ROW Feature_="MainFeature" Component_="share_plus_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="virtualdisplayservice.exe"/>
     <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.inf"/>
-    <ROW Feature_="MainFeature" Component_="AirSync_Sender.exp"/>
     <ROW Feature_="MainFeature" Component_="screen_extension.json"/>
     <ROW Feature_="MainFeature" Component_="no_sleep.js"/>
     <ROW Feature_="MainFeature" Component_="desktop_multi_window_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="desktop_screenstate_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="system_tray_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="AI_IA_ENABLE"/>
+    <ROW Feature_="MainFeature" Component_="app_links_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="auto_updater_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="permission_handler_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="screen_retriever_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="sentry.dll"/>
+    <ROW Feature_="MainFeature" Component_="window_manager_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="WinSparkle.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
