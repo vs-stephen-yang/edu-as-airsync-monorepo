@@ -50,6 +50,7 @@ dependencies:
   sentry_flutter: ^8.14.2
   sentry_logging: ^8.14.2
   share_plus: ^10.1.4
+  win32audio: ^1.4.0
   path_provider: ^2.1.4
   flutter_multi_formatter: ^2.13.0
   logging: ^1.2.0

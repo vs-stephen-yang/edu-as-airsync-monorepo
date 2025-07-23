@@ -475,7 +475,7 @@ class WebRTCConnector {
               'height': constraintHeight,
             };
       int? virtualAudioInputDeviceID; // for macOS only
-      if (_isAudioCaptureAllowed() && !kIsWeb && Platform.isMacOS) {
+      if (_isAudioCaptureAllowed()) {
         if (await AudioSwitchManager().switchToVirtualAudioOutput()) {
           virtualAudioInputDeviceID =
               await AudioSwitchManager().getVirtualAudioInputDeviceID();
@@ -940,9 +940,9 @@ class WebRTCConnector {
     trackOutboundStats(filterEverySecond(_videoOutboundStatsHistory.elements));
 
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
-    if (!kIsWeb && Platform.isMacOS) {
-      await AudioSwitchManager().restoreToDefaultAudioOutput();
-    }
+
+    await AudioSwitchManager().restoreToDefaultAudioOutput();
+
     await _disposeStream();
     await _peerConnectionDisconnect();
     if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:display_cast_flutter/utilities/audio_switch_manager_mac.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager_win.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class AudioSwitchManager {
@@ -8,7 +9,17 @@ abstract class AudioSwitchManager {
   factory AudioSwitchManager() => _instance;
 
   static AudioSwitchManager _createInstance() {
-    if (!kIsWeb && Platform.isMacOS) return AudioSwitchManagerMac();
+    if (kIsWeb) {
+      return AudioSwitchManagerStub();
+    }
+
+    if (Platform.isMacOS) {
+      return AudioSwitchManagerMac();
+    }
+
+    if (Platform.isWindows) {
+      return AudioSwitchManagerWin();
+    }
 
     return AudioSwitchManagerStub();
   }
