@@ -129,7 +129,7 @@ class DisplayGroupSession {
   }
 
   void _onInviteMessage(InviteDisplayGroupMessage message) {
-    _remoteScreenType = parseRemoteScreenType(message.connectionType);
+    _remoteScreenType = RemoteScreenType.fromDisplayGroupType(message.connectionType);
     onInvitation?.call(
       message.hostName ?? '',
       message.displayCode ?? '',

@@ -15,7 +15,6 @@ import 'package:display_flutter/model/display_group_mediator.dart';
 import 'package:display_flutter/model/display_group_member.dart';
 import 'package:display_flutter/model/display_group_member_info.dart';
 import 'package:display_flutter/model/display_group_session.dart';
-import 'package:display_flutter/model/display_group_video_view.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/network_diagnostic.dart';
