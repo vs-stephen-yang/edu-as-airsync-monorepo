@@ -941,12 +941,26 @@ class RemoteScreenSignalMessage extends ChannelMessage {
   }
 }
 
+enum DisplayGroupType {
+  unicast,
+  multicast,
+}
+
+DisplayGroupType stringToDisplayGroupType(String str) {
+  for (DisplayGroupType t in DisplayGroupType.values) {
+    if (str == t.name) {
+      return t;
+    }
+  }
+  throw ArgumentError('Invalid DisplayGroupType string: $str');
+}
+
 class InviteDisplayGroupMessage extends ChannelMessage {
   String? hostId;
   String? hostName;
   String? sessionId;
   String? displayCode;
-  String? connectionType;
+  DisplayGroupType? connectionType;
 
   InviteDisplayGroupMessage({
     this.sessionId,
@@ -963,7 +977,10 @@ class InviteDisplayGroupMessage extends ChannelMessage {
     hostName = data['hostName'] as String?;
     displayCode = data['displayCode'] as String?;
     sessionId = data['sessionId'] as String?;
-    connectionType = data['connectionType'] as String?;
+
+    if (data['connectionType'] != null) {
+      connectionType = stringToDisplayGroupType(data['connectionType'] as String);
+    }
   }
 
   @override
@@ -973,7 +990,7 @@ class InviteDisplayGroupMessage extends ChannelMessage {
       'hostName': hostName,
       'displayCode': displayCode,
       'sessionId': sessionId,
-      'connectionType': connectionType,
+      'connectionType': connectionType?.name,
     });
   }
 }
