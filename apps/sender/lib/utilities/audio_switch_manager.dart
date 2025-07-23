@@ -24,7 +24,7 @@ abstract class AudioSwitchManager {
     return AudioSwitchManagerStub();
   }
 
-  Future<bool> hasVirtualAudioDevice() async {
+  Future<bool> isVirtualAudioMissing() async {
     return true;
   }
 
@@ -41,8 +41,8 @@ abstract class AudioSwitchManager {
 
 class AudioSwitchManagerStub implements AudioSwitchManager {
   @override
-  Future<bool> hasVirtualAudioDevice() async {
-    return true;
+  Future<bool> isVirtualAudioMissing() async {
+    return false;
   }
 
   @override

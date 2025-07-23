@@ -17,7 +17,6 @@ import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_svg/svg.dart';
@@ -76,9 +75,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       selectScreenDialog?.cancel();
     });
 
-    bool? hasAudioDevice = (!kIsWeb && Platform.isMacOS)
-        ? await AudioSwitchManager().hasVirtualAudioDevice()
-        : null;
+    final isVirtualAudioMissing = await AudioSwitchManager().isVirtualAudioMissing();
     await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {
@@ -87,7 +84,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           isExtensionEnable:
               (Platform.isWindows || VersionUtil.isOpenVersion) && isSupported,
           annotationModel: context.read<AnnotationModel>(),
-          hasVirtualAudioDevice: hasAudioDevice,
+          isVirtualAudioMissing: isVirtualAudioMissing,
         );
         return selectScreenDialog!;
       },
@@ -276,7 +273,7 @@ class SelectScreenDialog extends Dialog {
     required this.hostName,
     required this.isExtensionEnable,
     required this.annotationModel,
-    required this.hasVirtualAudioDevice,
+    required this.isVirtualAudioMissing,
   }) {
     Future.delayed(const Duration(milliseconds: 100), () {
       _getSources(SourceType.Screen);
@@ -313,7 +310,7 @@ class SelectScreenDialog extends Dialog {
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
-  bool? hasVirtualAudioDevice;
+  final bool isVirtualAudioMissing;
   bool enableAudioCheckbox = true;
 
   @override
@@ -321,13 +318,6 @@ class SelectScreenDialog extends Dialog {
     hostName =
         hostName.length > 20 ? '${hostName.substring(0, 20)}...' : hostName;
     ctx = context;
-
-    bool displayAudioDriverWarning = false;
-    if (Platform.isMacOS &&
-        hasVirtualAudioDevice != null &&
-        !hasVirtualAudioDevice!) {
-      displayAudioDriverWarning = true;
-    }
 
     return Material(
       type: MaterialType.transparency,
@@ -419,7 +409,7 @@ class SelectScreenDialog extends Dialog {
                           double bottomHeight = 48;
                           if (platformIsDesktop && enableAudioCheckbox) {
                             bottomHeight += 48;
-                            if (displayAudioDriverWarning) {
+                            if (isVirtualAudioMissing) {
                               bottomHeight += 48;
                             }
                           }
@@ -560,14 +550,14 @@ class SelectScreenDialog extends Dialog {
                                                     .resolveWith(
                                                   (states) => BorderSide(
                                                       width: 1.0,
-                                                      color: (!displayAudioDriverWarning)
+                                                      color: (!isVirtualAudioMissing)
                                                           ? context.tokens.color
                                                               .vsdswColorPrimary
                                                           : context.tokens.color
                                                               .vsdswColorDisabled),
                                                 ),
                                                 onChanged:
-                                                    (!displayAudioDriverWarning)
+                                                    (!isVirtualAudioMissing)
                                                         ? (bool? value) {
                                                             setState(() {
                                                               _systemAudio =
@@ -585,7 +575,7 @@ class SelectScreenDialog extends Dialog {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontFamily: 'Inter',
-                                                    color: (!displayAudioDriverWarning)
+                                                    color: (!isVirtualAudioMissing)
                                                         ? context.tokens.color
                                                             .vsdswColorOnSurface
                                                         : context.tokens.color
@@ -594,7 +584,7 @@ class SelectScreenDialog extends Dialog {
                                             ),
                                           ],
                                         ),
-                                        if (displayAudioDriverWarning)
+                                        if (isVirtualAudioMissing)
                                           MergeSemantics(
                                             child: Row(
                                               children: [
