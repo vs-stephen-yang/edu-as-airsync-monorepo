@@ -418,7 +418,7 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> _handleRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
-    _remoteScreenClient ??= RtcScreenClient(_channel, infoMessage.sessionId);
+    _remoteScreenClient = RtcScreenClient(_channel, infoMessage.sessionId);
     await _remoteScreenClient!.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
