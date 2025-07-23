@@ -110,8 +110,7 @@ class _RemoteVideoView extends State<RemoteVideoView> {
 
   bool _isVideoAvailable(ChannelProvider channelProvider) {
     return channelProvider.remoteScreenClient != null &&
-        channelProvider.remoteScreenClient?.remoteScreenRenderer.textureId !=
-            null;
+        channelProvider.remoteScreenClient!.isVideoAvailable;
   }
 
   @override
@@ -134,10 +133,7 @@ class _RemoteVideoView extends State<RemoteVideoView> {
                 onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
                 onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
                 onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
-                child: RTCVideoView(
-                  channelProvider.remoteScreenClient!.remoteScreenRenderer,
-                  key: channelProvider.remoteScreenClient!.rtcWidgetKey,
-                ),
+                child: channelProvider.remoteScreenClient!.createVideoView,
               ),
             ),
           );

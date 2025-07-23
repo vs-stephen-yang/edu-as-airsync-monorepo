@@ -418,7 +418,8 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> _handleRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
-    await _remoteScreenClient?.handleRemoteScreenInfo(
+    _remoteScreenClient ??= RtcScreenClient(_channel, infoMessage.sessionId);
+    await _remoteScreenClient!.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
       infoMessage.ionSfuRoom!.iceServers,
@@ -730,8 +731,13 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future _requestRemoteScreen() async {
-    _remoteScreenClient = RemoteScreenClient(_channel);
-    unawaited(_remoteScreenClient?.sendStartRemoteScreenMessage());
+    final sessionId = Uuid().v4();
+    unawaited(sendStartRemoteScreenMessage(sessionId));
+  }
+
+  Future sendStartRemoteScreenMessage(String sessionId) async {
+    final msg = StartRemoteScreenMessage(sessionId);
+    _channel?.send(msg);
   }
 
   void _onChannelOpenFailed(ChannelConnectorError error) {

@@ -24,8 +24,7 @@ class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
 
   bool _isVideoAvailable(ChannelProvider channelProvider) {
     return channelProvider.remoteScreenClient != null &&
-        channelProvider.remoteScreenClient?.remoteScreenRenderer.textureId !=
-            null;
+        channelProvider.remoteScreenClient!.isVideoAvailable;
   }
 
   Widget _buildVideoView(ChannelProvider channelProvider) {
@@ -44,10 +43,7 @@ class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
           onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
           onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
           onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
-          child: RTCVideoView(
-            channelProvider.remoteScreenClient!.remoteScreenRenderer,
-            key: channelProvider.remoteScreenClient!.rtcWidgetKey,
-          ),
+          child: channelProvider.remoteScreenClient!.createVideoView,
         ),
       ),
     );

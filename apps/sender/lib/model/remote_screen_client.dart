@@ -7,31 +7,92 @@ import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-// import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart' as pb;
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 
-class RemoteScreenClient {
-  RemoteScreenClient(this._channel);
+abstract class RemoteScreenClient {
+  RemoteScreenClient(this._channel, String? sessionId)
+      : _sessionId = sessionId ?? const Uuid().v4();
 
   final Channel? _channel;
-  final String _sessionId = const Uuid().v4();
+  final String? _sessionId;
+
+  bool _textureSizeChanged = false;
+
+  StatelessWidget get createVideoView;
+  bool get isVideoAvailable;
+
+  RemoteScreenChannelSignal? _channelSignal;
+
+  void handleSignalMessage(String signal) {
+    // handle signal messages from the channel
+    _channelSignal?.onPeerMessage(signal);
+  }
+
+  Future sendStopRemoteScreenMessage() async {
+    final msg = StopRemoteScreenMessage(_sessionId);
+    _channel?.send(msg);
+  }
+
+  Future sendRemoteScreenState(RemoteScreenStatus status) async {
+    final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
+    _channel?.send(stateMessage);
+  }
+
+  Future remove();
+
+  onVideoSizeChanged() {
+    _textureSizeChanged = true;
+  }
+
+  void onKeyDown(KeyEvent event);
+
+  void onTouchStart(PointerEvent event) {
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_START, event);
+  }
+
+  void onTouchMove(PointerEvent event) {
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
+  }
+
+  void onTouchEnd(PointerEvent event) {
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_END, event);
+  }
+
+  void onTouchEvent(
+    pb.TouchEvent_TouchEventType eventType,
+    PointerEvent event,
+  );
+
+  Future handleRemoteScreenInfo(
+      String? url,
+      String roomId,
+      List<RtcIceServer>? iceServers,
+      Function() onTrack,
+      Function() onClose,
+      );
+}
+
+class RtcScreenClient extends RemoteScreenClient {
   Client? _client;
 
-  RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
   RTCDataChannel? _dataChannel;
 
-  GlobalKey get rtcWidgetKey => _rtcWidgetKey;
   final GlobalKey _rtcWidgetKey = GlobalKey();
-  bool _textureSizeChanged = false;
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
   bool _isFirstConnected = true;
 
-  RemoteScreenChannelSignal? _channelSignal;
+  RtcScreenClient(super.channel, super.sessionId);
+
+  @override
+  StatelessWidget get createVideoView => RTCVideoView(_remoteScreenRenderer, key: _rtcWidgetKey);
+
+  @override
+  bool get isVideoAvailable => _remoteScreenRenderer.textureId != null;
 
   onDataChannelState(RTCDataChannelState state) {
     log.info('Remote screen: Data channel state ${state.name}');
@@ -41,7 +102,7 @@ class RemoteScreenClient {
     }
   }
 
-// send signal messages to the peer via the channel
+  // send signal messages to the peer via the channel
   void _sendSignalMessageToPeer(String message) {
     _channel?.send(
       RemoteScreenSignalMessage(_sessionId, message),
@@ -68,13 +129,14 @@ class RemoteScreenClient {
     }
   }
 
+  @override
   Future handleRemoteScreenInfo(
-    String? url,
-    String roomId,
-    List<RtcIceServer>? iceServers,
-    Function() onTrack,
-    Function() onClose,
-  ) async {
+      String? url,
+      String roomId,
+      List<RtcIceServer>? iceServers,
+      Function() onTrack,
+      Function() onClose,
+      ) async {
     log.info('Remote screen: Create client');
 
     final signal = _createSignal(url);
@@ -86,7 +148,7 @@ class RemoteScreenClient {
       config: WebRTCUtil.buildWebRtcConfiguration(iceServers),
     );
 
-    _dataChannel = await _client!.createDataChannel(_sessionId);
+    _dataChannel = await _client!.createDataChannel(_sessionId!);
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
@@ -128,26 +190,7 @@ class RemoteScreenClient {
     };
   }
 
-  void handleSignalMessage(String signal) {
-    // handle signal messages from the channel
-    _channelSignal?.onPeerMessage(signal);
-  }
-
-  Future sendStartRemoteScreenMessage() async {
-    final msg = StartRemoteScreenMessage(_sessionId);
-    _channel?.send(msg);
-  }
-
-  Future sendStopRemoteScreenMessage() async {
-    final msg = StopRemoteScreenMessage(_sessionId);
-    _channel?.send(msg);
-  }
-
-  Future sendRemoteScreenState(RemoteScreenStatus status) async {
-    final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
-    _channel?.send(stateMessage);
-  }
-
+  @override
   Future remove() async {
     if (_remoteScreenRenderer.textureId != null) {
       _remoteScreenRenderer.srcObject = null;
@@ -160,10 +203,6 @@ class RemoteScreenClient {
     _client = null;
 
     await WakelockManager().manageWakelock(AppScene.rtcRemoteScreenHangUp);
-  }
-
-  onVideoSizeChanged() {
-    _textureSizeChanged = true;
   }
 
   void updateTextureInfo() {
@@ -184,7 +223,7 @@ class RemoteScreenClient {
       return;
     } else {
       final RenderBox renderBox =
-          textureElement!.findRenderObject() as RenderBox;
+      textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
       log.info(
@@ -193,6 +232,7 @@ class RemoteScreenClient {
     }
   }
 
+  @override
   void onKeyDown(KeyEvent event) {
     final eventMessage = EventMessage();
     eventMessage.keyEvent = toKeyEvent(event);
@@ -202,22 +242,11 @@ class RemoteScreenClient {
     );
   }
 
-  void onTouchStart(PointerEvent event) {
-    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_START, event);
-  }
-
-  void onTouchMove(PointerEvent event) {
-    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
-  }
-
-  void onTouchEnd(PointerEvent event) {
-    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_END, event);
-  }
-
+  @override
   void onTouchEvent(
-    pb.TouchEvent_TouchEventType eventType,
-    PointerEvent event,
-  ) {
+      pb.TouchEvent_TouchEventType eventType,
+      PointerEvent event,
+      ) {
     if (_textureSizeChanged) {
       updateTextureInfo();
     }
