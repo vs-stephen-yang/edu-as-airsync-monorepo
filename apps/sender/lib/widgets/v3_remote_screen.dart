@@ -6,7 +6,6 @@ import 'package:display_cast_flutter/widgets/resizable_draggable_widget.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class V3RemoteScreen extends StatefulWidget {
