@@ -35,6 +35,7 @@ import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -163,8 +164,10 @@ class ChannelProvider extends ChangeNotifier {
   bool get isDisplayGroupVideoAvailable =>
       _displayGroupSession?.isVideoAvailable ?? false;
 
-  DisplayGroupVideoView? get displayGroupVideoView =>
-      _displayGroupSession?.videoView;
+  bool get isDisplayGroupAudioEnabled =>
+      _displayGroupSession?.isAudioEnabled ?? false;
+
+  StatelessWidget? get displayGroupVideoView => _displayGroupSession?.videoView;
 
   ProviderContainer? providerContainer; //透過ProviderContainer來和Riverpod進行互動
 
@@ -1101,6 +1104,10 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void displayGroupOnMute() {
+    _displayGroupSession?.onMute();
   }
 // endregion
 }

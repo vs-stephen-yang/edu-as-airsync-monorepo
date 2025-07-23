@@ -48,9 +48,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
             }
           });
         }
-        bool audioEnabled = videoView.renderer.srcObject != null &&
-            videoView.renderer.srcObject!.getAudioTracks().isNotEmpty &&
-            videoView.renderer.srcObject!.getAudioTracks()[0].enabled;
+        bool audioEnabled = provider.isDisplayGroupAudioEnabled;
 
         return FocusScope(
           child: Stack(
@@ -65,10 +63,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                   ),
                   color: Colors.black,
                 ),
-                child: RTCVideoView(
-                  videoView.renderer,
-                  key: videoView.widgetKey,
-                ),
+                child: provider.displayGroupVideoView,
               ),
               IgnorePointer(
                 child: Container(
@@ -84,17 +79,8 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                 halfScreen: MediaQuery.of(context).size.width / 2,
                 text:
                     '${S.of(context).v3_group_receive_view_status_from} ${provider.displayGroupHostName}',
-                onMute: () {
-                  if (videoView.renderer.srcObject != null &&
-                      videoView.renderer.srcObject!
-                          .getAudioTracks()
-                          .isNotEmpty) {
-                    videoView.renderer.srcObject!.getAudioTracks()[0].enabled =
-                        !videoView.renderer.srcObject!
-                            .getAudioTracks()[0]
-                            .enabled;
-                  }
-                },
+                // TODO: test onMute function when unblock Cast to Board onMute
+                onMute: provider.displayGroupOnMute,
                 onStop: () {
                   provider.stopReceivedFromHost(
                       closeReason: 'stop received from host');
