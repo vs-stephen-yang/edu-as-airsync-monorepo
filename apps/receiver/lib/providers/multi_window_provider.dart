@@ -165,3 +165,67 @@ class MultiWindowLayout extends StatelessWidget {
     );
   }
 }
+
+class MultiWindowAdaptiveLayout extends StatelessWidget {
+  final Widget? portrait;
+  final Widget landscape;
+  final Widget? landscapeHalf;
+  final Widget? landscapeOneThird;
+  final Widget? landscapeThirds;
+
+  final Widget? Function()? fallbackForTwoThirds;
+  final Widget? Function()? fallbackForOneThird;
+  final Widget? Function()? fallbackForHalf;
+
+  const MultiWindowAdaptiveLayout({
+    super.key,
+    this.portrait,
+    required this.landscape,
+    this.landscapeHalf,
+    this.landscapeOneThird,
+    this.landscapeThirds,
+    this.fallbackForTwoThirds,
+    this.fallbackForOneThird,
+    this.fallbackForHalf,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final isMultiWindow = context.isInMultiWindow;
+      final isPortrait =
+          constraints.maxWidth < constraints.maxHeight && !isMultiWindow;
+
+      if (isPortrait && portrait != null) {
+        return portrait ?? landscape;
+      }
+
+      if (!isMultiWindow) return landscape;
+
+      final ratio = context.splitScreenRatio;
+
+      switch (ratio) {
+        case SplitScreenRatio.twoThirds:
+          return landscapeThirds ?? _fallbackForTwoThirds() ?? landscape;
+        case SplitScreenRatio.half:
+          return landscapeHalf ?? _fallbackForHalf() ?? landscape;
+        case SplitScreenRatio.oneThird:
+          return landscapeOneThird ?? _fallbackForOneThird() ?? landscape;
+        case SplitScreenRatio.none:
+          return landscape;
+      }
+    });
+  }
+
+  Widget? _fallbackForTwoThirds() {
+    return fallbackForTwoThirds?.call() ?? landscapeHalf ?? landscapeOneThird;
+  }
+
+  Widget? _fallbackForOneThird() {
+    return fallbackForOneThird?.call() ?? landscapeHalf ?? landscapeThirds;
+  }
+
+  Widget? _fallbackForHalf() {
+    return fallbackForHalf?.call() ?? landscapeThirds ?? landscapeOneThird;
+  }
+}
