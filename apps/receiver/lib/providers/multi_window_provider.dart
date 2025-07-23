@@ -171,7 +171,7 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
   final Widget landscape;
   final Widget? landscapeHalf;
   final Widget? landscapeOneThird;
-  final Widget? landscapeThirds;
+  final Widget? landscapeTwoThirds;
 
   final Widget? Function()? fallbackForTwoThirds;
   final Widget? Function()? fallbackForOneThird;
@@ -183,7 +183,7 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
     required this.landscape,
     this.landscapeHalf,
     this.landscapeOneThird,
-    this.landscapeThirds,
+    this.landscapeTwoThirds,
     this.fallbackForTwoThirds,
     this.fallbackForOneThird,
     this.fallbackForHalf,
@@ -206,7 +206,7 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
 
       switch (ratio) {
         case SplitScreenRatio.twoThirds:
-          return landscapeThirds ?? _fallbackForTwoThirds() ?? landscape;
+          return landscapeTwoThirds ?? _fallbackForTwoThirds() ?? landscape;
         case SplitScreenRatio.half:
           return landscapeHalf ?? _fallbackForHalf() ?? landscape;
         case SplitScreenRatio.oneThird:
@@ -218,14 +218,17 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
   }
 
   Widget? _fallbackForTwoThirds() {
+    if (fallbackFullscreen) return landscape;
     return fallbackForTwoThirds?.call() ?? landscapeHalf ?? landscapeOneThird;
   }
 
   Widget? _fallbackForOneThird() {
-    return fallbackForOneThird?.call() ?? landscapeHalf ?? landscapeThirds;
+    if (fallbackFullscreen) return landscape;
+    return fallbackForOneThird?.call() ?? landscapeHalf ?? landscapeTwoThirds;
   }
 
   Widget? _fallbackForHalf() {
-    return fallbackForHalf?.call() ?? landscapeThirds ?? landscapeOneThird;
+    if (fallbackFullscreen) return landscape;
+    return fallbackForHalf?.call() ?? landscapeTwoThirds ?? landscapeOneThird;
   }
 }
