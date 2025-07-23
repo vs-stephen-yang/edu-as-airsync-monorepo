@@ -86,8 +86,8 @@ class AudioSwitchManagerMac implements AudioSwitchManager {
   }
 
   @override
-  Future<bool> hasVirtualAudioDevice() async {
-    return await _checkVirtualAudioDevice() != null;
+  Future<bool> isVirtualAudioMissing() async {
+    return await _checkVirtualAudioDevice() == null;
   }
 
   @override

@@ -10,8 +10,8 @@ class AudioSwitchManagerWin implements AudioSwitchManager {
   static final String _virtualAudioName = "AirSync Audio";
 
   @override
-  Future<bool> hasVirtualAudioDevice() async {
-    return true;
+  Future<bool> isVirtualAudioMissing() async {
+    return false;
   }
 
   @override

@@ -49,14 +49,14 @@ class _V3PresentIdleAudioDriverWarningState
     }
 
     return FutureBuilder<bool>(
-      future: AudioSwitchManager().hasVirtualAudioDevice(),
+      future: AudioSwitchManager().isVirtualAudioMissing(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();
         }
 
-        final bool hasAudioDevice = snapshot.data ?? true;
-        if (hasAudioDevice) {
+        final bool isVirtualAudioMissing = snapshot.data ?? false;
+        if (!isVirtualAudioMissing) {
           return const SizedBox.shrink();
         }
 
