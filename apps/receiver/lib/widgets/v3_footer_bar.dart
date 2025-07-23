@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/utility/navigation_service_util.dart';
@@ -44,29 +45,32 @@ class V3FooterBar extends StatelessWidget {
             child: SizedBox(
               width: 41,
               height: 41,
-              child: Consumer<SettingsProvider>(
-                builder: (_, settingsProvider, __) {
-                  final lock = settingsProvider.isSettingsLock;
-                  return V3Focus(
-                    label: lock
-                        ? S.of(context).v3_lbl_settings_menu_locked
-                        : S.of(context).v3_lbl_open_menu_settings,
-                    identifier: lock
-                        ? 'v3_qa_menu_settings_locked'
-                        : 'v3_qa_menu_settings',
-                    child: IconButton(
-                      icon: SvgPicture.asset(lock
-                          ? 'assets/images/ic_menu_settings_locked.svg'
-                          : 'assets/images/ic_menu_settings.svg'),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {
-                        trackEvent('click_setting', EventCategory.setting);
-                        _showSettingsMenuDialog(context, settingsProvider);
-                      },
-                    ),
-                  );
-                },
+              child: MultiWindowAdaptiveLayout(
+                landscape: Consumer<SettingsProvider>(
+                  builder: (_, settingsProvider, __) {
+                    final lock = settingsProvider.isSettingsLock;
+                    return V3Focus(
+                      label: lock
+                          ? S.of(context).v3_lbl_settings_menu_locked
+                          : S.of(context).v3_lbl_open_menu_settings,
+                      identifier: lock
+                          ? 'v3_qa_menu_settings_locked'
+                          : 'v3_qa_menu_settings',
+                      child: IconButton(
+                        icon: SvgPicture.asset(lock
+                            ? 'assets/images/ic_menu_settings_locked.svg'
+                            : 'assets/images/ic_menu_settings.svg'),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          trackEvent('click_setting', EventCategory.setting);
+                          _showSettingsMenuDialog(context, settingsProvider);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                landscapeOneThird: SizedBox.shrink(),
               ),
             ),
           ),
