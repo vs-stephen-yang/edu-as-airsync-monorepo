@@ -134,9 +134,9 @@ class _V3HomeState extends State<V3Home> {
 
     () async {
       await _presentEndOnExit();
-      if (!kIsWeb && Platform.isMacOS) {
-        await AudioSwitchManager().restoreToDefaultAudioOutput();
-      }
+
+      await AudioSwitchManager().restoreToDefaultAudioOutput();
+
       completer.complete(AppExitResponse.exit);
     }();
 
