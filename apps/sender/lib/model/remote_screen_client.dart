@@ -21,7 +21,7 @@ abstract class RemoteScreenClient {
 
   bool _textureSizeChanged = false;
 
-  StatelessWidget get createVideoView;
+  Widget get createVideoView;
   bool get isVideoAvailable;
 
   RemoteScreenChannelSignal? _channelSignal;
@@ -89,7 +89,7 @@ class RtcScreenClient extends RemoteScreenClient {
   RtcScreenClient(super.channel, super.sessionId);
 
   @override
-  StatelessWidget get createVideoView => RTCVideoView(_remoteScreenRenderer, key: _rtcWidgetKey);
+  Widget get createVideoView => RTCVideoView(_remoteScreenRenderer, key: _rtcWidgetKey);
 
   @override
   bool get isVideoAvailable => _remoteScreenRenderer.textureId != null;
