@@ -946,11 +946,13 @@ class InviteDisplayGroupMessage extends ChannelMessage {
   String? hostName;
   String? sessionId;
   String? displayCode;
+  String? connectionType;
 
   InviteDisplayGroupMessage({
     this.sessionId,
     this.displayCode,
     this.hostName,
+    this.connectionType,
   }) : super(ChannelMessageType.inviteDisplayGroup);
 
   InviteDisplayGroupMessage.fromJson(Map<String, dynamic> json)
@@ -961,6 +963,7 @@ class InviteDisplayGroupMessage extends ChannelMessage {
     hostName = data['hostName'] as String?;
     displayCode = data['displayCode'] as String?;
     sessionId = data['sessionId'] as String?;
+    connectionType = data['connectionType'] as String?;
   }
 
   @override
@@ -970,6 +973,7 @@ class InviteDisplayGroupMessage extends ChannelMessage {
       'hostName': hostName,
       'displayCode': displayCode,
       'sessionId': sessionId,
+      'connectionType': connectionType,
     });
   }
 }
