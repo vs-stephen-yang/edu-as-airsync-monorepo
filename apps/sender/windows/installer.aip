@@ -33,9 +33,10 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="NewFolder_Dir" Directory_Parent="drivers_Dir" DefaultDir="INDIRE~1|indirect_display"/>
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="airsyncaudio_Dir" Directory_Parent="APPDIR" DefaultDir="AIRSYN~1|airsyncaudio"/>
+    <ROW Directory="airsyncaudio_Dir" Directory_Parent="drivers_Dir" DefaultDir="AIRSYN~1|airsyncaudio"/>
     <ROW Directory="assets_1_Dir" Directory_Parent="cupertino_icons_Dir" DefaultDir="assets"/>
     <ROW Directory="assets_2_Dir" Directory_Parent="wakelock_plus_Dir" DefaultDir="assets"/>
     <ROW Directory="assets_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="assets"/>
@@ -78,7 +79,8 @@
     <ROW Component="flutter_window_close_plugin.dll" ComponentId="{A0866AE4-9E83-4D98-AF3E-849B9683F6F4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_window_close_plugin.dll"/>
     <ROW Component="flutter_windows.dll" ComponentId="{7AC28546-FBA8-4C3B-99C0-239D5D2EFCFE}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_windows.dll"/>
     <ROW Component="ic_activate_off.svg" ComponentId="{C10313F1-3545-444F-B4C0-04B59AED08EF}" Directory_="images_Dir" Attributes="0" KeyPath="ic_activate_off.svg" Type="0"/>
-    <ROW Component="indirect_display_1_2.inf" ComponentId="{71656C35-BB4B-4B29-8D8B-96D35A0AF1C6}" Directory_="drivers_Dir" Attributes="256" Condition="VersionNT64" KeyPath="indirect_display_1_2.dll"/>
+    <ROW Component="indirect_display_1_2.cat" ComponentId="{7E3FEA7B-6C84-497C-96F5-CC61A3EED582}" Directory_="NewFolder_Dir" Attributes="0" KeyPath="indirect_display_1_2.cat" Type="0"/>
+    <ROW Component="indirect_display_1_2.dll" ComponentId="{FC5FA19C-28A5-433F-A141-95E49B3253D5}" Directory_="NewFolder_Dir" Attributes="0" KeyPath="indirect_display_1_2.dll"/>
     <ROW Component="ink_sparkle.frag" ComponentId="{BFD6B9B3-D751-428D-9D8C-C02A880823C1}" Directory_="shaders_Dir" Attributes="0" KeyPath="ink_sparkle.frag" Type="0"/>
     <ROW Component="launcher.exe" ComponentId="{9E513C78-8C39-475A-90EA-13D36B4D57B1}" Directory_="APPDIR" Attributes="256" KeyPath="launcher.exe"/>
     <ROW Component="libwebrtc.dll" ComponentId="{1D51C5E6-5F93-44D1-B646-A305D8D05B30}" Directory_="APPDIR" Attributes="256" KeyPath="libwebrtc.dll"/>
@@ -399,9 +401,9 @@
     <ROW File="RobotoRegular.ttf" Component_="CustomIcons.ttf" FileName="ROBOTO~1.TTF|Roboto-Regular.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\Roboto-Regular.ttf" SelfReg="false"/>
     <ROW File="connectivity_plus_plugin.dll" Component_="connectivity_plus_plugin.dll" FileName="CONNEC~1.DLL|connectivity_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\connectivity_plus_plugin.dll" SelfReg="false"/>
     <ROW File="profiles.json" Component_="profiles.json" FileName="PROFIL~1.JSO|profiles.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\profiles.json" SelfReg="false"/>
-    <ROW File="indirect_display_1_2.cat" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.CAT|indirect_display_1_2.cat" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.cat" SelfReg="false"/>
-    <ROW File="indirect_display_1_2.dll" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.DLL|indirect_display_1_2.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.dll" SelfReg="false"/>
-    <ROW File="indirect_display_1_2.inf" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.inf" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.cat" Component_="indirect_display_1_2.cat" FileName="INDIRE~1.CAT|indirect_display_1_2.cat" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.cat" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.dll" Component_="indirect_display_1_2.dll" FileName="INDIRE~1.DLL|indirect_display_1_2.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.dll" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.inf" Component_="indirect_display_1_2.cat" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.inf" SelfReg="false"/>
     <ROW File="flutter_virtual_display_plugin.dll" Component_="flutter_virtual_display_plugin.dll" FileName="FLUTTE~5.DLL|flutter_virtual_display_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_virtual_display_plugin.dll" SelfReg="false"/>
     <ROW File="launcher.exe" Component_="launcher.exe" FileName="launcher.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\launcher.exe" SelfReg="false" DigSign="true"/>
     <ROW File="share_plus_plugin.dll" Component_="share_plus_plugin.dll" FileName="SHARE_~1.DLL|share_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\share_plus_plugin.dll" SelfReg="false"/>
@@ -649,7 +651,6 @@
     <ROW Feature_="MainFeature" Component_="launcher.exe"/>
     <ROW Feature_="MainFeature" Component_="share_plus_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="virtualdisplayservice.exe"/>
-    <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.inf"/>
     <ROW Feature_="MainFeature" Component_="screen_extension.json"/>
     <ROW Feature_="MainFeature" Component_="no_sleep.js"/>
     <ROW Feature_="MainFeature" Component_="desktop_multi_window_plugin.dll"/>
@@ -664,6 +665,8 @@
     <ROW Feature_="MainFeature" Component_="window_manager_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="WinSparkle.dll"/>
     <ROW Feature_="airsyncaudio" Component_="airsyncaudio.inf_1"/>
+    <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.cat"/>
+    <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
