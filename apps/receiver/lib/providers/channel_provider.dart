@@ -18,7 +18,6 @@ import 'package:display_flutter/model/display_group_session.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/network_diagnostic.dart';
-import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -247,7 +246,6 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
-    getIceServersForDirect() => Future.value(<RtcIceServer>[]);
     _remoteScreenProvider = RemoteScreenProvider(
         RemoteScreenServer(), _instanceInfo.ipAddress, removeSender);
 
