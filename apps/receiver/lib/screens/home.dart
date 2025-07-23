@@ -90,10 +90,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       return const SizedBox.shrink();
     }
 
-    return RTCVideoView(
-      videoView.renderer,
-      key: videoView.widgetKey,
-    );
+    return videoView;
   }
 
   @override

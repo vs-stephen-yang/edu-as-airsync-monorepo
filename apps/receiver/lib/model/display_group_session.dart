@@ -1,14 +1,34 @@
 import 'package:display_channel/display_channel.dart';
-import 'package:display_flutter/model/display_group_video_view.dart';
 import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_client.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class DisplayGroupSession {
   bool get isVideoAvailable => _isVideoAvailable;
   bool _isVideoAvailable = false;
 
-  DisplayGroupVideoView? get videoView {
+  bool get isAudioEnabled {
+    switch (_remoteScreenType) {
+      case RemoteScreenType.rtc:
+        final rtcClient = _remoteScreenClient as RtcScreenClient;
+        return rtcClient.remoteScreenRenderer.srcObject != null &&
+            rtcClient.remoteScreenRenderer.srcObject!
+                .getAudioTracks()
+                .isNotEmpty &&
+            rtcClient.remoteScreenRenderer.srcObject!
+                .getAudioTracks()[0]
+                .enabled;
+
+      case RemoteScreenType.multicast:
+      // TODO: implement it
+    }
+
+    return false;
+  }
+
+  StatelessWidget? get videoView {
     if (_remoteScreenClient == null) {
       return null;
     }
@@ -16,12 +36,12 @@ class DisplayGroupSession {
     switch (_remoteScreenType) {
       case RemoteScreenType.rtc:
         final rtcClient = _remoteScreenClient as RtcScreenClient;
-        return DisplayGroupVideoView(
+        return RTCVideoView(
           rtcClient.remoteScreenRenderer,
-          rtcClient.rtcWidgetKey,
+          key: rtcClient.rtcWidgetKey,
         );
       case RemoteScreenType.multicast:
-        // TODO: implement it
+      // TODO: implement it
     }
 
     return null;
@@ -90,13 +110,15 @@ class DisplayGroupSession {
         // TODO:
         break;
       case ChannelMessageType.remoteScreenInfo:
-        if (_remoteScreenType == RemoteScreenType.rtc && _remoteScreenClient is RtcScreenClient) {
+        if (_remoteScreenType == RemoteScreenType.rtc &&
+            _remoteScreenClient is RtcScreenClient) {
           await _onRemoteScreenInfo(message as RemoteScreenInfoMessage);
         }
         break;
       case ChannelMessageType.remoteScreenSignal:
         final signalMessage = message as RemoteScreenSignalMessage;
-        if (_remoteScreenType == RemoteScreenType.rtc && _remoteScreenClient is RtcScreenClient) {
+        if (_remoteScreenType == RemoteScreenType.rtc &&
+            _remoteScreenClient is RtcScreenClient) {
           final rtcClient = _remoteScreenClient as RtcScreenClient;
           rtcClient.handleSignalMessage(signalMessage.signal!);
         }
@@ -143,5 +165,26 @@ class DisplayGroupSession {
         onWebRtcClose?.call();
       },
     );
+  }
+
+  void onMute() {
+    switch (_remoteScreenType) {
+      case RemoteScreenType.rtc:
+        final rtcClient = _remoteScreenClient as RtcScreenClient;
+        if (rtcClient.remoteScreenRenderer.srcObject != null &&
+            rtcClient.remoteScreenRenderer.srcObject!
+                .getAudioTracks()
+                .isNotEmpty) {
+          rtcClient.remoteScreenRenderer.srcObject!
+                  .getAudioTracks()[0]
+                  .enabled =
+              !rtcClient.remoteScreenRenderer.srcObject!
+                  .getAudioTracks()[0]
+                  .enabled;
+        }
+
+      case RemoteScreenType.multicast:
+      // TODO: implement it
+    }
   }
 }
