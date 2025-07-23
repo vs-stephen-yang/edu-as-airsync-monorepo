@@ -6,7 +6,6 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/resizable_draggable_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
