@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/screens/v3_setting_menu_desktop.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
+import 'package:display_cast_flutter/widgets/v3_debug_invisible_button.dart';
 import 'package:display_cast_flutter/widgets/v3_device_list.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
@@ -22,7 +23,6 @@ import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_cast_flutter/widgets/v3_remote_screen.dart';
-import 'package:display_cast_flutter/widgets/v3_viewsonic_logo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -58,7 +58,7 @@ class V3HomeApp extends StatelessWidget {
                   if (presentStateProvider.currentState == ViewState.idle &&
                       (demoProvider.state == V3DemoViewState.idle ||
                           demoProvider.state == V3DemoViewState.off)) ...[
-                    const V3ViewsonicLogo(),
+                    const V3DebugInvisibleButton(),
                     const QRCodeConnect(),
                     const SettingMenu(),
                   ]
