@@ -24,19 +24,13 @@ abstract class AudioSwitchManager {
     return AudioSwitchManagerStub();
   }
 
-  Future<bool> isVirtualAudioMissing() async {
-    return true;
-  }
+  Future<bool> isVirtualAudioMissing();
 
-  Future<int?> getVirtualAudioInputDeviceID() async {
-    return null;
-  }
+  Future<int?> getVirtualAudioInputDeviceID();
 
-  Future<bool> switchToVirtualAudioOutput() async {
-    return true;
-  }
+  Future<bool> switchToVirtualAudioOutput();
 
-  Future<void> restoreToDefaultAudioOutput() async {}
+  Future<void> restoreToDefaultAudioOutput();
 }
 
 class AudioSwitchManagerStub implements AudioSwitchManager {
