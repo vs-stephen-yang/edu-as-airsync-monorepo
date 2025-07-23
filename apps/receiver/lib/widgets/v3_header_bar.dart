@@ -1,3 +1,4 @@
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/widgets/v3_status.dart';
 import 'package:flutter/material.dart';
@@ -44,16 +45,24 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
                   height: 36,
                 ),
               ),
-              const Padding(padding: EdgeInsets.only(left: 7)),
-              SvgPicture.asset(
-                'assets/images/ic_logo_airsync_text.svg',
-                excludeFromSemantics: true,
-                width: 140,
-                height: 31,
-                colorFilter: ColorFilter.mode(
-                  widget.isWaitForStream ? Colors.white : Colors.black,
-                  BlendMode.srcIn,
+              MultiWindowAdaptiveLayout(
+                landscape: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Padding(padding: EdgeInsets.only(left: 7)),
+                    SvgPicture.asset(
+                      'assets/images/ic_logo_airsync_text.svg',
+                      excludeFromSemantics: true,
+                      width: 140,
+                      height: 31,
+                      colorFilter: ColorFilter.mode(
+                        widget.isWaitForStream ? Colors.white : Colors.black,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ],
                 ),
+                landscapeOneThird: SizedBox.shrink(),
               ),
             ],
           ),

@@ -99,17 +99,25 @@ class V3Status extends StatelessWidget {
             );
           },
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.tokens.spacing.vsdslSpacingLg.left,
+        MultiWindowAdaptiveLayout(
+          landscape: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.tokens.spacing.vsdslSpacingLg.left,
+                ),
+                child: Container(
+                  width: 1,
+                  height: 27,
+                  color: context.tokens.color.vsdslColorOutlineVariant,
+                ),
+              ),
+              const V3TextClock(),
+            ],
           ),
-          child: Container(
-            width: 1,
-            height: 27,
-            color: context.tokens.color.vsdslColorOutlineVariant,
-          ),
+          landscapeOneThird: SizedBox.shrink(),
         ),
-        const V3TextClock(),
       ],
     );
   }
