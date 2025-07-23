@@ -1,0 +1,3 @@
+[submodule "windows/prebuilt/virtual-audio-cable-binaries"]
+	path = windows/prebuilt/virtual-audio-cable-binaries
+	url = https://viewsonic-ssi.visualstudio.com/Display%20App/_git/virtual-audio-cable-binaries
