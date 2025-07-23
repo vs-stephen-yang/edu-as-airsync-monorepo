@@ -12,7 +12,16 @@ class V3Background extends StatelessWidget {
       right: 0,
       bottom: 0,
       child: (Platform.isAndroid || Platform.isIOS)
-          ? const SizedBox.shrink()
+          ? Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+              child: ExcludeSemantics(
+                child: Image.asset(
+                  'assets/images/ic_logo_viewsonic_mobile.png',
+                  width: 170,
+                  height: 50,
+                ),
+              ),
+            )
           : Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -20,6 +29,17 @@ class V3Background extends StatelessWidget {
                   excludeFromSemantics: true,
                   'assets/images/ic_wallpaper.png',
                   width: 1280,
+                ),
+                Positioned(
+                  right: 24,
+                  bottom: 16,
+                  child: ExcludeSemantics(
+                    child: Image.asset(
+                      'assets/images/ic_logo_viewsonic_desktop.png',
+                      width: 193,
+                      height: 60,
+                    ),
+                  ),
                 ),
               ],
             ),
