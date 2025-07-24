@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,17 +12,18 @@ class MultiWindowProvider extends ChangeNotifier {
 
   bool _isInMultiWindow = false;
 
-  bool get isInMultiWindow => _isInMultiWindow;
-
   Size _realScreenSize = Size.zero;
 
   Size get realScreenSize => _realScreenSize;
+
+  String _deviceModel = "";
 
   MultiWindowProvider() {
     _init();
   }
 
   Future<void> _init() async {
+    _deviceModel = await DeviceInfoVs.deviceType ?? '';
     try {
       final resolution =
           await _channel.invokeMethod("getRealScreenResolution") as Map?;
@@ -74,6 +76,16 @@ class MultiWindowProvider extends ChangeNotifier {
       _updateMultiWindow(call.arguments as bool);
     }
   }
+
+  bool _isFloatingIFPModel(String deviceModel) {
+    final unsupportedModels = [
+      'IFP105',
+      'IFP92',
+    ];
+    // 轉成大寫後比較以防大小寫錯誤
+    final normalizedModel = deviceModel.toUpperCase();
+    return unsupportedModels.any((model) => normalizedModel.contains(model));
+  }
 }
 
 enum SplitScreenRatio { half, oneThird, twoThirds, none }
@@ -96,7 +108,19 @@ extension SplitScreenRatioExt on SplitScreenRatio {
 extension MultiWindowContext on BuildContext {
   MultiWindowProvider get multiWindow => watch<MultiWindowProvider>();
 
-  bool get isInMultiWindow => multiWindow.isInMultiWindow;
+  bool get isInMultiWindow {
+    // IFP92與105只能用高度來判斷是否為全屏，原生的isInMultiWindowMode無效。
+    if (multiWindow._isFloatingIFPModel(multiWindow._deviceModel)) {
+      final appHeight = MediaQuery.of(this).size.height *
+          PlatformDispatcher.instance.views.first.devicePixelRatio;
+      if (appHeight != multiWindow._realScreenSize.height) {
+        return true;
+      }
+      return false;
+    } else {
+      return multiWindow._isInMultiWindow;
+    }
+  }
 
   SplitScreenRatio get splitScreenRatio =>
       multiWindow.getSplitScreenRatio(MediaQuery.of(this).size);
