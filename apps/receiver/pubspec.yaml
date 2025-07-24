@@ -83,7 +83,7 @@ dependencies:
   synchronized: ^3.3.0
   auto_hyphenating_text: ^0.3.0
   network_info_plus: ^6.1.4
-  convert: ^3.1.2
+  convert: ^3.1.1
 
   # ViewSonic plug-in
   app_ota_flutter:
@@ -101,7 +101,7 @@ dependencies:
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-3.8.0
+      ref: release-3.8.1
   flutter_golang_server:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server
