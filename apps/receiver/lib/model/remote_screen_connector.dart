@@ -136,12 +136,41 @@ class RtcScreenConnector extends RemoteScreenConnector {
 }
 
 class MulticastScreenConnector extends RemoteScreenConnector {
-  MulticastScreenConnector(super.channel, super.msg);
+  String ip;
+  int videoPort;
+  int audioPort;
+  int ssrc;
+  String keyHex;
+  String saltHex;
+  int videoRoc;
+  int audioRoc;
 
-  Future<void> onStartRemoteScreen(
-      StartRemoteScreenMessage message, List<RtcIceServer>? iceServers) {
-    // TODO: implement onStartRemoteScreen
-    throw UnimplementedError();
+  MulticastScreenConnector(
+      Channel channel,
+      this.ip,
+      this.videoPort,
+      this.audioPort,
+      this.ssrc,
+      this.keyHex,
+      this.saltHex,
+      this.videoRoc,
+      this.audioRoc,
+      JoinDisplayMessage message)
+      : super(channel, message);
+
+  void onStartRemoteScreen(
+      StartRemoteScreenMessage message) {
+    _sessionId = message.sessionId;
+    // accept
+    sendRemoteScreenState(RemoteScreenStatus.accepted);
+    remotePresentationState = RemotePresentationState.waitForStream;
+
+    // info
+    final multicastInfoMessage = MulticastInfoMessage(_sessionId!, ip, videoPort,
+        audioPort, ssrc, keyHex, saltHex, videoRoc, audioRoc);
+
+    channel.send(multicastInfoMessage);
+    remotePresentationState = RemotePresentationState.streaming;
   }
 
   @override

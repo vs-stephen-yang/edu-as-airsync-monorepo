@@ -17,6 +17,7 @@ import 'package:display_flutter/model/display_group_member_info.dart';
 import 'package:display_flutter/model/display_group_session.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/multicast_presenter.dart';
 import 'package:display_flutter/model/network_diagnostic.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
@@ -247,7 +248,7 @@ class ChannelProvider extends ChangeNotifier {
 
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
     _remoteScreenProvider = RemoteScreenProvider(
-        RemoteScreenServer(), _instanceInfo.ipAddress, removeSender);
+        RemoteScreenServer(), _instanceInfo.ipAddress, removeSender, MulticastPresenter());
 
     _load().then((_) {
       if (_isSenderMode) {
@@ -608,8 +609,10 @@ class ChannelProvider extends ChangeNotifier {
               return;
             }
             remoteScreenConnector =
-                _remoteScreenProvider.createRemoteScreenConnector(channel, msg);
-            _remoteScreenConnectors.add(remoteScreenConnector!);
+                await _remoteScreenProvider.createRemoteScreenConnector(channel, msg);
+            if (remoteScreenConnector != null) {
+              _remoteScreenConnectors.add(remoteScreenConnector!);
+            }
           }
           notifyListeners();
           break;
@@ -656,13 +659,16 @@ class ChannelProvider extends ChangeNotifier {
           if (rtcConnector.isModeratorShare) {
             final joinMessage = JoinDisplayMessage(rtcConnector.clientId);
 
-            remoteScreenConnector = _remoteScreenProvider
+            remoteScreenConnector = await _remoteScreenProvider
                 .createRemoteScreenConnector(channel, joinMessage);
+            if (remoteScreenConnector == null) {
+              break;
+            }
             _remoteShareConnectors.add(remoteScreenConnector!);
 
             final iceServers = await _getIceServers();
 
-            await _remoteScreenProvider.onStartRemoteScreen(
+            _remoteScreenProvider.onStartRemoteScreen(
                 remoteScreenConnector!,
                 message as StartRemoteScreenMessage,
                 iceServers);
@@ -675,7 +681,7 @@ class ChannelProvider extends ChangeNotifier {
             final iceServers = await _getIceServers();
 
             if (remoteScreenConnector != null) {
-              await _remoteScreenProvider.onStartRemoteScreen(
+              _remoteScreenProvider.onStartRemoteScreen(
                   remoteScreenConnector!,
                   message as StartRemoteScreenMessage,
                   iceServers);
