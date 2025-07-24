@@ -70,6 +70,12 @@
             android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
+            <layout
+                android:defaultWidth="640px"
+                android:defaultHeight="1080px"
+                android:minWidth="640px"
+                android:minHeight="1080px"
+                tools:targetApi="n" />
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
