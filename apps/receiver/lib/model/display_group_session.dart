@@ -5,6 +5,8 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
+import 'multicast_info.dart';
+
 class DisplayGroupSession {
   bool get isVideoAvailable => _isVideoAvailable;
   bool _isVideoAvailable = false;
@@ -123,6 +125,12 @@ class DisplayGroupSession {
           rtcClient.handleSignalMessage(signalMessage.signal!);
         }
         break;
+      case ChannelMessageType.multicastInfo:
+        if (_remoteScreenType == RemoteScreenType.multicast &&
+            _remoteScreenClient is MulticastScreenClient) {
+            await _onMulticastInfo(message as MulticastInfoMessage);
+        }
+        break;
       default:
         break;
     }
@@ -165,6 +173,11 @@ class DisplayGroupSession {
         onWebRtcClose?.call();
       },
     );
+  }
+
+  Future<void> _onMulticastInfo(MulticastInfoMessage infoMessage) async {
+    final client = _remoteScreenClient as MulticastScreenClient;
+    await client.handleMulticastInfo(MulticastInfo.fromMessage(infoMessage));
   }
 
   void onMute() {

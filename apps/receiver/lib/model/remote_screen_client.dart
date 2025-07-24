@@ -9,6 +9,8 @@ import 'package:uuid/uuid.dart';
 import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 
+import 'multicast_info.dart';
+
 abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel);
 
@@ -241,6 +243,13 @@ class RtcScreenClient extends RemoteScreenClient {
 
 class MulticastScreenClient extends RemoteScreenClient {
   MulticastScreenClient(super.channel);
+
+  handleMulticastInfo(
+      MulticastInfo info
+      ) {
+    // TODO: multicast plugin receive start
+    log.warning("handle Multicast info");
+  }
 
   @override
   Future remove() {

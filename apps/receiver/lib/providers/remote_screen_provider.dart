@@ -1,4 +1,5 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/multicast_presenter.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen.dart';
@@ -6,6 +7,9 @@ import 'package:display_flutter/model/remote_screen.dart';
 class RemoteScreenProvider {
   RemoteScreenServer get server => _server;
   final RemoteScreenServer _server;
+  MulticastPresenter get multicast => _multicastPresenter;
+  final MulticastPresenter _multicastPresenter;
+
   final String _ipAddress;
   final void Function({
     bool? fromGroup,
@@ -16,11 +20,11 @@ class RemoteScreenProvider {
   }) _connectorDisconnectCallback;
   RemoteScreenType remoteScreenType = RemoteScreenType.rtc;
 
-  RemoteScreenProvider(
-      this._server, this._ipAddress, this._connectorDisconnectCallback);
+  RemoteScreenProvider(this._server, this._ipAddress,
+      this._connectorDisconnectCallback, this._multicastPresenter);
 
-  RemoteScreenConnector createRemoteScreenConnector(
-      Channel channel, JoinDisplayMessage msg) {
+  Future<RemoteScreenConnector?> createRemoteScreenConnector(
+      Channel channel, JoinDisplayMessage msg) async {
     RemoteScreenConnector connector;
 
     switch (remoteScreenType) {
@@ -30,8 +34,21 @@ class RemoteScreenProvider {
         _server.addConnector(connector as RtcScreenConnector);
         break;
       case RemoteScreenType.multicast:
-        connector =
-            MulticastScreenConnector(channel, msg);
+        final info = await _multicastPresenter.streamInfo;
+        if (info == null) {
+          return null;
+        }
+        connector = MulticastScreenConnector(
+            channel,
+            info.ip,
+            info.videoPort,
+            info.audioPort,
+            info.ssrc,
+            info.keyHex,
+            info.saltHex,
+            info.videoRoc,
+            info.audioRoc,
+            msg);
         break;
     }
 
@@ -85,17 +102,18 @@ class RemoteScreenProvider {
   }
 
   onStartRemoteScreen(
-      RemoteScreenConnector connector,
-      StartRemoteScreenMessage message,
-      List<RtcIceServer>? iceServers,
-      ) async {
+    RemoteScreenConnector connector,
+    StartRemoteScreenMessage message,
+    List<RtcIceServer>? iceServers,
+  ) {
     switch (remoteScreenType) {
       case RemoteScreenType.rtc:
         RtcScreenConnector c = connector as RtcScreenConnector;
         c.onStartRemoteScreen(message, iceServers);
         break;
       case RemoteScreenType.multicast:
-        // TODO: get multicastInfo and call multicastConnector.onStartRemoteScreen
+        MulticastScreenConnector c = connector as MulticastScreenConnector;
+        c.onStartRemoteScreen(message);
         break;
     }
   }
