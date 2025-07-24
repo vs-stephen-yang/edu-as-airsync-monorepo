@@ -643,10 +643,10 @@ class PresentQualityConstraints {
         decodeHeightLimit = json['decodeHeightLimit'] as int? ?? 0;
 
   Map<String, dynamic> toJson() => {
-    'frameRate': frameRate,
-    'height': height,
-    'decodeHeightLimit': decodeHeightLimit,
-  };
+        'frameRate': frameRate,
+        'height': height,
+        'decodeHeightLimit': decodeHeightLimit,
+      };
 }
 
 class ChangePresentQuality extends ChannelMessage {
@@ -955,9 +955,17 @@ class MulticastInfoMessage extends ChannelMessage {
   late int videoRoc;
   late int audioRoc;
 
-  MulticastInfoMessage(this.sessionId, this.ip, this.videoPort, this.audioPort,
-      this.ssrc, this.keyHex, this.saltHex, this.videoRoc, this.audioRoc)
-      : super(ChannelMessageType.multicastInfo);
+  MulticastInfoMessage(
+    this.sessionId,
+    this.ip,
+    this.videoPort,
+    this.audioPort,
+    this.ssrc,
+    this.keyHex,
+    this.saltHex,
+    this.videoRoc,
+    this.audioRoc,
+  ) : super(ChannelMessageType.multicastInfo);
 
   MulticastInfoMessage.fromJson(Map<String, dynamic> json)
       : super.fromJson(ChannelMessageType.multicastInfo, json) {
@@ -1028,7 +1036,8 @@ class InviteDisplayGroupMessage extends ChannelMessage {
     sessionId = data['sessionId'] as String?;
 
     if (data['connectionType'] != null) {
-      connectionType = stringToDisplayGroupType(data['connectionType'] as String);
+      connectionType =
+          stringToDisplayGroupType(data['connectionType'] as String);
     }
   }
 
