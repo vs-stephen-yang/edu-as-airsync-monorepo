@@ -305,7 +305,7 @@ packages:
     source: hosted
     version: "1.2.4"
   convert:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: convert
       sha256: "0f08b14755d163f6e2134cb58222dd25ea2a2ee8a195e53983d57c075324d592"
@@ -414,8 +414,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.8.0"
-      resolved-ref: c85d22d8d6351aceef1b91b71d210e48c0298bc6
+      ref: "release-3.8.1"
+      resolved-ref: e8bea484ef8b87bbcf8ded0d2a27ab0fa5f2a30b
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
