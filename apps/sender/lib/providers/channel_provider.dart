@@ -177,7 +177,7 @@ class ChannelProvider extends ChangeNotifier {
 
     // Generate potential remote IP addresses
     final remoteIpCandidates =
-      createRemoteIpCandidates(displayCode!, localIpAddresses);
+        createRemoteIpCandidates(displayCode!, localIpAddresses);
 
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
@@ -409,6 +409,9 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.remoteScreenSignal:
           await _handleRemoteScreenSignal(message as RemoteScreenSignalMessage);
           break;
+        case ChannelMessageType.multicastInfo:
+          await _handleMulticastInfo(message as MulticastInfoMessage);
+          break;
         default:
           break;
       }
@@ -418,8 +421,8 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> _handleRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
-    _remoteScreenClient = RtcScreenClient(_channel, infoMessage.sessionId);
-    await _remoteScreenClient!.handleRemoteScreenInfo(
+    final client = RtcScreenClient(_channel, infoMessage.sessionId);
+    await client.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
       infoMessage.ionSfuRoom!.iceServers,
@@ -430,6 +433,20 @@ class ChannelProvider extends ChangeNotifier {
         removeRemoteScreenClient();
       },
     );
+    _remoteScreenClient = client;
+  }
+
+  Future<void> _handleMulticastInfo(
+    MulticastInfoMessage infoMessage,
+  ) async {
+    final client = MulticastScreenClient(_channel, infoMessage.sessionId);
+    await client.handleMulticastInfo(infoMessage, _onRemoteScreenTrack,
+        // onClose callback
+        () {
+      Toast.makeToast(S.current.remote_screen_connect_error);
+      removeRemoteScreenClient();
+    });
+    _remoteScreenClient = client;
   }
 
   void _onRemoteScreenTrack() {

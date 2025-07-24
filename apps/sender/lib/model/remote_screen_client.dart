@@ -65,14 +65,6 @@ abstract class RemoteScreenClient {
     pb.TouchEvent_TouchEventType eventType,
     PointerEvent event,
   );
-
-  Future handleRemoteScreenInfo(
-      String? url,
-      String roomId,
-      List<RtcIceServer>? iceServers,
-      Function() onTrack,
-      Function() onClose,
-      );
 }
 
 class RtcScreenClient extends RemoteScreenClient {
@@ -129,14 +121,13 @@ class RtcScreenClient extends RemoteScreenClient {
     }
   }
 
-  @override
   Future handleRemoteScreenInfo(
-      String? url,
-      String roomId,
-      List<RtcIceServer>? iceServers,
-      Function() onTrack,
-      Function() onClose,
-      ) async {
+    String? url,
+    String roomId,
+    List<RtcIceServer>? iceServers,
+    Function() onTrack,
+    Function() onClose,
+  ) async {
     log.info('Remote screen: Create client');
 
     final signal = _createSignal(url);
@@ -223,7 +214,7 @@ class RtcScreenClient extends RemoteScreenClient {
       return;
     } else {
       final RenderBox renderBox =
-      textureElement!.findRenderObject() as RenderBox;
+          textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
       log.info(
@@ -244,9 +235,9 @@ class RtcScreenClient extends RemoteScreenClient {
 
   @override
   void onTouchEvent(
-      pb.TouchEvent_TouchEventType eventType,
-      PointerEvent event,
-      ) {
+    pb.TouchEvent_TouchEventType eventType,
+    PointerEvent event,
+  ) {
     if (_textureSizeChanged) {
       updateTextureInfo();
     }
@@ -273,5 +264,43 @@ class RtcScreenClient extends RemoteScreenClient {
     _dataChannel?.send(
       RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()),
     );
+  }
+}
+
+class MulticastScreenClient extends RemoteScreenClient {
+  MulticastScreenClient(super.channel, super.sessionId);
+
+  @override
+  // TODO: implement createVideoView
+  Widget get createVideoView => throw UnimplementedError();
+
+  @override
+  // TODO: implement isVideoAvailable
+  bool get isVideoAvailable => throw UnimplementedError();
+
+  @override
+  void onKeyDown(KeyEvent event) {
+    // TODO: implement onKeyDown
+  }
+
+  @override
+  void onTouchEvent(
+      pb.TouchEvent_TouchEventType eventType, PointerEvent event) {
+    // TODO: implement onTouchEvent
+  }
+
+  @override
+  Future<void> remove() async {
+    // TODO: implement remove
+    log.warning("remove");
+  }
+
+  Future<void> handleMulticastInfo(
+    MulticastInfoMessage msg,
+    Function() onTrack,
+    Function() onClose,
+  ) async {
+    // TODO: multicast plugin receive start
+    log.warning("handleMulticastInfo");
   }
 }
