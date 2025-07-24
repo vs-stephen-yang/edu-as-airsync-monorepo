@@ -18,6 +18,7 @@ enum ChannelMessageType {
   stopRemoteScreen,
   remoteScreenStatus,
   remoteScreenInfo,
+  multicastInfo,
   joinDisplayRejected,
   remoteScreenSignal,
   inviteDisplayGroup,
@@ -85,6 +86,7 @@ final channelMessageActionNames = <int, String>{
       'invite-display-group-result',
   ChannelMessageType.inviteRemoteScreen.index: 'invite-remote-screen',
   ChannelMessageType.stopDisplayGroup.index: 'stop-display-group',
+  ChannelMessageType.multicastInfo.index: 'multicast-info',
 };
 
 final channelMessageParsers = {
@@ -119,6 +121,7 @@ final channelMessageParsers = {
   ChannelMessageType.inviteRemoteScreen.index:
       InviteRemoteScreenMessage.fromJson,
   ChannelMessageType.stopDisplayGroup.index: StopDisplayGroupMessage.fromJson,
+  ChannelMessageType.multicastInfo.index: MulticastInfoMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -937,6 +940,52 @@ class RemoteScreenSignalMessage extends ChannelMessage {
     return super._toJson({
       'sessionId': sessionId,
       'signal': signal,
+    });
+  }
+}
+
+class MulticastInfoMessage extends ChannelMessage {
+  late String sessionId;
+  late String ip;
+  late int videoPort;
+  late int audioPort;
+  late int ssrc;
+  late String keyHex;
+  late String saltHex;
+  late int videoRoc;
+  late int audioRoc;
+
+  MulticastInfoMessage(this.sessionId, this.ip, this.videoPort, this.audioPort,
+      this.ssrc, this.keyHex, this.saltHex, this.videoRoc, this.audioRoc)
+      : super(ChannelMessageType.multicastInfo);
+
+  MulticastInfoMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.multicastInfo, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String;
+    ip = data['ip'] as String;
+    videoPort = data['videoPort'] as int;
+    audioPort = data['audioPort'] as int;
+    ssrc = data['ssrc'] as int;
+    keyHex = data['keyHex'] as String;
+    saltHex = data['saltHex'] as String;
+    videoRoc = data['videoRoc'] as int;
+    audioRoc = data['audioRoc'] as int;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+      'ip': ip,
+      'videoPort': videoPort,
+      'audioPort': audioPort,
+      'ssrc': ssrc,
+      'keyHex': keyHex,
+      'saltHex': saltHex,
+      'videoRoc': videoRoc,
+      'audioRoc': audioRoc,
     });
   }
 }
