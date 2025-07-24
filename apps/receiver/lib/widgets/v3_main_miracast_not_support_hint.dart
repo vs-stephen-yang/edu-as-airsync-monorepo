@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-class V3MainMiracastInstructionRow extends StatelessWidget {
-  const V3MainMiracastInstructionRow({super.key});
+class V3MainMiracastNotSupportHint extends StatelessWidget {
+  const V3MainMiracastNotSupportHint({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class V3MainMiracastInstructionRow extends StatelessWidget {
       builder: (_, provider, __) {
         return provider.isSpecifiedModuleAndDFSChannel
             ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildInstructionIcon(
                     context,

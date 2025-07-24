@@ -6,6 +6,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/utility/misc_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -132,7 +133,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
                         const SizedBox(width: 3),
                         // Trailing is display code, should not use - to confuse user
                         Text(
-                          _getDisplayCodeVisualIdentity(_displayCode),
+                          getDisplayCodeVisualIdentity(_displayCode),
                           style: textStyle,
                         ),
                         const SizedBox(width: 8),
@@ -274,14 +275,5 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
     });
   }
 
-  String _getDisplayCodeVisualIdentity(String displayCode) {
-    String result = displayCode;
-    if (displayCode.length > 5) {
-      // https://stackoverflow.com/a/56845471/13160681
-      result = displayCode
-          .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
-          .trimRight();
-    }
-    return result;
-  }
+
 }
