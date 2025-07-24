@@ -21,3 +21,14 @@ String getPlatformName() {
     return '';
   }
 }
+
+String getDisplayCodeVisualIdentity(String displayCode) {
+  String result = displayCode;
+  if (displayCode.length > 5) {
+    // https://stackoverflow.com/a/56845471/13160681
+    result = displayCode
+        .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
+        .trimRight();
+  }
+  return result;
+}

@@ -1,20 +1,18 @@
-import 'dart:math' as math;
-
 import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
-import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/connection_status.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/multi_line_underline_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_display_code.dart';
+import 'package:display_flutter/widgets/v3_otp_with_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -279,19 +277,7 @@ class V3Instruction extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 35),
-          child: Consumer<InstanceInfoProvider>(
-              builder: (_, instanceInfoProvider, __) {
-            return Semantics(
-              identifier: 'v3_qa_display_code',
-              // Trialling is display code, should not use - to confuse user
-              child: Text(
-                _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
-                style: context.tokens.textStyle.airsyncFontDisplay.apply(
-                  color: context.tokens.color.vsdslColorOnSurface,
-                ),
-              ),
-            );
-          }),
+          child: const V3DisplayCode(),
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
         Row(
@@ -317,65 +303,9 @@ class V3Instruction extends StatelessWidget {
           ],
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-        Wrap(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 35),
-              child:
-                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-                return ValueListenableBuilder<String>(
-                  valueListenable: channelProvider.otp,
-                  builder: (_, otp, __) {
-                    return Semantics(
-                      identifier: 'v3_qa_otp_code',
-                      // Trialling is otp code , should not use - to confuse user
-                      child: Text(
-                        otp,
-                        style:
-                            context.tokens.textStyle.airsyncFontDisplay.apply(
-                          color: context.tokens.color.vsdslColorOnSurface,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
-            ),
-            const Gap(16),
-            Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-              return ValueListenableBuilder<int>(
-                valueListenable: channelProvider.countDownProgress,
-                builder: (_, progress, __) {
-                  return ValueListenableBuilder(
-                      valueListenable: AppPreferences().textSizeOptionNotifier,
-                      builder: (context, _, __) {
-                        return Container(
-                          height: 45 * AppPreferences().textScale,
-                          width: 40,
-                          alignment: Alignment.bottomCenter,
-                          margin: EdgeInsets.only(
-                              left: context.tokens.spacing.vsdslSpacingMd.left),
-                          child: Transform(
-                            alignment: Alignment.center,
-                            transform: Matrix4.rotationY(math.pi),
-                            child: SizedBox(
-                              width: 27,
-                              height: 27,
-                              child: CircularProgressIndicator(
-                                value: progress / channelProvider.maxCountDown,
-                                strokeWidth: 4,
-                                backgroundColor: const Color(0xFFE9EAF0),
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Color(0xFF636D8A)),
-                              ),
-                            ),
-                          ),
-                        );
-                      });
-                },
-              );
-            }),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: const V3OtpWithTimer(),
         ),
       ],
     );
@@ -393,16 +323,6 @@ class V3Instruction extends StatelessWidget {
     );
   }
 
-  String _getDisplayCodeVisualIdentity(String displayCode) {
-    String result = displayCode;
-    if (displayCode.length > 5) {
-      // https://stackoverflow.com/a/56845471/13160681
-      result = displayCode
-          .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
-          .trimRight();
-    }
-    return result;
-  }
 
   TextSpan _buildTextSpan(
       {required String fullText,

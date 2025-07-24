@@ -1,7 +1,9 @@
 import 'package:display_flutter/app_preferences.dart';
-import 'package:display_flutter/widgets/v3_main_instruction_area.dart';
-import 'package:display_flutter/widgets/v3_main_instruction_section.dart';
+import 'package:display_flutter/widgets/v3_instruction.dart';
+import 'package:display_flutter/widgets/v3_main_miracast_instruction.dart';
+import 'package:display_flutter/widgets/v3_main_miracast_not_support_hint.dart';
 import 'package:display_flutter/widgets/v3_main_qr_code_area.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -54,6 +56,68 @@ class _V3MainConnectionInfoState extends State<V3MainConnectionInfo> {
           ),
         ),
         const V3MainQrCodeArea(),
+      ],
+    );
+  }
+}
+
+class V3MainInstructionArea extends StatelessWidget {
+  final ScrollController scrollController;
+  final double leftPadding;
+  final double topPadding;
+
+  const V3MainInstructionArea({
+    super.key,
+    required this.scrollController,
+    this.leftPadding = 53.0,
+    this.topPadding = 53.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: EdgeInsets.only(
+        left: leftPadding,
+        top: topPadding,
+      ),
+      child: V3Scrollbar(
+        controller: scrollController,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: const V3Instruction(isCastToDevice: false),
+        ),
+      ),
+    );
+  }
+}
+
+class V3MainInstructionSection extends StatelessWidget {
+  final double horizontalPadding;
+  final double verticalPadding;
+
+  const V3MainInstructionSection({
+    super.key,
+    this.horizontalPadding = 50.0,
+    this.verticalPadding = 6.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: const V3MainMiracastInstruction(),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
+          child: const V3MainMiracastNotSupportHint(),
+        ),
       ],
     );
   }

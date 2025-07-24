@@ -4,8 +4,8 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class V3MainInstructionRow extends StatelessWidget {
-  const V3MainInstructionRow({super.key});
+class V3MainMiracastInstruction extends StatelessWidget {
+  const V3MainMiracastInstruction({super.key});
 
   @override
   Widget build(BuildContext context) {

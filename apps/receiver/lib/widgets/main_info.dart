@@ -6,6 +6,7 @@ import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,7 @@ class MainInfo extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              _getDisplayCodeVisualIdentity(
+                              getDisplayCodeVisualIdentity(
                                   instanceInfo.displayCode),
                               style: const TextStyle(
                                 fontFamily: 'Inconsolata',
@@ -181,14 +182,5 @@ class MainInfo extends StatelessWidget {
     );
   }
 
-  String _getDisplayCodeVisualIdentity(String displayCode) {
-    String result = displayCode;
-    if (displayCode.length > 5) {
-      // https://stackoverflow.com/a/56845471/13160681
-      result = displayCode
-          .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
-          .trimRight();
-    }
-    return result;
-  }
+
 }
