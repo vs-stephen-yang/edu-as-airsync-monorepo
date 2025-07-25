@@ -998,32 +998,16 @@ class MulticastInfoMessage extends ChannelMessage {
   }
 }
 
-enum DisplayGroupType {
-  unicast,
-  multicast,
-}
-
-DisplayGroupType stringToDisplayGroupType(String str) {
-  for (DisplayGroupType t in DisplayGroupType.values) {
-    if (str == t.name) {
-      return t;
-    }
-  }
-  throw ArgumentError('Invalid DisplayGroupType string: $str');
-}
-
 class InviteDisplayGroupMessage extends ChannelMessage {
   String? hostId;
   String? hostName;
   String? sessionId;
   String? displayCode;
-  DisplayGroupType? connectionType;
 
   InviteDisplayGroupMessage({
     this.sessionId,
     this.displayCode,
     this.hostName,
-    this.connectionType,
   }) : super(ChannelMessageType.inviteDisplayGroup);
 
   InviteDisplayGroupMessage.fromJson(Map<String, dynamic> json)
@@ -1034,11 +1018,6 @@ class InviteDisplayGroupMessage extends ChannelMessage {
     hostName = data['hostName'] as String?;
     displayCode = data['displayCode'] as String?;
     sessionId = data['sessionId'] as String?;
-
-    if (data['connectionType'] != null) {
-      connectionType =
-          stringToDisplayGroupType(data['connectionType'] as String);
-    }
   }
 
   @override
@@ -1048,7 +1027,6 @@ class InviteDisplayGroupMessage extends ChannelMessage {
       'hostName': hostName,
       'displayCode': displayCode,
       'sessionId': sessionId,
-      'connectionType': connectionType?.name,
     });
   }
 }
