@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
@@ -72,7 +73,9 @@ class WebTransportConnectionServer {
       // reject the connection
       final reason = convertConnectRequestStatusToReason(status);
 
-      connection.send(ChannelClosedMessage(reason).toJson());
+      Timer(const Duration(seconds: 1), () {
+        connection.send(ChannelClosedMessage(reason).toJson());
+      });
 
       // TODO: disconnect the connection
       return;
