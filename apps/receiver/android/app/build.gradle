@@ -166,6 +166,7 @@ android {
         pickFirst '**/libevent*.so'
         pickFirst '**/libcast.so'
         pickFirst '**/liblog.so'
+        pickFirst '**/libc++_shared.so'
         // see: https://issuetracker.google.com/issues/299314630?pli=1
         resources.excludes.add("META-INF/LICENSE.md")
         resources.excludes.add("META-INF/LICENSE-notice.md")

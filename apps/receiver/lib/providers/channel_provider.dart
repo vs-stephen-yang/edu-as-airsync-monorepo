@@ -21,6 +21,7 @@ import 'package:display_flutter/model/multicast_presenter.dart';
 import 'package:display_flutter/model/network_diagnostic.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
+import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/group_provider.dart';
@@ -182,11 +183,18 @@ class ChannelProvider extends ChangeNotifier {
 
   late RemoteScreenProvider _remoteScreenProvider;
 
+  RemoteScreenType get remoteScreenType => _remoteScreenProvider.remoteScreenType;
+
   final NetworkDiagnostic _networkDiagnostic = NetworkDiagnostic();
 
   set isAuthorizeMode(bool value) {
     _isAuthorizeMode = value;
     _save();
+    notifyListeners();
+  }
+
+  set remoteScreenType(RemoteScreenType type) {
+    _remoteScreenProvider.remoteScreenType = type;
     notifyListeners();
   }
 
@@ -483,8 +491,7 @@ class ChannelProvider extends ChangeNotifier {
     _save();
     final iceServers = await _getIceServers();
 
-    await _remoteScreenProvider.startSfuServer(iceServers);
-    bool result = await _remoteScreenProvider.startRemoteScreenPublisher();
+    bool result = await _remoteScreenProvider.startPublish(iceServers);
     if (!result) {
       removeSender(fromSender: true, fromGroup: true);
       return stopRemoteScreenPublisher();
@@ -501,7 +508,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void stopRemoteScreenPublisher() {
-    _remoteScreenProvider.stopRemoteScreenPublisher();
+    _remoteScreenProvider.stopPublish();
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
