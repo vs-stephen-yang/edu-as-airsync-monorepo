@@ -52,6 +52,8 @@ public class EulaActivity extends FlutterActivity {
     private VSApiHandler vsApiHandler;
     private MethodChannel multiWindowChannel;
 
+    private WifiManager.MulticastLock multicastLock;
+
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
@@ -281,6 +283,15 @@ public class EulaActivity extends FlutterActivity {
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         WifiHelper.getInstance().registerUsbReceiver(EulaActivity.this);
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        // 建立並 acquire MulticastLock
+        if (wifiManager != null) {
+            multicastLock = wifiManager.createMulticastLock("multicast_lock");
+            multicastLock.setReferenceCounted(false);
+            multicastLock.acquire();
+        }
     }
 
     @Override
@@ -305,6 +316,10 @@ public class EulaActivity extends FlutterActivity {
         }
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
         WifiHelper.getInstance().unregisterUsbReceiver(EulaActivity.this);
+        if (multicastLock != null) {
+            multicastLock.release();
+        }
+
         super.onDestroy();
 //        System.exit(0);
     }

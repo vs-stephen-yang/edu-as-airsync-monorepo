@@ -97,8 +97,13 @@ class RemoteScreenProvider {
     return _server.startRemoteScreenPublisher();
   }
 
-  void stopRemoteScreenPublisher() {
-    return _server.stopRemoteScreenPublisher();
+  void stopPublish() {
+    switch (remoteScreenType) {
+      case RemoteScreenType.rtc:
+        return _server.stopRemoteScreenPublisher();
+      case RemoteScreenType.multicast:
+        return _multicastPresenter.stop();
+    }
   }
 
   onStartRemoteScreen(
@@ -115,6 +120,16 @@ class RemoteScreenProvider {
         MulticastScreenConnector c = connector as MulticastScreenConnector;
         c.onStartRemoteScreen(message);
         break;
+    }
+  }
+
+  Future<bool> startPublish(List<RtcIceServer>? iceServers) async {
+    switch (remoteScreenType) {
+      case RemoteScreenType.rtc:
+        await startSfuServer(iceServers);
+        return await startRemoteScreenPublisher();
+      case RemoteScreenType.multicast:
+        return await _multicastPresenter.start();
     }
   }
 }

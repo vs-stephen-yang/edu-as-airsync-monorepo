@@ -103,6 +103,12 @@
             android:foregroundServiceType="mediaProjection"
             android:permission="android.permission.FOREGROUND_SERVICE" />
 
+        <service
+            android:name="com.viewsonic.flutter_multicast_plugin.ScreenCaptureService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection"
+            android:enabled="true" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
