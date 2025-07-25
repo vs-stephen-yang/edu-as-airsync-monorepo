@@ -1,9 +1,8 @@
 import 'package:display_channel/display_channel.dart';
-import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_client.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:uuid/uuid.dart';
 
 import 'multicast_info.dart';
 
@@ -11,50 +10,15 @@ class DisplayGroupSession {
   bool get isVideoAvailable => _isVideoAvailable;
   bool _isVideoAvailable = false;
 
-  bool get isAudioEnabled {
-    switch (_remoteScreenType) {
-      case RemoteScreenType.rtc:
-        final rtcClient = _remoteScreenClient as RtcScreenClient;
-        return rtcClient.remoteScreenRenderer.srcObject != null &&
-            rtcClient.remoteScreenRenderer.srcObject!
-                .getAudioTracks()
-                .isNotEmpty &&
-            rtcClient.remoteScreenRenderer.srcObject!
-                .getAudioTracks()[0]
-                .enabled;
+  bool get isAudioEnabled => _remoteScreenClient?.isAudioEnable ?? false;
 
-      case RemoteScreenType.multicast:
-      // TODO: implement it
-    }
-
-    return false;
-  }
-
-  StatelessWidget? get videoView {
-    if (_remoteScreenClient == null) {
-      return null;
-    }
-
-    switch (_remoteScreenType) {
-      case RemoteScreenType.rtc:
-        final rtcClient = _remoteScreenClient as RtcScreenClient;
-        return RTCVideoView(
-          rtcClient.remoteScreenRenderer,
-          key: rtcClient.rtcWidgetKey,
-        );
-      case RemoteScreenType.multicast:
-      // TODO: implement it
-    }
-
-    return null;
-  }
+  StatelessWidget? get videoView => _remoteScreenClient?.videoView;
 
   void Function(ChannelState? state)? onChannelStateChange;
   void Function(String hostName, String displayCode)? onInvitation;
   void Function()? onWebRtcClose;
 
   final Channel _channel;
-  late RemoteScreenType _remoteScreenType;
 
   RemoteScreenClient? _remoteScreenClient;
 
@@ -112,24 +76,17 @@ class DisplayGroupSession {
         // TODO:
         break;
       case ChannelMessageType.remoteScreenInfo:
-        if (_remoteScreenType == RemoteScreenType.rtc &&
-            _remoteScreenClient is RtcScreenClient) {
-          await _onRemoteScreenInfo(message as RemoteScreenInfoMessage);
-        }
+        await _onRemoteScreenInfo(message as RemoteScreenInfoMessage);
         break;
       case ChannelMessageType.remoteScreenSignal:
         final signalMessage = message as RemoteScreenSignalMessage;
-        if (_remoteScreenType == RemoteScreenType.rtc &&
-            _remoteScreenClient is RtcScreenClient) {
+        if (_remoteScreenClient is RtcScreenClient) {
           final rtcClient = _remoteScreenClient as RtcScreenClient;
           rtcClient.handleSignalMessage(signalMessage.signal!);
         }
         break;
       case ChannelMessageType.multicastInfo:
-        if (_remoteScreenType == RemoteScreenType.multicast &&
-            _remoteScreenClient is MulticastScreenClient) {
-            await _onMulticastInfo(message as MulticastInfoMessage);
-        }
+        await _onMulticastInfo(message as MulticastInfoMessage);
         break;
       default:
         break;
@@ -137,7 +94,6 @@ class DisplayGroupSession {
   }
 
   void _onInviteMessage(InviteDisplayGroupMessage message) {
-    _remoteScreenType = RemoteScreenType.fromDisplayGroupType(message.connectionType);
     onInvitation?.call(
       message.hostName ?? '',
       message.displayCode ?? '',
@@ -145,21 +101,14 @@ class DisplayGroupSession {
   }
 
   void _startRemoteScreen() {
-    switch (_remoteScreenType) {
-      case RemoteScreenType.rtc:
-        _remoteScreenClient = RtcScreenClient(_channel);
-        break;
-      case RemoteScreenType.multicast:
-        _remoteScreenClient = MulticastScreenClient(_channel);
-        break;
-    }
-    _remoteScreenClient?.sendStartRemoteScreenMessage();
+    final sessionId = Uuid().v4();
+    _channel.send(StartRemoteScreenMessage(sessionId));
   }
 
   Future<void> _onRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
-    final rtcClient = _remoteScreenClient as RtcScreenClient;
+    final rtcClient = RtcScreenClient(_channel, infoMessage.sessionId);
     await rtcClient.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
@@ -173,31 +122,16 @@ class DisplayGroupSession {
         onWebRtcClose?.call();
       },
     );
+    _remoteScreenClient = rtcClient;
   }
 
   Future<void> _onMulticastInfo(MulticastInfoMessage infoMessage) async {
-    final client = _remoteScreenClient as MulticastScreenClient;
+    final client = MulticastScreenClient(_channel, infoMessage.sessionId);
     await client.handleMulticastInfo(MulticastInfo.fromMessage(infoMessage));
+    _remoteScreenClient = client;
   }
 
   void onMute() {
-    switch (_remoteScreenType) {
-      case RemoteScreenType.rtc:
-        final rtcClient = _remoteScreenClient as RtcScreenClient;
-        if (rtcClient.remoteScreenRenderer.srcObject != null &&
-            rtcClient.remoteScreenRenderer.srcObject!
-                .getAudioTracks()
-                .isNotEmpty) {
-          rtcClient.remoteScreenRenderer.srcObject!
-                  .getAudioTracks()[0]
-                  .enabled =
-              !rtcClient.remoteScreenRenderer.srcObject!
-                  .getAudioTracks()[0]
-                  .enabled;
-        }
-
-      case RemoteScreenType.multicast:
-      // TODO: implement it
-    }
+    _remoteScreenClient?.onMute();
   }
 }

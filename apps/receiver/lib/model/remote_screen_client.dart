@@ -12,17 +12,17 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 import 'multicast_info.dart';
 
 abstract class RemoteScreenClient {
-  RemoteScreenClient(this._channel);
+  RemoteScreenClient(this._channel, String? sessionId)
+      : _sessionId = sessionId ?? const Uuid().v4();
 
   final Channel? _channel;
-  final String _sessionId = const Uuid().v4();
+  final String? _sessionId;
 
   bool _textureSizeChanged = false;
 
-  Future sendStartRemoteScreenMessage() async {
-    final msg = StartRemoteScreenMessage(_sessionId);
-    _channel?.send(msg);
-  }
+  bool get isAudioEnable;
+
+  StatelessWidget? get videoView;
 
   Future sendRemoteScreenState(RemoteScreenStatus status) async {
     final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
@@ -51,6 +51,8 @@ abstract class RemoteScreenClient {
   );
 
   Future remove();
+
+  void onMute();
 }
 
 class RtcScreenClient extends RemoteScreenClient {
@@ -66,7 +68,20 @@ class RtcScreenClient extends RemoteScreenClient {
 
   RemoteScreenChannelSignal? _channelSignal;
 
-  RtcScreenClient(super.channel);
+  @override
+  bool get isAudioEnable {
+    return remoteScreenRenderer.srcObject != null &&
+        remoteScreenRenderer.srcObject!.getAudioTracks().isNotEmpty &&
+        remoteScreenRenderer.srcObject!.getAudioTracks()[0].enabled;
+  }
+
+  @override
+  StatelessWidget? get videoView => RTCVideoView(
+        remoteScreenRenderer,
+        key: rtcWidgetKey,
+      );
+
+  RtcScreenClient(super.channel, super.sessionId);
 
   onDataChannelState(RTCDataChannelState state) {
     log.info('Remote screen: Data channel state ${state.name}');
@@ -121,7 +136,7 @@ class RtcScreenClient extends RemoteScreenClient {
       config: WebRTCUtil.createPcConfiguration(iceServers),
     );
 
-    _dataChannel = await _client!.createDataChannel(_sessionId);
+    _dataChannel = await _client!.createDataChannel(_sessionId!);
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
@@ -239,14 +254,29 @@ class RtcScreenClient extends RemoteScreenClient {
       RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()),
     );
   }
+
+  @override
+  void onMute() {
+    if (remoteScreenRenderer.srcObject != null &&
+        remoteScreenRenderer.srcObject!.getAudioTracks().isNotEmpty) {
+      remoteScreenRenderer.srcObject!.getAudioTracks()[0].enabled =
+          !remoteScreenRenderer.srcObject!.getAudioTracks()[0].enabled;
+    }
+  }
 }
 
 class MulticastScreenClient extends RemoteScreenClient {
-  MulticastScreenClient(super.channel);
+  @override
+  // TODO: implement isAudioEnable
+  bool get isAudioEnable => throw UnimplementedError();
 
-  handleMulticastInfo(
-      MulticastInfo info
-      ) {
+  @override
+  // TODO: implement videoView
+  StatelessWidget? get videoView => throw UnimplementedError();
+
+  MulticastScreenClient(super.channel, super.sessionId);
+
+  handleMulticastInfo(MulticastInfo info) {
     // TODO: multicast plugin receive start
     log.warning("handle Multicast info");
   }
@@ -258,7 +288,13 @@ class MulticastScreenClient extends RemoteScreenClient {
   }
 
   @override
-  void onTouchEvent(pb.TouchEvent_TouchEventType eventType, PointerEvent event) {
+  void onTouchEvent(
+      pb.TouchEvent_TouchEventType eventType, PointerEvent event) {
     // TODO: implement onTouchEvent
+  }
+
+  @override
+  void onMute() {
+    // TODO: implement onMute
   }
 }
