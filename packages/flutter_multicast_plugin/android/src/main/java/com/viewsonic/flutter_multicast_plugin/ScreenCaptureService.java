@@ -232,8 +232,6 @@ public class ScreenCaptureService extends Service {
 
                 frameCount++;
 
-                // ✅ 基於啟動時間計算理想的幀時間，避免累積誤差
-                long idealFrameTime = startTimeMs + frameCount * frameIntervalMs;
                 long nextFrameTime = startTimeMs + (frameCount + 1) * frameIntervalMs;
 
                 // 執行繪製
@@ -241,15 +239,6 @@ public class ScreenCaptureService extends Service {
                     surfaceTexture.updateTexImage();
                     windowSurface.drawFrame(surfaceTexture);
                     windowSurface.swapBuffers();
-
-                    long nowNs = System.nanoTime();
-                    if (lastDrawNs > 0) {
-                        long deltaNs = nowNs - lastDrawNs;
-                        float fps = 1_000_000_000f / deltaNs;
-//                        Log.d(TAG, "[FrameLoop] delta = " + deltaNs + "ns, FPS = " + fps);
-                    }
-                    lastDrawNs = nowNs;
-
                 } catch (Exception e) {
                     Log.e(TAG, "GL frame loop error", e);
                 }
@@ -289,15 +278,7 @@ public class ScreenCaptureService extends Service {
                     int startCodeLength = detectStartCodeLength(nal);
                     if (startCodeLength == -1) continue;
 
-//                    StringBuilder sb = new StringBuilder("NAL prefix bytes: ");
-//                    int printLen = Math.min(nal.length, 5);
-//                    for (int i = 0; i < printLen; i++) {
-//                        sb.append(String.format("%02X ", nal[i]));
-//                    }
-//                    Log.d(TAG, sb.toString());
-
                     int nalUnitType = nal[startCodeLength] & 0x1F;
-//                    Log.d(TAG, "NAL startCodeLength = " + startCodeLength + ", NAL Unit Type: " + nalUnitType);
 
                     // Check if this is an IDR frame (NAL unit type 5)
                     if (nalUnitType == 5) {
@@ -326,12 +307,8 @@ public class ScreenCaptureService extends Service {
                             stapA[stapAoffset++] = (byte) (pps.length & 0xFF);
                             System.arraycopy(pps, 0, stapA, stapAoffset, pps.length);
 
-//                            Log.d(TAG, "STAP-A : " + Arrays.toString(stapA));
-//                            Log.d(TAG, "sps.length = " + sps.length + ", pps.length = " + pps.length);
-
                             NativeBridge.sendRtpFrame(stapA);
                         }
-                        Log.d(TAG, "Send IDR");
                     }
 
                     NativeBridge.sendRtpFrame(nal);
@@ -372,10 +349,8 @@ public class ScreenCaptureService extends Service {
         // 2. 檢查是否為 Annex B
         List<byte[]> nalUnits;
         if (isActuallyAnnexB(buffer)) {
-//            Log.d(TAG, "Encoded buffer is in Annex B format");
             return splitAnnexBNalus(buffer);
         }
-//        Log.d(TAG, "Encoded buffer is in AVCC format, converting to Annex B...");
         return convertAvccToAnnexB(buffer);
     }
 
@@ -539,15 +514,15 @@ public class ScreenCaptureService extends Service {
                     .build();
 
             // 檢查 AudioRecord 狀態
-            Log.i(TAG, "AudioRecord state: " + audioRecord.getState());
-            Log.i(TAG, "AudioRecord recording state: " + audioRecord.getRecordingState());
-            Log.i(TAG, "AudioRecord sample rate: " + audioRecord.getSampleRate());
-            Log.i(TAG, "AudioRecord channel count: " + audioRecord.getChannelCount());
-            Log.i(TAG, "AudioRecord format: " + audioRecord.getFormat());
+            Log.d(TAG, "AudioRecord state: " + audioRecord.getState());
+            Log.d(TAG, "AudioRecord recording state: " + audioRecord.getRecordingState());
+            Log.d(TAG, "AudioRecord sample rate: " + audioRecord.getSampleRate());
+            Log.d(TAG, "AudioRecord channel count: " + audioRecord.getChannelCount());
+            Log.d(TAG, "AudioRecord format: " + audioRecord.getFormat());
 
             // 檢查系統音量
             AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-            Log.i(TAG, "Media volume: " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) +
+            Log.d(TAG, "Media volume: " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) +
                     "/" + audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
 
             if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
@@ -566,7 +541,7 @@ public class ScreenCaptureService extends Service {
             audioCaptureThread = new Thread(this::audioLoopCapture);
             audioCaptureThread.start();
 
-            Log.i(TAG, "System audio capture started successfully");
+            Log.d(TAG, "System audio capture started successfully");
 
         } catch (Exception e) {
             Log.e(TAG, "Failed to setup audio capture: " + e.getMessage());
@@ -589,63 +564,28 @@ public class ScreenCaptureService extends Service {
         audioEncoder.configure(audioFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         audioEncoder.start();
 
-        Log.i(TAG, "Creating OPUS encoder with format: " + audioFormat);
+        Log.d(TAG, "Creating OPUS encoder with format: " + audioFormat);
 
         isAudioEncoding = true;
 
         // 啟動編碼執行緒
         audioEncoderHandler.post(this::opusEncodingLoop);
 
-        Log.i(TAG, "OPUS encoder started: " + OPUS_SAMPLE_RATE + "Hz, " +
+        Log.d(TAG, "OPUS encoder started: " + OPUS_SAMPLE_RATE + "Hz, " +
                 OPUS_CHANNEL_COUNT + " channels, " + OPUS_BITRATE + " bps");
     }
 
     private void audioLoopCapture() {
         byte[] buffer = new byte[1920]; // 立體聲 PCM buffer
 
-        Log.i(TAG, "Audio capture loop started");
         int readCount = 0;
         int zeroCount = 0;
         while (isCapturingAudio && audioRecord != null) {
             try {
                 int bytesRead = audioRecord.read(buffer, 0, buffer.length);
-                readCount++;
 
                 if (bytesRead > 0) {
-                    // 檢查是否全為 0
-                    boolean allZero = true;
-                    int maxValue = 0;
-                    int minValue = 0;
-
-                    for (int i = 0; i < bytesRead; i++) {
-                        int value = buffer[i] & 0xFF;
-                        if (value != 0) {
-                            allZero = false;
-                        }
-                        if (value > maxValue) maxValue = value;
-                        if (value < minValue) minValue = value;
-                    }
-
-                    if (allZero) {
-                        zeroCount++;
-                    }
-
-                    // 每 100 次讀取報告一次
-                    if (readCount % 100 == 0) {
-                        Log.i(TAG, String.format("Read #%d: %d bytes, all-zero: %d/%d (%.1f%%), max: %d, min: %d",
-                                readCount, bytesRead, zeroCount, readCount,
-                                (zeroCount * 100.0 / readCount), maxValue, minValue));
-
-                        // 印出前 16 個 bytes
-                        StringBuilder hex = new StringBuilder("Sample data: ");
-                        for (int i = 0; i < Math.min(16, bytesRead); i++) {
-                            hex.append(String.format("%02X ", buffer[i] & 0xFF));
-                        }
-                        Log.d(TAG, hex.toString());
-                    }
-
                     feedToOpusEncoder(buffer, bytesRead);
-
                 } else if (bytesRead < 0) {
                     Log.w(TAG, "AudioRecord read error: " + bytesRead);
                     break;
@@ -661,26 +601,6 @@ public class ScreenCaptureService extends Service {
     private void feedToOpusEncoder(byte[] pcmData, int length) {
         if (!isAudioEncoding || audioEncoder == null) {
             return;
-        }
-
-        // 檢查 PCM 數據是否全為 0 (靜音)
-        boolean hasAudio = false;
-        for (int i = 0; i < length; i++) {
-            if (pcmData[i] != 0) {
-                hasAudio = true;
-                break;
-            }
-        }
-
-        Log.d(TAG, "PCM data has audio: " + hasAudio + ", length: " + length);
-
-        // 每 100 個封包印一次前幾個 bytes
-        if (++pcmLogCount % 100 == 0) {
-            StringBuilder sb = new StringBuilder("PCM sample: ");
-            for (int i = 0; i < Math.min(16, length); i++) {
-                sb.append(String.format("%02X ", pcmData[i] & 0xFF));
-            }
-            Log.d(TAG, sb.toString());
         }
 
         try {
@@ -700,7 +620,6 @@ public class ScreenCaptureService extends Service {
                             System.nanoTime() / 1000,
                             0
                     );
-                    Log.d(TAG, "Fed " + length + " bytes to OPUS encoder, buffer index: " + inputBufferIndex);
                 } else {
                     Log.w(TAG, "Input buffer too small or null: remaining=" +
                             (inputBuffer != null ? inputBuffer.remaining() : "null") + ", need=" + length);
@@ -712,9 +631,6 @@ public class ScreenCaptureService extends Service {
     }
 
     private void opusEncodingLoop() {
-        Log.i(TAG, "OPUS encoding loop started");
-        int encodedPackets = 0;
-
         while (isAudioEncoding && audioEncoder != null) {
             try {
                 MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
@@ -733,12 +649,6 @@ public class ScreenCaptureService extends Service {
                         // 發送 OPUS 數據到 native layer 進行 RTP 傳輸
                         NativeBridge.sendAudioRtpFrame(opusData);
 
-                        Log.i(TAG, "OPUS packet: " + opusData.length + " bytes, " +
-                                "timestamp: " + bufferInfo.presentationTimeUs);
-
-                        encodedPackets++;
-                        Log.d(TAG, "OPUS packet #" + encodedPackets + ": " + opusData.length + " bytes");
-
                         if (opusData.length >= 8) {
                             StringBuilder hex = new StringBuilder("OPUS header: ");
                             for (int i = 0; i < Math.min(8, opusData.length); i++) {
@@ -753,8 +663,6 @@ public class ScreenCaptureService extends Service {
                     MediaFormat newFormat = audioEncoder.getOutputFormat();
                     Log.i(TAG, "OPUS encoder format changed: " + newFormat);
                 }
-
-
             } catch (IllegalStateException e) {
                 Log.e(TAG, "OPUS encoding loop terminated", e);
                 break;
@@ -763,12 +671,10 @@ public class ScreenCaptureService extends Service {
                 break;
             }
         }
-
-        Log.i(TAG, "OPUS encoding loop ended");
     }
 
     private void stopAudioCapture() {
-        Log.i(TAG, "Stopping audio capture and encoding...");
+        Log.d(TAG, "Stopping audio capture and encoding...");
 
         isCapturingAudio = false;
         isAudioEncoding = false;
