@@ -22,7 +22,7 @@ set(UVGRTP_DISABLE_GTEST ON)
 
 # 加入 Crypto++（先建出靜態庫）
 set(CRYPTOPP_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../native_libs/cryptopp")
-file(GLOB CRYPTOPP_SRC "${CRYPTOPP_SRC_DIR}/*.cpp")
+file(GLOB CRYPTOPP_SRC CONFIGURE_DEPENDS "${CRYPTOPP_SRC_DIR}/*.cpp")
 
 # 過濾掉會導致 Clang crash 的 SIMD 文件
 list(REMOVE_ITEM CRYPTOPP_SRC
