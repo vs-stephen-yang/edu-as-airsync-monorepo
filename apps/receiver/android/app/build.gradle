@@ -201,7 +201,7 @@ dependencies {
     }
     // region vbsOTA
     implementation 'com.github.tonyofrancis:fetch:3.0.3'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     // endregion
 
     // region FireBase for "store"
