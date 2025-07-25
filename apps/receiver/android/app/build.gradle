@@ -208,7 +208,7 @@ dependencies {
     storeImplementation 'com.google.firebase:firebase-core:21.1.1'
     // *** Use 21.1.0 may cause "Remote Config HTTP errors for some RTL locales" ***
     // https://github.com/firebase/firebase-android-sdk/issues/3757
-    storeImplementation 'com.google.firebase:firebase-config:21.4.1'
+    storeImplementation 'com.google.firebase:firebase-config:23.0.0'
     // endregion
 
     implementation 'com.google.android.gms:play-services-base:18.2.0'
