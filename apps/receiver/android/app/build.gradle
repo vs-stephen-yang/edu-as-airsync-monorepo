@@ -212,7 +212,7 @@ dependencies {
     // endregion
 
     implementation 'com.google.android.gms:play-services-base:18.2.0'
-    implementation 'io.sentry:sentry-android:8.16.0'
+    implementation 'io.sentry:sentry-android:8.17.0'
 
     // import vsapi
     compileOnly files("src/libs/VSApi_1.15.1.aar")
