@@ -51,7 +51,7 @@ class MultiWindowProvider extends ChangeNotifier {
     final ratio = double.parse(
       (appWidth / _realScreenSize.width).toStringAsFixed(2),
     );
-    debugPrint('**** ratio $ratio');
+    debugPrint('SplitScreenRatio $ratio');
     return switch (ratio) {
       < 0.5 => SplitScreenRatio.oneThird,
       >= 0.5 && < 0.65 => SplitScreenRatio.half,
