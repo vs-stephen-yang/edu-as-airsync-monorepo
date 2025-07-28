@@ -54,6 +54,7 @@
     <ROW Directory="packages_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="packages"/>
     <ROW Directory="png_Dir" Directory_Parent="flags_Dir" DefaultDir="png"/>
     <ROW Directory="shaders_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="shaders"/>
+    <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools"/>
     <ROW Directory="wakelock_plus_Dir" Directory_Parent="packages_Dir" DefaultDir="WAKELO~1|wakelock_plus"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
@@ -76,6 +77,7 @@
     <ROW Component="desktop_multi_window_plugin.dll" ComponentId="{CE2D6A2F-8D2F-444C-8A9F-52D96F894399}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_multi_window_plugin.dll"/>
     <ROW Component="desktop_screenstate_plugin.dll" ComponentId="{50E79E90-D696-4EEC-8859-CB173AA1A513}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_screenstate_plugin.dll"/>
     <ROW Component="desktop_window_plugin.dll" ComponentId="{6A555317-900D-443B-BD0A-1A6C415674E8}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
+    <ROW Component="devcon.exe" ComponentId="{DB53C66A-B973-43EC-9D4D-F62102DF07FD}" Directory_="tools_Dir" Attributes="256" KeyPath="devcon.exe"/>
     <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{12BBAEAE-F47D-409E-97E5-783BF339FBC4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
     <ROW Component="flutter_virtual_display_plugin.dll" ComponentId="{A80DDE0B-1AD6-4FAC-B463-2DB273CB292B}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_virtual_display_plugin.dll"/>
     <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{7BE6E933-AD6E-4E4D-AAFC-D915EA00FC30}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
@@ -529,6 +531,7 @@
     <ROW File="indirect_display_1_2.dll_1" Component_="indirect_display_1_2.dll_1" FileName="INDIRE~1.DLL|indirect_display_1_2.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.dll" SelfReg="false"/>
     <ROW File="indirect_display_1_2.inf_1" Component_="indirect_display_1_2.cat_1" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.inf" SelfReg="false"/>
     <ROW File="win32audio_plugin.dll" Component_="win32audio_plugin.dll" FileName="WIN32A~1.DLL|win32audio_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\win32audio_plugin.dll" SelfReg="false"/>
+    <ROW File="devcon.exe" Component_="devcon.exe" FileName="devcon.exe" Attributes="0" SourcePath="prebuilt\tools\devcon.exe" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiEmbeddedUIComponent">
     <ROW MsiEmbeddedUI="embeddeduiproxy" FileName="embeddeduiproxy.dll" Attributes="3" MessageFilter="201359327" Data="&lt;AI_HOME&gt;bin\x86\embeddeduiproxy.dll"/>
@@ -646,6 +649,8 @@
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_UPDATER_SERVICE_CONFIG" Type="3090" Source="updater.exe" Target="/configservice -name &quot;AirSyncSenderUpdater&quot;"/>
     <ROW Action="AI_UPDATER_UNINSTALL" Type="82" Source="updater.exe" Target="/clean silent"/>
+    <ROW Action="InstallAudioDriverNode" Type="3170" Source="APPDIR" Target="&quot;[#devcon.exe]&quot; install &quot;[#airsyncaudio.inf_1]&quot; Root\AirSyncAudio"/>
+    <ROW Action="RemoveAudioDriverNode" Type="3154" Source="devcon.exe" Target="remove Root\AirSyncAudio"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFiles64Folder][Manufacturer]\[ProductName]#DefaultBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]#ReleaseBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -705,6 +710,7 @@
     <ROW Feature_="MainFeature" Component_="indirect_display_1_2.cat_1"/>
     <ROW Feature_="MainFeature" Component_="indirect_display_1_2.dll_1"/>
     <ROW Feature_="MainFeature" Component_="win32audio_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="devcon.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
@@ -742,6 +748,8 @@
     <ROW Action="AI_IaLogMachineInfo" Sequence="399"/>
     <ROW Action="AI_IaLogCustomInfo" Sequence="1401"/>
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
+    <ROW Action="InstallAudioDriverNode" Condition="( NOT Installed )" Sequence="6401"/>
+    <ROW Action="RemoveAudioDriverNode" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1601"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="746"/>
