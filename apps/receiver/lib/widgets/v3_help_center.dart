@@ -1,4 +1,3 @@
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
@@ -19,7 +18,6 @@ class _V3HelpCenterWidgetState extends State<V3HelpCenterWidget> {
   final LayerLink _layerLink = LayerLink();
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _iconKey = GlobalKey();
-  final double _popoverWidth = 383;
   final double _maxHeight = 500;
 
   void _showPopover() {
@@ -28,11 +26,17 @@ class _V3HelpCenterWidgetState extends State<V3HelpCenterWidget> {
     if (renderBox == null) return;
 
     final iconPosition = renderBox.localToGlobal(Offset.zero);
+
+    final popoverMaxWidth =
+        MediaQuery.of(context).size.width - iconPosition.dx - 10;
+
+    final double popoverWidth = popoverMaxWidth < 383 ? popoverMaxWidth : 383;
+
     // 有些情況高度會超出畫面，這時會計算y的補正，維持在畫面中。
     final double positionY =
         iconPosition.dy < _maxHeight ? (_maxHeight - iconPosition.dy) : 0;
     // x軸若超出畫面，透過targetAnchor與followerAnchor來修正。
-    final overflow = iconPosition.dx < (_popoverWidth / 2);
+    final overflow = iconPosition.dx < (popoverWidth / 2);
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -54,7 +58,7 @@ class _V3HelpCenterWidgetState extends State<V3HelpCenterWidget> {
                     : CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: _popoverWidth,
+                    width: popoverWidth,
                     constraints: BoxConstraints(maxHeight: _maxHeight),
                     padding: const EdgeInsets.only(
                         left: 20, right: 20, top: 20, bottom: 8),
@@ -267,43 +271,48 @@ class HelpCenterItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = 30 * AppPreferences().textScale;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ExcludeSemantics(
-          child: Container(
-            alignment: Alignment.center,
-            height: height,
-            child: icon,
-          ),
-        ),
-        const Gap(12),
-        Expanded(
-          child: SizedBox(
-            height: height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: context.tokens.color.vsdslColorOnSurface),
-                ),
-                if (subtitle != null)
-                  Text(
-                    subtitle!,
-                    style: TextStyle(
-                        fontSize: 9,
-                        color: context.tokens.color.vsdslColorInfo),
-                  ),
-              ],
+    return IntrinsicHeight(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 30),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ExcludeSemantics(
+              child: Container(
+                alignment: Alignment.center,
+                child: icon,
+              ),
             ),
-          ),
+            const Gap(12),
+            Expanded(
+              child: SizedBox(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: context.tokens.color.vsdslColorOnSurface),
+                    ),
+                    if (subtitle != null)
+                      Flexible(
+                        child: Text(
+                          subtitle!,
+                          style: TextStyle(
+                              fontSize: 9,
+                              color: context.tokens.color.vsdslColorInfo),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
