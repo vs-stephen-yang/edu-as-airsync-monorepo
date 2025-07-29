@@ -25,6 +25,8 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager_factory.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -135,16 +137,24 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
 
     V3NetworkStatusDetector.ensureInitialized();
 
-    runApp(AppConfig(
-      settings: settings,
-      profileStore: profileStore,
-      appName: packageInfo.appName,
-      appVersion: packageInfo.version,
-      child: Tokens(
-        tokens: DefaultTokens(),
-        child: const MyApp(),
+    runApp(MultiProvider(
+      providers: [
+        Provider<AudioSwitchManager>(
+          create: (context) => createAudioSwitchManager(),
+        ),
+      ],
+      child: AppConfig(
+        settings: settings,
+        profileStore: profileStore,
+        appName: packageInfo.appName,
+        appVersion: packageInfo.version,
+        child: Tokens(
+          tokens: DefaultTokens(),
+          child: const MyApp(),
+        ),
       ),
     ));
+
     if (kIsWeb) {
       SemanticsBinding.instance.ensureSemantics();
     }

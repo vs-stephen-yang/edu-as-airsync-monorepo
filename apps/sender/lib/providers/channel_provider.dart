@@ -15,6 +15,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -33,6 +34,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
+import 'package:provider/provider.dart';
 
 // convert ChannelConnectorError to ChannelConnectError
 ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
@@ -75,6 +77,8 @@ class ChannelProvider extends ChangeNotifier {
     _profileStore = AppConfig.of(context)!.profileStore;
     platformDirectPort = AppConfig.of(context)!.platformDirectPort;
     webTransportPort = AppConfig.of(context)!.webTransportPort;
+
+    _audioSwitchManager = context.read<AudioSwitchManager>();
   }
 
   Channel? _channel;
@@ -85,7 +89,7 @@ class ChannelProvider extends ChangeNotifier {
   var _sessionId = const Uuid().v4();
   late int platformDirectPort;
   late int webTransportPort;
-
+  late AudioSwitchManager _audioSwitchManager;
   PresentStateProvider? _presentStateProvider;
   late String _baseApiUrl = '';
   late ProfileStore _profileStore;
@@ -217,8 +221,8 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _channelConnector!.open(
-      directPort: kIsWeb ? webTransportPort : platformDirectPort,
-      useWebTransport: kIsWeb
+        directPort: kIsWeb ? webTransportPort : platformDirectPort,
+        useWebTransport: kIsWeb
     );
   }
 
@@ -556,6 +560,7 @@ class ChannelProvider extends ChangeNotifier {
       profileStore: profileStore,
       systemAudio: systemAudio,
       autoVirtualDisplay: autoVirtualDisplay,
+      audioSwitchManager: _audioSwitchManager,
       sendPresentSignalMessage: (PresentSignalMessage message) {
         // offer, answer, candidate
         message.sessionId = _sessionId;
@@ -921,21 +926,21 @@ class ChannelProvider extends ChangeNotifier {
   ClientConnection createDirectClientConnection(String url, bool isReconnect) {
     if (kIsWeb) {
       return WebTransportClientConnection(
-          url,
-          () async {
-            final certMap = await fetchWebTransportCertificateHashes();
-            if (certMap['dates'] != null) {
-              _networkDiagnostic.reportWebTransportCertDate(certMap['dates']!);
-            }
-            return certMap['hashes'];
-          },
-          WebTransportClientConnectionConfig(
-            connectionTimeout: defaultDirectConnectionTimeout,
-            allowSelfSignedCertificates: true, // Allow self-signed certificates
-            retry: getChannelRetryConfig(isReconnect),
-            logger: (url, message) => log.fine('direct connection: $url $message'),
-          ),
-        );
+        url,
+        () async {
+          final certMap = await fetchWebTransportCertificateHashes();
+          if (certMap['dates'] != null) {
+            _networkDiagnostic.reportWebTransportCertDate(certMap['dates']!);
+          }
+          return certMap['hashes'];
+        },
+        WebTransportClientConnectionConfig(
+          connectionTimeout: defaultDirectConnectionTimeout,
+          allowSelfSignedCertificates: true, // Allow self-signed certificates
+          retry: getChannelRetryConfig(isReconnect),
+          logger: (url, message) => log.fine('direct connection: $url $message'),
+        ),
+      );
     } else {
       return WebSocketClientConnection(
         url,

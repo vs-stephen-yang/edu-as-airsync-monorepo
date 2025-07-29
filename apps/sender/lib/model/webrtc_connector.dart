@@ -37,6 +37,7 @@ class WebRTCConnector {
     required this.preset,
     required this.systemAudio,
     required this.autoVirtualDisplay,
+    required this.audioSwitchManager,
     required this.sendSignalMessage,
     required this.onConnectionState,
     required this.onStopPresent,
@@ -56,6 +57,8 @@ class WebRTCConnector {
   void Function() onStopPresent;
   Function(RtcVideoOutboundStats stats)? onVideoStatsReport;
   void Function(bool isPause, bool isStop) onTouchEvenWhenPaused;
+
+  final AudioSwitchManager audioSwitchManager;
 
   dynamic _deviceId;
   int _screenId = 0;
@@ -476,9 +479,9 @@ class WebRTCConnector {
             };
       int? virtualAudioInputDeviceID; // for macOS only
       if (_isAudioCaptureAllowed()) {
-        if (await AudioSwitchManager().switchToVirtualAudioOutput()) {
+        if (await audioSwitchManager.switchToVirtualAudioOutput()) {
           virtualAudioInputDeviceID =
-              await AudioSwitchManager().getVirtualAudioInputDeviceID();
+              await audioSwitchManager.getVirtualAudioInputDeviceID();
         }
       }
       final audioConstraints = _isAudioCaptureAllowed()
@@ -941,7 +944,7 @@ class WebRTCConnector {
 
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
 
-    await AudioSwitchManager().restoreToDefaultAudioOutput();
+    await audioSwitchManager.restoreToDefaultAudioOutput();
 
     await _disposeStream();
     await _peerConnectionDisconnect();

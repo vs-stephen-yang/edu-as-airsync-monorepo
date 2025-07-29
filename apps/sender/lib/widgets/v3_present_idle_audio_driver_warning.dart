@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class V3PresentIdleAudioDriverWarning extends StatefulWidget {
@@ -47,9 +48,10 @@ class _V3PresentIdleAudioDriverWarningState
     if (kIsWeb || !Platform.isMacOS || !_isVisible) {
       return const SizedBox.shrink();
     }
+    final audioSwitchManager = context.read<AudioSwitchManager>();
 
     return FutureBuilder<bool>(
-      future: AudioSwitchManager().isVirtualAudioMissing(),
+      future: audioSwitchManager.isVirtualAudioMissing(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();

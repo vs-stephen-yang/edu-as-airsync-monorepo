@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/webrtc_connector.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
@@ -33,6 +34,7 @@ class WebRTCHelper {
     required ProfileStore profileStore,
     required bool systemAudio,
     required bool autoVirtualDisplay,
+    required AudioSwitchManager audioSwitchManager,
     required Function(PresentSignalMessage message) sendPresentSignalMessage,
     required Function(RTCPeerConnectionState state) onRTCPeerConnectionState,
     required Function() onStopPresent,
@@ -44,6 +46,7 @@ class WebRTCHelper {
       preset: profileStore.getSelectedProfile().presets.first,
       systemAudio: systemAudio,
       autoVirtualDisplay: autoVirtualDisplay,
+      audioSwitchManager: audioSwitchManager,
       sendSignalMessage: sendPresentSignalMessage,
       onConnectionState: onRTCPeerConnectionState,
       onStopPresent: onStopPresent,
