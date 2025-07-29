@@ -1,10 +1,9 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_client.dart';
+import 'package:display_flutter/model/multicast_info.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-
-import 'multicast_info.dart';
 
 class DisplayGroupSession {
   bool get isVideoAvailable => _isVideoAvailable;

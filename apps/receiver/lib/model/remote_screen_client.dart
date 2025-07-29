@@ -8,8 +8,8 @@ import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
+import 'package:display_flutter/model/multicast_info.dart';
 
-import 'multicast_info.dart';
 
 abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel, String? sessionId)
