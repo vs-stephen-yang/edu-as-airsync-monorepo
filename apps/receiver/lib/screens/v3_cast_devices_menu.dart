@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/widgets/v3_cast_device_info.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
@@ -15,60 +16,65 @@ class V3CastDevicesMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     fromShortcut = false;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final bool isLandscape = constraints.maxWidth > constraints.maxHeight;
-        return Container(
-          alignment: Alignment.center,
-          padding: isLandscape
-              ? const EdgeInsets.symmetric(horizontal: 100, vertical: 58)
-              : const EdgeInsets.all(58),
-          color: context.tokens.color.vsdslColorOpacityNeutralXs,
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            backgroundColor: context.tokens.color.vsdslColorSurface100,
-            insetPadding: EdgeInsets.zero,
-            elevation: 16.0,
-            shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-            child: FocusScope(
-              autofocus: true,
-              node: FocusScopeNode(),
-              child: Stack(
-                children: [
-                  const V3CastDeviceInfo(),
-                  Positioned(
-                    right: 13,
-                    bottom: 13,
-                    child: V3Focus(
-                      label: S.of(context).v3_lbl_close_feature_set_cast_device,
-                      identifier: 'v3_qa_close_feature_set_cast_device',
-                      child: SizedBox(
-                        width: 33,
-                        height: 33,
-                        child: IconButton(
-                          focusNode: primaryFocusNode,
-                          icon: SvgPicture.asset(
-                            'assets/images/ic_menu_close_gray.svg',
-                          ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () {
-                            if (navService.canPop()) {
-                              navService.goBack();
-                            }
-                          },
-                        ),
-                      ),
+
+    final minDialog = _buildDialog(context, EdgeInsets.all(58));
+    return Container(
+      alignment: Alignment.center,
+      color: context.tokens.color.vsdslColorOpacityNeutralXs,
+      child: MultiWindowAdaptiveLayout(
+        portrait: minDialog,
+        landscape: _buildDialog(
+            context, EdgeInsets.symmetric(horizontal: 100, vertical: 58)),
+        landscapeHalf: minDialog,
+        landscapeOneThird: minDialog,
+        landscapeTwoThirds: minDialog,
+      ),
+    );
+  }
+
+  Widget _buildDialog(BuildContext context, EdgeInsets padding) {
+    return Padding(
+      padding: padding,
+      child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: context.tokens.color.vsdslColorSurface100,
+        insetPadding: EdgeInsets.zero,
+        elevation: 16.0,
+        shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
+        child: FocusScope(
+          autofocus: true,
+          node: FocusScopeNode(),
+          child: Stack(
+            children: [
+              const V3CastDeviceInfo(),
+              Positioned(
+                right: 13,
+                bottom: 13,
+                child: V3Focus(
+                  label: S.of(context).v3_lbl_close_feature_set_cast_device,
+                  identifier: 'v3_qa_close_feature_set_cast_device',
+                  child: SizedBox(
+                    width: 33,
+                    height: 33,
+                    child: IconButton(
+                      focusNode: primaryFocusNode,
+                      icon: SvgPicture.asset(
+                          'assets/images/ic_menu_close_gray.svg'),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        if (navService.canPop()) {
+                          navService.goBack();
+                        }
+                      },
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
