@@ -62,7 +62,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
         ),
         alignment: Alignment.bottomLeft,
         backgroundColor: context.tokens.color.vsdslColorSurface1000,
-        insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
+        insetPadding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
         child: SizedBox(
           width: 518,
           height: 413,
