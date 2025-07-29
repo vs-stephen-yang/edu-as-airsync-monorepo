@@ -33,9 +33,14 @@ class _V3HomeState extends State<V3Home> {
   late Future<void> initOperation;
   var _alertShowing = false;
 
+  AudioSwitchManager? _audioSwitchManager;
+
   @override
   void initState() {
     super.initState();
+
+    _audioSwitchManager = context.read<AudioSwitchManager>();
+
     _lifecycleListener = AppLifecycleListener(
       onResume: _handleResume,
       onExitRequested: _handleExitRequest,
@@ -135,7 +140,7 @@ class _V3HomeState extends State<V3Home> {
     () async {
       await _presentEndOnExit();
 
-      await AudioSwitchManager().restoreToDefaultAudioOutput();
+      await _audioSwitchManager?.restoreToDefaultAudioOutput();
 
       completer.complete(AppExitResponse.exit);
     }();
