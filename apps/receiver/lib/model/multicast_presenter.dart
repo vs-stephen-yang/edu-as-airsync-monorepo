@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
-import 'multicast_info.dart';
+import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/model/multicast_info.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
 
 const String defaultMulticastIp = '239.1.1.1';
@@ -10,11 +11,12 @@ const int maxMulticastPort = 32768;
 
 class MulticastPresenter {
   final String ip = defaultMulticastIp;
-  late final int videoPort;
-  late final int audioPort;
-  late final int ssrc;
-  late final Uint8List keyHex;
-  late final Uint8List saltHex;
+  late int videoPort;
+  late int audioPort;
+  late int ssrc;
+  late Uint8List keyHex;
+  late Uint8List saltHex;
+  late String keyString;
 
   static final Random _random = Random();
   static final Random _secureRandom = Random.secure();
@@ -26,39 +28,18 @@ class MulticastPresenter {
     }
 
     return MulticastInfo(
-        ip: ip,
-        videoPort: videoPort,
-        audioPort: audioPort,
-        ssrc: ssrc,
-        keyHex: hex.encode(keyHex),
-        saltHex: hex.encode(saltHex),
-        videoRoc: rocData.videoRoc,
-        audioRoc: rocData.audioRoc);
+      ip: ip,
+      videoPort: videoPort,
+      audioPort: audioPort,
+      ssrc: ssrc,
+      keyHex: hex.encode(keyHex),
+      saltHex: hex.encode(saltHex),
+      videoRoc: rocData.videoRoc,
+      audioRoc: rocData.audioRoc,
+    );
   }
 
-  MulticastPresenter() {
-    // videoPort = _generatePort();
-    // audioPort = videoPort + 1;
-    // ssrc = _generateSsrc();
-    //
-    // final keyMaterial = _generateEncryptionKey();
-    // keyHex = keyMaterial.sublist(0, 16);
-    // saltHex = keyMaterial.sublist(16);
-    videoPort = 5004;
-    audioPort = 5005;
-    ssrc = 1234564002;
-
-    final String hexKey =
-        'E1F97A0D3E018BE0D64FA32C06DE41390EC675AD498AFEEBB6960B3AABE6';
-
-    Uint8List keyMaterial = Uint8List.fromList([
-      for (int i = 0; i < hexKey.length; i += 2)
-        int.parse(hexKey.substring(i, i + 2), radix: 16),
-    ]);
-
-    keyHex = keyMaterial.sublist(0, 16);
-    saltHex = keyMaterial.sublist(16);
-  }
+  MulticastPresenter();
 
   int _generatePort() {
     return minMulticastPort +
@@ -66,12 +47,7 @@ class MulticastPresenter {
   }
 
   int _generateSsrc() {
-    int s;
-    do {
-      s = _random.nextInt(0xFFFFFFFF);
-    } while (s == 0); // Avoid SSRC = 0
-
-    return s;
+    return 1 + _random.nextInt(0x7FFFFFFF); // range 1 to 2,147,483,647
   }
 
   Uint8List _generateEncryptionKey() {
@@ -80,6 +56,14 @@ class MulticastPresenter {
   }
 
   Future<bool> start() async {
+    videoPort = _generatePort();
+    audioPort = videoPort + 1;
+    ssrc = _generateSsrc();
+    final keyMaterial = _generateEncryptionKey();
+    keyHex = keyMaterial.sublist(0, 16);
+    saltHex = keyMaterial.sublist(16);
+    keyString = hex.encode(keyMaterial);
+
     final rtpSuccess = await FlutterMulticastPlugin.startRtpStream(
         ip: ip,
         videoPort: videoPort,
@@ -92,6 +76,7 @@ class MulticastPresenter {
       return false;
     }
 
+    log.info('Start multicast with config: videoPort: $videoPort, audioPort: $audioPort, ssrc: $ssrc, keyString: $keyString');
     await FlutterMulticastPlugin.startCapture();
     return true;
   }
