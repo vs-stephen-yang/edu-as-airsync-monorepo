@@ -1,5 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
+import 'listener.dart';
 import 'method_channel.dart';
 import 'stream_roc_data.dart';
 
@@ -15,6 +15,10 @@ abstract class FlutterMulticastPluginPlatform extends PlatformInterface {
   static set instance(FlutterMulticastPluginPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
+  }
+
+  void registerListener(FlutterMulticastPluginListener listener) {
+    throw UnimplementedError('registerListener() has not been implemented.');
   }
 
   Future<bool> startRtpStream({

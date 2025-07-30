@@ -3,8 +3,9 @@ package com.viewsonic.flutter_multicast_plugin;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
-import android.graphics.SurfaceTexture;
 import android.media.projection.MediaProjectionManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
 
@@ -24,22 +25,26 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.TextureRegistry;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 /** FlutterMulticastPlugin */
 @Keep
-public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener, SurfaceCallbackHandler.SurfaceLifecycleListener {
+public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener, SurfaceCallbackHandler.SurfaceLifecycleListener, NativeListener {
     private MethodChannel channel;
 
     private TextureRegistry textureRegistry;
 
-    private Surface surface;
+    private final Handler handler_ = new Handler(Looper.getMainLooper());
+
     private Activity activity;
     private SurfaceCallbackHandler surfaceHandler;
     private static final int REQUEST_CODE_MEDIA_PROJECTION = 1001;
+
+    private NativeBridge nativeBridge_;
 
     private static final String TAG = "FlutterMulticastPlugin";
 
@@ -63,7 +68,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
         // 使用反射來初始化 GStreamer，避免編譯時依賴
         initializeGStreamerIfAvailable(flutterPluginBinding.getApplicationContext());
-        NativeBridge.setNativePluginInstance(this);
+        nativeBridge_ = new NativeBridge(this);
     }
 
     private void initializeGStreamerIfAvailable(android.content.Context context) {
@@ -97,14 +102,14 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
                 List<String> localIps = NetworkUtils.getAllLocalIPv4s();
                 String[] ipArray = localIps.toArray(new String[0]);
-                boolean success = NativeBridge.startRtpStream(ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc);
+                boolean success = nativeBridge_.startRtpStream(ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc);
                 result.success(success);
                 break;
             }
             case "getStreamRoc": {
                 try {
                     // 調用 native 方法
-                    Map<String, Object> rocData = NativeBridge.getStreamRoc();
+                    Map<String, Object> rocData = nativeBridge_.getStreamRoc();
 
                     if (rocData != null && !rocData.isEmpty()) {
                         result.success(rocData);
@@ -117,7 +122,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                 break;
             }
             case "stopRtpStream": {
-                NativeBridge.stopRtpStream();
+                nativeBridge_.stopRtpStream();
                 result.success(null);
                 break;
             }
@@ -173,7 +178,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
                 List<String> localIps = NetworkUtils.getAllLocalIPv4s();
                 String[] ipArray = localIps.toArray(new String[0]);
-                NativeBridge.receiveStart(surface, ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc, videoRoc, audioRoc);
+                nativeBridge_.receiveStart(surface, ipArray, multicastIp, videoPort, audioPort, key, salt, ssrc, videoRoc, audioRoc);
 
                 surfaceHandler.setActive(true);
 
@@ -185,7 +190,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                     surfaceHandler.setActive(false);
                 }
 
-                NativeBridge.receiveStop();
+                nativeBridge_.receiveStop();
 
                 if (surfaceHandler != null) {
                     surfaceHandler.release();
@@ -242,23 +247,41 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
     @Override
     public void onSurfaceReady(Surface surface) {
         Log.d(TAG, "Surface ready - reinitializing video pipeline");
-        NativeBridge.reinitializeVideoPipeline(surface);
+        nativeBridge_.reinitializeVideoPipeline(surface);
     }
 
     @Override
     public void onSurfaceDestroyed() {
         Log.d(TAG, "Surface destroyed - pausing video pipeline");
         if (surfaceHandler != null && surfaceHandler.isActive()) {
-            NativeBridge.pauseVideoPipeline();
+            nativeBridge_.pauseVideoPipeline();
         }
     }
 
-    public void onNativeResolution(int width, int height) {
-        Map<String, Object> args = new HashMap<>();
-        args.put("width", width);
-        args.put("height", height);
+    // make sure that the task runs on the platform thread
+    private void post(Runnable r) {
+        if (isOnPlatformThread()) {
+            r.run();
+            return;
+        }
 
-        Log.d(TAG, "[callback Java] onNativeResolution width: "+ width + ", height: " + height);
-        channel.invokeMethod("onVideoResolution", args);
+        // Run the task on the platform thread
+        handler_.post(r);
+    }
+
+    private boolean isOnPlatformThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+
+    public void onNativeResolution(int width, int height) {
+        Log.d(TAG, "onNativeResolution width: "+ width + ", height: " + height);
+
+        post(() -> {
+            Map<String, Object> args = new HashMap<>();
+            args.put("width", width);
+            args.put("height", height);
+
+            channel.invokeMethod("onVideoSize", args);
+        });
     }
 }

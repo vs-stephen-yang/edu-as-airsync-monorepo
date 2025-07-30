@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
 
-class RtpReceiver {
+class RtpReceiver implements FlutterMulticastPluginListener {
+  final ValueNotifier<double?> aspectRatioNotifier = ValueNotifier(null);
+
   /// 啟動 RTP 接收（呼叫原生的 NativeBridge.receiveStart）
-  static Future<int?> start(int videoRoc, int audioRoc) async {
+  Future<int?> start(int videoRoc, int audioRoc) async {
+    FlutterMulticastPlugin.registerListener(this);
     final String hexKey =
         'E1F97A0D3E018BE0D64FA32C06DE41390EC675AD498AFEEBB6960B3AABE6';
 
@@ -39,12 +42,22 @@ class RtpReceiver {
   }
 
   /// 停止 RTP 接收（呼叫 NativeBridge.nativeStop）
-  static Future<void> stop() async {
+  Future<void> stop() async {
     try {
       await FlutterMulticastPlugin.receiveStop();
     } on PlatformException catch (e) {
       print('Failed to stop receiver: ${e.message}');
     }
+  }
+
+  @override
+  void onVideoSize(int width, int height) {
+    final ratio = width / height;
+    aspectRatioNotifier.value = ratio;
+  }
+
+  void dispose() {
+    aspectRatioNotifier.dispose();
   }
 }
 
@@ -60,6 +73,7 @@ class ReceiverHome extends StatefulWidget {
 }
 
 class _ReceiverHomeState extends State<ReceiverHome> {
+  RtpReceiver receiver = RtpReceiver();
   bool running = false;
   int? textureId;
   final TextEditingController _rocController = TextEditingController(text: '0');
@@ -67,7 +81,7 @@ class _ReceiverHomeState extends State<ReceiverHome> {
 
   void _toggleReceiver() async {
     if (running) {
-      await RtpReceiver.stop();
+      await receiver.stop();
       setState(() {
         running = false;
         textureId = null;
@@ -109,7 +123,7 @@ class _ReceiverHomeState extends State<ReceiverHome> {
         return;
       }
 
-      final id = await RtpReceiver.start(videoRoc, audioRoc);
+      final id = await receiver.start(videoRoc, audioRoc);
       if (id != null) {
         setState(() {
           running = true;
@@ -140,14 +154,21 @@ class _ReceiverHomeState extends State<ReceiverHome> {
   @override
   void dispose() {
     _rocController.dispose();
+    receiver.dispose();
     super.dispose();
   }
+
+  final GlobalKey _videoViewKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     Widget videoWidget;
     if (textureId != null) {
-      videoWidget = Texture(textureId: textureId!);
+      videoWidget = MulticastVideoView(
+        key: _videoViewKey,
+        textureId: textureId!,
+        aspectRatioListenable: receiver.aspectRatioNotifier,
+      );
     } else {
       videoWidget = const Center(child: Text('此處將顯示影片'));
     }
@@ -161,13 +182,12 @@ class _ReceiverHomeState extends State<ReceiverHome> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // ROC 輸入框
                 TextField(
                   controller: _rocController,
-                  enabled: !running, // 運行時禁用輸入
+                  enabled: !running,
                   keyboardType: TextInputType.number,
                   inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly, // 只允許數字
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: const InputDecoration(
                     labelText: 'video ROC 初始值',
@@ -178,10 +198,10 @@ class _ReceiverHomeState extends State<ReceiverHome> {
                 ),
                 TextField(
                   controller: _audioRocController,
-                  enabled: !running, // 運行時禁用輸入
+                  enabled: !running,
                   keyboardType: TextInputType.number,
                   inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly, // 只允許數字
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: const InputDecoration(
                     labelText: 'audio ROC 初始值',
@@ -191,7 +211,6 @@ class _ReceiverHomeState extends State<ReceiverHome> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // 開始/停止按鈕
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
