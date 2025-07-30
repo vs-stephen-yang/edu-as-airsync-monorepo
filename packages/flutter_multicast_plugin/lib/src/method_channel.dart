@@ -1,13 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-
+import 'listener.dart';
 import 'platform_interface.dart';
 import 'stream_roc_data.dart';
 
 /// An implementation of [FlutterMulticastPluginPlatform] that uses method channels.
 class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform {
-  @visibleForTesting
   final methodChannel = const MethodChannel('flutter_multicast_plugin');
+
+  FlutterMulticastPluginListener? _listener;
+
+  MethodChannelFlutterMulticastPlugin() {
+    methodChannel.setMethodCallHandler(onMethodCallFromNative);
+  }
 
   @override
   Future<bool> startRtpStream({
@@ -81,5 +86,28 @@ class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform
   @override
   Future<void> receiveStop() async {
     await methodChannel.invokeMethod('receiveStop');
+  }
+
+  @override
+  void registerListener(FlutterMulticastPluginListener listener) {
+    _listener = listener;
+  }
+
+  Future<dynamic> onMethodCallFromNative(MethodCall call) async {
+    try {
+      print("onMethodCallFromNative: ${call.method}");
+      switch (call.method) {
+        case 'onVideoSize':
+          _listener?.onVideoSize(
+            call.arguments['width'],
+            call.arguments['height'],
+          );
+          break;
+        default:
+          throw MissingPluginException();
+      }
+    } catch (e) {
+      print("Malformed method call from native: ${call.method}. $e");
+    }
   }
 }

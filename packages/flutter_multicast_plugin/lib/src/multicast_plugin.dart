@@ -1,3 +1,4 @@
+import 'listener.dart';
 import 'platform_interface.dart';
 import 'stream_roc_data.dart';
 
@@ -60,5 +61,9 @@ class FlutterMulticastPlugin {
 
   static Future<void> receiveStop() {
     return FlutterMulticastPluginPlatform.instance.receiveStop();
+  }
+
+  static void registerListener(FlutterMulticastPluginListener listener) {
+    return FlutterMulticastPluginPlatform.instance.registerListener(listener);
   }
 }

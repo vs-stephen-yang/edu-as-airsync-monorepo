@@ -187,7 +187,7 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_getStreamRoc(
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendRtpFrame(
-    JNIEnv *env, jobject thiz, jbyteArray frame) {
+    JNIEnv *env, jclass thiz, jbyteArray frame) {
   if (streamPairs.empty()) {
     ALOGE("No video streams available");
     return;
@@ -213,7 +213,7 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendRtpFrame(
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendAudioRtpFrame(
-    JNIEnv *env, jobject thiz, jbyteArray frame) {
+    JNIEnv *env, jclass thiz, jbyteArray frame) {
   if (streamPairs.empty()) {
     ALOGE("No audio streams available");
     return;
