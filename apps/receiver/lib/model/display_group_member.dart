@@ -134,7 +134,6 @@ class DisplayGroupMember {
 
   void _sendInviteDisplayGroup() {
     final message = InviteDisplayGroupMessage(
-      connectionType: _mediator.getRemoteScreenType().displayGroupType,
       hostName: AppPreferences().instanceName,
       displayCode: '',
     );

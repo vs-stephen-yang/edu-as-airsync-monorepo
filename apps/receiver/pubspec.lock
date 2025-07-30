@@ -414,8 +414,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.8.1"
-      resolved-ref: e8bea484ef8b87bbcf8ded0d2a27ab0fa5f2a30b
+      ref: "release-3.8.2"
+      resolved-ref: "7e00fed3cbfb53f5dcd04fe519803d0c9f3c4679"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
