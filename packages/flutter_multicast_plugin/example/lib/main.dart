@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
-import 'package:flutter_multicast_plugin/stream_roc_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {

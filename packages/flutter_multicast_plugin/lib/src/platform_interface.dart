@@ -1,6 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'flutter_multicast_plugin_method_channel.dart';
+import 'method_channel.dart';
 import 'stream_roc_data.dart';
 
 abstract class FlutterMulticastPluginPlatform extends PlatformInterface {
