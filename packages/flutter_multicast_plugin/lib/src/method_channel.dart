@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'flutter_multicast_plugin_platform_interface.dart';
+import 'platform_interface.dart';
 import 'stream_roc_data.dart';
 
 /// An implementation of [FlutterMulticastPluginPlatform] that uses method channels.
