@@ -280,6 +280,9 @@ static void decodebin_pad_added_cb(GstElement* decodebin, GstPad* new_pad, gpoin
         ALOGI("[PAD_ADDED] ✅ New elements set to PLAYING");
     }
 
+    // probe get video size
+    gst_pad_add_probe(new_pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM, on_decoder_caps_probe, nullptr, nullptr);
+
     // 添加 probe 來監控數據流
     gst_pad_add_probe(new_pad, GST_PAD_PROBE_TYPE_BUFFER,
                       enhanced_probe_callback, (gpointer) "decodebin_output", nullptr);

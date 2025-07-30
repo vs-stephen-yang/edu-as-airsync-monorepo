@@ -162,6 +162,7 @@ set(COMMON_SRC
         ${COMMON_DIR}/gst_video_pipeline.cpp
         ${COMMON_DIR}/gst_audio_pipeline.cpp
         ${COMMON_DIR}/gst_util.cpp
+        ${COMMON_DIR}/jni_context.cpp
 )
 
 # 加入 JNI 的 source

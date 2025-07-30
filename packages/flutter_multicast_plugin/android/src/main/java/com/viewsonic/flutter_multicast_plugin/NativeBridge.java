@@ -15,4 +15,6 @@ public class NativeBridge {
     public static native void receiveStop();
     public static native void pauseVideoPipeline();
     public static native void reinitializeVideoPipeline(Object surface);
+
+    public static native void setNativePluginInstance(Object instance);
 }

@@ -6,8 +6,14 @@
 #include <gst/gst.h>
 #include <gst/gstbuffer.h>
 #include <gst/gstcaps.h>
+#include <gst/gstevent.h>
 #include <gst/gstpad.h>
 #include <string>
+
+#ifdef __ANDROID__
+#include "jni_context.h"
+#include <jni.h>
+#endif
 
 GstPadProbeReturn enhanced_probe_callback(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
     const char* element_name = (const char*)user_data;
@@ -129,4 +135,45 @@ GstBusSyncReply bus_sync_handler(GstBus*, GstMessage* msg, gpointer user_data) {
 
     // Important: return to let the message continue flowing
     return GST_BUS_PASS;
+}
+
+GstPadProbeReturn on_decoder_caps_probe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+    if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM) {
+        GstEvent* event = GST_PAD_PROBE_INFO_EVENT(info);
+        if (GST_EVENT_TYPE(event) == GST_EVENT_CAPS) {
+            GstCaps* caps = NULL;
+            gst_event_parse_caps(event, &caps);
+
+            if (caps) {
+                GstStructure* s = gst_caps_get_structure(caps, 0);
+                int width = 0, height = 0;
+                gst_structure_get_int(s, "width", &width);
+                gst_structure_get_int(s, "height", &height);
+
+                notify_video_resolution(width, height);
+            }
+        }
+    }
+    return GST_PAD_PROBE_OK;
+}
+
+void notify_video_resolution(int width, int height) {
+#ifdef __ANDROID__
+    if (!java_vm || !g_plugin_instance) {
+        return;
+    }
+
+    JNIEnv* env;
+    if (java_vm->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK) {
+        if (java_vm->AttachCurrentThread(&env, nullptr) != 0) {
+            return;
+        }
+    }
+
+    jclass clazz = env->GetObjectClass(g_plugin_instance);
+    jmethodID method = env->GetMethodID(clazz, "onNativeResolution", "(II)V");
+    if (method) {
+        env->CallVoidMethod(g_plugin_instance, method, width, height);
+    }
+#endif
 }
