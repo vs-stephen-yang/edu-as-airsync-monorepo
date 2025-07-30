@@ -12,14 +12,13 @@
 
 #include "gst_audio_pipeline.h"
 #include "gst_video_pipeline.h"
+#include "jni_context.h"
 #include "log.h"
 #include "rtp_receiver_core.h"
 
 static std::unique_ptr<RtpReceiverCore> g_receiver;
 static std::unique_ptr<GstVideoPipeline> g_pipeline;
 static std::unique_ptr<GstAudioPipeline> g_audio_pipeline;
-
-static JavaVM *java_vm;
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStart(
@@ -74,7 +73,7 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStart(
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStop(
-    JNIEnv *, jobject) {
+    JNIEnv *env, jobject) {
   if (g_receiver)
     g_receiver->stop();
   if (g_pipeline)
@@ -84,6 +83,11 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStop(
   g_receiver.reset();
   g_pipeline.reset();
   g_audio_pipeline.reset();
+
+  if (g_plugin_instance) {
+    env->DeleteGlobalRef(g_plugin_instance);
+    g_plugin_instance = nullptr;
+  }
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -103,6 +107,14 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_reinitializeVideoPipe
     ANativeWindow *native_window = ANativeWindow_fromSurface(env, surface);
     g_pipeline->reinitialize(native_window);
     ANativeWindow_release(native_window);
+  }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_setNativePluginInstance(
+    JNIEnv *env, jclass, jobject instance) {
+  if (g_plugin_instance == nullptr) {
+    g_plugin_instance = env->NewGlobalRef(instance);
   }
 }
 

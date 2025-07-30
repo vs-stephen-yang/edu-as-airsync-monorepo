@@ -25,6 +25,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.TextureRegistry;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,7 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
         // 使用反射來初始化 GStreamer，避免編譯時依賴
         initializeGStreamerIfAvailable(flutterPluginBinding.getApplicationContext());
+        NativeBridge.setNativePluginInstance(this);
     }
 
     private void initializeGStreamerIfAvailable(android.content.Context context) {
@@ -249,5 +251,14 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
         if (surfaceHandler != null && surfaceHandler.isActive()) {
             NativeBridge.pauseVideoPipeline();
         }
+    }
+
+    public void onNativeResolution(int width, int height) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("width", width);
+        args.put("height", height);
+
+        Log.d(TAG, "[callback Java] onNativeResolution width: "+ width + ", height: " + height);
+        channel.invokeMethod("onVideoResolution", args);
     }
 }
