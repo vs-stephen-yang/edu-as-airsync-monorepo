@@ -3,10 +3,10 @@
 ## Download and install GStreamer binaries
 ### Android
 1.	Visit the [GStreamer Android Releases page](https://gstreamer.freedesktop.org/download/#android)
-2.	Download the “Universal” tarball, for example: `gstreamer-1.0-android-universal-1.24.2.tar.xz`
+2.	Download the “Universal” tarball, for example: `gstreamer-1.0-android-universal-1.26.4.tar.xz`
 3.	Extract it to a desired location, for example: 
     ```
-    tar -xf gstreamer-1.0-android-universal-1.24.2.tar.xz -C ~/SDKs/
+    tar -xf gstreamer-1.0-android-universal-1.26.4.tar.xz -C ~/SDKs/
     ```
 
 ### iOS
