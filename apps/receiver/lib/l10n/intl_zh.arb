@@ -346,5 +346,21 @@
   "v3_lbl_settings_broadcast_to_display_group_checkbox": "選擇 %s",
   "v3_lbl_settings_broadcast_to_display_group_save": "儲存",
   "v3_lbl_settings_broadcast_to_display_group_cast": "廣播",
-  "v3_lbl_settings_broadcast_to_display_group_confirm": "未選擇任何接收端"
+  "v3_lbl_settings_broadcast_to_display_group_confirm": "未選擇任何接收端",
+  "v3_help_center_share_title": "分享螢幕",
+  "v3_help_center_share_title_sub": "將裝置端畫面分享至大屏",
+  "v3_help_center_cast_device_title": "分享大屏端畫面至裝置",
+  "v3_help_center_cast_device_title_sub": "將大屏端畫面分享至裝置端",
+  "v3_help_center_touchback_title": "反控",
+  "v3_help_center_touchback_title_sub": "允許使用者遠端控制",
+  "v3_help_center_untouchback_title": "停止反控",
+  "v3_help_center_untouchback_title_sub": "停止使用者遠端控制",
+  "v3_help_center_fullscreen_title": "全螢幕",
+  "v3_help_center_mute_user_title": "靜音",
+  "v3_help_center_remove_user_title": "移除使用者",
+  "v3_help_center_stop_share_title": "停止分享",
+  "v3_help_center_close": "關閉",
+  "v3_help_center_title": "支援中心",
+  "v3_lbl_open_help_center": "開啟支援中心",
+  "v3_lbl_close_help_center": "關閉支援中心"
 }
