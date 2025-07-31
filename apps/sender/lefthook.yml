@@ -1,0 +1,14 @@
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      run: |
+        files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.dart$')
+        if [ -n "$files" ]; then
+          dart format $files
+        fi
+
+        git add $files
+    # analyze:
+    #   run: fvm.bat flutter analyze --no-pub --no-fatal-infos
+
