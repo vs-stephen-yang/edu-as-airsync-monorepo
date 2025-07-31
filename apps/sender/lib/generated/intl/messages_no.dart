@@ -393,6 +393,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_password_invalid":
             MessageLookupByLibrary.simpleMessage("Ugyldig passord."),
         "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Neste"),
+        "v3_main_present_or": MessageLookupByLibrary.simpleMessage("eller"),
         "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
             "Følg trinnene for å komme i gang."),
         "v3_main_present_title":

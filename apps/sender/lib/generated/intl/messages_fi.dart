@@ -394,6 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Virheellinen salasana."),
         "v3_main_present_action":
             MessageLookupByLibrary.simpleMessage("Seuraava"),
+        "v3_main_present_or": MessageLookupByLibrary.simpleMessage("tai"),
         "v3_main_present_subtitle":
             MessageLookupByLibrary.simpleMessage("Seuraa aloitusohjeita."),
         "v3_main_present_title":

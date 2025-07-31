@@ -74,6 +74,7 @@
   "main_notice_positive_button": "下載AirSync傳送端app",
   "present_select_screen_ios_restart_description": "請在連線逾時前點擊\"開始直播\"以分享畫面，或點擊\"返回\"回到初始畫面。",
   "present_select_screen_ios_restart": "開始直播",
+  "remote_screen_connect_error": "遠端連線中斷",
   "v3_eula_title": "最終用戶許可協議",
   "v3_eula_agree": "同意",
   "v3_eula_disagree": "不同意",
@@ -255,5 +256,6 @@
   "v3_exit_action_cancel": "取消",
   "v3_exit_action_exit": "離開",
   "v3_lbl_exit_action_cancel": "取消",
-  "v3_lbl_exit_action_exit": "離開"
+  "v3_lbl_exit_action_exit": "離開",
+  "v3_main_present_or": "或"
 }

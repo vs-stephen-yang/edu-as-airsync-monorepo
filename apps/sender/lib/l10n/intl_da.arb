@@ -257,5 +257,6 @@
   "v3_exit_action_cancel": "Annuller",
   "v3_exit_action_exit": "Afslut",
   "v3_lbl_exit_action_cancel": "Annuller",
-  "v3_lbl_exit_action_exit": "Afslut"
+  "v3_lbl_exit_action_exit": "Afslut",
+  "v3_main_present_or": "eller"
 }
