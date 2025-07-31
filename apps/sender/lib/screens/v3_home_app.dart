@@ -33,6 +33,7 @@ class V3HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final query = MediaQuery.of(context);
     return SafeArea(
       child: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
@@ -45,7 +46,9 @@ class V3HomeApp extends StatelessWidget {
             ),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height,
+                maxHeight: query.size.height -
+                    query.padding.top -
+                    query.padding.bottom,
               ),
               child: Stack(
                 alignment: Alignment.center,
