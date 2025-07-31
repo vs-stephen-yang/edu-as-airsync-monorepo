@@ -257,5 +257,6 @@
   "v3_exit_action_cancel": "Abbrechen",
   "v3_exit_action_exit": "Verlassen",
   "v3_lbl_exit_action_cancel": "Abbrechen",
-  "v3_lbl_exit_action_exit": "Verlassen"
+  "v3_lbl_exit_action_exit": "Verlassen",
+  "v3_main_present_or": "oder"
 }

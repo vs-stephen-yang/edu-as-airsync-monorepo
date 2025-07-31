@@ -137,6 +137,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_time_unit_min": MessageLookupByLibrary.simpleMessage("分鐘"),
         "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("秒"),
         "present_wait": m0,
+        "remote_screen_connect_error":
+            MessageLookupByLibrary.simpleMessage("遠端連線中斷"),
         "remote_screen_wait":
             MessageLookupByLibrary.simpleMessage("分享畫面處理中，請稍後"),
         "settings_audio_configuration":
@@ -343,6 +345,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("密碼錯誤"),
         "v3_main_present_action":
             MessageLookupByLibrary.simpleMessage("請選擇分享方式"),
+        "v3_main_present_or": MessageLookupByLibrary.simpleMessage("或"),
         "v3_main_present_subtitle":
             MessageLookupByLibrary.simpleMessage("只需幾個步驟即可快速分享"),
         "v3_main_present_title":

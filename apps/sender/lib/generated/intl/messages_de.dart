@@ -394,6 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ungültiges Passwort."),
         "v3_main_present_action":
             MessageLookupByLibrary.simpleMessage("Weiter"),
+        "v3_main_present_or": MessageLookupByLibrary.simpleMessage("oder"),
         "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
             "Folgen Sie den Schritten, um zu beginnen."),
         "v3_main_present_title":

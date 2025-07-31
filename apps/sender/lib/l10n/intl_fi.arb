@@ -257,5 +257,6 @@
   "v3_exit_action_cancel": "Peruuta",
   "v3_exit_action_exit": "Poistu",
   "v3_lbl_exit_action_cancel": "Peruuta",
-  "v3_lbl_exit_action_exit": "Poistu"
+  "v3_lbl_exit_action_exit": "Poistu",
+  "v3_main_present_or": "tai"
 }
