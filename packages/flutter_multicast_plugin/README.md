@@ -29,7 +29,7 @@ This Flutter plugin uses Android native C++ code that integrates the following c
 ### Required Environment Variable
 Before building, set the following environment variable to point to your GStreamer Android SDK path:
 ```
-export GSTREAMER_SDK_ANDROID=export GSTREAMER_SDK_ANDROID=/path/to/gstreamer-1.0-android-universal-<version>
+export GSTREAMER_SDK_ANDROID=/path/to/gstreamer-1.0-android-universal-<version>
 ```
 
 ## iOS Native Build Instructions
