@@ -40,5 +40,7 @@
 # OpenJSSE
 -keep class org.openjsse.** { *; }
 -dontwarn org.openjsse.**
+
+-keep class org.freedesktop.gstreamer.** { *; }
 ##---------------End: proguard configuration for Missing Classes -------
 
