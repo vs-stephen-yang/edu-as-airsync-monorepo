@@ -3,5 +3,5 @@
 
 @interface FlutterMulticastPlugin : NSObject <FlutterPlugin>
 @property(nonatomic, weak) NSObject<FlutterPluginRegistrar> *registrar;
-
+@property(nonatomic, strong) FlutterMethodChannel *channel;
 @end

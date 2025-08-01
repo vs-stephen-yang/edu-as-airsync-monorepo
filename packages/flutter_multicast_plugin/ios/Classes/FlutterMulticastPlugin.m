@@ -6,6 +6,9 @@
 #import <ifaddrs.h>
 #import <net/if.h>
 
+static bool has_notified_resolution = false;
+void set_plugin_instance(FlutterMulticastPlugin *instance);
+
 @implementation FlutterMulticastPlugin {
     VideoTexture *_videoTexture;
     NSObject<FlutterTextureRegistry> *_textureRegistry;
@@ -17,6 +20,8 @@
                                     binaryMessenger:[registrar messenger]];
     FlutterMulticastPlugin *instance = [[FlutterMulticastPlugin alloc] init];
     instance.registrar = registrar;
+    instance.channel = channel;
+    set_plugin_instance(instance);
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
@@ -119,6 +124,8 @@
                          videoRoc:videoRoc
                          audioRoc:audioRoc];
 
+    [self resetResolutionNotificationFlag];
+
     return _textureId;
 }
 
@@ -183,4 +190,30 @@
     set_global_texture_variables(NULL, NULL, -1);
 }
 
+- (void)resetResolutionNotificationFlag {
+    has_notified_resolution = false;
+}
+
+- (void)notifyVideoResolution:(int)width height:(int)height {
+    if (self.channel) {
+        [self.channel invokeMethod:@"onVideoSize"
+                         arguments:@{@"width" : @(width), @"height" : @(height)}];
+    }
+}
+
 @end
+
+static FlutterMulticastPlugin *g_plugin_instance = nil;
+
+void set_plugin_instance(FlutterMulticastPlugin *instance) { g_plugin_instance = instance; }
+
+void notify_flutter_video_resolution(int width, int height) {
+    if (has_notified_resolution)
+        return;
+    has_notified_resolution = true;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (g_plugin_instance) {
+          [g_plugin_instance notifyVideoResolution:width height:height];
+      }
+    });
+}
