@@ -159,13 +159,13 @@ GstPadProbeReturn on_decoder_caps_probe(GstPad* pad, GstPadProbeInfo* info, gpoi
 
 void notify_video_resolution(int width, int height) {
 #ifdef __ANDROID__
-    if (!java_vm || !g_plugin_instance) {
+    if (!g_java_vm || !g_plugin_instance) {
         return;
     }
 
     JNIEnv* env;
-    if (java_vm->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK) {
-        if (java_vm->AttachCurrentThread(&env, nullptr) != 0) {
+    if (g_java_vm->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK) {
+        if (g_java_vm->AttachCurrentThread(&env, nullptr) != 0) {
             return;
         }
     }

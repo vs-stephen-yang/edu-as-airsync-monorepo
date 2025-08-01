@@ -25,9 +25,9 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_receiveStart(
     JNIEnv *env, jobject thiz, jobject surface, jobjectArray local_ips,
     jstring multicast_ip, jint video_port, jint audio_port, jbyteArray j_key,
     jbyteArray j_salt, jint ssrc, jlong video_roc, jlong audio_roc) {
-    if (g_plugin_instance == nullptr) {
-        g_plugin_instance = env->NewGlobalRef(thiz);
-    }
+  if (g_plugin_instance == nullptr) {
+    g_plugin_instance = env->NewGlobalRef(thiz);
+  }
   ANativeWindow *native_window = ANativeWindow_fromSurface(env, surface);
   ALOGD("Received surface %p (native window %p)", surface, native_window);
 
@@ -114,7 +114,7 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_reinitializeVideoPipe
 }
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-  java_vm = vm;
+  g_java_vm = vm;
 
   return JNI_VERSION_1_4;
 }
