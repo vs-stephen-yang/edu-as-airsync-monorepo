@@ -14,14 +14,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 /// STORE: Integrate InAppUpdate, wait verify
 
 class AppUpdateHelper {
-  static final AppUpdateHelper _instance = AppUpdateHelper._internal();
-
-  //private "Named constructors"
-  AppUpdateHelper._internal();
-
-  // passes the instantiation to the _instance object
-  factory AppUpdateHelper() => _instance;
-
   OtaEnvironment _otaEnvironment = OtaEnvironment.production;
   OtaFlavor _otaFlavor = OtaFlavor.ifp;
 
