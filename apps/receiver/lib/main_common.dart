@@ -28,6 +28,7 @@ import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
+import 'package:display_flutter/utility/user_timer_manager.dart';
 import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
@@ -101,7 +102,16 @@ Future<void> commonEntry(ConfigSettings settings) async {
     setSentryUser(AppInstanceCreate().displayInstanceID);
 
     await AppUpdateHelper().ensureInitialized(settings);
-    runApp(configureApp);
+    runApp(
+      MultiProvider(
+        providers: [
+          Provider<UserTimerManager>(
+            create: (context) => UserTimerManager(),
+          ),
+        ],
+        child: configureApp,
+      ),
+    );
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
 

@@ -47,11 +47,6 @@ class UserTimer {
 }
 
 class UserTimerManager {
-  static final UserTimerManager _instance = UserTimerManager._internal();
-
-  factory UserTimerManager() => _instance;
-
-  UserTimerManager._internal();
 
   final Map<String, UserTimer> _userTimers = {};
   String? _currentDisplayTimerId;
