@@ -3,14 +3,15 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/remote_screen_util.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/features/protoc/event.pb.dart' as pb;
+import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-
+import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
-import 'package:display_cast_flutter/features/protoc/event.pb.dart' as pb;
-import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
+import 'package:convert/convert.dart';
 
 abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel, String? sessionId)
@@ -81,7 +82,8 @@ class RtcScreenClient extends RemoteScreenClient {
   RtcScreenClient(super.channel, super.sessionId);
 
   @override
-  Widget get createVideoView => RTCVideoView(_remoteScreenRenderer, key: _rtcWidgetKey);
+  Widget get createVideoView =>
+      RTCVideoView(_remoteScreenRenderer, key: _rtcWidgetKey);
 
   @override
   bool get isVideoAvailable => _remoteScreenRenderer.textureId != null;
@@ -267,16 +269,27 @@ class RtcScreenClient extends RemoteScreenClient {
   }
 }
 
-class MulticastScreenClient extends RemoteScreenClient {
-  MulticastScreenClient(super.channel, super.sessionId);
+class MulticastScreenClient extends RemoteScreenClient
+    implements FlutterMulticastPluginListener {
+  final ValueNotifier<double?> _aspectRatioNotifier = ValueNotifier(null);
+
+  final GlobalKey _multicastWidgetKey = GlobalKey();
+  int? _textureId;
+
+  MulticastScreenClient(super.channel, super.sessionId) {
+    FlutterMulticastPlugin.registerListener(this);
+  }
 
   @override
-  // TODO: implement createVideoView
-  Widget get createVideoView => throw UnimplementedError();
+  Widget get createVideoView => _textureId != null
+      ? MulticastVideoView(
+          key: _multicastWidgetKey,
+          textureId: _textureId!,
+          aspectRatioListenable: _aspectRatioNotifier)
+      : const SizedBox.shrink();
 
   @override
-  // TODO: implement isVideoAvailable
-  bool get isVideoAvailable => throw UnimplementedError();
+  bool get isVideoAvailable => _textureId != null;
 
   @override
   void onKeyDown(KeyEvent event) {
@@ -291,8 +304,7 @@ class MulticastScreenClient extends RemoteScreenClient {
 
   @override
   Future<void> remove() async {
-    // TODO: implement remove
-    log.warning("remove");
+    await FlutterMulticastPlugin.receiveStop();
   }
 
   Future<void> handleMulticastInfo(
@@ -300,7 +312,26 @@ class MulticastScreenClient extends RemoteScreenClient {
     Function() onTrack,
     Function() onClose,
   ) async {
-    // TODO: multicast plugin receive start
-    log.warning("handleMulticastInfo");
+    try {
+      _textureId = await FlutterMulticastPlugin.receiveStart(
+        ip: msg.ip,
+        videoPort: msg.videoPort,
+        audioPort: msg.audioPort,
+        ssrc: msg.ssrc,
+        key: hex.decode(msg.keyHex),
+        salt: hex.decode(msg.saltHex),
+        videoRoc: msg.videoRoc,
+        audioRoc: msg.audioRoc,
+      );
+      onTrack();
+    } catch(e) {
+      onClose();
+    }
+  }
+
+  @override
+  void onVideoSize(int width, int height) {
+    final ratio = width / height;
+    _aspectRatioNotifier.value = ratio;
   }
 }

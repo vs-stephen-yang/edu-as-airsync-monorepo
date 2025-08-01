@@ -31,3 +31,4 @@
 -dontwarn io.sentry.**
 ##---------------End: Sentry specific rules ---------------------------
 
+-keep class org.freedesktop.gstreamer.** { *; }
