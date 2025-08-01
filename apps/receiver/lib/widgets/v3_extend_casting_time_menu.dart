@@ -8,6 +8,7 @@ import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class V3ExtendCastingTimeMenu extends StatefulWidget {
   const V3ExtendCastingTimeMenu({super.key});
@@ -21,9 +22,14 @@ class V3ExtendCastingTimeMenu extends StatefulWidget {
 class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
   StreamSubscription<int>? sub;
 
+  late V3Toast _v3Toast;
+
   @override
   void initState() {
     super.initState();
+
+    _v3Toast = context.read<V3Toast>();
+
     sub = ConnectionTimer.getInstance()
         .remainingTimeTimeout
         .stream
@@ -32,7 +38,7 @@ class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
         .listen((event) {
       if (!mounted) return;
 
-      V3Toast()
+      _v3Toast
           .makeMessageToast(context, S.of(context).v3_casting_ended_toast)
           .show(context);
     });
@@ -248,6 +254,8 @@ class _ExtendButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final v3Toast = context.read<V3Toast>();
+
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: context.tokens.spacing.vsdslSpacingXl.right),
@@ -275,7 +283,7 @@ class _ExtendButtons extends StatelessWidget {
             onPressed: () {
               V3ExtendCastingTimeMenu.showReamingTimeAlert.value = false;
               ConnectionTimer.getInstance().extendRemainTimer();
-              V3Toast()
+              v3Toast
                   .makeSuccessToast(context,
                       S.of(context).v3_casting_time_extend_success_toast)
                   .show(context);

@@ -29,6 +29,7 @@ import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/utility/user_timer_manager.dart';
+import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
@@ -112,6 +113,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
           ),
           ChangeNotifierProvider<InstanceInfoProvider>.value(
             value: instanceInfoProvider,
+          ),
+          Provider<V3Toast>.value(
+            value: V3Toast(),
           ),
         ],
         child: configureApp,
