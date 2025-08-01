@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/multicast_info.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
 
 enum RemotePresentationState {
@@ -136,38 +137,27 @@ class RtcScreenConnector extends RemoteScreenConnector {
 }
 
 class MulticastScreenConnector extends RemoteScreenConnector {
-  String ip;
-  int videoPort;
-  int audioPort;
-  int ssrc;
-  String keyHex;
-  String saltHex;
-  int videoRoc;
-  int audioRoc;
-
-  MulticastScreenConnector(
-      Channel channel,
-      this.ip,
-      this.videoPort,
-      this.audioPort,
-      this.ssrc,
-      this.keyHex,
-      this.saltHex,
-      this.videoRoc,
-      this.audioRoc,
-      JoinDisplayMessage message)
-      : super(channel, message);
+  MulticastScreenConnector(super.channel, super.message);
 
   void onStartRemoteScreen(
-      StartRemoteScreenMessage message) {
+      StartRemoteScreenMessage message, MulticastInfo streamInfo) {
     _sessionId = message.sessionId;
     // accept
     sendRemoteScreenState(RemoteScreenStatus.accepted);
     remotePresentationState = RemotePresentationState.waitForStream;
 
     // info
-    final multicastInfoMessage = MulticastInfoMessage(_sessionId!, ip, videoPort,
-        audioPort, ssrc, keyHex, saltHex, videoRoc, audioRoc);
+    final multicastInfoMessage = MulticastInfoMessage(
+      _sessionId!,
+      streamInfo.ip,
+      streamInfo.videoPort,
+      streamInfo.audioPort,
+      streamInfo.ssrc,
+      streamInfo.keyHex,
+      streamInfo.saltHex,
+      streamInfo.videoRoc,
+      streamInfo.audioRoc,
+    );
 
     channel.send(multicastInfoMessage);
     remotePresentationState = RemotePresentationState.streaming;
