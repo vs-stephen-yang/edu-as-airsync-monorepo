@@ -18,7 +18,7 @@ class MulticastPresenter {
   late Uint8List saltHex;
   late String keyString;
 
-  late bool started = false;
+  bool started = false;
 
   static final Random _random = Random();
   static final Random _secureRandom = Random.secure();
