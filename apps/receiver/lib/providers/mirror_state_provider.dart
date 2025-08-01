@@ -525,6 +525,12 @@ class MirrorStateProvider extends ChangeNotifier
       log.severe('Mirror initialize failure', e, stackTrace);
     }
     isPlatformInitialized = true;
+
+    if (_deviceName != _instanceInfoProvider.deviceName) {
+      _deviceName = _instanceInfoProvider.deviceName;
+      // restart when device name changed.
+      await restartMirror();
+    }
   }
 
   void _getWidgetInfo(GlobalKey mirrorViewKey) {
