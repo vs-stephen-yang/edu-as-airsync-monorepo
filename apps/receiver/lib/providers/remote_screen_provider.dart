@@ -23,7 +23,7 @@ class RemoteScreenProvider {
   RemoteScreenProvider(this._server, this._ipAddress,
       this._connectorDisconnectCallback, this._multicastPresenter);
 
-  Future<RemoteScreenConnector?> createRemoteScreenConnector(
+  Future<RemoteScreenConnector> createRemoteScreenConnector(
       Channel channel, JoinDisplayMessage msg) async {
     RemoteScreenConnector connector;
 
@@ -34,21 +34,7 @@ class RemoteScreenProvider {
         _server.addConnector(connector as RtcScreenConnector);
         break;
       case RemoteScreenType.multicast:
-        final info = await _multicastPresenter.streamInfo;
-        if (info == null) {
-          return null;
-        }
-        connector = MulticastScreenConnector(
-            channel,
-            info.ip,
-            info.videoPort,
-            info.audioPort,
-            info.ssrc,
-            info.keyHex,
-            info.saltHex,
-            info.videoRoc,
-            info.audioRoc,
-            msg);
+        connector = MulticastScreenConnector(channel, msg);
         break;
     }
 
@@ -110,15 +96,18 @@ class RemoteScreenProvider {
     RemoteScreenConnector connector,
     StartRemoteScreenMessage message,
     List<RtcIceServer>? iceServers,
-  ) {
+  ) async {
     switch (remoteScreenType) {
       case RemoteScreenType.rtc:
         RtcScreenConnector c = connector as RtcScreenConnector;
         c.onStartRemoteScreen(message, iceServers);
         break;
       case RemoteScreenType.multicast:
-        MulticastScreenConnector c = connector as MulticastScreenConnector;
-        c.onStartRemoteScreen(message);
+        final streamInfo = await _multicastPresenter.streamInfo;
+        if (streamInfo != null) {
+          MulticastScreenConnector c = connector as MulticastScreenConnector;
+          c.onStartRemoteScreen(message, streamInfo);
+        }
         break;
     }
   }

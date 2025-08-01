@@ -183,7 +183,8 @@ class ChannelProvider extends ChangeNotifier {
 
   late RemoteScreenProvider _remoteScreenProvider;
 
-  RemoteScreenType get remoteScreenType => _remoteScreenProvider.remoteScreenType;
+  RemoteScreenType get remoteScreenType =>
+      _remoteScreenProvider.remoteScreenType;
 
   final NetworkDiagnostic _networkDiagnostic = NetworkDiagnostic();
 
@@ -255,8 +256,8 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
-    _remoteScreenProvider = RemoteScreenProvider(
-        RemoteScreenServer(), _instanceInfo.ipAddress, removeSender, MulticastPresenter());
+    _remoteScreenProvider = RemoteScreenProvider(RemoteScreenServer(),
+        _instanceInfo.ipAddress, removeSender, MulticastPresenter());
 
     _load().then((_) {
       if (_isSenderMode) {
@@ -615,11 +616,9 @@ class ChannelProvider extends ChangeNotifier {
               sendJoinDisplayRejectMessage(channel);
               return;
             }
-            remoteScreenConnector =
-                await _remoteScreenProvider.createRemoteScreenConnector(channel, msg);
-            if (remoteScreenConnector != null) {
-              _remoteScreenConnectors.add(remoteScreenConnector!);
-            }
+            remoteScreenConnector = await _remoteScreenProvider
+                .createRemoteScreenConnector(channel, msg);
+            _remoteScreenConnectors.add(remoteScreenConnector!);
           }
           notifyListeners();
           break;
@@ -668,17 +667,12 @@ class ChannelProvider extends ChangeNotifier {
 
             remoteScreenConnector = await _remoteScreenProvider
                 .createRemoteScreenConnector(channel, joinMessage);
-            if (remoteScreenConnector == null) {
-              break;
-            }
             _remoteShareConnectors.add(remoteScreenConnector!);
 
             final iceServers = await _getIceServers();
 
-            _remoteScreenProvider.onStartRemoteScreen(
-                remoteScreenConnector!,
-                message as StartRemoteScreenMessage,
-                iceServers);
+            _remoteScreenProvider.onStartRemoteScreen(remoteScreenConnector!,
+                message as StartRemoteScreenMessage, iceServers);
             notifyListeners();
 
             break;
@@ -688,10 +682,8 @@ class ChannelProvider extends ChangeNotifier {
             final iceServers = await _getIceServers();
 
             if (remoteScreenConnector != null) {
-              _remoteScreenProvider.onStartRemoteScreen(
-                  remoteScreenConnector!,
-                  message as StartRemoteScreenMessage,
-                  iceServers);
+              _remoteScreenProvider.onStartRemoteScreen(remoteScreenConnector!,
+                  message as StartRemoteScreenMessage, iceServers);
             }
             notifyListeners();
           } else {
