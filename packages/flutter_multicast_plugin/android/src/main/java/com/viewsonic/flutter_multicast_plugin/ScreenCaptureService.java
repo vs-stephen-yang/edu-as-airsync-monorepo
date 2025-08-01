@@ -70,8 +70,6 @@ public class ScreenCaptureService extends Service {
     private int height = 720;
     private int dpi = 320;
 
-    private long lastDrawNs = -1;
-
     private volatile boolean isEncoding = false;
 
     private MediaCodec audioEncoder;
@@ -88,7 +86,6 @@ public class ScreenCaptureService extends Service {
     private static final int OPUS_CHANNEL_COUNT = 2; // 立體聲
     private static final int OPUS_BITRATE = 128000;
 
-    private int pcmLogCount = 0;
 
     @Override
     public void onCreate() {
@@ -577,9 +574,6 @@ public class ScreenCaptureService extends Service {
 
     private void audioLoopCapture() {
         byte[] buffer = new byte[1920]; // 立體聲 PCM buffer
-
-        int readCount = 0;
-        int zeroCount = 0;
         while (isCapturingAudio && audioRecord != null) {
             try {
                 int bytesRead = audioRecord.read(buffer, 0, buffer.length);
@@ -648,14 +642,6 @@ public class ScreenCaptureService extends Service {
 
                         // 發送 OPUS 數據到 native layer 進行 RTP 傳輸
                         NativeBridge.sendAudioRtpFrame(opusData);
-
-                        if (opusData.length >= 8) {
-                            StringBuilder hex = new StringBuilder("OPUS header: ");
-                            for (int i = 0; i < Math.min(8, opusData.length); i++) {
-                                hex.append(String.format("%02X ", opusData[i] & 0xFF));
-                            }
-                            Log.d(TAG, hex.toString());
-                        }
                     }
 
                     audioEncoder.releaseOutputBuffer(outputBufferIndex, false);
