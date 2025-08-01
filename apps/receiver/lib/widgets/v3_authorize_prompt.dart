@@ -27,13 +27,15 @@ class V3AuthorizePrompt extends StatefulWidget {
 class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
   List<BuildContext> dialogContextList = [];
 
-  final UserTimerManager _timerManager = UserTimerManager();
+  late UserTimerManager _timerManager;
   final ValueNotifier<double> _progressNotifier = ValueNotifier<double>(1.0);
   final ValueNotifier<int> _remainingSecondsNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
     super.initState();
+
+    _timerManager = context.read<UserTimerManager>();
 
     // 設置計時器管理器的回調
     _timerManager.onProgressUpdate = (progress, remainingSeconds) {
