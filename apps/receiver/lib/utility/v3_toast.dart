@@ -8,14 +8,6 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
 
 class V3Toast {
-  static final V3Toast _instance = V3Toast._internal();
-
-  //private "Named constructors"
-  V3Toast._internal();
-
-  // passes the instantiation to the _instance object
-  factory V3Toast() => _instance;
-
   final List<Map<ReconnectState, DateTime>> _splitScreenLastToastTimes =
       List.filled(HybridConnectionList.maxHybridSplitScreen,
           {ReconnectState.idle: DateTime.now()});

@@ -32,6 +32,8 @@ class V3ParticipantItem extends StatefulWidget {
 class _V3ParticipantItemState extends State<V3ParticipantItem> {
   @override
   Widget build(BuildContext context) {
+    final v3Toast = context.read<V3Toast>();
+
     final RTCConnector rtcConnector =
         HybridConnectionList().getConnection<RTCConnector>(widget.index);
     String presenterId = rtcConnector.clientId ?? '';
@@ -185,7 +187,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
               if (rtcConnector.clickButtonWhenReconnect) {
                 if (value == ReconnectState.success) {
                   rtcConnector.clickButtonWhenReconnect = false;
-                  V3Toast()
+                  v3Toast
                       .makeReconnectToast(value,
                           S.of(context).main_feature_reconnect_success_toast)
                       ?.show(context);
@@ -193,7 +195,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
                       ReconnectState.idle;
                 } else if (value == ReconnectState.fail) {
                   rtcConnector.clickButtonWhenReconnect = false;
-                  V3Toast()
+                  v3Toast
                       .makeReconnectToast(value,
                           S.of(context).main_feature_reconnect_fail_toast)
                       ?.show(context);
@@ -210,6 +212,8 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
   }
 
   _sendPresenterRemove(BuildContext context, RTCConnector rtcConnector) async {
+    final v3Toast = context.read<V3Toast>();
+
     if (widget.isForMenuUse) {
       trackEvent(
         'click_exit',
@@ -222,7 +226,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
 
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
-      V3Toast()
+      v3Toast
           .makeReconnectToast(
               rtcConnector.reconnectChannelState,
               rtcConnector.reconnectChannelState == ReconnectState.reconnecting
@@ -366,9 +370,11 @@ class ParticipantStandbyFeature extends TextSizeAwareStateless {
 
   _presenterOn(
       BuildContext context, RTCConnector rtcConnector, String presenterId) {
+    final v3Toast = context.read<V3Toast>();
+
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
-      V3Toast()
+      v3Toast
           .makeReconnectToast(
               rtcConnector.reconnectChannelState,
               rtcConnector.reconnectChannelState == ReconnectState.reconnecting
@@ -399,9 +405,11 @@ class ParticipantStandbyFeature extends TextSizeAwareStateless {
   }
 
   _sendInviteRemoteScreen(BuildContext context, RTCConnector rtcConnector) {
+    final v3Toast = context.read<V3Toast>();
+
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
-      V3Toast()
+      v3Toast
           .makeReconnectToast(
               rtcConnector.reconnectChannelState,
               rtcConnector.reconnectChannelState == ReconnectState.reconnecting
@@ -461,9 +469,11 @@ class ParticipantStreamingFeature extends TextSizeAwareStateless {
 
   _presenterOff(
       BuildContext context, RTCConnector rtcConnector, String presenterId) {
+    final v3Toast = context.read<V3Toast>();
+
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
-      V3Toast()
+      v3Toast
           .makeReconnectToast(
               rtcConnector.reconnectChannelState,
               rtcConnector.reconnectChannelState == ReconnectState.reconnecting
@@ -612,9 +622,11 @@ class ParticipantReceivingFeature extends TextSizeAwareStateless {
   _disconnect(BuildContext context, ChannelProvider channelProvider) {
     trackEvent('click_disconnect', EventCategory.castToBoards);
 
+    final v3Toast = context.read<V3Toast>();
+
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
-      V3Toast()
+      v3Toast
           .makeReconnectToast(
               rtcConnector.reconnectChannelState,
               rtcConnector.reconnectChannelState == ReconnectState.reconnecting
@@ -653,6 +665,9 @@ class ParticipantControllingFeature extends TextSizeAwareStateless {
   Widget buildWithTextSize(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
+
+    final v3Toast = context.read<V3Toast>();
+
     return Wrap(
       alignment: WrapAlignment.spaceBetween,
       children: [
@@ -733,7 +748,7 @@ class ParticipantControllingFeature extends TextSizeAwareStateless {
 
                 if (!rtcConnector.isChannelConnectAvailable()) {
                   rtcConnector.clickButtonWhenReconnect = true;
-                  V3Toast()
+                  v3Toast
                       .makeReconnectToast(
                           rtcConnector.reconnectChannelState,
                           rtcConnector.reconnectChannelState ==
