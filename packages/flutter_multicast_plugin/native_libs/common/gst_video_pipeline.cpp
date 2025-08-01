@@ -20,6 +20,7 @@
 // 宣告 C 介面函數
 extern "C" {
 void update_flutter_texture_from_cpp(const uint8_t* data, size_t width, size_t height, size_t stride);
+void notify_flutter_video_resolution(int width, int height);
 }
 
 #ifdef __ANDROID__
@@ -59,6 +60,8 @@ static GstFlowReturn on_new_video_sample(GstElement* appsink, gpointer user_data
         gst_sample_unref(sample);
         return GST_FLOW_OK;
     }
+
+    notify_flutter_video_resolution(width, height);
 
     // 映射 buffer 資料
     GstMapInfo map;
