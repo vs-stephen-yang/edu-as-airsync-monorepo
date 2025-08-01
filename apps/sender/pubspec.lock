@@ -366,7 +366,7 @@ packages:
     source: hosted
     version: "1.2.4"
   convert:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: convert
       sha256: b30acd5944035672bc15c6b7a8b47d773e41e2f17de064350988c5d02adb1c68
@@ -605,6 +605,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
+  flutter_multicast_plugin:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "release-3.8.1"
+      resolved-ref: "36c2665a562ed0b797dfb4ac572126b06d38c66f"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin"
+    source: git
+    version: "0.0.1"
   flutter_oss_licenses:
     dependency: "direct main"
     description:
