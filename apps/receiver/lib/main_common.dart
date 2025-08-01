@@ -73,16 +73,18 @@ Future<void> commonEntry(ConfigSettings settings) async {
       ),
     );
 
+    final instanceInfoProvider = InstanceInfoProvider();
+
     DisplayServiceBroadcast.ensureInitialized(
       directChannelPort: 5100,
       broadcastServiceType: '_vs-airsync._tcp',
       appVersion: configureApp.appVersion,
-      instanceInfoProvider: InstanceInfoProvider(),
+      instanceInfoProvider: instanceInfoProvider,
       invitedToGroupOption: AppPreferences().invitedToGroup,
     );
 
     // Initialize the instance name
-    InstanceInfoProvider().instanceName = AppPreferences().instanceName;
+    instanceInfoProvider.instanceName = AppPreferences().instanceName;
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
@@ -107,6 +109,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
         providers: [
           Provider<UserTimerManager>(
             create: (context) => UserTimerManager(),
+          ),
+          ChangeNotifierProvider<InstanceInfoProvider>.value(
+            value: instanceInfoProvider,
           ),
         ],
         child: configureApp,
@@ -164,19 +169,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
     //debugPaintSizeEnabled = true;
 
+    final instanceInfoProvider = context.read<InstanceInfoProvider>();
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: InstanceInfoProvider()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
           value: ChannelProvider(
             AppConfig.of(context)!,
-            InstanceInfoProvider(),
+            instanceInfoProvider,
           ),
         ),
         ChangeNotifierProvider.value(
           value: MirrorStateProvider(
-            InstanceInfoProvider(),
+            instanceInfoProvider,
           ),
         ),
         ChangeNotifierProvider.value(
