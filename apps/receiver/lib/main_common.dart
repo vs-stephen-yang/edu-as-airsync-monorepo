@@ -104,12 +104,18 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
 
-    await AppUpdateHelper().ensureInitialized(settings);
+    final appUpdateHelper = AppUpdateHelper();
+
+    await appUpdateHelper.ensureInitialized(settings);
+
     runApp(
       MultiProvider(
         providers: [
           Provider<UserTimerManager>(
             create: (context) => UserTimerManager(),
+          ),
+          Provider<AppUpdateHelper>.value(
+            value: appUpdateHelper,
           ),
           ChangeNotifierProvider<InstanceInfoProvider>.value(
             value: instanceInfoProvider,

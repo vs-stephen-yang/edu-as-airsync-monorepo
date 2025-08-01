@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class AppOTADialog extends StatefulWidget {
   const AppOTADialog({super.key, required this.child});
@@ -26,9 +27,13 @@ class AppOTADialogState extends State<AppOTADialog>
   ValueNotifier<double> progress = ValueNotifier(0);
   BuildContext? ctxDownloading; //variable for downloading dialog context
 
+  late AppUpdateHelper _appUpdateHelper;
+
   @override
   void initState() {
-    AppUpdateHelper().initializeChecking(listener: this);
+    _appUpdateHelper = context.read<AppUpdateHelper>();
+
+    _appUpdateHelper.initializeChecking(listener: this);
     super.initState();
   }
 
@@ -49,15 +54,15 @@ class AppOTADialogState extends State<AppOTADialog>
         }
         break;
       case UpdateStatus.updateDownloaded:
-        if (AppUpdateHelper().otaFlavor == OtaFlavor.ifp ||
-            AppUpdateHelper().otaFlavor == OtaFlavor.edla) {
+        if (_appUpdateHelper.otaFlavor == OtaFlavor.ifp ||
+            _appUpdateHelper.otaFlavor == OtaFlavor.edla) {
           _installNow(info);
         } else {
           _showOTADialog(status, info);
         }
         break;
       case UpdateStatus.updateInApp:
-        AppUpdateHelper().startInAppUpdate();
+        _appUpdateHelper.startInAppUpdate();
         break;
       case UpdateStatus.updateToDate:
       case UpdateStatus.unknown:
