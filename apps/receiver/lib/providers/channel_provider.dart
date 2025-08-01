@@ -1122,5 +1122,21 @@ class ChannelProvider extends ChangeNotifier {
   void displayGroupOnMute() {
     _displayGroupSession?.onMute();
   }
+
+  void refreshOnlyWhenCastingStatus() {
+    if (providerContainer != null) {
+      final toggle = providerContainer!.read(groupProvider).broadcastToGroup;
+      final launchType =
+          providerContainer!.read(groupProvider).broadcastGroupLaunchType;
+      if (toggle && launchType == BroadcastGroupLaunchType.onlyWhenCasting) {
+        final List<GroupListItem> selectedList =
+            HybridConnectionList.hybridSplitScreenCount.value > 0
+                ? providerContainer!.read(groupProvider).selectedList
+                : [];
+        startDisplayGroup(selectedList,
+            anyCasting: HybridConnectionList.hybridSplitScreenCount.value != 0);
+      }
+    }
+  }
 // endregion
 }

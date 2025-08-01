@@ -3,12 +3,10 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
@@ -25,21 +23,19 @@ import 'package:display_flutter/widgets/v3_settings_password_dialog.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:provider/provider.dart' as provider;
+import 'package:provider/provider.dart';
 
-class V3StreamingView extends ConsumerStatefulWidget {
+class V3StreamingView extends StatefulWidget {
   const V3StreamingView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _V3StreamingViewState();
+  State<StatefulWidget> createState() => _V3StreamingViewState();
 }
 
-class _V3StreamingViewState extends ConsumerState {
+class _V3StreamingViewState extends State {
   double _fullWidth = 0,
       _fullHeight = 0,
       _halfWidth = 0,
@@ -70,19 +66,10 @@ class _V3StreamingViewState extends ConsumerState {
               }
 
               if (splitScreenCount >= 0) {
-                final toggle = ref.read(groupProvider).broadcastToGroup;
-                final launchType =
-                    ref.read(groupProvider).broadcastGroupLaunchType;
-                if (toggle &&
-                    launchType == BroadcastGroupLaunchType.onlyWhenCasting) {
-                  final List<GroupListItem> selectedList = splitScreenCount > 0
-                      ? ref.read(groupProvider).selectedList
-                      : [];
-                  provider.Provider.of<ChannelProvider>(context, listen: false)
-                      .startDisplayGroup(selectedList,
-                          anyCasting: splitScreenCount != 0);
-                }
+                Provider.of<ChannelProvider>(context, listen: false)
+                    .refreshOnlyWhenCastingStatus();
               }
+
               if (splitScreenCount == 7) {
                 // add two more to show "Waiting for others to join".
                 splitScreenCount += 2;
@@ -211,7 +198,7 @@ class _V3StreamingViewState extends ConsumerState {
                           }
 
                           bool smartScalingDecision = false;
-                          if (provider.Provider.of<ChannelProvider>(context)
+                          if (Provider.of<ChannelProvider>(context)
                                   .smartScaling &&
                               (splitScreenCount == 1 ||
                                   (splitScreenCount > 1 &&
@@ -258,7 +245,7 @@ class _V3StreamingViewState extends ConsumerState {
                                         screenHeight: _fullHeight,
                                         displaySmartScalingEnabled:
                                             smartScalingDecision),
-                                  provider.Consumer<ChannelProvider>(
+                                  Consumer<ChannelProvider>(
                                     builder: (_, channelProvider, __) {
                                       // 直接監聽ChannelProvider確保每次都能抓到最新的狀態
                                       if (HybridConnectionList()
@@ -328,7 +315,7 @@ class _V3StreamingViewState extends ConsumerState {
           ),
           ValueListenableBuilder(
             valueListenable:
-                provider.Provider.of<ChannelProvider>(context, listen: false)
+                Provider.of<ChannelProvider>(context, listen: false)
                     .showNewSharingNameList,
             builder: (_, value, __) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -400,7 +387,7 @@ class _V3StreamingViewState extends ConsumerState {
     ).then((_) {
       if (mounted) {
         ChannelProvider channelProvider =
-            provider.Provider.of<ChannelProvider>(context, listen: false);
+            Provider.of<ChannelProvider>(context, listen: false);
         channelProvider.showNewSharingNameList.value.remove(name);
         channelProvider.showNewSharingNameList.value =
             List.from(channelProvider.showNewSharingNameList.value);
@@ -510,7 +497,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                 ),
                 if (isExpanded) ...[
                   const Gap(8),
-                  provider.Consumer<SettingsProvider>(
+                  Consumer<SettingsProvider>(
                       builder: (_, settingsProvider, __) {
                     final lock = settingsProvider.isSettingsLock;
                     return V3Focus(
