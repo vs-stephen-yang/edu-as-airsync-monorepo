@@ -19,9 +19,9 @@ import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/multicast_presenter.dart';
 import 'package:display_flutter/model/network_diagnostic.dart';
+import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
-import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/group_provider.dart';
@@ -34,7 +34,6 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -137,6 +136,18 @@ class ChannelProvider extends ChangeNotifier {
   set smartScaling(bool value) {
     _smartScaling = value;
     _save();
+    notifyListeners();
+  }
+
+  static const defaultHighImageQuality = false;
+  bool _highImageQuality = defaultHighImageQuality;
+
+  bool get highImageQuality => _highImageQuality;
+
+  set highImageQuality(bool value) {
+    _highImageQuality = value;
+    // TODO: Skip saving to shared preferences for now; may add later if needed.
+    // _save();
     notifyListeners();
   }
 

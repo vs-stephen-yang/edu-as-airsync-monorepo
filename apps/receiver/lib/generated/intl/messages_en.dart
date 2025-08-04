@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
+
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("I Agree"),
         "eula_disagree": MessageLookupByLibrary.simpleMessage("I Disagree"),
@@ -625,6 +626,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_settings_device_auto_fill_otp":
             MessageLookupByLibrary.simpleMessage(
                 "Turn on/off auto fill OTP mode"),
+        "v3_lbl_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("High Image Quality"),
         "v3_lbl_settings_device_launch_on_startup":
             MessageLookupByLibrary.simpleMessage(
                 "Turn on/off auto startup mode"),
@@ -923,6 +926,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_auto_fill_otp_desc":
             MessageLookupByLibrary.simpleMessage(
           "Enable one-touch connection when this device is selected from the Sender app\'s Quick Connect menu.",
+        ),
+        "v3_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("High Image Quality"),
+        "v3_settings_device_high_image_quality_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Turn on to receive high-definition projection from Sender.",
         ),
         "v3_settings_device_launch_on_startup":
             MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),

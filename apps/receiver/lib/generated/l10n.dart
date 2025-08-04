@@ -3689,6 +3689,36 @@ class S {
       args: [],
     );
   }
+
+  /// `High Image Quality`
+  String get v3_settings_device_high_image_quality {
+    return Intl.message(
+      'High Image Quality',
+      name: 'v3_settings_device_high_image_quality',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High Image Quality`
+  String get v3_lbl_settings_device_high_image_quality {
+    return Intl.message(
+      'High Image Quality',
+      name: 'v3_lbl_settings_device_high_image_quality',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on to receive high-definition projection from Sender.`
+  String get v3_settings_device_high_image_quality_desc {
+    return Intl.message(
+      'Turn on to receive high-definition projection from Sender.',
+      name: 'v3_settings_device_high_image_quality_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

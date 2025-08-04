@@ -365,5 +365,8 @@
   "v3_lbl_open_help_center": "Open Help center menu",
   "v3_lbl_close_help_center": "Close help center",
   "v3_settings_knowledge_base": "Knowledge Base",
-  "v3_lbl_settings_knowledge_base": "Knowledge Base"
+  "v3_lbl_settings_knowledge_base": "Knowledge Base",
+  "v3_settings_device_high_image_quality": "High Image Quality",
+  "v3_lbl_settings_device_high_image_quality": "High Image Quality",
+  "v3_settings_device_high_image_quality_desc": "Turn on to receive high-definition projection from Sender."
 }
