@@ -69,6 +69,17 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               ),
             ),
             _buildDivider(context),
+            _buildHighImageQuality(context, settingsProvider),
+            Padding(
+              padding: EdgeInsets.only(
+                top: context.tokens.spacing.vsdslSpacingSm.top,
+              ),
+              child: _buildTextDesc(
+                context,
+                S.of(context).v3_settings_device_high_image_quality_desc,
+              ),
+            ),
+            _buildDivider(context),
             V3SettingMenuSubItemFocus(
               excludeSemantics: false,
               child: _buildInviteGroup(context, settingsProvider),
@@ -373,6 +384,22 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         ),
       ],
     );
+  }
+
+  Widget _buildHighImageQuality(
+      BuildContext context, SettingsProvider settingsProvider) {
+    return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+      return V3SettingMenuItemToggleTile(
+        label: S.of(context).v3_lbl_settings_device_high_image_quality,
+        identifier: "v3_qa_settings_device_high_image_quality",
+        switchOn: channelProvider.highImageQuality,
+        isLocked: settingsProvider.isDeviceSettingLock,
+        title: S.of(context).v3_settings_device_high_image_quality,
+        onTap: () async {
+          channelProvider.highImageQuality = !channelProvider.highImageQuality;
+        },
+      );
+    });
   }
 
   Widget _buildShowDisplayCode(
