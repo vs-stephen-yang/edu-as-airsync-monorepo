@@ -74,6 +74,7 @@
     <ROW Component="auto_updater_windows_plugin.dll" ComponentId="{D2240D48-049B-4B2C-992F-634B377570CD}" Directory_="APPDIR" Attributes="256" KeyPath="auto_updater_windows_plugin.dll"/>
     <ROW Component="bonsoir_windows_plugin.dll" ComponentId="{A8F31CDE-2EAA-4157-94BA-93BD80AA25F9}" Directory_="APPDIR" Attributes="256" KeyPath="bonsoir_windows_plugin.dll"/>
     <ROW Component="connectivity_plus_plugin.dll" ComponentId="{CC521518-7BE0-4389-BCFC-B225BC864ABE}" Directory_="APPDIR" Attributes="256" KeyPath="connectivity_plus_plugin.dll"/>
+    <ROW Component="custom_actions.dll" ComponentId="{6EE266AD-8F87-46C4-BEBC-9F2FE9F6F7E7}" Directory_="APPDIR" Attributes="256" KeyPath="custom_actions.dll"/>
     <ROW Component="desktop_multi_window_plugin.dll" ComponentId="{CE2D6A2F-8D2F-444C-8A9F-52D96F894399}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_multi_window_plugin.dll"/>
     <ROW Component="desktop_screenstate_plugin.dll" ComponentId="{50E79E90-D696-4EEC-8859-CB173AA1A513}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_screenstate_plugin.dll"/>
     <ROW Component="desktop_window_plugin.dll" ComponentId="{6A555317-900D-443B-BD0A-1A6C415674E8}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
@@ -532,6 +533,9 @@
     <ROW File="indirect_display_1_2.inf_1" Component_="indirect_display_1_2.cat_1" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.inf" SelfReg="false"/>
     <ROW File="win32audio_plugin.dll" Component_="win32audio_plugin.dll" FileName="WIN32A~1.DLL|win32audio_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\win32audio_plugin.dll" SelfReg="false"/>
     <ROW File="devcon.exe" Component_="devcon.exe" FileName="devcon.exe" Attributes="0" SourcePath="prebuilt\tools\devcon.exe" SelfReg="false"/>
+    <ROW File="custom_actions.dll" Component_="custom_actions.dll" FileName="CUSTOM~1.DLL|custom_actions.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\custom_actions.dll" SelfReg="false"/>
+    <ROW File="AssetManifest.bin.json" Component_="AssetManifest.bin" FileName="ASSETM~2.JSO|AssetManifest.bin.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.bin.json" SelfReg="false"/>
+    <ROW File="NOTICES" Component_="AssetManifest.bin" FileName="NOTICES" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\NOTICES" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiEmbeddedUIComponent">
     <ROW MsiEmbeddedUI="embeddeduiproxy" FileName="embeddeduiproxy.dll" Attributes="3" MessageFilter="201359327" Data="&lt;AI_HOME&gt;bin\x86\embeddeduiproxy.dll"/>
@@ -628,6 +632,8 @@
     <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="InstallAudioDriverNode" Target="DevconPath=[#devcon.exe];InfPath=[#airsyncaudio.inf_1];Hwid=Root\AirSyncAudio"/>
+    <ROW Action="AI_DATA_SETTER_1" Type="51" Source="RemoveAudioDriverNode" Target="DevconPath=[#devcon.exe];InfPath=[#airsyncaudio.inf_1];Hwid=Root\AirSyncAudio"/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DetectSoftware" Type="257" Source="SoftwareDetector.dll" Target="OnDetectSoftware"/>
     <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
@@ -649,8 +655,8 @@
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_UPDATER_SERVICE_CONFIG" Type="3090" Source="updater.exe" Target="/configservice -name &quot;AirSyncSenderUpdater&quot;"/>
     <ROW Action="AI_UPDATER_UNINSTALL" Type="82" Source="updater.exe" Target="/clean silent"/>
-    <ROW Action="InstallAudioDriverNode" Type="3170" Source="APPDIR" Target="&quot;[#devcon.exe]&quot; install &quot;[#airsyncaudio.inf_1]&quot; Root\AirSyncAudio"/>
-    <ROW Action="RemoveAudioDriverNode" Type="3154" Source="devcon.exe" Target="remove Root\AirSyncAudio"/>
+    <ROW Action="InstallAudioDriverNode" Type="3153" Source="custom_actions.dll" Target="InstallAudio" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="RemoveAudioDriverNode" Type="3153" Source="custom_actions.dll" Target="UninstallAudio" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFiles64Folder][Manufacturer]\[ProductName]#DefaultBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]#ReleaseBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -711,6 +717,7 @@
     <ROW Feature_="MainFeature" Component_="indirect_display_1_2.dll_1"/>
     <ROW Feature_="MainFeature" Component_="win32audio_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="devcon.exe"/>
+    <ROW Feature_="MainFeature" Component_="custom_actions.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
@@ -748,8 +755,10 @@
     <ROW Action="AI_IaLogMachineInfo" Sequence="399"/>
     <ROW Action="AI_IaLogCustomInfo" Sequence="1401"/>
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
-    <ROW Action="InstallAudioDriverNode" Condition="( NOT Installed )" Sequence="6401"/>
-    <ROW Action="RemoveAudioDriverNode" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1601"/>
+    <ROW Action="InstallAudioDriverNode" Condition="( NOT Installed )" Sequence="6402"/>
+    <ROW Action="AI_DATA_SETTER" Condition="( NOT Installed )" Sequence="6401"/>
+    <ROW Action="RemoveAudioDriverNode" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="3602"/>
+    <ROW Action="AI_DATA_SETTER_1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="3601"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="746"/>

@@ -1,11 +1,8 @@
 #pragma once
-#include <windows.h>
 #include <sstream>
+#include <string>
 
-// internal helper
-inline void LogOutput(const std::wstring& msg) {
-  wprintf((msg + L"\n").c_str());
-}
+void LogOutput(const std::wstring& msg);
 
 // macro: each call gets its own local stringstream
 #define LOG()                                                                \
