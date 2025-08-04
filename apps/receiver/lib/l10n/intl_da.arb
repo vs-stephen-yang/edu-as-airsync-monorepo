@@ -363,5 +363,6 @@
   "v3_help_center_close": "Luk",
   "v3_help_center_title": "Hjælpecenter",
   "v3_lbl_open_help_center": "Åbn menuen for hjælpecenter",
-  "v3_lbl_close_help_center": "Luk hjælpecenter"
+  "v3_lbl_close_help_center": "Luk hjælpecenter",
+  "v3_settings_knowledge_base": "Knowledge Base"
 }

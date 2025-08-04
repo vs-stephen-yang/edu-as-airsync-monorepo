@@ -189,5 +189,6 @@
   "v3_settings_version": "AirSync ©{year}. Version {version}",
   "v3_settings_broadcast_screen_energy_saving": "Bitte schalten Sie den Energiesparmodus aus, um unerwartete Unterbrechungen während der Übertragung zu vermeiden.",
   "v3_participants_desc_maximum_9": "Maximal bis zu 9 Teilnehmer.",
-  "v3_settings_device_smart_scaling": "Smart Scaling"
+  "v3_settings_device_smart_scaling": "Smart Scaling",
+  "v3_settings_knowledge_base": "Wissensdatenbank"
 }

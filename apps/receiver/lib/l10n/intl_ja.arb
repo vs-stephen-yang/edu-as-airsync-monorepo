@@ -129,5 +129,6 @@
   "v3_quick_connect_menu_bottom_msg": "2 名以上のユーザーが画面を共有する場合、画面分割が自動的に有効になります。",
   "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_settings_broadcast_screen_energy_saving": "ブロードキャスト中の予期せぬ中断を避けるため、省エネを無効にしてください。",
-  "v3_participants_desc_maximum_9": "最大 9 名まで参加可能です。"
+  "v3_participants_desc_maximum_9": "最大 9 名まで参加可能です。",
+  "v3_settings_knowledge_base": "知識ベース"
 }

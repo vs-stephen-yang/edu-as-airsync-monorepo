@@ -363,5 +363,6 @@
   "v3_help_center_close": "Aizvērt",
   "v3_help_center_title": "Palīdzības Centrs",
   "v3_lbl_open_help_center": "Palīdzības centra izvēlnes atvēršana",
-  "v3_lbl_close_help_center": "Aizvērt palīdzības centru"
+  "v3_lbl_close_help_center": "Aizvērt palīdzības centru",
+  "v3_settings_knowledge_base": "Zināšanu bāze"
 }

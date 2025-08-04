@@ -363,5 +363,6 @@
   "v3_help_center_close": "Sulje",
   "v3_help_center_title": "Ohjekeskus",
   "v3_lbl_open_help_center": "Avaa ohjekeskuksen valikko",
-  "v3_lbl_close_help_center": "Sulje ohjekeskus"
+  "v3_lbl_close_help_center": "Sulje ohjekeskus",
+  "v3_settings_knowledge_base": "Tietopankki"
 }

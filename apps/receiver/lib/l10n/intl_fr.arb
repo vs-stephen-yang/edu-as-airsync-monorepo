@@ -347,5 +347,6 @@
   "v3_lbl_settings_broadcast_to_display_group_checkbox": "Sélectionner %s",
   "v3_lbl_settings_broadcast_to_display_group_save": "Enregistrer",
   "v3_lbl_settings_broadcast_to_display_group_cast": "Diffuser",
-  "v3_lbl_settings_broadcast_to_display_group_confirm": "Confirmer qu'aucun appareil n'est sélectionné."
+  "v3_lbl_settings_broadcast_to_display_group_confirm": "Confirmer qu'aucun appareil n'est sélectionné.",
+  "v3_settings_knowledge_base": "Base de connaissances"
 }
