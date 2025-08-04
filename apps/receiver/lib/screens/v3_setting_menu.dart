@@ -1,6 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
+import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_accessibility.dart';
@@ -23,6 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class V3SettingMenu extends StatefulWidget {
   const V3SettingMenu({super.key, required this.openedWithLogicalKey});
@@ -120,6 +122,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                               return const V3SettingsLegalPolicy();
                             case SettingPageState.licenses:
                               return const V3SettingsLicense();
+                            case SettingPageState.knowledgeBase:
+                              return const SizedBox.shrink();
                           }
                         },
                       ),
@@ -154,6 +158,10 @@ class _V3SettingMenuSidebar extends StatelessWidget {
   });
 
   final SettingsProvider settingsProvider;
+  final String _enKnowledgeBaseUrl =
+      'https://myviewboard.com/kb/en_US/airsync-overview/airsync';
+  final String _zhKnowledgeBaseUrl =
+      'https://myviewboard.com/kb/t_CN/airsync-overview/airsync';
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +273,27 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                             onClick: () => settingsProvider
                                 .setPage(SettingPageState.legalPolicy),
                           ),
+                          const Padding(padding: EdgeInsets.only(bottom: 5)),
+                          _SubTittleButton(
+                            label: S.of(context).v3_lbl_settings_knowledge_base,
+                            identifier: "v3_qa_settings_knowledge_base",
+                            index: 7,
+                            state: SettingPageState.knowledgeBase,
+                            text: S.of(context).v3_settings_knowledge_base,
+                            locked: false,
+                            itemIcon: SvgPicture.asset(
+                                'assets/images/ic_settings_external.svg'),
+                            onClick: () async {
+                              PrefLanguageProvider languageProvider =
+                                  Provider.of<PrefLanguageProvider>(context,
+                                      listen: false);
+                              var url = Uri.parse(_enKnowledgeBaseUrl);
+                              if (languageProvider.language == '繁體中文') {
+                                url = Uri.parse(_zhKnowledgeBaseUrl);
+                              }
+                              await launchUrl(url);
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -327,6 +356,7 @@ class _SubTittleButton extends StatelessWidget {
     required this.index,
     required this.onClick,
     this.label,
+    this.itemIcon,
     this.identifier,
   });
 
@@ -336,6 +366,7 @@ class _SubTittleButton extends StatelessWidget {
   final int index;
   final void Function() onClick;
   final String? label;
+  final Widget? itemIcon;
   final String? identifier;
 
   @override
@@ -373,6 +404,7 @@ class _SubTittleButton extends StatelessWidget {
                   ),
                 ),
               ),
+              if (itemIcon != null) itemIcon!,
               if (locked)
                 SizedBox(
                   width: 11,

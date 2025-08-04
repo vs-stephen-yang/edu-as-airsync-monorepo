@@ -347,5 +347,6 @@
   "v3_lbl_settings_broadcast_to_display_group_checkbox": "Seleccionar %s",
   "v3_lbl_settings_broadcast_to_display_group_save": "Guardar",
   "v3_lbl_settings_broadcast_to_display_group_cast": "Transmitir",
-  "v3_lbl_settings_broadcast_to_display_group_confirm": "Confirmar que no se ha seleccionado ningún dispositivo."
+  "v3_lbl_settings_broadcast_to_display_group_confirm": "Confirmar que no se ha seleccionado ningún dispositivo.",
+  "v3_settings_knowledge_base": "Base de conocimientos"
 }

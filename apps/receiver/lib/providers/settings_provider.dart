@@ -14,7 +14,8 @@ enum SettingPageState {
   connectivity,
   whatsNew,
   legalPolicy,
-  licenses;
+  licenses,
+  knowledgeBase;
 
   static List<SettingPageState> get mainPages => [
         SettingPageState.deviceSetting,
@@ -24,6 +25,7 @@ enum SettingPageState {
         SettingPageState.connectivity,
         SettingPageState.whatsNew,
         SettingPageState.legalPolicy,
+        SettingPageState.knowledgeBase,
       ];
 }
 
