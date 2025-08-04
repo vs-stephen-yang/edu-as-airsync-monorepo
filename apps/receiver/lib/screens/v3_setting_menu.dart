@@ -404,7 +404,12 @@ class _SubTittleButton extends StatelessWidget {
                   ),
                 ),
               ),
-              if (itemIcon != null) itemIcon!,
+              if (itemIcon != null)
+                SizedBox(
+                  width: 11,
+                  height: 11,
+                  child: itemIcon!,
+                ),
               if (locked)
                 SizedBox(
                   width: 11,
