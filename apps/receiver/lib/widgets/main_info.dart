@@ -181,6 +181,4 @@ class MainInfo extends StatelessWidget {
       },
     );
   }
-
-
 }

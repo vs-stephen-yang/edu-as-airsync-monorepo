@@ -107,10 +107,10 @@ class MirrorStateProvider extends ChangeNotifier
   ];
 
   Map<String, Map<String, int>> airplayDeviceMaxResolutions = {
-    "iPad":     {"width": 2560, "height": 1440},
-    "iPhone":   {"width": 2480, "height": 1396},
-    "Mac":      {"width": 2276, "height": 1280},
-    "unknown":  {"width": 1920, "height": 1080},
+    "iPad": {"width": 2560, "height": 1440},
+    "iPhone": {"width": 2480, "height": 1396},
+    "Mac": {"width": 2276, "height": 1280},
+    "unknown": {"width": 1920, "height": 1080},
   };
 
   Map<String, Map<String, int>> getDeviceMaxResolutions(String? deviceType) {
@@ -485,7 +485,8 @@ class MirrorStateProvider extends ChangeNotifier
 
     if (_miracastSupport) {
       await channel.invokeMethod("startSpecifiedModuleDFSChannelMonitor");
-      const EventChannel('com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel')
+      const EventChannel(
+              'com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel')
           .receiveBroadcastStream()
           .listen((event) async {
         if (event is bool) {

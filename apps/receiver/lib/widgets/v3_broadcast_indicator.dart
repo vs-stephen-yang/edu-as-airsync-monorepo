@@ -61,7 +61,8 @@ class _V3BroadcastIndicatorState extends ConsumerState {
                           : context.tokens.color.vsdslColorOnSurface,
                     ),
                     SizedBox(
-                        width: context.tokens.spacing.vsdslSpacingXs.left),
+                      width: context.tokens.spacing.vsdslSpacingXs.left,
+                    ),
                     V3AutoHyphenatingText(
                       S.of(context).v3_broadcast_indicator,
                       style: TextStyle(

@@ -19,8 +19,14 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class V3WebrtcView extends StatefulWidget {
-  const V3WebrtcView(
-      {super.key, required this.rtcConnector, required this.index, required this.screenWidth, required this.screenHeight, required this.displaySmartScalingEnabled});
+  const V3WebrtcView({
+    super.key,
+    required this.rtcConnector,
+    required this.index,
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.displaySmartScalingEnabled,
+  });
 
   final RTCConnector rtcConnector;
   final int index;
@@ -183,9 +189,12 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                         TouchEvent_TouchEventType.TOUCH_POINT_END, event);
                   },
                   child: pauseScreenImage ??
-                      RTCVideoView(widget.rtcConnector.remoteRenderer!,
-                          key: _widgetKey,
-                          displaySmartScalingEnabled: widget.displaySmartScalingEnabled),
+                      RTCVideoView(
+                        widget.rtcConnector.remoteRenderer!,
+                        key: _widgetKey,
+                        displaySmartScalingEnabled:
+                            widget.displaySmartScalingEnabled,
+                      ),
                 ),
               ),
             ),
@@ -396,8 +405,13 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
     } else {
       final RenderBox renderBox =
           textureElement!.findRenderObject() as RenderBox;
-      bool isSameDirection = (widget.screenWidth > widget.screenHeight && renderBox.size.width > renderBox.size.height ) || (widget.screenHeight > widget.screenWidth && renderBox.size.height > renderBox.size.width);
-      _textureSize = (widget.displaySmartScalingEnabled && isSameDirection) ? Size(widget.screenWidth, widget.screenHeight) : renderBox.size;
+      bool isSameDirection = (widget.screenWidth > widget.screenHeight &&
+              renderBox.size.width > renderBox.size.height) ||
+          (widget.screenHeight > widget.screenWidth &&
+              renderBox.size.height > renderBox.size.width);
+      _textureSize = (widget.displaySmartScalingEnabled && isSameDirection)
+          ? Size(widget.screenWidth, widget.screenHeight)
+          : renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
       log.info(
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');

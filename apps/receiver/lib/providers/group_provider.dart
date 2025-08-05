@@ -128,12 +128,14 @@ class GroupProvider extends StateNotifier<GroupState> {
           .removeWhere((foundService) => foundService.id() == client.id());
       final newSelectedList = [...state.selectedList, client];
       _addToHistorySelectedList(client);
-      state = state.copyWith(selectedList: newSelectedList, clients:state.clients.toList());
+      state = state.copyWith(
+          selectedList: newSelectedList, clients: state.clients.toList());
     }
   }
 
   void removeFromSelectedList(GroupListItem client) {
-    state.selectedList.removeWhere((foundService) => foundService.id() == client.id());
+    state.selectedList
+        .removeWhere((foundService) => foundService.id() == client.id());
     final newSelectedList = state.selectedList.toList();
     _removeFromHistorySelectedList(client.id());
     state = state.copyWith(

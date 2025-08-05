@@ -10,7 +10,6 @@ import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/model/multicast_info.dart';
 
-
 abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel, String? sessionId)
       : _sessionId = sessionId ?? const Uuid().v4();

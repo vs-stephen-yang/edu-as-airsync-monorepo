@@ -37,13 +37,16 @@ List<RtcIceServer> parseIceServersFromApi(Map<String, dynamic> body) {
       .toList();
 }
 
-const _webtransportCertsListPath = 'assets/channel/webtransport_certs_list.json';
+const _webtransportCertsListPath =
+    'assets/channel/webtransport_certs_list.json';
 
 Future<WebTransportCertificate?> getWebTransportCert() async {
   log.info("Finding webTransport certificate");
 
-  Map<String, dynamic> jsonData = await loadAssetAsJsonData(_webtransportCertsListPath);
-  List<Map<String, dynamic>> certs = List<Map<String, dynamic>>.from(jsonData['certs']);
+  Map<String, dynamic> jsonData =
+      await loadAssetAsJsonData(_webtransportCertsListPath);
+  List<Map<String, dynamic>> certs =
+      List<Map<String, dynamic>>.from(jsonData['certs']);
 
   List<Map<String, dynamic>> validCerts = filterValidCertificates(certs);
 
@@ -52,7 +55,8 @@ Future<WebTransportCertificate?> getWebTransportCert() async {
     return null;
   }
 
-  validCerts.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
+  validCerts.sort(
+      (a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
   Map<String, dynamic> selectedCert = validCerts.first;
 
   return WebTransportCertificate(
@@ -62,11 +66,13 @@ Future<WebTransportCertificate?> getWebTransportCert() async {
   );
 }
 
-List<Map<String, dynamic>> filterValidCertificates(List<Map<String, dynamic>> certs) {
+List<Map<String, dynamic>> filterValidCertificates(
+    List<Map<String, dynamic>> certs) {
   DateTime today = DateTime.now().toUtc();
   return certs.where((cert) {
     DateTime notBefore = DateTime.parse(cert['date']);
     DateTime notAfter = notBefore.add(const Duration(days: 14));
-    return (notBefore.isBefore(today) || notBefore.isAtSameMomentAs(today)) && today.isBefore(notAfter);
+    return (notBefore.isBefore(today) || notBefore.isAtSameMomentAs(today)) &&
+        today.isBefore(notAfter);
   }).toList();
 }

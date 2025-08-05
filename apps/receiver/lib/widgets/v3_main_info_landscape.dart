@@ -95,9 +95,7 @@ class _V3MainConnectionInfoOneThirdState
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             AutoHyphenatingText(
-                              S
-                                  .of(context)
-                                  .v3_instruction2,
+                              S.of(context).v3_instruction2,
                               style: context.tokens.textStyle.airsyncFontTitle
                                   .apply(
                                 color: context.tokens.color.vsdslColorOnSurface,
@@ -107,11 +105,9 @@ class _V3MainConnectionInfoOneThirdState
                             const V3DisplayCode(),
                             SizedBox(
                                 height:
-                                context.tokens.spacing.vsdslSpacing3xl.top),
+                                    context.tokens.spacing.vsdslSpacing3xl.top),
                             AutoHyphenatingText(
-                              S
-                                  .of(context)
-                                  .v3_instruction3,
+                              S.of(context).v3_instruction3,
                               style: context.tokens.textStyle.airsyncFontTitle
                                   .apply(
                                 color: context.tokens.color.vsdslColorOnSurface,
@@ -119,7 +115,7 @@ class _V3MainConnectionInfoOneThirdState
                             ),
                             SizedBox(
                                 height:
-                                context.tokens.spacing.vsdslSpacingXl.top),
+                                    context.tokens.spacing.vsdslSpacingXl.top),
                             const V3OtpWithTimer(),
                           ],
                         ),

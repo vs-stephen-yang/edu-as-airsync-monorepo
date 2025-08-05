@@ -313,8 +313,8 @@ class RTCConnector {
 
     // TODO: enable by some flag
     // if (xxx) {
-      _rtcStatsPresenter = RtcStatsPresenter();
-      _rtcStatsParser?.addSubscriber(_rtcStatsPresenter!);
+    _rtcStatsPresenter = RtcStatsPresenter();
+    _rtcStatsParser?.addSubscriber(_rtcStatsPresenter!);
     // }
   }
 
@@ -365,7 +365,8 @@ class RTCConnector {
         await disconnectPeerConnection(sendAnalytics: true);
         await disconnectChannel(reason: 'Timeout: present rejected');
       } else {
-        sendStopPresent(reason: Reason(
+        sendStopPresent(
+            reason: Reason(
           StopPresentReasonCode.timeout.code,
           text: 'timeout',
         ));
@@ -487,7 +488,7 @@ class RTCConnector {
   }
 
   int getFullHeight(bool isFullHeight) {
-    int fullHeight = isFullHeight? 2160 : 540;
+    int fullHeight = isFullHeight ? 2160 : 540;
     return fullHeight;
   }
 
@@ -498,7 +499,7 @@ class RTCConnector {
     if (_fhdOnlyWebRtcModels.contains(deviceType)) {
       return 1080;
     }
-    return 0;   // no limitation
+    return 0; // no limitation
   }
 
   void sendChangeQuality(

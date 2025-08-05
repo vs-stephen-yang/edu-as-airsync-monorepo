@@ -313,7 +313,6 @@ class AppManagerConfig {
         // clear manager update request
         await prefs.setBool('mgr_UpdateConnectivity', false);
       }
-
     });
   }
 

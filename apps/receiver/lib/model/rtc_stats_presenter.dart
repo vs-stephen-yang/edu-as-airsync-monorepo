@@ -116,10 +116,9 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
   }
 
   @override
-  void pairCandidates(StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
-  }
+  void pairCandidates(
+      StatsReport localCandidateReport, StatsReport remoteCandidateReport) {}
 
   @override
-  void selectedCandidatePair(StatsReport selectedCandidatePair) {
-  }
+  void selectedCandidatePair(StatsReport selectedCandidatePair) {}
 }

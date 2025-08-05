@@ -88,8 +88,8 @@ class PortraitWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         V3AutoHyphenatingText(
-                          sprintf(
-                              S.of(context).v3_touchback_alert_title, [deviceName]),
+                          sprintf(S.of(context).v3_touchback_alert_title,
+                              [deviceName]),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: context.tokens.color

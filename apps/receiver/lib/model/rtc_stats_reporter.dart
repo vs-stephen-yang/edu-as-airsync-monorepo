@@ -45,18 +45,14 @@ class RtcStatsReporter implements RtcStatsSubscriber {
   }
 
   @override
-  void updateCandidatePairStats(StatsReport report) {
-  }
+  void updateCandidatePairStats(StatsReport report) {}
 
   @override
-  void updateCodecStats(StatsReport report) {
-  }
+  void updateCodecStats(StatsReport report) {}
 
   @override
-  void updateLocalCandidate(List<StatsReport> reports) {
-  }
+  void updateLocalCandidate(List<StatsReport> reports) {}
 
   @override
-  void updateRemoteCandidate(List<StatsReport> reports) {
-  }
+  void updateRemoteCandidate(List<StatsReport> reports) {}
 }

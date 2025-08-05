@@ -7,8 +7,12 @@ void main() {
       // Arrange
       final now = DateTime.now().toUtc();
       final certs = [
-        {"date": now.subtract(const Duration(days: 20)).toIso8601String()}, // Expired
-        {"date": now.subtract(const Duration(days: 2)).toIso8601String()} // Valid
+        {
+          "date": now.subtract(const Duration(days: 20)).toIso8601String()
+        }, // Expired
+        {
+          "date": now.subtract(const Duration(days: 2)).toIso8601String()
+        } // Valid
       ];
 
       // Act
@@ -22,8 +26,12 @@ void main() {
       // Arrange
       final now = DateTime.now().toUtc();
       final certs = [
-        {"date": now.subtract(const Duration(days: 30)).toIso8601String()}, // Expired
-        {"date": now.subtract(const Duration(days: 25)).toIso8601String()} // Expired
+        {
+          "date": now.subtract(const Duration(days: 30)).toIso8601String()
+        }, // Expired
+        {
+          "date": now.subtract(const Duration(days: 25)).toIso8601String()
+        } // Expired
       ];
 
       // Act

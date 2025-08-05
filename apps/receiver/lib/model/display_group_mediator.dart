@@ -13,12 +13,14 @@ class DisplayGroupMediatorObject implements DisplayGroupMediator {
   final RemoteScreenProvider _remoteScreenProvider;
   final Future<List<RtcIceServer>?> Function() _getIceServersForDirect;
 
-  DisplayGroupMediatorObject(this._remoteScreenProvider, this._getIceServersForDirect);
+  DisplayGroupMediatorObject(
+      this._remoteScreenProvider, this._getIceServersForDirect);
 
   @override
   Future<RemoteScreenConnector?> createRemoteScreenConnector(
       Channel channel, StartRemoteScreenMessage message) async {
-    final connector = await _remoteScreenProvider.createRemoteScreenConnector(channel, JoinDisplayMessage('123'));
+    final connector = await _remoteScreenProvider.createRemoteScreenConnector(
+        channel, JoinDisplayMessage('123'));
 
     final iceServers = await _getIceServersForDirect();
     _remoteScreenProvider.onStartRemoteScreen(
