@@ -20,6 +20,10 @@
 using Microsoft::WRL::ComPtr;
 using DeviceIdArray = std::array<std::wstring, ERole_enum_count>;
 
+constexpr std::array<ERole, ERole_enum_count> AllRoles() {
+  return {eConsole, eMultimedia, eCommunications};
+}
+
 static const int kRestoreAfterInstallDelayMs = 2 * 1000;
 static const int kRestoreRetryDelayMs = 1 * 1000;
 static const int kRestoreRetryAttemps = 5;
@@ -46,8 +50,8 @@ static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role);
 static DeviceIdArray GetDefaultAudioDeviceIds(EDataFlow dataFlow) {
   DeviceIdArray deviceIds;
 
-  for (int role = eConsole; role < ERole_enum_count; ++role) {
-    deviceIds[role] = GetDefaultAudioDeviceId(dataFlow, static_cast<ERole>(role));
+  for (auto role : AllRoles()) {
+    deviceIds[role] = GetDefaultAudioDeviceId(dataFlow, role);
   }
   return deviceIds;
 }
@@ -101,11 +105,11 @@ static bool TryRestoreDefaultAudioDevice(
 static void RestoreDefaultAudioDevice(
     ComPtr<IPolicyConfigVista> policyConfig,
     const DeviceIdArray& originalDeviceIds) {
-  for (int role = eConsole; role < ERole_enum_count; ++role) {
+  for (auto role : AllRoles()) {
     if (!originalDeviceIds[role].empty()) {
       LOG() << L"Restoring default audio device [Role " << role << "] to " << originalDeviceIds[role];
 
-      HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), static_cast<ERole>(role));
+      HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), role);
 
       if (FAILED(hr)) {
         LOG() << L"SetDefaultEndpoint failed: " << hr;
@@ -124,7 +128,7 @@ bool InstallAudioDevice(const std::wstring& devconPath, const std::wstring& infP
   try {
     // Step 1: Get current default audio device
     const DeviceIdArray originalDeviceIds = GetDefaultAudioDeviceIds(eRender);
-    for (int role = eConsole; role < ERole_enum_count; ++role) {
+    for (auto role : AllRoles()) {
       LOG() << L"Original default audio device [Role " << role << "]:" << originalDeviceIds[role];
     }
 
