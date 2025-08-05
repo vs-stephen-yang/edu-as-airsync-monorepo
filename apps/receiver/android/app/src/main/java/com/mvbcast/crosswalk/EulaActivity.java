@@ -1,5 +1,7 @@
 package com.mvbcast.crosswalk;
 
+import static android.content.Intent.getIntent;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -275,6 +278,14 @@ public class EulaActivity extends FlutterActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check CPU architecture
+        String abi = System.getProperty("os.arch");
+        if (abi != null && abi.contains("x86")) {
+            Toast.makeText(this, "This device architecture is not supported", Toast.LENGTH_LONG).show();
+            finish(); // Exit immediately
+        }
+
         String myString = getIntent().getStringExtra("RESTART_REASON");
         if ("TaskRemoved".equals(myString) ||
                 "Rebooted".equals(myString) ||
