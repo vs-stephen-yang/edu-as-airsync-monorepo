@@ -19,6 +19,7 @@
 using Microsoft::WRL::ComPtr;
 
 static const int kRestoreAfterInstallDelayMs = 2 * 1000;
+static const int kProcessWaitTimeoutMs = 30 * 1000;
 
 static bool RunCmd(const std::wstring& cmdPath, const std::wstring& args);
 
@@ -55,53 +56,63 @@ static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role) {
 }
 
 bool InstallAudioDevice(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid) {
-  // Step 1: Get current default audio device
-  std::wstring originalDeviceIds[ERole_enum_count];
+  try {
+    // Step 1: Get current default audio device
+    std::wstring originalDeviceIds[ERole_enum_count];
 
-  for (int role = eConsole; role < ERole_enum_count; ++role) {
-    originalDeviceIds[role] = GetDefaultAudioDeviceId(eRender, static_cast<ERole>(role));
-    LOG() << L"Original default audio device [Role " << role << "]:" << originalDeviceIds[role];
-  }
-
-  // Step 2: Try to update virtual audio driver
-  if (!DevconUpdate(devconPath, infPath, hwid)) {
-    // If update fails (device missing), tries to install.
-    if (!DevconInstall(devconPath, infPath, hwid)) {
-      LOG() << L"Installing audio driver failed.";
+    for (int role = eConsole; role < ERole_enum_count; ++role) {
+      originalDeviceIds[role] = GetDefaultAudioDeviceId(eRender, static_cast<ERole>(role));
+      LOG() << L"Original default audio device [Role " << role << "]:" << originalDeviceIds[role];
     }
-  }
 
-  // Step 3: Restore defaults for all roles
-  ComPtr<IPolicyConfigVista> policyConfig;
-
-  HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient),
-                                NULL, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID*)&policyConfig);
-
-  if (!policyConfig) {
-    LOG() << L"CreatePolicyConfig failed.";
-    return false;
-  }
-
-  // Give Windows enough time to finish registering the new device before switching defaults back.
-  Sleep(kRestoreAfterInstallDelayMs);
-
-  for (int role = eConsole; role < ERole_enum_count; ++role) {
-    if (!originalDeviceIds[role].empty()) {
-      LOG() << L"Restoring default audio device [Role " << role << "] to " << originalDeviceIds[role];
-
-      HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), static_cast<ERole>(role));
-
-      if (FAILED(hr)) {
-        LOG() << L"SetDefaultEndpoint failed: " << hr;
+    // Step 2: Try to update virtual audio driver
+    if (!DevconUpdate(devconPath, infPath, hwid)) {
+      // If update fails (device missing), tries to install.
+      if (!DevconInstall(devconPath, infPath, hwid)) {
+        LOG() << L"Installing audio driver failed.";
       }
     }
-  }
 
-  return true;
+    // Step 3: Restore defaults for all roles
+    ComPtr<IPolicyConfigVista> policyConfig;
+
+    HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient),
+                                  NULL, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID*)&policyConfig);
+
+    if (!policyConfig) {
+      LOG() << L"CreatePolicyConfig failed.";
+      return false;
+    }
+
+    // Give Windows enough time to finish registering the new device before switching defaults back.
+    Sleep(kRestoreAfterInstallDelayMs);
+
+    for (int role = eConsole; role < ERole_enum_count; ++role) {
+      if (!originalDeviceIds[role].empty()) {
+        LOG() << L"Restoring default audio device [Role " << role << "] to " << originalDeviceIds[role];
+
+        HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), static_cast<ERole>(role));
+
+        if (FAILED(hr)) {
+          LOG() << L"SetDefaultEndpoint failed: " << hr;
+        }
+      }
+    }
+
+    return true;
+  } catch (const std::runtime_error& e) {
+    LOG() << "Exception occurred in InstallAudioDevice: " << e.what();
+    return false;
+  }
 }
 
 bool UninstallAudioDevice(const std::wstring& devconPath, const std::wstring& hwid) {
-  return DevconRemove(devconPath, hwid);
+  try {
+    return DevconRemove(devconPath, hwid);
+  } catch (const std::runtime_error& e) {
+    LOG() << "Exception occurred in UninstallAudioDevice: " << e.what();
+    return false;
+  }
 }
 
 static bool DevconUpdate(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid) {
@@ -150,10 +161,17 @@ bool RunCmd(const std::wstring& cmdPath, const std::wstring& args) {
           &si,
           &pi)) {
     LOG() << L"CreateProcess failed. Error: " << GetLastError();
-    return false;
+    throw std::runtime_error("CreateProcess failed.");
   }
 
-  WaitForSingleObject(pi.hProcess, INFINITE);
+  DWORD waitResult = WaitForSingleObject(pi.hProcess, kProcessWaitTimeoutMs);
+  if (waitResult == WAIT_TIMEOUT) {
+    LOG() << L"Process timed out after " << kProcessWaitTimeoutMs << L" ms.";
+    TerminateProcess(pi.hProcess, 1);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    throw std::runtime_error("Process timed out.");
+  }
 
   DWORD exitCode = 1;
   GetExitCodeProcess(pi.hProcess, &exitCode);
