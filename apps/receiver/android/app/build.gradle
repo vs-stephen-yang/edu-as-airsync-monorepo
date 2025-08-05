@@ -72,6 +72,12 @@ android {
         versionName = flutter.versionName
         // https://developer.android.com/studio/build/build-variants#resolve_matching_errors
         missingDimensionStrategy 'distribute', 'googlePlay'
+
+        if (project.hasProperty("ENABLE_ABI_FILTERS") && ENABLE_ABI_FILTERS.toBoolean()) {
+            ndk {
+                abiFilters("armeabi-v7a", "arm64-v8a")
+            }
+        }
     }
 
     flavorDimensions("channel", "stage")
