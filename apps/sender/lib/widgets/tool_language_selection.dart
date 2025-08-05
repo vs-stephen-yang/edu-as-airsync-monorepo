@@ -29,8 +29,7 @@ class LanguageSelection extends StatelessWidget {
                     FittedBox(
                       fit: BoxFit.fitHeight,
                       child: IconButton(
-                        onPressed: () {
-                        },
+                        onPressed: () {},
                         splashRadius: 20,
                         focusColor: Colors.grey,
                         icon: const Icon(

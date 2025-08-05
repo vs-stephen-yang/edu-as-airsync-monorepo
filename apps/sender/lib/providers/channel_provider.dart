@@ -221,8 +221,8 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _channelConnector!.open(
-        directPort: kIsWeb ? webTransportPort : platformDirectPort,
-        useWebTransport: kIsWeb
+      directPort: kIsWeb ? webTransportPort : platformDirectPort,
+      useWebTransport: kIsWeb,
     );
   }
 
@@ -381,12 +381,14 @@ class ChannelProvider extends ChangeNotifier {
           }
           break;
         case ChannelMessageType.presentSignal:
-          unawaited(WebRTCHelper().receiveSignalMessage(message as PresentSignalMessage));
+          unawaited(WebRTCHelper()
+              .receiveSignalMessage(message as PresentSignalMessage));
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
           if (_moderatorStatus) {
-            unawaited(presentStop(reason: Reason(
+            unawaited(presentStop(
+                reason: Reason(
               StopPresentReasonCode.getStopPresentFromPeer.code,
               text: 'Get stop present from peer',
             )));
@@ -405,7 +407,8 @@ class ChannelProvider extends ChangeNotifier {
           await _handleStopRemoteScreen(message as StopRemoteScreenMessage);
           break;
         case ChannelMessageType.remoteScreenStatus:
-          unawaited(_handleRemoteScreenState(message as RemoteScreenStatusMessage));
+          unawaited(
+              _handleRemoteScreenState(message as RemoteScreenStatusMessage));
           break;
         case ChannelMessageType.remoteScreenInfo:
           await _handleRemoteScreenInfo(message as RemoteScreenInfoMessage);
@@ -568,7 +571,8 @@ class ChannelProvider extends ChangeNotifier {
       },
       onRTCPeerConnectionState: _onRtcConnectionState,
       onStreamInterrupted: () async {
-        unawaited(presentStop(reason: Reason(
+        unawaited(presentStop(
+            reason: Reason(
           StopPresentReasonCode.streamInterrupted.code,
           text: 'Stream interrupted',
         )));
@@ -580,7 +584,8 @@ class ChannelProvider extends ChangeNotifier {
       },
       onStopPresent: () {
         // Received StopPresent from the peer via data channel
-        presentStop(reason: Reason(
+        presentStop(
+            reason: Reason(
           StopPresentReasonCode.getStopPresentFromPeer.code,
           text: 'Get stop present from peer',
         ));
@@ -591,7 +596,8 @@ class ChannelProvider extends ChangeNotifier {
           presentResume();
         }
         if (isStop) {
-          presentStop(reason: Reason(
+          presentStop(
+              reason: Reason(
             StopPresentReasonCode.touchStopWhenTouchBack.code,
             text: 'Touch stop when touch back',
           ));
@@ -621,7 +627,8 @@ class ChannelProvider extends ChangeNotifier {
             presentingState.value = true;
             _startPresentTimer();
           } else {
-            presentStop(reason: Reason(
+            presentStop(
+                reason: Reason(
               StopPresentReasonCode.makeCallFailed.code,
               text: 'Make call failed',
             ));
@@ -887,7 +894,8 @@ class ChannelProvider extends ChangeNotifier {
     // cast_error: when users fail to cast their screen on the first attempt
     final eventName = _isRtcFirstConnected ? 'cast_fail' : 'cast_error';
 
-    final Map<String, Object> properties = _isRtcFirstConnected ? {} : WebRTCHelper().getIceInfo();
+    final Map<String, Object> properties =
+        _isRtcFirstConnected ? {} : WebRTCHelper().getIceInfo();
 
     trackEvent(eventName, EventCategory.session, properties: properties);
 
@@ -938,7 +946,8 @@ class ChannelProvider extends ChangeNotifier {
           connectionTimeout: defaultDirectConnectionTimeout,
           allowSelfSignedCertificates: true, // Allow self-signed certificates
           retry: getChannelRetryConfig(isReconnect),
-          logger: (url, message) => log.fine('direct connection: $url $message'),
+          logger: (url, message) =>
+              log.fine('direct connection: $url $message'),
         ),
       );
     } else {

@@ -5,7 +5,7 @@ import 'dart:io' show Platform;
 
 import 'log.dart';
 
-class AudioSwitch  {
+class AudioSwitch {
   AudioSwitch._();
 
   static const MethodChannel _channel = MethodChannel("audio_switch_channel");
@@ -47,7 +47,8 @@ class AudioSwitch  {
   }
 
   static Future<Map<String, dynamic>?> getPairedVirtualAudioDevice() async {
-    final result = await _channel.invokeMethod<Map>('getPairedVirtualAudioDevice');
+    final result =
+        await _channel.invokeMethod<Map>('getPairedVirtualAudioDevice');
     return result == null ? null : Map<String, dynamic>.from(result);
   }
 }
@@ -55,7 +56,6 @@ class AudioSwitch  {
 class AudioSwitchManagerMac implements AudioSwitchManager {
   int? _defaultOutputDeviceID;
   Map<String, dynamic>? _currentVirtualAudioDevice;
-
 
   Future<Map<String, dynamic>?> _checkVirtualAudioDevice() async {
     final virtualDevice = await AudioSwitch.getPairedVirtualAudioDevice();
@@ -81,7 +81,8 @@ class AudioSwitchManagerMac implements AudioSwitchManager {
       return false;
     }
     String deviceName = _currentVirtualAudioDevice!['deviceName'];
-    log.info('default output device: $_defaultOutputDeviceID virtual audio device: $deviceName');
+    log.info(
+        'default output device: $_defaultOutputDeviceID virtual audio device: $deviceName');
     return true;
   }
 

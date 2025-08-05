@@ -38,7 +38,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: V3AutoHyphenatingText("Restart the program to apply the changes.")));
+        content: V3AutoHyphenatingText(
+            "Restart the program to apply the changes.")));
   }
 
   void _showDebugOverlayChanged(bool value) async {
@@ -92,7 +93,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
         if (dir != null) {
           _rtcLogsDir = dir;
         }
-        WebRTCLogManager().setup(_rtcLogsDir, _enableRTCStatsLogs, _enableRTCEventLogs);
+        WebRTCLogManager()
+            .setup(_rtcLogsDir, _enableRTCStatsLogs, _enableRTCEventLogs);
       }
     });
   }
@@ -185,7 +187,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
                       onChanged: _showDebugOverlayChanged,
                     ),
                     SwitchListTile(
-                        title: const V3AutoHyphenatingText('video_quality_first'),
+                        title:
+                            const V3AutoHyphenatingText('video_quality_first'),
                         value: _isVideoQualityFirst,
                         onChanged: _changeVideoProfile),
                     V3AutoHyphenatingText(
@@ -196,7 +199,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         style:
                             const TextStyle(fontSize: 14, color: Colors.red)),
                     SwitchListTile(
-                        title: const V3AutoHyphenatingText('ICE Gathering Continually'),
+                        title: const V3AutoHyphenatingText(
+                            'ICE Gathering Continually'),
                         value: _iceGatheringContinually,
                         onChanged: _changeGatheringPolicy),
                     SwitchListTile(
@@ -204,13 +208,15 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         value: _isLogVerbose,
                         onChanged: _changeLogVerbose),
                     SwitchListTile(
-                        title: const V3AutoHyphenatingText('Enable RTC Stats Logs'),
+                        title: const V3AutoHyphenatingText(
+                            'Enable RTC Stats Logs'),
                         value: _enableRTCStatsLogs,
                         onChanged: (value) {
                           _changeRTCLogs(WebRTCLogType.stats, value);
                         }),
                     SwitchListTile(
-                        title: const V3AutoHyphenatingText('Enable RTC Event Logs'),
+                        title: const V3AutoHyphenatingText(
+                            'Enable RTC Event Logs'),
                         value: _enableRTCEventLogs,
                         onChanged: (value) {
                           _changeRTCLogs(WebRTCLogType.event, value);

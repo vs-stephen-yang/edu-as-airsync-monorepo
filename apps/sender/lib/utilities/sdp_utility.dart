@@ -211,8 +211,8 @@ class CodecCapabilitySelector {
     for (var fmtp in fmtpList) {
       if (fmtp['payload'].toString() == h264Payload) {
         var config = fmtp['config'] ?? '';
-        var profileMatch = RegExp(r'profile-level-id=([0-9a-fA-F]{6})')
-            .firstMatch(config);
+        var profileMatch =
+            RegExp(r'profile-level-id=([0-9a-fA-F]{6})').firstMatch(config);
         if (profileMatch != null) {
           var profileId = profileMatch.group(1);
           switch (profileId) {

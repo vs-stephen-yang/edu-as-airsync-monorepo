@@ -45,7 +45,8 @@ class V3PresentSelectScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (platformIsDesktop) {
         // MacOS and Windows
-        await _handleDesktopPlatform(context, channelProvider, audioSwitchManager);
+        await _handleDesktopPlatform(
+            context, channelProvider, audioSwitchManager);
       } else {
         // Android and iOS
         if (Platform.isAndroid) {
@@ -66,8 +67,8 @@ class V3PresentSelectScreen extends StatelessWidget {
     return const SizedBox();
   }
 
-  Future<void> _handleDesktopPlatform(
-      BuildContext context, ChannelProvider provider, AudioSwitchManager audioSwitchManager) async {
+  Future<void> _handleDesktopPlatform(BuildContext context,
+      ChannelProvider provider, AudioSwitchManager audioSwitchManager) async {
     bool isSupported = (Platform.isWindows || VersionUtil.isOpenVersion)
         ? (await FlutterVirtualDisplay.instance.isSupported() ?? false)
         : false;
@@ -78,7 +79,8 @@ class V3PresentSelectScreen extends StatelessWidget {
       selectScreenDialog?.cancel();
     });
 
-    final isVirtualAudioMissing = await audioSwitchManager.isVirtualAudioMissing();
+    final isVirtualAudioMissing =
+        await audioSwitchManager.isVirtualAudioMissing();
     await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {

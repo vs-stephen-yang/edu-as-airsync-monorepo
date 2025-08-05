@@ -60,7 +60,8 @@ void trackOutboundStats(
   const precision = 2;
   final packetSendDelayAvgMs =
       formatDoubleList(statsLists.packetSendDelayAvgMs, precision);
-  final encodeTimeAvgMs = formatDoubleList(statsLists.encodeTimeAvgMs, precision);
+  final encodeTimeAvgMs =
+      formatDoubleList(statsLists.encodeTimeAvgMs, precision);
 
   trackTrace('video_outbound_stats', properties: {
     'framesPerSecond': statsLists.framesPerSecond.join(','),
