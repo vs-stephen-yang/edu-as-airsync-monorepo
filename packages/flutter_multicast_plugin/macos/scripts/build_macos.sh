@@ -4,8 +4,9 @@ set -e
 set -o pipefail
 
 ARCHS=("arm64" "x86_64")
-BUILD_DIR_BASE="build"
-LIB_DIR="libs"
+# ARCHS=("arm64")
+BUILD_DIR_BASE="../build"
+LIB_DIR="../libs"
 CLEAN_BUILD=true
 
 if [[ -z "$LOG_LEVEL" ]]; then
@@ -45,7 +46,7 @@ for ARCH in "${ARCHS[@]}"; do
   echo "🔧 編譯架構：$ARCH ➤ $BUILD_DIR"
 
   if [ "$CLEAN_BUILD" = true ] || [ ! -f "$BUILD_DIR/CMakeCache.txt" ]; then
-    cmake -S . -B "$BUILD_DIR" \
+    cmake -S ../ -B "$BUILD_DIR" \
       -DCMAKE_SYSTEM_NAME=Darwin \
       -DCMAKE_OSX_ARCHITECTURES="$ARCH" \
       -DCMAKE_OSX_DEPLOYMENT_TARGET=10.14 \
@@ -62,10 +63,13 @@ for ARCH in "${ARCHS[@]}"; do
   cp "$BUILD_DIR/libcommon.a" "$LIB_DIR/libcommon_$ARCH.a"
   cp "$BUILD_DIR/uvgrtp/libuvgrtp.a" "$LIB_DIR/libuvgrtp_$ARCH.a"
   cp "$BUILD_DIR/libcryptopp.a" "$LIB_DIR/libcryptopp_$ARCH.a"
+  # cp "$BUILD_DIR/libcommon.a" "$LIB_DIR/libcommon.a"
+  # cp "$BUILD_DIR/uvgrtp/libuvgrtp.a" "$LIB_DIR/libuvgrtp.a"
+  # cp "$BUILD_DIR/libcryptopp.a" "$LIB_DIR/libcryptopp.a"
 done
 
 # 合併為 universal binary
-echo "📦 合併為 universal .a"
+# echo "📦 合併為 universal .a"
 
 LIBS=("libcommon.a" "libuvgrtp.a" "libcryptopp.a")
 
@@ -79,4 +83,4 @@ done
 
 echo ""
 echo "📦 所有 universal libraries 已生成到：$LIB_DIR/"
-echo "🔍 可用 lipo -info libs/*.a 查看架構內容"
+echo "🔍 可用 lipo -info ../libs/*.a 查看架構內容"

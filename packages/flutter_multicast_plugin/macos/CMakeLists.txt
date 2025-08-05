@@ -46,17 +46,6 @@ target_include_directories(uvgrtp PRIVATE
 # ✅ 補上 SRTP 與 Crypto flag（因為你不能 patch uvgrtp CMake）
 target_compile_definitions(uvgrtp PRIVATE ENABLE_SRTP UVG_CRYPTO)
 
-# ======= GStreamer SDK =======
-if(DEFINED ENV{GSTREAMER_SDK_MACOS})
-    set(GST_FRAMEWORK $ENV{GSTREAMER_SDK_MACOS})
-    message(STATUS "[CMake] Using GStreamer SDK path from environment: ${GSTREAMER_ROOT}")
-else()
-    message(FATAL_ERROR "GSTREAMER_SDK_MACOS environment variable not set!")
-endif()
-
-# Headers (等同於 include/gstreamer-1.0)
-include_directories(${GST_FRAMEWORK}/Headers)
-
 # ======= Common (GStreamer + RTP Receiver core) =========
 set(COMMON_DIR "${CMAKE_SOURCE_DIR}/../native_libs/common")
 set(COMMON_SRC
@@ -76,7 +65,7 @@ target_include_directories(common
 	${COMMON_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../native_libs
 	${UVGRTP_DIR}/include
-	${GST_FRAMEWORK}/Headers
+	${CMAKE_CURRENT_SOURCE_DIR}/gstreamer-headers
 )
 
 target_link_libraries(common
