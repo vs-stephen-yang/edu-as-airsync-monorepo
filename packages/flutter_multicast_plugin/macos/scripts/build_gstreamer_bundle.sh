@@ -42,7 +42,7 @@ CORE_DYLIBS=(
     
     # GStreamer codecs (gstreamer-1.0-codecs equivalent)
     libgstcodecparsers-1.0.0.dylib libavfilter.10.dylib libavformat.61.dylib 
-    libavcodec.61.dylib libavutil.59.dylib libswresample.5.dylib
+    libavcodec.61.dylib libavutil.59.dylib libswresample.5.dylib libopus.0.dylib
 )
 
 echo "📁 Copying core .dylibs..."
@@ -58,12 +58,15 @@ for dylib in "${CORE_DYLIBS[@]}"; do
 done
 
 CORE_PLUGINS=(
-    libgstcoreelements.dylib 
-    libgstapp.dylib 
-    libgstvideoparsersbad.dylib 
-    libgstvideoconvertscale.dylib 
-    libgstlibav.dylib 
+    libgstcoreelements.dylib
+    libgstapp.dylib
+    libgstvideoparsersbad.dylib
+    libgstvideoconvertscale.dylib
+    libgstlibav.dylib
     libgstopenh264.dylib
+    libgstopus.dylib
+    libgstaudioconvert.dylib
+    libgstosxaudio.dylib
 )
 
 # ... 同理 plugin 路徑也換成 $FRAMEWORK_DIR
