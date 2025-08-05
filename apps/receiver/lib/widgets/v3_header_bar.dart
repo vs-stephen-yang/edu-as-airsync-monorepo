@@ -63,6 +63,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
                   ],
                 ),
                 landscapeOneThird: SizedBox.shrink(),
+                landscapeHalf: SizedBox.shrink(),
               ),
             ],
           ),
