@@ -88,16 +88,40 @@ This Flutter plugin uses macOS native C++ code that integrates the following com
 - GStreamer macOS SDK – H.264 decoding and rendering
 - macOS Frameworks – VideoToolbox, CoreVideo, CoreMedia for hardware acceleration
 
-### Required Environment Variable
-Before building, set the following environment variable to point to your GStreamer macOS SDK path:
+### Prebuilt GStreamer Libraries
+
+This plugin includes the required macOS GStreamer `.dylib`s, plugins, and headers inside the following directories:
+
+- `macos/gstreamer-dylibs/` – Relocated `.dylib` files used at runtime
+- `macos/gstreamer-frameworks/` – Runtime plugin and core `.dylib` files, included as application resources
+- `macos/gstreamer-headers/` – GStreamer public headers used at build time
+
+These files are **already committed into the repository**. You do **not** need to set up the full GStreamer SDK unless you're updating or rebuilding the native bundle.
+
+### Updating the GStreamer SDK (Optional)
+
+If you wish to upgrade the macOS GStreamer SDK or customize which plugins are bundled, run:
+
+```bash
+cd macos/scripts
+./build_gstreamer_bundle.sh
+```
+
+This script:
+- Copies and relocates .dylib and plugin files from your local GStreamer SDK
+- Rewrites their install_name for runtime compatibility
+- Populates gstreamer-dylibs/, gstreamer-frameworks/, and gstreamer-headers/
+
+Before running this script, set the following environment variable:
 ```
 export GSTREAMER_SDK_MACOS=/path/to/GStreamer.framework
 ```
+⚠️ This step is only needed if you’re maintaining the plugin or changing GStreamer version. For app developers, the bundled binaries are already ready to use.
 
 ### Building Native Libraries
 Navigate to the `macos/` directory and use the provided build script:
 ```
-cd macos/
+cd macos/scripts
 ```
 
 #### Full Build (Clean & Configure)
