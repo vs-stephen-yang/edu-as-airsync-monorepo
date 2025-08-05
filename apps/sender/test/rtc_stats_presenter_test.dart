@@ -16,8 +16,7 @@ void main() {
           maxVideoStats: 3,
           maxCandidates: 2,
           maxCandidatePairs: 2,
-          maxCodecStats: 2
-      );
+          maxCodecStats: 2);
     });
 
     test('Should add and maintain limited video stats with callback', () {
@@ -27,10 +26,14 @@ void main() {
         callbackResults.add(List.from(stats));
       };
 
-      final stats1 = RtcVideoOutboundStats(timestamp: 1000.0, frameWidth: 1280, frameHeight: 720);
-      final stats2 = RtcVideoOutboundStats(timestamp: 2000.0, frameWidth: 1280, frameHeight: 720);
-      final stats3 = RtcVideoOutboundStats(timestamp: 3000.0, frameWidth: 1280, frameHeight: 720);
-      final stats4 = RtcVideoOutboundStats(timestamp: 4000.0, frameWidth: 1280, frameHeight: 720);
+      final stats1 = RtcVideoOutboundStats(
+          timestamp: 1000.0, frameWidth: 1280, frameHeight: 720);
+      final stats2 = RtcVideoOutboundStats(
+          timestamp: 2000.0, frameWidth: 1280, frameHeight: 720);
+      final stats3 = RtcVideoOutboundStats(
+          timestamp: 3000.0, frameWidth: 1280, frameHeight: 720);
+      final stats4 = RtcVideoOutboundStats(
+          timestamp: 4000.0, frameWidth: 1280, frameHeight: 720);
 
       // Act
       presenter.updateVideoStats(stats1);
@@ -43,7 +46,8 @@ void main() {
       expect(callbackResults[0].length, equals(1));
       expect(callbackResults[1].length, equals(2));
       expect(callbackResults[2].length, equals(3));
-      expect(callbackResults[3].length, equals(3)); // Still 3 because of maxVideoStats
+      expect(callbackResults[3].length,
+          equals(3)); // Still 3 because of maxVideoStats
 
       // Verify oldest entry was removed in the latest result
       final latestResult = callbackResults.last;
@@ -88,7 +92,8 @@ void main() {
 
       // Assert
       expect(callbackResults['latest']?.length, equals(2)); // Maximum is 2
-      expect(callbackResults['latest']?.containsKey('LC01'), isFalse); // First one should be removed
+      expect(callbackResults['latest']?.containsKey('LC01'),
+          isFalse); // First one should be removed
       expect(callbackResults['latest']?.containsKey('LC02'), isTrue);
       expect(callbackResults['latest']?.containsKey('LC03'), isTrue);
 
@@ -135,14 +140,16 @@ void main() {
 
       // Assert
       expect(callbackResults['latest']?.length, equals(2)); // Maximum is 2
-      expect(callbackResults['latest']?.containsKey('RC01'), isFalse); // First one should be removed
+      expect(callbackResults['latest']?.containsKey('RC01'),
+          isFalse); // First one should be removed
       expect(callbackResults['latest']?.containsKey('RC02'), isTrue);
       expect(callbackResults['latest']?.containsKey('RC03'), isTrue);
     });
 
     test('Should update candidate pair stats with callback', () {
       // Arrange
-      final Map<String, Map<String, RtcIceCandidatePairStats>> callbackResults = {};
+      final Map<String, Map<String, RtcIceCandidatePairStats>> callbackResults =
+          {};
       presenter.onCandidatePairPresent = (pairs) {
         callbackResults['latest'] = Map.from(pairs);
       };
@@ -210,7 +217,8 @@ void main() {
 
       // Assert
       expect(callbackResults['latest']?.length, equals(2)); // Maximum is 2
-      expect(callbackResults['latest']?.containsKey('CD01'), isFalse); // First one should be removed
+      expect(callbackResults['latest']?.containsKey('CD01'),
+          isFalse); // First one should be removed
       expect(callbackResults['latest']?.containsKey('CD02'), isTrue);
       expect(callbackResults['latest']?.containsKey('CD03'), isTrue);
 

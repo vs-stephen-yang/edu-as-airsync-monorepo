@@ -74,7 +74,8 @@ class PresentSelectScreen extends StatelessWidget {
               selectedSource: value.selectedSource,
               systemAudio: value.systemAudio));
         } else {
-          unawaited(provider.presentStart(selectedSource: value.selectedSource));
+          unawaited(
+              provider.presentStart(selectedSource: value.selectedSource));
         }
       } else {
         if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {

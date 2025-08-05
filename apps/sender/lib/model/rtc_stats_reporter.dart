@@ -3,7 +3,6 @@ import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class RtcStatsReporter implements RtcStatsSubscriber {
-
   Function(RtcVideoOutboundStats stats)? onVideoOutboundStats;
 
   RtcStatsReporter(this.onVideoOutboundStats);
@@ -14,18 +13,14 @@ class RtcStatsReporter implements RtcStatsSubscriber {
   }
 
   @override
-  void updateCandidatePairStats(StatsReport report) {
-  }
+  void updateCandidatePairStats(StatsReport report) {}
 
   @override
-  void updateCodecStats(StatsReport report) {
-  }
+  void updateCodecStats(StatsReport report) {}
 
   @override
-  void updateLocalCandidate(List<StatsReport> reports) {
-  }
+  void updateLocalCandidate(List<StatsReport> reports) {}
 
   @override
-  void updateRemoteCandidate(List<StatsReport> reports) {
-  }
+  void updateRemoteCandidate(List<StatsReport> reports) {}
 }

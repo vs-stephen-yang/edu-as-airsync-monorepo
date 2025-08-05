@@ -55,7 +55,8 @@ void main(List<String> args) async {
   ];
 
   // Scan the build directory for files
-  await for (final entity in buildDirectory.list(recursive: true, followLinks: false)) {
+  await for (final entity
+      in buildDirectory.list(recursive: true, followLinks: false)) {
     if (entity is File) {
       // Get the path relative to the build directory
       String relativePath = entity.path.substring(buildDirectory.path.length);
@@ -119,7 +120,8 @@ void main(List<String> args) async {
 
   // Check if placeholder exists in template
   if (!templateContent.contains(placeholder)) {
-    stderr.writeln('❌ Error: Placeholder text "$placeholder" not found in template file.');
+    stderr.writeln(
+        '❌ Error: Placeholder text "$placeholder" not found in template file.');
     exit(1);
   }
 
@@ -137,7 +139,8 @@ void main(List<String> args) async {
   // Validate the result
   if (await outputFileHandle.exists()) {
     final size = await outputFileHandle.length();
-    print('✅ Service worker generated successfully (${(size / 1024).toStringAsFixed(2)} KB)');
+    print(
+        '✅ Service worker generated successfully (${(size / 1024).toStringAsFixed(2)} KB)');
     print('🚀 PWA assets are ready for offline use');
   } else {
     stderr.writeln('❌ Error: Failed to write service worker file.');

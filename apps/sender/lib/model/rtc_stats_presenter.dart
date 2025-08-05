@@ -26,9 +26,9 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
 
   RtcStatsPresenter(
       {int maxVideoStats = 300,
-        int maxCandidates = 10,
-        int maxCandidatePairs = 100,
-        int maxCodecStats = 10})
+      int maxCandidates = 10,
+      int maxCandidatePairs = 100,
+      int maxCodecStats = 10})
       : _maxCodecStats = maxCodecStats,
         _maxCandidatePairs = maxCandidatePairs,
         _maxCandidates = maxCandidates,
@@ -56,9 +56,9 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
   }
 
   void _addCandidatesToMap(
-      List<StatsReport> reports,
-      Map<String, RtcIceCandidate> candidateMap,
-      ) {
+    List<StatsReport> reports,
+    Map<String, RtcIceCandidate> candidateMap,
+  ) {
     for (final report in reports) {
       final id = report.id as String?;
       if (id == null) {

@@ -90,14 +90,18 @@ class WebRTCLogManager {
       if (kIsWeb) {
         return Future.value(false); // does not support rtc event log on web
       }
-      RtcPeerconnectionNative peerConnectionNative = peerConnection as RtcPeerconnectionNative;
+      RtcPeerconnectionNative peerConnectionNative =
+          peerConnection as RtcPeerconnectionNative;
       _eventLogFileName = _generateFileName(WebRTCLogType.event);
       if (Platform.isWindows) {
-        return peerConnectionNative.startRtcEventLogOnWindows('$_logDir/', _eventLogFileName);
+        return peerConnectionNative.startRtcEventLogOnWindows(
+            '$_logDir/', _eventLogFileName);
       } else if (Platform.isAndroid) {
-        return peerConnectionNative.startRtcEventLogOnAndroid(eventLogFilePath, 0/*unlimited*/);
+        return peerConnectionNative.startRtcEventLogOnAndroid(
+            eventLogFilePath, 0 /*unlimited*/);
       } else if (Platform.isIOS || Platform.isMacOS) {
-        return peerConnectionNative.startRtcEventLogOnAppleDevice(eventLogFilePath, 0/*unlimited*/);
+        return peerConnectionNative.startRtcEventLogOnAppleDevice(
+            eventLogFilePath, 0 /*unlimited*/);
       }
       return Future.value(false);
     } catch (e) {
@@ -110,7 +114,8 @@ class WebRTCLogManager {
       return; // does not support rtc event log on web
     }
     try {
-      RtcPeerconnectionNative peerConnectionNative = peerConnection as RtcPeerconnectionNative;
+      RtcPeerconnectionNative peerConnectionNative =
+          peerConnection as RtcPeerconnectionNative;
       await peerConnectionNative.stopRTCEventLog();
       _eventLogFileName = ''; // clear log file name
     } catch (e) {
@@ -120,13 +125,9 @@ class WebRTCLogManager {
 
   String _generateFileName(WebRTCLogType type) {
     if (type == WebRTCLogType.stats) {
-      return 'webrtc_stats_log_${DateTime
-          .now()
-          .millisecondsSinceEpoch}';
+      return 'webrtc_stats_log_${DateTime.now().millisecondsSinceEpoch}';
     } else {
-      return 'webrtc_event_log_${DateTime
-          .now()
-          .millisecondsSinceEpoch}';
+      return 'webrtc_event_log_${DateTime.now().millisecondsSinceEpoch}';
     }
   }
 }

@@ -696,8 +696,14 @@ class WebRTCConnector {
       log.info('Touch event ignored due to paused state');
       return;
     }
-    unawaited(
-        _flutterInputInjectionPlugin.sendNormalizedTouch(_screenId, autoVirtualDisplay, action, id, remoteX, remoteY));
+    unawaited(_flutterInputInjectionPlugin.sendNormalizedTouch(
+      _screenId,
+      autoVirtualDisplay,
+      action,
+      id,
+      remoteX,
+      remoteY,
+    ));
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
@@ -820,19 +826,21 @@ class WebRTCConnector {
     double baseHeight = 1080,
   }) {
     final int actualPixels = (actualWidth * actualHeight).toInt();
-    const int commonBasePixels = 2073600;            // 1920 x 1080
-    const int maxPixels = 8294400;                   // 3840 x 2160
-    const int minBitrateBps = 5000000;               // 5 Mbps
-    const double slope = 3.535;                      // ≈ 22,000,000 / 6,220,800
+    const int commonBasePixels = 2073600; // 1920 x 1080
+    const int maxPixels = 8294400; // 3840 x 2160
+    const int minBitrateBps = 5000000; // 5 Mbps
+    const double slope = 3.535; // ≈ 22,000,000 / 6,220,800
 
-    final bool isCommonConfig = (uhdMaxBitrateKbps == 27000 && baseWidth == 1920 && baseHeight == 1080);
+    final bool isCommonConfig =
+        (uhdMaxBitrateKbps == 27000 && baseWidth == 1920 && baseHeight == 1080);
 
     // fast path: FHD@5Mbps using slope to determine bitrate (default)
     if (isCommonConfig) {
       if (actualPixels <= commonBasePixels) return minBitrateBps;
       if (actualPixels >= maxPixels) return uhdMaxBitrateKbps * 1000;
       // bitrate = 5_000_000 + (pixels - basePixels) * slope
-      return (minBitrateBps + ((actualPixels - commonBasePixels) * slope)).round();
+      return (minBitrateBps + ((actualPixels - commonBasePixels) * slope))
+          .round();
     }
 
     // fallback: baseWidth, baseHeight, and uhdMaxBitrateKbps are not common
@@ -847,7 +855,8 @@ class WebRTCConnector {
     if (actualPixels >= maxPixels) return highBitrateBps;
 
     final int bitrateDelta = highBitrateBps - lowBitrateBps;
-    final int interpolatedBps = lowBitrateBps + (bitrateDelta * pixelDelta ~/ pixelRange);
+    final int interpolatedBps =
+        lowBitrateBps + (bitrateDelta * pixelDelta ~/ pixelRange);
     return interpolatedBps;
   }
 
@@ -1013,11 +1022,12 @@ class WebRTCConnector {
   void startStatsTimer() {
     _statsTimer?.cancel();
 
-    _rtcStatsParser = RtcStatsParser(
-        (width, height) =>
-            {log.info('Outbound video size has changed to ${width}x$height')});
+    _rtcStatsParser = RtcStatsParser((width, height) =>
+        {log.info('Outbound video size has changed to ${width}x$height')});
 
-    final rtcStatsReporter = RtcStatsReporter((stats) => _handleVideoStatsReport(stats));
+    final rtcStatsReporter = RtcStatsReporter(
+      (stats) => _handleVideoStatsReport(stats),
+    );
     _rtcStatsParser?.addSubscriber(rtcStatsReporter);
 
     _rtcStatsPresenter = RtcStatsPresenter();
@@ -1041,8 +1051,10 @@ class WebRTCConnector {
 
     onVideoStatsReport?.call(stats);
 
-    final isWidthChanged = stats.frameWidth != null && _actualWidth != stats.frameWidth;
-    final isHeightChanged = stats.frameHeight != null && _actualHeight != stats.frameHeight;
+    final isWidthChanged =
+        stats.frameWidth != null && _actualWidth != stats.frameWidth;
+    final isHeightChanged =
+        stats.frameHeight != null && _actualHeight != stats.frameHeight;
 
     if (isWidthChanged || isHeightChanged) {
       _actualWidth = stats.frameWidth!;
@@ -1056,10 +1068,8 @@ class WebRTCConnector {
 
     final candidates = _rtcStatsPresenter?.getCandidates();
     if (candidates != null) {
-      final local = (candidates['local'])?.map((e) => e.toJson())
-          .toList();
-      final remote = (candidates['remote'])?.map((e) => e.toJson())
-          .toList();
+      final local = (candidates['local'])?.map((e) => e.toJson()).toList();
+      final remote = (candidates['remote'])?.map((e) => e.toJson()).toList();
 
       result['candidates'] = jsonEncode({
         'local': local,
@@ -1068,7 +1078,10 @@ class WebRTCConnector {
     }
 
     result['iceServers'] = jsonEncode(
-        _iceServerList.map((server) => server.urls).expand((urls) => urls).toList(),
+      _iceServerList
+          .map((server) => server.urls)
+          .expand((urls) => urls)
+          .toList(),
     );
 
     return result;

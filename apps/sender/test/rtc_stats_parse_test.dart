@@ -8,8 +8,8 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
 import 'rtc_stats_parse_test.mocks.dart';
-@GenerateMocks([RtcStatsReporter, RtcStatsPresenter])
 
+@GenerateMocks([RtcStatsReporter, RtcStatsPresenter])
 void main() {
   group('RtcStatsParser - _onStatsReports', () {
     late RtcStatsParser parser;
@@ -19,7 +19,7 @@ void main() {
     setUp(() {
       mockReporter = MockRtcStatsReporter();
       mockPresenter = MockRtcStatsPresenter();
-      parser = RtcStatsParser((int? x, int? y){});
+      parser = RtcStatsParser((int? x, int? y) {});
       parser.addSubscriber(mockReporter);
       parser.addSubscriber(mockPresenter);
     });
@@ -65,63 +65,79 @@ void main() {
 
       // Assert
       verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoOutboundStats>()
-          .having((s) => s.encoderImplementation, 'encoderImplementation', 'vp8')
-          .having((s) => s.frameWidth, 'frameWidth', 1280)
-          .having((s) => s.frameHeight, 'frameHeight', 720)
-          .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
-          .having((s) => s.contentType, 'contentType', 'realtime')
-          .having((s) => s.qualityLimitationReason, 'qualityLimitationReason', 'bandwidth')
-          .having((s) => s.pliCount, 'pliCount', 3)
-          .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
-          .having((s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
-          .having((s) => s.bytesSent, 'bytesSent', 600000)
-          .having((s) => s.packetsSent, 'packetsSent', 950)
-          .having((s) => s.active, 'active', true)
-          .having((s) => s.firCount, 'firCount', 1)
-          .having((s) => s.framesEncoded, 'framesEncoded', 1180)
-          .having((s) => s.framesSent, 'framesSent', 1200)
-          .having((s) => s.headerBytesSent, 'headerBytesSent', 98000)
-          .having((s) => s.hugeFramesSent, 'hugeFramesSent', 5)
-          .having((s) => s.keyFramesEncoded, 'keyFramesEncoded', 10)
-          .having((s) => s.nackCount, 'nackCount', 18)
-          .having((s) => s.retransmittedBytesSent, 'retransmittedBytesSent', 15000)
-          .having((s) => s.retransmittedPacketsSent, 'retransmittedPacketsSent', 25)
-          .having((s) => s.totalEncodeTime, 'totalEncodeTime', 25.5)
-          .having((s) => s.totalEncodedBytesTarget, 'totalEncodedBytesTarget', 650000)
-          .having((s) => s.totalPacketSendDelay, 'totalPacketSendDelay', 120.5)
-          .having((s) => s.qpSum, 'qpSum', 1500))))
+              .having((s) => s.encoderImplementation, 'encoderImplementation',
+                  'vp8')
+              .having((s) => s.frameWidth, 'frameWidth', 1280)
+              .having((s) => s.frameHeight, 'frameHeight', 720)
+              .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
+              .having((s) => s.contentType, 'contentType', 'realtime')
+              .having((s) => s.qualityLimitationReason,
+                  'qualityLimitationReason', 'bandwidth')
+              .having((s) => s.pliCount, 'pliCount', 3)
+              .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
+              .having(
+                  (s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
+              .having((s) => s.bytesSent, 'bytesSent', 600000)
+              .having((s) => s.packetsSent, 'packetsSent', 950)
+              .having((s) => s.active, 'active', true)
+              .having((s) => s.firCount, 'firCount', 1)
+              .having((s) => s.framesEncoded, 'framesEncoded', 1180)
+              .having((s) => s.framesSent, 'framesSent', 1200)
+              .having((s) => s.headerBytesSent, 'headerBytesSent', 98000)
+              .having((s) => s.hugeFramesSent, 'hugeFramesSent', 5)
+              .having((s) => s.keyFramesEncoded, 'keyFramesEncoded', 10)
+              .having((s) => s.nackCount, 'nackCount', 18)
+              .having((s) => s.retransmittedBytesSent, 'retransmittedBytesSent',
+                  15000)
+              .having((s) => s.retransmittedPacketsSent,
+                  'retransmittedPacketsSent', 25)
+              .having((s) => s.totalEncodeTime, 'totalEncodeTime', 25.5)
+              .having((s) => s.totalEncodedBytesTarget,
+                  'totalEncodedBytesTarget', 650000)
+              .having(
+                  (s) => s.totalPacketSendDelay, 'totalPacketSendDelay', 120.5)
+              .having((s) => s.qpSum, 'qpSum', 1500))))
           .called(1);
 
       verify(mockPresenter.updateVideoStats(argThat(isA<RtcVideoOutboundStats>()
-          .having((s) => s.encoderImplementation, 'encoderImplementation', 'vp8')
-          .having((s) => s.frameWidth, 'frameWidth', 1280)
-          .having((s) => s.frameHeight, 'frameHeight', 720)
-          .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
-          .having((s) => s.contentType, 'contentType', 'realtime')
-          .having((s) => s.qualityLimitationReason, 'qualityLimitationReason', 'bandwidth')
-          .having((s) => s.pliCount, 'pliCount', 3)
-          .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
-          .having((s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
-          .having((s) => s.bytesSent, 'bytesSent', 600000)
-          .having((s) => s.packetsSent, 'packetsSent', 950)
-          .having((s) => s.active, 'active', true)
-          .having((s) => s.firCount, 'firCount', 1)
-          .having((s) => s.framesEncoded, 'framesEncoded', 1180)
-          .having((s) => s.framesSent, 'framesSent', 1200)
-          .having((s) => s.headerBytesSent, 'headerBytesSent', 98000)
-          .having((s) => s.hugeFramesSent, 'hugeFramesSent', 5)
-          .having((s) => s.keyFramesEncoded, 'keyFramesEncoded', 10)
-          .having((s) => s.nackCount, 'nackCount', 18)
-          .having((s) => s.retransmittedBytesSent, 'retransmittedBytesSent', 15000)
-          .having((s) => s.retransmittedPacketsSent, 'retransmittedPacketsSent', 25)
-          .having((s) => s.totalEncodeTime, 'totalEncodeTime', 25.5)
-          .having((s) => s.totalEncodedBytesTarget, 'totalEncodedBytesTarget', 650000)
-          .having((s) => s.totalPacketSendDelay, 'totalPacketSendDelay', 120.5)
-          .having((s) => s.qpSum, 'qpSum', 1500))))
+              .having((s) => s.encoderImplementation, 'encoderImplementation',
+                  'vp8')
+              .having((s) => s.frameWidth, 'frameWidth', 1280)
+              .having((s) => s.frameHeight, 'frameHeight', 720)
+              .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
+              .having((s) => s.contentType, 'contentType', 'realtime')
+              .having((s) => s.qualityLimitationReason,
+                  'qualityLimitationReason', 'bandwidth')
+              .having((s) => s.pliCount, 'pliCount', 3)
+              .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
+              .having(
+                  (s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
+              .having((s) => s.bytesSent, 'bytesSent', 600000)
+              .having((s) => s.packetsSent, 'packetsSent', 950)
+              .having((s) => s.active, 'active', true)
+              .having((s) => s.firCount, 'firCount', 1)
+              .having((s) => s.framesEncoded, 'framesEncoded', 1180)
+              .having((s) => s.framesSent, 'framesSent', 1200)
+              .having((s) => s.headerBytesSent, 'headerBytesSent', 98000)
+              .having((s) => s.hugeFramesSent, 'hugeFramesSent', 5)
+              .having((s) => s.keyFramesEncoded, 'keyFramesEncoded', 10)
+              .having((s) => s.nackCount, 'nackCount', 18)
+              .having((s) => s.retransmittedBytesSent, 'retransmittedBytesSent',
+                  15000)
+              .having((s) => s.retransmittedPacketsSent,
+                  'retransmittedPacketsSent', 25)
+              .having((s) => s.totalEncodeTime, 'totalEncodeTime', 25.5)
+              .having((s) => s.totalEncodedBytesTarget,
+                  'totalEncodedBytesTarget', 650000)
+              .having(
+                  (s) => s.totalPacketSendDelay, 'totalPacketSendDelay', 120.5)
+              .having((s) => s.qpSum, 'qpSum', 1500))))
           .called(1);
     });
 
-    test('Should calculate correct averages when processing outbound-rtp reports twice', () {
+    test(
+        'Should calculate correct averages when processing outbound-rtp reports twice',
+        () {
       // Arrange
       final firstReport = StatsReport('OR01', 'outbound-rtp', 1742886162000.0, {
         'kind': 'video',
@@ -131,7 +147,7 @@ void main() {
         'framesPerSecond': 30.0,
         'contentType': 'realtime',
         'qualityLimitationReason': 'bandwidth',
-        'totalEncodeTime': 20.0,  // Nice round numbers for clean division
+        'totalEncodeTime': 20.0, // Nice round numbers for clean division
         'pliCount': 2,
         'targetBitrate': 1000000.0,
         'powerEfficientEncoder': true,
@@ -139,19 +155,20 @@ void main() {
         'framesEncoded': 1000,
         'bytesSent': 500000,
         'packetsSent': 800,
-        'qpSum': 2000,  // 2.0 average with 1000 frames
+        'qpSum': 2000, // 2.0 average with 1000 frames
         'nackCount': 10,
         'firCount': 1,
         'retransmittedBytesSent': 10000,
         'retransmittedPacketsSent': 20,
-        'totalPacketSendDelay': 80.0,  // 0.1ms average with 800 packets
+        'totalPacketSendDelay': 80.0, // 0.1ms average with 800 packets
         'headerBytesSent': 80000,
         'hugeFramesSent': 0,
         'keyFramesEncoded': 5,
         'totalEncodedBytesTarget': 600000,
       });
 
-      final secondReport = StatsReport('OR01', 'outbound-rtp', 1742886163000.0, {
+      final secondReport =
+          StatsReport('OR01', 'outbound-rtp', 1742886163000.0, {
         'kind': 'video',
         'encoderImplementation': 'libvpx',
         'frameWidth': 1280,
@@ -159,24 +176,26 @@ void main() {
         'framesPerSecond': 30.0,
         'contentType': 'realtime',
         'qualityLimitationReason': 'bandwidth',
-        'totalEncodeTime': 43.0,  // +23.0 from first report, chosen for clean division
+        'totalEncodeTime':
+            43.0, // +23.0 from first report, chosen for clean division
         'pliCount': 3,
         'targetBitrate': 1000000.0,
         'powerEfficientEncoder': true,
-        'framesSent': 1200,  // +200 from first report
-        'framesEncoded': 1200,  // +200 from first report
-        'bytesSent': 600000,  // +100000 from first report
-        'packetsSent': 1000,  // +200 from first report
-        'qpSum': 3000,  // +1000 from first report, still 2.5 average (3000/1200)
+        'framesSent': 1200, // +200 from first report
+        'framesEncoded': 1200, // +200 from first report
+        'bytesSent': 600000, // +100000 from first report
+        'packetsSent': 1000, // +200 from first report
+        'qpSum': 3000, // +1000 from first report, still 2.5 average (3000/1200)
         'nackCount': 15,
         'firCount': 2,
-        'retransmittedBytesSent': 15000,  // +5000 from first report
-        'retransmittedPacketsSent': 30,  // +10 from first report
-        'totalPacketSendDelay': 120.0,  // +40.0 from first report, 120.0ms average with 1000 packets
-        'headerBytesSent': 100000,  // +20000 from first report
+        'retransmittedBytesSent': 15000, // +5000 from first report
+        'retransmittedPacketsSent': 30, // +10 from first report
+        'totalPacketSendDelay':
+            120.0, // +40.0 from first report, 120.0ms average with 1000 packets
+        'headerBytesSent': 100000, // +20000 from first report
         'hugeFramesSent': 1,
         'keyFramesEncoded': 6,
-        'totalEncodedBytesTarget': 720000,  // +120000 from first report
+        'totalEncodedBytesTarget': 720000, // +120000 from first report
       });
 
       // Act
@@ -185,26 +204,34 @@ void main() {
 
       // Assert
       verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoOutboundStats>()
-      // Basic fields
-          .having((s) => s.frameWidth, 'frameWidth', 1280)
-          .having((s) => s.frameHeight, 'frameHeight', 720)
-      // Calculated differences
-          .having((s) => s.encodeTime, 'encodeTime', 23.0) // 43.0 - 20.0 = 23.0
-          .having((s) => s.bytesSentPerSecond, 'bytesSentPerSecond', 100000) // 600000-500000 = 100000 bits
-          .having((s) => s.packetsSentPerSecond, 'packetsSentPerSecond', 200) // 1000-800 = 200
-          .having((s) => s.framesEncodedPerSecond, 'framesEncodedPerSecond', 200) // 1200-1000 = 200
-          .having((s) => s.framesSentPerSecond, 'framesSentPerSecond', 200) // 1200-1000 = 200
-      // Calculated averages (properly divisible for clean results)
-          .having((s) => s.encodeTimeAvgMs, 'encodeTimeAvg', 115.0)
-          .having((s) => s.qpSumAvg, 'qpSumAvg', 5.0)
-          .having((s) => s.packetSendDelayAvgMs, 'packetSendDelayAvg', 200.0)
-      ))).called(1);
+              // Basic fields
+              .having((s) => s.frameWidth, 'frameWidth', 1280)
+              .having((s) => s.frameHeight, 'frameHeight', 720)
+              // Calculated differences
+              .having(
+                  (s) => s.encodeTime, 'encodeTime', 23.0) // 43.0 - 20.0 = 23.0
+              .having((s) => s.bytesSentPerSecond, 'bytesSentPerSecond',
+                  100000) // 600000-500000 = 100000 bits
+              .having((s) => s.packetsSentPerSecond, 'packetsSentPerSecond',
+                  200) // 1000-800 = 200
+              .having((s) => s.framesEncodedPerSecond, 'framesEncodedPerSecond',
+                  200) // 1200-1000 = 200
+              .having((s) => s.framesSentPerSecond, 'framesSentPerSecond',
+                  200) // 1200-1000 = 200
+              // Calculated averages (properly divisible for clean results)
+              .having((s) => s.encodeTimeAvgMs, 'encodeTimeAvg', 115.0)
+              .having((s) => s.qpSumAvg, 'qpSumAvg', 5.0)
+              .having(
+                  (s) => s.packetSendDelayAvgMs, 'packetSendDelayAvg', 200.0))))
+          .called(1);
     });
 
     // New test case to add to the existing rtc_stats_parse_test.dart file
 // This should be added inside the main() group('RtcStatsParser - _onStatsReports', () {...}) function
 
-    test('Should call all subscriber methods when processing different types of reports', () {
+    test(
+        'Should call all subscriber methods when processing different types of reports',
+        () {
       // Arrange
       final videoReport = StatsReport('OR01', 'outbound-rtp', 0, {
         'kind': 'video',
@@ -275,37 +302,50 @@ void main() {
 
       // Verify local candidate updates - should pass a list containing both local candidates
       verify(mockReporter.updateLocalCandidate(argThat(isA<List<StatsReport>>()
-          .having((list) => list.length, 'length', 2)
-          .having((list) => list.any((report) => report.id == 'LC01'), 'contains LC01', true)
-          .having((list) => list.any((report) => report.id == 'LC02'), 'contains LC02', true)))).called(1);
+              .having((list) => list.length, 'length', 2)
+              .having((list) => list.any((report) => report.id == 'LC01'),
+                  'contains LC01', true)
+              .having((list) => list.any((report) => report.id == 'LC02'),
+                  'contains LC02', true))))
+          .called(1);
       verify(mockPresenter.updateLocalCandidate(argThat(isA<List<StatsReport>>()
-          .having((list) => list.length, 'length', 2)
-          .having((list) => list.any((report) => report.id == 'LC01'), 'contains LC01', true)
-          .having((list) => list.any((report) => report.id == 'LC02'), 'contains LC02', true)))).called(1);
+              .having((list) => list.length, 'length', 2)
+              .having((list) => list.any((report) => report.id == 'LC01'),
+                  'contains LC01', true)
+              .having((list) => list.any((report) => report.id == 'LC02'),
+                  'contains LC02', true))))
+          .called(1);
 
       // Verify remote candidate updates
       verify(mockReporter.updateRemoteCandidate(argThat(isA<List<StatsReport>>()
-          .having((list) => list.length, 'length', 1)
-          .having((list) => list.first.id, 'first id', 'RC01')))).called(1);
-      verify(mockPresenter.updateRemoteCandidate(argThat(isA<List<StatsReport>>()
-          .having((list) => list.length, 'length', 1)
-          .having((list) => list.first.id, 'first id', 'RC01')))).called(1);
+              .having((list) => list.length, 'length', 1)
+              .having((list) => list.first.id, 'first id', 'RC01'))))
+          .called(1);
+      verify(mockPresenter.updateRemoteCandidate(argThat(
+              isA<List<StatsReport>>()
+                  .having((list) => list.length, 'length', 1)
+                  .having((list) => list.first.id, 'first id', 'RC01'))))
+          .called(1);
 
       // Verify candidate pair updates
       verify(mockReporter.updateCandidatePairStats(argThat(isA<StatsReport>()
-          .having((r) => r.id, 'id', 'CP01')
-          .having((r) => r.type, 'type', 'candidate-pair')))).called(1);
+              .having((r) => r.id, 'id', 'CP01')
+              .having((r) => r.type, 'type', 'candidate-pair'))))
+          .called(1);
       verify(mockPresenter.updateCandidatePairStats(argThat(isA<StatsReport>()
-          .having((r) => r.id, 'id', 'CP01')
-          .having((r) => r.type, 'type', 'candidate-pair')))).called(1);
+              .having((r) => r.id, 'id', 'CP01')
+              .having((r) => r.type, 'type', 'candidate-pair'))))
+          .called(1);
 
       // Verify codec stats updates
       verify(mockReporter.updateCodecStats(argThat(isA<StatsReport>()
-          .having((r) => r.id, 'id', 'CD01')
-          .having((r) => r.type, 'type', 'codec')))).called(1);
+              .having((r) => r.id, 'id', 'CD01')
+              .having((r) => r.type, 'type', 'codec'))))
+          .called(1);
       verify(mockPresenter.updateCodecStats(argThat(isA<StatsReport>()
-          .having((r) => r.id, 'id', 'CD01')
-          .having((r) => r.type, 'type', 'codec')))).called(1);
+              .having((r) => r.id, 'id', 'CD01')
+              .having((r) => r.type, 'type', 'codec'))))
+          .called(1);
     });
   });
 }

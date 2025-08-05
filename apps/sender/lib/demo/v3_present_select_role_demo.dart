@@ -126,7 +126,9 @@ class RoleButton extends StatelessWidget {
             SizedBox(
                 width: iconSize.width,
                 height: iconSize.height,
-                child: ExcludeSemantics(child: SvgPicture.asset(iconPath),)),
+                child: ExcludeSemantics(
+                  child: SvgPicture.asset(iconPath),
+                )),
             const SizedBox(height: 16),
             V3AutoHyphenatingText(
               name,

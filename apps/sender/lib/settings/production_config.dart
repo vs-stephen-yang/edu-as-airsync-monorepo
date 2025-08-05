@@ -33,7 +33,8 @@ class ProductionConfig implements ConfigSettings {
   String appStoreUrl = 'https://www.airsync.net/download';
 
   @override
-  String appUpdateMacAppcastUrl = 'https://appconfig.airsync.net/airsync-sender/mac_appcast.xml';
+  String appUpdateMacAppcastUrl =
+      'https://appconfig.airsync.net/airsync-sender/mac_appcast.xml';
 
   @override
   bool appA11yDebug = false;

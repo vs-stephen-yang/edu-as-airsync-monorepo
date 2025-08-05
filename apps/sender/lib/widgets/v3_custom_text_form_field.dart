@@ -105,7 +105,7 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
             width: 16,
             height: 16,
             child:
-            SvgPicture.asset('assets/images/v3_ic_display_code_error.svg'),
+                SvgPicture.asset('assets/images/v3_ic_display_code_error.svg'),
           ),
           const Gap(4),
           SizedBox(
