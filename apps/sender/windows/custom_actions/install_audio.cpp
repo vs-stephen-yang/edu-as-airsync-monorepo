@@ -21,6 +21,8 @@ using Microsoft::WRL::ComPtr;
 static const int kRestoreAfterInstallDelayMs = 2 * 1000;
 
 static bool RunCmd(const std::wstring& cmdPath, const std::wstring& args);
+
+static bool DevconUpdate(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid);
 static bool DevconInstall(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid);
 static bool DevconRemove(const std::wstring& devconPath, const std::wstring& hwid);
 
@@ -61,9 +63,12 @@ bool InstallAudioDevice(const std::wstring& devconPath, const std::wstring& infP
     LOG() << L"Original default audio device [Role " << role << "]:" << originalDeviceIds[role];
   }
 
-  // Step 2: Install virtual audio driver
-  if (!DevconInstall(devconPath, infPath, hwid)) {
-    LOG() << L"Installing audio driver failed.";
+  // Step 2: Try to update virtual audio driver
+  if (!DevconUpdate(devconPath, infPath, hwid)) {
+    // If update fails (device missing), tries to install.
+    if (!DevconInstall(devconPath, infPath, hwid)) {
+      LOG() << L"Installing audio driver failed.";
+    }
   }
 
   // Step 3: Restore defaults for all roles
@@ -99,8 +104,20 @@ bool UninstallAudioDevice(const std::wstring& devconPath, const std::wstring& hw
   return DevconRemove(devconPath, hwid);
 }
 
+static bool DevconUpdate(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid) {
+  // devcon update airsyncaudio.inf Root\AirSyncAudio
+  // Looks for existing devices in the system that match the provided hardware ID.
+  // If found, updates their drivers using the given .inf.
+  // Does not create new devices — if no existing device is found, nothing happens.
+  std::wstring args = L"update \"" + infPath + L"\" \"" + hwid + L"\"";
+
+  return RunCmd(devconPath, args);
+}
+
 static bool DevconInstall(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid) {
   // devcon install airsyncaudio.inf Root\AirSyncAudio
+  // Creates a new device instance for the given hardware ID, regardless of whether one already exists.
+  // If a device with the same HWID already exists, you end up with two instances of the same device in Device Manager.
   std::wstring args = L"install \"" + infPath + L"\" \"" + hwid + L"\"";
 
   return RunCmd(devconPath, args);
@@ -143,6 +160,8 @@ bool RunCmd(const std::wstring& cmdPath, const std::wstring& args) {
 
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
+
+  LOG() << L"Exit code: " << exitCode;
 
   return (exitCode == 0);
 }
