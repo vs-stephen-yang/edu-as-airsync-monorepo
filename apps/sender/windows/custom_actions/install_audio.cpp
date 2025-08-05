@@ -7,6 +7,7 @@
 #include <setupapi.h>
 #include <windows.h>
 #include <wrl/client.h>
+#include <array>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -17,8 +18,11 @@
 #pragma comment(lib, "newdev.lib")
 
 using Microsoft::WRL::ComPtr;
+using DeviceIdArray = std::array<std::wstring, ERole_enum_count>;
 
 static const int kRestoreAfterInstallDelayMs = 2 * 1000;
+static const int kRestoreRetryDelayMs = 1 * 1000;
+static const int kRestoreRetryAttemps = 5;
 static const int kProcessWaitTimeoutMs = 30 * 1000;
 
 static bool RunCmd(const std::wstring& cmdPath, const std::wstring& args);
@@ -26,6 +30,27 @@ static bool RunCmd(const std::wstring& cmdPath, const std::wstring& args);
 static bool DevconUpdate(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid);
 static bool DevconInstall(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid);
 static bool DevconRemove(const std::wstring& devconPath, const std::wstring& hwid);
+
+static void RestoreDefaultAudioDevice(
+    ComPtr<IPolicyConfigVista> policyConfig,
+    const DeviceIdArray& originalDeviceIds);
+
+static bool TryRestoreDefaultAudioDevice(
+    ComPtr<IPolicyConfigVista> policyConfig,
+    const DeviceIdArray& originalDeviceIds);
+
+static bool IsDefaultAudioRestored(const DeviceIdArray& original);
+
+static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role);
+
+static DeviceIdArray GetDefaultAudioDeviceIds(EDataFlow dataFlow) {
+  DeviceIdArray deviceIds;
+
+  for (int role = eConsole; role < ERole_enum_count; ++role) {
+    deviceIds[role] = GetDefaultAudioDeviceId(dataFlow, static_cast<ERole>(role));
+  }
+  return deviceIds;
+}
 
 // Helper to get current default audio device ID
 static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role) {
@@ -55,13 +80,51 @@ static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role) {
   return std::wstring(deviceId);
 }
 
+static bool TryRestoreDefaultAudioDevice(
+    ComPtr<IPolicyConfigVista> policyConfig,
+    const DeviceIdArray& originalDeviceIds) {
+  for (int attempt = 0; attempt < kRestoreRetryAttemps; ++attempt) {
+    RestoreDefaultAudioDevice(policyConfig, originalDeviceIds);
+
+    if (IsDefaultAudioRestored(originalDeviceIds)) {
+      return true;
+    }
+
+    Sleep(kRestoreRetryDelayMs);
+  }
+
+  LOG() << L"Failed to restore defaults after " << kRestoreRetryAttemps << L" attempts.";
+
+  return false;
+}
+
+static void RestoreDefaultAudioDevice(
+    ComPtr<IPolicyConfigVista> policyConfig,
+    const DeviceIdArray& originalDeviceIds) {
+  for (int role = eConsole; role < ERole_enum_count; ++role) {
+    if (!originalDeviceIds[role].empty()) {
+      LOG() << L"Restoring default audio device [Role " << role << "] to " << originalDeviceIds[role];
+
+      HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), static_cast<ERole>(role));
+
+      if (FAILED(hr)) {
+        LOG() << L"SetDefaultEndpoint failed: " << hr;
+      }
+    }
+  }
+}
+
+static bool IsDefaultAudioRestored(const DeviceIdArray& original) {
+  DeviceIdArray current = GetDefaultAudioDeviceIds(eRender);
+
+  return current == original;
+}
+
 bool InstallAudioDevice(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid) {
   try {
     // Step 1: Get current default audio device
-    std::wstring originalDeviceIds[ERole_enum_count];
-
+    const DeviceIdArray originalDeviceIds = GetDefaultAudioDeviceIds(eRender);
     for (int role = eConsole; role < ERole_enum_count; ++role) {
-      originalDeviceIds[role] = GetDefaultAudioDeviceId(eRender, static_cast<ERole>(role));
       LOG() << L"Original default audio device [Role " << role << "]:" << originalDeviceIds[role];
     }
 
@@ -87,19 +150,8 @@ bool InstallAudioDevice(const std::wstring& devconPath, const std::wstring& infP
     // Give Windows enough time to finish registering the new device before switching defaults back.
     Sleep(kRestoreAfterInstallDelayMs);
 
-    for (int role = eConsole; role < ERole_enum_count; ++role) {
-      if (!originalDeviceIds[role].empty()) {
-        LOG() << L"Restoring default audio device [Role " << role << "] to " << originalDeviceIds[role];
+    return TryRestoreDefaultAudioDevice(policyConfig, originalDeviceIds);
 
-        HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), static_cast<ERole>(role));
-
-        if (FAILED(hr)) {
-          LOG() << L"SetDefaultEndpoint failed: " << hr;
-        }
-      }
-    }
-
-    return true;
   } catch (const std::runtime_error& e) {
     LOG() << "Exception occurred in InstallAudioDevice: " << e.what();
     return false;
