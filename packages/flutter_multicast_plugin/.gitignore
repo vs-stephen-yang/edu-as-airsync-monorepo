@@ -31,5 +31,6 @@ migrate_working_dir/
 .flutter-plugins
 .flutter-plugins-dependencies
 build/
-
+build-arm64/
+build-x86_64/
 android/src/main/java/org/freedesktop/
