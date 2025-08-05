@@ -18,10 +18,17 @@
 #pragma comment(lib, "newdev.lib")
 
 using Microsoft::WRL::ComPtr;
-using DeviceIdArray = std::array<std::wstring, ERole_enum_count>;
+
+using AudioDeviceIds = std::array<
+    std::array<std::wstring, ERole_enum_count>,
+    EDataFlow_enum_count>;
 
 constexpr std::array<ERole, ERole_enum_count> AllRoles() {
   return {eConsole, eMultimedia, eCommunications};
+}
+
+constexpr std::array<EDataFlow, 2> AllFlows() {
+  return {eRender, eCapture};
 }
 
 static const int kRestoreAfterInstallDelayMs = 2 * 1000;
@@ -35,24 +42,31 @@ static bool DevconUpdate(const std::wstring& devconPath, const std::wstring& inf
 static bool DevconInstall(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid);
 static bool DevconRemove(const std::wstring& devconPath, const std::wstring& hwid);
 
+const wchar_t* EDataFlowName(EDataFlow flow) {
+  return (flow == eRender ? L"output" : L"input");
+}
+
 static void RestoreDefaultAudioDevice(
     ComPtr<IPolicyConfigVista> policyConfig,
-    const DeviceIdArray& originalDeviceIds);
+    const AudioDeviceIds& originalDeviceIds);
 
 static bool TryRestoreDefaultAudioDevice(
     ComPtr<IPolicyConfigVista> policyConfig,
-    const DeviceIdArray& originalDeviceIds);
+    const AudioDeviceIds& originalDeviceIds);
 
-static bool IsDefaultAudioRestored(const DeviceIdArray& original);
+static bool IsDefaultAudioRestored(const AudioDeviceIds& original);
 
 static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role);
 
-static DeviceIdArray GetDefaultAudioDeviceIds(EDataFlow dataFlow) {
-  DeviceIdArray deviceIds;
+static AudioDeviceIds GetDefaultAudioDeviceIds() {
+  AudioDeviceIds deviceIds;
 
-  for (auto role : AllRoles()) {
-    deviceIds[role] = GetDefaultAudioDeviceId(dataFlow, role);
+  for (auto flow : AllFlows()) {
+    for (auto role : AllRoles()) {
+      deviceIds[flow][role] = GetDefaultAudioDeviceId(flow, role);
+    }
   }
+
   return deviceIds;
 }
 
@@ -86,8 +100,11 @@ static std::wstring GetDefaultAudioDeviceId(EDataFlow dataFlow, ERole role) {
 
 static bool TryRestoreDefaultAudioDevice(
     ComPtr<IPolicyConfigVista> policyConfig,
-    const DeviceIdArray& originalDeviceIds) {
+    const AudioDeviceIds& originalDeviceIds) {
   for (int attempt = 0; attempt < kRestoreRetryAttemps; ++attempt) {
+    LOG() << L"Attempt " << (attempt + 1) << L" of " << kRestoreRetryAttemps
+          << L" to restore default audio devices.";
+
     RestoreDefaultAudioDevice(policyConfig, originalDeviceIds);
 
     if (IsDefaultAudioRestored(originalDeviceIds)) {
@@ -104,22 +121,24 @@ static bool TryRestoreDefaultAudioDevice(
 
 static void RestoreDefaultAudioDevice(
     ComPtr<IPolicyConfigVista> policyConfig,
-    const DeviceIdArray& originalDeviceIds) {
-  for (auto role : AllRoles()) {
-    if (!originalDeviceIds[role].empty()) {
-      LOG() << L"Restoring default audio device [Role " << role << "] to " << originalDeviceIds[role];
+    const AudioDeviceIds& originalDeviceIds) {
+  for (auto flow : AllFlows()) {
+    for (auto role : AllRoles()) {
+      const auto& id = originalDeviceIds[flow][role];
+      if (!id.empty()) {
+        LOG() << "Restoring default audio " << EDataFlowName(flow) << L" [Role " << role << L"] to " << id;
 
-      HRESULT hr = policyConfig->SetDefaultEndpoint(originalDeviceIds[role].c_str(), role);
-
-      if (FAILED(hr)) {
-        LOG() << L"SetDefaultEndpoint failed: " << hr;
+        HRESULT hr = policyConfig->SetDefaultEndpoint(id.c_str(), role);
+        if (FAILED(hr)) {
+          LOG() << L"SetDefaultEndpoint failed: " << hr;
+        }
       }
     }
   }
 }
 
-static bool IsDefaultAudioRestored(const DeviceIdArray& original) {
-  DeviceIdArray current = GetDefaultAudioDeviceIds(eRender);
+static bool IsDefaultAudioRestored(const AudioDeviceIds& original) {
+  AudioDeviceIds current = GetDefaultAudioDeviceIds();
 
   return current == original;
 }
@@ -127,9 +146,11 @@ static bool IsDefaultAudioRestored(const DeviceIdArray& original) {
 bool InstallAudioDevice(const std::wstring& devconPath, const std::wstring& infPath, const std::wstring& hwid) {
   try {
     // Step 1: Get current default audio device
-    const DeviceIdArray originalDeviceIds = GetDefaultAudioDeviceIds(eRender);
-    for (auto role : AllRoles()) {
-      LOG() << L"Original default audio device [Role " << role << "]:" << originalDeviceIds[role];
+    const AudioDeviceIds originalDeviceIds = GetDefaultAudioDeviceIds();
+    for (auto flow : AllFlows()) {
+      for (auto role : AllRoles()) {
+        LOG() << L"Default audio " << EDataFlowName(flow) << " device [Role " << role << "]:" << originalDeviceIds[flow][role];
+      }
     }
 
     // Step 2: Try to update virtual audio driver
