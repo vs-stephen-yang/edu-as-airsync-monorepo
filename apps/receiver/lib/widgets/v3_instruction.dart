@@ -323,7 +323,6 @@ class V3Instruction extends StatelessWidget {
     );
   }
 
-
   TextSpan _buildTextSpan(
       {required String fullText,
       required List<String> formatTexts,

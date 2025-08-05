@@ -61,7 +61,8 @@ void main() {
       verify(mockPresenter
           .updateLocalCandidate([localCandidate1, localCandidate2])).called(1);
       verify(mockPresenter
-          .updateRemoteCandidate([remoteCandidate1, remoteCandidate2])).called(1);
+              .updateRemoteCandidate([remoteCandidate1, remoteCandidate2]))
+          .called(1);
       verify(mockPresenter.updateCandidatePairStats(candidatePair1)).called(1);
       verify(mockPresenter.updateCandidatePairStats(candidatePair2)).called(1);
     });
@@ -134,8 +135,7 @@ void main() {
               .having((s) => s.jitter, 'jitter', 5.2))))
           .called(1);
 
-      verify(mockPresenter.updateVideoStats(argThat(isA<
-                  RtcVideoInboundStats>()
+      verify(mockPresenter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
               .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
@@ -262,8 +262,7 @@ void main() {
               .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
               .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
           .called(1);
-      verify(mockPresenter.updateVideoStats(argThat(isA<
-                  RtcVideoInboundStats>()
+      verify(mockPresenter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
               // Per-second differentials
               .having((s) => s.packetsReceivedPerSecond,
                   'packetsReceivedPerSecond', 50)

@@ -126,27 +126,24 @@ class V3ShortcutsMenu extends StatelessWidget {
                                         }
 
                                         trackEvent(
-                                              'click_cast_to_device',
-                                              EventCategory.quickMenu,
-                                              target: channelProvider
-                                                  .isSenderMode
-                                                  ? 'on'
-                                                  : 'off',
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    }),
+                                          'click_cast_to_device',
+                                          EventCategory.quickMenu,
+                                          target: channelProvider.isSenderMode
+                                              ? 'on'
+                                              : 'off',
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
                               ],
                             ),
                           ),
                           SizedBox(
                               height:
-                              context.tokens.spacing.vsdslSpacingSm.top),
+                                  context.tokens.spacing.vsdslSpacingSm.top),
                           AutoSizeText(
-                            S
-                                .of(context)
-                                .v3_shortcuts_cast_device_desc,
+                            S.of(context).v3_shortcuts_cast_device_desc,
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w400,
@@ -160,7 +157,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                             child: Container(
                               height: 1,
                               color:
-                              context.tokens.color.vsdslColorOutlineVariant,
+                                  context.tokens.color.vsdslColorOutlineVariant,
                             ),
                           ),
                           Consumer<MirrorStateProvider>(
@@ -169,9 +166,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AutoSizeText(
-                                    S
-                                        .of(context)
-                                        .v3_shortcuts_mirroring,
+                                    S.of(context).v3_shortcuts_mirroring,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
@@ -184,10 +179,10 @@ class V3ShortcutsMenu extends StatelessWidget {
                                         .of(context)
                                         .v3_lbl_streaming_shortcut_airplay_toggle,
                                     identifier:
-                                    'v3_qa_streaming_shortcut_airplay_toggle',
+                                        'v3_qa_streaming_shortcut_airplay_toggle',
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(
@@ -196,9 +191,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                                             left: 13,
                                           ),
                                           child: AutoSizeText(
-                                            S
-                                                .of(context)
-                                                .v3_shortcuts_airplay,
+                                            S.of(context).v3_shortcuts_airplay,
                                             style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,

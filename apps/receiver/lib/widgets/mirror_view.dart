@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MirrorView extends StatefulWidget {
-  const MirrorView({super.key, required this.mirrorRequest, this.screenWidth = 0.0, this.screenHeight = 0.0, this.displaySmartScalingEnabled = false});
+  const MirrorView({
+    super.key,
+    required this.mirrorRequest,
+    this.screenWidth = 0.0,
+    this.screenHeight = 0.0,
+    this.displaySmartScalingEnabled = false,
+  });
 
   final MirrorRequest mirrorRequest;
   final double screenWidth;

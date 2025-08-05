@@ -339,7 +339,9 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                         removeOverlay();
                         onConfirm?.call();
                       },
-                      child: V3AutoHyphenatingText(S.of(context).v3_moderator_disable_mirror_ok),
+                      child: V3AutoHyphenatingText(
+                        S.of(context).v3_moderator_disable_mirror_ok,
+                      ),
                     ),
                   ),
                 ],

@@ -13,8 +13,8 @@ void main() {
       expect(getDisplayCodeVisualIdentity('12345'), '12345');
     });
 
-    test(
-        'should format code with spaces every 4 characters when length > 5', () {
+    test('should format code with spaces every 4 characters when length > 5',
+        () {
       // Test 6 characters
       expect(getDisplayCodeVisualIdentity('123456'), '1234 56');
 

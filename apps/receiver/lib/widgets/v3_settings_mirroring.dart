@@ -149,8 +149,8 @@ class V3SettingsMirroring extends StatelessWidget {
                       label: S.of(context).v3_lbl_shortcuts_miracast,
                       identifier: 'v3_qa_shortcuts_miracast',
                       excludeSemantics: false,
-                      isDisable:
-                          disable || mirrorStateProvider.isSpecifiedModuleAndDFSChannel,
+                      isDisable: disable ||
+                          mirrorStateProvider.isSpecifiedModuleAndDFSChannel,
                       name: S.of(context).v3_shortcuts_miracast,
                       mirrorEnabled: mirrorStateProvider.miracastEnabled &&
                           !mirrorStateProvider.isSpecifiedModuleAndDFSChannel,

@@ -47,7 +47,6 @@ class UserTimer {
 }
 
 class UserTimerManager {
-
   final Map<String, UserTimer> _userTimers = {};
   String? _currentDisplayTimerId;
 

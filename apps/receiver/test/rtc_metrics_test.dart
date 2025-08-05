@@ -17,7 +17,6 @@ void main() {
     expect(actual.zeros, 0);
   });
 
-
   test('Aggregate metric for the dataset with null and zeros', () {
     // arrange
     final data = List<int?>.generate(100, (index) => index + 1);
@@ -34,7 +33,7 @@ void main() {
     expect(actual.zeros, 4);
   });
 
-    test('Aggregate metric for the empty dataset', () {
+  test('Aggregate metric for the empty dataset', () {
     // arrange
     final data = <int?>[];
 

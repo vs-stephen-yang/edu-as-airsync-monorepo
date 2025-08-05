@@ -25,7 +25,8 @@ abstract class RtcStatsSubscriber {
   void updateRemoteCandidate(List<StatsReport> reports);
   void updateCandidatePairStats(StatsReport report);
   void updateCodecStats(StatsReport report);
-  void pairCandidates(StatsReport localCandidateReport, StatsReport remoteCandidateReport);
+  void pairCandidates(
+      StatsReport localCandidateReport, StatsReport remoteCandidateReport);
   void selectedCandidatePair(StatsReport selectedCandidatePair);
 }
 
@@ -86,10 +87,11 @@ class RtcStatsParser {
         final remoteCandidateId =
             selectedCandidatePair.values['remoteCandidateId'];
 
-        publishPairCandidates(localCandidates.firstWhere(
+        publishPairCandidates(
+            localCandidates.firstWhere(
                 (StatsReport report) => report.id == localCandidateId),
             remoteCandidates.firstWhere(
-                    (StatsReport report) => report.id == remoteCandidateId));
+                (StatsReport report) => report.id == remoteCandidateId));
 
         publishSelectedCandidatePair(selectedCandidatePair);
       }
@@ -140,7 +142,8 @@ class RtcStatsParser {
     final packetsLost = videoInboundRtp.values['packetsLost'];
     final jitter = videoInboundRtp.values['jitter'];
     final pauseCount = videoInboundRtp.values['pauseCount'];
-    final powerEfficientDecoder = videoInboundRtp.values['powerEfficientDecoder'];
+    final powerEfficientDecoder =
+        videoInboundRtp.values['powerEfficientDecoder'];
     final nackCount = videoInboundRtp.values['nackCount'];
     final firCount = videoInboundRtp.values['firCount'];
     final pliCount = videoInboundRtp.values['pliCount'];
@@ -149,9 +152,11 @@ class RtcStatsParser {
     final totalPausesDuration = videoInboundRtp.values['totalPausesDuration'];
     final totalProcessingDelay = videoInboundRtp.values['totalProcessingDelay'];
     final totalAssemblyTime = videoInboundRtp.values['totalAssemblyTime'];
-    final framesAssembledFromMultiplePackets = videoInboundRtp.values['framesAssembledFromMultiplePackets'];
+    final framesAssembledFromMultiplePackets =
+        videoInboundRtp.values['framesAssembledFromMultiplePackets'];
     final totalInterFrameDelay = videoInboundRtp.values['totalInterFrameDelay'];
-    final totalSquaredInterFrameDelay = videoInboundRtp.values['totalSquaredInterFrameDelay'];
+    final totalSquaredInterFrameDelay =
+        videoInboundRtp.values['totalSquaredInterFrameDelay'];
     final qpSum = videoInboundRtp.values['qpSum'];
 
     int? framesReceivedPerSecond;
@@ -168,16 +173,23 @@ class RtcStatsParser {
     double? jitterBufferDelayAvg;
     double? decodeTimeAvg;
 
-
     if (_previousVideoInboundStats != null) {
-      framesReceivedPerSecond = _diff(framesReceived, _previousVideoInboundStats!.framesReceived);
-      framesDecodedPerSecond = _diff(framesDecoded, _previousVideoInboundStats!.framesDecoded);
-      framesDroppedPerSecond = _diff(framesDropped, _previousVideoInboundStats!.framesDropped);
-      bytesPerSecond = _diff(bytesReceived, _previousVideoInboundStats!.bytesReceived);
-      interFrameDelayPerSecond = _diff(totalSquaredInterFrameDelay?.toDouble(), _previousVideoInboundStats!.totalSquaredInterFrameDelay?.toDouble());
-      keyFramesDecodedPerSecond = _diff(keyFramesDecoded?.toDouble(), _previousVideoInboundStats!.keyFramesDecoded?.toDouble());
-      headerBytesPerSecond = _diff(headerBytesReceived?.toDouble(), _previousVideoInboundStats!.headerBytesReceived?.toDouble());
-      packetsReceivedPerSecond = _diff(packetsReceived?.toDouble(), _previousVideoInboundStats!.packetsReceived?.toDouble());
+      framesReceivedPerSecond =
+          _diff(framesReceived, _previousVideoInboundStats!.framesReceived);
+      framesDecodedPerSecond =
+          _diff(framesDecoded, _previousVideoInboundStats!.framesDecoded);
+      framesDroppedPerSecond =
+          _diff(framesDropped, _previousVideoInboundStats!.framesDropped);
+      bytesPerSecond =
+          _diff(bytesReceived, _previousVideoInboundStats!.bytesReceived);
+      interFrameDelayPerSecond = _diff(totalSquaredInterFrameDelay?.toDouble(),
+          _previousVideoInboundStats!.totalSquaredInterFrameDelay?.toDouble());
+      keyFramesDecodedPerSecond = _diff(keyFramesDecoded?.toDouble(),
+          _previousVideoInboundStats!.keyFramesDecoded?.toDouble());
+      headerBytesPerSecond = _diff(headerBytesReceived?.toDouble(),
+          _previousVideoInboundStats!.headerBytesReceived?.toDouble());
+      packetsReceivedPerSecond = _diff(packetsReceived?.toDouble(),
+          _previousVideoInboundStats!.packetsReceived?.toDouble());
 
       qpSumAvg = _avg(
         qpSum,
@@ -187,10 +199,10 @@ class RtcStatsParser {
       );
 
       totalAssemblyTimeAvg = _avg(
-          totalAssemblyTime,
-          _previousVideoInboundStats!.totalAssemblyTime,
-          framesAssembledFromMultiplePackets,
-          _previousVideoInboundStats!.framesAssembledFromMultiplePackets
+        totalAssemblyTime,
+        _previousVideoInboundStats!.totalAssemblyTime,
+        framesAssembledFromMultiplePackets,
+        _previousVideoInboundStats!.framesAssembledFromMultiplePackets,
       );
 
       totalInterFrameDelayAvg = _avg(
@@ -269,7 +281,8 @@ class RtcStatsParser {
   }
 
   StatsReport? getOneTimeVideoInboundStats(List<StatsReport> reports) {
-    final inboundRtps = reports.where((StatsReport report) => report.type == 'inbound-rtp');
+    final inboundRtps =
+        reports.where((StatsReport report) => report.type == 'inbound-rtp');
     if (inboundRtps.isEmpty) return null;
 
     for (final report in inboundRtps) {
@@ -282,7 +295,6 @@ class RtcStatsParser {
   void addSubscriber(RtcStatsSubscriber s) {
     _subscribers.add(s);
   }
-
 
   void publishRtcVideoOutboundStats(RtcVideoInboundStats stats) {
     for (final subscriber in _subscribers) {
@@ -320,7 +332,8 @@ class RtcStatsParser {
     }
   }
 
-  void publishPairCandidates(StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
+  void publishPairCandidates(
+      StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
     for (final subscriber in _subscribers) {
       subscriber.pairCandidates(localCandidateReport, remoteCandidateReport);
     }

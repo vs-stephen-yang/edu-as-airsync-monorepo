@@ -84,7 +84,8 @@ class MulticastPresenter {
       return false;
     }
 
-    log.info('Start multicast with config: videoPort: $videoPort, audioPort: $audioPort, ssrc: $ssrc, keyString: $keyString');
+    log.info(
+        'Start multicast with config: videoPort: $videoPort, audioPort: $audioPort, ssrc: $ssrc, keyString: $keyString');
     await FlutterMulticastPlugin.startCapture();
     started = true;
     return true;

@@ -35,7 +35,6 @@ class DisplayGroupMember {
   }
 
   void newChannel() {
-
     final clientId = const Uuid().v4();
 
     _channel = DisplayChannelClient(
