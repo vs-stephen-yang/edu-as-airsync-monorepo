@@ -103,7 +103,7 @@ set(INSTALL_BUNDLE_DRIVERS_DIR "${CMAKE_INSTALL_PREFIX}/drivers")
 
 if(flutter_virtual_display_bundled_drivers)
   install(FILES "${flutter_virtual_display_bundled_drivers}"
-    DESTINATION "${INSTALL_BUNDLE_DRIVERS_DIR}"
+    DESTINATION "${INSTALL_BUNDLE_DRIVERS_DIR}/indirect_display"
     COMPONENT Runtime)
 endif()
 
