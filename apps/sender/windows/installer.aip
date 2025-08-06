@@ -747,8 +747,8 @@
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
     <ROW Action="InstallAudioDriverNode" Condition="( NOT Installed )" Sequence="6402"/>
     <ROW Action="AI_DATA_SETTER" Condition="( NOT Installed )" Sequence="6401"/>
-    <ROW Action="RemoveAudioDriverNode" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="3602"/>
-    <ROW Action="AI_DATA_SETTER_1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="3601"/>
+    <ROW Action="RemoveAudioDriverNode" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1602"/>
+    <ROW Action="AI_DATA_SETTER_1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1601"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="746"/>
