@@ -46,21 +46,8 @@ Pod::Spec.new do |s|
   log_level = ENV['LOG_LEVEL'] || 'LOG_LEVEL_WARN'
   s.pod_target_xcconfig = {
     'HEADER_SEARCH_PATHS' => "$(inherited) $(PODS_TARGET_SRCROOT)/../native_libs/common $(PODS_TARGET_SRCROOT)/../native_libs/uvgrtp/include $(PODS_TARGET_SRCROOT)/gstreamer-headers",
-    'OTHER_LDFLAGS' => '$(inherited) -framework VideoToolbox -framework AudioToolbox -framework CoreVideo -framework CoreMedia -Wl,-rpath,@loader_path/../Resources -L$(PODS_TARGET_SRCROOT)/macos/gstreamer-dylibs/',
-    'LD_RUNPATH_SEARCH_PATHS' => [
-      '$(inherited)',
-      '@executable_path/../Resources/gstreamer-frameworks/lib',
-      '@executable_path/../Resources/gstreamer-frameworks/gstreamer-1.0'
-    ].join(' '),
+    'OTHER_LDFLAGS' => '$(inherited) -Wl,-rpath,@loader_path/../Resources',
     'OTHER_CFLAGS' => "-DLOG_LEVEL=LOG_LEVEL_WARN",
     'DEFINES_MODULE' => 'YES'
-  }
-
-  s.user_target_xcconfig = {
-    'LD_RUNPATH_SEARCH_PATHS' => [
-      '$(inherited)',
-      '@executable_path/../Resources/gstreamer-frameworks/lib',
-      '@executable_path/../Resources/gstreamer-frameworks/gstreamer-1.0'
-    ].join(' ')
   }
 end
