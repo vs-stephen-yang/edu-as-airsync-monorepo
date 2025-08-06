@@ -258,5 +258,7 @@
   "v3_exit_action_exit": "Exit",
   "v3_lbl_exit_action_cancel": "Cancel",
   "v3_lbl_exit_action_exit": "Exit",
-  "v3_main_present_or": "or"
+  "v3_main_present_or": "or",
+  "v3_main_knowledge_base": "Knowledge Base",
+  "v3_lbl_main_knowledge_base": "Knowledge Base"
 }

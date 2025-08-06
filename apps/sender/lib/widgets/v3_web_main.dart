@@ -294,7 +294,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
           identifier: 'v3_qa_${entry.key}',
           selected: (entry.key == prefLanguageProvider.language),
           excludeSemantics: true,
-          child: V3AutoHyphenatingText(
+          child: Text(
             entry.key,
             style: TextStyle(
               fontSize: 14,
