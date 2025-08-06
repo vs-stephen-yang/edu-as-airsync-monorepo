@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -213,10 +215,10 @@ class _MyAppState extends State<MyApp>
       name: "display-1",
       security: AirplaySecurity.none,
       airPlayResolutionMap: {
-        "iPad":     {"width": 2560, "height": 1440},
-        "iPhone":   {"width": 1242, "height": 2688},
-        "Mac":      {"width": 2276, "height": 1280},
-        "unknown":  {"width": 1920, "height": 1080},
+        "iPad": {"width": 2560, "height": 1440},
+        "iPhone": {"width": 1242, "height": 2688},
+        "Mac": {"width": 2276, "height": 1280},
+        "unknown": {"width": 1920, "height": 1080},
       },
     ));
 
