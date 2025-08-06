@@ -24,6 +24,7 @@ class MultiWindowProvider extends ChangeNotifier {
 
   Future<void> _init() async {
     _deviceModel = await DeviceInfoVs.deviceType ?? '';
+    notifyListeners();
     try {
       final resolution =
           await _channel.invokeMethod("getRealScreenResolution") as Map?;
@@ -48,14 +49,26 @@ class MultiWindowProvider extends ChangeNotifier {
     // 轉成pixel計算比例
     final appWidth = appSize.width *
         PlatformDispatcher.instance.views.first.devicePixelRatio;
+    final appHeight = appSize.height *
+        PlatformDispatcher.instance.views.first.devicePixelRatio;
     final ratio = double.parse(
       (appWidth / _realScreenSize.width).toStringAsFixed(2),
     );
-    debugPrint('SplitScreenRatio $ratio');
+
+    final fullHeight = appHeight == _realScreenSize.height;
     return switch (ratio) {
-      < 0.5 => SplitScreenRatio.oneThird,
-      >= 0.5 && < 0.65 => SplitScreenRatio.half,
-      >= 0.65 => SplitScreenRatio.twoThirds,
+      < 0.33 => SplitScreenRatio.launcher,
+      >= 0.33 && < 0.416667 => fullHeight
+          ? SplitScreenRatio.floatingDefault
+          : SplitScreenRatio.launcher,
+      >= 0.416667 && < 0.5 => fullHeight
+          ? SplitScreenRatio.oneThird
+          : SplitScreenRatio.floatingDefault,
+      >= 0.5 && < 0.65 =>
+        fullHeight ? SplitScreenRatio.half : SplitScreenRatio.floatingDefault,
+      >= 0.65 => fullHeight
+          ? SplitScreenRatio.twoThirds
+          : SplitScreenRatio.floatingDefault,
       _ => SplitScreenRatio.none
     };
   }
@@ -80,6 +93,7 @@ class MultiWindowProvider extends ChangeNotifier {
   bool _isFloatingIFPModel(String deviceModel) {
     final unsupportedModels = [
       'IFP105',
+      'IFP51',
       'IFP92',
     ];
     // 轉成大寫後比較以防大小寫錯誤
@@ -88,19 +102,47 @@ class MultiWindowProvider extends ChangeNotifier {
   }
 }
 
-enum SplitScreenRatio { half, oneThird, twoThirds, none }
+enum SplitScreenRatio {
+  half,
+  launcher,
+  oneThird,
+  floatingDefault,
+  twoThirds,
+  none,
+}
 
 extension SplitScreenRatioExt on SplitScreenRatio {
   String get label {
     switch (this) {
+      case SplitScreenRatio.launcher:
+        return "420/1920";
       case SplitScreenRatio.half:
         return "1/2";
+      case SplitScreenRatio.floatingDefault:
+        return "800/1920";
       case SplitScreenRatio.oneThird:
         return "1/3";
       case SplitScreenRatio.twoThirds:
         return "2/3";
       case SplitScreenRatio.none:
         return "None";
+    }
+  }
+
+  double get widthFraction {
+    switch (this) {
+      case SplitScreenRatio.launcher:
+        return 0.21875; // 420/1920
+      case SplitScreenRatio.oneThird:
+        return 0.33;
+      case SplitScreenRatio.floatingDefault:
+        return 0.416667; // 800/1920
+      case SplitScreenRatio.half:
+        return 0.5;
+      case SplitScreenRatio.twoThirds:
+        return 2 / 3;
+      case SplitScreenRatio.none:
+        return 0;
     }
   }
 }
@@ -169,6 +211,8 @@ class MultiWindowLayout extends StatelessWidget {
 class MultiWindowAdaptiveLayout extends StatelessWidget {
   final Widget? portrait;
   final Widget landscape;
+  final Widget? launcher;
+  final Widget? floatingDefault;
   final Widget? landscapeHalf;
   final Widget? landscapeOneThird;
   final Widget? landscapeTwoThirds;
@@ -177,6 +221,8 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
     super.key,
     this.portrait,
     required this.landscape,
+    this.launcher,
+    this.floatingDefault,
     this.landscapeHalf,
     this.landscapeOneThird,
     this.landscapeTwoThirds,
@@ -197,7 +243,12 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
 
       final ratio = context.splitScreenRatio;
 
+      //w420、w640、w800、w960、w1280
       switch (ratio) {
+        case SplitScreenRatio.launcher:
+          return launcher ?? landscape;
+        case SplitScreenRatio.floatingDefault:
+          return floatingDefault ?? launcher ?? landscape;
         case SplitScreenRatio.twoThirds:
           return landscapeTwoThirds ?? landscape;
         case SplitScreenRatio.half:

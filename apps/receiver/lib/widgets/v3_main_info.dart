@@ -3,6 +3,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
+import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_main_info_landscape.dart';
 import 'package:display_flutter/widgets/v3_no_network_status.dart';
@@ -21,6 +22,14 @@ class V3MainInfo extends StatelessWidget {
     return MultiWindowLayout(
       builder: (context, constraints, ratio, isMultiWindow, isPortrait,
           isFloatWindow) {
+        if (!isPortrait) {
+          if (ratio == SplitScreenRatio.launcher) {
+            return buildSmallFrame(width: 280, height: 157.3);
+          }
+          if (ratio == SplitScreenRatio.floatingDefault) {
+            return buildSmallFrame(width: 533.3333, height: 300);
+          }
+        }
         return Container(
           alignment: Alignment.center,
           margin: !isPortrait
@@ -39,6 +48,37 @@ class V3MainInfo extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget buildSmallFrame({
+    required double width,
+    required double height,
+  }) {
+    return Container(
+      color: Colors.white,
+      child: Center(
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              V3HeaderBar(),
+              Expanded(
+                child: Consumer<ConnectivityProvider>(
+                  builder: (_, connectivityProvider, __) {
+                    return connectivityProvider.connectionStatus ==
+                            ConnectivityResult.none
+                        ? const V3NoNetworkStatus()
+                        : const V3MainInfoLandscape();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:display_flutter/widgets/v3_main_connection_info.dart';
 import 'package:display_flutter/widgets/v3_main_qr_code_area.dart';
 import 'package:display_flutter/widgets/v3_otp_with_timer.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
+import 'package:display_flutter/widgets/v3_qrcode_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -26,6 +27,11 @@ class V3MainInfoLandscape extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiWindowAdaptiveLayout(
+      launcher: V3MainConnectionInfoLauncher(),
+      landscapeOneThird: V3MainConnectionInfoOneThird(),
+      floatingDefault: V3MainConnectionInfoFloatingDefault(),
+      landscapeHalf: V3MainConnectionInfoHalf(),
+      landscapeTwoThirds: V3MainConnectionInfo(),
       landscape: Row(
         children: [
           Expanded(
@@ -42,9 +48,6 @@ class V3MainInfoLandscape extends StatelessWidget {
           ),
         ],
       ),
-      landscapeTwoThirds: V3MainConnectionInfo(),
-      landscapeHalf: V3MainConnectionInfoHalf(),
-      landscapeOneThird: V3MainConnectionInfoOneThird(),
     );
   }
 }
@@ -196,6 +199,149 @@ class _V3MainConnectionInfoOneThirdState
           ],
         );
       },
+    );
+  }
+}
+
+class V3MainConnectionInfoLauncher extends StatelessWidget {
+  const V3MainConnectionInfoLauncher({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const _V3MainConnectionInfoSmall(
+      leftPadding: 16,
+      titleFontSize: 10.66,
+      actionFontSize: 18.66,
+      topGap: 10.66,
+      qrSize: 69.33,
+      qrPadding: 6,
+    );
+  }
+}
+
+class V3MainConnectionInfoFloatingDefault extends StatelessWidget {
+  const V3MainConnectionInfoFloatingDefault({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const _V3MainConnectionInfoSmall(
+      leftPadding: 32,
+      titleFontSize: 10.66 * 2,
+      actionFontSize: 18.66 * 2,
+      topGap: 10.66 * 2,
+      qrSize: 69.66 * 2,
+      qrPadding: 16,
+    );
+  }
+}
+
+class _V3MainConnectionInfoSmall extends StatefulWidget {
+  const _V3MainConnectionInfoSmall({
+    required this.leftPadding,
+    required this.titleFontSize,
+    required this.actionFontSize,
+    required this.topGap,
+    required this.qrSize,
+    required this.qrPadding,
+  });
+
+  final double leftPadding;
+  final double titleFontSize;
+  final double actionFontSize;
+  final double topGap;
+  final double qrSize;
+  final double qrPadding;
+
+  @override
+  State<_V3MainConnectionInfoSmall> createState() =>
+      _V3MainConnectionInfoSmallState();
+}
+
+class _V3MainConnectionInfoSmallState
+    extends State<_V3MainConnectionInfoSmall> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = context.tokens.color.vsdslColorOnSurface;
+
+    return V3MainInstructionArea(
+      topPadding: 0,
+      leftPadding: widget.leftPadding,
+      scrollController: _scrollController,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Gap(widget.topGap),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    V3InstructionStep(
+                      showIcon: false,
+                      textContent: AutoHyphenatingText(
+                        S.of(context).v3_instruction2_onethird,
+                        style: context.tokens.textStyle.airsyncFontTitle
+                            .copyWith(fontSize: widget.titleFontSize)
+                            .apply(color: color),
+                        maxLines: 6,
+                      ),
+                      actionWidget: V3DisplayCode(
+                        style: context.tokens.textStyle.airsyncFontDisplay
+                            .copyWith(fontSize: widget.actionFontSize)
+                            .apply(color: color),
+                      ),
+                      actionPadding: EdgeInsets.zero,
+                    ),
+                    Gap(widget.topGap),
+                    V3InstructionStep(
+                      showIcon: false,
+                      textContent: AutoHyphenatingText(
+                        S.of(context).v3_instruction3_onethird,
+                        style: context.tokens.textStyle.airsyncFontTitle
+                            .copyWith(fontSize: widget.titleFontSize)
+                            .apply(color: color),
+                      ),
+                      actionWidget: V3OtpWithTimer(
+                        style: context.tokens.textStyle.airsyncFontDisplay
+                            .copyWith(fontSize: widget.actionFontSize)
+                            .apply(color: color),
+                      ),
+                      actionPadding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: widget.qrSize,
+            height: widget.qrSize,
+            child: V3QrCodeImage(
+              isShowBackground: true,
+              size: widget.qrSize,
+              backgroundPadding: widget.qrPadding,
+            ),
+          ),
+          Gap(16),
+        ],
+      ),
     );
   }
 }
