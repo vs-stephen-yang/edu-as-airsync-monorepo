@@ -4,7 +4,7 @@ import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class V3WebFooter extends StatelessWidget {
   const V3WebFooter({super.key});
@@ -56,19 +56,17 @@ class V3WebFooter extends StatelessWidget {
                   identifier: 'v3_qa_main_privacy',
                   button: false,
                   link: true,
-                  child: Link(
-                    uri: Uri.parse(
-                        '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'),
-                    target: LinkTarget.blank,
-                    builder: (context, followLink) => ExcludeSemantics(
-                      child: TextButton(
-                        onPressed: followLink,
-                        child: V3AutoHyphenatingText(
-                          S.of(context).v3_main_privacy,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: context.tokens.color.vsdswColorOnSurface,
-                          ),
+                  child: ExcludeSemantics(
+                    child: TextButton(
+                      onPressed: () {
+                        launchUrl(Uri.parse(
+                            '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
+                      },
+                      child: V3AutoHyphenatingText(
+                        S.of(context).v3_main_privacy,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: context.tokens.color.vsdswColorOnSurface,
                         ),
                       ),
                     ),
