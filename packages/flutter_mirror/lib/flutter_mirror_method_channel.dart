@@ -169,13 +169,8 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         String mirrorType = call.arguments["mirrorType"];
         String deviceModel = call.arguments["deviceModel"];
 
-        _mirrorListener?.onMirrorStart(
-          mirrorId,
-          textureId,
-          deviceName,
-          MirrorType.values.byName(mirrorType),
-          deviceModel
-        );
+        _mirrorListener?.onMirrorStart(mirrorId, textureId, deviceName,
+            MirrorType.values.byName(mirrorType), deviceModel);
       } else if (call.method == 'onMirrorStop') {
         String mirrorId = call.arguments["mirrorId"];
 
@@ -212,12 +207,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int statusCode = call.arguments["status"];
         BluetoothTouchbackStatus? status =
             BluetoothTouchbackStatus.values[statusCode];
-        if (status != null) {
-          _bluetoothTouchbackListener
-              ?.onBluetoothTouchbackStatusChanged(status);
-        } else {
-          log("Unknown BluetoothTouchbackStatus: $statusCode");
-        }
+        _bluetoothTouchbackListener?.onBluetoothTouchbackStatusChanged(status);
       } else {
         log("Unknown method call from native: ${call.method}");
       }
