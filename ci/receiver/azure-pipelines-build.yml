@@ -137,17 +137,17 @@ jobs:
 
 
       # Build Single APK
-      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) --target-platform android-arm,android-arm64 -PENABLE_ABI_FILTERS=true
         displayName: Build Single APK
         condition: ne(variables['appbundle'], true)
 
       # Build Split APK
-      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) --split-per-abi
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) --target-platform android-arm,android-arm64 --split-per-abi
         displayName: Build Split APK
         condition: eq(variables['splitPerAbi'], true)
 
       # Build App bundle
-      - script: $(Flutter.Bin) $(Flutter.Verbose) build appbundle --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build appbundle --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) --target-platform android-arm,android-arm64
         displayName: Build App Bundle
         condition: eq(variables['appbundle'], true)
 
