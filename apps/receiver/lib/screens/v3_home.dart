@@ -7,6 +7,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/wifi_status_util.dart';
@@ -141,22 +142,25 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                   alignment: Alignment.center,
                   children: <Widget>[
                     const StreamingViewContainer(),
-                    ValueListenableBuilder(
-                      valueListenable: V3Home.isShowHeaderFooterBar,
-                      builder: (_, bool value, __) {
-                        return value
-                            ? Stack(
-                                fit: StackFit.expand,
-                                children: <Widget>[
-                                  Container(
-                                    color: const Color(0xFFEAEBF1),
-                                  ),
-                                  const V3FooterBar(),
-                                  const V3HeaderBar(),
-                                ],
-                              )
-                            : const SizedBox.shrink();
-                      },
+                    MultiWindowAdaptiveLayout(
+                      landscape: ValueListenableBuilder(
+                        valueListenable: V3Home.isShowHeaderFooterBar,
+                        builder: (_, bool value, __) {
+                          return value
+                              ? Stack(
+                                  fit: StackFit.expand,
+                                  children: <Widget>[
+                                    Container(
+                                      color: const Color(0xFFEAEBF1),
+                                    ),
+                                    const V3HeaderBar(),
+                                    const V3FooterBar(),
+                                  ],
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                      launcher: SizedBox.shrink(),
                     ),
                     ValueListenableBuilder(
                       valueListenable: V3Home.isShowDisplayCode,

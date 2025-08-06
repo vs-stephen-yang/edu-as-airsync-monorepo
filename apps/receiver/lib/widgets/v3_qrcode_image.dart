@@ -9,16 +9,17 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class V3QrCodeImage extends StatelessWidget {
-  const V3QrCodeImage({
-    super.key,
-    this.isShowBackground = false,
-    this.isStringOnTop = false,
-    this.size = 139,
-  });
+  const V3QrCodeImage(
+      {super.key,
+      this.isShowBackground = false,
+      this.isStringOnTop = false,
+      this.size = 139,
+      this.backgroundPadding = 20});
 
   final bool isShowBackground;
   final bool isStringOnTop;
   final double size;
+  final double backgroundPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class V3QrCodeImage extends StatelessWidget {
                   size: isShowBackground
                       ? isStringOnTop
                           ? size - 35
-                          : size - 40
+                          : size - backgroundPadding * 2
                       : size,
                 );
               },

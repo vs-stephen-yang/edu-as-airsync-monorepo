@@ -117,6 +117,7 @@ class V3Status extends StatelessWidget {
             ],
           ),
           landscapeOneThird: SizedBox.shrink(),
+          launcher: SizedBox.shrink(),
         ),
       ],
     );

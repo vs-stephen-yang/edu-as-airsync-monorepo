@@ -24,19 +24,26 @@ class V3FooterBar extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          Image.asset(
-            'assets/images/ic_wallpaper.png',
-            excludeFromSemantics: true,
-            width: 1280,
+          MultiWindowAdaptiveLayout(
+            launcher: SizedBox.shrink(),
+            landscape: Image.asset(
+              'assets/images/ic_wallpaper.png',
+              excludeFromSemantics: true,
+              width: 1280,
+            ),
           ),
           Positioned(
             right: 13,
             bottom: 13,
-            child: Image.asset(
-              'assets/images/ic_logo_viewsonic.png',
-              excludeFromSemantics: true,
-              width: 513 / 3,
-              height: 160 / 3,
+            child: MultiWindowAdaptiveLayout(
+              launcher: SizedBox.shrink(),
+              landscapeOneThird: SizedBox.shrink(),
+              landscape: Image.asset(
+                'assets/images/ic_logo_viewsonic.png',
+                excludeFromSemantics: true,
+                width: 513 / 3,
+                height: 160 / 3,
+              ),
             ),
           ),
           Positioned(
@@ -71,6 +78,7 @@ class V3FooterBar extends StatelessWidget {
                   },
                 ),
                 landscapeOneThird: SizedBox.shrink(),
+                launcher: SizedBox.shrink(),
               ),
             ),
           ),

@@ -145,6 +145,7 @@ class V3InstructionStep extends StatelessWidget {
   final Widget textContent; // Text content widget
   final Widget? actionWidget; // Action widget (DisplayCode/OtpWithTimer)
   final bool showIcon; // Whether to show icon (even if iconAsset is not null)
+  final double iconSize;
   final EdgeInsets? actionPadding; // Custom padding for action widget
 
   const V3InstructionStep({
@@ -154,6 +155,7 @@ class V3InstructionStep extends StatelessWidget {
     this.actionWidget,
     this.showIcon = true,
     this.actionPadding,
+    this.iconSize = 27.0,
   });
 
   @override
@@ -165,14 +167,14 @@ class V3InstructionStep extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             if (showIcon && iconAsset != null) ...[
               SvgPicture.asset(
                 iconAsset!,
                 excludeFromSemantics: true,
-                height: 27,
-                width: 27,
+                height: iconSize,
+                width: iconSize,
               ),
               Gap(context.tokens.spacing.vsdslSpacingMd.left),
             ],

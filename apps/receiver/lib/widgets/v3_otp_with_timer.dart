@@ -6,11 +6,17 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3OtpWithTimer extends StatelessWidget {
-  const V3OtpWithTimer({super.key});
+  const V3OtpWithTimer({
+    super.key,
+    this.style,
+  });
+
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Consumer<ChannelProvider>(
           builder: (_, channelProvider, __) {
@@ -22,9 +28,10 @@ class V3OtpWithTimer extends StatelessWidget {
                   // Trialling is otp code , should not use - to confuse user
                   child: Text(
                     otp,
-                    style: context.tokens.textStyle.airsyncFontDisplay.apply(
-                      color: context.tokens.color.vsdslColorOnSurface,
-                    ),
+                    style: style ??
+                        context.tokens.textStyle.airsyncFontDisplay.apply(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                        ),
                   ),
                 );
               },

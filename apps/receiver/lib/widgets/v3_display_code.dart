@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class V3DisplayCode extends StatelessWidget {
-  const V3DisplayCode({super.key});
+  final TextStyle? style;
+
+  const V3DisplayCode({
+    super.key,
+    this.style,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +21,10 @@ class V3DisplayCode extends StatelessWidget {
           // Trialling is display code, should not use - to confuse user
           child: Text(
             getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
-            style: context.tokens.textStyle.airsyncFontDisplay.apply(
-              color: context.tokens.color.vsdslColorOnSurface,
-            ),
+            style: style ??
+                context.tokens.textStyle.airsyncFontDisplay.apply(
+                  color: context.tokens.color.vsdslColorOnSurface,
+                ),
           ),
         );
       },
