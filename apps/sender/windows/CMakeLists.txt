@@ -1,5 +1,9 @@
 # Project-level configuration.
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
+
+# Enable proper handling of MSVC_RUNTIME_LIBRARY
+cmake_policy(SET CMP0091 NEW)
+
 project(display_cast_flutter LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
@@ -13,6 +17,7 @@ cmake_policy(SET CMP0063 NEW)
 
 # Define build configuration option.
 get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
 if(IS_MULTICONFIG)
   set(CMAKE_CONFIGURATION_TYPES "Debug;Profile;Release"
     CACHE STRING "" FORCE)
@@ -24,6 +29,7 @@ else()
       "Debug" "Profile" "Release")
   endif()
 endif()
+
 # Define settings for the Profile build mode.
 set(CMAKE_EXE_LINKER_FLAGS_PROFILE "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
 set(CMAKE_SHARED_LINKER_FLAGS_PROFILE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
@@ -64,8 +70,10 @@ include(flutter/generated_plugins.cmake)
 # run in place. This is done instead of making a separate bundle (as on Linux)
 # so that building and running from within Visual Studio will work.
 set(BUILD_BUNDLE_DIR "$<TARGET_FILE_DIR:${BINARY_NAME}>")
+
 # Make the "install" step default, as it's required to run.
 set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
 endif()
@@ -95,23 +103,23 @@ set(INSTALL_BUNDLE_DRIVERS_DIR "${CMAKE_INSTALL_PREFIX}/drivers")
 
 if(flutter_virtual_display_bundled_drivers)
   install(FILES "${flutter_virtual_display_bundled_drivers}"
-          DESTINATION "${INSTALL_BUNDLE_DRIVERS_DIR}"
-          COMPONENT Runtime)
+    DESTINATION "${INSTALL_BUNDLE_DRIVERS_DIR}"
+    COMPONENT Runtime)
 endif()
 
 if(flutter_virtual_display_bundled_services)
   install(FILES "${flutter_virtual_display_bundled_services}"
-      DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-      COMPONENT Runtime)
+    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
 endif()
 
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
 install(TARGETS launcher RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}"
-        COMPONENT Runtime)
+  COMPONENT Runtime)
 
 install(TARGETS custom_actions RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}"
-        COMPONENT Runtime)
+  COMPONENT Runtime)
 
 set(FLUTTER_ASSET_DIR_NAME "flutter_assets")
 install(CODE "
