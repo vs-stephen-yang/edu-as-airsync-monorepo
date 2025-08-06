@@ -21,6 +21,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
+@Deprecated('Use NewWidget instead')
 class V3StreamingView extends StatefulWidget {
   const V3StreamingView({super.key});
 
