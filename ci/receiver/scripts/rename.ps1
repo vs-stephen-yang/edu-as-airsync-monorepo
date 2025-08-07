@@ -42,7 +42,7 @@ if ($Single) {
 # Rename split apk
 if ($Split) {
 
-    $archs = @("arm64-v8a", "armeabi-v7a", "x86_64")
+    $archs = @("arm64-v8a", "armeabi-v7a")
     
     foreach ($arch in $archs) {
         $sourceAppFile = "$($Wd)/app-$($arch)-$($Channel)$($Target)-release.apk"
