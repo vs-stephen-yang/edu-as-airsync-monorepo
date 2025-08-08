@@ -1,13 +1,14 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/multicast_presenter.dart';
-import 'package:display_flutter/model/remote_screen_server.dart';
-import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen.dart';
+import 'package:display_flutter/model/remote_screen_connector.dart';
+import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 
 class RemoteScreenProvider {
   RemoteScreenServer get server => _server;
   final RemoteScreenServer _server;
+
   MulticastPresenter get multicast => _multicastPresenter;
   final MulticastPresenter _multicastPresenter;
 
@@ -19,7 +20,9 @@ class RemoteScreenProvider {
     RemoteScreenConnector? remoteScreenConnector,
     bool kick,
   }) _connectorDisconnectCallback;
-  RemoteScreenType remoteScreenType = DeviceFeatureAdapter.useMulticast ? RemoteScreenType.multicast : RemoteScreenType.rtc;
+  RemoteScreenType remoteScreenType = DeviceFeatureAdapter.useMulticast
+      ? RemoteScreenType.multicast
+      : RemoteScreenType.rtc;
 
   RemoteScreenProvider(this._server, this._ipAddress,
       this._connectorDisconnectCallback, this._multicastPresenter);
