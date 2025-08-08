@@ -397,11 +397,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1.2.2"
-      resolved-ref: f94c39a4ec5caabd9c7acb0e2488b51010b8be78
+      ref: "1.2.6"
+      resolved-ref: d82627246106d4e4791562bc2641394f15d45f64
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS"
     source: git
-    version: "1.2.2"
+    version: "1.2.6"
   dio:
     dependency: transitive
     description:
