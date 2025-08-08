@@ -33,6 +33,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _enableWebRtcTracing = false;
   bool _startWebRtcTracing = false;
   bool _verboseWebRtcLog = false;
+  bool _useMulticast = false;
   bool _enableWebRtcH264BaselineProfile = false;
   bool _iceGatheringContinually = false;
   final TextEditingController _roomNumberController = TextEditingController();
@@ -167,6 +168,18 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  void _changeMulticast(bool value) async {
+    DeviceFeatureAdapter.useMulticast = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _useMulticast = value;
+      _notifyRestart();
+    });
+  }
+
+
+
   void _initialize() {
     _showOldUI = DeviceFeatureAdapter.showOldUI;
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
@@ -178,6 +191,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
     _dumpSrtpPackets = DeviceFeatureAdapter.dumpSrtpPackets;
     _iceGatheringContinually = DeviceFeatureAdapter.iceGatheringContinually;
+    _useMulticast = DeviceFeatureAdapter.useMulticast;
   }
 
   @override
@@ -299,6 +313,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           title: const Text('WebRTC Verbose log'),
                           value: _verboseWebRtcLog,
                           onChanged: (value) => _changeWebRtcLogVerbose(value),
+                        ),
+                        SwitchListTile(
+                          title: const Text('Multicast'),
+                          value: _useMulticast,
+                          onChanged: (value) => _changeMulticast(value),
                         ),
                         const _CastingTimeAdjuster(),
                         Center(
