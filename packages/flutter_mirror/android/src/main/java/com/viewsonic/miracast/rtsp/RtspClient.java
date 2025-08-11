@@ -59,6 +59,8 @@ public class RtspClient
   private boolean isUibcEnable_ = false;
 
   private AudioFormatListener audioFormatListener_;
+  private SourceCapabilityListener sourceCapabilityListener_;
+
   private boolean activate_ = true;
   private String receiverName_ = "";
 
@@ -105,6 +107,10 @@ public class RtspClient
 
   public void setAudioFormatListener(AudioFormatListener listener) {
     audioFormatListener_ = listener;
+  }
+
+  public void setSourceCapabilityListener(SourceCapabilityListener listener) {
+    sourceCapabilityListener_ = listener;
   }
 
   public void pause() {
@@ -157,6 +163,10 @@ public class RtspClient
 
   public interface AudioFormatListener {
     void onAudioFormatUpdate(String name, int sampleRate, int channelCount);
+  }
+
+  public interface SourceCapabilityListener {
+    void onUibcCapability(boolean isUibcSupported);
   }
 
   /**
@@ -448,6 +458,12 @@ public class RtspClient
     rm.headers = addCommonHeader();
     rm.headers.put(KEY_SESSION, rtspParams_.session);
     sendRequest(rm);
+
+    // IMPROVE
+    if (sourceCapabilityListener_ != null) {
+      boolean isUibcSupported = uibcPort_ != 0;
+      sourceCapabilityListener_.onUibcCapability(isUibcSupported);
+    }
   }
 
   private void sendRequestTeardown() {

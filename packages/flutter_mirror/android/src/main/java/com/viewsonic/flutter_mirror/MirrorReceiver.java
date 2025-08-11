@@ -78,11 +78,11 @@ public class MirrorReceiver implements
     String deviceId = NetUtils.getRandomMacAddress();
 
     startAirplayNative(
-      instance_,
-      name,
-      deviceId,
-      security,
-      airPlayResolutionMap);
+        instance_,
+        name,
+        deviceId,
+        security,
+        airPlayResolutionMap);
   }
 
   // stop airplay
@@ -336,8 +336,24 @@ public class MirrorReceiver implements
   }
 
   @Override
+  public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
+    mirrorListener_.onMirrorCapabilities(
+        mirrorId,
+      isUibcSupported);
+  }
+
+  @Override
   public void onMirrorError(String mirrorType, String erroMessage) {
     mirrorListener_.onMirrorError(mirrorType, erroMessage);
+  }
+
+  @Override
+  public void onMirrorCapabilities(
+      String mirrorId,
+      boolean isUibcSupported) {
+    mirrorListener_.onMirrorCapabilities(
+        mirrorId,
+        isUibcSupported);
   }
 
   private native long createInstanceNative(
@@ -366,11 +382,11 @@ public class MirrorReceiver implements
       String videoPath);
 
   private native void startAirplayNative(
-    long instance,
-    String name,
-    String deviceId,
-    String security,
-    Map<String, Map<String, Integer>> airPlayResolutionMap);
+      long instance,
+      String name,
+      String deviceId,
+      String security,
+      Map<String, Map<String, Integer>> airPlayResolutionMap);
 
   private native void stopAirplayNative(
       long instance);

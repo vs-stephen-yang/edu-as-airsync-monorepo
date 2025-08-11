@@ -534,6 +534,21 @@ public class FlutterMirrorPlugin implements
   }
 
   @Override
+  public void onMirrorCapabilities(
+      String mirrorId,
+      boolean isUibcSupported) {
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorId", mirrorId);
+      arguments.put("isUibcSupported", isUibcSupported);
+
+      channel_.invokeMethod("onMirrorCapabilities", arguments);
+    });
+  }
+
+  @Override
   public void onMirrorVideoFrameRate(String mirrorId, int fps) {
 
     // Must run on the platform thread
