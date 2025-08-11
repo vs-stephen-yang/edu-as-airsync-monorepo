@@ -9,8 +9,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/wifi_status_util.dart';
-import 'package:display_flutter/widgets/streaming/grid_view_config.dart';
-import 'package:display_flutter/widgets/streaming/v3_streaming_view.dart';
+import 'package:display_flutter/widgets/streaming/streaming_view_container.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
@@ -136,7 +135,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    V3StreamingView(config: gridViewConfig),
+                    const StreamingViewContainer(),
                     ValueListenableBuilder(
                       valueListenable: V3Home.isShowHeaderFooterBar,
                       builder: (_, bool value, __) {
