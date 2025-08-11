@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
 import android.media.projection.MediaProjectionManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -45,6 +46,8 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
     private static final int REQUEST_CODE_MEDIA_PROJECTION = 1001;
 
     private NativeBridge nativeBridge_;
+
+    private Bundle captureConfig;
 
     private static final String TAG = "FlutterMulticastPlugin";
 
@@ -132,6 +135,20 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
                     result.error("PERMISSION_DENIED", "Audio recording permission required for system audio capture", null);
                     return;
                 }
+
+                // 讀取 Dart 傳來的參數，塞到 Bundle
+                @SuppressWarnings("unchecked")
+                Map<String, Object> args = (Map<String, Object>) call.arguments;
+                Bundle cfg = new Bundle();
+                if (args != null) {
+                    putIfPresent(cfg, "width", args.get("width"));
+                    putIfPresent(cfg, "height", args.get("height"));
+                    putIfPresent(cfg, "bitrate", args.get("bitrate"));
+                    putIfPresent(cfg, "maxBitrate", args.get("maxBitrate"));
+                    putIfPresent(cfg, "frameRate", args.get("frameRate"));
+                    putIfPresent(cfg, "bitrateMode", args.get("bitrateMode")); // String: CBR/VBR/CQ
+                }
+                captureConfig = cfg;
 
                 if (activity != null) {
                     MediaProjectionManager projectionManager = (MediaProjectionManager) activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -238,6 +255,11 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
             Intent serviceIntent = new Intent(activity, ScreenCaptureService.class);
             serviceIntent.putExtra("resultCode", resultCode);
             serviceIntent.putExtra("data", data);
+
+            if (captureConfig != null) {
+                serviceIntent.putExtra("config", captureConfig);
+            }
+
             ContextCompat.startForegroundService(activity, serviceIntent);
             return true;
         }
@@ -283,5 +305,15 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
             channel.invokeMethod("onVideoSize", args);
         });
+    }
+
+    private static void putIfPresent(Bundle b, String key, Object v) {
+        if (v == null) return;
+        if (v instanceof Integer) b.putInt(key, (Integer) v);
+        else if (v instanceof Long) b.putLong(key, (Long) v);
+        else if (v instanceof Double) b.putInt(key, ((Double) v).intValue());
+        else if (v instanceof Float) b.putInt(key, ((Float) v).intValue());
+        else if (v instanceof String) b.putString(key, (String) v);
+        else if (v instanceof Boolean) b.putBoolean(key, (Boolean) v);
     }
 }

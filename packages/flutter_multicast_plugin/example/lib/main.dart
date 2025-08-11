@@ -61,7 +61,7 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
         ssrc: 1234564002,
       );
       if (success == true) {
-        await FlutterMulticastPlugin.startCapture();
+        await FlutterMulticastPlugin.startCapture(width: 1920, height: 1080, bitrate: 4000000, maxBitrate: 8000000, frameRate: 30, bitrateMode: 'CBR');
         setState(() => _isStreaming = true);
       }
     } catch (e) {

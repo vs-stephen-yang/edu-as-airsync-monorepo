@@ -50,8 +50,22 @@ class MethodChannelFlutterMulticastPlugin extends FlutterMulticastPluginPlatform
   }
 
   @override
-  Future<void> startCapture() async {
-    await methodChannel.invokeMethod('startCapture');
+  Future<void> startCapture({
+    required int width,
+    required int height,
+    required int bitrate,
+    required int maxBitrate,
+    required int frameRate,
+    required String bitrateMode,
+  }) async {
+    await methodChannel.invokeMethod('startCapture', {
+      'width': width,
+      'height': height,
+      'bitrate': bitrate,
+      'maxBitrate': maxBitrate,
+      'frameRate': frameRate,
+      'bitrateMode': bitrateMode,
+    });
   }
 
   @override

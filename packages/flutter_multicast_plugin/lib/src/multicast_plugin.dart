@@ -29,8 +29,22 @@ class FlutterMulticastPlugin {
     return FlutterMulticastPluginPlatform.instance.stopRtpStream();
   }
 
-  static Future<void> startCapture() {
-    return FlutterMulticastPluginPlatform.instance.startCapture();
+  static Future<void> startCapture({
+    required int width,
+    required int height,
+    required int bitrate,
+    required int maxBitrate,
+    required int frameRate,
+    required String bitrateMode,
+  }) {
+    return FlutterMulticastPluginPlatform.instance.startCapture(
+      width: width,
+      height: height,
+      bitrate: bitrate,
+      maxBitrate: maxBitrate,
+      frameRate: frameRate,
+      bitrateMode: bitrateMode,
+    );
   }
 
   static Future<void> stopCapture() {

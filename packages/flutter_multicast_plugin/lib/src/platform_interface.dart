@@ -40,7 +40,14 @@ abstract class FlutterMulticastPluginPlatform extends PlatformInterface {
     throw UnimplementedError('stopRtpStream() has not been implemented.');
   }
 
-  Future<void> startCapture() {
+  Future<void> startCapture({
+    required int width,
+    required int height,
+    required int bitrate,
+    required int maxBitrate,
+    required int frameRate,
+    required String bitrateMode,
+}) {
     throw UnimplementedError('startCapture() has not been implemented.');
   }
 

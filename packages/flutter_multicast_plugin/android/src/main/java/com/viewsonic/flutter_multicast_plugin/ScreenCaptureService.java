@@ -1,7 +1,5 @@
 package com.viewsonic.flutter_multicast_plugin;
 
-import static android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -22,6 +20,7 @@ import android.media.MediaFormat;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -45,7 +44,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Keep
 public class ScreenCaptureService extends Service {
@@ -63,12 +61,15 @@ public class ScreenCaptureService extends Service {
     private SurfaceTexture surfaceTexture;
     private Surface surfaceTextureSurface;
     private Surface encoderInputSurface;
-    private EGLCore eglCore;
     private WindowSurface windowSurface;
 
     private int width = 1280;
     private int height = 720;
     private int dpi = 320;
+    private int bitrate = 4_000_000;
+    private int maxBitrate = 8_000_000;
+    private int frameRate = 30;
+    private int bitrateMode = MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR;
 
     private volatile boolean isEncoding = false;
 
@@ -110,6 +111,18 @@ public class ScreenCaptureService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
         Intent data = intent.getParcelableExtra("data");
+
+        Bundle cfg = intent.getBundleExtra("config");
+        if (cfg != null) {
+            this.width  = cfg.getInt("width", this.width);
+            this.height = cfg.getInt("height", this.height);
+
+            this.bitrate    = cfg.getInt("bitrate", this.bitrate);
+            this.maxBitrate = cfg.getInt("maxBitrate", this.maxBitrate);
+            this.frameRate  = cfg.getInt("frameRate", this.frameRate);
+            String bm  = cfg.getString("bitrateMode", "CBR");
+            bitrateMode = parseBitrateMode(bm); // 轉成對應常數
+        }
 
         if (data == null) {
             Log.e(TAG, "onStartCommand: data Intent is null");
@@ -153,16 +166,26 @@ public class ScreenCaptureService extends Service {
         return START_NOT_STICKY;
     }
 
+    private int parseBitrateMode(String mode) {
+        if (mode == null) return MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR;
+        switch (mode.toUpperCase()) {
+            case "VBR": return MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR;
+            case "CQ":  return MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CQ;
+            default:    return MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR;
+        }
+    }
+
     private void setupMediaCodec() throws IOException {
-        MediaFormat format = MediaFormat.createVideoFormat("video/avc", width, height);
+        MediaFormat format = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, width, height);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
-        format.setInteger(MediaFormat.KEY_BITRATE_MODE, BITRATE_MODE_VBR);
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 4000_000);
-        format.setInteger("max-bitrate", 8_000_000); // Peak
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+
+        format.setInteger(MediaFormat.KEY_BITRATE_MODE, bitrateMode);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
+        format.setInteger("max-bitrate", maxBitrate); // Peak
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
 
-        mediaCodec = MediaCodec.createEncoderByType("video/avc");
+        mediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_VIDEO_AVC);
         mediaCodec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         encoderInputSurface = mediaCodec.createInputSurface();
         mediaCodec.start();
@@ -174,7 +197,7 @@ public class ScreenCaptureService extends Service {
         GLES20.glGenTextures(1, textures, 0);
         int textureId = textures[0];
 
-        eglCore = new EGLCore();
+        EGLCore eglCore = new EGLCore();
         windowSurface = new WindowSurface(eglCore, encoderInputSurface, textureId);
 
         surfaceTexture = new SurfaceTexture(textureId);
