@@ -119,7 +119,7 @@ dependencies:
   flutter_mirror:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
-      ref: release-3.8.0
+      ref: release-3.8.1
   android_window:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window
@@ -128,6 +128,7 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin
       ref: release-3.8.2
+  fluttertoast: ^8.2.12
   # ViewSonic plug-in
 
 dev_dependencies:

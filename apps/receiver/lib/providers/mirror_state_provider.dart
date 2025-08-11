@@ -11,6 +11,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/bluetooth_touchback_listener.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum MirrorState {
   idle,
@@ -683,5 +685,17 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorError(String mirrorType, String errorMessage) {
     trackTrace("mirror_error", target: errorMessage);
+  }
+
+  @override
+  void onMirrorCapabilities(String mirrorId, bool? isUibcSupported) {
+    if (isUibcSupported != null && isUibcSupported == false) {
+      // TODO: Replace Fluttertoast.showToast with V3Toast and v3_miracast_uibc_not_supported_message
+      Fluttertoast.showToast(
+        msg: 'This source does not support Miracast touchback',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
   }
 }

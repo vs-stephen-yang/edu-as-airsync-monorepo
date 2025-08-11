@@ -371,5 +371,6 @@
   "v3_settings_device_high_image_quality_desc": "Turn on to receive high-definition projection from Sender.",
   "v3_lbl_streaming_page_control": "next page",
   "v3_instruction2_onethird": "Display code",
-  "v3_instruction3_onethird": "One-time password"
+  "v3_instruction3_onethird": "One-time password",
+  "v3_miracast_uibc_not_supported_message": "This source does not support Miracast touchback"
 }
