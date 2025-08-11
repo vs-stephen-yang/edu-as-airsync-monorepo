@@ -1,4 +1,5 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 
@@ -31,48 +32,53 @@ class VerticalPageIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (dotCount <= 1) {
-      return const SizedBox.shrink();
-    }
-    return Container(
-      width: 36,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: context.tokens.color.vsdslColorOutlineVariant,
-          width: 2,
-        ),
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          for (int i = 0; i < dotCount; i++) _buildDot(context, i),
-          V3Focus(
-            label: "next page",
-            identifier: 'v3_streaming_page_control',
-            child: SizedBox(
-              height: 28,
-              width: 28,
-              child: IconButton(
-                onPressed: onNextPressed,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                color: context.tokens.color.vsdslColorOnSecondary,
-                iconSize: 16,
-                padding: EdgeInsets.zero,
-                splashRadius: 24,
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(
-                      context.tokens.color.vsdslColorSecondaryVariant),
-                  shape: WidgetStateProperty.all(const CircleBorder()),
-                ),
-              ),
+    return ValueListenableBuilder<int?>(
+      valueListenable: HybridConnectionList().enlargedScreenIndex,
+      builder: (_, enlarged, __) {
+        if (dotCount <= 1 || enlarged != null) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          width: 36,
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F172A),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: context.tokens.color.vsdslColorOutlineVariant,
+              width: 2,
             ),
           ),
-        ],
-      ),
+          padding: const EdgeInsets.all(4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (int i = 0; i < dotCount; i++) _buildDot(context, i),
+              V3Focus(
+                label: "next page",
+                identifier: 'v3_streaming_page_control',
+                child: SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: IconButton(
+                    onPressed: onNextPressed,
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                    color: context.tokens.color.vsdslColorOnSecondary,
+                    iconSize: 16,
+                    padding: EdgeInsets.zero,
+                    splashRadius: 24,
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                          context.tokens.color.vsdslColorSecondaryVariant),
+                      shape: WidgetStateProperty.all(const CircleBorder()),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
