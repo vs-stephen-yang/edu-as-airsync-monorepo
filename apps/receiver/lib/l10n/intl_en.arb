@@ -72,9 +72,7 @@
   "v3_instruction1a": "Visit airsync.net or open the sender app",
   "v3_instruction1b": "Open the sender app",
   "v3_instruction2": "Enter display code",
-  "v3_instruction2_onethird": "Display code",
   "v3_instruction3": "Enter one-time password",
-  "v3_instruction3_onethird": "One-time password",
   "v3_instruction_support": "Supports sharing via AirPlay, Google Cast or Miracast",
   "v3_qrcode_quick_connect": "Quick Connect",
   "v3_quick_connect_menu_display_code": "Display Code",
@@ -370,5 +368,8 @@
   "v3_lbl_settings_knowledge_base": "Knowledge Base",
   "v3_settings_device_high_image_quality": "High Image Quality",
   "v3_lbl_settings_device_high_image_quality": "High Image Quality",
-  "v3_settings_device_high_image_quality_desc": "Turn on to receive high-definition projection from Sender."
+  "v3_settings_device_high_image_quality_desc": "Turn on to receive high-definition projection from Sender.",
+  "v3_lbl_streaming_page_control": "next page",
+  "v3_instruction2_onethird": "Display code",
+  "v3_instruction3_onethird": "One-time password"
 }

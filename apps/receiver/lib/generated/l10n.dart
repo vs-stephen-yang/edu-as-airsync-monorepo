@@ -781,31 +781,11 @@ class S {
     );
   }
 
-  /// `Display code`
-  String get v3_instruction2_onethird {
-    return Intl.message(
-      'Display code',
-      name: 'v3_instruction2_onethird',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Enter one-time password`
   String get v3_instruction3 {
     return Intl.message(
       'Enter one-time password',
       name: 'v3_instruction3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `One-time password`
-  String get v3_instruction3_onethird {
-    return Intl.message(
-      'One-time password',
-      name: 'v3_instruction3_onethird',
       desc: '',
       args: [],
     );
@@ -3766,6 +3746,36 @@ class S {
     return Intl.message(
       'Turn on to receive high-definition projection from Sender.',
       name: 'v3_settings_device_high_image_quality_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `next page`
+  String get v3_lbl_streaming_page_control {
+    return Intl.message(
+      'next page',
+      name: 'v3_lbl_streaming_page_control',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display code`
+  String get v3_instruction2_onethird {
+    return Intl.message(
+      'Display code',
+      name: 'v3_instruction2_onethird',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One-time password`
+  String get v3_instruction3_onethird {
+    return Intl.message(
+      'One-time password',
+      name: 'v3_instruction3_onethird',
       desc: '',
       args: [],
     );
