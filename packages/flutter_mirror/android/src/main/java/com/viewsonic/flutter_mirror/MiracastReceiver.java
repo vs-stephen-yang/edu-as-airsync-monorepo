@@ -150,6 +150,15 @@ public class MiracastReceiver implements
     listener_.onMiracastError(errorMessage);
   }
 
+  @Override
+  public void onSourceCapabilities(
+      String mirrorId,
+      boolean isUibcSupported) {
+    listener_.onSourceCapabilities(
+        mirrorId,
+        isUibcSupported);
+  }
+
   // Native methods
   private native long createInstanceNative(
       long mirrorListenerInstance);

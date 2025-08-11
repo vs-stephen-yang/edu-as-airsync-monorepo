@@ -90,6 +90,14 @@ public class MiraSession
         }
       }
     });
+    rtspClient_.setSourceCapabilityListener(new RtspClient.SourceCapabilityListener() {
+      @Override
+      public void onUibcCapability(boolean isUibcSupported) {
+        if (mirrorListener_ != null) {
+          mirrorListener_.onSourceCapabilities(id_, isUibcSupported);
+        }
+      }
+    });
     Log.d(TAG, "#" + id_ + " rtsp client->" + "rtsp://" + ip_ + ":" + port_);
   }
 

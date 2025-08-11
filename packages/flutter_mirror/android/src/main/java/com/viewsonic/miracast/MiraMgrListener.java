@@ -21,4 +21,8 @@ public interface MiraMgrListener {
       int channelCount);
 
   void onMiracastError(String errorMessage);
+
+  public void onSourceCapabilities(
+      String mirrorId,
+      boolean isUibcSupported);
 }

@@ -208,6 +208,11 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         BluetoothTouchbackStatus? status =
             BluetoothTouchbackStatus.values[statusCode];
         _bluetoothTouchbackListener?.onBluetoothTouchbackStatusChanged(status);
+      } else if (call.method == 'onMirrorCapabilities') {
+        final mirrorId = call.arguments["mirrorId"];
+        bool? isUibcSupported = call.arguments["isUibcSupported"];
+
+        _mirrorListener?.onMirrorCapabilities(mirrorId, isUibcSupported);
       } else {
         log("Unknown method call from native: ${call.method}");
       }

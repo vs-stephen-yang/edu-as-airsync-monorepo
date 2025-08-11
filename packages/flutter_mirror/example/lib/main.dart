@@ -450,4 +450,12 @@ class _MyAppState extends State<MyApp>
       ),
     );
   }
+
+  @override
+  void onMirrorCapabilities(
+    String mirrorId,
+    bool? isUibcSupported,
+  ) {
+    print("Mirror capabilities: isUibcSupported=$isUibcSupported");
+  }
 }

@@ -23,4 +23,8 @@ public interface MirrorListener {
       int day);
 
   public void onMirrorError(String mirrorType, String errorMessage);
+
+  public void onMirrorCapabilities(
+      String mirrorId,
+      boolean isUibcSupported);
 }

@@ -18,4 +18,9 @@ abstract class FlutterMirrorListener {
   void onMirrorVideoFrameRate(String mirrorId, int fps);
 
   void onMirrorError(String mirrorType, String errorMessage);
+
+  void onMirrorCapabilities(
+    String mirrorId,
+    bool? isUibcSupported,
+  );
 }

@@ -174,4 +174,14 @@ public class MiraMgr
     }
   }
 
+  @Override
+  public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
+    if (listener_ != null) {
+      try {
+        listener_.onSourceCapabilities(mirrorId, isUibcSupported);
+      } catch (Exception e) {
+      }
+    }
+  }
+
 }
