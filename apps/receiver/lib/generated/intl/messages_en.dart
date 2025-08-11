@@ -501,6 +501,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Open mirroring setting menu"),
         "v3_lbl_streaming_airplay_touchback":
             MessageLookupByLibrary.simpleMessage("Airplay touchback"),
+        "v3_lbl_streaming_page_control":
+            MessageLookupByLibrary.simpleMessage("next page"),
         "v3_lbl_streaming_shortcut_airplay_toggle":
             MessageLookupByLibrary.simpleMessage("AirPlay toggle"),
         "v3_lbl_streaming_shortcut_cast_device_toggle":

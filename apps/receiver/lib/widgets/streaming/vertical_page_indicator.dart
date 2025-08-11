@@ -1,4 +1,5 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class VerticalPageIndicator extends StatelessWidget {
             children: [
               for (int i = 0; i < dotCount; i++) _buildDot(context, i),
               V3Focus(
-                label: "next page",
+                label: S.current.v3_lbl_streaming_page_control,
                 identifier: 'v3_streaming_page_control',
                 child: SizedBox(
                   height: 28,

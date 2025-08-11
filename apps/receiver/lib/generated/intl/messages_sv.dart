@@ -454,6 +454,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_lbl_settings_device_auto_fill_otp":
             MessageLookupByLibrary.simpleMessage(
                 "Slå på/av OTP-läge för automatisk fyllning"),
+        "v3_lbl_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage(
+                "v3_lbl_settings_device_high_image_quality"),
         "v3_lbl_settings_device_launch_on_startup":
             MessageLookupByLibrary.simpleMessage(
                 "Slå på/av automatiskt startläge"),
@@ -475,6 +478,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Öppna rullgardinsmenyn för skärmsändning"),
         "v3_lbl_settings_invite_group_item":
             MessageLookupByLibrary.simpleMessage("Välj %s"),
+        "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+            "v3_lbl_settings_knowledge_base"),
         "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
             "Öppna inställningsmenyn för juridisk princip"),
         "v3_lbl_settings_menu_locked":
@@ -659,6 +664,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_auto_fill_otp_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Aktivera anslutning med ett tryck när du väljer en enhet från enhetslistan."),
+        "v3_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("Hög bildkvalitet"),
+        "v3_settings_device_high_image_quality_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Aktivera för att ta emot högupplöst projektion från avsändaren."),
         "v3_settings_device_launch_on_startup":
             MessageLookupByLibrary.simpleMessage("Starta AirSync vid start"),
         "v3_settings_device_name":
