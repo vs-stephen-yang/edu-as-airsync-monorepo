@@ -41,6 +41,9 @@ class HybridConnectionList {
 
   // the following device support 9 split screen
   static final List<String> _support9SplitScreenDevices = [
+    // Windows Receiver
+    'Windows',
+    // Android Receiver
     'IFP105S',
     'IFP105UW',
     'IFP110',

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'dart:io' show Platform;
 
 import 'package:crypto/crypto.dart';
@@ -82,7 +81,7 @@ class AppInstanceCreate {
 
     if (_instanceID.isEmpty) {
       try {
-        _serialNumber = await DeviceInfoVs.serialNumber ?? '1234567890';
+        _serialNumber = (Platform.isWindows) ? '1234567890' : await DeviceInfoVs.serialNumber ?? '1234567890';
       } on PlatformException {
         _serialNumber = '1234567890';
       }
@@ -123,6 +122,10 @@ class AppInstanceCreate {
         IosDeviceInfo info = await deviceInfo.iosInfo;
         deviceId = info.identifierForVendor!;
         _modelName = info.model;
+      } else if (Platform.isWindows) {
+        WindowsDeviceInfo info = await deviceInfo.windowsInfo;
+        deviceId = info.deviceId;
+        _modelName = info.productName;
       } else {
         deviceId = (const Uuid()).v4(); // todo: support other platform id.
         _modelName = '';
@@ -171,6 +174,8 @@ class AppInstanceCreate {
         platform = 'iOS';
       } else if (Platform.isAndroid) {
         platform = 'Android';
+      } else if (Platform.isWindows) {
+        platform = 'Windows';
       } else {
         platform = ''; // todo: support other platform.
       }
@@ -222,6 +227,15 @@ class AppInstanceCreate {
           'SystemName': info.systemName,
           'Machine': info.utsname.machine,
           'Model': info.model,
+        };
+      } else if (Platform.isWindows) {
+        WindowsDeviceInfo info = await deviceInfo.windowsInfo;
+        hardwareProperty = {
+          'TimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
+          'productName': info.productName,
+          'majorVersion': info.majorVersion,
+          'minorVersion': info.minorVersion,
+          'buildNumber': info.buildNumber,
         };
       } else {
         hardwareProperty = {}; // todo: support other platform.
