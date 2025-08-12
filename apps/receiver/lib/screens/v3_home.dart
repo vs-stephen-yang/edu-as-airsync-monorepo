@@ -37,7 +37,7 @@ class V3Home extends StatefulWidget {
 class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
-  late StreamSubscription _wifiStatusSubscription;
+  StreamSubscription? _wifiStatusSubscription;
   bool _lastWifiStatus = false;
   late Future<void> initOperation;
 
@@ -55,22 +55,25 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
 
     setProviderContainer();
     AppManagerConfig().startHandleManagerUpdateRequest(context);
-    WifiStatusUtil().initialize();
 
-    // 獲取當前 WiFi 狀態
-    WifiStatusUtil.isWifiEnabled().then((value) {
-      _lastWifiStatus = value;
-    });
+    if (mirrorStateProvider.miracastSupport) {
+      WifiStatusUtil().initialize();
 
-    // 監聽 WiFi 狀態變化
-    _wifiStatusSubscription =
-        WifiStatusUtil().wifiStatusStream.listen((isEnabled) {
-      // reopen
-      if (isEnabled && !_lastWifiStatus) {
-        mirrorStateProvider.restartMiracast();
-      }
-      _lastWifiStatus = isEnabled;
-    });
+      // 獲取當前 WiFi 狀態
+      WifiStatusUtil.isWifiEnabled().then((value) {
+        _lastWifiStatus = value;
+      });
+
+      // 監聽 WiFi 狀態變化
+      _wifiStatusSubscription =
+          WifiStatusUtil().wifiStatusStream.listen((isEnabled) {
+            // reopen
+            if (isEnabled && !_lastWifiStatus) {
+              mirrorStateProvider.restartMiracast();
+            }
+            _lastWifiStatus = isEnabled;
+          });
+    }
   }
 
   void setProviderContainer() {
@@ -82,7 +85,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _wifiStatusSubscription.cancel();
+    _wifiStatusSubscription?.cancel();
     WifiStatusUtil().dispose();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);

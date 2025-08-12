@@ -4,6 +4,8 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
+#include "wifi_utils.cpp"
+
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
@@ -25,6 +27,56 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+
+    flutter::MethodChannel <flutter::EncodableValue> channelAppUpdate(
+            flutter_controller_->engine()->messenger(),
+            "com.mvbcast.crosswalk/app_update",
+            &flutter::StandardMethodCodec::GetInstance());
+
+    channelAppUpdate.SetMethodCallHandler(
+            [](const flutter::MethodCall<> &method_call,
+               std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result) {
+                if (method_call.method_name().compare("getFlavor") == 0) {
+                    result->Success(flutter::EncodableValue("Windows"));
+                    return;
+                } else {
+                    result->NotImplemented();
+                }
+            });
+
+    flutter::MethodChannel <flutter::EncodableValue> channelWifiSignalStrength(
+            flutter_controller_->engine()->messenger(),
+            "com.mvbcast.crosswalk/wifi_signal_strength",
+            &flutter::StandardMethodCodec::GetInstance());
+
+    channelWifiSignalStrength.SetMethodCallHandler(
+            [](const flutter::MethodCall<> &method_call,
+               std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result) {
+                if (method_call.method_name().compare("getWifiSignalStrength") == 0) {
+                    int signal = GetWifiSignalStrength();
+                    result->Success(flutter::EncodableValue(signal));
+                    return;
+                } else {
+                    result->NotImplemented();
+                }
+            });
+
+    flutter::MethodChannel <flutter::EncodableValue> channelWifiHelper(
+            flutter_controller_->engine()->messenger(),
+            "com.mvbcast.crosswalk/wifi_helper",
+            &flutter::StandardMethodCodec::GetInstance());
+
+    channelWifiHelper.SetMethodCallHandler(
+            [](const flutter::MethodCall<> &method_call,
+               std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result) {
+                if (method_call.method_name().compare("getFlavor") == 0) {
+                    result->Success(flutter::EncodableValue("Windows"));
+                    return;
+                } else {
+                    result->NotImplemented();
+                }
+            });
+
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {

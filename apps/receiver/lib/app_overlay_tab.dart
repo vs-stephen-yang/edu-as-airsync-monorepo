@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:android_window/main.dart' as android_window;
 import 'package:display_flutter/app_preferences.dart';
@@ -42,6 +43,7 @@ class AppOverlayTab {
   factory AppOverlayTab() => _instance;
 
   ensureInitialized() async {
+    if (Platform.isWindows) return;
     android_window.open();
     // wait 10 milliseconds for handle above open process.
     await Future.delayed(const Duration(milliseconds: 10));
@@ -64,6 +66,7 @@ class AppOverlayTab {
   }
 
   Future<void> setupOverlayTabHandler(BuildContext buildContext) async {
+    if (Platform.isWindows) return;
     await isOverlayTabRunning();
     android_window.setHandler((String name, Object? data) async {
       log('overlay tab handler-> name:$name');
@@ -142,6 +145,7 @@ class AppOverlayTab {
 
   Future<Map<Object?, Object?>> _postMessageToAndroidWindow(
       String key, Map<String, String>? value) async {
+    if (Platform.isWindows) return <Object?, Object?>{};
     var isRunning = await isOverlayTabRunning();
     if (isRunning) {
       log('overlay tab post message-> key:$key, value:$value');

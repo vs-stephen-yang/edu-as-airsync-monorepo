@@ -443,6 +443,9 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
   // 不支援HID
   bool _isUnsupportedIFPModel(String deviceModel) {
     final unsupportedModels = [
+      // Windows Receiver
+      'Windows',
+      // Android Receiver
       'IFP105',
       'IFP52_K', //IFP52-1A/B
       'IFP50_3',

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -171,6 +173,7 @@ class DeviceFeatureAdapter {
   }
 
   static ensureInitialized() async {
+    if (Platform.isWindows) return;
     _deviceType = await DeviceInfoVs.deviceType ?? '';
     _sdkVersion = (await DeviceInfoPlugin().androidInfo).version.release;
     log.info('sdkVersion: $_sdkVersion');

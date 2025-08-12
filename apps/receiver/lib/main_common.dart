@@ -89,8 +89,13 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
-    final vsApi = await VSApi.createVSApiInstance();
-
+    String? serialNumber = '1234567890';
+    String? macAddress = '';
+    if (Platform.isAndroid) {
+      final vsApi = await VSApi.createVSApiInstance();
+      serialNumber = await vsApi?.getSerialNumber();
+      macAddress = await vsApi?.getEthernetMacAddress();
+    }
     await AppAnalytics.initializeApp(
       instrumentationKey: settings.instrumentationKey,
       ingestionEndpoint: settings.ingestionEndpoint,
@@ -98,15 +103,17 @@ Future<void> commonEntry(ConfigSettings settings) async {
       userId: AppInstanceCreate().instanceID,
       sessionId: const Uuid().v4(),
       deviceInfo: await ClientDeviceInfo.fetch(),
-      serialNumber: await vsApi?.getSerialNumber(),
-      macAddress: await vsApi?.getEthernetMacAddress(),
+      serialNumber: serialNumber,
+      macAddress: macAddress,
     );
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
 
     final appUpdateHelper = AppUpdateHelper();
 
-    await appUpdateHelper.ensureInitialized(settings);
+    if (Platform.isAndroid) {
+      await appUpdateHelper.ensureInitialized(settings);
+    }
 
     runApp(
       MultiProvider(
