@@ -464,6 +464,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       child: V3Scrollbar(
         controller: sc,
         child: ListView.separated(
+          controller: sc,
           shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(),
           itemCount: isBroadcastingToGroup ? clientList.length : 0,
