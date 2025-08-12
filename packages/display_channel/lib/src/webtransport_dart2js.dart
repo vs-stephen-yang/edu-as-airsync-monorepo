@@ -112,7 +112,7 @@ class WebTransport {
           }
         }
       } catch (e) {
-        rethrow;
+        break;
       }
     }
   }
@@ -174,4 +174,3 @@ class WebTransport {
     return certificateHashes;
   }
 }
-
