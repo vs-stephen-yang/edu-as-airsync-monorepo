@@ -1,0 +1,209 @@
+# PR / push 觸發，QualityCheck → Build（dev/stage/production × AAB+APK）
+trigger:
+  branches:
+    include:
+      - main
+      - HotFix/*
+pr:
+  branches:
+    include:
+      - main
+      - HotFix/*
+
+pool:
+  name: "AirSync macOS Pool"
+
+variables:
+  - name: Flutter.Bin
+    value: fvm flutter
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate"
+  - name: Split.Debug.Root
+    value: "$(Build.ArtifactStagingDirectory)/debug_info"
+  - name: Signing.Arguments
+    value: "--min-sdk-version 21"
+  - group: "store-keystore-secrets"
+
+jobs:
+  # -------------------------------------------------------------------
+  # 1) 品質檢查
+  # -------------------------------------------------------------------
+  - job: QualityCheck
+    displayName: Quality Check (lint & test)
+    steps:
+      - checkout: self
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Analyze code
+      - script: $(Flutter.Bin) test -j 8 --no-pub --coverage --branch-coverage
+        displayName: Run tests with coverage
+
+  # -------------------------------------------------------------------
+  # 2) Build（矩陣 dev/stage/production；每個環境同時出 AAB & APK）
+  #    - 命名：Android_<env>_v<version>.(apk|aab)
+  #      env: dev=D, stage=S, production=""
+  #    - 版本號：production 的 build-number = pubspec code + 1；其餘使用原 code
+  # -------------------------------------------------------------------
+  - job: Build
+    displayName: Build Android (AAB & APK with signing for APK)
+    dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
+    strategy:
+      maxParallel: 3
+      matrix:
+        dev:
+          envName: "dev"
+          envMark: "D"
+          isProd: "false"
+        stage:
+          envName: "stage"
+          envMark: "S"
+          isProd: "false"
+        production:
+          envName: "production"
+          envMark: ""          # 沒有尾碼
+          isProd: "true"
+
+    steps:
+      - checkout: self
+        persistCredentials: true
+
+      # 若有 Azure Artifacts 私庫，打開這兩段；沒用也能安全跳過
+      - task: MavenAuthenticate@0
+        displayName: Provide Maven credentials (optional)
+        inputs:
+          artifactsFeeds: "myViewBoard_Artifacts"
+      - task: Bash@3
+        displayName: Extract Azure Artifacts creds (optional)
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            if [ -f "$HOME/.m2/settings.xml" ]; then
+              USERNAME=$(xmllint --xpath "string(//settings/servers/server/username)" "$HOME/.m2/settings.xml" || true)
+              PASSWORD=$(xmllint --xpath "string(//settings/servers/server/password)" "$HOME/.m2/settings.xml" || true)
+              echo "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$USERNAME"
+              echo "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$PASSWORD"
+            fi
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+
+      # 讀 pubspec 的 version，計算 build number（prod +1），設定檔名前綴
+      - task: Bash@3
+        displayName: Resolve version & filenames
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            ver_line=$(grep '^version: ' pubspec.yaml | head -n1 | cut -c 10-)
+            name="${ver_line%%+*}"   # x.y.z
+            code_s="${ver_line##*+}" # 原始 code
+            if [ "$(isProd)" = "true" ]; then code=$((code_s+1)); else code=$code_s; fi
+            
+            # envMark: D / S / ""（依 matrix）
+            if [ -n "$(envMark)" ]; then
+              APK_NAME="Android_$(envMark)_v${name}.apk"
+              AAB_NAME="Android_$(envMark)_v${name}.aab"
+            else
+              APK_NAME="Android_v${name}.apk"
+              AAB_NAME="Android_v${name}.aab"
+            fi
+            
+            echo "version_name=$name, code_s=$code_s, code=$code"
+            echo "apk=$APK_NAME, aab=$AAB_NAME"
+            
+            echo "##vso[task.setvariable variable=APP_VERSION_NAME]$name"
+            echo "##vso[task.setvariable variable=APP_VERSION_CODE_S]$code_s"
+            echo "##vso[task.setvariable variable=APP_VERSION_CODE]$code"
+            echo "##vso[task.setvariable variable=APK_FILE_NAME]$APK_NAME"
+            echo "##vso[task.setvariable variable=AAB_FILE_NAME]$AAB_NAME"
+
+      # 建置 AAB（以檔名為 debug_info 子目錄）
+      - task: Bash@3
+        displayName: Build AAB
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            mkdir -p "$(Split.Debug.Root)"
+            dbgdir="$(Split.Debug.Root)/$(AAB_FILE_NAME).debug_info"
+            mkdir -p "$dbgdir"
+            $(Flutter.Bin) build appbundle \
+              -t "lib/main_$(envName).dart" \
+              $(Flutter.Build.Options) \
+              --split-debug-info="$dbgdir/" \
+              --build-name="$(APP_VERSION_NAME)" \
+              --build-number="$(APP_VERSION_CODE)"
+            mkdir -p "$(Build.ArtifactStagingDirectory)/aab"
+            # 兼容含 flavor 的輸出檔名
+            cp build/app/outputs/bundle/**/app-release.aab "$(Build.ArtifactStagingDirectory)/aab/$(AAB_FILE_NAME)"
+            cp -r "$dbgdir" "$(Build.ArtifactStagingDirectory)/aab/"
+
+      # 建置 APK（以檔名為 debug_info 子目錄）
+      - task: Bash@3
+        displayName: Build APK
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            dbgdir="$(Split.Debug.Root)/$(APK_FILE_NAME).debug_info"
+            mkdir -p "$dbgdir"
+            $(Flutter.Bin) build apk \
+              -t "lib/main_$(envName).dart" \
+              $(Flutter.Build.Options) \
+              --split-debug-info="$dbgdir/" \
+              --build-name="$(APP_VERSION_NAME)" \
+              --build-number="$(APP_VERSION_CODE)"
+            mkdir -p "$(Build.ArtifactStagingDirectory)/apk"
+            cp build/app/outputs/flutter-apk/app-release.apk "$(Build.ArtifactStagingDirectory)/apk/$(APK_FILE_NAME)"
+            cp -r "$dbgdir" "$(Build.ArtifactStagingDirectory)/apk/"
+
+      # 簽章：AAB 與 APK 都簽（store.keystore）
+      - task: AndroidSigning@3
+        displayName: Sign AABs - store
+        inputs:
+          apkFiles: '$(Build.ArtifactStagingDirectory)/aab/*.aab'
+          keystoreFile: store.keystore
+          keystorePass: $(store.keystore.password)
+          keystoreAlias: $(store.keystore.alias)
+          keyPass: $(store.key.password)
+          apksignerArguments: $(Signing.Arguments)
+      - task: AndroidSigning@3
+        displayName: Sign APKs - store
+        inputs:
+          apkFiles: '$(Build.ArtifactStagingDirectory)/apk/*.apk'
+          keystoreFile: store.keystore
+          keystorePass: $(store.keystore.password)
+          keystoreAlias: $(store.keystore.alias)
+          keyPass: $(store.key.password)
+          apksignerArguments: $(Signing.Arguments)
+          zipalign: true
+
+      # 清理中間產物：不對外發佈 .unaligned / .idsig
+      - task: Bash@3
+        displayName: Clean signing intermediates (.unaligned / .idsig)
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            for kind in aab apk; do
+              dir="$(Build.ArtifactStagingDirectory)/$kind"
+              if [ -d "$dir" ]; then
+                # 刪掉簽章/對齊過程的中間檔
+                find "$dir" -maxdepth 1 -type f \( -name '*.unaligned' -o -name '*.idsig' \) -print -delete || true
+              fi
+            done
+
+      # 發佈產物（分 AAB / APK；每個 env 各一份）
+      - task: PublishPipelineArtifact@1
+        displayName: Publish AAB Artifact
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/aab'
+          artifact: 'aab_$(envName)'
+      - task: PublishPipelineArtifact@1
+        displayName: Publish APK Artifact
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/apk'
+          artifact: 'apk_$(envName)'
