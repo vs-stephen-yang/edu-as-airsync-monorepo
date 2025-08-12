@@ -108,7 +108,8 @@ class RestartBluetoothWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
+    final ScrollController mainController = ScrollController();
+    final ScrollController buttonController = ScrollController();
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -116,7 +117,7 @@ class RestartBluetoothWidget extends StatelessWidget {
           constrainedAxis: Axis.vertical,
           child: SizedBox(
             width: 266,
-            height: 193,
+            height: 210,
             child: Dialog(
               shape: RoundedRectangleBorder(
                 borderRadius: context.tokens.radii.vsdslRadiusXl,
@@ -131,9 +132,9 @@ class RestartBluetoothWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: V3Scrollbar(
-                        controller: scrollController,
+                        controller: mainController,
                         child: SingleChildScrollView(
-                          controller: scrollController,
+                          controller: mainController,
                           child: Column(
                             children: [
                               Padding(
@@ -176,8 +177,8 @@ class RestartBluetoothWidget extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 40,
+                          child: Container(
+                            constraints: BoxConstraints(maxHeight: 80),
                             child: V3Focus(
                               label: S
                                   .of(context)
@@ -219,8 +220,8 @@ class RestartBluetoothWidget extends StatelessWidget {
                         ),
                         Gap(8),
                         Expanded(
-                          child: SizedBox(
-                            height: 40,
+                          child: Container(
+                            constraints: BoxConstraints(maxHeight: 80),
                             child: V3Focus(
                               label: S
                                   .of(context)
@@ -239,7 +240,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       context.tokens.color.vsdslColorPrimary,
                                   // remove onFocused color, this is also ripple color
                                   overlayColor: Colors.transparent,
-                                  padding: EdgeInsets.zero,
+                                  padding: EdgeInsets.all(10),
                                 ),
                                 onPressed: () {
                                   onConfirm?.call();
@@ -247,12 +248,18 @@ class RestartBluetoothWidget extends StatelessWidget {
                                     navService.goBack();
                                   }
                                 },
-                                child: V3AutoHyphenatingText(
-                                  S.current
-                                      .v3_touchback_restart_bluetooth_btn_restart,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
+                                child: V3Scrollbar(
+                                  controller: buttonController,
+                                  child: SingleChildScrollView(
+                                    controller: buttonController,
+                                    child: V3AutoHyphenatingText(
+                                      S.current
+                                          .v3_touchback_restart_bluetooth_btn_restart,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
