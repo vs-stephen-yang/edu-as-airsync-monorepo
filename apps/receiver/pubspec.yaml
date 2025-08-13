@@ -127,7 +127,7 @@ dependencies:
   flutter_multicast_plugin:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin
-      ref: release-3.8.2
+      ref: release-3.8.4
   fluttertoast: ^8.2.12
   # ViewSonic plug-in
 
