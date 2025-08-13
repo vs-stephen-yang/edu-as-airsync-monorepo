@@ -78,6 +78,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
     setState(() {
       _isEraser = false;
+      refreshCheck();
     });
   }
 
@@ -86,6 +87,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
     setState(() {
       _isEraser = true;
+      refreshCheck();
     });
   }
 
@@ -93,13 +95,8 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
     trackEvent('click_clean', EventCategory.annotation);
     setState(() {
       _points.clear();
+      refreshCheck();
     });
-    if (Platform.isMacOS && _onMinimize) {
-      _onMinimize = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await refreshScreen();
-      });
-    }
   }
 
   void _addPoint(Offset offset) {
@@ -118,13 +115,8 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   Future<void> _endDrawing() async {
     setState(() {
       _points.add(null);
+      refreshCheck();
     });
-    if (Platform.isMacOS && _onMinimize) {
-      _onMinimize = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await refreshScreen();
-      });
-    }
   }
 
   void _collapse() async {
@@ -227,6 +219,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             onPressed: () {
               setState(() {
                 _strokeWidth = 2.0;
+                refreshCheck();
               });
             },
           ),
@@ -237,6 +230,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             onPressed: () {
               setState(() {
                 _strokeWidth = 5.0;
+                refreshCheck();
               });
             },
           ),
@@ -247,6 +241,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             onPressed: () {
               setState(() {
                 _strokeWidth = 12.0;
+                refreshCheck();
               });
             },
           ),
@@ -274,19 +269,32 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
     );
   }
 
+  void refreshCheck() {
+    if (Platform.isMacOS && _onMinimize) {
+      _onMinimize = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await refreshScreen();
+      });
+    }
+  }
+
   Future<void> refreshScreen() async {
     // mac如果設定透明背景會有殘影，需要刷新整個視窗殘影才能消失(刷新flutter層Widget無效)。
     setState(() {
       _pointSave.addAll(_points.toList());
       _points.clear();
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await widget.windowController!.hide();
-      await Future.delayed(const Duration(milliseconds: 100));
-      await widget.windowController!.show();
-      setState(() {
-        _points.addAll(_pointSave);
-        _pointSave.clear();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // delay是為了畫面顯示完整後才動作。
+        await Future.delayed(const Duration(milliseconds: 50));
+        await widget.windowController!.hide();
+        await Future.delayed(const Duration(milliseconds: 50));
+        await widget.windowController!.show();
+        await Future.delayed(const Duration(milliseconds: 50));
+        setState(() {
+          _points.addAll(_pointSave);
+          _pointSave.clear();
+        });
       });
     });
   }
