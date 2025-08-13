@@ -1,8 +1,11 @@
 import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
-import 'package:display_flutter/utility/log.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/model/multicast_info.dart';
+import 'package:display_flutter/model/remote_screen_utils.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
 
 const String defaultMulticastIp = '239.1.1.1';
@@ -17,6 +20,9 @@ class MulticastPresenter {
   late Uint8List keyHex;
   late Uint8List saltHex;
   late String keyString;
+
+  double _screenWidth = defaultScreenWidth;
+  double _screenHeight = defaultScreenHeight;
 
   bool started = false;
 
@@ -86,7 +92,22 @@ class MulticastPresenter {
 
     log.info(
         'Start multicast with config: videoPort: $videoPort, audioPort: $audioPort, ssrc: $ssrc, keyString: $keyString');
-    await FlutterMulticastPlugin.startCapture();
+
+    final (width, height) = await updateScreenSize();
+    _screenWidth = width;
+    _screenHeight = height;
+
+    String? deviceType = await DeviceInfoVs.deviceType;
+
+    final captureResolution = getMulticastCaptureVideoResolution(
+      deviceType,
+      _screenWidth,
+      _screenHeight,
+    );
+    log.info(
+        'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+
+    await FlutterMulticastPlugin.startCapture(resolution: captureResolution);
     started = true;
     return true;
   }
