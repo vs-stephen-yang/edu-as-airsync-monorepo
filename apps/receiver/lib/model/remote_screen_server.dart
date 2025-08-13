@@ -8,7 +8,6 @@ import 'package:display_flutter/model/touch_event_manager.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu.dart';
@@ -17,10 +16,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:uuid/uuid.dart';
-import 'package:window_size/window_size.dart';
 
-const defaultScreenWidth = 3840.0;
-const defaultScreenHeight = 2160.0;
 const int roomIdLength = 8;
 
 class RemoteControlChannel {
@@ -155,7 +151,10 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
       _ionSfuClient = await _createIonSfuClient();
 
-      await updateScreenSize();
+      final (width, height) = await updateScreenSize();
+      _screenWidth = width;
+      _screenHeight = height;
+
       String? deviceType = await DeviceInfoVs.deviceType;
 
       final captureResolution = getCaptureVideoResolution(
@@ -331,24 +330,6 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       log.warning('No channel is found for connector');
     } catch (e) {
       log.warning(e);
-    }
-  }
-
-  Future<void> updateScreenSize() async {
-    if (Platform.isWindows) {
-      // PlatformDispatcher did not support get windows width and height yet.
-      // Using window_size for workaround.
-      // https://github.com/flutter/flutter/issues/125938
-      // https://github.com/flutter/flutter/issues/125939
-      // todo: tracking issue status to remove this workaround.
-      Screen? screen = await getCurrentScreen();
-      if (screen != null) {
-        _screenWidth = screen.frame.width;
-        _screenHeight = screen.frame.height;
-      }
-    } else {
-      _screenWidth = PlatformDispatcher.instance.displays.first.size.width;
-      _screenHeight = PlatformDispatcher.instance.displays.first.size.height;
     }
   }
 
