@@ -8,6 +8,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
@@ -87,7 +88,9 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
           constraints: BoxConstraints.tightFor(
             width: isCollapsed
                 ? 37
-                : (HybridConnectionList.hybridSplitScreenCount.value > 1
+                : (context.splitScreenRatio == SplitScreenRatio.oneThird ||
+                            HybridConnectionList.hybridSplitScreenCount.value >
+                                1
                         ? 140
                         : 106) +
                     (isAirplay ? 45 : 0), // 增加按鈕的空間
@@ -176,7 +179,9 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 // Use Visibility Widget to Maintain Focus on the Correct Icon During Collapse/Expand.
                 Visibility(
                   visible: !isCollapsed &&
-                      HybridConnectionList.hybridSplitScreenCount.value > 1,
+                      (context.splitScreenRatio == SplitScreenRatio.oneThird ||
+                          HybridConnectionList.hybridSplitScreenCount.value >
+                              1),
                   child: V3Focus(
                     label: HybridConnectionList().enlargedScreenIndex.value ==
                             widget.index
