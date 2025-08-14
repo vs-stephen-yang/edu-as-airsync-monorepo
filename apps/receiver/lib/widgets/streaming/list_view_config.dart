@@ -40,7 +40,7 @@ final listViewConfig = StreamingViewConfig(
 
     if (enlarged != null) {
       return enlarged == index
-          ? LayoutPosition(left: 0, top: thirdH, width: fullW, height: thirdH)
+          ? LayoutPosition(left: 0, top: 0, width: fullW, height: fullH)
           : LayoutPosition.zero();
     }
 
