@@ -25,7 +25,7 @@ class VerticalPageIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: isActive
             ? context.tokens.color.vsdslColorSecondaryVariant
-            : const Color(0x3C5AAA7A),
+            : context.tokens.color.vsdslColorOpacityPrimaryLg,
         shape: BoxShape.circle,
       ),
     );
