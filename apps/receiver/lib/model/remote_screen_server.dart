@@ -151,7 +151,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
       _ionSfuClient = await _createIonSfuClient();
 
-      final (width, height) = await updateScreenSize();
+      final (width, height) = await getScreenSize();
       _screenWidth = width;
       _screenHeight = height;
 
