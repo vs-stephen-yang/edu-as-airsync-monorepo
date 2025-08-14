@@ -57,7 +57,7 @@ Resolution getMulticastCaptureVideoResolution(
 const defaultScreenWidth = 3840.0;
 const defaultScreenHeight = 2160.0;
 
-Future<(double, double)> updateScreenSize() async {
+Future<(double, double)> getScreenSize() async {
   if (Platform.isWindows) {
     // PlatformDispatcher did not support get windows width and height yet.
     // Using window_size for workaround.
