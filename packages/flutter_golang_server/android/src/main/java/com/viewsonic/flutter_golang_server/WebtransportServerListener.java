@@ -1,5 +1,8 @@
 package com.viewsonic.flutter_golang_server;
 
+import androidx.annotation.Keep;
+
+@Keep
 public interface WebtransportServerListener {
     void onMessage(String connId, String message);
 
