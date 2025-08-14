@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 /**
  * FlutterGolangPlugin
  */
+@Keep
 public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandler, IonSfuServerListener, WebtransportServerListener {
     /// The MethodChannel that will the communication between Flutter and native
     /// Android

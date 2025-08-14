@@ -1,11 +1,14 @@
 package com.viewsonic.flutter_golang_server;
 
+import androidx.annotation.Keep;
+
 import java.util.List;
 import java.util.Map;
 
 import server.ConfigInfo;
 import server.ICEServerConfig;
 
+@Keep
 public class IonSfuUtil {
 
     // Adds multiple ICE server configurations to the given ConfigInfo instance.

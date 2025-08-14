@@ -1,5 +1,7 @@
 package com.viewsonic.flutter_golang_server;
 
+import androidx.annotation.Keep;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +10,7 @@ import server.WebTransportConfig;
 import server.WebTransportListener;
 
 
+@Keep
 public class WebtransportServer implements WebTransportListener {
     private final WebtransportServerListener webtransportServerListener_;
 

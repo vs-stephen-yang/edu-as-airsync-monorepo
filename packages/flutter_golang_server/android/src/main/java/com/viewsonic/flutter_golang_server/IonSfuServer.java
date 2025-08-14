@@ -1,11 +1,14 @@
 package com.viewsonic.flutter_golang_server;
 
+import androidx.annotation.Keep;
+
 import java.util.List;
 import java.util.Map;
 
 import server.ConfigInfo;
 import server.IonSfuListener;
 
+@Keep
 public class IonSfuServer implements IonSfuListener {
     private static final String TAG = "IonSfuServer";
 
