@@ -148,7 +148,7 @@
   "v3_group_dialog_message": "%s 已向您的設備發送了螢幕廣播請求。這將同步並顯示當前請求端的畫面內容，您想接受此請求嗎？",
   "v3_group_dialog_accept": "接受",
   "v3_group_dialog_decline": "拒絕",
-  "v3_settings_whats_new_content": "AirSync %s 版本發行說明\n\nAirSync 是 ViewSonic 專有的無線螢幕分享產品。搭配AirSync sender一起使用時，您可以快速地從您的各種設備無線分享螢幕到 ViewSonic 大型互動式顯示器。\n\n此版本包含以下新功能：\n\n1. 支援 ViewSonic LED 顯示器。\n\n2. 支援在大屏上反控Android裝置的功能。\n\n3. 支援透過 AirPlay 共享時，在大屏上反控iPad的功能。\n\n4. 智慧滿屏。\n\n5. 可以調整設備端接收大屏畫面視窗的大小。\n\n6. 提升 Miracast 的穩定性。\n\n7. 修正錯誤。",
+  "v3_settings_whats_new_content": "AirSync %s 版本發行說明\n\nAirSync 是 ViewSonic 專有的無線螢幕分享產品。搭配AirSync sender一起使用時，您可以快速地從您的各種設備無線分享螢幕到 ViewSonic 大型互動式顯示器。\n\n此版本包含以下新功能：\n\n1. 支援 ViewBoard原生分割畫面顯示。\n\n2. 支援web sender高畫質螢幕分享 (最高4K解析度)。\n\n3. 透過Windows sender分享畫面時，Windows裝置保持靜音。\n\n4. 提升穩定性。\n\n5. 修正錯誤。\n",
   "v3_eula_title": "最終用戶許可協議",
   "v3_eula_agree": "同意",
   "v3_eula_disagree": "不同意",
@@ -363,5 +363,12 @@
   "v3_help_center_title": "支援中心",
   "v3_lbl_open_help_center": "開啟支援中心",
   "v3_lbl_close_help_center": "關閉支援中心",
-  "v3_settings_knowledge_base": "知識庫"
+  "v3_settings_knowledge_base": "知識庫",
+  "v3_lbl_settings_knowledge_base": "知識庫",
+  "v3_settings_device_high_image_quality": "高畫質",
+  "v3_lbl_settings_device_high_image_quality": "高畫質",
+  "v3_settings_device_high_image_quality_desc": "以較高解析度顯示 (設備端需支援FHD以上輸出)",
+  "v3_lbl_streaming_page_control": "下一頁",
+  "v3_instruction2_onethird": "投影辨識碼",
+  "v3_instruction3_onethird": "一次性密碼"
 }

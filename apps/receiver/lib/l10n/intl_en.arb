@@ -148,7 +148,7 @@
   "v3_group_dialog_message": "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?",
   "v3_group_dialog_accept": "Accept",
   "v3_group_dialog_decline": "Decline",
-  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync is a proprietary wireless screen-sharing solution from ViewSonic. When utilized with the AirSync sender, it allows users to seamlessly share their screens with ViewSonic interactive displays.\n\nThis release includes the following new features:\n\n1. Support for ViewSonic LED Displays.\n\n2. Touchback functionality for Android devices on IFP.\n\n3. Touchback functionality for iPads when sharing via AirPlay.\n\n4. Smart scaling.\n\n5. Capability to resize the cast to device window.\n\n6. Enhanced stability for Miracast.\n\n7. Fixed various bugs.",
+  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync is a proprietary wireless screen-sharing solution from ViewSonic. When utilized with the AirSync sender, it allows users to seamlessly share their screens with ViewSonic interactive displays.\n\nThis release includes the following new features:\n\n1. Support for ViewBoard split screen view.\n\n2. Support high quality screen sharing (up to 4K) through web sender.\n\n3. Mute device audio output when sharing through Windows sender.\n\n4. Enhanced stability.\n\n5. Fixed various bugs.\n",
   "v3_eula_title": "End-User License Agreement",
   "v3_eula_agree": "Agree",
   "v3_eula_disagree": "Disagree",
