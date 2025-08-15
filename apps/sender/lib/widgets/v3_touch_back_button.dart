@@ -20,7 +20,7 @@ class V3TouchBackButton extends StatefulWidget {
 
 class _V3TouchBackButtonState extends State<V3TouchBackButton>
     with WidgetsBindingObserver {
-  late final AppLifecycleListener? _lifecycleListener;
+  AppLifecycleListener? _lifecycleListener;
   bool isButtonEnabled = false;
 
   @override
@@ -49,6 +49,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
   @override
   void dispose() {
     _lifecycleListener?.dispose();
+    _lifecycleListener = null;
 
     super.dispose();
   }
