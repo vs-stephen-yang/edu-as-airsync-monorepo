@@ -883,13 +883,17 @@ class WebRTCConnector {
     }
     final pc = _pc!;
 
-    // TODO: dispose previous stream and tracks
-
     final stream = await getDisplayMedia();
     if (stream == null) {
       return;
     }
+
+    final oldStream = _localStream;
     _localStream = stream;
+
+    // Clean up the old stream and tracks
+    oldStream?.getTracks().forEach((track) => track.stop());
+    await oldStream?.dispose();
 
     final videoTrack =
         stream.getVideoTracks().isNotEmpty ? stream.getVideoTracks().first : null;
