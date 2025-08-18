@@ -487,8 +487,10 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
-  int getFullHeight(bool isFullHeight) {
-    int fullHeight = isFullHeight ? 2160 : 540;
+  int getFullHeight(bool isFullHeight, int attenderCount) {
+    int fullHeight = (isFullHeight || attenderCount <= 2)
+                   ? 2160
+                   : 540;
     return fullHeight;
   }
 
@@ -508,7 +510,7 @@ class RTCConnector {
 
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0,
-        height: getFullHeight(isFullHeight),
+        height: getFullHeight(isFullHeight, attendeeCount),
         decodeHeightLimit: getDecodeHeightLimit(_deviceType, attendeeCount));
     log.info(
         '[$clientId] Changing present quality. height:${message.constraints?.height}');
