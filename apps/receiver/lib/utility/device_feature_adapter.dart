@@ -194,11 +194,6 @@ class DeviceFeatureAdapter {
       options.addAll(opts);
     }
 
-    // Workaround for [BUG 71148] 50-5 A13平台無法使用H264 Contraint-BaseLine Profile
-    if (_deviceType == 'IFP50_5' && _sdkVersion == '13') {
-      options['maxHardwareDecodeSession'] = 0; // disable hardware decode
-    }
-
     if (useSoftwareDecode) {
       options['maxHardwareDecodeSession'] = 0;
     }
