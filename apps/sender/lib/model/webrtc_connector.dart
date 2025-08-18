@@ -867,6 +867,61 @@ class WebRTCConnector {
     return result;
   }
 
+  RTCRtpSender? _findSenderByKind(List<RTCRtpSender> senders, String kind) {
+    for (final s in senders) {
+      if (s.track?.kind == kind) {
+        return s;
+      }
+    }
+    return null;
+  }
+
+  // apply resolution and fps for desktop platforms
+  Future<void> applyConstraintsForDesktop() async {
+    if (_pc == null) {
+      return;
+    }
+    final pc = _pc!;
+
+    // TODO: dispose previous stream and tracks
+
+    final stream = await getDisplayMedia();
+    if (stream == null) {
+      return;
+    }
+    _localStream = stream;
+
+    final videoTrack =
+        stream.getVideoTracks().isNotEmpty ? stream.getVideoTracks().first : null;
+    final audioTrack =
+        stream.getAudioTracks().isNotEmpty ? stream.getAudioTracks().first : null;
+
+    final senders = await pc.getSenders();
+    final futures = <Future<void>>[];
+
+    if (videoTrack != null) {
+      _applyVideoContentHint(videoTrack);
+
+      final videoSender = _findSenderByKind(senders, 'video');
+
+      if (videoSender != null) {
+        futures.add(videoSender.replaceTrack(videoTrack));
+      }
+    }
+
+    if (audioTrack != null) {
+      final audioSender = _findSenderByKind(senders, 'audio');
+
+      if (audioSender != null) {
+        futures.add(audioSender.replaceTrack(audioTrack));
+      }
+    }
+
+    if (futures.isNotEmpty) {
+      await Future.wait(futures);
+    }
+  }
+
   Future changePresentQuality(ChangePresentQuality msg) async {
     log.info(
         "Received quality change request. height:${msg.constraints?.height}");
@@ -910,16 +965,7 @@ class WebRTCConnector {
         await videoTrack?.applyConstraints(constraints);
       }
     } else {
-      _localStream = await getDisplayMedia();
-
-      for (MediaStreamTrack track in _localStream!.getTracks()) {
-        if (track.kind == 'video') {
-          _applyVideoContentHint(track);
-        }
-        unawaited(_pc?.getSenders().then((value) async {
-          await value.first.replaceTrack(track);
-        }));
-      }
+      await applyConstraintsForDesktop();
     }
   }
 
