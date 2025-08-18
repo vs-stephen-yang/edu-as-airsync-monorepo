@@ -330,7 +330,7 @@ public class EulaActivity extends FlutterActivity {
         if (multicastLock != null) {
             multicastLock.release();
         }
-
+        mAlarmOTA = null;
         super.onDestroy();
 //        System.exit(0);
     }
@@ -355,15 +355,15 @@ public class EulaActivity extends FlutterActivity {
     public static void setAlarmOTA(Context context) {
         Log.e(TAG, "setAlarmOTA !!!!!");
 
+        Intent intent = new Intent(context, AppAlarmOTA.class);
+        intent.setAction("com.mvbcast.crosswalk.AppOTA"); // must add this!!
+        intent.setPackage("com.mvbcast.crosswalk");
+        int flag = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ? PendingIntent.FLAG_IMMUTABLE : 0;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, flag);
+
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context,
-                    AppAlarmOTA.class), PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context,
-                    AppAlarmOTA.class), 0);
-        }
+        // Remove previously scheduled alarm before setting a new one
+        am.cancel(pendingIntent);
 
         // noinspection ConstantConditions
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
