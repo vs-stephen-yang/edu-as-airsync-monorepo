@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
@@ -65,13 +66,14 @@ class AppUpdateHelper {
         isStartupCheck: isStartupCheck));
   }
 
-  startAppUpdate(String filePath) {
+  startAppUpdate(String filePath) async {
+    DisplayServiceBroadcast.instance.dispose();
     if (_otaFlavor == OtaFlavor.ifp || _otaFlavor == OtaFlavor.edla) {
       // silent install
-      AppOtaFlutter().startSilentInstallApk(filePath);
+      unawaited(AppOtaFlutter().startSilentInstallApk(filePath));
     } else {
       // using google UI
-      AppOtaFlutter().startInstallApk(filePath);
+      unawaited(AppOtaFlutter().startInstallApk(filePath));
     }
   }
 
