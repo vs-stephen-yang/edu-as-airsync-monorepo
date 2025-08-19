@@ -62,7 +62,10 @@ public class EulaActivity extends FlutterActivity {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger binaryMessenger = flutterEngine.getDartExecutor().getBinaryMessenger();
 
-        vsApiHandler = new VSApiHandler(this, binaryMessenger);
+        // Use the same condition as in VSApi.createVSApiInstance() [vs_api.dart]
+        if (BuildConfig.FLAVOR_channel == "ifp") {
+            vsApiHandler = new VSApiHandler(this, binaryMessenger);
+        }
 
         MethodChannel mAndroidRetain = new MethodChannel(binaryMessenger, "com.mvbcast" +
                 ".crosswalk/android_app_retain");
