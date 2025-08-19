@@ -98,6 +98,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     );
     trackEvent('launch', EventCategory.system);
 
+    setSentryUser(AppInstanceCreate().instanceId);
+
     WebRTCUtil.iceGatheringContinually =
         await WebRTCUtil.loadIceGatheringContinually();
     WebRTCUtil.showDebugOverlay = await WebRTCUtil.loadShowDebugOverlay();

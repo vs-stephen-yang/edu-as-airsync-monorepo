@@ -21,3 +21,11 @@ initSentry(SentryConfig config) async {
     },
   );
 }
+
+setSentryUser(String id) {
+  final user = SentryUser(
+    id: id,
+  );
+
+  Sentry.configureScope((scope) => scope.setUser(user));
+}
