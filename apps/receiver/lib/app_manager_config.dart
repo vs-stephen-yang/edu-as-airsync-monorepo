@@ -164,7 +164,7 @@ class AppManagerConfig {
         await AppPreferences().loadInvitedToGroupSelectedItem();
 
         // Apply new settings
-        DisplayServiceBroadcast.instance
+        await DisplayServiceBroadcast.instance
             .updateInvitedToGroupOption(AppPreferences().invitedToGroup);
 
         // clear manager update request

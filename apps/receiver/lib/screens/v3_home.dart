@@ -7,6 +7,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/wifi_status_util.dart';
 import 'package:display_flutter/widgets/streaming/streaming_view_container.dart';
@@ -67,12 +68,12 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
       // 監聽 WiFi 狀態變化
       _wifiStatusSubscription =
           WifiStatusUtil().wifiStatusStream.listen((isEnabled) {
-            // reopen
-            if (isEnabled && !_lastWifiStatus) {
-              mirrorStateProvider.restartMiracast();
-            }
-            _lastWifiStatus = isEnabled;
-          });
+        // reopen
+        if (isEnabled && !_lastWifiStatus) {
+          mirrorStateProvider.restartMiracast();
+        }
+        _lastWifiStatus = isEnabled;
+      });
     }
   }
 
@@ -90,6 +91,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     AppManagerConfig().stopHandleManagerUpdateRequest();
+    DisplayServiceBroadcast.instance.dispose();
   }
 
   @override

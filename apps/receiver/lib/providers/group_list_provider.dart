@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as provider;
@@ -11,110 +12,147 @@ import 'channel_provider.dart';
 import 'group_provider.dart';
 
 final discoveryModelProvider = ChangeNotifierProvider<GroupListModel>((ref) {
-  GroupListModel model = GroupListModel();
-  return model;
+  return GroupListModel();
 });
 
 class GroupListModel with ChangeNotifier {
   GroupListModel();
 
   static const String discoveryType = '_vs-airsync._tcp';
-  static BonsoirDiscovery? discovery;
-  static GroupProvider? _groupProvider;
-  static bool _startDiscoveryService = false;
-  static bool _stopDiscoveryService = false;
+
+  BonsoirDiscovery? _discovery;
+  StreamSubscription<BonsoirDiscoveryEvent>? _discoverySub;
+  GroupProvider? _groupProvider;
+
   final Map<String, DateTime> _serviceFoundTime = {};
 
-  start({required BuildContext context}) async {
-    if (discovery?.isStopped == false || _startDiscoveryService) {
-      return;
-    }
-    _startDiscoveryService = true;
-    // 等待三秒，讓上一次的資源回收完
-    await Future.delayed(const Duration(seconds: 3));
-    if (!context.mounted) {
-      _startDiscoveryService = false;
-      return;
-    }
-    try {
-      discovery = BonsoirDiscovery(type: discoveryType);
-      await discovery!.ready;
-      discovery!.eventStream!.listen((BonsoirDiscoveryEvent event) {
-        if (event.service == null) {
-          return;
-        }
-        BonsoirService service = event.service!;
+  // ---- 序列化所有 start/stop，避免併發 ----
+  Future<void> _ops = Future.value();
 
-        if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
-          bool containsName = _groupProvider
-                  ?.getClientList()
-                  .any((item) => item.serviceName() == service.name) ??
-              false;
-          if (discovery != null && !containsName) {
-            service.resolve(discovery!.serviceResolver);
-          }
-        } else if (event.type ==
-            BonsoirDiscoveryEventType.discoveryServiceResolved) {
-          GroupBean bean = GroupBean.fromJson(service.toJson());
-          if (bean.deviceName().isEmpty ||
-              bean.ip().isEmpty ||
-              bean.id().isEmpty) {
-            return;
-          }
-          _groupProvider?.addClient(bean);
-          _serviceFoundTime[bean.id()] = DateTime.now();
-          log.info('group list add client:${bean.deviceName()}');
-        } else if (event.type ==
-            BonsoirDiscoveryEventType.discoveryServiceLost) {
-          if (event.service!.attributes.containsValue('AirSync')) {
-            GroupBean bean = GroupBean.fromJson(service.toJson());
-
-            DateTime? addTime = _serviceFoundTime[bean.id()];
-            // Service Found後，又馬上收到Service Lost，會被歸類為雜訊
-            if (addTime != null &&
-                    DateTime.now().difference(addTime).inMinutes < 5 ||
-                bean.deviceName().isEmpty) {
-              return;
-            }
-            // 若是host member正在播放中，bonsoir lost也不從清單刪除
-            bool onGrouping = false;
-            if (context.mounted) {
-              ChannelProvider channelProvider =
-                  provider.Provider.of<ChannelProvider>(context, listen: false);
-              if (channelProvider.groupActivated()) {
-                onGrouping = channelProvider.isGroupHostMember(bean.id());
-              }
-            }
-            if (!onGrouping) {
-              _groupProvider?.removeClient(bean);
-              log.info('group list remove Client:${bean.deviceName()}');
-            }
-          }
-        }
-      });
-      await discovery!.start();
-    } catch (e) {
-      discovery = null;
-      log.severe('Failed to start Bonjour Discovery', e);
-    } finally {
-      _startDiscoveryService = false;
-    }
+  Future<T> _queue<T>(Future<T> Function() run) {
+    _ops = _ops.then((_) => run(), onError: (_) => run());
+    return _ops as Future<T>;
   }
 
-  stop() async {
-    if (discovery == null || _stopDiscoveryService) {
-      return;
-    }
-    _stopDiscoveryService = true;
-    try {
-      if (!(discovery?.isStopped ?? false)) {
-        await discovery?.stop();
+  Future<void> start({required BuildContext context}) => _queue(() async {
+        // 若已在探索中就不重入
+        if (_discovery != null && !(_discovery!.isStopped)) return;
+
+        // 先確保沒有殘留 listener
+        await _safeStop();
+
+        final discovery = BonsoirDiscovery(type: discoveryType);
+        await discovery.ready;
+
+        // 使用「這次的 discovery」當作 resolver 來源，避免 race
+        _discoverySub =
+            discovery.eventStream!.listen((BonsoirDiscoveryEvent event) async {
+          final BonsoirService? service = event.service;
+          if (service == null) return;
+
+          switch (event.type) {
+            case BonsoirDiscoveryEventType.discoveryServiceFound:
+              final alreadyInList = _groupProvider
+                      ?.getClientList()
+                      .any((item) => item.serviceName() == service.name) ??
+                  false;
+              if (!alreadyInList) {
+                // 僅在尚未解析過時解析
+                try {
+                  await service.resolve(discovery.serviceResolver);
+                } catch (e) {
+                  log.warning('Resolve service failed: ${service.name}', e);
+                }
+              }
+              break;
+
+            case BonsoirDiscoveryEventType.discoveryServiceResolved:
+              final bean = GroupBean.fromJson(service.toJson());
+              if (bean.deviceName().isEmpty ||
+                  bean.ip().isEmpty ||
+                  bean.id().isEmpty) {
+                return;
+              }
+              _groupProvider?.addClient(bean);
+              _serviceFoundTime[bean.id()] = DateTime.now();
+              log.info('group list add client: ${bean.deviceName()}');
+              break;
+
+            case BonsoirDiscoveryEventType.discoveryServiceLost:
+              final attrs = service.attributes;
+              if (!attrs.containsValue('AirSync')) return;
+
+              final bean = GroupBean.fromJson(service.toJson());
+              final addTime = _serviceFoundTime[bean.id()];
+
+              // Found 後立刻 Lost 視為雜訊（<5 分鐘）或名稱無效時忽略
+              if ((addTime != null &&
+                      DateTime.now().difference(addTime).inMinutes < 5) ||
+                  bean.deviceName().isEmpty) {
+                return;
+              }
+
+              bool onGrouping = false;
+              if (context.mounted) {
+                final channelProvider = provider.Provider.of<ChannelProvider>(
+                    context,
+                    listen: false);
+                if (channelProvider.groupActivated()) {
+                  onGrouping = channelProvider.isGroupHostMember(bean.id());
+                }
+              }
+              if (!onGrouping) {
+                _groupProvider?.removeClient(bean);
+                log.info('group list remove client: ${bean.deviceName()}');
+              }
+              break;
+
+            default:
+              break;
+          }
+        });
+
+        try {
+          await discovery.start();
+          _discovery = discovery;
+        } on PlatformException catch (e) {
+          final msg = (e.message ?? '').toLowerCase();
+          if (msg.contains('listener already in use')) {
+            await _safeStop();
+            await Future.delayed(const Duration(milliseconds: 150));
+            await discovery.start();
+            _discovery = discovery;
+          } else {
+            await _safeStop();
+            log.severe('Failed to start Bonjour Discovery', e);
+            rethrow;
+          }
+        } catch (e) {
+          await _safeStop();
+          log.severe('Failed to start Bonjour Discovery', e);
+          rethrow;
+        }
+      });
+
+  Future<void> stop() => _queue(_safeStop);
+
+  Future<void> _safeStop() async {
+    // 先停用訂閱（避免新事件在 stop 途中進來）
+    final sub = _discoverySub;
+    _discoverySub = null;
+    await sub?.cancel();
+
+    final d = _discovery;
+    _discovery = null;
+
+    if (d != null) {
+      try {
+        if (!(d.isStopped)) {
+          await d.stop();
+        }
+      } catch (e) {
+        log.warning('Failed to stop Bonjour Discovery', e);
       }
-    } catch (e) {
-      log.severe('Failed to stop Bonjour Discovery', e);
-    } finally {
-      discovery = null;
-      _stopDiscoveryService = false;
     }
   }
 
