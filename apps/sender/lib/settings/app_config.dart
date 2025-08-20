@@ -31,6 +31,8 @@ class AppConfig extends InheritedWidget {
   final int platformDirectPort = 5100;
   final int webTransportPort = 8001;
 
+  final String feedbackUrl = 'https://forms.office.com/r/HsuEUMPCU2';
+
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }

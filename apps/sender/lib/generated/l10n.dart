@@ -2624,6 +2624,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Feedback`
+  String get v3_main_feedback {
+    return Intl.message(
+      'Feedback',
+      name: 'v3_main_feedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Feedback`
+  String get v3_lbl_main_feedback {
+    return Intl.message(
+      'Feedback',
+      name: 'v3_lbl_main_feedback',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
