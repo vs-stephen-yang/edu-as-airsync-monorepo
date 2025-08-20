@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,6 +113,7 @@ class V3SettingMainList extends StatelessWidget {
             );
           }),
         ),
+        Gap(14),
         V3AutoHyphenatingText(
           VersionUtil.isOpenVersion
               ? S.of(context).v3_setting_app_version_independent(
@@ -194,6 +196,18 @@ class V3SettingMainList extends StatelessWidget {
               V3UpdateManager().showUpdateDialog(context, value);
             }
           });
+        },
+      ),
+    );
+    list.add(
+      SettingsItems(
+        S.of(context).v3_main_feedback,
+        SvgPicture.asset('assets/images/v3_ic_setting_external.svg'),
+        () {
+          trackEvent('click_feedback', EventCategory.setting);
+          launchUrl(
+            Uri.parse(AppConfig.of(context)!.feedbackUrl),
+          );
         },
       ),
     );
