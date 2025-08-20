@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/dart_ui_web_fake.dart'
@@ -23,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'V3_focus.dart';
 
@@ -432,6 +434,7 @@ class ResponsiveHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSmallScreen = !isBigThan768(context);
+    final bool isMiniScreen = !isBigThan384(context);
 
     final horizontalPadding = isSmallScreen ? 16.0 : 40.0;
     final verticalPadding = isSmallScreen ? 8.0 : 16.0;
@@ -445,7 +448,12 @@ class ResponsiveHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ExcludeSemantics(
-                  child: SvgPicture.asset('assets/images/ic_logo_airsync.svg')),
+                child: SvgPicture.asset(
+                  isMiniScreen
+                      ? 'assets/images/ic_logo_airsync_no_word.svg'
+                      : 'assets/images/ic_logo_airsync.svg',
+                ),
+              ),
               Spacer(),
               LanguageShowMenu(!isSmallScreen),
               const SizedBox(width: 16),
@@ -493,11 +501,10 @@ class ResponsiveHeader extends StatelessWidget {
                           ),
                           excludeFromSemantics: true,
                         ),
-                        if (!isSmallScreen)
+                        if (!isSmallScreen) ...[
                           SizedBox(
                             width: context.tokens.spacing.vsdswSpacing2xs.left,
                           ),
-                        if (!isSmallScreen)
                           Flexible(
                             child: V3AutoHyphenatingText(
                               S.of(context).v3_main_download,
@@ -507,6 +514,74 @@ class ResponsiveHeader extends StatelessWidget {
                               ),
                             ),
                           ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              V3Focus(
+                label: S.current.v3_lbl_main_feedback,
+                identifier: 'v3_qa_main_feedback',
+                button: true,
+                child: InkWell(
+                  onTap: () {
+                    launchUrl(
+                      Uri.parse(AppConfig.of(context)!.feedbackUrl),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  customBorder: isSmallScreen ? const CircleBorder() : null,
+                  splashColor: context.tokens.color.vsdswColorOnPrimary
+                      .withValues(alpha: 0.2),
+                  highlightColor: Colors.transparent,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isSmallScreen ? 10 : 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.tokens.color.vsdswColorPrimary,
+                      shape:
+                      isSmallScreen ? BoxShape.circle : BoxShape.rectangle,
+                      borderRadius:
+                      isSmallScreen ? null : BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.tokens.color.vsdswColorPrimary
+                              .withValues(alpha: 0.4),
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/v3_ic_web_main_feedback.svg',
+                          width: 16,
+                          height: 16,
+                          colorFilter: ColorFilter.mode(
+                            context.tokens.color.vsdswColorOnPrimary,
+                            BlendMode.srcIn,
+                          ),
+                          excludeFromSemantics: true,
+                        ),
+                        if (!isSmallScreen) ...[
+                          SizedBox(
+                            width: context.tokens.spacing.vsdswSpacing2xs.left,
+                          ),
+                          Flexible(
+                            child: V3AutoHyphenatingText(
+                              S.of(context).v3_main_feedback,
+                              style: TextStyle(
+                                color: context.tokens.color.vsdswColorOnPrimary,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -582,7 +657,7 @@ class _V3PopupMenuItemState<T> extends State<V3PopupMenuItem<T>> {
                   decoration: BoxDecoration(
                     color: _isHovered
                         ? context.tokens.color.vsdswColorTertiary
-                            .withOpacity(0.5)
+                            .withValues(alpha: 0.5)
                         : widget.selected
                             ? context.tokens.color.vsdswColorTertiary
                             : context.tokens.color.vsdswColorSurface100,

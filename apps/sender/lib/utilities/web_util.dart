@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+bool isBigThan384(context) => MediaQuery.of(context).size.width >= 384;
+
 bool isBigThan768(context) => MediaQuery.of(context).size.width >= 768;
 
 bool isBigThan1024(context) => MediaQuery.of(context).size.width >= 1024;
