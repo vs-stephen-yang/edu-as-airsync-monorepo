@@ -1,13 +1,8 @@
 trigger:
-  branches:
+  tags:
     include:
-      - main
-      - HotFix/*
-pr:
-  branches:
-    include:
-      - main
-      - HotFix/*
+      - '*'
+pr: none
 
 pool:
   name: "AirSync macOS Pool"
@@ -22,7 +17,8 @@ variables:
   - name: Signing.Arguments
     value: "--min-sdk-version 21"
   - group: "store-keystore-secrets"
-  - group: dropbox-secrets-test-I
+  - group: "dropbox-secrets"
+  - group: "sentry-airsync-sender"
 
 jobs:
   # -------------------------------------------------------------------
@@ -159,6 +155,20 @@ jobs:
             mkdir -p "$(Build.ArtifactStagingDirectory)/apk"
             cp build/app/outputs/flutter-apk/app-release.apk "$(Build.ArtifactStagingDirectory)/apk/$(APK_FILE_NAME)"
             cp -r "$dbgdir" "$(Build.ArtifactStagingDirectory)/apk/"
+
+      # Uploading debug symbols to sentry
+      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin \
+          --include-sources \
+          --release $(APP_VERSION_NAME)+$(APP_VERSION_CODE) \
+          --upload-sources \
+          --wait \
+          --debug-symbols "$(Build.ArtifactStagingDirectory)/debug_info"
+        displayName: Uploading debug symbols
+        enabled: "true"
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
 
       # 簽章：AAB 與 APK 都簽（store.keystore）
       - task: AndroidSigning@3
