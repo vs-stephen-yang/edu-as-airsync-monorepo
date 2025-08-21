@@ -1,4 +1,3 @@
-# PR / push 觸發，QualityCheck → Build（dev/stage/production × AAB+APK）
 trigger:
   branches:
     include:
@@ -23,6 +22,7 @@ variables:
   - name: Signing.Arguments
     value: "--min-sdk-version 21"
   - group: "store-keystore-secrets"
+  - group: dropbox-secrets-test-I
 
 jobs:
   # -------------------------------------------------------------------
@@ -207,3 +207,73 @@ jobs:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)/apk'
           artifact: 'apk_$(envName)'
+
+      - task: Bash@3
+        displayName: Upload to Dropbox
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "🔐 Getting Dropbox access token..."
+            RESPONSE=$(curl -s -X POST https://api.dropboxapi.com/oauth2/token \
+              -u "${DROPBOX_APP_KEY}:${DROPBOX_APP_SECRET}" \
+              -d grant_type=refresh_token \
+              -d refresh_token="${DROPBOX_REFRESH_TOKEN}")
+
+            echo "🔍 Dropbox API response: $RESPONSE"
+            echo "📤 Parsing access token from response..."
+            ACCESS_TOKEN=$(echo "$RESPONSE" | tr ',' '\n' | grep '"access_token"' | cut -d '"' -f4)
+            echo "✅ Access token received $ACCESS_TOKEN"
+
+            if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
+              echo "❌ Failed to retrieve Dropbox access token"
+              echo "Full Dropbox response: $RESPONSE"
+              exit 1
+            fi
+
+            ENV_NAME="$(envName)"
+            VERSION_NAME="$APP_VERSION_NAME"
+            BUILD_BUILDNUMBER="$APP_VERSION_CODE"
+            VERSION_FOLDER="v${VERSION_NAME}-build-${BUILD_BUILDNUMBER}"
+            DROPBOX_BASE="/Apps/airsync-sender-ci/Sender-Android/${VERSION_FOLDER}"
+
+            ARTIFACT_ROOT="$(Build.ArtifactStagingDirectory)"
+
+            upload_file() {
+              local file_path="$1"
+              local relative_path="$2"
+              local dropbox_path="${DROPBOX_BASE}/${relative_path}"
+              echo "📤 Uploading file: $file_path → $dropbox_path"
+              curl -s -X POST https://content.dropboxapi.com/2/files/upload \
+                --header "Authorization: Bearer $ACCESS_TOKEN" \
+                --header "Dropbox-API-Arg: {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}" \
+                --header "Content-Type: application/octet-stream" \
+                --data-binary @"$file_path"
+            }
+
+            echo "📦 Uploading AAB artifacts from: $ARTIFACT_ROOT/aab"
+            AAB_COUNT=$(find "$ARTIFACT_ROOT/aab" -type f ! -name "*.DS_Store" | wc -l)
+            echo "🗂 Found $AAB_COUNT AAB files to upload."
+            find "$ARTIFACT_ROOT/aab" -type f ! -name "*.DS_Store" | while read -r file; do
+              rel_path="aab_${ENV_NAME}/${file##*/}"
+              if [[ "$file" == *".debug_info/"* ]]; then
+                rel_dir=$(basename "$(dirname "$file")")
+                rel_path="aab_${ENV_NAME}/${rel_dir}/${file##*/}"
+              fi
+              echo "📤 Uploading AAB: $file → $rel_path"
+              upload_file "$file" "$rel_path"
+            done
+
+            echo "📦 Uploading APK artifacts from: $ARTIFACT_ROOT/apk"
+            APK_COUNT=$(find "$ARTIFACT_ROOT/apk" -type f ! -name "*.DS_Store" | wc -l)
+            echo "🗂 Found $APK_COUNT APK files to upload."
+            find "$ARTIFACT_ROOT/apk" -type f ! -name "*.DS_Store" | while read -r file; do
+              rel_path="apk_${ENV_NAME}/${file##*/}"
+              if [[ "$file" == *".debug_info/"* ]]; then
+                rel_dir=$(basename "$(dirname "$file")")
+                rel_path="apk_${ENV_NAME}/${rel_dir}/${file##*/}"
+              fi
+              echo "📤 Uploading APK: $file → $rel_path"
+              upload_file "$file" "$rel_path"
+            done
