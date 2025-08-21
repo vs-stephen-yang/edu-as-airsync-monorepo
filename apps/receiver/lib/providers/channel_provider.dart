@@ -242,14 +242,51 @@ class ChannelProvider extends ChangeNotifier {
 
   late AppSettings _settings;
 
+  bool _postInitRan = false; // 守門：只跑一次
+
   void bindSettings(AppSettings s) {
     _settings = s;
+    if (_postInitRan) {
+      _bootstrapNetworking();
+    } else {
+      _ensurePostInitOnce();
+    }
+  }
+
+  void _ensurePostInitOnce() {
+    if (_postInitRan) return;
+
+    // 若已載入就立刻跑；否則等 ready
+    if (_settings.isLoaded) {
+      _runPostInitOnce();
+    } else {
+      _settings.ready.then((_) => _runPostInitOnce());
+    }
+  }
+
+  void _runPostInitOnce() {
+    if (_postInitRan) return;
+    _postInitRan = true;
+
+    _bootstrapNetworking();
+    // 本來在_load執行，現在需要等確認模式後再開啟
+    if (_isSenderMode) {
+      startRemoteScreen(fromSender: true);
+    }
+  }
+
+  void _bootstrapNetworking() {
+    _reconfigureNetworking();
+  }
+
+  void _reconfigureNetworking() {
     _remoteScreenProvider = RemoteScreenProvider(
-        RemoteScreenServer(),
-        _instanceInfo.ipAddress,
-        removeSender,
-        MulticastPresenter(),
-        _settings.remoteScreenType);
+      RemoteScreenServer(),
+      _instanceInfo.ipAddress,
+      removeSender,
+      MulticastPresenter(),
+      _settings.remoteScreenType,
+    );
   }
 
   ChannelProvider(
@@ -287,11 +324,7 @@ class ChannelProvider extends ChangeNotifier {
       RemoteScreenType.rtc,
     );
 
-    _load().then((_) {
-      if (_isSenderMode) {
-        startRemoteScreen(fromSender: true);
-      }
-    });
+    _load();
   }
 
   @override

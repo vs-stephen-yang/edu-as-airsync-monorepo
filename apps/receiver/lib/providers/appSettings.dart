@@ -10,13 +10,13 @@ class AppSettings extends ChangeNotifier {
   bool _useMulticast = false;
   bool _loaded = false;
 
-  final Completer<void> _ready = Completer<void>();
-
-  Future<void> get ready => _ready.future;
-
   bool get isLoaded => _loaded;
 
   bool get useMulticast => _useMulticast;
+
+  final Completer<void> _ready = Completer<void>();
+
+  Future<void> get ready => _ready.future;
 
   RemoteScreenType get remoteScreenType =>
       _useMulticast ? RemoteScreenType.multicast : RemoteScreenType.rtc;
@@ -32,7 +32,7 @@ class AppSettings extends ChangeNotifier {
       _useMulticast = prefs.getBool(_kUseMulticastKey) ?? false;
       _loaded = true;
       notifyListeners();
-      _ready.complete();
+      if (!_ready.isCompleted) _ready.complete(); // <- 通知已完成一次性初始化
     } catch (e, st) {
       _ready.completeError(e, st);
       rethrow;
