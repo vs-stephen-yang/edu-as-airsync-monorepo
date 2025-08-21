@@ -40,6 +40,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
+import 'appSettings.dart';
 import 'group_list_provider.dart';
 import 'message_dialog_provider.dart';
 
@@ -101,7 +102,12 @@ class ChannelProvider extends ChangeNotifier {
 
   bool blockRtcConnection = false;
 
-  final int maxRemoteScreenConnection = 10;
+  final int _maxRemoteScreenConnection = 10;
+
+  int get maxRemoteScreenConnection {
+    return _maxRemoteScreenConnection *
+        (remoteScreenType == RemoteScreenType.multicast ? 10 : 1);
+  }
 
   bool get remoteScreenConnectionFull =>
       _remoteScreenConnectors.length >= maxRemoteScreenConnection;
@@ -194,19 +200,13 @@ class ChannelProvider extends ChangeNotifier {
 
   late RemoteScreenProvider _remoteScreenProvider;
 
-  RemoteScreenType get remoteScreenType =>
-      _remoteScreenProvider.remoteScreenType;
+  RemoteScreenType get remoteScreenType => _settings.remoteScreenType;
 
   final NetworkDiagnostic _networkDiagnostic = NetworkDiagnostic();
 
   set isAuthorizeMode(bool value) {
     _isAuthorizeMode = value;
     _save();
-    notifyListeners();
-  }
-
-  set remoteScreenType(RemoteScreenType type) {
-    _remoteScreenProvider.remoteScreenType = type;
     notifyListeners();
   }
 
@@ -240,6 +240,18 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  late AppSettings _settings;
+
+  void bindSettings(AppSettings s) {
+    _settings = s;
+    _remoteScreenProvider = RemoteScreenProvider(
+        RemoteScreenServer(),
+        _instanceInfo.ipAddress,
+        removeSender,
+        MulticastPresenter(),
+        _settings.remoteScreenType);
+  }
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
@@ -267,8 +279,13 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
-    _remoteScreenProvider = RemoteScreenProvider(RemoteScreenServer(),
-        _instanceInfo.ipAddress, removeSender, MulticastPresenter());
+    _remoteScreenProvider = RemoteScreenProvider(
+      RemoteScreenServer(),
+      _instanceInfo.ipAddress,
+      removeSender,
+      MulticastPresenter(),
+      RemoteScreenType.rtc,
+    );
 
     _load().then((_) {
       if (_isSenderMode) {

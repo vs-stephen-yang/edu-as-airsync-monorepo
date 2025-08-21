@@ -12,6 +12,7 @@ import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/providers/appSettings.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -190,12 +191,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AppSettings()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
-        ChangeNotifierProvider.value(
-          value: ChannelProvider(
+        ChangeNotifierProxyProvider<AppSettings, ChannelProvider>(
+          create: (_) => ChannelProvider(
             AppConfig.of(context)!,
             instanceInfoProvider,
           ),
+          update: (_, settings, model) => model!..bindSettings(settings),
         ),
         ChangeNotifierProvider.value(
           value: MirrorStateProvider(

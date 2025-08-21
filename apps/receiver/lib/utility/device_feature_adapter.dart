@@ -29,7 +29,6 @@ class DeviceFeatureAdapter {
   static bool dumpSrtpPackets = false;
   static bool iceGatheringContinually = false;
   static String roomNumber = '';
-  static bool useMulticast = false;
 
   static bool defaultShowOldUI = false;
   static bool defaultShowDebugOverlay = false;
@@ -39,10 +38,10 @@ class DeviceFeatureAdapter {
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
   static bool defaultDumpSrtpPackets = false;
+
   // gather_continually by default
   static bool defaultIceGatheringContinually = true;
   static const String defaultRoomNumber = '';
-  static bool defaultUseMulticast = false;
 
   static Map<String, int> quickDecodeParams = {
     "low-latency": 1, // RK3588
@@ -135,7 +134,6 @@ class DeviceFeatureAdapter {
     iceGatheringContinually = prefs.getBool("IceGatheringContinually") ??
         defaultIceGatheringContinually;
     roomNumber = prefs.getString("RoomNumber") ?? defaultRoomNumber;
-    useMulticast = prefs.getBool("UseMulticast") ?? defaultUseMulticast;
   }
 
   static save() async {
@@ -151,7 +149,6 @@ class DeviceFeatureAdapter {
     await prefs.setBool("DumpSrtpPackets", dumpSrtpPackets);
     await prefs.setBool("IceGatheringContinually", iceGatheringContinually);
     await prefs.setString("RoomNumber", roomNumber);
-    await prefs.setBool("UseMulticast", useMulticast);
   }
 
   static Map<String, int> getDecodeOptions(

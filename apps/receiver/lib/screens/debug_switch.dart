@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/providers/appSettings.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log_upload.dart';
@@ -9,6 +10,7 @@ import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:provider/provider.dart';
 
 class DebugSwitch extends StatefulWidget {
   static ValueNotifier<String> debugPanelLog = ValueNotifier('');
@@ -169,16 +171,13 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _changeMulticast(bool value) async {
-    DeviceFeatureAdapter.useMulticast = value;
-    await DeviceFeatureAdapter.save();
+    await context.read<AppSettings>().setUseMulticast(value);
 
     setState(() {
       _useMulticast = value;
       _notifyRestart();
     });
   }
-
-
 
   void _initialize() {
     _showOldUI = DeviceFeatureAdapter.showOldUI;
@@ -191,7 +190,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
     _dumpSrtpPackets = DeviceFeatureAdapter.dumpSrtpPackets;
     _iceGatheringContinually = DeviceFeatureAdapter.iceGatheringContinually;
-    _useMulticast = DeviceFeatureAdapter.useMulticast;
+    _useMulticast = context.read<AppSettings>().useMulticast;
   }
 
   @override
