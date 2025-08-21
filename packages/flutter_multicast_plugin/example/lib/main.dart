@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -61,7 +61,7 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
         ssrc: 1234564002,
       );
       if (success == true) {
-        await FlutterMulticastPlugin.startCapture(width: 1920, height: 1080, bitrate: 4000000, maxBitrate: 8000000, frameRate: 30, bitrateMode: 'CBR');
+        await FlutterMulticastPlugin.startCapture(resolution: Resolution.fhd);
         setState(() => _isStreaming = true);
       }
     } catch (e) {
@@ -101,7 +101,8 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
           _rocStatus = 'ROC data retrieved successfully';
           _isLoadingRoc = false;
         });
-        print('ROC Data - Video: ${result.videoRoc}, Audio: ${result.audioRoc}');
+        print(
+            'ROC Data - Video: ${result.videoRoc}, Audio: ${result.audioRoc}');
       } else {
         setState(() {
           _rocStatus = 'Failed to get ROC data - null result';
@@ -116,6 +117,7 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
       print('Error getting ROC: $e');
     }
   }
+
   Widget _buildRocDisplay() {
     if (_rocData == null) {
       return Card(
@@ -133,7 +135,9 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
                 _rocStatus,
                 style: TextStyle(
                   fontSize: 14,
-                  color: _rocStatus.contains('Error') ? Colors.red : Colors.grey[600],
+                  color: _rocStatus.contains('Error')
+                      ? Colors.red
+                      : Colors.grey[600],
                 ),
               ),
             ],
@@ -220,10 +224,10 @@ class _RtpSenderPageState extends State<RtpSenderPage> {
               onPressed: _isLoadingRoc ? null : _getStreamRoc,
               icon: _isLoadingRoc
                   ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : const Icon(Icons.info),
               label: Text(_isLoadingRoc ? 'Loading...' : 'Get Stream ROC'),
               style: ElevatedButton.styleFrom(

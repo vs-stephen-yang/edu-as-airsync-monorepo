@@ -29,6 +29,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -39,23 +40,19 @@ import java.util.List;
 public class ScreenCaptureService extends Service {
     private static final String TAG = "ScreenCaptureService";
     private static final String CHANNEL_ID = "screen_capture_channel";
-
+    private final int dpi = 320;
     private volatile boolean isRunningFrameLoop = false;
-
     private MediaProjection mediaProjection;
     private VirtualDisplay virtualDisplay;
     private MediaCodec mediaCodec;
     private HandlerThread encoderThread;
     private Handler encoderHandler;
-
     private SurfaceTexture surfaceTexture;
     private Surface surfaceTextureSurface;
     private Surface encoderInputSurface;
     private WindowSurface windowSurface;
-
     private int width = 1280;
     private int height = 720;
-    private int dpi = 320;
     private int bitrate = 4_000_000;
     private int maxBitrate = 8_000_000;
     private int frameRate = 30;
@@ -64,6 +61,108 @@ public class ScreenCaptureService extends Service {
     private volatile boolean isEncoding = false;
 
     private AudioCaptureManager audioManager;
+
+    public static boolean isAnnexB(byte[] buffer) {
+        if (buffer == null || buffer.length < 6) return false;
+
+        int startCodeCount = 0;
+        int i = 0;
+
+        while (i < buffer.length - 4) {
+            if (buffer[i] == 0x00 && buffer[i + 1] == 0x00) {
+                if (buffer[i + 2] == 0x00 && buffer[i + 3] == 0x01) {
+                    startCodeCount++;
+                    i += 4;
+                    continue;
+                } else if (buffer[i + 2] == 0x01) {
+                    startCodeCount++;
+                    i += 3;
+                    continue;
+                }
+            }
+            i++;
+        }
+
+        // 若有至少 1 個 start code 且它在開頭，就視為合法的 Annex B
+        return startCodeCount >= 1 &&
+                buffer[0] == 0x00 && buffer[1] == 0x00 &&
+                ((buffer[2] == 0x00 && buffer[3] == 0x01) || buffer[2] == 0x01);
+    }
+
+    public static List<byte[]> convertAvccToAnnexB(byte[] avccBuffer) {
+        List<byte[]> nalUnits = new ArrayList<>();
+        int offset = 0;
+
+        while (offset + 4 <= avccBuffer.length) {
+            int length = ((avccBuffer[offset] & 0xFF) << 24) |
+                    ((avccBuffer[offset + 1] & 0xFF) << 16) |
+                    ((avccBuffer[offset + 2] & 0xFF) << 8) |
+                    (avccBuffer[offset + 3] & 0xFF);
+            offset += 4;
+            if (length <= 0 || offset + length > avccBuffer.length) break;
+
+            byte[] nalUnit = new byte[length + 4];
+            nalUnit[0] = 0x00;
+            nalUnit[1] = 0x00;
+            nalUnit[2] = 0x00;
+            nalUnit[3] = 0x01;
+            System.arraycopy(avccBuffer, offset, nalUnit, 4, length);
+            nalUnits.add(nalUnit);
+            offset += length;
+        }
+
+        return nalUnits;
+    }
+
+    public static List<byte[]> splitAnnexBNalus(byte[] buffer) {
+        List<byte[]> nalUnits = new ArrayList<>();
+        int start = -1;
+        int i = 0;
+
+        while (i < buffer.length - 3) {
+            boolean found = false;
+            int prefixLength = 0;
+
+            // 找 start code
+            if (buffer[i] == 0x00 && buffer[i + 1] == 0x00) {
+                if (buffer[i + 2] == 0x01) {
+                    found = true;
+                    prefixLength = 3;
+                } else if (i + 3 < buffer.length && buffer[i + 2] == 0x00 && buffer[i + 3] == 0x01) {
+                    found = true;
+                    prefixLength = 4;
+                }
+            }
+
+            if (found) {
+                if (start >= 0) {
+                    // 上一段 NALU 結束，取出
+                    nalUnits.add(Arrays.copyOfRange(buffer, start, i));
+                }
+                start = i;
+                i += prefixLength;
+            } else {
+                i++;
+            }
+        }
+
+        // 加入最後一段 NALU（結尾）
+        if (start >= 0 && start < buffer.length) {
+            nalUnits.add(Arrays.copyOfRange(buffer, start, buffer.length));
+        }
+
+        return nalUnits;
+    }
+
+    public static int detectStartCodeLength(byte[] nal) {
+        if (nal.length >= 4 &&
+                nal[0] == 0x00 && nal[1] == 0x00 &&
+                nal[2] == 0x00 && nal[3] == 0x01) return 4;
+        if (nal.length >= 3 &&
+                nal[0] == 0x00 && nal[1] == 0x00 &&
+                nal[2] == 0x01) return 3;
+        return -1; // Invalid
+    }
 
     @Override
     public void onCreate() {
@@ -195,12 +294,14 @@ public class ScreenCaptureService extends Service {
 
     private void startFrameLoop() {
         isRunningFrameLoop = true;
-        final long frameIntervalMs = 33;
+        final long T = Math.round(1_000_000_000.0 / frameRate);
+        // 建立「兩個時鐘」的對齊點
+        final long baseUpMs = SystemClock.uptimeMillis();
+        final long baseErNs = SystemClock.elapsedRealtimeNanos();
 
         Runnable frameRunnable = new Runnable() {
+            long nextErNs; // 以 elapsedRealtimeNanos 為基準的下一個理想節點
             private boolean initialized = false;
-            private long startTimeMs = 0;
-            private int frameCount = 0;
 
             @Override
             public void run() {
@@ -211,23 +312,18 @@ public class ScreenCaptureService extends Service {
                         // ✅ 在 encoderThread 上 makeCurrent 並建立 shader/program
                         windowSurface.makeCurrentAndInitGLObjects();
                         initialized = true;
-                        startTimeMs = SystemClock.uptimeMillis(); // 記錄啟動時間
-                        frameCount = 0;
                         Log.d(TAG, "GL context initialized and program created");
 
-                        // 排程第一幀
-                        long firstFrameTime = startTimeMs + frameIntervalMs;
-                        encoderHandler.postAtTime(this, firstFrameTime);
+                        long nowEr = SystemClock.elapsedRealtimeNanos();
+                        nextErNs = nowEr + T;
+                        long targetUpMs = baseUpMs + (nextErNs - baseErNs) / 1_000_000L;
+                        encoderHandler.postAtTime(this, targetUpMs); // ← 絕對時間（uptime）對齊
                         return;
                     } catch (Exception e) {
                         Log.e(TAG, "GL init error", e);
                         return;
                     }
                 }
-
-                frameCount++;
-
-                long nextFrameTime = startTimeMs + (frameCount + 1) * frameIntervalMs;
 
                 // 執行繪製
                 try {
@@ -239,16 +335,17 @@ public class ScreenCaptureService extends Service {
                 }
 
                 // 排程下一幀
-                long nowMs = SystemClock.uptimeMillis();
-                if (nextFrameTime < nowMs) {
-                    // 如果已經落後，重新計算幀計數以追上進度
-                    long elapsedMs = nowMs - startTimeMs;
-                    frameCount = (int) (elapsedMs / frameIntervalMs);
-                    nextFrameTime = startTimeMs + (frameCount + 1) * frameIntervalMs;
-                    Log.d(TAG, "Frame dropped, adjusting to frame " + frameCount);
+                nextErNs += T;
+                long nowEr = SystemClock.elapsedRealtimeNanos();
+                if (nowEr > nextErNs) {
+                    long behind = nowEr - nextErNs;
+                    long missed = 1 + (behind / T);
+                    nextErNs += missed * T;
+                    Log.d(TAG, "Dropped, catch up " + missed + " intervals");
                 }
 
-                encoderHandler.postAtTime(this, nextFrameTime);
+                long targetUpMs = baseUpMs + (nextErNs - baseErNs) / 1_000_000L;
+                encoderHandler.postAtTime(this, targetUpMs); // ← 絕對排程，不會累積
             }
         };
 
@@ -269,6 +366,7 @@ public class ScreenCaptureService extends Service {
                 ByteBuffer encodedData = mediaCodec.getOutputBuffer(outputBufferIndex);
 
                 List<byte[]> nalUnits = processEncodedBuffer(encodedData, bufferInfo.offset, bufferInfo.size);
+                ByteArrayOutputStream au = new ByteArrayOutputStream();
                 for (byte[] nal : nalUnits) {
                     int startCodeLength = detectStartCodeLength(nal);
                     if (startCodeLength == -1) continue;
@@ -306,12 +404,16 @@ public class ScreenCaptureService extends Service {
                         }
                     }
 
-                    NativeBridge.sendRtpFrame(nal);
+                    au.write(nal);
                 }
+                NativeBridge.sendRtpFrame(au.toByteArray());
                 mediaCodec.releaseOutputBuffer(outputBufferIndex, false);
             }
         } catch (IllegalStateException e) {
             Log.e(TAG, "Encoder loop terminated due to codec stop", e);
+            return;
+        } catch (IOException e) {
+            Log.e(TAG, "AU write error", e);
             return;
         }
 
@@ -353,36 +455,6 @@ public class ScreenCaptureService extends Service {
         return isAnnexB(buffer) && !looksLikeAvcc(buffer);
     }
 
-    public static boolean isAnnexB(byte[] buffer) {
-        if (buffer == null || buffer.length < 6) return false;
-
-        int startCodeCount = 0;
-        int i = 0;
-
-        while (i < buffer.length - 4) {
-            if (buffer[i] == 0x00 && buffer[i + 1] == 0x00) {
-                if (buffer[i + 2] == 0x00 && buffer[i + 3] == 0x01) {
-                    startCodeCount++;
-                    i += 4;
-                    continue;
-                } else if (buffer[i + 2] == 0x01) {
-                    startCodeCount++;
-                    i += 3;
-                    continue;
-                }
-            }
-            i++;
-        }
-
-        // 若有至少 1 個 start code 且它在開頭，就視為合法的 Annex B
-        if (startCodeCount >= 1 &&
-                buffer[0] == 0x00 && buffer[1] == 0x00 &&
-                ((buffer[2] == 0x00 && buffer[3] == 0x01) || buffer[2] == 0x01)) {
-            return true;
-        }
-        return false;
-    }
-
     boolean looksLikeAvcc(byte[] buffer) {
         int offset = 0;
         while (offset + 4 <= buffer.length) {
@@ -396,81 +468,6 @@ public class ScreenCaptureService extends Service {
             offset += length;
         }
         return offset == buffer.length; // 所有 NALU 完整對齊
-    }
-
-    public static List<byte[]> convertAvccToAnnexB(byte[] avccBuffer) {
-        List<byte[]> nalUnits = new ArrayList<>();
-        int offset = 0;
-
-        while (offset + 4 <= avccBuffer.length) {
-            int length = ((avccBuffer[offset] & 0xFF) << 24) |
-                    ((avccBuffer[offset + 1] & 0xFF) << 16) |
-                    ((avccBuffer[offset + 2] & 0xFF) << 8) |
-                    (avccBuffer[offset + 3] & 0xFF);
-            offset += 4;
-            if (length <= 0 || offset + length > avccBuffer.length) break;
-
-            byte[] nalUnit = new byte[length + 4];
-            nalUnit[0] = 0x00;
-            nalUnit[1] = 0x00;
-            nalUnit[2] = 0x00;
-            nalUnit[3] = 0x01;
-            System.arraycopy(avccBuffer, offset, nalUnit, 4, length);
-            nalUnits.add(nalUnit);
-            offset += length;
-        }
-
-        return nalUnits;
-    }
-
-    public static List<byte[]> splitAnnexBNalus(byte[] buffer) {
-        List<byte[]> nalUnits = new ArrayList<>();
-        int start = -1;
-        int i = 0;
-
-        while (i < buffer.length - 3) {
-            boolean found = false;
-            int prefixLength = 0;
-
-            // 找 start code
-            if (buffer[i] == 0x00 && buffer[i + 1] == 0x00) {
-                if (buffer[i + 2] == 0x01) {
-                    found = true;
-                    prefixLength = 3;
-                } else if (i + 3 < buffer.length && buffer[i + 2] == 0x00 && buffer[i + 3] == 0x01) {
-                    found = true;
-                    prefixLength = 4;
-                }
-            }
-
-            if (found) {
-                if (start >= 0) {
-                    // 上一段 NALU 結束，取出
-                    nalUnits.add(Arrays.copyOfRange(buffer, start, i));
-                }
-                start = i;
-                i += prefixLength;
-            } else {
-                i++;
-            }
-        }
-
-        // 加入最後一段 NALU（結尾）
-        if (start >= 0 && start < buffer.length) {
-            nalUnits.add(Arrays.copyOfRange(buffer, start, buffer.length));
-        }
-
-        return nalUnits;
-    }
-
-    public static int detectStartCodeLength(byte[] nal) {
-        if (nal.length >= 4 &&
-                nal[0] == 0x00 && nal[1] == 0x00 &&
-                nal[2] == 0x00 && nal[3] == 0x01) return 4;
-        if (nal.length >= 3 &&
-                nal[0] == 0x00 && nal[1] == 0x00 &&
-                nal[2] == 0x01) return 3;
-        return -1; // Invalid
     }
 
     @Override
