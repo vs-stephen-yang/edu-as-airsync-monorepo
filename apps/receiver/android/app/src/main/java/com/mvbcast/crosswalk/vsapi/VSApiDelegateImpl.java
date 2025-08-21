@@ -2,27 +2,35 @@ package com.mvbcast.crosswalk.vsapi;
 
 import android.content.Context;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
+
+import com.viewsonic.vsapicompat.VSContext;
 import com.viewsonic.vsapicompat.VSNetworkManager;
+import com.viewsonic.vsapicompat.VSServiceManagerCompat;
 import com.viewsonic.vsapicompat.VSSystemManager;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class VSApiDelegateImpl implements VSApiDelegate {
-    private final VSSystemManager vsSystemManager;
-    private final VSNetworkManager vsNetworkManager;
+    private VSSystemManager vsSystemManager = null;
+    private VSNetworkManager vsNetworkManager = null;
 
     public VSApiDelegateImpl(Context context) {
-        this.vsSystemManager = VSSystemManager.getInstance(context);
-        this.vsNetworkManager = VSNetworkManager.getInstance(context);
+        try {
+            this.vsSystemManager = (VSSystemManager) VSServiceManagerCompat.getService(context, VSContext.VS_SYSTEM_SERVICE);
+            this.vsNetworkManager = (VSNetworkManager) VSServiceManagerCompat.getService(context, VSContext.VS_NETWORK_SERVICE);
+        } catch (java.lang.NoClassDefFoundError | Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public String getSerialNumber() throws Exception {
-        return vsSystemManager.getSerialNumber();
+        return vsSystemManager != null ? vsSystemManager.getSerialNumber() : "";
     }
 
     @Override
     public String getEthernetMacAddress() throws Exception {
-        return vsNetworkManager.getEthernetMacAddress();
+        return vsNetworkManager != null ? vsNetworkManager.getEthernetMacAddress() : "";
     }
 }
