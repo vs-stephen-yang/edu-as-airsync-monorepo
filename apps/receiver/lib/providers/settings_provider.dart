@@ -125,6 +125,7 @@ class SettingsProvider with ChangeNotifier {
         prefs.getBool('app_isMirroringLock') ?? defaultMirroringLock;
     _isConnectivityLock =
         prefs.getBool('app_isConnectivityLock') ?? defaultConnectivityLock;
+    notifyListeners();
   }
 
   Future<void> reloadPreferences() async {
