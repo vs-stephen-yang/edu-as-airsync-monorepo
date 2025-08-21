@@ -1,0 +1,128 @@
+parameters:
+  artifactRoot: ''
+  versionName: ''
+  runNumber: ''
+  envName: ''
+  apkFile: ''
+  aabFile: ''
+
+steps:
+  - task: Bash@3
+    displayName: Upload to Dropbox
+    env:
+      DROPBOX_APP_KEY: $(DROPBOX_APP_KEY)
+      DROPBOX_APP_SECRET: $(DROPBOX_APP_SECRET)
+      DROPBOX_REFRESH_TOKEN: $(DROPBOX_REFRESH_TOKEN)
+    inputs:
+      targetType: inline
+      script: |
+        set -euo pipefail
+
+        echo "=================================="
+        echo "🔍 Checking Dropbox credentials..."
+        echo "=================================="
+
+        # Check if environment variables are set
+        MISSING_VARS=()
+
+        if [ -z "${DROPBOX_APP_KEY:-}" ]; then
+          echo "❌ DROPBOX_APP_KEY is EMPTY or NOT SET"
+          MISSING_VARS+=("DROPBOX_APP_KEY")
+        else
+          echo "✅ DROPBOX_APP_KEY is set (length: ${#DROPBOX_APP_KEY})"
+        fi
+
+        if [ -z "${DROPBOX_APP_SECRET:-}" ]; then
+          echo "❌ DROPBOX_APP_SECRET is EMPTY or NOT SET"
+          MISSING_VARS+=("DROPBOX_APP_SECRET")
+        else
+          echo "✅ DROPBOX_APP_SECRET is set (length: ${#DROPBOX_APP_SECRET})"
+        fi
+
+        if [ -z "${DROPBOX_REFRESH_TOKEN:-}" ]; then
+          echo "❌ DROPBOX_REFRESH_TOKEN is EMPTY or NOT SET"
+          MISSING_VARS+=("DROPBOX_REFRESH_TOKEN")
+        else
+          echo "✅ DROPBOX_REFRESH_TOKEN is set (length: ${#DROPBOX_REFRESH_TOKEN})"
+        fi
+
+        echo "=================================="
+
+        # Exit if any required variable is missing
+        if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+          echo ""
+          echo "❌ ERROR: Missing required Dropbox credentials!"
+          echo "   Missing variables: ${MISSING_VARS[*]}"
+          echo ""
+          echo "💡 Please ensure the 'dropbox-secrets' variable group contains:"
+          echo "   - DROPBOX_APP_KEY"
+          echo "   - DROPBOX_APP_SECRET"
+          echo "   - DROPBOX_REFRESH_TOKEN"
+          exit 1
+        fi
+
+        echo "✅ All Dropbox credentials are present"
+        echo ""
+
+        APK_FILE="${{ parameters.apkFile }}"
+        AAB_FILE="${{ parameters.aabFile }}"
+
+        echo "🔐 Getting Dropbox access token..."
+        RESPONSE=$(curl -s -X POST https://api.dropboxapi.com/oauth2/token \
+          -u "${DROPBOX_APP_KEY}:${DROPBOX_APP_SECRET}" \
+          -d grant_type=refresh_token \
+          -d refresh_token="${DROPBOX_REFRESH_TOKEN}")
+
+        ACCESS_TOKEN=$(echo "$RESPONSE" | tr ',' '\n' | grep '"access_token"' | cut -d '"' -f4)
+
+        if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
+          echo "❌ Failed to retrieve Dropbox access token"
+          echo "❗ Full Dropbox response for debugging: $RESPONSE"
+          exit 1
+        fi
+        TIMESTAMP="${{ parameters.timestamp }}"
+        VERSION_FOLDER="v${{ parameters.versionName }}-build-${{ parameters.runNumber }}"
+        DROPBOX_BASE="/Apps/airsync-sender-ci/Sender-Android/${VERSION_FOLDER}"
+        ENV_NAME="${{ parameters.envName }}"
+        
+        upload_file() {
+          local file_path="$1"
+          local relative_path="$2"
+          local dropbox_path="${DROPBOX_BASE}/${relative_path}"
+          echo "📤 Uploading: $file_path → $dropbox_path"
+          curl -s -X POST https://content.dropboxapi.com/2/files/upload \
+            --header "Authorization: Bearer $ACCESS_TOKEN" \
+            --header "Dropbox-API-Arg: {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}" \
+            --header "Content-Type: application/octet-stream" \
+            --data-binary @"$file_path"
+        }
+
+        upload_dir() {
+          local dir_path="$1"
+          local relative_base="$2"
+          find "$dir_path" -type f | while read -r file; do
+            rel_path="${relative_base}/${file#$dir_path/}"
+            upload_file "$file" "$rel_path"
+          done
+        }
+
+        for kind in aab apk; do
+          case "$kind" in
+            apk) file_path="$APK_FILE" ;;
+            aab) file_path="$AAB_FILE" ;;
+          esac
+
+          if [ -n "$file_path" ] && [ -f "$file_path" ]; then
+            rel_path="${kind}_${ENV_NAME}/$(basename "$file_path")"
+            upload_file "$file_path" "$rel_path"
+
+            debug_info_dir="${file_path}.debug_info"
+            if [ -d "$debug_info_dir" ]; then
+              debug_info_rel_path="${kind}_${ENV_NAME}/$(basename "$debug_info_dir")"
+              echo "📂 Uploading debug info directory: $debug_info_dir → $debug_info_rel_path"
+              upload_dir "$debug_info_dir" "$debug_info_rel_path"
+            fi
+          else
+            echo "⚠️ Skipping $kind: no valid file provided or file not found"
+          fi
+        done
