@@ -3760,6 +3760,46 @@ class S {
       args: [],
     );
   }
+
+  /// `next page`
+  String get v3_lbl_cast_device_next {
+    return Intl.message(
+      'next page',
+      name: 'v3_lbl_cast_device_next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `previous page`
+  String get v3_lbl_cast_device_previous {
+    return Intl.message(
+      'previous page',
+      name: 'v3_lbl_cast_device_previous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `sort asc`
+  String get v3_lbl_cast_device_sort_asc {
+    return Intl.message(
+      'sort asc',
+      name: 'v3_lbl_cast_device_sort_asc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `sort desc`
+  String get v3_lbl_cast_device_sort_desc {
+    return Intl.message(
+      'sort desc',
+      name: 'v3_lbl_cast_device_sort_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

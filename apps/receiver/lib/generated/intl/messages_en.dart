@@ -397,6 +397,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Close cast device connection",
     ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "next page",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "previous page",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "sort asc",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "sort desc",
+    ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
           "Disable touchback for cast device",

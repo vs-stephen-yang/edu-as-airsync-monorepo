@@ -372,5 +372,9 @@
   "v3_lbl_streaming_page_control": "next page",
   "v3_instruction2_onethird": "Display code",
   "v3_instruction3_onethird": "One-time password",
-  "v3_miracast_uibc_not_supported_message": "This source does not support Miracast touchback"
+  "v3_miracast_uibc_not_supported_message": "This source does not support Miracast touchback",
+  "v3_lbl_cast_device_next": "next page",
+  "v3_lbl_cast_device_previous": "previous page",
+  "v3_lbl_cast_device_sort_asc": "sort asc",
+  "v3_lbl_cast_device_sort_desc": "sort desc"
 }

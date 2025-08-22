@@ -1192,4 +1192,17 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 // endregion
+
+  void sortRemoteScreenConnectors(bool asc) {
+    if (asc) {
+      _remoteScreenConnectors.sortBySenderNameAsc();
+    } else {
+      _remoteScreenConnectors.sortBySenderNameDesc();
+    }
+    notifyListeners();
+  }
+
+  void restoreRemoteScreenConnectors() {
+    _remoteScreenConnectors.sortByCreatedAtAsc();
+  }
 }

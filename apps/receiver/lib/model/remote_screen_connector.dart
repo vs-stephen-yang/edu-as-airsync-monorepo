@@ -24,6 +24,9 @@ abstract class RemoteScreenConnector {
   bool isDeleted = false;
   bool isTouchEnabled = false;
 
+  /// 物件產生時間（本機時間）
+  final DateTime createdAt;
+
   String get senderNameWithEllipsis {
     String result = senderName ?? '';
     if (result.length > 10) {
@@ -37,7 +40,7 @@ abstract class RemoteScreenConnector {
   RemoteScreenConnector(
     this.channel,
     JoinDisplayMessage message,
-  ) {
+  ) : createdAt = DateTime.now() {
     clientId = message.clientId;
     senderName = message.name;
     senderVersion = message.version;
@@ -165,4 +168,75 @@ class MulticastScreenConnector extends RemoteScreenConnector {
 
   @override
   void processSignalFromPeer(String message) {}
+}
+
+extension RemoteScreenConnectorSorting on List<RemoteScreenConnector> {
+  /// 依 senderName 英文字母升序（A→Z），不分大小寫。
+  /// [nullsLast] 為 true 時，null 或空字串會排在最後。
+  void sortBySenderNameAsc({bool nullsLast = true}) {
+    sort((a, b) =>
+        _compareSenderName(a, b, ascending: true, nullsLast: nullsLast));
+  }
+
+  /// 依 senderName 英文字母降序（Z→A），不分大小寫。
+  /// [nullsLast] 為 true 時，null 或空字串會排在最後。
+  void sortBySenderNameDesc({bool nullsLast = true}) {
+    sort((a, b) =>
+        _compareSenderName(a, b, ascending: false, nullsLast: nullsLast));
+  }
+
+  /// 依建立時間升序（舊→新）。時間相同時，以 senderName 升序作為次排序鍵。
+  void sortByCreatedAtAsc({bool nullsLastForName = true}) {
+    sort((a, b) => _compareCreatedAt(
+          a,
+          b,
+          ascending: true,
+          nullsLastForName: nullsLastForName,
+        ));
+  }
+
+  /// 依建立時間降序（新→舊）。時間相同時，以 senderName 升序作為次排序鍵。
+  void sortByCreatedAtDesc({bool nullsLastForName = true}) {
+    sort((a, b) => _compareCreatedAt(
+          a,
+          b,
+          ascending: false,
+          nullsLastForName: nullsLastForName,
+        ));
+  }
+}
+
+int _compareSenderName(
+  RemoteScreenConnector a,
+  RemoteScreenConnector b, {
+  required bool ascending,
+  required bool nullsLast,
+}) {
+  final aName = a.senderName;
+  final bName = b.senderName;
+
+  final aEmpty = aName == null || aName.isEmpty;
+  final bEmpty = bName == null || bName.isEmpty;
+  if (aEmpty && bEmpty) return 0;
+  if (aEmpty) return nullsLast ? 1 : -1;
+  if (bEmpty) return nullsLast ? -1 : 1;
+
+  // 英文字母不分大小寫比較；若僅大小寫不同，再用原字串比較確保穩定性
+  final ci = aName.toLowerCase().compareTo(bName.toLowerCase());
+  final primary = (ci != 0) ? ci : aName.compareTo(bName);
+
+  return ascending ? primary : -primary;
+}
+
+int _compareCreatedAt(
+  RemoteScreenConnector a,
+  RemoteScreenConnector b, {
+  required bool ascending,
+  required bool nullsLastForName,
+}) {
+  final timeCmp = a.createdAt.compareTo(b.createdAt); // 舊 < 新
+  if (timeCmp != 0) return ascending ? timeCmp : -timeCmp;
+
+  // 若時間相同，以 senderName（升序、不分大小寫）作為 tie-breaker
+  return _compareSenderName(a, b, ascending: true, nullsLast: nullsLastForName);
 }
