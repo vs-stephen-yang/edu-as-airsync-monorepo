@@ -481,8 +481,10 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
     } else {
       HybridConnectionList().enlargedScreenIndex.value = selection;
     }
-    HybridConnectionList().setSpecifiedSplitScreenWindowQuality(selection,
-        HybridConnectionList().enlargedScreenIndex.value == selection);
+    if (HybridConnectionList.hybridSplitScreenCount.value > 1) {
+      HybridConnectionList().setSpecifiedSplitScreenWindowQuality(selection,
+          HybridConnectionList().enlargedScreenIndex.value == selection);
+    }
   }
 
   _showTouchbackAlertDialog(
