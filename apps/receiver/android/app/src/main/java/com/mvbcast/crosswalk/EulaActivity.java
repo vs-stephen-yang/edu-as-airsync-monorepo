@@ -38,7 +38,6 @@ import androidx.annotation.Nullable;
 
 import com.mvbcast.crosswalk.helper.WifiHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
-import com.mvbcast.crosswalk.vsapi.VSApiHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,7 +57,6 @@ public class EulaActivity extends FlutterActivity {
     private static final String TAG = EulaActivity.class.getSimpleName();
     private MethodChannel mVbsOTA;
     private static MethodChannel mAlarmOTA;
-    private VSApiHandler vsApiHandler;
     private MethodChannel multiWindowChannel;
 
     private WifiManager.MulticastLock multicastLock;
@@ -67,11 +65,6 @@ public class EulaActivity extends FlutterActivity {
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger binaryMessenger = flutterEngine.getDartExecutor().getBinaryMessenger();
-
-        // Use the same condition as in VSApi.createVSApiInstance() [vs_api.dart]
-        if (BuildConfig.FLAVOR_channel == "ifp") {
-            vsApiHandler = new VSApiHandler(this, binaryMessenger);
-        }
 
         MethodChannel mAndroidRetain = new MethodChannel(binaryMessenger, "com.mvbcast" +
                 ".crosswalk/android_app_retain");
@@ -402,9 +395,6 @@ public class EulaActivity extends FlutterActivity {
 
     @Override
     protected void onDestroy() {
-        if (vsApiHandler != null) {
-            vsApiHandler.dispose();
-        }
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
         WifiHelper.getInstance().unregisterUsbReceiver(EulaActivity.this);
         if (multicastLock != null) {

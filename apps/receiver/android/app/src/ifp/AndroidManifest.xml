@@ -32,5 +32,6 @@
 			android:exported="true"
 			android:permission="com.mvbcast.crosswalk.AppAlarmOTA" />
 
+		<meta-data android:name="app_model" android:value="vs_api"/>
 	</application>
 </manifest>

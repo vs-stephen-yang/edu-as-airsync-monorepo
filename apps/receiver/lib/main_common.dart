@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_manager_config.dart';
@@ -30,7 +31,6 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/utility/user_timer_manager.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
-import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:flutter/material.dart';
@@ -87,13 +87,6 @@ Future<void> commonEntry(ConfigSettings settings) async {
     // Initialize the instance name
     instanceInfoProvider.instanceName = AppPreferences().instanceName;
 
-    String? serialNumber = '1234567890';
-    String? macAddress = '';
-    if (Platform.isAndroid) {
-      final vsApi = await VSApi.createVSApiInstance();
-      serialNumber = await vsApi?.getSerialNumber();
-      macAddress = await vsApi?.getEthernetMacAddress();
-    }
     await AppAnalytics.initializeApp(
       instrumentationKey: settings.instrumentationKey,
       ingestionEndpoint: settings.ingestionEndpoint,
@@ -101,8 +94,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
       userId: AppInstanceCreate().instanceID,
       sessionId: const Uuid().v4(),
       deviceInfo: await ClientDeviceInfo.fetch(),
-      serialNumber: serialNumber,
-      macAddress: macAddress,
+      serialNumber: await DeviceInfoVs.getVSApiSerialNumber,
+      macAddress: await DeviceInfoVs.getVSApiEthernetMacAddress,
     );
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
