@@ -9,16 +9,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
@@ -45,6 +50,7 @@ import java.util.Map;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -211,13 +217,13 @@ public class EulaActivity extends FlutterActivity {
                 });
 
         // 添加 WiFi 狀態變化的 EventChannel
-        new io.flutter.plugin.common.EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_status_events")
-                .setStreamHandler(new io.flutter.plugin.common.EventChannel.StreamHandler() {
+        new EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_status_events")
+                .setStreamHandler(new EventChannel.StreamHandler() {
                     private BroadcastReceiver wifiStateReceiver;
                     private Context applicationContext;
 
                     @Override
-                    public void onListen(Object arguments, io.flutter.plugin.common.EventChannel.EventSink events) {
+                    public void onListen(Object arguments, EventChannel.EventSink events) {
                         applicationContext = getApplicationContext();
                         wifiStateReceiver = new BroadcastReceiver() {
                             @Override
@@ -260,6 +266,75 @@ public class EulaActivity extends FlutterActivity {
                         result.notImplemented();
                     }
                 });
+
+        // time event channel
+        new EventChannel(
+                flutterEngine.getDartExecutor().getBinaryMessenger(),
+                "com.mvbcast.crosswalk/time_events"
+        ).setStreamHandler(new EventChannel.StreamHandler() {
+            private Context applicationContext;
+            private ContentObserver timeFormatObserver;
+            private BroadcastReceiver localeReceiver;
+
+            @Override
+            public void onListen(Object arguments, final EventChannel.EventSink events) {
+                applicationContext = getApplicationContext();
+
+                // 送出目前值
+                push(events, applicationContext);
+
+                // 監聽 12/24 時制設定變更（Settings.System.TIME_12_24）
+                final Uri uri = Settings.System.getUriFor(Settings.System.TIME_12_24);
+                timeFormatObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        push(events, applicationContext);
+                    }
+
+                    @Override
+                    public void onChange(boolean selfChange, Uri changedUri) {
+                        push(events, applicationContext);
+                    }
+                };
+                applicationContext.getContentResolver().registerContentObserver(
+                        uri,
+                        false,
+                        timeFormatObserver
+                );
+
+                // 監聽語系變更（可能影響預設 12/24）
+                localeReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        push(events, applicationContext);
+                    }
+                };
+                // 動態註冊，不需在 Manifest 宣告
+                applicationContext.registerReceiver(localeReceiver, new IntentFilter(Intent.ACTION_LOCALE_CHANGED));
+            }
+
+            @Override
+            public void onCancel(Object arguments) {
+                // 取消監聽並清理資源
+                if (timeFormatObserver != null) {
+                    applicationContext.getContentResolver().unregisterContentObserver(timeFormatObserver);
+                    timeFormatObserver = null;
+                }
+                if (localeReceiver != null && applicationContext != null) {
+                    try {
+                        applicationContext.unregisterReceiver(localeReceiver);
+                    } catch (IllegalArgumentException ignored) {
+                    }
+                    localeReceiver = null;
+                }
+            }
+
+            private void push(EventChannel.EventSink sink, Context ctx) {
+                boolean is24 = DateFormat.is24HourFormat(ctx);
+                // 回傳 boolean；Dart 端可直接當 bool 使用
+                sink.success(is24);
+            }
+        });
     }
 
     private Size getRealScreenResolution(Context context) {
