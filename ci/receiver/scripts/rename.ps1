@@ -43,7 +43,10 @@ if ($Single) {
 if ($Split) {
 
     $archs = @("arm64-v8a", "armeabi-v7a")
-    
+
+    if ($Channel -ieq 'open') {
+        $archs += 'x86_64'
+    }
     foreach ($arch in $archs) {
         $sourceAppFile = "$($Wd)/app-$($arch)-$($Channel)$($Target)-release.apk"
         $destAppFile = "$($Wd)/myViewBoardDisplay_APK_$($channelName)_$($arch)$($variantName)_v$($versionName).apk"
