@@ -145,7 +145,12 @@ class RTCConnector {
   ChannelMessage? _changeQualityMessage;
   String? _deviceType;
 
-  RTCConnector(this._channel);
+  final bool is4KEnabled;
+
+  RTCConnector(
+    this._channel, {
+    required this.is4KEnabled,
+  });
 
   Future<void> init(
     JoinDisplayMessage message,
@@ -487,11 +492,10 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
+  int get maxResolutionHeight => is4KEnabled ? 2160 : 1080;
+
   int getFullHeight(bool isFullHeight, int attenderCount) {
-    int fullHeight = (isFullHeight || attenderCount <= 2)
-                   ? 2160
-                   : 540;
-    return fullHeight;
+    return (isFullHeight || attenderCount <= 2) ? maxResolutionHeight : 540;
   }
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
