@@ -145,6 +145,10 @@ class RTCConnector {
   ChannelMessage? _changeQualityMessage;
   String? _deviceType;
 
+  static const int _resolutionHeight4K = 2160;
+  static const int _resolutionHeightFullHd = 1080;
+  static const int _resolutionHeightHalfFhd = 540;
+
   final bool is4KEnabled;
 
   RTCConnector(
@@ -492,18 +496,21 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
-  int get maxResolutionHeight => is4KEnabled ? 2160 : 1080;
+  int get maxResolutionHeight =>
+      is4KEnabled ? _resolutionHeight4K : _resolutionHeightFullHd;
 
   int getFullHeight(bool isFullHeight, int attenderCount) {
-    return (isFullHeight || attenderCount <= 2) ? maxResolutionHeight : 540;
+    return (isFullHeight || attenderCount <= 2)
+        ? maxResolutionHeight
+        : _resolutionHeightHalfFhd;
   }
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
     if (isMtk9950Model(deviceType) && (attenderCount > 1)) {
-      return 1080;
+      return _resolutionHeightFullHd;
     }
     if (_fhdOnlyWebRtcModels.contains(deviceType)) {
-      return 1080;
+      return _resolutionHeightFullHd;
     }
     return 0; // no limitation
   }
