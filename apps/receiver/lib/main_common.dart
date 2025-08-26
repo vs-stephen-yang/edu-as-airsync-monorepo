@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_manager_config.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
@@ -87,8 +86,6 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     // Initialize the instance name
     instanceInfoProvider.instanceName = AppPreferences().instanceName;
-
-    await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
     String? serialNumber = '1234567890';
     String? macAddress = '';
