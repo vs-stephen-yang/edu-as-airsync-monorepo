@@ -34,18 +34,6 @@ class DevConfig implements ConfigSettings {
       'https://devapi.myviewboard.com/api/v1/application/extension/register?key=';
 
   @override
-  String icarUpdateUrl =
-      'https://devapi.myviewboard.com/api/v1/application/extension/register/uid?key=';
-
-  @override
-  String icarExceptionUrl =
-      'https://devapi.myviewboard.com/api/v1/application/extension/exception?key=';
-
-  @override
-  String icarExceptionFileUrl =
-      'https://devapi.myviewboard.com/api/v1/application/extension/exception/uid/file?folder=DisplayExceptionLog';
-
-  @override
   String airSyncUrl = 'dev.airsync.net';
 
   @override
