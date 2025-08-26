@@ -5,32 +5,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class V3NoNetworkStatus extends StatelessWidget {
-  const V3NoNetworkStatus({super.key});
+  const V3NoNetworkStatus({
+    super.key,
+    this.width = 540,
+    this.height = 280,
+    this.imageWidth = 126,
+    this.imageHeight = 110,
+    this.spacing,
+    this.textStyle,
+  });
+
+  final double width;
+  final double height;
+  final double imageWidth;
+  final double imageHeight;
+  final double? spacing;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
+    final defaultSpacing = context.tokens.spacing.vsdslSpacing4xl.top;
+    final defaultTextStyle = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      color: context.tokens.color.vsdslColorOnSurfaceVariant,
+    );
+
     return SizedBox(
-      width: 540,
-      height: 280,
+      width: width,
+      height: height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
             'assets/images/ic_status_no_network.svg',
             excludeFromSemantics: true,
-            width: 126,
-            height: 110,
+            width: imageWidth,
+            height: imageHeight,
           ),
-          SizedBox(
-            height: context.tokens.spacing.vsdslSpacing4xl.top,
-          ),
+          SizedBox(height: spacing ?? defaultSpacing),
           AutoSizeText(
             S.of(context).v3_main_status_no_network,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: context.tokens.color.vsdslColorOnSurfaceVariant,
-            ),
+            style: textStyle ?? defaultTextStyle,
             textAlign: TextAlign.center,
             maxLines: 5,
           ),
