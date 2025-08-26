@@ -135,6 +135,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
+
+    final webrtcHelper = context.read<WebRTCHelper>();
+
     AnnotationModel annotationModel = context.read<AnnotationModel>();
     if (kIsWeb) {
       isAnnotationImplemented = false;
@@ -144,7 +147,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
       isAnnotationImplemented = true;
     }
 
-    setDebugText();
+    setDebugText(webrtcHelper);
 
     return Container(
       color: context.tokens.color.vsdswColorNeutral,
@@ -222,7 +225,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                                 child: InkWell(
                                   onTap: () async {
                                     if (needRelaunchBroadcastUploadExtension) {
-                                      unawaited(WebRTCHelper()
+                                      unawaited(webrtcHelper
                                           .launchBroadcastUploadExtension());
                                     } else {
                                       // Toggle current state
@@ -321,7 +324,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           Positioned(
             bottom: 100,
             child: ValueListenableBuilder(
-                valueListenable: WebRTCHelper().reconnectStateNotifier,
+                valueListenable: webrtcHelper.reconnectStateNotifier,
                 builder: (BuildContext context, ChannelReconnectState state,
                     Widget? child) {
                   if (state == ChannelReconnectState.reconnecting) {
@@ -330,13 +333,11 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                   } else if (state == ChannelReconnectState.success) {
                     Toast.makeFeatureReconnectToast(state,
                         S.of(context).main_webrtc_reconnect_success_toast);
-                    WebRTCHelper()
-                        .setReconnectState(ChannelReconnectState.idle);
+                    webrtcHelper.setReconnectState(ChannelReconnectState.idle);
                   } else if (state == ChannelReconnectState.fail) {
                     Toast.makeFeatureReconnectToast(
                         state, S.of(context).main_webrtc_reconnect_fail_toast);
-                    WebRTCHelper()
-                        .setReconnectState(ChannelReconnectState.idle);
+                    webrtcHelper.setReconnectState(ChannelReconnectState.idle);
                   }
                   return Container();
                 }),
@@ -357,7 +358,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           //     ),
           //   ),
           // ),
-          if (WebRTCHelper().showTouchBack())
+          if (webrtcHelper.showTouchBack())
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -416,8 +417,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     return widgetRect;
   }
 
-  void setDebugText() {
-    WebRTCHelper().webRTCConnector?.onVideoStatsReport = (stats) {
+  void setDebugText(WebRTCHelper webRTCHelper) {
+    webRTCHelper.webRTCConnector?.onVideoStatsReport = (stats) {
       if (!WebRTCUtil.showDebugOverlay) {
         _clearDebugOverlay();
         return;

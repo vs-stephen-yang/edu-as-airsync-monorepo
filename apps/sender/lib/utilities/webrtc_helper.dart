@@ -13,15 +13,6 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'log.dart';
 
 class WebRTCHelper {
-  static WebRTCHelper? _instance;
-
-  WebRTCHelper._internal();
-
-  factory WebRTCHelper() {
-    _instance ??= WebRTCHelper._internal();
-    return _instance!;
-  }
-
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? iceServerList;
   bool _isScreenType = false;

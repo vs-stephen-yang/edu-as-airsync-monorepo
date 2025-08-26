@@ -35,6 +35,7 @@ import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
 import 'package:display_cast_flutter/utilities/sentry_util.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
+import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +144,9 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       providers: [
         Provider<AudioSwitchManager>(
           create: (context) => createAudioSwitchManager(),
+        ),
+        Provider<WebRTCHelper>(
+          create: (context) => WebRTCHelper(),
         ),
       ],
       child: AppConfig(
