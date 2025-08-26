@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
 
 class V3TouchBackButton extends StatefulWidget {
   const V3TouchBackButton({super.key});
@@ -26,21 +27,23 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
   @override
   void initState() {
     super.initState();
-    isButtonEnabled = WebRTCHelper().getTouchBack();
+
+    final webrtcHelper = context.read<WebRTCHelper>();
+
+    isButtonEnabled = webrtcHelper.getTouchBack();
 
     if (Platform.isAndroid) {
       _lifecycleListener = AppLifecycleListener(
         onResume: () async {
-          isButtonEnabled =
-              await WebRTCHelper().isAccessibilityServiceAllowed();
-          WebRTCHelper().setTouchBack(isButtonEnabled);
+          isButtonEnabled = await webrtcHelper.isAccessibilityServiceAllowed();
+          webrtcHelper.setTouchBack(isButtonEnabled);
           setState(() {});
         },
       );
 
       if (isButtonEnabled) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _showAccessibilityServiceDialog();
+          _showAccessibilityServiceDialog(webrtcHelper);
         });
       }
     }
@@ -56,6 +59,8 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
 
   @override
   Widget build(BuildContext context) {
+    final webrtcHelper = context.read<WebRTCHelper>();
+
     return Container(
       constraints: BoxConstraints(minHeight: 66),
       decoration: BoxDecoration(
@@ -107,10 +112,10 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
                   );
 
                   isButtonEnabled = !isButtonEnabled;
-                  WebRTCHelper().setTouchBack(isButtonEnabled);
+                  webrtcHelper.setTouchBack(isButtonEnabled);
                   setState(() {});
                   if (isButtonEnabled && Platform.isAndroid) {
-                    _showAccessibilityServiceDialog();
+                    _showAccessibilityServiceDialog(webrtcHelper);
                   }
                 },
               ),
@@ -121,8 +126,8 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
     );
   }
 
-  _showAccessibilityServiceDialog() async {
-    if (!await WebRTCHelper().isAccessibilityServiceAllowed()) {
+  _showAccessibilityServiceDialog(WebRTCHelper webrtcHelper) async {
+    if (!await webrtcHelper.isAccessibilityServiceAllowed()) {
       // if AccessibilityService not enabled, show dialog to ask permission.
       if (context.mounted) {
         final sc = ScrollController();
@@ -150,8 +155,8 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
                   TextButton(
                     onPressed: () async {
                       isButtonEnabled =
-                          await WebRTCHelper().isAccessibilityServiceAllowed();
-                      WebRTCHelper().setTouchBack(isButtonEnabled);
+                          await webrtcHelper.isAccessibilityServiceAllowed();
+                      webrtcHelper.setTouchBack(isButtonEnabled);
                       setState(() {});
                       if (navService.canPop()) {
                         navService.goBack();
@@ -176,7 +181,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
                           WidgetStateProperty.all<Color>(Colors.white),
                     ),
                     onPressed: () async {
-                      await WebRTCHelper().openAccessibilitySettings();
+                      await webrtcHelper.openAccessibilitySettings();
                       if (navService.canPop()) {
                         navService.goBack();
                       }

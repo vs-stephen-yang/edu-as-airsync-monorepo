@@ -79,8 +79,10 @@ class ChannelProvider extends ChangeNotifier {
     webTransportPort = AppConfig.of(context)!.webTransportPort;
 
     _audioSwitchManager = context.read<AudioSwitchManager>();
+    _webRTCHelper = context.read<WebRTCHelper>();
   }
 
+  late WebRTCHelper _webRTCHelper;
   Channel? _channel;
   DisplayChannelConnector? _channelConnector;
   RemoteScreenClient? _remoteScreenClient;
@@ -381,7 +383,7 @@ class ChannelProvider extends ChangeNotifier {
           }
           break;
         case ChannelMessageType.presentSignal:
-          unawaited(WebRTCHelper()
+          unawaited(_webRTCHelper
               .receiveSignalMessage(message as PresentSignalMessage));
           break;
         case ChannelMessageType.stopPresent:
@@ -477,7 +479,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void _onPresentAccepted(PresentAcceptedMessage message) {
     // get ice servers
-    WebRTCHelper().iceServerList = message.iceServers;
+    _webRTCHelper.iceServerList = message.iceServers;
 
     // select screen
     _presentStateProvider?.presentSelectScreenPage();
@@ -525,7 +527,7 @@ class ChannelProvider extends ChangeNotifier {
         reconnectState = ChannelReconnectState.reconnecting;
         notifyListeners();
 
-        if (!WebRTCHelper().isStreaming()) {
+        if (!_webRTCHelper.isStreaming()) {
           // If no streaming is active, interrupt if the channel remains disconnected for an period
           _startChannelReconnectTimer();
         }
@@ -558,7 +560,7 @@ class ChannelProvider extends ChangeNotifier {
     _isPresentingErrorReported = false;
 
     // PeerConnect
-    await WebRTCHelper().init(
+    await _webRTCHelper.init(
       sessionId: _sessionId,
       profileStore: profileStore,
       systemAudio: systemAudio,
@@ -614,7 +616,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> makeCall({required dynamic selectedSource}) async {
-    await WebRTCHelper().start(
+    await _webRTCHelper.start(
         selectedSource: selectedSource,
         onResult: (result) {
           log.info('makeCall: ${result ? 'success' : 'failure'}');
@@ -643,7 +645,7 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentEnd({bool goIdleState = true}) async {
     try {
-      await WebRTCHelper().close();
+      await _webRTCHelper.close();
       await closeChannel();
     } catch (e, stackTrace) {
       log.severe('presentEnd', e, stackTrace);
@@ -661,7 +663,7 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentStop({Reason? reason}) async {
     // handle stream
-    WebRTCHelper().stop();
+    _webRTCHelper.stop();
 
     // send command
     _stopPresent(reason: reason);
@@ -669,12 +671,12 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentPause({Rect? pauseBtnRect, Rect? stopBtnRect}) async {
-    WebRTCHelper().pause(_sessionId,
+    _webRTCHelper.pause(_sessionId,
         pauseBtnRect: pauseBtnRect, stopBtnRect: stopBtnRect);
   }
 
   Future<void> presentResume() async {
-    WebRTCHelper().resume(_sessionId);
+    _webRTCHelper.resume(_sessionId);
   }
 
   Future<bool> presentChangeHighQuality({required bool isHighQuality}) async {
@@ -686,7 +688,7 @@ class ChannelProvider extends ChangeNotifier {
       );
     }
     Preset preset = _profileStore.getSelectedProfile().presets.first;
-    bool result = await WebRTCHelper().changeHighQuality(preset);
+    bool result = await _webRTCHelper.changeHighQuality(preset);
     ProfileUtil.saveSelectedProfile(_profileStore.getSelectedProfile().name);
     if (result) {
       log.info('updateEncodingPreset success');
@@ -828,7 +830,7 @@ class ChannelProvider extends ChangeNotifier {
 
     _channel?.send(msg);
 
-    WebRTCHelper().sendStop(msg);
+    _webRTCHelper.sendStop(msg);
   }
 
   //endregion
@@ -895,7 +897,7 @@ class ChannelProvider extends ChangeNotifier {
     final eventName = _isRtcFirstConnected ? 'cast_fail' : 'cast_error';
 
     final Map<String, Object> properties =
-        _isRtcFirstConnected ? {} : WebRTCHelper().getIceInfo();
+        _isRtcFirstConnected ? {} : _webRTCHelper.getIceInfo();
 
     trackEvent(eventName, EventCategory.session, properties: properties);
 

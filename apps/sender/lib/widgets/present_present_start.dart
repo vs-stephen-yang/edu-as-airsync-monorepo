@@ -31,6 +31,8 @@ class PresentPresentStart extends StatelessWidget {
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
+    final webrtcHelper = context.read<WebRTCHelper>();
+
     var textStyle28 = const TextStyle(color: Colors.white, fontSize: 28);
     var textStyle14 = const TextStyle(
         color: Colors.white, fontSize: AppConstants.fontSizeNormal);
@@ -126,13 +128,13 @@ class PresentPresentStart extends StatelessWidget {
                     initialValue:
                         channelProvider.profileStore.selectedProfile ==
                             ProfileStore.videoQualityFirstProfile),
-              if (WebRTCHelper().showTouchBack())
+              if (webrtcHelper.showTouchBack())
                 TouchBackButton(
                   key: touchBtnKey,
-                  initialValue: WebRTCHelper().getTouchBack(),
+                  initialValue: webrtcHelper.getTouchBack(),
                   onPressed: (state) {
                     trackEvent('click_touchback', EventCategory.session);
-                    WebRTCHelper().setTouchBack(state);
+                    webrtcHelper.setTouchBack(state);
                   },
                 ),
             ],
@@ -140,7 +142,7 @@ class PresentPresentStart extends StatelessWidget {
         ),
         ValueListenableBuilder(
             valueListenable:
-                WebRTCHelper().webRTCConnector!.reconnectStateNotifier,
+                webrtcHelper.webRTCConnector!.reconnectStateNotifier,
             builder: (BuildContext context, ChannelReconnectState state,
                 Widget? child) {
               if (state == ChannelReconnectState.reconnecting) {
@@ -149,11 +151,11 @@ class PresentPresentStart extends StatelessWidget {
               } else if (state == ChannelReconnectState.success) {
                 Toast.makeFeatureReconnectToast(
                     state, S.of(context).main_webrtc_reconnect_success_toast);
-                WebRTCHelper().setReconnectState(ChannelReconnectState.idle);
+                webrtcHelper.setReconnectState(ChannelReconnectState.idle);
               } else if (state == ChannelReconnectState.fail) {
                 Toast.makeFeatureReconnectToast(
                     state, S.of(context).main_webrtc_reconnect_fail_toast);
-                WebRTCHelper().setReconnectState(ChannelReconnectState.idle);
+                webrtcHelper.setReconnectState(ChannelReconnectState.idle);
               }
               return Container();
             }),
