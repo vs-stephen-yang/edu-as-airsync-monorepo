@@ -5,6 +5,7 @@
 #include "flutter/generated_plugin_registrant.h"
 
 #include "wifi_utils.cpp"
+#include "time_utils.cpp"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
@@ -76,6 +77,13 @@ bool FlutterWindow::OnCreate() {
                     result->NotImplemented();
                 }
             });
+    // Create EventChannel
+    time_channel_ = std::make_unique<
+                    flutter::EventChannel<flutter::EncodableValue>>(
+                    flutter_controller_->engine()->messenger(),
+                    "com.mvbcast.crosswalk/time_events",
+                    &flutter::StandardMethodCodec::GetInstance());
+    time_channel_->SetStreamHandler(std::make_unique<TimeFormatStreamHandler>());
 
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
@@ -92,7 +100,8 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
-  if (flutter_controller_) {
+    time_channel_.reset();
+    if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }
 

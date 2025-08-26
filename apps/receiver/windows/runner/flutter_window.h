@@ -4,13 +4,7 @@
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
 #include <flutter/event_channel.h>
-#include <flutter/event_sink.h>
-#include <flutter/event_stream_handler_functions.h>
-#include <flutter/method_channel.h>
-#include <flutter/standard_method_codec.h>
 #include <flutter/encodable_value.h>
-#include <windows.h>
-
 #include <memory>
 
 #include "win32_window.h"
@@ -35,6 +29,8 @@ class FlutterWindow : public Win32Window {
 
   // The Flutter instance hosted by this window.
   std::unique_ptr<flutter::FlutterViewController> flutter_controller_;
+  // EventChannel for 12/24H streaming (handler owned by the channel)
+  std::unique_ptr<flutter::EventChannel<flutter::EncodableValue>> time_channel_;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_
