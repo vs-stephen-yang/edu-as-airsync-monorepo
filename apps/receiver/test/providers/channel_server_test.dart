@@ -15,6 +15,7 @@ void main() {
       baseApiUrl: 'https://test.api',
       instanceId: 'abc-123',
       webTransportServerPort: 1234,
+      directChannelPort: 1235,
       reportPortBindResult: (_, __, ___) {},
       reportTunnelConnectResult: (_, __) {},
       reportWebTransportCertDate: (_) {},

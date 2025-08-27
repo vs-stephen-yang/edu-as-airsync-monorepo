@@ -310,6 +310,7 @@ class ChannelProvider extends ChangeNotifier {
       baseApiUrl: appConfig.settings.baseApiUrl,
       instanceId: AppInstanceCreate().displayInstanceID,
       webTransportServerPort: appConfig.webTransportServerPort,
+      directChannelPort: DisplayServiceBroadcast.instance.directChannelPort,
       reportPortBindResult: _networkDiagnostic.importPortTestResult,
       reportTunnelConnectResult: _networkDiagnostic.reportTunnelConnectResult,
       reportWebTransportCertDate: _networkDiagnostic.reportWebTransportCertDate,
