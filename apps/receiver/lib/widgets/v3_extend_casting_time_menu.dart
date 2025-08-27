@@ -4,6 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
@@ -108,11 +110,13 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
   }
 
   Widget _buildPureCountdownView(BuildContext context) {
-    return _buildDialog(
+    final isCompat = context.splitScreenRatio.widthFraction <=
+        SplitScreenRatio.floatingDefault.widthFraction;
+    final r = _buildDialog(
       context: context,
       width: 108,
       height: 50,
-      backgroundColor: const Color(0xFF151C32).withOpacity(0.64),
+      backgroundColor: const Color(0xFF151C32).withValues(alpha: 0.64),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -122,6 +126,22 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
         ],
       ),
     );
+
+    if (isCompat) {
+      return Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: ChannelProvider.isModeratorMode ? 25 : 4.66,
+          ),
+          child: Center(child: r),
+        ),
+      );
+    }
+
+    return r;
   }
 
   Widget _buildMainDialog(BuildContext context) {
@@ -133,25 +153,74 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
               ConnectionTimer.getInstance().remainExtendTime,
             );
 
-    return _buildDialog(
-      context: context,
-      width: 242,
-      height: height,
-      backgroundColor: context.tokens.color.vsdslColorSurface1000,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 16),
-          const _CountdownText(),
-          const SizedBox(height: 8),
-          _MessageText(message: message),
-          if (!lastTime) ...[
-            const SizedBox(height: 13),
-            _ExtendButtons(
-                onDoNotExtend: () => setState(() => onlyCountdown = true)),
+    final compat = UnconstrainedBox(
+      constrainedAxis: Axis.vertical,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero, // 移除圓角
+          ),
+          insetPadding: EdgeInsets.zero,
+          backgroundColor: context.tokens.color.vsdslColorSurface1000,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 16),
+                  const _CountdownText(),
+                  Spacer(),
+                  const SizedBox(height: 8),
+                  _MessageText(message: message),
+                  Spacer(),
+                  if (!lastTime) ...[
+                    const SizedBox(height: 13),
+                    _ExtendButtons(
+                        wrapAlignment: WrapAlignment.spaceEvenly,
+                        onDoNotExtend: () =>
+                            setState(() => onlyCountdown = true)),
+                  ],
+                  const SizedBox(height: 8),
+                ],
+              )),
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _CountDownProgressIndicatorBar(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    return MultiWindowAdaptiveLayout(
+      launcher: compat,
+      floatingDefault: compat,
+      landscape: _buildDialog(
+        context: context,
+        width: 242,
+        height: height,
+        backgroundColor: context.tokens.color.vsdslColorSurface1000,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 16),
+            const _CountdownText(),
+            const SizedBox(height: 8),
+            _MessageText(message: message),
+            if (!lastTime) ...[
+              const SizedBox(height: 13),
+              _ExtendButtons(
+                  onDoNotExtend: () => setState(() => onlyCountdown = true)),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -249,8 +318,12 @@ class _MessageText extends StatelessWidget {
 
 class _ExtendButtons extends StatelessWidget {
   final VoidCallback onDoNotExtend;
+  final WrapAlignment wrapAlignment;
 
-  const _ExtendButtons({required this.onDoNotExtend});
+  const _ExtendButtons({
+    required this.onDoNotExtend,
+    this.wrapAlignment = WrapAlignment.end,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -260,14 +333,14 @@ class _ExtendButtons extends StatelessWidget {
       padding: EdgeInsets.symmetric(
           horizontal: context.tokens.spacing.vsdslSpacingXl.right),
       child: Wrap(
-        alignment: WrapAlignment.end,
+        alignment: wrapAlignment,
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 5,
         children: [
           _buildButton(
             context: context,
             label: S.of(context).v3_casting_time_do_not_extend,
-            width: 110,
+            width: 90,
             backgroundColor: context.tokens.color.vsdslColorOpacityNeutralSm,
             borderColor: context.tokens.color.vsdslColorOnSurfaceInverse,
             onPressed: onDoNotExtend,
@@ -277,7 +350,7 @@ class _ExtendButtons extends StatelessWidget {
           _buildButton(
             context: context,
             label: S.of(context).v3_casting_time_extend,
-            width: 67,
+            width: 90,
             backgroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
             textColor: context.tokens.color.vsdslColorNeutral,
             onPressed: () {
@@ -310,9 +383,11 @@ class _ExtendButtons extends StatelessWidget {
     return V3Focus(
       label: semanticLabel,
       identifier: identifier,
-      child: SizedBox(
-        width: width,
-        height: 27,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: 27,
+          minWidth: width,
+        ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             foregroundColor:
