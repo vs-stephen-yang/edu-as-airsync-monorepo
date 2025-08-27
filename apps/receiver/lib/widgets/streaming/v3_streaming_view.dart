@@ -1,6 +1,7 @@
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/utility/navigation_service_util.dart';
@@ -165,9 +166,14 @@ class BottomOverlayMenus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inMin = context.splitScreenRatio == SplitScreenRatio.launcher;
     return Positioned(
-      bottom: isLifted ? 164 : 54,
-      right: 53,
+      bottom: inMin
+          ? 0
+          : isLifted
+              ? 164
+              : 54,
+      right: inMin ? 0 : 53,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [
