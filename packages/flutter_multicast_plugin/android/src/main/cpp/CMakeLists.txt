@@ -4,8 +4,6 @@ cmake_policy(SET CMP0079 NEW)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
 project(multicast_android)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -165,6 +163,7 @@ set(COMMON_SRC
         ${COMMON_DIR}/gst_audio_pipeline.cpp
         ${COMMON_DIR}/gst_util.cpp
         ${COMMON_DIR}/jni_context.cpp
+        ${COMMON_DIR}/h264_util.cpp
 )
 
 # 加入 JNI 的 source

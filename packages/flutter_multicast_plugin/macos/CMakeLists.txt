@@ -54,6 +54,7 @@ set(COMMON_SRC
     ${COMMON_DIR}/gst_util.cpp
     ${COMMON_DIR}/rtp_receiver_core.cpp
     ${COMMON_DIR}/ip_pktinfo_detector.cpp
+    ${COMMON_DIR}/h264_util.cpp
 )
 
 add_library(common STATIC ${COMMON_SRC})

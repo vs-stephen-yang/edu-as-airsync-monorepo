@@ -34,12 +34,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Keep
 public class ScreenCaptureService extends Service {
     private static final String TAG = "ScreenCaptureService";
     private static final String CHANNEL_ID = "screen_capture_channel";
+    private static final byte[] START_CODE = new byte[]{0x00, 0x00, 0x00, 0x01};
     private final int dpi = 320;
     private volatile boolean isRunningFrameLoop = false;
     private MediaProjection mediaProjection;
@@ -57,12 +59,11 @@ public class ScreenCaptureService extends Service {
     private int maxBitrate = 8_000_000;
     private int frameRate = 30;
     private int bitrateMode = MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR;
-
     private volatile boolean isEncoding = false;
-
     private AudioCaptureManager audioManager;
+    private ByteBuffer h26xConfig;
 
-    public static boolean isAnnexB(byte[] buffer) {
+    private static boolean isAnnexB(byte[] buffer) {
         if (buffer == null || buffer.length < 6) return false;
 
         int startCodeCount = 0;
@@ -89,7 +90,7 @@ public class ScreenCaptureService extends Service {
                 ((buffer[2] == 0x00 && buffer[3] == 0x01) || buffer[2] == 0x01);
     }
 
-    public static List<byte[]> convertAvccToAnnexB(byte[] avccBuffer) {
+    private static List<byte[]> convertAvccToAnnexB(byte[] avccBuffer) {
         List<byte[]> nalUnits = new ArrayList<>();
         int offset = 0;
 
@@ -114,54 +115,189 @@ public class ScreenCaptureService extends Service {
         return nalUnits;
     }
 
-    public static List<byte[]> splitAnnexBNalus(byte[] buffer) {
-        List<byte[]> nalUnits = new ArrayList<>();
-        int start = -1;
-        int i = 0;
+    /** 回傳：每顆 NAL 都已經「含 start code」的 Annex-B 片段 */
+    private static List<byte[]> extractAnnexBNalsFromConfig(ByteBuffer csd) {
+        if (csd == null) return Collections.emptyList();
 
-        while (i < buffer.length - 3) {
-            boolean found = false;
-            int prefixLength = 0;
+        // 只取有效區間（不要用 clear()）
+        ByteBuffer buf = csd.duplicate();
+        // 若外面已設 position/limit，保持不變；否則預設就是 0..limit
+        byte[] data = new byte[buf.remaining()];
+        buf.get(data);
 
-            // 找 start code
-            if (buffer[i] == 0x00 && buffer[i + 1] == 0x00) {
-                if (buffer[i + 2] == 0x01) {
-                    found = true;
-                    prefixLength = 3;
-                } else if (i + 3 < buffer.length && buffer[i + 2] == 0x00 && buffer[i + 3] == 0x01) {
-                    found = true;
-                    prefixLength = 4;
-                }
-            }
+        if (isAnnexB(data)) {
+            // 切出每顆 NAL，但「保留」各自的 start code
+            return splitAnnexBKeepingStartCodes(data);
+        } else {
+            // 解析 avcC，將每顆 SPS/PPS 轉成 Annex-B（前面加 00 00 00 01）
+            return parseAvcCToAnnexBNalList(data);
+        }
+    }
 
-            if (found) {
+    /** Annex-B：保留各自的 start code（3 或 4 byte 都可） */
+    private static List<byte[]> splitAnnexBKeepingStartCodes(byte[] b) {
+        List<byte[]> out = new ArrayList<>();
+        int i = 0, start = -1, scLen = 0;
+
+        while (i + 3 < b.length) {
+            int s = i;
+            int len = 0;
+            if (b[i] == 0 && b[i+1] == 0 && b[i+2] == 1) { len = 3; }
+            else if (i + 3 < b.length && b[i] == 0 && b[i+1] == 0 && b[i+2] == 0 && b[i+3] == 1) { len = 4; }
+
+            if (len != 0) {
                 if (start >= 0) {
-                    // 上一段 NALU 結束，取出
-                    nalUnits.add(Arrays.copyOfRange(buffer, start, i));
+                    // 上一顆 NAL [含它自己的 start code] 切出
+                    out.add(Arrays.copyOfRange(b, start, s));
                 }
-                start = i;
-                i += prefixLength;
+                start = s;
+                scLen = len;
+                i += len;
             } else {
                 i++;
             }
         }
-
-        // 加入最後一段 NALU（結尾）
-        if (start >= 0 && start < buffer.length) {
-            nalUnits.add(Arrays.copyOfRange(buffer, start, buffer.length));
+        if (start >= 0) {
+            out.add(Arrays.copyOfRange(b, start, b.length));
         }
-
-        return nalUnits;
+        return out;
     }
 
-    public static int detectStartCodeLength(byte[] nal) {
-        if (nal.length >= 4 &&
-                nal[0] == 0x00 && nal[1] == 0x00 &&
-                nal[2] == 0x00 && nal[3] == 0x01) return 4;
-        if (nal.length >= 3 &&
-                nal[0] == 0x00 && nal[1] == 0x00 &&
-                nal[2] == 0x01) return 3;
-        return -1; // Invalid
+    /** avcC：取出 SPS/PPS，對每段前面補 0x00000001，回傳 Annex-B 片段（含 start code） */
+    private static List<byte[]> parseAvcCToAnnexBNalList(byte[] avcc) {
+        List<byte[]> out = new ArrayList<>();
+        if (avcc.length < 7) return out;
+
+        int idx = 0;
+        int configurationVersion = avcc[idx++] & 0xFF;    // 1
+        int profile              = avcc[idx++] & 0xFF;
+        int compat               = avcc[idx++] & 0xFF;
+        int level                = avcc[idx++] & 0xFF;
+
+        int lengthSizeMinusOne   = avcc[idx++] & 0x03;     // 低 2 bit
+        int nalLenSize           = (lengthSizeMinusOne + 1); // 1/2/4，幾乎一定是 4
+
+        int numSps = avcc[idx++] & 0x1F; // 低 5 bit
+        for (int n = 0; n < numSps; n++) {
+            if (idx + 2 > avcc.length) return out;
+            int spsLen = ((avcc[idx] & 0xFF) << 8) | (avcc[idx+1] & 0xFF);
+            idx += 2;
+            if (idx + spsLen > avcc.length) return out;
+
+            byte[] nal = new byte[START_CODE.length + spsLen];
+            System.arraycopy(START_CODE, 0, nal, 0, START_CODE.length);
+            System.arraycopy(avcc, idx, nal, START_CODE.length, spsLen);
+            out.add(nal);
+            idx += spsLen;
+        }
+
+        if (idx >= avcc.length) return out;
+
+        int numPps = avcc[idx++] & 0xFF;
+        for (int n = 0; n < numPps; n++) {
+            if (idx + 2 > avcc.length) return out;
+            int ppsLen = ((avcc[idx] & 0xFF) << 8) | (avcc[idx+1] & 0xFF);
+            idx += 2;
+            if (idx + ppsLen > avcc.length) return out;
+
+            byte[] nal = new byte[START_CODE.length + ppsLen];
+            System.arraycopy(START_CODE, 0, nal, 0, START_CODE.length);
+            System.arraycopy(avcc, idx, nal, START_CODE.length, ppsLen);
+            out.add(nal);
+            idx += ppsLen;
+        }
+
+        return out;
+    }
+
+    // 把多顆 Annex-B NAL 串回成一段 bytes（每顆已含 start code）
+    private static byte[] joinBytes(List<byte[]> parts) {
+        int total = 0; for (byte[] p: parts) total += p.length;
+        ByteArrayOutputStream bo = new ByteArrayOutputStream(total);
+        for (byte[] p: parts) try { bo.write(p); } catch (IOException ignored) {}
+        return bo.toByteArray();
+    }
+
+    private static boolean isActuallyAnnexB(byte[] buffer) {
+        return isAnnexB(buffer) && !looksLikeAvcc(buffer);
+    }
+
+    private static boolean looksLikeAvcc(byte[] buffer) {
+        int offset = 0;
+        while (offset + 4 <= buffer.length) {
+            int length = ((buffer[offset] & 0xFF) << 24) |
+                    ((buffer[offset + 1] & 0xFF) << 16) |
+                    ((buffer[offset + 2] & 0xFF) << 8) |
+                    (buffer[offset + 3] & 0xFF);
+            offset += 4;
+            if (length <= 0 || offset + length > buffer.length)
+                return false;
+            offset += length;
+        }
+        return offset == buffer.length; // 所有 NALU 完整對齊
+    }
+
+    // 拆 Annex-B stream 成「raw payload」（不含 start code），只用來判斷 IDR
+    private static List<byte[]> splitAnnexBToRawSegments(byte[] annexb) {
+        List<byte[]> out = new ArrayList<>();
+        int n = annexb.length, i = 0;
+        while (i + 3 < n) {
+            int sc = (annexb[i]==0 && annexb[i+1]==0 && annexb[i+2]==1) ? 3 :
+                    (i+3<n && annexb[i]==0 && annexb[i+1]==0 && annexb[i+2]==0 && annexb[i+3]==1) ? 4 : 0;
+            if (sc==0) { i++; continue; }
+            int payload = i + sc, j = payload;
+            while (j + 3 < n) {
+                if (annexb[j]==0 && annexb[j+1]==0 && (annexb[j+2]==1 || (j+3<n && annexb[j+2]==0 && annexb[j+3]==1))) break;
+                j++;
+            }
+            int end = (j + 3 < n) ? j : n;
+            if (payload < end) out.add(Arrays.copyOfRange(annexb, payload, end));
+            i = end;
+        }
+        return out;
+    }
+
+    private static int nalTypeWithStartCode(byte[] nalWithSc) {
+        int i = (nalWithSc[2]==1) ? 3 : 4;
+        return nalWithSc.length > i ? (nalWithSc[i] & 0x1F) : -1;
+    }
+
+    private static byte[] buildAnnexBAu(ByteBuffer frameBuf, @Nullable ByteBuffer configBuf) {
+        try {
+            // 取出本幀位元組
+            byte[] frameBytes = new byte[frameBuf.remaining()];
+            frameBuf.get(frameBytes);
+
+            // 若本幀是 AVCC，先轉 Annex-B；Annex-B 就直接用原 bytes
+            byte[] annexbFrame = isActuallyAnnexB(frameBytes)
+                    ? frameBytes
+                    : joinBytes(convertAvccToAnnexB(frameBytes)); // 每顆 NAL 皆含 00 00 00 01
+
+            // 掃描本幀是否包含 IDR
+            boolean hasIdr = false;
+            for (byte[] seg : splitAnnexBToRawSegments(annexbFrame)) {
+                int t = seg[0] & 0x1F;
+                if (t == 5) { hasIdr = true; break; }
+            }
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            // 若是 keyframe 且有 CSD，從 CSD 取「Annex-B 的 SPS/PPS（各自含 start code）」前置
+            if (hasIdr && configBuf != null && configBuf.hasRemaining()) {
+                for (byte[] nalWithSc : extractAnnexBNalsFromConfig(configBuf.slice())) {
+                    int t = nalTypeWithStartCode(nalWithSc);
+                    if (t == 7 || t == 8) out.write(nalWithSc); // 直接寫入 Annex-B 的 SPS/PPS
+                }
+            }
+
+            // 再把本幀 Annex-B 原樣寫入（不要移除任何 slice；SPS/PPS 即使重複也沒關係）
+            out.write(annexbFrame);
+
+            return out.toByteArray();
+        } catch (Exception e) {
+            Log.e(TAG, "buildAnnexBAu failed", e);
+            return new byte[0];
+        }
     }
 
     @Override
@@ -359,65 +495,49 @@ public class ScreenCaptureService extends Service {
 
     private void encodeNextFrame() {
         if (!isEncoding) return;
+
         MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
         try {
             int outputBufferIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, 10_000);
             if (outputBufferIndex >= 0) {
                 ByteBuffer encodedData = mediaCodec.getOutputBuffer(outputBufferIndex);
-
-                List<byte[]> nalUnits = processEncodedBuffer(encodedData, bufferInfo.offset, bufferInfo.size);
-                ByteArrayOutputStream au = new ByteArrayOutputStream();
-                for (byte[] nal : nalUnits) {
-                    int startCodeLength = detectStartCodeLength(nal);
-                    if (startCodeLength == -1) continue;
-
-                    int nalUnitType = nal[startCodeLength] & 0x1F;
-
-                    // Check if this is an IDR frame (NAL unit type 5)
-                    if (nalUnitType == 5) {
-                        MediaFormat format = mediaCodec.getOutputFormat();
-                        ByteBuffer spsBuf = format.getByteBuffer("csd-0");
-                        ByteBuffer ppsBuf = format.getByteBuffer("csd-1");
-                        if (spsBuf != null && ppsBuf != null) {
-                            byte[] sps = new byte[spsBuf.remaining()];
-                            byte[] pps = new byte[ppsBuf.remaining()];
-                            spsBuf.rewind();
-                            spsBuf.get(sps);
-                            ppsBuf.rewind();
-                            ppsBuf.get(pps);
-
-                            int totalLength = 1 + 2 + sps.length + 2 + pps.length;
-                            byte[] stapA = new byte[totalLength];
-                            int stapAoffset = 0;
-                            stapA[stapAoffset++] = 24; // STAP-A NAL unit type
-
-                            stapA[stapAoffset++] = (byte) ((sps.length >> 8) & 0xFF);
-                            stapA[stapAoffset++] = (byte) (sps.length & 0xFF);
-                            System.arraycopy(sps, 0, stapA, stapAoffset, sps.length);
-                            stapAoffset += sps.length;
-
-                            stapA[stapAoffset++] = (byte) ((pps.length >> 8) & 0xFF);
-                            stapA[stapAoffset++] = (byte) (pps.length & 0xFF);
-                            System.arraycopy(pps, 0, stapA, stapAoffset, pps.length);
-
-                            NativeBridge.sendRtpFrame(stapA);
-                        }
-                    }
-
-                    au.write(nal);
+                // 先用 offset/size 縮出有效視窗
+                if (encodedData == null) {
+                    return;
                 }
-                NativeBridge.sendRtpFrame(au.toByteArray());
+                encodedData.position(bufferInfo.offset);
+                encodedData.limit(bufferInfo.offset + bufferInfo.size);
+
+                // 1) CONFIG buffer：保存 exact-size 副本（避免尾端垃圾/容量過大）
+                if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                    if (bufferInfo.size > 0) {
+                        // 只分配剛好的大小
+                        h26xConfig = ByteBuffer.allocateDirect(bufferInfo.size);
+                        // 拷貝「目前 position..limit」的有效資料
+                        h26xConfig.put(encodedData.slice());
+                        h26xConfig.rewind();
+                        Log.d(TAG, "Saved CONFIG (CSD) size=" + h26xConfig.capacity());
+                    }
+                    mediaCodec.releaseOutputBuffer(outputBufferIndex, false);
+                    return;
+                }
+
+                boolean isKey = (bufferInfo.flags & MediaCodec.BUFFER_FLAG_KEY_FRAME) != 0;
+
+                // 2) 把「本幀」轉成 Annex-B 的「整個 AU」
+                byte[] auBytes = buildAnnexBAu(encodedData.slice(), isKey ? h26xConfig : null);
+
+                // 3) 一次送整個 AU 給 uvgRTP（內部走 h26x::push_media_frame）
+                NativeBridge.sendRtpFrame(auBytes);
                 mediaCodec.releaseOutputBuffer(outputBufferIndex, false);
             }
         } catch (IllegalStateException e) {
             Log.e(TAG, "Encoder loop terminated due to codec stop", e);
-            return;
-        } catch (IOException e) {
-            Log.e(TAG, "AU write error", e);
-            return;
+        } finally {
+            if (isEncoding) {
+                encoderHandler.post(this::encodeNextFrame);
+            }
         }
-
-        encoderHandler.post(this::encodeNextFrame);
     }
 
     private void createNotificationChannel() {
@@ -432,42 +552,6 @@ public class ScreenCaptureService extends Service {
                 manager.createNotificationChannel(channel);
             }
         }
-    }
-
-    List<byte[]> processEncodedBuffer(ByteBuffer encodedData, int offset, int size) {
-        if (encodedData == null || size <= 0) return new ArrayList<>();
-
-        // 1. 將 ByteBuffer 轉為 byte[]
-        byte[] buffer = new byte[size];
-        encodedData.position(offset);
-        encodedData.limit(offset + size);
-        encodedData.get(buffer);
-
-        // 2. 檢查是否為 Annex B
-        List<byte[]> nalUnits;
-        if (isActuallyAnnexB(buffer)) {
-            return splitAnnexBNalus(buffer);
-        }
-        return convertAvccToAnnexB(buffer);
-    }
-
-    boolean isActuallyAnnexB(byte[] buffer) {
-        return isAnnexB(buffer) && !looksLikeAvcc(buffer);
-    }
-
-    boolean looksLikeAvcc(byte[] buffer) {
-        int offset = 0;
-        while (offset + 4 <= buffer.length) {
-            int length = ((buffer[offset] & 0xFF) << 24) |
-                    ((buffer[offset + 1] & 0xFF) << 16) |
-                    ((buffer[offset + 2] & 0xFF) << 8) |
-                    (buffer[offset + 3] & 0xFF);
-            offset += 4;
-            if (length <= 0 || offset + length > buffer.length)
-                return false;
-            offset += length;
-        }
-        return offset == buffer.length; // 所有 NALU 完整對齊
     }
 
     @Override

@@ -1,4 +1,5 @@
 #pragma once
+#include "h264_util.h"
 #include <atomic>
 #include <cstdint>
 #include <functional>
@@ -6,6 +7,7 @@
 #include <stdint.h>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -23,6 +25,7 @@ class RtpReceiverCore {
     std::thread video_receiver_thread_;
     std::thread audio_receiver_thread_;
     std::atomic<bool> running_;
+    std::unordered_map<uint32_t, AuBuf> aus_; // key = RTP timestamp
 
     std::string detect_best_interface(const std::vector<std::string>& candidate_local_ips,
                                       const std::string& multicast_ip,

@@ -63,9 +63,6 @@ for ARCH in "${ARCHS[@]}"; do
   cp "$BUILD_DIR/libcommon.a" "$LIB_DIR/libcommon_$ARCH.a"
   cp "$BUILD_DIR/uvgrtp/libuvgrtp.a" "$LIB_DIR/libuvgrtp_$ARCH.a"
   cp "$BUILD_DIR/libcryptopp.a" "$LIB_DIR/libcryptopp_$ARCH.a"
-  # cp "$BUILD_DIR/libcommon.a" "$LIB_DIR/libcommon.a"
-  # cp "$BUILD_DIR/uvgrtp/libuvgrtp.a" "$LIB_DIR/libuvgrtp.a"
-  # cp "$BUILD_DIR/libcryptopp.a" "$LIB_DIR/libcryptopp.a"
 done
 
 # 合併為 universal binary
