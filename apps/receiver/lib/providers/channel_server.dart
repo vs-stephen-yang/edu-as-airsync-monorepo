@@ -4,7 +4,6 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/http_request.dart';
 import 'package:display_flutter/api/instance_api.dart';
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/cancelable_task.dart';
 import 'package:display_flutter/utility/channel_util.dart';
@@ -32,6 +31,7 @@ class ChannelServer {
   bool _directEnabled = false;
 
   final int webTransportServerPort;
+  final int directChannelPort;
 
   final int tunnelMaxRetry;
   final Duration tunnelRetryInterval;
@@ -97,6 +97,7 @@ class ChannelServer {
     required this.baseApiUrl,
     required this.instanceId,
     required this.webTransportServerPort,
+    required this.directChannelPort,
     required this.reportPortBindResult,
     required this.reportTunnelConnectResult,
     required this.reportWebTransportCertDate,
@@ -127,15 +128,13 @@ class ChannelServer {
       );
 
       await _directServer?.start(
-        DisplayServiceBroadcast.instance.directChannelPort,
+        directChannelPort,
         securityContext: securityContext,
       );
-      reportPortBindResult(
-          DisplayServiceBroadcast.instance.directChannelPort, true, null);
+      reportPortBindResult(directChannelPort, true, null);
       log.info('Direct channel server has started');
     } on Exception catch (e) {
-      reportPortBindResult(DisplayServiceBroadcast.instance.directChannelPort,
-          false, e.toString());
+      reportPortBindResult(directChannelPort, false, e.toString());
       log.severe('Failed to start direct channel server', e);
     }
 
