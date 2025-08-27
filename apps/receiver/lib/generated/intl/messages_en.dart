@@ -891,6 +891,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Save",
     ),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Device version is not supported",
+    ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Device setting",
     ),

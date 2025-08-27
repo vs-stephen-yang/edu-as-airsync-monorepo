@@ -114,6 +114,7 @@ class DisplayServiceBroadcast {
           'ip': _instanceInfo.ipAddress,
           'igo': _invitedToGroupOption,
           'id': AppInstanceCreate().groupID,
+          'mc': '1', // multicast
         },
       );
 

@@ -376,5 +376,6 @@
   "v3_lbl_cast_device_next": "next page",
   "v3_lbl_cast_device_previous": "previous page",
   "v3_lbl_cast_device_sort_asc": "sort asc",
-  "v3_lbl_cast_device_sort_desc": "sort desc"
+  "v3_lbl_cast_device_sort_desc": "sort desc",
+  "v3_settings_device_not_supported": "Device version is not supported"
 }

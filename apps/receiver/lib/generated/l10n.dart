@@ -3800,6 +3800,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Device version is not supported`
+  String get v3_settings_device_not_supported {
+    return Intl.message(
+      'Device version is not supported',
+      name: 'v3_settings_device_not_supported',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
