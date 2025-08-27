@@ -55,7 +55,7 @@ class MultiWindowProvider extends ChangeNotifier {
       (appWidth / _realScreenSize.width).toStringAsFixed(2),
     );
 
-    final fullHeight = appHeight == _realScreenSize.height;
+    final fullHeight = (appHeight - _realScreenSize.height).abs() < 150;
     return switch (ratio) {
       < 0.33 => SplitScreenRatio.launcher,
       >= 0.33 && < 0.416667 => fullHeight
