@@ -199,7 +199,7 @@ Java_com_viewsonic_flutter_1multicast_1plugin_NativeBridge_sendRtpFrame(
   for (auto &pair : streamPairs) {
     if (pair.videoStream) {
       rtp_error_t ret = pair.videoStream->push_frame(
-          reinterpret_cast<uint8_t *>(buf), len, RTP_NO_FLAGS);
+          reinterpret_cast<uint8_t *>(buf), len, RTP_NO_H26X_SCL);
       if (ret != RTP_OK) {
         ALOGE("Failed to send video data via local IP: %s",
               pair.local_ip.c_str());

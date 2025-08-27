@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.Context;
 import android.media.projection.MediaProjectionManager;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,7 +35,6 @@ import java.util.concurrent.FutureTask;
 /** FlutterMulticastPlugin */
 @Keep
 public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener, SurfaceCallbackHandler.SurfaceLifecycleListener, NativeListener {
-    private  Context context;
     private MethodChannel channel;
 
     private TextureRegistry textureRegistry;
@@ -53,8 +51,6 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
     private static final String TAG = "FlutterMulticastPlugin";
 
-    private WifiManager.MulticastLock multicastLock;
-
     static {
         try {
           System.loadLibrary("gstreamer_android");
@@ -68,18 +64,17 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        context = flutterPluginBinding.getApplicationContext();
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_multicast_plugin");
         channel.setMethodCallHandler(this);
 
         textureRegistry = flutterPluginBinding.getTextureRegistry();
 
         // 使用反射來初始化 GStreamer，避免編譯時依賴
-        initializeGStreamerIfAvailable();
+        initializeGStreamerIfAvailable(flutterPluginBinding.getApplicationContext());
         nativeBridge_ = new NativeBridge(this);
     }
 
-    private void initializeGStreamerIfAvailable() {
+    private void initializeGStreamerIfAvailable(android.content.Context context) {
         try {
             Class<?> gstreamerClass = Class.forName("org.freedesktop.gstreamer.GStreamer");
             java.lang.reflect.Method initMethod = gstreamerClass.getMethod("init", android.content.Context.class);
@@ -96,15 +91,6 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case "startRtpStream": {
-                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-
-                // 建立並 acquire MulticastLock
-                if (wifiManager != null) {
-                    Log.w(TAG, "acquire multicast lock");
-                    multicastLock = wifiManager.createMulticastLock("multicast_lock");
-                    multicastLock.setReferenceCounted(false);
-                    multicastLock.acquire();
-                }
                 String multicastIp = call.argument("ip");
                 Integer videoPort = call.argument("videoPort");
                 Integer audioPort = call.argument("audioPort");
@@ -140,10 +126,6 @@ public class FlutterMulticastPlugin implements FlutterPlugin, MethodCallHandler,
             }
             case "stopRtpStream": {
                 nativeBridge_.stopRtpStream();
-                if (multicastLock != null) {
-                    Log.w(TAG, "release multicast lock");
-                    multicastLock.release();
-                }
                 result.success(null);
                 break;
             }

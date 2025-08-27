@@ -1,8 +1,10 @@
 #include "rtp_receiver_core.h"
+#include "h264_util.h"
 #include "ip_pktinfo_detector.h"
 #include "log.h"
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #include <uvgrtp/lib.hh>
 
 constexpr int RECEIVER_WAIT_TIME_MS = 100;
@@ -130,24 +132,43 @@ void RtpReceiverCore::start_rtp_receiver_with_interface(const std::string& inter
     audio_stream->enable_network_stats(true);
 
     video_receiver_thread_ = std::thread([video_stream, callback, this]() {
-        std::vector<uint8_t> latest_sps, latest_pps, current_au;
         uint32_t frame_count = 0;
 
-        auto find_first_nalu_type = [](const uint8_t* data, size_t size) -> int {
-            int nal_type = -1;
-            if (size >= 5 &&
-                data[0] == 0x00 &&
-                data[1] == 0x00 &&
-                ((data[2] == 0x00 && data[3] == 0x01) || data[2] == 0x01)) {
-                int offset = (data[2] == 0x00) ? 4 : 3;
-                nal_type = data[offset] & 0x1F;
+        std::vector<uint8_t> latest_sps, latest_pps;
+
+        auto flush_au = [&](uint32_t ts) {
+            auto it = aus_.find(ts);
+            if (it == aus_.end())
+                return;
+            auto& au = it->second;
+
+            // 沒有 VCL 的 AU 不送（純參數集或雜訊）
+            if (!au.has_vcl || au.nals.empty()) {
+                aus_.erase(it);
+                return;
             }
-            return nal_type;
+
+            std::vector<uint8_t> out;
+
+            // IDR 幀前面帶一次 SPS/PPS
+            if (au.seen_idr) {
+                if (!latest_sps.empty())
+                    out.insert(out.end(), latest_sps.begin(), latest_sps.end());
+                if (!latest_pps.empty())
+                    out.insert(out.end(), latest_pps.begin(), latest_pps.end());
+            }
+            for (auto& n : au.nals)
+                out.insert(out.end(), n.begin(), n.end());
+
+            callback(out);
+            aus_.erase(it);
         };
 
         while (running_) {
             auto* frame = video_stream->pull_frame(RECEIVER_WAIT_TIME_MS);
             if (!frame || !frame->payload || frame->payload_len == 0) {
+                if (frame)
+                    uvgrtp::frame::dealloc_frame(frame);
                 continue;
             }
 
@@ -171,40 +192,58 @@ void RtpReceiverCore::start_rtp_receiver_with_interface(const std::string& inter
                 ALOGI("=========================================");
             }
 
-            int nal_type = find_first_nalu_type(frame->payload, frame->payload_len);
-            if (nal_type == -1)
-                continue;
-            ALOGD("First 4 bytes of payload: %02x %02x %02x %02x (NAL type: %d)",
-                  frame->payload[0], frame->payload[1],
-                  frame->payload[2], frame->payload[3],
-                  nal_type);
+            uint32_t ts = frame->header.timestamp;
+            bool marker = frame->header.marker; // ← 一幀最後一包
+            const uint8_t* payload = frame->payload;
+            size_t plen = frame->payload_len;
 
-            if (nal_type == 7) {
-                latest_sps.assign(frame->payload, frame->payload + frame->payload_len);
-            } else if (nal_type == 8) {
-                latest_pps.assign(frame->payload, frame->payload + frame->payload_len);
+            auto& au = aus_[ts];
+            if (au.nals.empty())
+                au.first_seen = std::chrono::steady_clock::now();
+
+            auto push_one_annexb_nal = [&](const uint8_t* nal, size_t n) {
+                std::vector<uint8_t> v;
+                v.insert(v.end(), nal, nal + n);
+
+                int t = h264::nal_type_of_any(v.data(), v.size());
+                if (t == 7) {
+                    latest_sps = v;
+                } else if (t == 8) {
+                    latest_pps = v;
+                } else if (t == 5) {
+                    au.seen_idr = true;
+                    au.has_vcl = true;
+                } else if (t == 1) {
+                    au.has_vcl = true;
+                }
+
+                au.nals.emplace_back(std::move(v));
+            };
+
+            // Annex-B：可能同一 payload 內多顆 NAL
+            auto segs = h264::scan_annexb_nals(payload, plen);
+            if (segs.empty()) {
+                ALOGW("Annex-B payload but no NAL found (len=%zu)", plen);
+            } else if (segs.size() > 1) {
+                ALOGW("Multiple NALs in one payload: %zu", segs.size());
             }
+            for (auto& s : segs)
+                push_one_annexb_nal(s.first, s.second);
 
-            if (nal_type == 5) {
-                std::vector<uint8_t> au;
-                if (!latest_sps.empty())
-                    au.insert(au.end(), latest_sps.begin(), latest_sps.end());
-                if (!latest_pps.empty())
-                    au.insert(au.end(), latest_pps.begin(), latest_pps.end());
-                au.insert(au.end(), frame->payload, frame->payload + frame->payload_len);
-                callback(au);
-            } else if (nal_type == 1) {
-                current_au.insert(current_au.end(), frame->payload, frame->payload + frame->payload_len);
-                callback(current_au);
-                current_au.clear();
+            // frame 結束判定：RTP marker
+            if (marker) {
+                flush_au(ts);
             }
 
             uvgrtp::frame::dealloc_frame(frame);
-        }
 
-        if (!current_au.empty()) {
-            callback(current_au);
-            current_au.clear();
+            for (auto it = aus_.begin(); it != aus_.end();) {
+                if (std::chrono::steady_clock::now() - it->second.first_seen > std::chrono::milliseconds(500)) {
+                    // 放棄這幀（丟掉）
+                    it = aus_.erase(it);
+                } else
+                    ++it;
+            }
         }
 
         session->destroy_stream(video_stream);
