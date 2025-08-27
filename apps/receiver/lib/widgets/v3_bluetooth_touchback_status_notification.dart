@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
@@ -117,17 +118,17 @@ class RestartBluetoothWidget extends StatelessWidget {
           constrainedAxis: Axis.vertical,
           child: SizedBox(
             width: 266,
-            height: 210,
+            height: 157,
             child: Dialog(
               shape: RoundedRectangleBorder(
-                borderRadius: context.tokens.radii.vsdslRadiusXl,
+                borderRadius: context.tokens.radii.vsdslRadiusLg,
               ),
               insetPadding: EdgeInsets.zero,
               backgroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
               elevation: 16.0,
               shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
               child: Container(
-                padding: const EdgeInsets.all(17),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     Expanded(
@@ -145,7 +146,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       .v3_touchback_restart_bluetooth_title,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                     color:
                                         context.tokens.color.vsdslColorNeutral,
@@ -161,7 +162,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       .v3_touchback_restart_bluetooth_message,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 10,
                                     fontWeight: FontWeight.w400,
                                     color:
                                         context.tokens.color.vsdslColorNeutral,
@@ -173,12 +174,12 @@ class RestartBluetoothWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Gap(13),
+                    const Gap(8),
                     Row(
                       children: [
                         Expanded(
                           child: Container(
-                            constraints: BoxConstraints(maxHeight: 80),
+                            constraints: BoxConstraints(maxHeight: 35),
                             child: V3Focus(
                               label: S
                                   .of(context)
@@ -210,7 +211,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                   style: TextStyle(
                                     color: context
                                         .tokens.color.vsdslColorSecondary,
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -221,7 +222,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                         Gap(8),
                         Expanded(
                           child: Container(
-                            constraints: BoxConstraints(maxHeight: 80),
+                            constraints: BoxConstraints(maxHeight: 35),
                             child: V3Focus(
                               label: S
                                   .of(context)
@@ -240,7 +241,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       context.tokens.color.vsdslColorPrimary,
                                   // remove onFocused color, this is also ripple color
                                   overlayColor: Colors.transparent,
-                                  padding: EdgeInsets.all(10),
+                                  padding: EdgeInsets.zero,
                                 ),
                                 onPressed: () {
                                   onConfirm?.call();
@@ -256,7 +257,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       S.current
                                           .v3_touchback_restart_bluetooth_btn_restart,
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 11,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -291,20 +292,38 @@ class StatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildDialog(
-      context: context,
-      width: 242,
-      height: 49,
-      backgroundColor: context.tokens.color.vsdslColorSurface1000,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 16),
-          _MessageText(message: statusMessage),
-        ],
-      ),
-      progressPercent: progressPercent,
+    return MultiWindowLayout(
+      builder: (context, constraints, ratio, isMultiWindow, isPortrait,
+          isFloatWindow) {
+        if (ratio == SplitScreenRatio.launcher) {
+          return _buildDialog(
+            context: context,
+            width: 280,
+            height: 157,
+            backgroundColor: context.tokens.color.vsdslColorSurface1000,
+            child: Center(
+              child: _MessageText(message: statusMessage),
+            ),
+            progressPercent: progressPercent,
+          );
+        } else {
+          return _buildDialog(
+            context: context,
+            width: 242,
+            height: 49,
+            backgroundColor: context.tokens.color.vsdslColorSurface1000,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 16),
+                _MessageText(message: statusMessage),
+              ],
+            ),
+            progressPercent: progressPercent,
+          );
+        }
+      },
     );
   }
 

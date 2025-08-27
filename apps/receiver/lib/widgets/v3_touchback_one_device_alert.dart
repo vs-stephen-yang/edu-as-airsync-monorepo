@@ -57,17 +57,12 @@ class PortraitWidget extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 193),
       child: Container(
         width: 267,
-        height: 193,
-        padding: const EdgeInsets.only(
-          top: 26,
-          left: 20,
-          right: 20,
-          bottom: 20,
-        ),
+        height: 157,
+        padding: const EdgeInsets.all(10),
         decoration: ShapeDecoration(
-          color: Colors.white /* AirSync-color-surface-100 */,
+          color: context.tokens.color.vsdslColorOnSurfaceInverse,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: context.tokens.radii.vsdslRadiusLg,
           ),
         ),
         child: Column(
@@ -105,7 +100,7 @@ class PortraitWidget extends StatelessWidget {
                           style: TextStyle(
                             color: context.tokens.color
                                 .vsdslColorNeutral /* AirSync-color-neutral */,
-                            fontSize: 11,
+                            fontSize: 10,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
