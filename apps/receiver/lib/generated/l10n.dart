@@ -3810,6 +3810,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Participants would like to share their screen`
+  String get v3_authorize_prompt_title_launcher {
+    return Intl.message(
+      'Participants would like to share their screen',
+      name: 'v3_authorize_prompt_title_launcher',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

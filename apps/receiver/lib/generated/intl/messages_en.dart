@@ -206,7 +206,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Decline",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Participants would like to share their screen",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
     "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Receiving",
     ),
