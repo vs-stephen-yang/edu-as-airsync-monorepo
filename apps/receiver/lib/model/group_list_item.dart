@@ -10,6 +10,8 @@ abstract class GroupListItem {
   String id();
 
   String serviceName();
+
+  bool unsupportedMulticast();
 }
 
 class GroupBean extends GroupListItem {
@@ -70,6 +72,11 @@ class GroupBean extends GroupListItem {
 
   @override
   String serviceName() => _name ?? '';
+
+  @override
+  bool unsupportedMulticast() {
+    return _attributes?.mc != '1';
+  }
 }
 
 class Attributes {
@@ -79,8 +86,9 @@ class Attributes {
   String? fn;
   String? dc;
   String? id;
+  String? mc; // multicast
 
-  Attributes({this.igo, this.ver, this.ip, this.fn, this.dc, this.id});
+  Attributes({this.igo, this.ver, this.ip, this.fn, this.dc, this.id, this.mc});
 
   Attributes.fromJson(Map<String, dynamic> json) {
     igo = json['igo'];
@@ -89,6 +97,7 @@ class Attributes {
     fn = json['fn'];
     dc = json['dc'];
     id = json['id'];
+    mc = json['mc'];
   }
 
   Map<String, dynamic> toJson() {
@@ -99,6 +108,7 @@ class Attributes {
     data['fn'] = fn;
     data['dc'] = dc;
     data['id'] = id;
+    data['mc'] = mc;
     return data;
   }
 }

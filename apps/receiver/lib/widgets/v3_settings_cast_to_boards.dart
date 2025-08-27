@@ -6,6 +6,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/text_scale_option.dart';
+import 'package:display_flutter/providers/appSettings.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
@@ -523,7 +524,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             ExcludeFocus(
               child: InkWell(
                 excludeFromSemantics: true,
-                onTap: () => toggleCheckbox(client),
+                onTap: () =>
+                    isUnavailable(client) ? null : toggleCheckbox(client),
                 highlightColor: Colors.transparent,
                 child: SizedBox(
                   width: 48,
@@ -537,17 +539,23 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                         "v3_qa_settings_broadcast_to_display_group_checkbox_%s",
                         [client.deviceName()]),
                     child: Checkbox(
-                      value: broadcastSelectedList
-                          .any((element) => element.id() == client.id()),
+                      value: isUnavailable(client)
+                          ? false
+                          : broadcastSelectedList
+                              .any((element) => element.id() == client.id()),
                       activeColor: context.tokens.color.vsdslColorPrimary,
                       side: BorderSide(
-                          color: context.tokens.color.vsdslColorOnPrimary,
+                          color: isUnavailable(client)
+                              ? context.tokens.color.vsdslColorOutline
+                              : context.tokens.color.vsdslColorOnPrimary,
                           width: 2),
-                      onChanged: (bool? value) {
-                        if (value != null) {
-                          toggleCheckbox(client, fromTouch: true);
-                        }
-                      },
+                      onChanged: isUnavailable(client)
+                          ? null
+                          : (bool? value) {
+                              if (value != null) {
+                                toggleCheckbox(client, fromTouch: true);
+                              }
+                            },
                     ),
                   ),
                 ),
@@ -574,9 +582,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
   }
 
   Widget displayCodeWidget(GroupListItem client, BuildContext context) {
-    final bool unavailable =
-        client.invitedState() == InvitedToGroupOption.ignore.value.toString();
-
+    final unavailable = isUnavailable(client);
+    final useMulticast = context.read<AppSettings>().useMulticast;
     final isNormal =
         AppPreferences().textSizeOption == ResizeTextSizeOption.normal;
     return Flexible(
@@ -595,7 +602,9 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             // Trialling is display code, should not use - to confuse user
             child: V3AutoHyphenatingText(
               unavailable
-                  ? S.of(context).v3_settings_device_unavailable
+                  ? useMulticast
+                      ? S.of(context).v3_settings_device_not_supported
+                      : S.of(context).v3_settings_device_unavailable
                   : client.displayCode(),
               style: TextStyle(
                 fontSize: 12,
@@ -606,6 +615,14 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         ],
       ),
     );
+  }
+
+  bool isUnavailable(GroupListItem client) {
+    final useMulticast = context.read<AppSettings>().useMulticast;
+    final bool unavailable =
+        client.invitedState() == InvitedToGroupOption.ignore.value.toString() ||
+            client.unsupportedMulticast() && useMulticast;
+    return unavailable;
   }
 
   Opacity _buildListHeader(BuildContext context, GroupProvider groupNotifier,
