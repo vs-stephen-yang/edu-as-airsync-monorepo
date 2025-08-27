@@ -6,6 +6,7 @@ import 'streaming_view_config.dart';
 
 final listViewConfig = StreamingViewConfig(
   mode: StreamingLayoutMode.list,
+  dotCount: 3,
   adjustSplitCount: (count) {
     // 不能大於裝置的分割max
     if (count >= HybridConnectionList.maxHybridSplitScreen) {

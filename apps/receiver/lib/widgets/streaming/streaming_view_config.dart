@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum StreamingLayoutMode {
+  single,
   list,
   grid,
 }
@@ -19,12 +20,14 @@ class StreamingViewConfig {
   final Widget Function(int pageIndex, int dotCount, VoidCallback onNext)?
       buildPageHeaderFooter;
   final PositionCalculator positionCalculator;
+  int dotCount;
 
-  const StreamingViewConfig({
+  StreamingViewConfig({
     required this.mode,
     required this.adjustSplitCount,
     required this.positionCalculator,
     this.buildPageHeaderFooter,
+    this.dotCount = 1,
   });
 }
 

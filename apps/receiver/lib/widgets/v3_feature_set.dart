@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/screens/v3_participants_menu.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
@@ -25,6 +26,11 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = context.isInMultiWindow &&
+        context.splitScreenRatio.widthFraction <=
+            SplitScreenRatio.floatingDefault.widthFraction;
+
+    if (isCompact) return SizedBox.shrink();
     return Consumer2<ChannelProvider, MirrorStateProvider>(
       builder: (context, channelProvider, mirrorProvider, widget) {
         int featureCount = 0;

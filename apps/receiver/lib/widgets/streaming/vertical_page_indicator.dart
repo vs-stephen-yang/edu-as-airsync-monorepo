@@ -83,3 +83,59 @@ class VerticalPageIndicator extends StatelessWidget {
     );
   }
 }
+
+class SingleViewIndicator extends StatelessWidget {
+  final int pageIndex;
+  final VoidCallback onNextPressed;
+  final int dotCount;
+
+  const SingleViewIndicator({
+    super.key,
+    required this.pageIndex,
+    required this.onNextPressed,
+    required this.dotCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int?>(
+      valueListenable: HybridConnectionList().enlargedScreenIndex,
+      builder: (_, enlarged, __) {
+        if (dotCount <= 1) {
+          return SizedBox.shrink();
+        }
+        return Container(
+          width: 36,
+          padding: const EdgeInsets.all(4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              V3Focus(
+                label: S.current.v3_lbl_streaming_page_control,
+                identifier: 'v3_streaming_page_control',
+                child: SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: IconButton(
+                    onPressed: onNextPressed,
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                    color: context.tokens.color.vsdslColorOnSecondary,
+                    iconSize: 16,
+                    padding: EdgeInsets.zero,
+                    splashRadius: 24,
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                          context.tokens.color.vsdslColorSecondaryVariant),
+                      shape: WidgetStateProperty.all(const CircleBorder()),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
