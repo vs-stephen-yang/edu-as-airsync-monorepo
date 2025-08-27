@@ -167,14 +167,23 @@ class BottomOverlayMenus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inMin = context.splitScreenRatio == SplitScreenRatio.launcher;
+    final isCompat = context.splitScreenRatio.widthFraction <=
+        SplitScreenRatio.floatingDefault.widthFraction;
+
+    if (isCompat) {
+      return Positioned.fill(
+        child: Stack(
+          children: [
+            V3ExtendCastingTimeMenu(),
+            V3BluetoothStatusNotification(),
+          ],
+        ),
+      );
+    }
+
     return Positioned(
-      bottom: inMin
-          ? 0
-          : isLifted
-              ? 164
-              : 54,
-      right: inMin ? 0 : 53,
+      bottom: isLifted ? 164 : 54,
+      right: 53,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [
