@@ -51,7 +51,8 @@ class _V3StreamingViewState extends State<V3StreamingView> {
       valueListenable: HybridConnectionList.hybridSplitScreenCount,
       builder: (ctx, count, _) {
         final adjustedCount = widget.config.adjustSplitCount(count);
-        _dotCount = (count ~/ 3) + ((count % 3) > 0 ? 1 : 0);
+        _dotCount = (count ~/ widget.config.dotCount) +
+            ((count % widget.config.dotCount) > 0 ? 1 : 0);
         if (_pageIndex >= _dotCount && _dotCount != 0) {
           _pageIndex -= 1;
         }

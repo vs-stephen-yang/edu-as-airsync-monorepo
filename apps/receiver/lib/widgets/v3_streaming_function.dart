@@ -88,9 +88,12 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
           constraints: BoxConstraints.tightFor(
             width: isCollapsed
                 ? 37
-                : (context.splitScreenRatio == SplitScreenRatio.oneThird ||
-                            HybridConnectionList.hybridSplitScreenCount.value >
-                                1
+                : ((context.splitScreenRatio == SplitScreenRatio.oneThird ||
+                                HybridConnectionList
+                                        .hybridSplitScreenCount.value >
+                                    1) &&
+                            (context.splitScreenRatio.widthFraction >
+                                SplitScreenRatio.floatingDefault.widthFraction)
                         ? 140
                         : 106) +
                     (isAirplay ? 45 : 0), // 增加按鈕的空間
@@ -181,7 +184,9 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                   visible: !isCollapsed &&
                       (context.splitScreenRatio == SplitScreenRatio.oneThird ||
                           HybridConnectionList.hybridSplitScreenCount.value >
-                              1),
+                              1) &&
+                      (context.splitScreenRatio.widthFraction >
+                          SplitScreenRatio.floatingDefault.widthFraction),
                   child: V3Focus(
                     label: HybridConnectionList().enlargedScreenIndex.value ==
                             widget.index

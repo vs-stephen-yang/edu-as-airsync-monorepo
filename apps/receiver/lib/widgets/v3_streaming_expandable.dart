@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
@@ -67,6 +68,11 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = context.isInMultiWindow &&
+        context.splitScreenRatio.widthFraction <=
+            SplitScreenRatio.floatingDefault.widthFraction;
+
+    if (isCompact) return SizedBox.shrink();
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
