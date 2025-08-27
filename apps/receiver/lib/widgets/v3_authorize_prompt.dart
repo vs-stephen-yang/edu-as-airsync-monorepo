@@ -7,8 +7,10 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/user_timer_manager.dart';
 import 'package:display_flutter/widgets/authorize_prompt_components.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -237,17 +239,31 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
-        var dialogWidth =
-            MediaQuery.of(context).textScaler.scale(1.0) > 1.0 ? 628.0 : 700.0;
+        final ratio = dialogContext.splitScreenRatio;
+        final isMultiWindow = dialogContext.isInMultiWindow;
+        final isCompact = isMultiWindow &&
+            ratio.widthFraction <=
+                SplitScreenRatio.floatingDefault.widthFraction;
+        var dialogWidth = isCompact
+            ? double.infinity
+            : MediaQuery.of(context).textScaler.scale(1.0) > 1.0
+                ? 628.0
+                : 700.0;
         dialogContextList.add(dialogContext);
         return PopScope(
           // Using canPop=false to block back key return,
           // it will break "Show Prompt mechanism"
           canPop: false,
           child: Dialog(
-            backgroundColor: context.tokens.color.vsdslColorOpacityNeutralXl,
+            shape: isCompact
+                ? RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  )
+                : null,
+            backgroundColor: context.tokens.color.vsdslColorOpacityNeutralXl
+                .withValues(alpha: isCompact ? 0.8 : 1),
             alignment: Alignment.bottomCenter,
-            insetPadding: const EdgeInsets.only(bottom: 27),
+            insetPadding: EdgeInsets.only(bottom: isCompact ? 0 : 27),
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -264,8 +280,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     // Calculate Dialog height.
                     var totalHeight = 0.0;
                     // container padding height
-                    var containerPaddingHeight =
-                        context.tokens.spacing.vsdslSpacing4xl.vertical;
+                    var containerPaddingHeight = 0;
                     // pin code height
                     var pinCodeHeight = 0.0;
                     if (mirrorStateProvider.pinCode.isNotEmpty) {
@@ -296,24 +311,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     totalHeight = containerPaddingHeight +
                         pinCodeHeight +
                         requestTotalHeight;
-                    widgetList.addAll([
-                      SvgPicture.asset(
-                        'assets/images/ic_prompt_arrow.svg',
-                        excludeFromSemantics: true,
-                        height: 53,
-                      ),
-                      SizedBox(
-                        width: dialogWidth,
-                        height: requestDividerHeight,
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal:
-                                  context.tokens.spacing.vsdslSpacing3xl.left),
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceVariant,
-                        ),
-                      ),
-                    ]);
+
                     if (mirrorStateProvider.pinCode.isNotEmpty) {
                       // PIN 碼模式 UI
                       widgetList.add(Container(
@@ -388,14 +386,14 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                             width: dialogWidth,
                             height: totalHeight,
                             padding: EdgeInsets.only(
-                                left:
-                                    context.tokens.spacing.vsdslSpacing3xl.left,
-                                right:
-                                    context.tokens.spacing.vsdslSpacing3xl.left,
-                                top: containerPaddingHeight / 2,
-                                bottom: authRequestIdles.isEmpty
-                                    ? containerPaddingHeight / 2
-                                    : 0),
+                              left: context.tokens.spacing.vsdslSpacing3xl.left,
+                              right:
+                                  context.tokens.spacing.vsdslSpacing3xl.left,
+                              top: containerPaddingHeight / 2,
+                              bottom: authRequestIdles.isEmpty
+                                  ? containerPaddingHeight / 2
+                                  : 0,
+                            ),
                             child: ListView.separated(
                               reverse: HybridConnectionList().isMirroring(),
                               physics: const NeverScrollableScrollPhysics(),
@@ -405,13 +403,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   (BuildContext buildContext, int index) {
                                 final request =
                                     mirrorRequestIdles.toList()[index];
-                                final deviceDisplayName = sprintf(
-                                    S.of(context).main_mirror_from_client,
-                                    [request.deviceName]);
 
                                 return RequestRow(
                                   data: RequestRowData(
-                                    deviceName: deviceDisplayName,
+                                    deviceName: request.deviceName,
                                     iconAsset:
                                         'assets/images/ic_prompt_in_mirror.svg',
                                     declineText: S
@@ -420,9 +415,6 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                     acceptText: S
                                         .of(context)
                                         .v3_authorize_prompt_accept,
-                                    acceptAllText: S
-                                        .of(context)
-                                        .v3_authorize_prompt_accept_all,
                                     onDecline: () {
                                       _resetTimerForUser(
                                           'mirror_${request.mirrorId}');
@@ -455,41 +447,6 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         mirrorStateProvider.setAcceptMirrorId(
                                             request.mirrorId);
                                       }
-                                    },
-                                    onAcceptAll: () async {
-                                      // 重置所有 mirror 計時器
-                                      for (var req in mirrorRequestIdles) {
-                                        _resetTimerForUser(
-                                            'mirror_${req.mirrorId}');
-                                      }
-
-                                      final String mirrorType =
-                                          request.mirrorType.name.replaceAll(
-                                              'googlecast', 'google_cast');
-                                      trackEvent('click_accept_all_device',
-                                          EventCategory.session,
-                                          mode: mirrorType);
-
-                                      for (int i = mirrorRequestIdles
-                                              .toList()
-                                              .length;
-                                          i > 0;
-                                          i--) {
-                                        String? mirrorId = mirrorRequestIdles
-                                            .toList()[i - 1]
-                                            .mirrorId;
-                                        if (ChannelProvider.isModeratorMode) {
-                                          mirrorStateProvider
-                                              .setModeratorIdleMirrorId(
-                                                  mirrorId);
-                                        } else {
-                                          mirrorStateProvider
-                                              .setAcceptMirrorId(mirrorId);
-                                        }
-                                      }
-
-                                      mirrorStateProvider.isMirrorConfirmation =
-                                          false;
                                     },
                                   ),
                                   containerHeight: requestContainerHeight,
@@ -562,12 +519,13 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                         width: dialogWidth,
                         height: totalHeight,
                         padding: EdgeInsets.only(
-                            left: context.tokens.spacing.vsdslSpacing3xl.left,
-                            right: context.tokens.spacing.vsdslSpacing3xl.left,
-                            bottom: containerPaddingHeight / 2,
-                            top: mirrorRequestIdles.isEmpty
-                                ? containerPaddingHeight / 2
-                                : 0),
+                          left: context.tokens.spacing.vsdslSpacing3xl.left,
+                          right: context.tokens.spacing.vsdslSpacing3xl.left,
+                          bottom: containerPaddingHeight / 2,
+                          top: mirrorRequestIdles.isEmpty
+                              ? containerPaddingHeight / 2
+                              : 0,
+                        ),
                         child: ListView.separated(
                           reverse: HybridConnectionList().isMirroring(),
                           physics: const NeverScrollableScrollPhysics(),
@@ -582,23 +540,20 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
 
                             return RequestRow(
                               data: RequestRowData(
-                                deviceName: deviceDisplayName,
+                                deviceName:
+                                    isCompact ? deviceName : deviceDisplayName,
                                 iconAsset:
                                     'assets/images/ic_prompt_in_webrtc.svg',
                                 declineText:
                                     S.of(context).v3_authorize_prompt_decline,
                                 acceptText:
                                     S.of(context).v3_authorize_prompt_accept,
-                                acceptAllText: S
-                                    .of(context)
-                                    .v3_authorize_prompt_accept_all,
                                 onDecline: () {
                                   _resetTimerForUser('webrtc_$deviceName');
 
                                   trackEvent('click_decline_device',
                                       EventCategory.session,
                                       mode: 'webrtc');
-
                                   request.entries.first.value.sendRejectPresent(
                                       PresentRejectedReasonCode
                                           .authorizeDecline.code,
@@ -617,30 +572,6 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       .sendAllowPresent();
                                   channelProvider.authorizeRequestList
                                       .removeAt(index);
-                                },
-                                onAcceptAll: () {
-                                  // 重置所有 WebRTC 計時器
-                                  for (var req in authRequestIdles) {
-                                    final reqDeviceName = req.entries.first.key;
-                                    _resetTimerForUser('webrtc_$reqDeviceName');
-                                  }
-
-                                  trackEvent('click_accept_all_device',
-                                      EventCategory.session,
-                                      mode: 'webrtc');
-
-                                  for (int i = authRequestIdles.length;
-                                      i > 0;
-                                      i--) {
-                                    authRequestIdles[i - 1]
-                                        .entries
-                                        .first
-                                        .value
-                                        .sendAllowPresent();
-                                    channelProvider.authorizeRequestList
-                                        .removeAt(i - 1);
-                                  }
-                                  channelProvider.isAuthorizeMode = false;
                                 },
                               ),
                               containerHeight: requestContainerHeight,
@@ -663,15 +594,192 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                       ));
                     }
 
+                    Widget title = SizedBox.shrink();
+                    if (isCompact) {
+                      title = Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.6),
+                          child: Text(
+                            S.of(context).v3_authorize_prompt_title_launcher,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                            ),
+                          ),
+                        ),
+                      ]);
+                    } else {
+                      title = Column(children: [
+                        SvgPicture.asset(
+                          'assets/images/ic_prompt_arrow.svg',
+                          excludeFromSemantics: true,
+                          height: 53,
+                        ),
+                        SizedBox(
+                          width: dialogWidth,
+                          height: requestDividerHeight,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: context
+                                    .tokens.spacing.vsdslSpacing3xl.left),
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceVariant,
+                          ),
+                        ),
+                      ]);
+                    }
+                    final sc = ScrollController();
                     return ConstrainedBox(
                       constraints: const BoxConstraints(
                         maxHeight: 400,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: widgetList,
-                        ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          title,
+                          isCompact
+                              ? Expanded(
+                                  child: V3Scrollbar(
+                                  controller: sc,
+                                  child: SingleChildScrollView(
+                                    controller: sc,
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: widgetList),
+                                  ),
+                                ))
+                              : Flexible(
+                                  child: V3Scrollbar(
+                                    controller: sc,
+                                    child: SingleChildScrollView(
+                                      controller: sc,
+                                      child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: widgetList),
+                                    ),
+                                  ),
+                                ),
+                          mirrorRequestIdles.isNotEmpty &&
+                                  (mirrorStateProvider.isMirrorConfirmation) &&
+                                  !(!ChannelProvider.isModeratorMode &&
+                                          HybridConnectionList
+                                                  .hybridSplitScreenCount
+                                                  .value >=
+                                              HybridConnectionList
+                                                  .maxHybridSplitScreen ||
+                                      (ChannelProvider.isModeratorMode &&
+                                          HybridConnectionList()
+                                                  .getConnectionCount() >=
+                                              HybridConnectionList
+                                                  .maxHybridConnection))
+                              ? SizedBox(
+                                  height: 26.6,
+                                  child: AuthorizeButton(
+                                    minWidth: 146.66,
+                                    minHeight: 26.6,
+                                    type: AuthorizeButtonType.acceptAll,
+                                    text: S
+                                        .of(context)
+                                        .v3_authorize_prompt_accept_all,
+                                    onPressed: () async {
+                                      // 重置所有 mirror 計時器
+
+                                      for (var req in mirrorRequestIdles) {
+                                        _resetTimerForUser(
+                                            'mirror_${req.mirrorId}');
+                                      }
+
+                                      final String mirrorType =
+                                          mirrorRequestIdles
+                                              .toList()
+                                              .first
+                                              .mirrorType
+                                              .name
+                                              .replaceAll(
+                                                  'googlecast', 'google_cast');
+                                      trackEvent('click_accept_all_device',
+                                          EventCategory.session,
+                                          mode: mirrorType);
+
+                                      for (int i = mirrorRequestIdles
+                                              .toList()
+                                              .length;
+                                          i > 0;
+                                          i--) {
+                                        String? mirrorId = mirrorRequestIdles
+                                            .toList()[i - 1]
+                                            .mirrorId;
+                                        if (ChannelProvider.isModeratorMode) {
+                                          mirrorStateProvider
+                                              .setModeratorIdleMirrorId(
+                                                  mirrorId);
+                                        } else {
+                                          mirrorStateProvider
+                                              .setAcceptMirrorId(mirrorId);
+                                        }
+                                      }
+
+                                      mirrorStateProvider.isMirrorConfirmation =
+                                          false;
+                                    },
+                                    focusLabel: S
+                                        .of(context)
+                                        .v3_authorize_prompt_accept_all,
+                                    focusIdentifier:
+                                        'v3_qa_authorize_prompt_accept_all',
+                                    // minHeight: containerHeight,
+                                  ),
+                                )
+                              : authRequestIdles.isNotEmpty
+                                  ? SizedBox(
+                                      height: 26.6,
+                                      child: AuthorizeButton(
+                                        minWidth: 146.66,
+                                        minHeight: 26.6,
+                                        type: AuthorizeButtonType.acceptAll,
+                                        text: S
+                                            .of(context)
+                                            .v3_authorize_prompt_accept_all,
+                                        onPressed: () {
+                                          // 重置所有 WebRTC 計時器
+                                          for (var req in authRequestIdles) {
+                                            final reqDeviceName =
+                                                req.entries.first.key;
+                                            _resetTimerForUser(
+                                                'webrtc_$reqDeviceName');
+                                          }
+
+                                          trackEvent('click_accept_all_device',
+                                    EventCategory.session,
+                                    mode: 'webrtc');
+
+                                          for (int i = authRequestIdles.length;
+                                              i > 0;
+                                              i--) {
+                                            authRequestIdles[i - 1]
+                                                .entries
+                                                .first
+                                                .value
+                                                .sendAllowPresent();
+                                            channelProvider.authorizeRequestList
+                                                .removeAt(i - 1);
+                                          }
+                                          channelProvider.isAuthorizeMode =
+                                              false;
+                                        },
+                                        focusLabel: S
+                                            .of(context)
+                                            .v3_authorize_prompt_accept_all,
+                                        focusIdentifier:
+                                            'v3_qa_authorize_prompt_accept_all',
+                                        // minHeight: containerHeight,
+                                      ),
+                                    )
+                                  : SizedBox.shrink(),
+                          Gap(16),
+                        ],
                       ),
                     );
                   },
@@ -680,8 +788,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                   valueListenable: _progressNotifier,
                   builder: (context, progress, _) {
                     return ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(28)),
+                      borderRadius: isCompact
+                          ? BorderRadius.zero
+                          : const BorderRadius.vertical(
+                              bottom: Radius.circular(28)),
                       child: SizedBox(
                         width: dialogWidth,
                         height: 56,
