@@ -19,12 +19,6 @@ class StageConfig implements ConfigSettings {
   String? defaultOtp; // For development only. Keep null
 
   @override
-  String appSecretAndroid = '0ffc5b6e-d024-4685-b7ab-214b636d2b8b';
-
-  @override // todo create iOS project secret
-  String appSecretIOS = '0ffc5b6e-d024-4685-b7ab-214b636d2b8b';
-
-  @override
   String instrumentationKey = '3633800d-9edd-4c63-9b6f-b0ab2ada5448';
 
   @override

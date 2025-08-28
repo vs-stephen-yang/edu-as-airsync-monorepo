@@ -19,12 +19,6 @@ class ProductionConfig implements ConfigSettings {
   String? defaultOtp; // For development only. Keep null
 
   @override
-  String appSecretAndroid = '6027dbdc-c4ad-41fb-8dc2-9b9d2cbbce23';
-
-  @override // todo create iOS project secret
-  String appSecretIOS = '6027dbdc-c4ad-41fb-8dc2-9b9d2cbbce23';
-
-  @override
   String instrumentationKey = 'e510b3fd-38d5-46e6-973e-53e416050c98';
 
   @override
