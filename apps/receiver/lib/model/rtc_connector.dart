@@ -515,12 +515,21 @@ class RTCConnector {
     return 0; // no limitation
   }
 
+  int getFullFrameRate(bool isFullFrameRate, String? deviceType) {
+    if (!isFullFrameRate) return 0;
+    if (isMtk9950Model(deviceType)) {
+      return 24;
+    } else {
+      return 30;
+    }
+  }
+
   void sendChangeQuality(
       bool isFullHeight, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
 
     message.constraints = PresentQualityConstraints(
-        frameRate: isFullFrameRate ? 30 : 0,
+        frameRate: getFullFrameRate(isFullFrameRate, _deviceType),
         height: getFullHeight(isFullHeight, attendeeCount),
         decodeHeightLimit: getDecodeHeightLimit(_deviceType, attendeeCount));
     log.info(
