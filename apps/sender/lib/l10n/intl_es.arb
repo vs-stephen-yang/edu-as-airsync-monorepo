@@ -247,5 +247,6 @@
   "v3_setting_accessibility": "Accesibilidad",
   "v3_setting_accessibility_size_normal": "Normal",
   "v3_setting_accessibility_size_large": "Grande",
-  "v3_setting_accessibility_size_xlarge": "Muy grande"
+  "v3_setting_accessibility_size_xlarge": "Muy grande",
+  "v3_present_touch_back_dialog_description": "Cuando habilites la compartición de pantalla, AirSync capturará y transmitirá temporalmente el contenido de tu pantalla al display seleccionado (por ejemplo, IFP). Para activar Touchback, AirSync necesita el permiso de Servicio de Accesibilidad para permitir el control remoto desde el display. AirSync no recopila tus datos personales ni supervisa tus acciones. Este permiso se utiliza únicamente para habilitar la función de control táctil."
 }

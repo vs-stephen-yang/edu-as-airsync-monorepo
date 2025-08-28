@@ -250,7 +250,7 @@
   "v3_setting_accessibility_size_xlarge": "XLarge",
   "v3_lbl_setting_privacy_policy": "Privacy policy",
   "v3_present_touch_back_dialog_title": "Allow to Touchback",
-  "v3_present_touch_back_dialog_description": "When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).To enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.AirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.",
+  "v3_present_touch_back_dialog_description": "When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP). To enable Touchback, AirSync requires the Accessibility Service permission to allow remote control from the display. AirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.",
   "v3_present_touch_back_dialog_not_now": "Not now",
   "v3_present_touch_back_dialog_allow": "Allow",
   "v3_exit_title": "Do you really want to quit?",
@@ -262,5 +262,6 @@
   "v3_main_knowledge_base": "Knowledge Base",
   "v3_lbl_main_knowledge_base": "Knowledge Base",
   "v3_main_feedback": "Feedback",
-  "v3_lbl_main_feedback": "Feedback"
+  "v3_lbl_main_feedback": "Feedback",
+  "v3_device_list_next": "Next"
 }

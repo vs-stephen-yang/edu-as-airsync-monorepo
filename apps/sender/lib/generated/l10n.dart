@@ -29,9 +29,10 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -2520,10 +2521,10 @@ class S {
     );
   }
 
-  /// `When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).To enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.AirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.`
+  /// `When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP). To enable Touchback, AirSync requires the Accessibility Service permission to allow remote control from the display. AirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.`
   String get v3_present_touch_back_dialog_description {
     return Intl.message(
-      'When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP).To enable Touchback, AirSync requires Accessibility Service permission to allow remote control from the display.AirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.',
+      'When you enable screen sharing, AirSync will temporarily capture and transmit your screen content to the selected display (e.g. IFP). To enable Touchback, AirSync requires the Accessibility Service permission to allow remote control from the display. AirSync does not collect your personal data or monitor your actions. This permission is only used to enable the touch control feature.',
       name: 'v3_present_touch_back_dialog_description',
       desc: '',
       args: [],
@@ -2644,6 +2645,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Next`
+  String get v3_device_list_next {
+    return Intl.message(
+      'Next',
+      name: 'v3_device_list_next',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -2670,10 +2681,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
-
   @override
   Future<S> load(Locale locale) => S.load(locale);
-
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 
