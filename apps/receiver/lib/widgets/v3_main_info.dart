@@ -76,7 +76,7 @@ class V3MainInfo extends StatelessWidget {
               connectivityProvider.connectionStatus == ConnectivityResult.none;
 
           return Container(
-            color: Colors.white,
+            color: Color.fromRGBO(234, 235, 241, 1),
             child: Center(
               child: SizedBox(
                 width: width,

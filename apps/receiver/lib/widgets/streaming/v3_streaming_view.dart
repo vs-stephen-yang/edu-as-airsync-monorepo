@@ -37,6 +37,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
       policy: CastingViewFocusTraversalPolicy(),
       child: Stack(
         children: [
+          ConstrainedBox(constraints: const BoxConstraints.expand()),
           _buildStreamStack(size),
           _buildHeaderFooter(),
           _buildNewSharingListener(),
@@ -64,6 +65,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
 
         return Stack(
           children: [
+            ConstrainedBox(constraints: BoxConstraints.expand()),
             ...List.generate(
               adjustedCount,
               (idx) => ValueListenableBuilder<int?>(

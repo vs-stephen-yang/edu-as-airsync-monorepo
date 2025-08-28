@@ -161,6 +161,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                         },
                       ),
                       launcher: SizedBox.shrink(),
+                      floatingDefault: SizedBox.shrink(),
                     ),
                     ValueListenableBuilder(
                       valueListenable: V3Home.isShowDisplayCode,
