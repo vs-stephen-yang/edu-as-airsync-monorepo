@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -10,6 +11,7 @@ import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
+import 'package:display_flutter/widgets/v3_global_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +25,6 @@ import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 enum MirrorState {
   idle,
@@ -690,12 +691,7 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorCapabilities(String mirrorId, bool? isUibcSupported) {
     if (isUibcSupported != null && isUibcSupported == false) {
-      // TODO: Replace Fluttertoast.showToast with V3Toast and v3_miracast_uibc_not_supported_message
-      Fluttertoast.showToast(
-        msg: 'This source does not support Miracast touchback',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-      );
+      GlobalToast.show(S.current.v3_miracast_uibc_not_supported_message);
     }
   }
 }
