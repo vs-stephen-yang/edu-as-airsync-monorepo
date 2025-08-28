@@ -42,9 +42,6 @@ abstract class ConfigSettings {
 
   late String baseApiUrl;
 
-  late String appSecretAndroid;
-  late String appSecretIOS;
-
   // Azure Application Insights
   late String instrumentationKey;
   late String ingestionEndpoint;
