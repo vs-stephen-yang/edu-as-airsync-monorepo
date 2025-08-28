@@ -211,9 +211,9 @@ class MessageLookup extends MessageLookupByLibrary {
           "Participants would like to share their screen",
         ),
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
-      "Receiving",
-    ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+          "Receiving",
+        ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
       "Maximum up to 10 devices.",
     ),
@@ -291,9 +291,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
-      "End-User License Agreement",
-    ),
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Launch"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+          "End-User License Agreement",
+        ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
       "Cancel",
     ),
@@ -442,9 +443,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Disagree with EULA",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel exiting moderator mode",
-    ),
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Launch"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+          "Cancel exiting moderator mode",
+        ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
       "Confirm exiting moderator mode",
     ),
