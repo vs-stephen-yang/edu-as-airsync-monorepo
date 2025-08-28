@@ -26,13 +26,6 @@ class ProductionConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String icarHostName = 'api.myviewboard.com';
-
-  @override
-  String icarRegisterUrl =
-      'https://api.myviewboard.com/api/v1/application/extension/register?key=';
-
-  @override
   String airSyncUrl = 'airsync.net';
 
   @override

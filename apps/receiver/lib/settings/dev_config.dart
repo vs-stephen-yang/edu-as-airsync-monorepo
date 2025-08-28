@@ -21,13 +21,6 @@ class DevConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String icarHostName = 'devapi.myviewboard.com';
-
-  @override
-  String icarRegisterUrl =
-      'https://devapi.myviewboard.com/api/v1/application/extension/register?key=';
-
-  @override
   String airSyncUrl = 'dev.airsync.net';
 
   @override
