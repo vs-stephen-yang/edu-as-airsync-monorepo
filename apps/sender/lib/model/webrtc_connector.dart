@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
@@ -350,7 +351,7 @@ class WebRTCConnector {
       <String, dynamic>{
         'frameRate': {
           'ideal': _idealTrackFrameRate,
-          'min': _minTrackFrameRate,
+          'min': min(_idealTrackFrameRate, _minTrackFrameRate),
         },
         'width': _trackWidth,
         'height': constraintHeight,
@@ -895,10 +896,12 @@ class WebRTCConnector {
     oldStream?.getTracks().forEach((track) => track.stop());
     await oldStream?.dispose();
 
-    final videoTrack =
-        stream.getVideoTracks().isNotEmpty ? stream.getVideoTracks().first : null;
-    final audioTrack =
-        stream.getAudioTracks().isNotEmpty ? stream.getAudioTracks().first : null;
+    final videoTrack = stream.getVideoTracks().isNotEmpty
+        ? stream.getVideoTracks().first
+        : null;
+    final audioTrack = stream.getAudioTracks().isNotEmpty
+        ? stream.getAudioTracks().first
+        : null;
 
     final senders = await pc.getSenders();
     final futures = <Future<void>>[];
