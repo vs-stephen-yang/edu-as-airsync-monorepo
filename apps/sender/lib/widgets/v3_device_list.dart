@@ -164,7 +164,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 ),
                 buildInkWellButton(
                   buildContext: context,
-                  text: 'Next',
+                  text: S.of(context).v3_device_list_next,
                   enable: _connectService != null,
                   onTap: () {
                     if (_connectService == null) return;

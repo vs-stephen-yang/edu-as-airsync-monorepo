@@ -258,5 +258,7 @@
   "v3_exit_action_exit": "Ej ārā",
   "v3_lbl_exit_action_cancel": "Atcelt",
   "v3_lbl_exit_action_exit": "Ej ārā",
-  "v3_main_present_or": "vai"
+  "v3_main_present_or": "vai",
+  "v3_main_knowledge_base": "Zināšanu bāze",
+  "v3_lbl_main_knowledge_base": "Zināšanu bāze"
 }

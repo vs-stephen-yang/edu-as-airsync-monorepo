@@ -247,5 +247,18 @@
   "v3_setting_accessibility": "Accessibilité",
   "v3_setting_accessibility_size_normal": "Normal",
   "v3_setting_accessibility_size_large": "Grand",
-  "v3_setting_accessibility_size_xlarge": "Très grand"
+  "v3_setting_accessibility_size_xlarge": "Très grand",
+  "v3_lbl_setting_privacy_policy": "Politique de confidentialité",
+  "v3_present_touch_back_dialog_title": "Autoriser le Mode tactile",
+  "v3_present_touch_back_dialog_description": "Lorsque vous activez le partage d'écran, AirSync capture et transmet temporairement le contenu de votre écran vers l'écran sélectionné (par exemple, un écran interactif). Pour activer le Mode tactile, AirSync nécessite l'autorisation du service d'accessibilité pour autoriser le contrôle à distance depuis l'écran. AirSync ne collecte pas vos données personnelles et ne surveille pas vos actions. Cette autorisation sert uniquement à activer la fonction de contrôle tactile.",
+  "v3_present_touch_back_dialog_not_now": "Pas maintenant",
+  "v3_present_touch_back_dialog_allow": "Autoriser",
+  "v3_exit_title": "Voulez-vous vraiment quitter?",
+  "v3_exit_action_cancel": "Annuler",
+  "v3_exit_action_exit": "Quitter",
+  "v3_lbl_exit_action_cancel": "Annuler",
+  "v3_lbl_exit_action_exit": "Quitter",
+  "v3_main_present_or": "ou",
+  "v3_main_knowledge_base": "Base de connaissances",
+  "v3_lbl_main_knowledge_base": "Base de connaissances"
 }

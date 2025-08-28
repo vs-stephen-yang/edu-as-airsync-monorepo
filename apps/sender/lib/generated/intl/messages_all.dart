@@ -32,7 +32,6 @@ import 'messages_sv.dart' as messages_sv;
 import 'messages_zh.dart' as messages_zh;
 
 typedef Future<dynamic> LibraryLoader();
-
 Map<String, LibraryLoader> _deferredLibraries = {
   'da': () => new SynchronousFuture(null),
   'de': () => new SynchronousFuture(null),

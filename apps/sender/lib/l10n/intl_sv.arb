@@ -258,5 +258,7 @@
   "v3_exit_action_exit": "Avsluta",
   "v3_lbl_exit_action_cancel": "Avbryt",
   "v3_lbl_exit_action_exit": "Avsluta",
-  "v3_main_present_or": "eller"
+  "v3_main_present_or": "eller",
+  "v3_main_knowledge_base": "Kunskapsbas",
+  "v3_lbl_main_knowledge_base": "Kunskapsbas"
 }

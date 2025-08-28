@@ -258,5 +258,7 @@
   "v3_exit_action_exit": "Mine välja",
   "v3_lbl_exit_action_cancel": "Tühista",
   "v3_lbl_exit_action_exit": "Mine välja",
-  "v3_main_present_or": "või"
+  "v3_main_present_or": "või",
+  "v3_main_knowledge_base": "Teadmistepagas",
+  "v3_lbl_main_knowledge_base": "Teadmistepagas"
 }
