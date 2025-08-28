@@ -1546,6 +1546,11 @@ class S {
     return Intl.message('Agree', name: 'v3_eula_agree', desc: '', args: []);
   }
 
+  /// `Launch`
+  String get v3_eula_launch {
+    return Intl.message('Launch', name: 'v3_eula_launch', desc: '', args: []);
+  }
+
   /// `Disagree`
   String get v3_eula_disagree {
     return Intl.message(
@@ -2186,6 +2191,16 @@ class S {
     return Intl.message(
       'Agree with EULA',
       name: 'v3_lbl_eula_agree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch`
+  String get v3_lbl_eula_launch {
+    return Intl.message(
+      'Launch',
+      name: 'v3_lbl_eula_launch',
       desc: '',
       args: [],
     );
