@@ -49,9 +49,6 @@ abstract class ConfigSettings {
   // Backdoor OTP. For development only.
   late String? defaultOtp;
 
-  late String icarHostName;
-  late String icarRegisterUrl;
-
   late String airSyncUrl;
   late String appStoreUrl;
 
