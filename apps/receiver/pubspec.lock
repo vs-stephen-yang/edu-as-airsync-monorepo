@@ -564,8 +564,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.8.4"
-      resolved-ref: d664aff2e12ba2113572dd32dcda9c0737eb0bc3
+      ref: "release-3.8.5"
+      resolved-ref: "91afee627613599bc722bfd0e1ae5174b0fedcd0"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin"
     source: git
     version: "0.0.1"
