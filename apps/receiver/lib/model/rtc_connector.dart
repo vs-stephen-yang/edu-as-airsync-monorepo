@@ -35,6 +35,12 @@ enum PresentationState {
   resumeStreaming,
 }
 
+enum MaxVideoResolution {
+  uhd,
+  qhd,
+  fhd,
+}
+
 class RTCConnector {
   String mUid = const Uuid().v4();
   final Channel _channel;
@@ -145,15 +151,16 @@ class RTCConnector {
   ChannelMessage? _changeQualityMessage;
   String? _deviceType;
 
-  static const int _resolutionHeight4K = 2160;
-  static const int _resolutionHeightFullHd = 1080;
-  static const int _resolutionHeightHalfFhd = 540;
+  static const int _resolutionHeightUltraHd = 2160;
+  static const int _resolutionHeightQuadHd = 1600;
+  static const int _resolutionHeightFullHd = 1200;
+  static const int _resolutionHeightQuarterHd = 540;
 
-  final bool is4KEnabled;
+  final MaxVideoResolution maxVideoResolution;
 
   RTCConnector(
     this._channel, {
-    required this.is4KEnabled,
+    required this.maxVideoResolution,
   });
 
   Future<void> init(
@@ -496,13 +503,21 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
-  int get maxResolutionHeight =>
-      is4KEnabled ? _resolutionHeight4K : _resolutionHeightFullHd;
+  int getFullResolutionHeight() {
+    switch (maxVideoResolution) {
+      case MaxVideoResolution.uhd:
+        return _resolutionHeightUltraHd;
+      case MaxVideoResolution.qhd:
+        return _resolutionHeightQuadHd;
+      case MaxVideoResolution.fhd:
+        return _resolutionHeightFullHd;
+    }
+  }
 
   int getFullHeight(bool isFullHeight, int attenderCount) {
     return (isFullHeight || attenderCount <= 2)
-        ? maxResolutionHeight
-        : _resolutionHeightHalfFhd;
+        ? getFullResolutionHeight()
+        : _resolutionHeightQuarterHd;
   }
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
