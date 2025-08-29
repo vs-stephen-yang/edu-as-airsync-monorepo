@@ -577,7 +577,7 @@ class ChannelProvider extends ChangeNotifier {
   void _onNewChannel(Channel channel, ChannelMode mode) {
     RTCConnector rtcConnector = RTCConnector(
       channel,
-      is4KEnabled: _highImageQuality,
+      maxVideoResolution: _highImageQuality? MaxVideoResolution.uhd : MaxVideoResolution.qhd,
     );
     log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
