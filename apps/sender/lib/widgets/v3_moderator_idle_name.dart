@@ -200,11 +200,18 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                         maxTextLength: 20,
                         inputFormatter: const [],
                         onFieldChanged: (text) {
-                          if (text.isNotEmpty) {
-                            buttonKey.currentState!.setEnable(true);
-                          } else {
+                          // Normalize any whitespace-only input to empty so UI shows as empty
+                          if (text.isNotEmpty && text.trim().isEmpty) {
+                            _nameController.text = '';
+                            _nameController.selection =
+                                const TextSelection.collapsed(offset: 0);
                             buttonKey.currentState!.setEnable(false);
+                            setState(() {});
+                            return;
                           }
+
+                          final bool hasNonWhitespace = text.trim().isNotEmpty;
+                          buttonKey.currentState!.setEnable(hasNonWhitespace);
                           setState(() {});
                         },
                         onFieldSubmitted: (String value) async {
@@ -282,7 +289,7 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
     if (presentStateProvider.currentState == ViewState.moderatorName) {
-      if (_nameController.text.isEmpty) {
+      if (_nameController.text.trim().isEmpty) {
         _showOverlayMessage(context, nameKey);
       } else if (channelProvider.displayCode != null) {
         if (channelProvider.isConnectAvailable()) {
