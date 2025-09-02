@@ -5,6 +5,14 @@ enum ConnectErrorType {
   webTransport,
 }
 
+enum ConnectionState {
+  connecting,
+  connected,
+  disconnecting,
+  disconnected,
+  closed
+}
+
 class ConnectError {
   ConnectErrorType error;
   String message;

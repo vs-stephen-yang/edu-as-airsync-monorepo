@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:display_channel/src/client_connection.dart';
@@ -16,6 +17,8 @@ class ConnectionClosedException implements Exception {
 }
 
 class WebSocketClientConnection implements ClientConnection {
+  int _gen = 0;
+
   @override
   void Function()? onConnected;
 
@@ -32,12 +35,16 @@ class WebSocketClientConnection implements ClientConnection {
   void Function(Map<String, dynamic> data)? onMessage;
 
   final String _url;
-  var _closed = false;
 
   final WebSocketClientConnectionConfig _config;
 
   WebSocket? _socket;
   HttpClient? _httpClient;
+  StreamSubscription? _socketSubscription;
+
+  ConnectionState _state = ConnectionState.disconnected;
+
+  bool _disconnectionHandled = false;
 
   WebSocketClientConnection(
     this._url,
@@ -46,23 +53,41 @@ class WebSocketClientConnection implements ClientConnection {
 
   @override
   void open() {
+    if (_state == ConnectionState.connecting ||
+        _state == ConnectionState.connected) {
+      return;
+    }
+
+    if (_state == ConnectionState.closed) {
+      _state = ConnectionState.disconnected;
+    }
+
     _connect();
   }
 
   @override
-  void close() {
-    _closed = true;
-
-    _closeSocket();
-  }
-
-  void _connect() async {
-    _config.logger?.call(_url, "connect");
-    if (_closed) {
+  void close() async {
+    if (_state == ConnectionState.closed) {
       return;
     }
 
-    _config.logger?.call(_url, "connecting");
+    _state = ConnectionState.closed;
+
+    await _closeSocket();
+  }
+
+  void _connect() async {
+    if (_state == ConnectionState.closed ||
+        _state == ConnectionState.connecting) {
+      return;
+    }
+
+    final myGen = ++_gen;
+    _state = ConnectionState.connecting;
+    _disconnectionHandled = false;
+
+    _config.logger?.call(_url, "connect");
+    _config.logger?.call(_url, "GEN $myGen connecting");
     onConnecting?.call();
 
     WebSocket? socket;
@@ -71,7 +96,7 @@ class WebSocketClientConnection implements ClientConnection {
         maxDelay: _config.retry.maxRetryDelay,
         maxAttempts: _config.retry.maxRetryAttempts,
         () {
-          if (_closed) {
+          if (_state == ConnectionState.closed) {
             throw ConnectionClosedException();
           }
 
@@ -90,7 +115,7 @@ class WebSocketClientConnection implements ClientConnection {
         },
         retryIf: (e) {
           _config.logger?.call(_url, e.toString());
-          return !_closed &&
+          return _state != ConnectionState.closed &&
               (e is SocketException ||
                   e is HttpException ||
                   e is WebSocketException);
@@ -98,32 +123,37 @@ class WebSocketClientConnection implements ClientConnection {
         onRetry: (p0) {},
       );
     } on HttpException catch (e) {
-      _handleConnectFailed(ConnectErrorType.http, e.toString());
+      await _handleConnectFailed(ConnectErrorType.http, e.toString());
       return;
     } on WebSocketException catch (e) {
       // WebSocketException: Connection to 'https://xxx' was not upgraded to websocket
-      _handleConnectFailed(ConnectErrorType.websocket, e.toString());
+      await _handleConnectFailed(ConnectErrorType.websocket, e.toString());
       return;
     } on SocketException catch (e) {
-      _handleConnectFailed(ConnectErrorType.socket, e.toString());
+      await _handleConnectFailed(ConnectErrorType.socket, e.toString());
       return;
     } on ConnectionClosedException catch (_) {
       return;
     }
 
-    if (_closed) {
+    if (_state == ConnectionState.closed || myGen != _gen) {
       await socket!.close();
       return;
     }
 
     _socket = socket;
     _socket!.pingInterval = _config.pingInterval;
+    _state = ConnectionState.connected;
 
     // connected
-    _config.logger?.call(_url, "connected");
+    _config.logger?.call(_url, "GEN $myGen connected");
     onConnected?.call();
 
-    _socket!.listen((dynamic data) {
+    _socketSubscription = _socket!.listen((dynamic data) {
+      if (_state != ConnectionState.connected) {
+        return;
+      }
+
       _config.logger?.call(_url, 'Received $data');
 
       // receive data
@@ -134,28 +164,38 @@ class WebSocketClientConnection implements ClientConnection {
         _config.logger?.call(_url, 'Invalid message $data');
       }
     }, onDone: () {
-      _config.logger?.call(_url, 'websocket onDone');
-
-      // websocket connection closed
-      _handleDisconnected();
+      _config.logger?.call(_url, 'GEN $myGen websocket onDone');
+      if (myGen == _gen) {
+        // websocket connection closed
+        _handleDisconnected(myGen);
+      }
     }, onError: (error) {
-      _config.logger?.call(_url, 'websocket onError $error');
-
-      // websocket connection error
-      _handleDisconnected();
+      _config.logger?.call(_url, 'Gen $myGen websocket onError $error');
+      if (myGen == _gen) {
+        // websocket connection error
+        _handleDisconnected(myGen);
+      }
     }, cancelOnError: true);
   }
 
   @override
   void send(Map<String, dynamic> message) {
-    final data = jsonEncode(message);
-    _socket?.add(data);
+    if (_state != ConnectionState.connected || _socket == null) {
+      _config.logger?.call(_url, 'Cannot send message: connection not ready');
+      return;
+    }
 
-    _config.logger?.call(_url, 'Sent $data');
+    try {
+      final data = jsonEncode(message);
+      _socket!.add(data);
+      _config.logger?.call(_url, 'Sent $data');
+    } catch (e) {
+      _config.logger?.call(_url, 'Send failed: $e');
+    }
   }
 
-  void _handleConnectFailed(ConnectErrorType error, String message) async {
-    if (_closed) {
+  Future<void> _handleConnectFailed(ConnectErrorType error, String message) async {
+    if (_state == ConnectionState.closed) {
       return;
     }
 
@@ -166,10 +206,16 @@ class WebSocketClientConnection implements ClientConnection {
     await _reconnect();
   }
 
-  void _handleDisconnected() async {
-    if (_closed) {
+  void _handleDisconnected(int expectedGen) async {
+    if (expectedGen != _gen) {
       return;
     }
+
+    if (_state == ConnectionState.closed || _disconnectionHandled) {
+      return;
+    }
+
+    _disconnectionHandled = true;
 
     _config.logger?.call(_url, "disconnected");
     onDisconnected?.call();
@@ -177,17 +223,35 @@ class WebSocketClientConnection implements ClientConnection {
     await _reconnect();
   }
 
-  void _closeSocket() {
+  Future<void> _closeSocket() async {
+    await _socketSubscription?.cancel();
+    _socketSubscription = null;
+
     _httpClient?.close(force: true);
     _httpClient = null;
 
-    _socket?.close();
-    _socket = null;
+    if (_socket != null) {
+      try {
+        await _socket!.close();
+      } catch (e) {
+        _config.logger?.call(_url, 'Error closing socket: $e');
+      }
+      _socket = null;
+    }
   }
 
-  Future _reconnect() async {
-    _closeSocket();
+  Future<void> _reconnect() async {
+    if (_state == ConnectionState.closed) {
+      return;
+    }
 
-    _connect();
+    _state = ConnectionState.disconnecting;
+
+    await _closeSocket();
+
+    if (_state != ConnectionState.closed) {
+      _state = ConnectionState.disconnected;
+      _connect();
+    }
   }
 }
