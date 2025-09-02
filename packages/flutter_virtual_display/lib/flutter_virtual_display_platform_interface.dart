@@ -24,7 +24,7 @@ abstract class FlutterVirtualDisplayPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  Future<bool?> startVirtualDisplay() {
+  Future<bool?> startVirtualDisplay(int pixelWidth, int pixelHeight) {
     throw UnimplementedError('startVirtualDisplay() has not been implemented.');
   }
 

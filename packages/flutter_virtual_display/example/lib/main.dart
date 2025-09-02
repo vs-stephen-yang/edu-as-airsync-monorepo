@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
+import 'package:screen_retriever/screen_retriever.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,8 +55,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _startVirtualDisplay() async {
-    await FlutterVirtualDisplay.instance.startVirtualDisplay();
+  void _startVirtualDisplay(int pixelWidth, int pixelHeight) async {
+    await FlutterVirtualDisplay.instance.startVirtualDisplay(pixelWidth, pixelHeight);
   }
 
   void _stopVirtualDisplay() async {
@@ -64,6 +65,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final display = await ScreenRetriever.instance.getPrimaryDisplay();
+    final scale = (display.scaleFactor ?? 1).toDouble();
+    final pixelWidth  = (display.size.width  * scale).round();
+    final pixelHeight = (display.size.height * scale).round();
+  
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -75,11 +81,13 @@ class _MyAppState extends State<MyApp> {
             children: <Widget>[
               if (_enableVirtualDisplayButton)
                 ElevatedButton(
-                    onPressed: _isVirtualDisplayStarted ?
-                    _stopVirtualDisplay : _startVirtualDisplay,
-                    child: _isVirtualDisplayStarted ?
-                    const Text('Stop Virtual Display') : const Text(
-                        'Start Virtual Display'))
+                  onPressed: _isVirtualDisplayStarted
+                      ? () => _stopVirtualDisplay()
+                      : () => _startVirtualDisplay(pixelWidth, pixelHeight),
+                  child: _isVirtualDisplayStarted
+                      ? const Text('Stop Virtual Display')
+                      : const Text('Start Virtual Display'),
+                )
               else
                 const Text('Virtual Display is not supported')
 

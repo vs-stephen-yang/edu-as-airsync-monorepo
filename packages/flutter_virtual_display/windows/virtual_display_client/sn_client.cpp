@@ -32,13 +32,13 @@ void SNClient::Stop() {
   tcp_client_->Close();
 }
 
-bool SNClient::DisplayConnect() {
+bool SNClient::DisplayConnect(int pixelWidth, int pixelHeight) {
   if (!tcp_client_->Connect()) {
     last_error_ = Error::ERROR_FAILED_TO_CONNECT_TO_SERVER;
     return false;
   }
   try {
-	auto buf = SANetProtocol::DisplayConnectPacketCreate();
+	auto buf = SANetProtocol::DisplayConnectPacketCreate(pixelWidth, pixelHeight);
 	tcp_client_->SendAll(buf.data(), (int)buf.size());
   } catch (...) {
     last_error_ = Error::ERROR_UNKNOWN;

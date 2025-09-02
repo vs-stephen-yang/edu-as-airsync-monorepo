@@ -9,7 +9,7 @@ namespace virtual_display_client {
 class SANetProtocol
 {
  public:
-  static std::vector<std::uint8_t> DisplayConnectPacketCreate();
+  static std::vector<std::uint8_t> DisplayConnectPacketCreate(int pixelWidth, int pixelHeight);
   static std::vector<std::uint8_t> DisplayDisconnectPacketCreate();
 };
 

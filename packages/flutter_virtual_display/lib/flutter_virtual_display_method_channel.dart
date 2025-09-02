@@ -26,9 +26,15 @@ class MethodChannelFlutterVirtualDisplay extends FlutterVirtualDisplayPlatform {
   }
 
   @override
-  Future<bool?> startVirtualDisplay() async {
+  Future<bool?> startVirtualDisplay(int pixelWidth, int pixelHeight) async {
     if (_initialized) {
-      return await methodChannel.invokeMethod<bool?>('startVirtualDisplay');
+      return methodChannel.invokeMethod<bool>(
+        'startVirtualDisplay',
+        {
+          'pixelWidth': pixelWidth,
+          'pixelHeight': pixelHeight,
+        },
+      );
     }
     return false;
   }
