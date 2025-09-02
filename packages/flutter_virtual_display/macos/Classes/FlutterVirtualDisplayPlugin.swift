@@ -46,18 +46,23 @@ public class FlutterVirtualDisplayPlugin: NSObject, FlutterPlugin, FlutterStream
       }
 #endif //AIRSYNC_OPEN
       result(false)
-      
+
     case "startVirtualDisplay":
 #if AIRSYNC_OPEN
-      if virtualDisplay != nil {
-        let success = virtualDisplay?.startVirtualDisplay()
-        result(success)
-      } else {
-        result(false)
-      }
+    if let args = call.arguments as? [String: Any],
+       let pixelWidth = args["pixelWidth"] as? Int,
+       let pixelHeight = args["pixelHeight"] as? Int {
+
+       let success = virtualDisplay?.startVirtualDisplay(width: UInt32(pixelWidth),
+                                                         height: UInt32(pixelHeight))
+       result(success)
+    } else {
+       result(false)
+    }
 #else //!OPEN
-      result(false)
+        result(false)
 #endif //AIRSYNC_OPEN
+
     case "stopVirtualDisplay":
 #if AIRSYNC_OPEN
       if virtualDisplay != nil {

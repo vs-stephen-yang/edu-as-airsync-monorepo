@@ -20,7 +20,7 @@ class SNClient {
   bool Start(const char* ip, int port);
   void Stop();
 
-  bool DisplayConnect();
+  bool DisplayConnect(int pixelWidth, int pixelHeight);
   bool DisplayDisconnect();
 
   std::string GetLastError();

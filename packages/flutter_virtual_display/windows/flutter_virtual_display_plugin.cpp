@@ -62,7 +62,11 @@ void FlutterVirtualDisplayPlugin::HandleMethodCall(
   } else if (method_name.compare("isSupported") == 0) {
     result->Success(_flutter_virtual_display->IsSupported());
   } else if (method_name.compare("startVirtualDisplay") == 0) {
-    result->Success(_flutter_virtual_display->StartVirtualDisplay());
+      const flutter::EncodableMap params =
+              GetValue<flutter::EncodableMap>(*method_call.arguments());
+      const int pixelWidth = findInt(params, "pixelWidth");
+      const int pixelHeight = findInt(params, "pixelHeight");
+    result->Success(_flutter_virtual_display->StartVirtualDisplay(pixelWidth, pixelHeight));
   } else if (method_name.compare("stopVirtualDisplay") == 0) {
     _flutter_virtual_display->StopVirtualDisplay();
     result->Success();

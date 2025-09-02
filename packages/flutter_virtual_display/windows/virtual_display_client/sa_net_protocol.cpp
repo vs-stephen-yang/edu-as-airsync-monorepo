@@ -11,12 +11,12 @@ const int ProtcolVersionNumberMinor = 8;
 const int LicensInformation = 0;
 const int FrameRateLimitation = 60;
 const int ResolutionListCount = 1;
-const int ResolutionX = 1920;
-const int ResolutionY = 1080;
+const int DefaultResolutionX = 1920;
+const int DefaultResolutionY = 1080;
 const wchar_t* DeviceIdentifier = L"{c9bdf5a6-776d-4533-ba27-9eff7a48d1c0}";
 const wchar_t* DeviceName = L"AirSyncDevice";
 
-std::vector<std::uint8_t> SANetProtocol::DisplayConnectPacketCreate() {
+std::vector<std::uint8_t> SANetProtocol::DisplayConnectPacketCreate(int pixelWidth, int pixelHeight) {
   size_t len = sizeof(PROTOCOL_SPCDSK_SMPL_HEADER) + sizeof(PROTOCOL_SPCDSK_SMPL_DATA_IDENTIFICATION);
   std::vector<uint8_t> buffer(len, 0x00);
 
@@ -31,8 +31,8 @@ std::vector<std::uint8_t> SANetProtocol::DisplayConnectPacketCreate() {
   Packet->u.Identification.LicensingInformation = LicensInformation;
   Packet->u.Identification.FrameRateLimitation = FrameRateLimitation;
   Packet->u.Identification.ResolutionsListCount = ResolutionListCount;
-  Packet->u.Identification.ResolutionX[0] = ResolutionX;
-  Packet->u.Identification.ResolutionY[0] = ResolutionY;
+  Packet->u.Identification.ResolutionX[0] = (pixelWidth > 0) ? pixelWidth : DefaultResolutionX;
+  Packet->u.Identification.ResolutionY[0] = (pixelHeight > 0) ? pixelHeight : DefaultResolutionY;
 
   PROTOCOL_SPCDSK_SMPL_DATA_IDENTIFICATION* pIdentification =
 	  (PROTOCOL_SPCDSK_SMPL_DATA_IDENTIFICATION*)(buffer.data() + sizeof(PROTOCOL_SPCDSK_SMPL_HEADER));

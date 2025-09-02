@@ -24,7 +24,7 @@ class FlutterVirtualDisplay {
 
   bool IsSupported();
   bool Initialize(const char* ip = DEFAULT_IP, int port = DEFAULT_PORT, bool from_registry = false);
-  bool StartVirtualDisplay();
+  bool StartVirtualDisplay(int pixelWidth, int pixelHeight);
   void StopVirtualDisplay();
 
  private:

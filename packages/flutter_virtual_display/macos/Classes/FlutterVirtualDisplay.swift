@@ -6,8 +6,8 @@ class FlutterVirtualDisplay {
   private var eventSink: (([String: Any]) -> Void)?
   
   private let displayName = "AirSync"
-  private let displayWidth: UInt32 = 1920
-  private let displayHeight: UInt32 = 1080
+  private let defaultDisplayWidth: UInt32 = 1920
+  private let defaultDisplayHeight: UInt32 = 1080
   private let displaySize = CGSize(width: 1800, height: 1012.5)
   private let vendorID: UInt32 = 0x0543 // ViewSonic
   private let productID: UInt32 = 0x1234
@@ -33,8 +33,8 @@ class FlutterVirtualDisplay {
     // https://source.chromium.org/chromium/chromium/src/+/main:ui/display/mac/test/virtual_display_mac_util.mm;drc=db6f1567b8caa6dacdd0d46b2a7ac60c5b5ddc82;l=339
     return true
   }
-  
-  func startVirtualDisplay() -> Bool {
+
+  func startVirtualDisplay(width: UInt32, height: UInt32) -> Bool {
     if virtualDisplay != nil {
       notifyEvent(event: "virtualDisplayError", success: false, errorMessage: "Virtual display already started")
       return false
@@ -50,9 +50,11 @@ class FlutterVirtualDisplay {
     ) { [weak self] _ in
       self?.attemptDetectVirtualDisplay()
     }
-    
-    virtualDisplay = createDisplay(name: displayName, width: displayWidth, height: displayHeight)
-    
+
+    let pixelWidth = width > 0 ? width : defaultDisplayWidth
+    let pixelHeight = height > 0 ? height : defaultDisplayHeight
+    virtualDisplay = createDisplay(name: displayName, width: pixelWidth, height: pixelHeight)
+
     return true
   }
   

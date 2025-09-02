@@ -38,8 +38,11 @@ class FlutterVirtualDisplay {
     return FlutterVirtualDisplayPlatform.instance.initialize();
   }
 
-  Future<bool?> startVirtualDisplay() {
-    return FlutterVirtualDisplayPlatform.instance.startVirtualDisplay();
+  Future<bool?> startVirtualDisplay(int pixelWidth, int pixelHeight) async {
+    return FlutterVirtualDisplayPlatform.instance.startVirtualDisplay(
+      pixelWidth,
+      pixelHeight,
+    );
   }
 
   Future<void> stopVirtualDisplay() {
