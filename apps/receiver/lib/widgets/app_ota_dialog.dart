@@ -48,15 +48,22 @@ class AppOTADialogState extends State<AppOTADialog>
     switch (status) {
       case UpdateStatus.updateDownloading:
         if (progress == -1) {
-          _showOTADialog(status, info);
+          // [USER STORY 90944]Silent software OTA，不顯示UI
+          // _showOTADialog(status, info);
         } else if (progress != null) {
           this.progress.value = progress;
         }
+        // 標記本次為下載，不安裝。
+        _appUpdateHelper.newVersionDownloaded = true;
         break;
       case UpdateStatus.updateDownloaded:
         if (_appUpdateHelper.otaFlavor == OtaFlavor.ifp ||
             _appUpdateHelper.otaFlavor == OtaFlavor.edla) {
-          _installNow(info);
+          // 如果這次是下載，則略過安裝流程。如果是Alarm就安裝。
+          if (!_appUpdateHelper.newVersionDownloaded ||
+              _appUpdateHelper.appAlarmOTA) {
+            _installNow(info);
+          }
         } else {
           _showOTADialog(status, info);
         }

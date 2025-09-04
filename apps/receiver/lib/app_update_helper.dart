@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'model/hybrid_connection_list.dart';
+
 /// IFP (arch):  Can Updated with silent install
 /// EDLA (arch): Can Updated with silent install
 /// OPEN: Can Updated with Google UI
@@ -17,6 +19,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 class AppUpdateHelper {
   OtaEnvironment _otaEnvironment = OtaEnvironment.production;
   OtaFlavor _otaFlavor = OtaFlavor.ifp;
+
+  // 用來記錄，當次為下載apk，不安裝。
+  bool newVersionDownloaded = false;
+  bool appAlarmOTA = false;
 
   get otaFlavor => _otaFlavor;
 
@@ -45,7 +51,19 @@ class AppUpdateHelper {
         const MethodChannel('com.mvbcast.crosswalk/app_update_alarm');
     channelAlarm.setMethodCallHandler((call) async {
       if (call.method == 'AppAlarmOTA') {
+        appAlarmOTA = true;
         await checkAppUpdate(true);
+      }
+    });
+
+    var channelSleepStatus =
+        const MethodChannel('com.mvbcast.crosswalk/sleep_status');
+    channelSleepStatus.setMethodCallHandler((call) async {
+      if (call.method == 'onSleepStatusChanged') {
+        newVersionDownloaded = false;
+        if (HybridConnectionList.hybridSplitScreenCount.value == 0) {
+          await checkAppUpdate(true);
+        }
       }
     });
   }
@@ -62,9 +80,11 @@ class AppUpdateHelper {
     log.info('InApp _otaState: $_otaEnvironment');
     log.info('InApp _otaFlavor: $_otaFlavor');
     if (_otaFlavor != OtaFlavor.edla) {
-      unawaited(AppOtaFlutter().startOTAProcess(
-          OtaApp.display, _otaEnvironment, _otaFlavor,
-          isStartupCheck: isStartupCheck));
+      unawaited(
+        AppOtaFlutter().startOTAProcess(
+            OtaApp.display, _otaEnvironment, _otaFlavor,
+            isStartupCheck: isStartupCheck),
+      );
     }
   }
 
