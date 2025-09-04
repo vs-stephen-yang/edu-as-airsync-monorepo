@@ -145,7 +145,7 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const defaultHighImageQuality = false;
+  static const defaultHighImageQuality = true;
   bool _highImageQuality = defaultHighImageQuality;
 
   bool get highImageQuality => _highImageQuality;
