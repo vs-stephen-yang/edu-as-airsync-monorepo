@@ -86,10 +86,13 @@ class WebRTCConnector {
   bool _streamPublished = false;
   ChangePresentQuality? _pendingChangePresentQuality;
 
-  double _screenWidth = 3840.0;
-  double _screenHeight = 2160.0;
-  static int _maxTrackWidth = 3840;
-  static int _maxTrackHeight = 2160;
+  static final _resolutionUltraHd = (width: 3840, height: 2160);
+  static final _resolutionQuadHdPlus = (width: 3024, height: 1964);
+
+  double _screenWidth = _resolutionQuadHdPlus.width.toDouble();
+  double _screenHeight = _resolutionQuadHdPlus.height.toDouble();
+  static int _maxTrackWidth = _resolutionQuadHdPlus.width;
+  static int _maxTrackHeight = _resolutionQuadHdPlus.height;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
@@ -410,10 +413,10 @@ class WebRTCConnector {
         // On Web, we need to apply minFrameRate to avoid static content
         // delay or black screen issue.
         if (kIsWeb) {
-          _screenWidth = 3840.0;
-          _screenHeight = 2160.0;
-          _maxTrackWidth = 3840;
-          _maxTrackHeight = 2160;
+          _screenWidth = _resolutionUltraHd.width.toDouble();
+          _screenHeight = _resolutionUltraHd.height.toDouble();
+          _maxTrackWidth = _resolutionUltraHd.width;
+          _maxTrackHeight = _resolutionUltraHd.height;
           _applyWebMinFrameRateWorkaround(track);
         }
       }
