@@ -103,7 +103,7 @@ dependencies:
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-3.8.5
+      ref: release-3.8.6
   flutter_golang_server:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server
