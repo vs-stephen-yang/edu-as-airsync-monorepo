@@ -951,7 +951,7 @@ class WebRTCConnector {
       _trackWidth = _maxTrackWidth;
       _trackHeight = _maxTrackHeight;
     } else {
-      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
+      _trackWidth = constraints.width!;
       _trackHeight = constraints.height!;
     }
     _decodeHeightLimit = constraints.decodeHeightLimit;
