@@ -156,6 +156,11 @@ class RTCConnector {
   static const int _resolutionHeightFullHd = 1200;
   static const int _resolutionHeightQuarterHd = 540;
 
+  final _resolutionUltraHd = (width: 3840, height: 2160);
+  final _resolutionQuadHd = (width: 2560, height: 1600);
+  final _resolutionFullHd = (width: 1920, height: 1200);
+  final _resolutionQuarterHd = (width: 960, height: 600);
+
   final MaxVideoResolution maxVideoResolution;
 
   RTCConnector(
@@ -506,26 +511,37 @@ class RTCConnector {
   int getFullResolutionHeight() {
     switch (maxVideoResolution) {
       case MaxVideoResolution.uhd:
-        return _resolutionHeightUltraHd;
+        return _resolutionUltraHd.height;
       case MaxVideoResolution.qhd:
-        return _resolutionHeightQuadHd;
+        return _resolutionQuadHd.height;
       case MaxVideoResolution.fhd:
-        return _resolutionHeightFullHd;
+        return _resolutionFullHd.height;
+    }
+  }
+
+  int getFullResolutionWidth() {
+    switch (maxVideoResolution) {
+      case MaxVideoResolution.uhd:
+        return _resolutionUltraHd.width;
+      case MaxVideoResolution.qhd:
+        return _resolutionQuadHd.width;
+      case MaxVideoResolution.fhd:
+        return _resolutionFullHd.width;
     }
   }
 
   int getFullHeight(bool isFullHeight, int attenderCount) {
     return (isFullHeight || attenderCount <= 2)
         ? getFullResolutionHeight()
-        : _resolutionHeightQuarterHd;
+        : _resolutionQuarterHd.height;
   }
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
     if (isMtk9950Model(deviceType) && (attenderCount > 1)) {
-      return _resolutionHeightFullHd;
+      return _resolutionFullHd.height;
     }
     if (_fhdOnlyWebRtcModels.contains(deviceType)) {
-      return _resolutionHeightFullHd;
+      return _resolutionFullHd.height;
     }
     return 0; // no limitation
   }
@@ -545,6 +561,7 @@ class RTCConnector {
 
     message.constraints = PresentQualityConstraints(
         frameRate: getFullFrameRate(isFullFrameRate, _deviceType),
+        width: getFullResolutionWidth(),
         height: getFullHeight(isFullHeight, attendeeCount),
         decodeHeightLimit: getDecodeHeightLimit(_deviceType, attendeeCount));
     log.info(
