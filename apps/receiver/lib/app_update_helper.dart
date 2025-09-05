@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_ota_flutter/app_ota_flutter.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -25,6 +26,8 @@ class AppUpdateHelper {
   bool appAlarmOTA = false;
 
   get otaFlavor => _otaFlavor;
+
+  late StreamSubscription<bool> _sub;
 
   ensureInitialized(ConfigSettings configSettings) async {
     if (configSettings.isDevelopEnvironment) {
@@ -56,10 +59,10 @@ class AppUpdateHelper {
       }
     });
 
-    var channelSleepStatus =
-        const MethodChannel('com.mvbcast.crosswalk/sleep_status');
-    channelSleepStatus.setMethodCallHandler((call) async {
-      if (call.method == 'onSleepStatusChanged') {
+    // 監聽變化
+    _sub = DeviceInfoVs.onSleepStateChanged.listen((onSleep) async {
+      print('***** onSleepStateChanged $onSleep');
+      if (!onSleep) {
         newVersionDownloaded = false;
         if (HybridConnectionList.hybridSplitScreenCount.value == 0) {
           await checkAppUpdate(true);
