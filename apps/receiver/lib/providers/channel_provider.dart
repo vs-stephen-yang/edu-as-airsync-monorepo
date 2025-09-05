@@ -577,7 +577,8 @@ class ChannelProvider extends ChangeNotifier {
   void _onNewChannel(Channel channel, ChannelMode mode) {
     RTCConnector rtcConnector = RTCConnector(
       channel,
-      maxVideoResolution: _highImageQuality? MaxVideoResolution.uhd : MaxVideoResolution.qhd,
+      maxVideoResolution:
+          _highImageQuality ? MaxVideoResolution.uhd : MaxVideoResolution.qhd,
     );
     log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
@@ -613,7 +614,13 @@ class ChannelProvider extends ChangeNotifier {
                 sendJoinDisplayRejectMessage(channel);
                 return;
               }
-              if (msg.name != null && HybridConnectionList().isPresenting()) {
+              if (isModeratorMode &&
+                  !(msg.isConnectedViaModeratorMode ?? false)) {
+                sendJoinDisplayRejectMessage(channel,
+                    errorCode: JoinDisplayRejectedReasonCode
+                        .joinedBeforeModeratorOn.code,
+                    reason: 'User name is null');
+              } else if (HybridConnectionList().isPresenting()) {
                 showNewSharingNameList.value.add(msg.name!);
                 showNewSharingNameList.value =
                     List.from(showNewSharingNameList.value);
@@ -1192,6 +1199,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
   }
+
 // endregion
 
   void sortRemoteScreenConnectors(bool asc) {
