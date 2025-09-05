@@ -39,7 +39,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.mvbcast.crosswalk.helper.SleepStatus;
 import com.mvbcast.crosswalk.helper.WifiHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 
@@ -64,8 +63,6 @@ public class EulaActivity extends FlutterActivity {
     private MethodChannel multiWindowChannel;
 
     private WifiManager.MulticastLock multicastLock;
-
-    private SleepStatus sleepStatus;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -336,10 +333,6 @@ public class EulaActivity extends FlutterActivity {
                 sink.success(is24);
             }
         });
-
-        if (BuildConfig.FLAVOR_channel == "ifp") {
-            sleepStatus = new SleepStatus(this, binaryMessenger);
-        }
     }
 
     private Size getRealScreenResolution(Context context) {
@@ -472,11 +465,6 @@ public class EulaActivity extends FlutterActivity {
             multicastLock.release();
         }
         mAlarmOTA = null;
-
-        if (sleepStatus != null) {
-            sleepStatus.onDestroy();
-        }
-
         super.onDestroy();
 //        System.exit(0);
     }
