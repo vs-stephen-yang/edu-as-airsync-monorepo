@@ -434,7 +434,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           'QualityLimitationReason: ${stats.qualityLimitationReason}\n'
           'pliCount: ${stats.pliCount}\n'
           'Encoder: ${stats.encoderImplementation}\n'
-          'EncodeTime: ${stats.encodeTime?.toStringAsFixed(2)}\n';
+          'EncodeTime: ${stats.encodeTimeAvgMs?.toStringAsFixed(2)}\n';
 
       setState(() {
         debugOverlayText = videoInfo;

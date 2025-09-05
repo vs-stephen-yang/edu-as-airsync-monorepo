@@ -9,7 +9,6 @@ class RtcVideoOutboundStats {
   String? qualityLimitationReason;
   int? pliCount;
   double? targetBitrate;
-  double? encodeTime;
   bool? powerEfficientEncoder;
 
   double? timestamp;
@@ -60,7 +59,6 @@ class RtcVideoOutboundStats {
     this.qualityLimitationReason,
     this.pliCount,
     this.targetBitrate,
-    this.encodeTime,
     this.powerEfficientEncoder,
     this.timestamp,
     this.bytesSent,
