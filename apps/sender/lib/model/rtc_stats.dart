@@ -1,4 +1,6 @@
 class RtcVideoOutboundStats {
+  String? transportId;
+  String? mediaSourceId;
   String? encoderImplementation;
   int? frameWidth;
   int? frameHeight;
@@ -34,6 +36,7 @@ class RtcVideoOutboundStats {
   int? bytesSentPerSecond;
   int? framesSentPerSecond;
   int? framesEncodedPerSecond;
+  int? hugeFramesSentPerSecond;
   double? retransmittedPacketsSentPerSecond;
   double? headerBytesSentPerSecond;
   double? retransmittedBytesSentPerSecond;
@@ -42,7 +45,13 @@ class RtcVideoOutboundStats {
   double? packetSendDelayAvgMs;
   double? qpSumAvg;
 
+  // extend field from other dictionary
+  double? availableOutgoingBitrate;
+  double? mediaSourceFramesPerSecond;
+
   RtcVideoOutboundStats({
+    this.transportId,
+    this.mediaSourceId,
     this.encoderImplementation,
     this.frameWidth,
     this.frameHeight,
@@ -76,11 +85,14 @@ class RtcVideoOutboundStats {
     this.headerBytesSentPerSecond,
     this.retransmittedBytesSentPerSecond,
     this.framesEncodedPerSecond,
+    this.hugeFramesSentPerSecond,
     this.encodeTimeAvgMs,
     this.totalEncodedBytesTargetPerSecond,
     this.framesSentPerSecond,
     this.packetSendDelayAvgMs,
     this.qpSumAvg,
+    this.availableOutgoingBitrate,
+    this.mediaSourceFramesPerSecond,
   });
 }
 
@@ -131,24 +143,32 @@ class RtcIceCandidatePairStats {
 
   // Represents the latest round trip time measured in seconds
   final double? currentRoundTripTime;
+
   // Represents the sum of all round trip time measurements in seconds since the beginning of the session
   final double? totalRoundTripTime;
 
+  double? availableOutgoingBitrate;
+  String? transportId;
+
   RtcIceCandidatePairStats({
+    this.transportId,
     this.localCandidateId,
     this.remoteCandidateId,
     this.state,
     this.totalRoundTripTime,
     this.currentRoundTripTime,
+    this.availableOutgoingBitrate,
   });
 
   factory RtcIceCandidatePairStats.fromMap(Map<dynamic, dynamic> map) {
     return RtcIceCandidatePairStats(
+      transportId: map['transportId'],
       localCandidateId: map['localCandidateId'],
       remoteCandidateId: map['remoteCandidateId'],
       totalRoundTripTime: (map['totalRoundTripTime'] as num?)?.toDouble(),
       currentRoundTripTime: (map['currentRoundTripTime'] as num?)?.toDouble(),
       state: map['state'],
+      availableOutgoingBitrate: map['availableOutgoingBitrate'],
     );
   }
 }
