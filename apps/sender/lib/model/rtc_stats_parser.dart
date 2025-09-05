@@ -150,6 +150,7 @@ class RtcStatsParser {
     int? framesSentPerSecond;
     int? packetsSentPerSecond;
     int? hugeFramesSentPerSecond;
+    int? keyFramesEncodedPerSecond;
     double? retransmittedPacketsSentPerSecond;
     double? headerBytesSentPerSecond;
     double? retransmittedBytesSentPerSecond;
@@ -175,6 +176,9 @@ class RtcStatsParser {
 
       hugeFramesSentPerSecond =
           _diff(hugeFramesSent, _previousVideoOutboundStats!.hugeFramesSent);
+
+      keyFramesEncodedPerSecond = _diff(
+          keyFramesEncoded, _previousVideoOutboundStats!.keyFramesEncoded);
 
       retransmittedPacketsSentPerSecond = _diff(
           retransmittedPacketsSent?.toDouble(),
@@ -257,6 +261,7 @@ class RtcStatsParser {
         retransmittedBytesSentPerSecond: retransmittedBytesSentPerSecond,
         framesEncodedPerSecond: framesEncodedPerSecond,
         hugeFramesSentPerSecond: hugeFramesSentPerSecond,
+        keyFramesEncodedPerSecond: keyFramesEncodedPerSecond,
         encodeTimeAvgMs: encodeTimeAvgMs,
         totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
         framesSentPerSecond: framesSentPerSecond,

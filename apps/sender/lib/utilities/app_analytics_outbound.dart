@@ -11,6 +11,7 @@ class RtcVideoOutboundStatsLists {
   List<int?> framesEncodedPerSecond;
   List<int?> hugeFramesSentPerSecond;
   List<int?> bytesSentPerSecond;
+  List<int?> keyFramesEncodedPerSecond;
 
   List<double?> packetSendDelayAvgMs;
   List<double?> encodeTimeAvgMs;
@@ -26,6 +27,7 @@ class RtcVideoOutboundStatsLists {
     required this.framesSentPerSecond,
     required this.framesEncodedPerSecond,
     required this.bytesSentPerSecond,
+    required this.keyFramesEncodedPerSecond,
     required this.packetSendDelayAvgMs,
     required this.encodeTimeAvgMs,
     required this.qpSumAvg,
@@ -44,6 +46,7 @@ class RtcVideoOutboundStatsLists {
     List<int?> framesEncodedPerSecond = [];
     List<int?> bytesSentPerSecond = [];
     List<int?> hugeFramesSentPerSecond = [];
+    List<int?> keyFramesEncodedPerSecond = [];
     List<double?> packetSendDelayAvgMs = [];
     List<double?> encodeTimeAvgMs = [];
     List<double?> qpSumAvg = [];
@@ -57,6 +60,7 @@ class RtcVideoOutboundStatsLists {
       framesEncodedPerSecond.add(stats.framesEncodedPerSecond);
       bytesSentPerSecond.add(stats.bytesSentPerSecond);
       hugeFramesSentPerSecond.add(stats.hugeFramesSentPerSecond);
+      keyFramesEncodedPerSecond.add(stats.keyFramesEncodedPerSecond);
       mediaSourceFramesPerSecond.add(stats.mediaSourceFramesPerSecond);
       packetSendDelayAvgMs.add(stats.packetSendDelayAvgMs);
       encodeTimeAvgMs.add(stats.encodeTimeAvgMs);
@@ -72,6 +76,7 @@ class RtcVideoOutboundStatsLists {
       framesEncodedPerSecond: framesEncodedPerSecond,
       bytesSentPerSecond: bytesSentPerSecond,
       hugeFramesSentPerSecond: hugeFramesSentPerSecond,
+      keyFramesEncodedPerSecond: keyFramesEncodedPerSecond,
       mediaSourceFramesPerSecond: mediaSourceFramesPerSecond,
       packetSendDelayAvgMs: packetSendDelayAvgMs,
       encodeTimeAvgMs: encodeTimeAvgMs,
@@ -100,6 +105,7 @@ void trackOutboundStats(
     'framesEncodedPerSecond': statsLists.framesEncodedPerSecond.join(','),
     'bytesSentPerSecond': statsLists.bytesSentPerSecond.join(','),
     'hugeFramesSentPerSecond': statsLists.hugeFramesSentPerSecond.join(','),
+    'keyFramesEncodedPerSecond': statsLists.keyFramesEncodedPerSecond.join(','),
     'mediaSourceFramesPerSecond':
         statsLists.mediaSourceFramesPerSecond.join(','),
     'packetSendDelayAvgMs': packetSendDelayAvgMs.join(','),

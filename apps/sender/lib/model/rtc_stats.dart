@@ -36,6 +36,7 @@ class RtcVideoOutboundStats {
   int? framesSentPerSecond;
   int? framesEncodedPerSecond;
   int? hugeFramesSentPerSecond;
+  int? keyFramesEncodedPerSecond;
   double? retransmittedPacketsSentPerSecond;
   double? headerBytesSentPerSecond;
   double? retransmittedBytesSentPerSecond;
@@ -84,6 +85,7 @@ class RtcVideoOutboundStats {
     this.retransmittedBytesSentPerSecond,
     this.framesEncodedPerSecond,
     this.hugeFramesSentPerSecond,
+    this.keyFramesEncodedPerSecond,
     this.encodeTimeAvgMs,
     this.totalEncodedBytesTargetPerSecond,
     this.framesSentPerSecond,
