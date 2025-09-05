@@ -150,7 +150,6 @@ class RtcStatsParser {
     int? framesSentPerSecond;
     int? packetsSentPerSecond;
     int? hugeFramesSentPerSecond;
-    double? encodeTime;
     double? retransmittedPacketsSentPerSecond;
     double? headerBytesSentPerSecond;
     double? retransmittedBytesSentPerSecond;
@@ -161,9 +160,6 @@ class RtcStatsParser {
 
     // Calculate differences if we have previous stats
     if (_previousVideoOutboundStats != null) {
-      encodeTime =
-          _diff(totalEncodeTime, _previousVideoOutboundStats!.totalEncodeTime);
-
       // Per-second calculations
       packetsSentPerSecond =
           _diff(packetsSent, _previousVideoOutboundStats!.packetsSent);
@@ -236,7 +232,6 @@ class RtcStatsParser {
         qualityLimitationReason: qualityLimitationReason,
         pliCount: pliCount,
         targetBitrate: targetBitrate,
-        encodeTime: encodeTime,
         powerEfficientEncoder: powerEfficientEncoder,
         timestamp: timestamp,
         bytesSent: bytesSent,
