@@ -21,9 +21,13 @@ dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
 
 abstract class RtcStatsSubscriber {
   void updateVideoStats(RtcVideoOutboundStats stats);
+
   void updateLocalCandidate(List<StatsReport> reports);
+
   void updateRemoteCandidate(List<StatsReport> reports);
+
   void updateCandidatePairStats(StatsReport report);
+
   void updateCodecStats(StatsReport report);
 }
 
@@ -49,6 +53,8 @@ class RtcStatsParser {
   void _onStatsReports(List<StatsReport> reports) {
     // Create maps for different report types
     final reportsByType = <String, List<StatsReport>>{};
+    final List<StatsReport> candidatePairs = [];
+    final List<StatsReport> transports = [];
 
     // Categorize reports by type
     for (final report in reports) {
@@ -60,6 +66,7 @@ class RtcStatsParser {
     }
 
     for (var report in reportsByType['candidate-pair'] ?? []) {
+      candidatePairs.add(report);
       publishCandidatePairStats(report);
     }
 
@@ -71,15 +78,30 @@ class RtcStatsParser {
       publishRemoteCandidate(reportsByType['remote-candidate']!);
     }
 
+    for (var report in reportsByType['transport'] ?? []) {
+      transports.add(report);
+    }
+
+    final mediaSources = reportsByType['media-source'] ?? [];
+    final videoMediaSources = mediaSources
+        .where((StatsReport report) => report.values['kind'] == 'video')
+        .toList();
+
     // find video outbound-rtp reports
     final outboundRtps = reportsByType['outbound-rtp'] ?? [];
     final videoOutboundRtps = outboundRtps
         .where((StatsReport report) => report.values['kind'] == 'video')
         .toList();
-    _onVideoStatsReports(videoOutboundRtps);
+    _onVideoStatsReports(
+        videoOutboundRtps, transports, candidatePairs, videoMediaSources);
   }
 
-  void _onVideoStatsReports(List<StatsReport> reports) {
+  void _onVideoStatsReports(
+    List<StatsReport> reports,
+    List<StatsReport> transports,
+    List<StatsReport> candidatePairs,
+    List<StatsReport> videoMediaSources,
+  ) {
     if (reports.isEmpty) {
       _outboundVideoWidth = null;
       _outboundVideoHeight = null;
@@ -91,6 +113,8 @@ class RtcStatsParser {
     final values = videoOutboundRtp.values;
 
     // Extract basic fields from report
+    final transportId = values['transportId'];
+    final mediaSourceId = values['mediaSourceId'];
     final encoderImplementation = values['encoderImplementation'];
     final frameWidth = values['frameWidth'];
     final frameHeight = values['frameHeight'];
@@ -125,6 +149,7 @@ class RtcStatsParser {
     int? framesEncodedPerSecond;
     int? framesSentPerSecond;
     int? packetsSentPerSecond;
+    int? hugeFramesSentPerSecond;
     double? encodeTime;
     double? retransmittedPacketsSentPerSecond;
     double? headerBytesSentPerSecond;
@@ -151,6 +176,9 @@ class RtcStatsParser {
 
       framesSentPerSecond =
           _diff(framesSent, _previousVideoOutboundStats!.framesSent);
+
+      hugeFramesSentPerSecond =
+          _diff(hugeFramesSent, _previousVideoOutboundStats!.hugeFramesSent);
 
       retransmittedPacketsSentPerSecond = _diff(
           retransmittedPacketsSent?.toDouble(),
@@ -198,6 +226,8 @@ class RtcStatsParser {
 
     // Create the stats object with all fields
     final stats = RtcVideoOutboundStats(
+        transportId: transportId,
+        mediaSourceId: mediaSourceId,
         encoderImplementation: encoderImplementation,
         frameWidth: frameWidth,
         frameHeight: frameHeight,
@@ -231,11 +261,18 @@ class RtcStatsParser {
         headerBytesSentPerSecond: headerBytesSentPerSecond,
         retransmittedBytesSentPerSecond: retransmittedBytesSentPerSecond,
         framesEncodedPerSecond: framesEncodedPerSecond,
+        hugeFramesSentPerSecond: hugeFramesSentPerSecond,
         encodeTimeAvgMs: encodeTimeAvgMs,
         totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
         framesSentPerSecond: framesSentPerSecond,
         packetSendDelayAvgMs: packetSendDelayAvgMs,
         qpSumAvg: qpSumAvg);
+
+    // get extend field
+    stats.availableOutgoingBitrate =
+        _getAvailableOutgoingBitrate(stats, transports, candidatePairs);
+    stats.mediaSourceFramesPerSecond =
+        _getMediaSourceFramesPerSecond(stats, videoMediaSources);
 
     // Publish the stats to subscribers
     publishRtcVideoOutboundStats(stats);
@@ -251,6 +288,52 @@ class RtcStatsParser {
 
     // Update state for next calculation
     _previousVideoOutboundStats = stats;
+  }
+
+  double? _getAvailableOutgoingBitrate(
+    RtcVideoOutboundStats videoOutboundStat,
+    List<StatsReport> transports,
+    List<StatsReport> candidatePairs,
+  ) {
+    final targetTransports = transports
+        .where(
+            (StatsReport report) => report.id == videoOutboundStat.transportId)
+        .toList();
+    if (targetTransports.isEmpty) {
+      return null;
+    }
+    final targetTransport = targetTransports.first;
+    final transportValue = targetTransport.values;
+
+    final selectedCandidatePairId = transportValue['selectedCandidatePairId'];
+    if (selectedCandidatePairId == null ||
+        selectedCandidatePairId.toString().isEmpty) {
+      return null;
+    }
+
+    final selectCandidatePairs = candidatePairs
+        .where((StatsReport report) => report.id == selectedCandidatePairId)
+        .toList();
+    if (selectCandidatePairs.isEmpty) {
+      return null;
+    }
+    final selectCandidatePair = selectCandidatePairs.first;
+    final selectCandidatePairValue = selectCandidatePair.values;
+
+    return selectCandidatePairValue['availableOutgoingBitrate'];
+  }
+
+  double? _getMediaSourceFramesPerSecond(
+      RtcVideoOutboundStats videoOutboundStat, List<StatsReport> mediaSources) {
+    final targetMediaSources = mediaSources
+        .where((StatsReport report) =>
+            report.id == videoOutboundStat.mediaSourceId)
+        .toList();
+    if (targetMediaSources.isEmpty) {
+      return null;
+    }
+    final targetMediaSource = targetMediaSources.first;
+    return targetMediaSource.values['framesPerSecond'];
   }
 
   void addSubscriber(RtcStatsSubscriber s) {
