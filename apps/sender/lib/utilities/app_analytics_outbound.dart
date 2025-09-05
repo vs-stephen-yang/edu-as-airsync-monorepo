@@ -16,8 +16,10 @@ class RtcVideoOutboundStatsLists {
   List<double?> encodeTimeAvgMs;
   List<double?> qpSumAvg;
 
-  double? targetBitrate;
-  double? availableOutgoingBitrate;
+  List<double?> targetBitrate;
+  List<double?> availableOutgoingBitrate;
+
+  String? encoderImplementation;
 
   RtcVideoOutboundStatsLists({
     required this.framesPerSecond,
@@ -31,6 +33,7 @@ class RtcVideoOutboundStatsLists {
     required this.hugeFramesSentPerSecond,
     required this.availableOutgoingBitrate,
     required this.mediaSourceFramesPerSecond,
+    required this.encoderImplementation,
   });
 
   factory RtcVideoOutboundStatsLists.fromStatsList(
@@ -44,8 +47,9 @@ class RtcVideoOutboundStatsLists {
     List<double?> packetSendDelayAvgMs = [];
     List<double?> encodeTimeAvgMs = [];
     List<double?> qpSumAvg = [];
-    double? targetBitrate;
-    double? availableOutgoingBitrate;
+    List<double?> targetBitrate = [];
+    List<double?> availableOutgoingBitrate = [];
+    String? encoderImplementation;
 
     for (var stats in statsList) {
       framesPerSecond.add(stats.framesPerSecond);
@@ -57,8 +61,9 @@ class RtcVideoOutboundStatsLists {
       packetSendDelayAvgMs.add(stats.packetSendDelayAvgMs);
       encodeTimeAvgMs.add(stats.encodeTimeAvgMs);
       qpSumAvg.add(stats.qpSumAvg);
-      targetBitrate = stats.targetBitrate;
-      availableOutgoingBitrate = stats.availableOutgoingBitrate;
+      targetBitrate.add(stats.targetBitrate);
+      availableOutgoingBitrate.add(stats.availableOutgoingBitrate);
+      encoderImplementation = stats.encoderImplementation;
     }
 
     return RtcVideoOutboundStatsLists(
@@ -73,6 +78,7 @@ class RtcVideoOutboundStatsLists {
       qpSumAvg: qpSumAvg,
       targetBitrate: targetBitrate,
       availableOutgoingBitrate: availableOutgoingBitrate,
+      encoderImplementation: encoderImplementation,
     );
   }
 }
@@ -99,7 +105,8 @@ void trackOutboundStats(
     'packetSendDelayAvgMs': packetSendDelayAvgMs.join(','),
     'encodeTimeAvgMs': encodeTimeAvgMs.join(','),
     'qpSumAvg': statsLists.qpSumAvg.join(','),
-    'targetBitrate': statsLists.targetBitrate ?? 0.0,
-    'availableOutgoingBitrate': statsLists.availableOutgoingBitrate ?? 0.0,
+    'targetBitrate': statsLists.targetBitrate.join(','),
+    'availableOutgoingBitrate': statsLists.availableOutgoingBitrate.join(','),
+    'encoderImplementation': statsLists.encoderImplementation ?? '',
   });
 }
