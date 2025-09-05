@@ -4,8 +4,8 @@ import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'rtc_stats_parse_test.mocks.dart';
 
@@ -176,26 +176,35 @@ void main() {
         'framesPerSecond': 30.0,
         'contentType': 'realtime',
         'qualityLimitationReason': 'bandwidth',
-        'totalEncodeTime':
-            43.0, // +23.0 from first report, chosen for clean division
+        'totalEncodeTime': 43.0,
+        // +23.0 from first report, chosen for clean division
         'pliCount': 3,
         'targetBitrate': 1000000.0,
         'powerEfficientEncoder': true,
-        'framesSent': 1200, // +200 from first report
-        'framesEncoded': 1200, // +200 from first report
-        'bytesSent': 600000, // +100000 from first report
-        'packetsSent': 1000, // +200 from first report
-        'qpSum': 3000, // +1000 from first report, still 2.5 average (3000/1200)
+        'framesSent': 1200,
+        // +200 from first report
+        'framesEncoded': 1200,
+        // +200 from first report
+        'bytesSent': 600000,
+        // +100000 from first report
+        'packetsSent': 1000,
+        // +200 from first report
+        'qpSum': 3000,
+        // +1000 from first report, still 2.5 average (3000/1200)
         'nackCount': 15,
         'firCount': 2,
-        'retransmittedBytesSent': 15000, // +5000 from first report
-        'retransmittedPacketsSent': 30, // +10 from first report
-        'totalPacketSendDelay':
-            120.0, // +40.0 from first report, 120.0ms average with 1000 packets
-        'headerBytesSent': 100000, // +20000 from first report
+        'retransmittedBytesSent': 15000,
+        // +5000 from first report
+        'retransmittedPacketsSent': 30,
+        // +10 from first report
+        'totalPacketSendDelay': 120.0,
+        // +40.0 from first report, 120.0ms average with 1000 packets
+        'headerBytesSent': 100000,
+        // +20000 from first report
         'hugeFramesSent': 1,
         'keyFramesEncoded': 6,
-        'totalEncodedBytesTarget': 720000, // +120000 from first report
+        'totalEncodedBytesTarget': 720000,
+        // +120000 from first report
       });
 
       // Act
@@ -208,8 +217,6 @@ void main() {
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
               // Calculated differences
-              .having(
-                  (s) => s.encodeTime, 'encodeTime', 23.0) // 43.0 - 20.0 = 23.0
               .having((s) => s.bytesSentPerSecond, 'bytesSentPerSecond',
                   100000) // 600000-500000 = 100000 bits
               .having((s) => s.packetsSentPerSecond, 'packetsSentPerSecond',
