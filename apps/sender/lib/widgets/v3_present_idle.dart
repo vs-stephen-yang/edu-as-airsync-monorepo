@@ -45,6 +45,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   bool isSessionFullDialogOnScreen = false;
   bool isScreenFullDialogOnScreen = false;
   bool isModeratorExitedDialogOnScreen = false;
+  bool isJoinedBeforeModeratorDialogOnScreen = false;
   bool isReceiverRemoteScreenBusyDialogOnScreen = false;
 
   late AppLinks _appLinks;
@@ -127,6 +128,11 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
           !isModeratorExitedDialogOnScreen) {
         channelProvider.isModeratorExitedRejected = false;
         _showModeratorExitedDialog();
+      }
+      if (channelProvider.isJoinedBeforeModeratorOnRejected &&
+          !isJoinedBeforeModeratorDialogOnScreen) {
+        channelProvider.isJoinedBeforeModeratorOnRejected = false;
+        _showJoinedBeforeModeratorDialog();
       }
       if (channelProvider.isReceiverRemoteScreenBusyRejected) {
         channelProvider.isReceiverRemoteScreenBusyRejected = false;
@@ -397,6 +403,26 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isModeratorExitedDialogOnScreen = false;
+      setState(() {});
+    });
+  }
+
+  _showJoinedBeforeModeratorDialog() async {
+    isJoinedBeforeModeratorDialogOnScreen = true;
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return V3MessageDialog(
+          stringTitle: S.of(context).v3_present_joined_before_moderator_on,
+          stringContent:
+              S.of(context).v3_present_joined_before_moderator_on_description,
+          stringAction:
+              S.of(context).v3_present_joined_before_moderator_on_action,
+        );
+      },
+    ).then((_) {
+      isJoinedBeforeModeratorDialogOnScreen = false;
       setState(() {});
     });
   }
