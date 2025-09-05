@@ -33,8 +33,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 // convert ChannelConnectorError to ChannelConnectError
 ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
@@ -123,6 +123,7 @@ class ChannelProvider extends ChangeNotifier {
 
   bool isJoinDisplayRejected = false;
   bool isModeratorExitedRejected = false;
+  bool isJoinedBeforeModeratorOnRejected = false;
   bool isPresentRejected = false;
   bool isReceiverRemoteScreenBusyRejected = false;
 
@@ -351,6 +352,9 @@ class ChannelProvider extends ChangeNotifier {
             } else if (reason?.code ==
                 JoinDisplayRejectedReasonCode.moderatorExited.code) {
               isModeratorExitedRejected = true;
+            } else if (reason?.code ==
+                JoinDisplayRejectedReasonCode.joinedBeforeModeratorOn.code) {
+              isJoinedBeforeModeratorOnRejected = true;
             } else if (reason?.code ==
                 JoinDisplayRejectedReasonCode.receiverRemoteScreenBusy.code) {
               isReceiverRemoteScreenBusyRejected = true;
