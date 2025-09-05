@@ -151,11 +151,6 @@ class RTCConnector {
   ChannelMessage? _changeQualityMessage;
   String? _deviceType;
 
-  static const int _resolutionHeightUltraHd = 2160;
-  static const int _resolutionHeightQuadHd = 1600;
-  static const int _resolutionHeightFullHd = 1200;
-  static const int _resolutionHeightQuarterHd = 540;
-
   final _resolutionUltraHd = (width: 3840, height: 2160);
   final _resolutionQuadHd = (width: 2560, height: 1600);
   final _resolutionFullHd = (width: 1920, height: 1200);
