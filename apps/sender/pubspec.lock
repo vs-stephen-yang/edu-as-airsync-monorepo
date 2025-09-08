@@ -562,8 +562,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "release-3.6.2"
-      resolved-ref: fe63cf3c700b11e9a401a9faf3f78b0da5d38b57
+      ref: "release-3.8.0"
+      resolved-ref: "40f08373218a84fd96153d5ad80fee78d142e6f6"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server"
     source: git
     version: "0.0.1"
@@ -669,8 +669,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-56"
-      resolved-ref: "8202356afc5589af3c9ce8cfa4db3450c5652c1c"
+      ref: "release-0.9.36-58"
+      resolved-ref: "0915b5ddce988b54812dbec6e567c92c1a9021d0"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -854,8 +854,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.50"
-      resolved-ref: "8393ecf399e2dfd300f12efc3697622e6915a495"
+      ref: "release-0.0.52"
+      resolved-ref: "28e4e4ccddfd01b201fda4840d2edd5bafc4e4ba"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
