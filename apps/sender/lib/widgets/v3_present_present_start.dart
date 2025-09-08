@@ -78,7 +78,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
 
-    windowManager.addListener(this); // 監聽視窗事件
+    if (!Platform.isMacOS) {
+      windowManager.addListener(this); // 監聽視窗事件
+    }
   }
 
   void _initializeBroadcastUploadExtensionObserver() {
@@ -127,7 +129,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       WidgetsBinding.instance.removeObserver(this);
     }
-    windowManager.removeListener(this);
+    if (!Platform.isMacOS) {
+      windowManager.removeListener(this);
+    }
     super.dispose();
   }
 
@@ -393,9 +397,13 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           }
         }
 
-        final Rect windowBounds = await windowManager.getBounds();
-        final Offset windowPosition =
-            Offset(windowBounds.left, windowBounds.top);
+        Offset windowPosition = Offset.zero;
+        if (Platform.isMacOS) {
+          windowPosition = await WindowUtility.getWindowPosition();
+        } else {
+          final Rect windowBounds = await windowManager.getBounds();
+          windowPosition = Offset(windowBounds.left, windowBounds.top);
+        }
 
         Offset widgetPositionInScreen = widgetPositionInApp + windowPosition;
         widgetRect = Rect.fromLTWH(
