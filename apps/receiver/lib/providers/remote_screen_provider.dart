@@ -85,12 +85,12 @@ class RemoteScreenProvider {
     return _server.startRemoteScreenPublisher();
   }
 
-  void stopPublish() {
+  Future<void> stopPublish() async {
     switch (remoteScreenType) {
       case RemoteScreenType.rtc:
-        return _server.stopRemoteScreenPublisher();
+        return await _server.stopRemoteScreenPublisher();
       case RemoteScreenType.multicast:
-        return _multicastPresenter.stop();
+        return await _multicastPresenter.stop();
     }
   }
 

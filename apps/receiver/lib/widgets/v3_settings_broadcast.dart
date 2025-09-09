@@ -2,14 +2,18 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/appSettings.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsBroadcast extends StatelessWidget {
@@ -17,32 +21,160 @@ class V3SettingsBroadcast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
+    return Consumer2<SettingsProvider, AppSettings>(
+        builder: (_, settingsProvider, appSettings, __) {
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isBroadcastLock,
         showEnergySaving: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AutoSizeText(
-              S.of(context).v3_settings_broadcast_cast_to,
-              style: TextStyle(
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                fontSize: 12,
+            Consumer<ChannelProvider>(
+              builder: (context, channelProvider, _) {
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: V3Focus(
+                            label: S
+                                .of(context)
+                                .v3_lbl_broadcast_multicast_checkbox,
+                            identifier: "v3_qa_settings_device_authorize_mode",
+                            child: V3CustomCheckbox(
+                              value: appSettings.useMulticast,
+                              isDisable: channelProvider.castModeLocked,
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  EasyThrottle.throttle('changeCastMode',
+                                      const Duration(milliseconds: 1500),
+                                      () async {
+                                    await channelProvider
+                                        .setAndRestartRemoteScreen(
+                                      appSettings: context.read<AppSettings>(),
+                                      multicast: value,
+                                    );
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        const Padding(padding: EdgeInsets.only(left: 4)),
+                        Expanded(
+                          child: InkWell(
+                            onTap: channelProvider.castModeLocked
+                                ? null
+                                : () {
+                                    EasyThrottle.throttle(
+                                      'changeCastMode',
+                                      const Duration(milliseconds: 1500),
+                                      () async {
+                                        final appSettings =
+                                            context.read<AppSettings>();
+                                        final useMulticast =
+                                            appSettings.useMulticast;
+                                        await channelProvider
+                                            .setAndRestartRemoteScreen(
+                                          appSettings: appSettings,
+                                          multicast: !useMulticast,
+                                        );
+                                      },
+                                    );
+                                  },
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              constraints: const BoxConstraints(minHeight: 48),
+                              child: AutoSizeText(
+                                S.of(context).v3_broadcast_multicast_checkbox,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: context
+                                      .tokens.color.vsdslColorOnSurfaceInverse,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 25,
+                        top: context.tokens.spacing.vsdslSpacingSm.top,
+                        bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
+                      ),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            excludeFromSemantics: true,
+                            channelProvider.castModeLocked
+                                ? 'assets/images/ic_multicast_alert.svg'
+                                : 'assets/images/ic_settings_info.svg',
+                            width: 22,
+                            height: 22,
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingXs.right),
+                          Expanded(
+                            child: V3AutoHyphenatingText(
+                              channelProvider.castModeLocked
+                                  ? S.of(context).v3_broadcast_multicast_warn
+                                  : S.of(context).v3_broadcast_multicast_desc,
+                              style: TextStyle(
+                                fontSize: 9,
+                                color: channelProvider.castModeLocked
+                                    ? context.tokens.color.vsdslColorWarning
+                                    : context.tokens.color
+                                        .vsdslColorOnSurfaceInverse,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            Gap(context.tokens.spacing.vsdslSpacingXl.top),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: context.tokens.radii.vsdslRadiusLg,
+                border: Border.all(
+                  color: context.tokens.color.vsdslColorOutlineVariant,
+                  width: 1.0,
+                ),
+                color: context.tokens.color.vsdslColorSurface900,
+              ),
+              child: Column(
+                children: [
+                  V3SettingMenuSubItemFocus(
+                    excludeSemantics: false,
+                    child: CastToDevices(
+                      settingsProvider: settingsProvider,
+                      focusNode: settingsProvider.subFocusNode ?? FocusNode(),
+                    ),
+                  ),
+                  Container(
+                    height: 1,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: context.tokens.spacing.vsdslSpacingXs.top,
+                    ),
+                    color: context.tokens.color.vsdslColorOutlineVariant,
+                  ),
+                  V3SettingMenuSubItemFocus(
+                    excludeSemantics: false,
+                    child: CastToBoards(settingsProvider: settingsProvider),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-            V3SettingMenuSubItemFocus(
-              excludeSemantics: false,
-              child: CastToDevices(
-                settingsProvider: settingsProvider,
-                focusNode: settingsProvider.subFocusNode ?? FocusNode(),
-              ),
-            ),
-            SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-            V3SettingMenuSubItemFocus(
-                excludeSemantics: false,
-                child: CastToBoards(settingsProvider: settingsProvider)),
+            Gap(context.tokens.spacing.vsdslSpacingXl.top),
           ],
         ),
       );
@@ -65,13 +197,9 @@ class CastToDevices extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 325,
-      constraints: const BoxConstraints(
-        minHeight: 88,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: context.tokens.radii.vsdslRadiusLg,
-        color: context.tokens.color.vsdslColorSurface900,
-      ),
+      constraints: const BoxConstraints(minHeight: 88),
+      decoration:
+          BoxDecoration(borderRadius: context.tokens.radii.vsdslRadiusLg),
       padding: context.tokens.spacing.vsdslSpacingXl,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,14 +211,14 @@ class CastToDevices extends StatelessWidget {
               'assets/images/ic_cast_to_devices.svg',
             ),
           ),
-          SizedBox(
-            width: context.tokens.spacing.vsdslSpacingXl.left,
+          Gap(
+            context.tokens.spacing.vsdslSpacingXl.left,
           ),
           Expanded(
             child: Column(
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 27),
+                  constraints: const BoxConstraints(minHeight: 27),
                   child: Row(
                     children: [
                       Expanded(
@@ -150,7 +278,7 @@ class CastToDevices extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
+                Gap(context.tokens.spacing.vsdslSpacingSm.top),
                 AutoSizeText(
                   S.of(context).v3_shortcuts_cast_device_desc,
                   minFontSize: 8,
@@ -159,6 +287,37 @@ class CastToDevices extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                     color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
+                ),
+                Gap(context.tokens.spacing.vsdslSpacingMd.top),
+                Selector<ChannelProvider, bool>(
+                  selector: (_, p) => p.remoteScreenInProgress,
+                  builder: (_, inProgress, __) {
+                    if (inProgress) {
+                      return Row(
+                        children: [
+                          SvgPicture.asset(
+                            excludeFromSemantics: true,
+                            'assets/images/ic_multicast_broadcast.svg',
+                            width: 22,
+                            height: 22,
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingXs.right),
+                          Expanded(
+                            child: V3AutoHyphenatingText(
+                              S.of(context).v3_broadcast_cast_device_on,
+                              style: TextStyle(
+                                fontSize: 9,
+                                color: context.tokens.color.vsdslColorSuccess,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
                 ),
               ],
             ),
@@ -178,13 +337,9 @@ class CastToBoards extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 325,
-      constraints: const BoxConstraints(
-        minHeight: 88,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: context.tokens.radii.vsdslRadiusLg,
-        color: context.tokens.color.vsdslColorSurface900,
-      ),
+      constraints: const BoxConstraints(minHeight: 88),
+      decoration:
+          BoxDecoration(borderRadius: context.tokens.radii.vsdslRadiusLg),
       padding: context.tokens.spacing.vsdslSpacingXl,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,9 +353,7 @@ class CastToBoards extends StatelessWidget {
               height: 43,
             ),
           ),
-          SizedBox(
-            width: context.tokens.spacing.vsdslSpacingXl.left,
-          ),
+          Gap(context.tokens.spacing.vsdslSpacingXl.left),
           Expanded(
             child: Column(
               children: [
@@ -245,7 +398,7 @@ class CastToBoards extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
+                Gap(context.tokens.spacing.vsdslSpacingSm.top),
                 AutoSizeText(
                   S.of(context).v3_settings_broadcast_cast_boards_desc,
                   minFontSize: 8,
@@ -254,6 +407,37 @@ class CastToBoards extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                     color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
+                ),
+                Gap(context.tokens.spacing.vsdslSpacingMd.top),
+                Selector<ChannelProvider, bool>(
+                  selector: (_, p) => p.castToBoardInProgress,
+                  builder: (_, inProgress, __) {
+                    if (inProgress) {
+                      return Row(
+                        children: [
+                          SvgPicture.asset(
+                            excludeFromSemantics: true,
+                            'assets/images/ic_multicast_broadcast.svg',
+                            width: 22,
+                            height: 22,
+                          ),
+                          Gap(context.tokens.spacing.vsdslSpacingXs.right),
+                          Expanded(
+                            child: V3AutoHyphenatingText(
+                              S.of(context).v3_broadcast_cast_board_on,
+                              style: TextStyle(
+                                fontSize: 9,
+                                color: context.tokens.color.vsdslColorSuccess,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
                 ),
               ],
             ),
