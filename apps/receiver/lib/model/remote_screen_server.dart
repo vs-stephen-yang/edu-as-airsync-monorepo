@@ -298,7 +298,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     return _ionSfuClient != null;
   }
 
-  void stopRemoteScreenPublisher() async {
+  Future<void> stopRemoteScreenPublisher() async {
     await _lock.synchronized(() async {
       if (FlutterBackground.isBackgroundExecutionEnabled) {
         await FlutterBackground.disableBackgroundExecution();

@@ -112,7 +112,7 @@ class MulticastPresenter {
     return true;
   }
 
-  void stop() async {
+  Future<void> stop() async {
     if (!started) {
       return;
     }

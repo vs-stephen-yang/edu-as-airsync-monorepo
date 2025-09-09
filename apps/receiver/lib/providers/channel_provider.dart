@@ -555,7 +555,7 @@ class ChannelProvider extends ChangeNotifier {
     bool result = await _remoteScreenProvider.startPublish(iceServers);
     if (!result) {
       removeSender(fromSender: true, fromGroup: true);
-      return stopRemoteScreenPublisher();
+      return await stopRemoteScreenPublisher();
     }
 
     ConnectionTimer.getInstance().startShareSenderTimer(() {
@@ -568,8 +568,8 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void stopRemoteScreenPublisher() {
-    _remoteScreenProvider.stopPublish();
+  Future<void> stopRemoteScreenPublisher() async {
+    await _remoteScreenProvider.stopPublish();
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
@@ -955,7 +955,7 @@ class ChannelProvider extends ChangeNotifier {
     bool? fromSender,
     RemoteScreenConnector? remoteScreenConnector,
     bool kick = true,
-  }) {
+  }) async {
     if (remoteScreenConnector != null) {
       if (fromSender != null && fromSender) {
         int index = _remoteScreenConnectors.indexOf(remoteScreenConnector);
@@ -1007,7 +1007,7 @@ class ChannelProvider extends ChangeNotifier {
       }
 
       if (fromGroup != null && fromGroup) {
-        providerContainer?.read(discoveryModelProvider.notifier).stop();
+        await providerContainer?.read(discoveryModelProvider.notifier).stop();
         providerContainer
             ?.read(groupProvider.notifier)
             .setBroadcastToGroup(false);
@@ -1016,7 +1016,7 @@ class ChannelProvider extends ChangeNotifier {
       }
 
       if (!_isSenderMode && !_isGroupMode && !_isShareMode) {
-        stopRemoteScreenPublisher();
+        await stopRemoteScreenPublisher();
         ConnectionTimer.getInstance().stopShareSenderTimer();
       }
     }
@@ -1198,7 +1198,6 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
   }
-
 // endregion
 
   void sortRemoteScreenConnectors(bool asc) {
@@ -1212,5 +1211,47 @@ class ChannelProvider extends ChangeNotifier {
 
   void restoreRemoteScreenConnectors() {
     _remoteScreenConnectors.sortByCreatedAtAsc();
+  }
+
+  bool get remoteScreenInProgress => _remoteScreenConnectors.isNotEmpty;
+
+  bool get castToBoardInProgress {
+    if (_displayGroupHost != null) {
+      return (_displayGroupHost!.members as Map<String, DisplayGroupMember>)
+          .isNotEmpty;
+    } else {
+      return false;
+    }
+  }
+
+  bool get castModeLocked {
+    return remoteScreenInProgress || castToBoardInProgress;
+  }
+
+  Future<void> setAndRestartRemoteScreen(
+      {required AppSettings appSettings, required bool multicast}) async {
+    final anyStart = _isGroupMode || _isShareMode || _isSenderMode;
+    final tempGroupMode = _isGroupMode;
+    final tempShareMode = _isShareMode;
+    final tempSenderMode = _isSenderMode;
+
+    if (anyStart) {
+      await removeSender(
+        fromGroup: true,
+        fromSender: true,
+        fromShare: true,
+      );
+    }
+    await appSettings.setUseMulticast(multicast);
+    if (anyStart) {
+      await startRemoteScreen(
+        fromGroup: tempGroupMode,
+        fromShare: tempShareMode,
+        fromSender: tempSenderMode,
+      );
+      providerContainer
+          ?.read(groupProvider.notifier)
+          .setBroadcastToGroup(tempGroupMode);
+    }
   }
 }
