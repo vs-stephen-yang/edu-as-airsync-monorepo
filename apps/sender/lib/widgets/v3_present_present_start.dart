@@ -78,7 +78,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
 
-    if (!Platform.isMacOS) {
+    if (!kIsWeb && !Platform.isMacOS) {
       windowManager.addListener(this); // 監聽視窗事件
     }
   }
@@ -129,7 +129,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       WidgetsBinding.instance.removeObserver(this);
     }
-    if (!Platform.isMacOS) {
+    if (!kIsWeb && !Platform.isMacOS) {
       windowManager.removeListener(this);
     }
     super.dispose();
