@@ -30,6 +30,7 @@ class PrefLanguageProvider extends ChangeNotifier {
     'Swedish': const Locale('sv', ''),
     '繁體中文': const Locale.fromSubtags(
         languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
+    '日本語': const Locale('ja', ''),
   };
 
   setLanguage(String language) {
