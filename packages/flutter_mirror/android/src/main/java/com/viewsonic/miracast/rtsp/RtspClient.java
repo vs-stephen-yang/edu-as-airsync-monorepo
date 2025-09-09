@@ -1,6 +1,7 @@
 package com.viewsonic.miracast.rtsp;
 
 import android.text.TextUtils;
+import com.viewsonic.miracast.rtp.RtpMpegTsPlayer;
 
 import android.util.Log;
 
@@ -69,6 +70,7 @@ public class RtspClient
 
   private String sourceProductId_ = "";
   private boolean isWindowsSource_ = false;
+  private RtpMpegTsPlayer rtpPlayer_;
 
   public RtspClient(String method, String address) {
     String url = address.substring(address.indexOf("//") + 2);
@@ -360,7 +362,14 @@ public class RtspClient
 
   private void cleanResource() {
     curState_ = STATE_STOPPED;
-
+    if (rtpPlayer_ != null) {
+      try {
+        rtpPlayer_.stop();
+      } catch (Exception e) {
+      }
+      rtpPlayer_.release();
+      rtpPlayer_ = null;
+    }
   }
 
   private void sendResponseM1() {
@@ -592,9 +601,17 @@ public class RtspClient
   }
 
   private void startRTPReceiver() {
-    assert rtspHandler_ != null;
-
-    rtpPort_ = rtspHandler_.startRTPReceiver();
+    if (rtpPlayer_ == null) {
+      rtpPlayer_ = new RtpMpegTsPlayer();
+    }
+    boolean started = rtpPlayer_.start();
+    if (!started) {
+      Log.e(TAG, "Failed to start RtpMpegTsPlayer");
+      rtpPort_ = 0;
+      return;
+    }
+    rtpPort_ = rtpPlayer_.getPort();
+    Log.d(TAG, "RtpMpegTsPlayer started on port: " + rtpPort_);
   }
 
   private void startUibc() {
