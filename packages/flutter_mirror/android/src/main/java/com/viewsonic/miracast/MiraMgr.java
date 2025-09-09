@@ -76,9 +76,9 @@ public class MiraMgr
     for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
       entry.getValue().stop();
       mirror_sessions_.remove(entry.getKey());
-      if (listener_ != null) {
-        listener_.onSessionEnd(entry.getKey());
-      }
+//      if (listener_ != null) {
+//        listener_.onSessionEnd(entry.getKey());
+//      }
     }
   }
 
@@ -121,11 +121,11 @@ public class MiraMgr
   public void onPeerDisconnected(String peerMacAddress) {
     Log.d(TAG, "onPeerDisconnected:" + peerMacAddress);
     String removeSessionId = removeSessionByPeerAddress(peerMacAddress);
-    if (removeSessionId != null) {
-      if (listener_ != null) {
-        listener_.onSessionEnd(removeSessionId);
-      }
-    }
+//    if (removeSessionId != null) {
+//      if (listener_ != null) {
+//        listener_.onSessionEnd(removeSessionId);
+//      }
+//    }
   }
 
   @Override
@@ -137,20 +137,9 @@ public class MiraMgr
 
   @Override
   public void onRtspConnected(String mirrorId, String deviceName) {
-    if (listener_ != null) {
-      listener_.onSessionBegin(mirrorId, deviceName);
-    }
-  }
-
-  @Override
-  public void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size) {
-    if (listener_ != null) {
-      try {
-        listener_.onMirrorData(mirrorId, seqNum, lastSeqNum, data, size);
-      } catch (Exception e) {
-        Log.e(TAG, "Failed to onMirrorData() ", e);
-      }
-    }
+//    if (listener_ != null) {
+//      listener_.onSessionBegin(mirrorId, deviceName);
+//    }
   }
 
   @Override
