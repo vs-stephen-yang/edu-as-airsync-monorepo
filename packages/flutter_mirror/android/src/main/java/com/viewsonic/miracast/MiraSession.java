@@ -182,32 +182,6 @@ public class MiraSession
     }
   }
 
-  private OnReceiveRTPListener initialOnReceiveRTPListener() {
-    return new OnReceiveRTPListener() {
-      @Override
-      public void onRtpData(long seqNum, byte[] data, int size) {
-        if (mirrorListener_ != null) {
-          mirrorListener_.onMirrorData(id_, seqNum, lastRTPSeqNum_, data, size);
-          lastRTPSeqNum_ = seqNum;
-        }
-      }
-    };
-  }
-
-  @Override
-  public int startRTPReceiver() {
-    try {
-      rtpServer_ = new RTPServer(eventBase_, initialOnReceiveRTPListener());
-      rtpServer_.start();
-      int port = rtpServer_.getRtpPort();
-      Log.d(TAG, "Start to connect the RTP Server. RTP Port is: " + port);
-      return port;
-    } catch (Exception e) {
-      // TODO
-      return 0;
-    }
-  }
-
   @Override
   public void startUibc(String host, int port) {
     try {

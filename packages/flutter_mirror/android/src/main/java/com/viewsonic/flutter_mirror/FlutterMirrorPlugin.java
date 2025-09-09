@@ -86,6 +86,7 @@ public class FlutterMirrorPlugin implements
   private Handler handler_ = new Handler(Looper.getMainLooper());
 
   private MirrorReceiver mirrorReceiver_;
+  private MiracastReceiver miracastReceiver_;
   private BluetoothTouchBackController bluetoothTouchBackController_;
 
   @Override
@@ -159,8 +160,8 @@ public class FlutterMirrorPlugin implements
       boolean touch = call.argument("touchDown");
       double x = call.argument("x");
       double y = call.argument("y");
-      if (mirrorReceiver_ != null) {
-        mirrorReceiver_.onMirrorTouch(
+      if (miracastReceiver_ != null) {
+        miracastReceiver_.onMirrorTouch(
             mirrorId,
             touchId,
             touch,
@@ -278,6 +279,8 @@ public class FlutterMirrorPlugin implements
     }
 
     mirrorReceiver_ = new MirrorReceiver(this, this, additionalCodecParams, context_);
+
+    miracastReceiver_ = new MiracastReceiver();
   }
 
   private void enableDump(String dumpPath) {
@@ -332,12 +335,12 @@ public class FlutterMirrorPlugin implements
   }
 
   private void stopMiracast() {
-    if (mirrorReceiver_ == null) {
+    if (miracastReceiver_ == null) {
       return;
     }
 
     Log.d(TAG, "stopMiracast()");
-    mirrorReceiver_.stopMiracast();
+    miracastReceiver_.stop();
   }
 
   private void updateCredentials(GooglecastCredentials credentials) {
@@ -352,14 +355,11 @@ public class FlutterMirrorPlugin implements
     assert context_ != null;
     assert activity_ != null;
 
-    if (mirrorReceiver_ == null) {
+    if (miracastReceiver_ == null) {
       return;
     }
 
-    mirrorReceiver_.startMiracast(
-        name,
-        context_,
-        activity_);
+    miracastReceiver_.start(name, context_, activity_);
   }
 
   private void stopMirror(String mirrorId) {

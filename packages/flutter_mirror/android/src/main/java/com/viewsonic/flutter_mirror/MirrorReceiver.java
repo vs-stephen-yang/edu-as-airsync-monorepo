@@ -12,7 +12,6 @@ import java.util.Map;
 
 @Keep
 public class MirrorReceiver implements
-    MiracastReceiverListener,
     MirrorListener {
 
   private static final String TAG = "MirrorReceiver";
@@ -23,9 +22,6 @@ public class MirrorReceiver implements
   // dns-sd services
   NsdManager nsdManager_;
   Map<String, NsdManager.RegistrationListener> services_ = new HashMap<>();
-
-  // Miracast
-  private MiracastReceiver miracastReceiver_;
 
   public MirrorReceiver(
       MirrorListener mirrorListener,
@@ -43,10 +39,6 @@ public class MirrorReceiver implements
         additionalCodecParams);
 
     assert instance_ != 0;
-
-    miracastReceiver_ = new MiracastReceiver(
-        this,
-        instance_);
 
     assert (instance_ != 0);
 
@@ -115,30 +107,7 @@ public class MirrorReceiver implements
         instance_);
   }
 
-  // start miracast
-  public void startMiracast(
-      String name,
-      Context context,
-      Activity activity) {
-    assert context != null;
-    assert activity != null;
-
-    miracastReceiver_.start(
-        name,
-        context,
-        activity);
-  }
-
-  // stop miracast
-  public void stopMiracast() {
-    if (miracastReceiver_ != null) {
-      miracastReceiver_.stop();
-    }
-  }
-
   public void stop() {
-    miracastReceiver_.stop();
-
     stopGooglecast();
     stopAirplay();
   }
@@ -175,20 +144,6 @@ public class MirrorReceiver implements
         instance_,
         mirrorId,
         enable);
-  }
-
-  public void onMirrorTouch(
-      String mirrorId,
-      int touchId,
-      boolean touch,
-      double x,
-      double y) {
-    miracastReceiver_.onMirrorTouch(
-        mirrorId,
-        touchId,
-        touch,
-        x,
-        y);
   }
 
   private NsdServiceInfo toServiceInfo(ServiceInfo info) {
@@ -330,17 +285,12 @@ public class MirrorReceiver implements
     mirrorListener_.onCredentialsRequest(year, month, day);
   }
 
-  @Override
-  public void onMiracastError(String erroMessage) {
-    mirrorListener_.onMirrorError("miracast", erroMessage);
-  }
-
-  @Override
-  public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
-    mirrorListener_.onMirrorCapabilities(
-        mirrorId,
-      isUibcSupported);
-  }
+//  @Override
+//  public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
+//    mirrorListener_.onMirrorCapabilities(
+//        mirrorId,
+//        isUibcSupported);
+//  }
 
   @Override
   public void onMirrorError(String mirrorType, String erroMessage) {

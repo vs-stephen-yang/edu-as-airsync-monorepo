@@ -5,8 +5,6 @@ public interface MiraSessionListener {
 
   void onSourceCapabilities(String mirrorId, boolean isUibcSupported);
 
-  void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size);
-
   void onAudioFormatUpdate(String mirrorId, String codecName, int sampleRate, int channelCount);
 
   void onMiracastSessionError(String mirrorId, String errorMessage);
