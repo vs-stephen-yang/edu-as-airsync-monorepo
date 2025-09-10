@@ -886,6 +886,14 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Turn on to receive high-definition projection from Sender.",
         ),
+    "v3_settings_device_high_image_quality_off_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Receive 2K high-definition projection from Sender",
+        ),
+    "v3_settings_device_high_image_quality_on_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Receive 4K high-definition projection from Sender",
+        ),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(

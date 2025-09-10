@@ -380,5 +380,7 @@
   "v3_lbl_cast_device_sort_asc": "sort asc",
   "v3_lbl_cast_device_sort_desc": "sort desc",
   "v3_settings_device_not_supported": "Device version is not supported",
-  "v3_authorize_prompt_title_launcher": "Participants would like to share their screen"
+  "v3_authorize_prompt_title_launcher": "Participants would like to share their screen",
+  "v3_settings_device_high_image_quality_on_desc": "Receive 4K high-definition projection from Sender",
+  "v3_settings_device_high_image_quality_off_desc": "Receive 2K high-definition projection from Sender"
 }
