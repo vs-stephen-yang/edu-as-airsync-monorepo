@@ -74,9 +74,20 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               padding: EdgeInsets.only(
                 top: context.tokens.spacing.vsdslSpacingSm.top,
               ),
-              child: _buildTextDesc(
-                context,
-                S.of(context).v3_settings_device_high_image_quality_desc,
+              child: Selector<ChannelProvider, bool>(
+                selector: (_, p) => p.highImageQuality,
+                builder: (_, highQuality, __) {
+                  return _buildTextDesc(
+                    context,
+                    highQuality
+                        ? S
+                            .of(context)
+                            .v3_settings_device_high_image_quality_on_desc
+                        : S
+                            .of(context)
+                            .v3_settings_device_high_image_quality_off_desc,
+                  );
+                },
               ),
             ),
             _buildDivider(context),
