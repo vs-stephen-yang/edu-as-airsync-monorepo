@@ -35,10 +35,20 @@ enum PresentationState {
   resumeStreaming,
 }
 
+/// Max output resolutions
+///   Aspect ratio policy:
+///   - 16:9  → enforced by receiver hardware (panel resolution, decoder limits).
+///   - 16:10 → matches many modern laptops; avoids scaling/compression for better image quality.
 enum MaxVideoResolution {
-  uhd,
-  qhd,
-  fhd,
+  uhd2160p_16x9(3840, 2160),
+  wqxga1600p_16x10(2560, 1600),
+  wuxga1200p_16x10(1920, 1200),
+  fhd1080p_16x9(1920, 1080),
+  r960x600_16x10(960, 600);
+
+  const MaxVideoResolution(this.width, this.height);
+  final int width;
+  final int height;
 }
 
 class RTCConnector {
@@ -150,11 +160,6 @@ class RTCConnector {
   String? _remoteCandidateType;
   ChannelMessage? _changeQualityMessage;
   String? _deviceType;
-
-  final _resolutionUltraHd = (width: 3840, height: 2160);
-  final _resolutionQuadHd = (width: 2560, height: 1600);
-  final _resolutionFullHd = (width: 1920, height: 1200);
-  final _resolutionQuarterHd = (width: 960, height: 600);
 
   final MaxVideoResolution maxVideoResolution;
 
@@ -503,40 +508,27 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
-  int getFullResolutionHeight() {
-    switch (maxVideoResolution) {
-      case MaxVideoResolution.uhd:
-        return _resolutionUltraHd.height;
-      case MaxVideoResolution.qhd:
-        return _resolutionQuadHd.height;
-      case MaxVideoResolution.fhd:
-        return _resolutionFullHd.height;
-    }
-  }
-
-  int getFullResolutionWidth() {
-    switch (maxVideoResolution) {
-      case MaxVideoResolution.uhd:
-        return _resolutionUltraHd.width;
-      case MaxVideoResolution.qhd:
-        return _resolutionQuadHd.width;
-      case MaxVideoResolution.fhd:
-        return _resolutionFullHd.width;
-    }
-  }
+  int getFullResolutionHeight() => maxVideoResolution.height;
+  int getFullResolutionWidth()  => maxVideoResolution.width;
 
   int getFullHeight(bool isFullHeight, int attenderCount) {
     return (isFullHeight || attenderCount <= 2)
         ? getFullResolutionHeight()
-        : _resolutionQuarterHd.height;
+        : MaxVideoResolution.r960x600_16x10.height;
+  }
+
+  int getFullWidth(bool isFullHeight, int attenderCount) {
+    return (isFullHeight || attenderCount <= 2)
+        ? getFullResolutionWidth()
+        : MaxVideoResolution.r960x600_16x10.width;
   }
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
     if (isMtk9950Model(deviceType) && (attenderCount > 1)) {
-      return _resolutionFullHd.height;
+      return MaxVideoResolution.fhd1080p_16x9.height;
     }
     if (_fhdOnlyWebRtcModels.contains(deviceType)) {
-      return _resolutionFullHd.height;
+      return MaxVideoResolution.fhd1080p_16x9.height;
     }
     return 0; // no limitation
   }
@@ -551,16 +543,16 @@ class RTCConnector {
   }
 
   void sendChangeQuality(
-      bool isFullHeight, bool isFullFrameRate, int attendeeCount) {
+      bool isFullResolution, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
 
     message.constraints = PresentQualityConstraints(
         frameRate: getFullFrameRate(isFullFrameRate, _deviceType),
-        width: getFullResolutionWidth(),
-        height: getFullHeight(isFullHeight, attendeeCount),
+        width: getFullWidth(isFullResolution, attendeeCount),
+        height: getFullHeight(isFullResolution, attendeeCount),
         decodeHeightLimit: getDecodeHeightLimit(_deviceType, attendeeCount));
     log.info(
-        '[$clientId] Changing present quality. height:${message.constraints?.height}');
+        '[$clientId] Changing present quality. width:${message.constraints?.width} height:${message.constraints?.height}');
 
     if (_controlDataChannel == null) {
       log.info(
