@@ -124,6 +124,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       enable: widget.enable,
       hintText: S.of(context).v3_main_display_code,
       inputFormatter: [
+        FilteringTextInputFormatter.deny(RegExp(r'\n')),
         TextInputFormatter.withFunction((oldValue, newValue) {
           rawNewValueLength = newValue.text.length;
           return newValue;
@@ -273,6 +274,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       hintText: S.of(context).v3_main_password,
       maxTextLength: otpLength,
       inputFormatter: [
+        FilteringTextInputFormatter.deny(RegExp(r'\n')),
         if (widget.platformDetector.notWindowsNeitherWeb)
           MaskedInputFormatter(
             '0000',
