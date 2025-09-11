@@ -1546,11 +1546,6 @@ class S {
     return Intl.message('Agree', name: 'v3_eula_agree', desc: '', args: []);
   }
 
-  /// `Launch`
-  String get v3_eula_launch {
-    return Intl.message('Launch', name: 'v3_eula_launch', desc: '', args: []);
-  }
-
   /// `Disagree`
   String get v3_eula_disagree {
     return Intl.message(
@@ -2191,16 +2186,6 @@ class S {
     return Intl.message(
       'Agree with EULA',
       name: 'v3_lbl_eula_agree',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Launch`
-  String get v3_lbl_eula_launch {
-    return Intl.message(
-      'Launch',
-      name: 'v3_lbl_eula_launch',
       desc: '',
       args: [],
     );
@@ -3706,31 +3691,21 @@ class S {
     );
   }
 
-  /// `High Image Quality`
+  /// `High image quality`
   String get v3_settings_device_high_image_quality {
     return Intl.message(
-      'High Image Quality',
+      'High image quality',
       name: 'v3_settings_device_high_image_quality',
       desc: '',
       args: [],
     );
   }
 
-  /// `High Image Quality`
+  /// `High image quality`
   String get v3_lbl_settings_device_high_image_quality {
     return Intl.message(
-      'High Image Quality',
+      'High image quality',
       name: 'v3_lbl_settings_device_high_image_quality',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn on to receive high-definition projection from Sender.`
-  String get v3_settings_device_high_image_quality_desc {
-    return Intl.message(
-      'Turn on to receive high-definition projection from Sender.',
-      name: 'v3_settings_device_high_image_quality_desc',
       desc: '',
       args: [],
     );
@@ -3826,31 +3801,106 @@ class S {
     );
   }
 
-  /// `Participants would like to share their screen`
-  String get v3_authorize_prompt_title_launcher {
+  /// `Cast to 10-100 Devices`
+  String get v3_broadcast_multicast_checkbox {
     return Intl.message(
-      'Participants would like to share their screen',
-      name: 'v3_authorize_prompt_title_launcher',
+      'Cast to 10-100 Devices',
+      name: 'v3_broadcast_multicast_checkbox',
       desc: '',
       args: [],
     );
   }
 
-  /// `Receive 4K high-definition projection from Sender`
+  /// `The number of receiving devices cannot be changed when the projection starts.`
+  String get v3_broadcast_multicast_desc {
+    return Intl.message(
+      'The number of receiving devices cannot be changed when the projection starts.',
+      name: 'v3_broadcast_multicast_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interrupt all projection to edit.`
+  String get v3_broadcast_multicast_warn {
+    return Intl.message(
+      'Interrupt all projection to edit.',
+      name: 'v3_broadcast_multicast_warn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Casting in progress`
+  String get v3_broadcast_cast_device_on {
+    return Intl.message(
+      'Casting in progress',
+      name: 'v3_broadcast_cast_device_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Casting in progress`
+  String get v3_broadcast_cast_board_on {
+    return Intl.message(
+      'Casting in progress',
+      name: 'v3_broadcast_cast_board_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast to 10-100 Devices`
+  String get v3_lbl_broadcast_multicast_checkbox {
+    return Intl.message(
+      'Cast to 10-100 Devices',
+      name: 'v3_lbl_broadcast_multicast_checkbox',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum UHD (4K) screen sharing from web sender and 3K+ from Windows and macOS sender depending on the sender screen resolution. Requires a high quality network.`
   String get v3_settings_device_high_image_quality_on_desc {
     return Intl.message(
-      'Receive 4K high-definition projection from Sender',
+      'Maximum UHD (4K) screen sharing from web sender and 3K+ from Windows and macOS sender depending on the sender screen resolution. Requires a high quality network.',
       name: 'v3_settings_device_high_image_quality_on_desc',
       desc: '',
       args: [],
     );
   }
 
-  /// `Receive 2K high-definition projection from Sender`
+  /// `Maximum QHD (2K) screen sharing depending on the sender screen resolution.`
   String get v3_settings_device_high_image_quality_off_desc {
     return Intl.message(
-      'Receive 2K high-definition projection from Sender',
+      'Maximum QHD (2K) screen sharing depending on the sender screen resolution.',
       name: 'v3_settings_device_high_image_quality_off_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch`
+  String get v3_lbl_eula_launch {
+    return Intl.message(
+      'Launch',
+      name: 'v3_lbl_eula_launch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch`
+  String get v3_eula_launch {
+    return Intl.message('Launch', name: 'v3_eula_launch', desc: '', args: []);
+  }
+
+  /// `Participants would like to share their screen`
+  String get v3_authorize_prompt_title_launcher {
+    return Intl.message(
+      'Participants would like to share their screen',
+      name: 'v3_authorize_prompt_title_launcher',
       desc: '',
       args: [],
     );
@@ -3875,6 +3925,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'no'),
       Locale.fromSubtags(languageCode: 'pl'),
       Locale.fromSubtags(languageCode: 'sv'),
+      Locale.fromSubtags(languageCode: 'tr'),
       Locale.fromSubtags(languageCode: 'zh'),
     ];
   }

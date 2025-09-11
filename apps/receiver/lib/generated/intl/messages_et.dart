@@ -371,8 +371,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Sisestage kuvakood",
     ),
+    "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+      "Kuvakood",
+    ),
     "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Sisestage ühekordne parool",
+    ),
+    "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+      "Ühekordne parool",
     ),
     "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Jagage oma ekraane",
@@ -394,6 +400,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Sulge seadme ühendus",
+    ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "Järgmine leht",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "Eelmine lehekülg",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "Sortige tõusvas järjekorras",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "Sordi kahanevas järjekorras",
     ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage("Keela seadme touchback"),
@@ -587,6 +605,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Lülita automaatse OTP täitmise režiim sisse/välja",
         ),
+    "v3_lbl_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Kõrge pildikvaliteet"),
     "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Lülita automaatse käivitamise režiim sisse/välja",
@@ -615,6 +635,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Vali %s",
+    ),
+    "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Teadmistepagas",
     ),
     "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Ava juriidilise poliitika seadete menüü",
@@ -660,6 +683,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "AirPlay touchback",
+    ),
+    "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+      "Järgmine leht",
     ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay lüliti"),
@@ -736,6 +762,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast pole hetkel saadaval. Praegune Wi-Fi kanal ei toeta ekraani edastamist.",
     ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
+          "See allikas ei toeta Miracasti tagasipöördumist",
+        ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Pääsukood",
     ),
@@ -865,6 +895,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Luba ühe puudutusega ühendus, kui valitakse seade seadmete loendist.",
         ),
+    "v3_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Kõrge pildikvaliteet"),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Käivita AirSync automaatselt"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
@@ -875,6 +907,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Salvesta",
+    ),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Seadme versiooni ei toetata",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Seadme seaded",

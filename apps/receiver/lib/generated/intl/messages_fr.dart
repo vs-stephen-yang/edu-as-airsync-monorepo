@@ -330,6 +330,46 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "a refusé votre demande de diffusion, veuillez vérifier les paramètres de diffusion.",
     ),
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Diffuser sur l\'appareil",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
+          "L\'IFP diffuse son écran sur les appareils.",
+        ),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Fermer"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Plein écran",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Couper le son de l\'utilisateur",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Supprimer l\'utilisateur",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Inviter à partager",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Appareils partageant leur écran avec l\'IFP.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Arrêter le partage",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Centre d\'aide",
+    ),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Mode Tactile",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Autoriser le contrôle à distance de l\'appareil.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Annuler Mode Tactile",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Annuler le Mode Tactile"),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Visitez airsync.net ou ouvrez l\'application expéditeur",
     ),
@@ -339,8 +379,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Entrez le code d\'affichage",
     ),
+    "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+      "Code d\'affichage",
+    ),
     "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Entrez le mot de passe à usage unique",
+    ),
+    "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+      "Mot de Passe à Usage Unique",
     ),
     "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Partagez vos écrans",
@@ -363,6 +409,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Fermer la connexion de l\'appareil de diffusion",
     ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "Page suivante",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "Page précédente",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "trier par ordre croissant",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "trier par ordre décroissant",
+    ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
           "Désactiver le retour tactile pour l\'appareil de diffusion",
@@ -379,6 +437,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Fermer la liste des modérateurs",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Fermer le centre d\'aide",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
         MessageLookupByLibrary.simpleMessage(
@@ -444,6 +505,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
       "Ouvrir la liste des modérateurs",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir le centre d\'aide",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Ouvrir le menu de configuration",
@@ -556,6 +620,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Activer/désactiver le mode de remplissage automatique OTP",
         ),
+    "v3_lbl_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Haute qualité d\'image"),
     "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Activer/désactiver le mode de démarrage automatique",
@@ -584,6 +650,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Sélectionner %s",
+    ),
+    "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Base de connaissances",
     ),
     "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Ouvrir le menu des politiques légales",
@@ -629,6 +698,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "Retour tactile Airplay",
+    ),
+    "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+      "Page suivante",
     ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("Basculer AirPlay"),
@@ -706,6 +778,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast non disponible pour le moment. Le canal Wi-Fi actuel ne supporte pas le partage d\'écran.",
     ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Cette source ne prend pas en charge le Mode Tactile de Miracast",
+        ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Code d\'accès",
     ),
@@ -841,6 +917,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
       "Activer la connexion en un clic lors de la sélection d\'un appareil dans la liste des appareils.",
     ),
+    "v3_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Haute qualité d\'image"),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Lancer AirSync au démarrage"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
@@ -851,6 +929,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Enregistrer",
+    ),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "La version de l\'appareil n\'est pas prise en charge",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Paramètres de l\'appareil",

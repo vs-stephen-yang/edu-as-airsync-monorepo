@@ -368,8 +368,13 @@
   "v3_lbl_settings_knowledge_base": "v3_lbl_settings_knowledge_base",
   "v3_settings_device_high_image_quality": "Hög bildkvalitet",
   "v3_lbl_settings_device_high_image_quality": "v3_lbl_settings_device_high_image_quality",
-  "v3_settings_device_high_image_quality_desc": "Aktivera för att ta emot högupplöst projektion från avsändaren.",
   "v3_lbl_streaming_page_control": "Nästa sida",
   "v3_instruction2_onethird": "Skärmkod",
-  "v3_instruction3_onethird": "Engångslösenord"
+  "v3_instruction3_onethird": "Engångslösenord",
+  "v3_miracast_uibc_not_supported_message": "Den här källan stöder inte Miracast-touchback",
+  "v3_lbl_cast_device_next": "Nästa sida",
+  "v3_lbl_cast_device_previous": "Föregående sida",
+  "v3_lbl_cast_device_sort_asc": "Sortera stigande",
+  "v3_lbl_cast_device_sort_desc": "Sortera fallande",
+  "v3_settings_device_not_supported": "Enhetsversionen stöds inte"
 }

@@ -367,8 +367,21 @@
   "v3_lbl_settings_knowledge_base": "知識庫",
   "v3_settings_device_high_image_quality": "高畫質",
   "v3_lbl_settings_device_high_image_quality": "高畫質",
-  "v3_settings_device_high_image_quality_desc": "以較高解析度顯示 (設備端需支援FHD以上輸出)",
   "v3_lbl_streaming_page_control": "下一頁",
   "v3_instruction2_onethird": "投影辨識碼",
-  "v3_instruction3_onethird": "一次性密碼"
+  "v3_instruction3_onethird": "一次性密碼",
+  "v3_miracast_uibc_not_supported_message": "傳送端裝置不支援Miracast反控",
+  "v3_lbl_cast_device_next": "下一頁",
+  "v3_lbl_cast_device_previous": "上一頁",
+  "v3_lbl_cast_device_sort_asc": "遞增排序",
+  "v3_lbl_cast_device_sort_desc": "遞減排序",
+  "v3_settings_device_not_supported": "不支援的版本",
+  "v3_broadcast_multicast_checkbox": "多點傳送 (最多100台裝置)",
+  "v3_broadcast_multicast_desc": "分享進行中，無法調整接收裝置數量",
+  "v3_broadcast_multicast_warn": "請結束所有分享後，再進行變更",
+  "v3_broadcast_cast_device_on": "有進行中的分享畫面",
+  "v3_broadcast_cast_board_on": "有進行中的分享畫面",
+  "v3_lbl_broadcast_multicast_checkbox": "多點傳送 (最多100台裝置)",
+  "v3_settings_device_high_image_quality_on_desc": "依據裝置端可支援的解析度，支援最高UHD 4K(web sender)或QHD以上解析度(Windows及macOS sender)，需良好的網路環境．",
+  "v3_settings_device_high_image_quality_off_desc": "依據裝置端可支援的解析度，支援最高QHD解析度"
 }

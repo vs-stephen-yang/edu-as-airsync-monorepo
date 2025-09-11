@@ -168,7 +168,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "一律接受",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒絕"),
+    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+      "有進行中的分享畫面",
+    ),
+    "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+      "有進行中的分享畫面",
+    ),
     "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
+    "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "多點傳送 (最多100台裝置)",
+    ),
+    "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+      "分享進行中，無法調整接收裝置數量",
+    ),
+    "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+      "請結束所有分享後，再進行變更",
+    ),
     "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "接收畫面中",
     ),
@@ -328,8 +343,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "拒絕請求",
     ),
+    "v3_lbl_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "多點傳送 (最多100台裝置)",
+    ),
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "結束與設備端連線",
+    ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage("下一頁"),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage("上一頁"),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage("遞增排序"),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "遞減排序",
     ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage("關閉反控"),
@@ -618,6 +642,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "目前使用的Wi-Fi頻道不支援Miracast功能",
     ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage("傳送端裝置不支援Miracast反控"),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage("密碼"),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
       "取消",
@@ -716,8 +742,12 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("從設備清單中連線時，自動填入一次性密碼"),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("高畫質"),
-    "v3_settings_device_high_image_quality_desc":
-        MessageLookupByLibrary.simpleMessage("以較高解析度顯示 (設備端需支援FHD以上輸出)"),
+    "v3_settings_device_high_image_quality_off_desc":
+        MessageLookupByLibrary.simpleMessage("依據裝置端可支援的解析度，支援最高QHD解析度"),
+    "v3_settings_device_high_image_quality_on_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "依據裝置端可支援的解析度，支援最高UHD 4K(web sender)或QHD以上解析度(Windows及macOS sender)，需良好的網路環境．",
+        ),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("開機後自動執行 AirSync"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage("裝置名稱"),
@@ -725,6 +755,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "設備名稱不可為空白",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage("儲存"),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "不支援的版本",
+    ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage("裝置設定"),
     "v3_settings_device_show_display_code":
         MessageLookupByLibrary.simpleMessage("永遠顯示投影辨識碼"),

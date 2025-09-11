@@ -364,5 +364,17 @@
   "v3_help_center_title": "Pagalbos Centras",
   "v3_lbl_open_help_center": "Atidaryti pagalbos centro meniu",
   "v3_lbl_close_help_center": "Uždaryti pagalbos centrą",
-  "v3_settings_knowledge_base": "Žinių bazė"
+  "v3_settings_knowledge_base": "Žinių bazė",
+  "v3_lbl_settings_knowledge_base": "Žinių bazė",
+  "v3_settings_device_high_image_quality": "Aukšta vaizdo kokybė",
+  "v3_lbl_settings_device_high_image_quality": "Aukšta vaizdo kokybė",
+  "v3_lbl_streaming_page_control": "Kitas puslapis",
+  "v3_instruction2_onethird": "Ekrano kodas",
+  "v3_instruction3_onethird": "Vienkartinis slaptažodis",
+  "v3_miracast_uibc_not_supported_message": "Šis šaltinis nepalaiko \"Miracast\" atgalinio ryšio",
+  "v3_lbl_cast_device_next": "Kitas puslapis",
+  "v3_lbl_cast_device_previous": "Ankstesnis puslapis",
+  "v3_lbl_cast_device_sort_asc": "Rūšiuoti didėjančia tvarka",
+  "v3_lbl_cast_device_sort_desc": "Rūšiuoti mažėjančia tvarka",
+  "v3_settings_device_not_supported": "Įrenginio versija nepalaikoma"
 }

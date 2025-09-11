@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a tr locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,29 +18,29 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'tr';
 
   static String m0(value) =>
-      "Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times. ";
+      "Ekran paylaşımı sona ermek üzere. 3 saat uzatmak ister misiniz? ${value} kez uzatabilirsiniz.";
 
-  static String m1(year, version) => "AirSync ©${year}. version ${version}";
+  static String m1(year, version) => "AirSync ©${year}. sürüm ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-    "eula_agree": MessageLookupByLibrary.simpleMessage("I Agree"),
-    "eula_disagree": MessageLookupByLibrary.simpleMessage("I Disagree"),
+    "eula_agree": MessageLookupByLibrary.simpleMessage("Kabul Ediyorum"),
+    "eula_disagree": MessageLookupByLibrary.simpleMessage("Kabul Etmiyorum"),
     "eula_title": MessageLookupByLibrary.simpleMessage("AirSync EULA"),
     "main_airplay_pin_code": MessageLookupByLibrary.simpleMessage(
-      "AirPlay Code",
+      "AirPlay Kodu",
     ),
     "main_auto_startup": MessageLookupByLibrary.simpleMessage(
-      "Launch AirSync on startup",
+      "Başlangıçta AirSync\'i başlat",
     ),
     "main_cast_settings_airplay": MessageLookupByLibrary.simpleMessage(
       "AirPlay",
     ),
     "main_cast_settings_device_name": MessageLookupByLibrary.simpleMessage(
-      "Name",
+      "Ad",
     ),
     "main_cast_settings_google_cast": MessageLookupByLibrary.simpleMessage(
       "Google Cast",
@@ -49,1043 +49,1050 @@ class MessageLookup extends MessageLookupByLibrary {
       "Miracast",
     ),
     "main_cast_settings_title": MessageLookupByLibrary.simpleMessage(
-      "Cast Settings",
+      "Yayın Ayarları",
     ),
     "main_content_display_code": MessageLookupByLibrary.simpleMessage(
-      "Display Code",
+      "Ekran Kodu",
     ),
     "main_content_lan_only": MessageLookupByLibrary.simpleMessage(
-      "Only LAN connection",
+      "Sadece LAN bağlantısı",
     ),
     "main_content_one_time_password": MessageLookupByLibrary.simpleMessage(
-      "One Time Password",
+      "Tek Kullanımlık Şifre",
     ),
-    "main_content_one_time_password_get_fail": MessageLookupByLibrary.simpleMessage(
-      "Failed to refresh password.\nPlease wait for 30 seconds before retrying.",
-    ),
+    "main_content_one_time_password_get_fail":
+        MessageLookupByLibrary.simpleMessage(
+          "Şifre yenileme başarısız.\nLütfen 30 saniye bekleyip tekrar deneyin.",
+        ),
     "main_feature_no_network_warning": MessageLookupByLibrary.simpleMessage(
-      "Control connection is disconnected. Please reconnect",
+      "Kontrol bağlantısı kesildi. Lütfen yeniden bağlanın",
     ),
     "main_feature_reconnect_fail_toast": MessageLookupByLibrary.simpleMessage(
-      "Network (Control) reconnect fail",
+      "Ağ (Kontrol) yeniden bağlanma başarısız",
     ),
     "main_feature_reconnect_success_toast":
         MessageLookupByLibrary.simpleMessage(
-          "Network (Control) reconnect success",
+          "Ağ (Kontrol) yeniden bağlanma başarılı",
         ),
     "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-      "Network (Control) reconnecting",
+      "Ağ (Kontrol) yeniden bağlanıyor",
     ),
     "main_get_display_code_failure": MessageLookupByLibrary.simpleMessage(
-      "Failed to get display code. Wait for network connectivity to resume, or restart the app.",
+      "Ekran kodu alınamadı. Ağ bağlantısının devam etmesini bekleyin veya uygulamayı yeniden başlatın.",
     ),
-    "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
-    "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
+    "main_language_name": MessageLookupByLibrary.simpleMessage("İngilizce"),
+    "main_language_title": MessageLookupByLibrary.simpleMessage("Dil"),
     "main_limit_time_message": MessageLookupByLibrary.simpleMessage(
-      "5 minutes left",
+      "5 dakika kaldı",
     ),
     "main_mirror_from_client": MessageLookupByLibrary.simpleMessage(
-      "%s would like to share their screen.",
+      "%s ekranını paylaşmak istiyor.",
     ),
-    "main_mirror_prompt_accept": MessageLookupByLibrary.simpleMessage("Accept"),
-    "main_mirror_prompt_cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "main_mirror_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Kabul Et",
+    ),
+    "main_mirror_prompt_cancel": MessageLookupByLibrary.simpleMessage("İptal"),
     "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
-      "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored.",
+      "Ekran Kodu ve Tek Kullanımlık Şifre alınamadı. Bu, bir ağ veya sunucu sorunundan kaynaklanıyor olabilir. Lütfen bağlantı yeniden sağlandığında tekrar deneyin.",
     ),
     "main_settings_airplay_code": MessageLookupByLibrary.simpleMessage(
-      "AirPlay code",
+      "AirPlay kodu",
     ),
     "main_settings_device_list": MessageLookupByLibrary.simpleMessage(
-      "Quick Connect Password",
+      "Hızlı Bağlantı Şifresi",
     ),
-    "main_settings_device_name": MessageLookupByLibrary.simpleMessage("Name"),
+    "main_settings_device_name": MessageLookupByLibrary.simpleMessage("Ad"),
     "main_settings_device_name_cancel": MessageLookupByLibrary.simpleMessage(
-      "CANCEL",
+      "İPTAL",
     ),
     "main_settings_device_name_hint": MessageLookupByLibrary.simpleMessage(
-      "Name",
+      "Ad",
     ),
     "main_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
-      "SAVE",
+      "KAYDET",
     ),
     "main_settings_device_name_title": MessageLookupByLibrary.simpleMessage(
-      "Rename device",
+      "Cihazı yeniden adlandır",
     ),
-    "main_settings_language": MessageLookupByLibrary.simpleMessage("Language"),
+    "main_settings_language": MessageLookupByLibrary.simpleMessage("Dil"),
     "main_settings_mirror_confirmation": MessageLookupByLibrary.simpleMessage(
-      "Mirror confirmation",
+      "Yansıtma onayı",
     ),
     "main_settings_pin_visible": MessageLookupByLibrary.simpleMessage(
-      "Connect information",
+      "Bağlantı bilgileri",
     ),
     "main_settings_share_to_sender": MessageLookupByLibrary.simpleMessage(
-      "Share screen to device",
+      "Ekranı göndericiye paylaş",
     ),
     "main_settings_share_to_sender_limit_desc":
-        MessageLookupByLibrary.simpleMessage("Share screen up to 10 senders."),
-    "main_settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
+        MessageLookupByLibrary.simpleMessage(
+          "Ekranı 10 göndericiye kadar paylaş.",
+        ),
+    "main_settings_title": MessageLookupByLibrary.simpleMessage("Ayarlar"),
     "main_settings_whats_new": MessageLookupByLibrary.simpleMessage(
-      "What\'s New?",
+      "Yenilikler?",
     ),
     "main_split_screen_question": MessageLookupByLibrary.simpleMessage(
-      "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.",
+      "Bölünmüş Ekran Modu için yukarıdaki düğmeye tıklayın. Aynı anda 4\'e kadar katılımcı sunum yapabilir.",
     ),
     "main_split_screen_title": MessageLookupByLibrary.simpleMessage(
-      "Split Screen",
+      "Bölünmüş Ekran",
     ),
     "main_split_screen_waiting": MessageLookupByLibrary.simpleMessage(
-      "Split screen enabled. Waiting for presenter to share screen...",
+      "Bölünmüş ekran etkin. Sunucunun ekranı paylaşmasını bekliyor...",
     ),
     "main_status_go_background": MessageLookupByLibrary.simpleMessage(
-      "AirSync app is running in the background.",
+      "AirSync uygulaması arka planda çalışıyor.",
     ),
     "main_status_no_network": MessageLookupByLibrary.simpleMessage(
-      "Poor network connection detected.\nPlease check your connectivity.",
+      "Zayıf ağ bağlantısı algılandı.\nLütfen bağlantınızı kontrol edin.",
     ),
     "main_status_remaining_time": MessageLookupByLibrary.simpleMessage(
-      "%02d min : %02d sec",
+      "%02d dk : %02d sn",
     ),
     "main_thanks_content": MessageLookupByLibrary.simpleMessage(
-      "Thank you for using AirSync.",
+      "AirSync\'i kullandığınız için teşekkür ederiz.",
     ),
     "main_wait_title": MessageLookupByLibrary.simpleMessage(
-      "Waiting for presenter to share screen...",
+      "Sunucunun ekranı paylaşmasını bekliyor...",
     ),
-    "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
+    "main_wait_up_next": MessageLookupByLibrary.simpleMessage("SIRADA"),
     "main_webrtc_reconnect_fail_toast": MessageLookupByLibrary.simpleMessage(
-      "Network (WebRTC) reconnect fail",
+      "Ağ (WebRTC) yeniden bağlanma başarısız",
     ),
     "main_webrtc_reconnect_success_toast": MessageLookupByLibrary.simpleMessage(
-      "Network (WebRTC) reconnect success",
+      "Ağ (WebRTC) yeniden bağlanma başarılı",
     ),
     "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-      "Network (WebRTC) reconnecting",
+      "Ağ (WebRTC) yeniden bağlanıyor",
     ),
     "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-      "[Improvement]\n\n1. All numeric display code for better experience.\n\n2. Improve connection stability.\n\n3. Bugs fixed.\n",
+      "[İyileştirme]\n\n1. Daha iyi bir deneyim için tamamen sayısal ekran kodu.\n\n2. Bağlantı kararlılığı geliştirildi.\n\n3. Hatalar giderildi.\n",
     ),
     "main_whats_new_title": MessageLookupByLibrary.simpleMessage(
-      "What’s New on AirSync?",
+      "AirSync\'te Ne Var?",
     ),
     "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
-      "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.",
+      "Bölünmüş Ekran Modu için yukarıdaki düğmeye tıklayın. Aynı anda 4\'e kadar katılımcı sunum yapabilir.",
     ),
-    "moderator_cancel": MessageLookupByLibrary.simpleMessage("CANCEL"),
-    "moderator_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+    "moderator_cancel": MessageLookupByLibrary.simpleMessage("İPTAL"),
+    "moderator_confirm": MessageLookupByLibrary.simpleMessage("Onayla"),
     "moderator_deactivate_split_screen": MessageLookupByLibrary.simpleMessage(
-      "Are you sure you want to end this split screen session? All screens currently shared will be terminated.",
+      "Bu bölünmüş ekran oturumunu sonlandırmak istediğinizden emin misiniz? Şu anda paylaşılan tüm ekranlar sonlandırılacaktır.",
     ),
-    "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
+    "moderator_exit": MessageLookupByLibrary.simpleMessage("ÇIKIŞ"),
     "moderator_exit_dialog": MessageLookupByLibrary.simpleMessage(
-      "Are you sure you want to end this moderator session? All presenters will be removed.",
+      "Bu moderatör oturumunu sonlandırmak istediğinizden emin misiniz? Tüm sunucular kaldırılacaktır.",
     ),
     "moderator_presentersLimit": MessageLookupByLibrary.simpleMessage(
-      "Click the above toggle for Moderator Mode. Up to 6 presenters can join.",
+      "Moderatör Modu için yukarıdaki düğmeye tıklayın. 6\'ya kadar sunucu katılabilir.",
     ),
     "moderator_presentersList": MessageLookupByLibrary.simpleMessage(
-      "Presenters",
+      "Sunucular",
     ),
-    "moderator_remove": MessageLookupByLibrary.simpleMessage("REMOVE"),
+    "moderator_remove": MessageLookupByLibrary.simpleMessage("KALDIR"),
     "moderator_verifyCode_fail": MessageLookupByLibrary.simpleMessage(
-      "Something went wrong. Please try again.",
+      "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
     ),
     "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-      "Has reached maximum split screen amount.",
+      "Maksimum bölünmüş ekran miktarına ulaşıldı.",
     ),
-    "update_install_now": MessageLookupByLibrary.simpleMessage("INSTALL NOW"),
+    "update_install_now": MessageLookupByLibrary.simpleMessage("ŞİMDİ YÜKLE"),
     "update_message": MessageLookupByLibrary.simpleMessage(
-      "A new version of software is available",
+      "Yazılımın yeni bir sürümü mevcut",
     ),
-    "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+    "update_title": MessageLookupByLibrary.simpleMessage(
+      "AirSync Güncellemesi",
+    ),
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
-      "Accept",
+      "Kabul Et",
     ),
     "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
-      "Accept All",
+      "Tümünü Kabul Et",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
-      "Decline",
-    ),
-    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
-      "Participants would like to share their screen",
+      "Reddet",
     ),
     "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
-      "Casting in progress",
+      "Yayın devam ediyor",
     ),
     "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
-      "Casting in progress",
+      "Yayın devam ediyor",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
+    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("AÇIK"),
     "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
-      "Cast to 10-100 Devices",
+      "10-100 Cihaza Yayınla",
     ),
     "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
-      "The number of receiving devices cannot be changed when the projection starts.",
+      "Projeksiyon başladığında alıcı cihaz sayısı değiştirilemez.",
     ),
     "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
-      "Interrupt all projection to edit.",
+      "Düzenlemek için tüm projeksiyonu durdur.",
     ),
     "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
-      "Receiving",
+      "Alınıyor",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
-      "Maximum up to 10 devices.",
+      "Maksimum 10 cihaza kadar.",
     ),
-    "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("Or"),
+    "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("Veya"),
     "v3_cast_to_device_menu_quick_connect1":
-        MessageLookupByLibrary.simpleMessage("Quick Connect"),
+        MessageLookupByLibrary.simpleMessage("Hızlı Bağlantı"),
     "v3_cast_to_device_menu_quick_connect2":
-        MessageLookupByLibrary.simpleMessage("by scan the QR code"),
+        MessageLookupByLibrary.simpleMessage("QR kodunu tarayarak"),
     "v3_cast_to_device_menu_title": MessageLookupByLibrary.simpleMessage(
-      "Join to Receive This Screen",
+      "Bu Ekranı Almak İçin Katılın",
     ),
     "v3_cast_to_device_reached_maximum": MessageLookupByLibrary.simpleMessage(
-      "You’ve reached the maximum limit.",
+      "Maksimum sınıra ulaştınız.",
     ),
     "v3_cast_to_device_title": MessageLookupByLibrary.simpleMessage(
-      "Device list",
+      "Cihaz listesi",
     ),
     "v3_cast_to_device_touch_back": MessageLookupByLibrary.simpleMessage(
-      "Touchback",
+      "Dokunmatik Geri Dönüş",
     ),
     "v3_cast_to_device_touch_back_disable":
-        MessageLookupByLibrary.simpleMessage("Disable"),
+        MessageLookupByLibrary.simpleMessage("Devre Dışı Bırak"),
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
-      "Touchback",
+      "Dokunmatik Geri Dönüş",
     ),
     "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
-      "Screen sharing has ended.",
+      "Ekran paylaşımı sona erdi.",
     ),
     "v3_casting_time_countdown": m0,
     "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
-      "Do not extend",
+      "Uzatma",
     ),
-    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Extend"),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("Uzat"),
     "v3_casting_time_extend_success_toast":
-        MessageLookupByLibrary.simpleMessage("Extended for 3 hours."),
+        MessageLookupByLibrary.simpleMessage("3 saat uzatıldı."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
-      "Scan the QR code with your iOS or Android device to download",
+      "İndirmek için iOS veya Android cihazınızla QR kodunu tarayın",
     ),
     "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
-      "For Best User Experience!",
+      "En İyi Kullanıcı Deneyimi İçin!",
     ),
     "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
-      "*Manual Installer",
+      "*Manuel Kurulum",
     ),
     "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
-      "Install MacOS via App Store",
+      "App Store üzerinden MacOS\'u yükle",
     ),
     "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
-      "*Only For MacOS",
+      "*Sadece MacOS için",
     ),
     "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
-      "Desktop",
+      "Masaüstü",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
-      "Download Sender App",
+      "Gönderici Uygulamasını İndir",
     ),
     "v3_download_app_for_desktop": MessageLookupByLibrary.simpleMessage(
-      "For Desktop",
+      "Masaüstü için",
     ),
     "v3_download_app_for_desktop_desc": MessageLookupByLibrary.simpleMessage(
-      "Enter the following URL to download.",
+      "İndirmek için aşağıdaki URL\'yi girin.",
     ),
     "v3_download_app_for_mobile": MessageLookupByLibrary.simpleMessage(
-      "For iOS & Android",
+      "iOS ve Android için",
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
-      "Scan the QR code for instant access.",
+      "Anında erişim için QR kodunu tarayın.",
     ),
     "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
-      "Mobile",
+      "Mobil",
     ),
-    "v3_download_app_or": MessageLookupByLibrary.simpleMessage("OR"),
+    "v3_download_app_or": MessageLookupByLibrary.simpleMessage("VEYA"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
-      "Download Sender App",
+      "Gönderici Uygulamasını İndir",
     ),
-    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
-    "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
-    "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Launch"),
+    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Kabul Et"),
+    "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Kabul Etme"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
-      "End-User License Agreement",
+      "Son Kullanıcı Lisans Sözleşmesi",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel",
+      "İptal",
     ),
     "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(
-      "Are you sure? This will disconnect all participants.",
+      "Emin misin? Bu, tüm katılımcıların bağlantısını kesecektir.",
     ),
-    "v3_exit_moderator_mode_exit": MessageLookupByLibrary.simpleMessage("Exit"),
+    "v3_exit_moderator_mode_exit": MessageLookupByLibrary.simpleMessage(
+      "Çıkış",
+    ),
     "v3_exit_moderator_mode_title": MessageLookupByLibrary.simpleMessage(
-      "Exit Moderator Mode",
+      "Moderatör Modundan Çık",
     ),
-    "v3_group_dialog_accept": MessageLookupByLibrary.simpleMessage("Accept"),
-    "v3_group_dialog_decline": MessageLookupByLibrary.simpleMessage("Decline"),
+    "v3_group_dialog_accept": MessageLookupByLibrary.simpleMessage("Kabul Et"),
+    "v3_group_dialog_decline": MessageLookupByLibrary.simpleMessage("Reddet"),
     "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
-      "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?",
+      "%s cihazınıza bir yayın isteği gönderdi. Bu eylem, mevcut içeriği senkronize edecek ve görüntüleyecektir, bu isteği kabul etmek ister misiniz?",
     ),
     "v3_group_dialog_no_device_message": MessageLookupByLibrary.simpleMessage(
-      "No device selected.",
+      "Cihaz seçilmedi.",
     ),
     "v3_group_dialog_title": MessageLookupByLibrary.simpleMessage(
-      "Broadcast Request from %s",
+      "Yayın İsteği: %s",
     ),
     "v3_group_receive_view_status_from": MessageLookupByLibrary.simpleMessage(
-      "Broadcasting from",
+      "Şuradan yayınlanıyor",
     ),
     "v3_group_receive_view_status_stop": MessageLookupByLibrary.simpleMessage(
-      "Stop",
+      "Durdur",
     ),
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
-      "declined your broadcast request, please check the Broads setting.",
+      "yayın isteğinizi reddetti, lütfen Yayın ayarlarını kontrol edin.",
     ),
     "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
-      "Cast to device",
+      "Cihaza yayınla",
     ),
     "v3_help_center_cast_device_title_sub":
         MessageLookupByLibrary.simpleMessage(
-          "IFP casting its screen to devices.",
+          "Ekranını cihazlara yayınlayan IFP.",
         ),
-    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Close"),
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Kapat"),
     "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
-      "Fullscreen",
+      "Tam ekran",
     ),
     "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
-      "Mute user",
+      "Kullanıcıyı sessize al",
     ),
     "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
-      "Remove user",
+      "Kullanıcıyı kaldır",
     ),
     "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
-      "Invite to share",
+      "Paylaşmaya davet et",
     ),
     "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
-      "Devices sharing its screen to IFP.",
+      "Ekranını IFP\'ye paylaşan cihazlar.",
     ),
     "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
-      "Stop sharing",
+      "Paylaşımı durdur",
     ),
-    "v3_help_center_title": MessageLookupByLibrary.simpleMessage("Help Center"),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Yardım Merkezi",
+    ),
     "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
-      "Touchback",
+      "Dokunmatik Geri Dönüş",
     ),
     "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
-      "Allowing user remote control.",
+      "Kullanıcının uzaktan kontrolüne izin verir.",
     ),
     "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
-      "Untouchback",
+      "Dokunmatik Geri Dönüşü Kapat",
     ),
     "v3_help_center_untouchback_title_sub":
-        MessageLookupByLibrary.simpleMessage("Detach touchback mode."),
+        MessageLookupByLibrary.simpleMessage(
+          "Dokunmatik geri dönüş modunu ayır.",
+        ),
     "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
-      "Visit airsync.net or open the sender app",
+      "airsync.net adresini ziyaret edin veya gönderici uygulamasını açın",
     ),
     "v3_instruction1b": MessageLookupByLibrary.simpleMessage(
-      "Open the sender app",
+      "Gönderici uygulamasını açın",
     ),
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
-      "Enter display code",
+      "Ekran kodunu girin",
     ),
     "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
-      "Display code",
+      "Ekran kodu",
     ),
     "v3_instruction3": MessageLookupByLibrary.simpleMessage(
-      "Enter one-time password",
+      "Tek kullanımlık şifreyi girin",
     ),
     "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
-      "One-time password",
+      "Tek kullanımlık şifre",
     ),
     "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
-      "Share Your Screens",
+      "Ekranlarınızı Paylaşın",
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
-      "Supports sharing via AirPlay, Google Cast or Miracast",
+      "AirPlay, Google Cast veya Miracast aracılığıyla paylaşımı destekler",
     ),
     "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
-      "Screen sharing is about to end. Please restart the screen sharing if necessary.",
+      "Ekran paylaşımı sona ermek üzere. Gerekirse lütfen ekran paylaşımını yeniden başlatın.",
     ),
     "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
-      "Accept request",
+      "İsteği kabul et",
     ),
     "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
-      "Accept all requests",
+      "Tüm istekleri kabul et",
     ),
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
-      "Decline request",
+      "İsteği reddet",
     ),
     "v3_lbl_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
-      "Cast to 10-100 Devices",
+      "10-100 Cihaza Yayınla",
     ),
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
-      "Close cast device connection",
+      "Yayınlanan cihaz bağlantısını kapat",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
-      "next page",
+      "sonraki sayfa",
     ),
     "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
-      "previous page",
+      "önceki sayfa",
     ),
     "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
-      "sort asc",
+      "artan sırala",
     ),
     "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
-      "sort desc",
+      "azalan sırala",
     ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
-          "Disable touchback for cast device",
+          "Yayınlanan cihaz için dokunmatik geri dönüşü devre dışı bırak",
         ),
     "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
-      "Enable touchback for cast device",
+      "Yayınlanan cihaz için dokunmatik geri dönüşü etkinleştir",
     ),
     "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
-      "Close download sender app menu",
+      "Gönderici uygulamasını indirme menüsünü kapat",
     ),
     "v3_lbl_close_feature_set_cast_device":
-        MessageLookupByLibrary.simpleMessage("Close cast device list"),
+        MessageLookupByLibrary.simpleMessage(
+          "Yayınlanan cihaz listesini kapat",
+        ),
     "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
-      "Close moderator list",
+      "Moderatör listesini kapat",
     ),
     "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
-      "Close help center",
+      "Yardım merkezini kapat",
     ),
     "v3_lbl_close_streaming_shortcut_menu":
-        MessageLookupByLibrary.simpleMessage("Close Streaming Shortcut menu"),
+        MessageLookupByLibrary.simpleMessage("Akış Kısayol menüsünü kapat"),
     "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
-      "Close connection status dialog",
+      "Bağlantı durumu iletişim kutusunu kapat",
     ),
     "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage(
-      "Agree with EULA",
+      "EULA\'yı kabul et",
     ),
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
-      "Disagree with EULA",
+      "EULA\'yı kabul etme",
     ),
-    "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Launch"),
     "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel exiting moderator mode",
+      "Moderatör modundan çıkışı iptal et",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
-      "Confirm exiting moderator mode",
+      "Moderatör modundan çıkışı onayla",
     ),
     "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
-      "Do not extend casting time",
+      "Yayın süresini uzatma",
     ),
     "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
-      "Extend casting time",
+      "Yayın süresini uzat",
     ),
     "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
-      "Close group reject notification",
+      "Grup reddetme bildirimini kapat",
     ),
     "v3_lbl_internet_connection_only_error":
         MessageLookupByLibrary.simpleMessage(
-          "Connectivity error，please check device network setting",
+          "Bağlantı hatası, lütfen cihaz ağ ayarlarını kontrol edin",
         ),
     "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
-      "Local connection only",
+      "Sadece yerel bağlantı",
     ),
     "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
-      "Select language",
+      "Dil seçin",
     ),
     "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
-      "Select %s",
+      "%s seç",
     ),
     "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel dialog",
+      "İletişim kutusunu iptal et",
     ),
     "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
-      "Confirm dialog",
+      "İletişim kutusunu onayla",
     ),
     "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
-      "Minimize quick connect menu",
+      "Hızlı bağlantı menüsünü küçült",
     ),
     "v3_lbl_minimal_streaming_qrcode_menu":
-        MessageLookupByLibrary.simpleMessage("Minimize Streaming QR Code menu"),
+        MessageLookupByLibrary.simpleMessage("Akış QR Kodu menüsünü küçült"),
     "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
-      "Toggle moderator mode",
+      "Moderatör modunu aç/kapat",
     ),
     "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
-      "Open download sender app menu",
+      "Gönderici uygulamasını indirme menüsünü aç",
     ),
     "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
-      "Open cast device list",
+      "Yayınlanan cihaz listesini aç",
     ),
     "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
-      "Open moderator list",
+      "Moderatör listesini aç",
     ),
     "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
-      "Open Help center menu",
+      "Yardım merkezi menüsünü aç",
     ),
     "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
-      "Open Setting Menu",
+      "Ayarlar Menüsünü Aç",
     ),
     "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
-      "Open Streaming QR Code Menu",
+      "Akış QR Kodu Menüsünü Aç",
     ),
     "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
-      "Open Streaming Shortcut Menu",
+      "Akış Kısayol Menüsünü Aç",
     ),
     "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
-      "Floating connection information tab",
+      "Kayan bağlantı bilgisi sekmesi",
     ),
     "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
-      "Expand overlay menu",
+      "Katman menüsünü genişlet",
     ),
     "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
-      "Minimize overlay menu",
+      "Katman menüsünü küçült",
     ),
     "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
-      "Cast device to this participant",
+      "Bu katılımcıya cihaz yayınla",
     ),
     "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
-      "Close participant connection",
+      "Katılımcı bağlantısını kapat",
     ),
     "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
-      "Disconnect this participant",
+      "Bu katılımcının bağlantısını kes",
     ),
     "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
-      "Close mirror participant connection",
+      "Yansıtma katılımcı bağlantısını kapat",
     ),
     "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
-      "Share to this participant\'s mirror",
+      "Bu katılımcının yansıtma ekranına paylaş",
     ),
     "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
-      "Stop mirror participant\'s streaming",
+      "Yansıtma katılımcısının akışını durdur",
     ),
     "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
-      "Share to this participant\'s screen",
+      "Bu katılımcının ekranına paylaş",
     ),
     "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
-      "Stop participant\'s streaming",
+      "Katılımcının akışını durdur",
     ),
     "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
-      "Enable touchback for this participant",
+      "Bu katılımcı için dokunmatik geri dönüşü etkinleştir",
     ),
     "v3_lbl_participant_touch_back_disable":
         MessageLookupByLibrary.simpleMessage(
-          "Disable touchback for this participant",
+          "Bu katılımcı için dokunmatik geri dönüşü devre dışı bırak",
         ),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
-      "Expand presentation control",
+      "Sunum kontrolünü genişlet",
     ),
     "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
-      "Minimize presentation control",
+      "Sunum kontrolünü küçült",
     ),
     "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
-      "Mute presentation",
+      "Sunumu sessize al",
     ),
     "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
-      "Stop presentation",
+      "Sunumu durdur",
     ),
     "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
-      "Accessibility",
+      "Erişilebilirlik",
     ),
     "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
-      "Back to previous page",
+      "Önceki sayfaya dön",
     ),
     "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
-      "Open broadcast setting menu",
+      "Yayın ayarları menüsünü aç",
     ),
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
-      "Open broadcast boards menu",
+      "Yayın panoları menüsünü aç",
     ),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
-      "Open broadcast devices menu",
+      "Yayın cihazları menüsünü aç",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
-          "Open broadcast to display group menu",
+          "Ekran grubuna yayınla menüsünü aç",
         ),
     "v3_lbl_settings_broadcast_to_display_group_cast":
-        MessageLookupByLibrary.simpleMessage("Broadcast"),
+        MessageLookupByLibrary.simpleMessage("Yayınla"),
     "v3_lbl_settings_broadcast_to_display_group_checkbox":
-        MessageLookupByLibrary.simpleMessage("Select %s"),
+        MessageLookupByLibrary.simpleMessage("Seç %s"),
     "v3_lbl_settings_broadcast_to_display_group_confirm":
-        MessageLookupByLibrary.simpleMessage("Confirm no device selected."),
+        MessageLookupByLibrary.simpleMessage("Seçili cihaz yok"),
     "v3_lbl_settings_broadcast_to_display_group_item":
-        MessageLookupByLibrary.simpleMessage("Select %s"),
+        MessageLookupByLibrary.simpleMessage("%s seç"),
     "v3_lbl_settings_broadcast_to_display_group_save":
-        MessageLookupByLibrary.simpleMessage("Save"),
+        MessageLookupByLibrary.simpleMessage("Kaydet"),
     "v3_lbl_settings_broadcast_to_display_group_type":
-        MessageLookupByLibrary.simpleMessage("Select %s"),
+        MessageLookupByLibrary.simpleMessage("Tür seç %s"),
     "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
-      "Close settings menu",
+      "Ayarlar menüsünü kapat",
     ),
     "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
-      "Open connectivity setting menu",
+      "Bağlantı ayarları menüsünü aç",
     ),
     "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
-      "Select %s",
+      "%s seç",
     ),
     "v3_lbl_settings_device_authorize_mode":
-        MessageLookupByLibrary.simpleMessage("Turn on/off authorization mode"),
+        MessageLookupByLibrary.simpleMessage("Yetkilendirme modunu aç/kapat"),
     "v3_lbl_settings_device_auto_fill_otp":
-        MessageLookupByLibrary.simpleMessage("Turn on/off auto fill OTP mode"),
+        MessageLookupByLibrary.simpleMessage(
+          "OTP otomatik doldurma modunu aç/kapat",
+        ),
     "v3_lbl_settings_device_high_image_quality":
-        MessageLookupByLibrary.simpleMessage("High image quality"),
+        MessageLookupByLibrary.simpleMessage("Yüksek görüntü kalitesi"),
     "v3_lbl_settings_device_launch_on_startup":
-        MessageLookupByLibrary.simpleMessage("Turn on/off auto startup mode"),
+        MessageLookupByLibrary.simpleMessage(
+          "Otomatik başlangıç modunu aç/kapat",
+        ),
     "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
-      "Modify device name",
+      "Cihaz adını değiştir",
     ),
     "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
-      "Close device name setting",
+      "Cihaz adı ayarını kapat",
     ),
     "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
-      "Save device name",
+      "Cihaz adını kaydet",
     ),
     "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
-      "Open device setting menu",
+      "Cihaz ayarları menüsünü aç",
     ),
     "v3_lbl_settings_device_smart_scaling":
         MessageLookupByLibrary.simpleMessage(
-          "Turn on/off smart scaling toggle",
+          "Akıllı ölçekleme düğmesini aç/kapat",
         ),
     "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
-      "Enter device name",
+      "Cihaz adını girin",
     ),
     "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
-      "Open screen broadcasting dropdown menu",
+      "Ekran yayınlama açılır menüsünü aç",
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
-      "Select %s",
+      "%s seç",
     ),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
-      "Knowledge Base",
+      "Bilgi Tabanı",
     ),
     "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
-      "Open legal policy setting menu",
+      "Yasal ve politika ayarları menüsünü aç",
     ),
     "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
-      "Setting Menu is locked",
+      "Ayarlar Menüsü kilitli",
     ),
     "v3_lbl_settings_mirroring_auto_accept":
-        MessageLookupByLibrary.simpleMessage("Turn on/off auto accept"),
+        MessageLookupByLibrary.simpleMessage("Otomatik kabul etmeyi aç/kapat"),
     "v3_lbl_settings_mirroring_require_passcode":
-        MessageLookupByLibrary.simpleMessage("Turn on/off require passcode"),
+        MessageLookupByLibrary.simpleMessage("Şifre istemeyi aç/kapat"),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
-          "More information about broadcast to display group",
+          "Ekran grubuna yayınlama hakkında daha fazla bilgi",
         ),
     "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
-      "Select %s",
+      "%s seç",
     ),
     "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
-      "Turn on/off display code toggle",
+      "Ekran kodu düğmesini aç/kapat",
     ),
     "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
-      "Open what\'s new setting menu",
+      "Yenilikler ayarları menüsünü aç",
     ),
     "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
-      "what\'s new icon",
+      "yenilikler simgesi",
     ),
     "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
-      "Turn on/off AirPlay",
+      "AirPlay\'i aç/kapat",
     ),
     "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
-      "Turn on/off Google Cast",
+      "Google Cast\'i aç/kapat",
     ),
     "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
-      "Turn on/off Miracast",
+      "Miracast\'i aç/kapat",
     ),
     "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
-      "Open mirroring setting menu",
+      "Yansıtma ayarları menüsünü aç",
     ),
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
-      "Airplay touchback",
+      "Airplay dokunmatik geri dönüş",
     ),
     "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
-      "next page",
+      "sonraki sayfa",
     ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
-        MessageLookupByLibrary.simpleMessage("AirPlay toggle"),
+        MessageLookupByLibrary.simpleMessage("AirPlay düğmesi"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
-        MessageLookupByLibrary.simpleMessage("Cast to devices toggle"),
+        MessageLookupByLibrary.simpleMessage("Cihazlara yayınla düğmesi"),
     "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
-      "Expand streaming features",
+      "Akış özelliklerini genişlet",
     ),
     "v3_lbl_streaming_shortcut_google_cast_toggle":
-        MessageLookupByLibrary.simpleMessage("Google Cast toggle"),
+        MessageLookupByLibrary.simpleMessage("Google Cast düğmesi"),
     "v3_lbl_streaming_shortcut_menu_locked":
-        MessageLookupByLibrary.simpleMessage(
-          "Streaming Shortcut Menu is locked",
-        ),
+        MessageLookupByLibrary.simpleMessage("Akış Kısayol Menüsü kilitli"),
     "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
-      "Collapse streaming features",
+      "Akış özelliklerini daralt",
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
-        MessageLookupByLibrary.simpleMessage("Miracast toggle"),
+        MessageLookupByLibrary.simpleMessage("Miracast düğmesi"),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
-      "Expand streaming view",
+      "Akış görünümünü genişlet",
     ),
     "v3_lbl_streaming_view_function_expand":
-        MessageLookupByLibrary.simpleMessage("Expand streaming function"),
+        MessageLookupByLibrary.simpleMessage("Akış fonksiyonunu genişlet"),
     "v3_lbl_streaming_view_function_minimize":
-        MessageLookupByLibrary.simpleMessage("Collapse streaming function"),
+        MessageLookupByLibrary.simpleMessage("Akış fonksiyonunu daralt"),
     "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
-      "Collapse streaming view",
+      "Akış görünümünü daralt",
     ),
     "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
-      "Mute audio",
+      "Sesi kapat",
     ),
     "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
-      "Stop streaming",
+      "Akışı durdur",
     ),
     "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
-      "Unmute audio",
+      "Sesi aç",
     ),
     "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel dialog",
+      "İletişim kutusunu iptal et",
     ),
     "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
-      "Confirm dialog",
+      "İletişim kutusunu onayla",
     ),
     "v3_lbl_touchback_restart_bluetooth_btn_cancel":
-        MessageLookupByLibrary.simpleMessage("Cancel"),
+        MessageLookupByLibrary.simpleMessage("İptal"),
     "v3_lbl_touchback_restart_bluetooth_btn_restart":
-        MessageLookupByLibrary.simpleMessage("Restart"),
+        MessageLookupByLibrary.simpleMessage("Yeniden Başlat"),
     "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
-      "Close",
+      "Kapat",
     ),
     "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
-      "Internet connection only。",
+      "Sadece internet bağlantısı.",
     ),
     "v3_main_internet_connection_only_error":
         MessageLookupByLibrary.simpleMessage(
-          "Connectivity error，please check device network setting。",
+          "Bağlantı hatası, lütfen cihaz ağ ayarlarını kontrol edin.",
         ),
     "v3_main_internet_connection_only_error_dialog_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Connectivity error，please check device network setting。",
+          "Bağlantı hatası, lütfen cihaz ağ ayarlarını kontrol edin.",
         ),
     "v3_main_local_connection_only_dialog_desc":
         MessageLookupByLibrary.simpleMessage(
-          "LAN connection only，please check device network setting。",
+          "Sadece LAN bağlantısı, lütfen cihaz ağ ayarlarını kontrol edin.",
         ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
-      "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again.",
+      "İnternet bağlantısı algılanamıyor. Lütfen bir Wi-Fi veya intranet ağına bağlanın ve tekrar deneyin.",
     ),
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
-      "Miracast unavailable now. Current Wi-Fi channel does not support screen casting.",
+      "Miracast şu anda kullanılamıyor. Mevcut Wi-Fi kanalı ekran yansıtmasını desteklemiyor.",
     ),
     "v3_miracast_uibc_not_supported_message":
         MessageLookupByLibrary.simpleMessage(
-          "This source does not support Miracast touchback",
+          "Bu kaynak Miracast dokunmatik geri dönüşü desteklemiyor",
         ),
-    "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
-      "Passcode",
-    ),
+    "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage("Şifre"),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel",
+      "İptal",
     ),
     "v3_moderator_disable_mirror_desc": MessageLookupByLibrary.simpleMessage(
-      "Mirroring will be disabled in moderator mode",
+      "Yansıtma, moderatör modunda devre dışı bırakılacaktır",
     ),
     "v3_moderator_disable_mirror_ok": MessageLookupByLibrary.simpleMessage(
-      "OK",
+      "TAMAM",
     ),
     "v3_moderator_disable_mirror_title": MessageLookupByLibrary.simpleMessage(
-      "Disable Mirroring for Moderator Mode",
+      "Moderatör Modu İçin Yansıtmayı Devre Dışı Bırak",
     ),
-    "v3_moderator_mode": MessageLookupByLibrary.simpleMessage("Moderator mode"),
+    "v3_moderator_mode": MessageLookupByLibrary.simpleMessage("Moderatör modu"),
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
-      " joined the session",
+      " oturuma katıldı",
     ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
-      "Casting",
+      "Yayınlanıyor",
     ),
     "v3_participant_item_connected": MessageLookupByLibrary.simpleMessage(
-      "Connected",
+      "Bağlandı",
     ),
     "v3_participant_item_controlling": MessageLookupByLibrary.simpleMessage(
-      "Receiving + Touchback",
+      "Alınıyor + Dokunmatik Geri Dönüş",
     ),
     "v3_participant_item_receiving": MessageLookupByLibrary.simpleMessage(
-      "Receiving",
+      "Alınıyor",
     ),
-    "v3_participant_item_share": MessageLookupByLibrary.simpleMessage("Share"),
+    "v3_participant_item_share": MessageLookupByLibrary.simpleMessage("Paylaş"),
     "v3_participant_item_waiting": MessageLookupByLibrary.simpleMessage(
-      "Waiting...",
+      "Bekleniyor...",
     ),
     "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
-      "Maximum up to 6 participants.",
+      "Maksimum 6 katılımcıya kadar.",
     ),
     "v3_participants_desc_maximum_9": MessageLookupByLibrary.simpleMessage(
-      "Maximum up to 9 participants.",
+      "Maksimum 9 katılımcıya kadar.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
-      "Participants",
+      "Katılımcılar",
     ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
-      "Quick Connect",
+      "Hızlı Bağlantı",
     ),
     "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
-      "Split-screen activates if two or more users share screens.",
+      "İki veya daha fazla kullanıcı ekran paylaştığında bölünmüş ekran etkinleşir.",
     ),
     "v3_quick_connect_menu_display_code": MessageLookupByLibrary.simpleMessage(
-      "Display Code",
+      "Ekran Kodu",
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
-      "QR Code",
+      "QR Kodu",
     ),
-    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
-      "Cancel",
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage("İptal"),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
+      "Temizle",
     ),
-    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage("Clear"),
     "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
-      "Confirm",
+      "Onayla",
     ),
     "v3_setting_passcode_error_description":
         MessageLookupByLibrary.simpleMessage(
-          "Invalid password, please try again.",
+          "Geçersiz şifre, lütfen tekrar deneyin.",
         ),
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
-      "Enter passcode to unlock Settings",
+      "Ayarların kilidini açmak için şifreyi girin",
     ),
     "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
-      "Accessibility",
+      "Erişilebilirlik",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
-      "Broadcast source IFP screen all the time.",
+      "Kaynak IFP ekranını her zaman yayınla.",
     ),
-    "v3_settings_broadcast": MessageLookupByLibrary.simpleMessage("Broadcast"),
+    "v3_settings_broadcast": MessageLookupByLibrary.simpleMessage("Yayın"),
     "v3_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
-      "Other AirSync devices",
+      "Diğer AirSync cihazları",
     ),
     "v3_settings_broadcast_cast_boards": MessageLookupByLibrary.simpleMessage(
-      "Cast to boards",
+      "Panolara yayınla",
     ),
-    "v3_settings_broadcast_cast_boards_desc": MessageLookupByLibrary.simpleMessage(
-      "Share this screen to all Interactive Flat Panels (IFPs) in the network.",
-    ),
+    "v3_settings_broadcast_cast_boards_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Bu ekranı ağdaki tüm Etkileşimli Düz Panellere (IFP) paylaşın.",
+        ),
     "v3_settings_broadcast_cast_to": MessageLookupByLibrary.simpleMessage(
-      "Broadcast to",
+      "Yayınla:",
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
-      "Sender devices",
+      "Gönderici cihazlar",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
-          "Please turn off energy saving to avoid unexpected interruption during broadcasting.",
+          "Yayın sırasında beklenmedik kesintileri önlemek için lütfen enerji tasarrufunu kapatın.",
         ),
     "v3_settings_broadcast_to_display_group":
-        MessageLookupByLibrary.simpleMessage("Broadcast to the display group"),
+        MessageLookupByLibrary.simpleMessage("Ekran grubuna yayınla"),
     "v3_settings_connectivity": MessageLookupByLibrary.simpleMessage(
-      "Connectivity",
+      "Bağlantı",
     ),
     "v3_settings_connectivity_both": MessageLookupByLibrary.simpleMessage(
-      "Both internet & local connection",
+      "Hem internet hem de yerel bağlantı",
     ),
     "v3_settings_connectivity_internet": MessageLookupByLibrary.simpleMessage(
-      "Internet connection",
+      "İnternet bağlantısı",
     ),
     "v3_settings_connectivity_internet_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Internet connection requires a stable network.",
+          "İnternet bağlantısı istikrarlı bir ağ gerektirir.",
         ),
     "v3_settings_connectivity_local": MessageLookupByLibrary.simpleMessage(
-      "Local connection",
+      "Yerel bağlantı",
     ),
     "v3_settings_connectivity_local_desc": MessageLookupByLibrary.simpleMessage(
-      "Local connections operate within a private network, offering more security and stability.",
+      "Yerel bağlantılar, daha fazla güvenlik ve kararlılık sunarak özel bir ağ içinde çalışır.",
     ),
     "v3_settings_device_authorize_mode": MessageLookupByLibrary.simpleMessage(
-      "Require approval for all screen sharing requests.",
+      "Tüm ekran paylaşımı istekleri için onay iste.",
     ),
     "v3_settings_device_auto_fill_otp": MessageLookupByLibrary.simpleMessage(
-      "Auto-fill one-time password",
+      "Tek kullanımlık şifreyi otomatik doldur",
     ),
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
-      "Enable one-touch connection when this device is selected from the Sender app\'s Quick Connect menu.",
+      "Bu cihaz, Gönderici uygulamasının Hızlı Bağlantı menüsünden seçildiğinde tek dokunuşla bağlantıyı etkinleştirin.",
     ),
     "v3_settings_device_high_image_quality":
-        MessageLookupByLibrary.simpleMessage("High image quality"),
+        MessageLookupByLibrary.simpleMessage("Yüksek görüntü kalitesi"),
     "v3_settings_device_high_image_quality_off_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Maximum QHD (2K) screen sharing depending on the sender screen resolution.",
+          "Gönderici ekran çözünürlüğüne bağlı olarak maksimum QHD (2K) ekran paylaşımı.",
         ),
     "v3_settings_device_high_image_quality_on_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Maximum UHD (4K) screen sharing from web sender and 3K+ from Windows and macOS sender depending on the sender screen resolution. Requires a high quality network.",
+          "Web göndericiden maksimum UHD (4K) ekran paylaşımı ve gönderici ekran çözünürlüğüne bağlı olarak Windows ve macOS göndericiden 3K+ ekran paylaşımı. Yüksek kaliteli ağ gerektirir.",
         ),
     "v3_settings_device_launch_on_startup":
-        MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
+        MessageLookupByLibrary.simpleMessage("Başlangıçta AirSync\'i başlat"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
-      "Device Name",
+      "Cihaz Adı",
     ),
     "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
-      "Device name cannot be empty",
+      "Cihaz adı boş bırakılamaz",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
-      "Save",
+      "Kaydet",
     ),
     "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
-      "Device version is not supported",
+      "Cihaz sürümü desteklenmiyor",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
-      "Device setting",
+      "Cihaz ayarları",
     ),
     "v3_settings_device_show_display_code":
-        MessageLookupByLibrary.simpleMessage("Show display code on top"),
+        MessageLookupByLibrary.simpleMessage("Ekran kodunu üstte göster"),
     "v3_settings_device_show_display_code_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.",
+          "Başka uygulamalara geçildiğinde ve ekran paylaşımı etkin olduğunda bile kodun ekranın üstünde görünür kalmasını sağlayın.",
         ),
     "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
-      "Smart scaling",
+      "Akıllı ölçekleme",
     ),
     "v3_settings_device_smart_scaling_desc": MessageLookupByLibrary.simpleMessage(
-      "Automatically adjust the screen size to maximize the use of screen space. The image may be slightly distorted.",
+      "Ekran alanını en üst düzeye çıkarmak için ekran boyutunu otomatik olarak ayarla. Görüntü biraz bozulabilir.",
     ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
-      "Unavailable",
+      "Kullanılamıyor",
     ),
     "v3_settings_display_group": MessageLookupByLibrary.simpleMessage(
-      "Display Group",
+      "Ekran Grubu",
     ),
     "v3_settings_display_group_all_the_time":
-        MessageLookupByLibrary.simpleMessage("All the time"),
+        MessageLookupByLibrary.simpleMessage("Her zaman"),
     "v3_settings_display_group_cast": MessageLookupByLibrary.simpleMessage(
-      "Broadcast",
+      "Yayınla",
     ),
     "v3_settings_display_group_only_casting":
-        MessageLookupByLibrary.simpleMessage("Only when casting"),
+        MessageLookupByLibrary.simpleMessage("Sadece yayınlandığında"),
     "v3_settings_feature_locked": MessageLookupByLibrary.simpleMessage(
-      "Locked by ViewSonic Manager.",
+      "ViewSonic Manager tarafından kilitlendi.",
     ),
     "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
-      "If invited to a display group",
+      "Bir ekran grubuna davet edildiğinde",
     ),
     "v3_settings_invite_group_auto_accept":
-        MessageLookupByLibrary.simpleMessage("Auto Accept"),
+        MessageLookupByLibrary.simpleMessage("Otomatik Kabul Et"),
     "v3_settings_invite_group_ignore": MessageLookupByLibrary.simpleMessage(
-      "Ignore",
+      "Yoksay",
     ),
     "v3_settings_invite_group_notify_me": MessageLookupByLibrary.simpleMessage(
-      "Notify me",
+      "Beni bilgilendir",
     ),
     "v3_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
-      "Knowledge Base",
+      "Bilgi Tabanı",
     ),
     "v3_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
-      "Legal & Policy",
+      "Yasal ve Politika",
     ),
     "v3_settings_local_connection_only": MessageLookupByLibrary.simpleMessage(
-      "Local connection only",
+      "Sadece yerel bağlantı",
     ),
     "v3_settings_mirroring_auto_accept": MessageLookupByLibrary.simpleMessage(
-      "Auto Accept",
+      "Otomatik Kabul Et",
     ),
     "v3_settings_mirroring_auto_accept_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Instantly enable mirroring without requiring moderator approval.",
+          "Moderatör onayı gerektirmeden yansıtmayı anında etkinleştirin.",
         ),
     "v3_settings_mirroring_blocked": MessageLookupByLibrary.simpleMessage(
-      "Turn off moderator mode first.",
+      "Önce moderatör modunu kapatın.",
     ),
     "v3_settings_mirroring_require_passcode":
-        MessageLookupByLibrary.simpleMessage("Require passcode"),
+        MessageLookupByLibrary.simpleMessage("Şifre iste"),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
-      "Broadcast the source IFP screen only when it is receiving a shared screen.",
+      "Yalnızca paylaşılan bir ekranı alırken kaynak IFP ekranını yayınla.",
     ),
     "v3_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
-      "Open Source Licenses",
+      "Açık Kaynak Lisansları",
     ),
     "v3_settings_privacy_policy": MessageLookupByLibrary.simpleMessage(
-      "Privacy Policy",
+      "Gizlilik Politikası",
     ),
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
-      "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\n\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy.",
+      "ViewSonic, gizliliğinizi korumaya kararlıdır ve kişisel verilerin işlenmesini ciddiye alır. Aşağıdaki Gizlilik Politikası, ViewSonic\'in, sizin Web Sitesini kullanımınız aracılığıyla toplanan kişisel verilerinizi nasıl işleyeceğini ayrıntılı olarak anlatır. ViewSonic, güvenlik teknolojileri kullanarak bilgilerinizin gizliliğini korur ve kişisel bilgilerinizin yetkisiz kullanımını önleyen politikalara uyar. Bu Web Sitesini kullanarak, bilgilerinizin toplanmasına ve kullanılmasına izin vermiş olursunuz.\n\nViewSonic.com\'dan bağlantı verdiğiniz Web sitelerinin kendi gizlilik politikaları olabilir ve bunlar ViewSonic\'in politikasından farklı olabilir. Onları ziyaret ettiğinizde toplanan bilgileri nasıl kullanabilecekleri hakkında ayrıntılı bilgi için lütfen bu Web sitelerinin gizlilik politikalarını inceleyin.\n\nGizlilik Politikamız hakkında daha fazla bilgi edinmek için lütfen aşağıdaki bağlantılara tıklayın.",
     ),
     "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
-      "Resize text size",
+      "Metin boyutunu yeniden boyutlandır",
     ),
     "v3_settings_resize_text_size_extra_large":
-        MessageLookupByLibrary.simpleMessage("XLarge"),
+        MessageLookupByLibrary.simpleMessage("Ekstra Büyük"),
     "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
-      "Large",
+      "Büyük",
     ),
     "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
       "Normal",
     ),
     "v3_settings_version": m1,
-    "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
-      "What\'s new",
-    ),
+    "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage("Yenilikler"),
     "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-      "AirSync %s\n\nAirSync is a proprietary wireless screen-sharing solution from ViewSonic. When utilized with the AirSync sender, it allows users to seamlessly share their screens with ViewSonic interactive displays.\n\nThis release includes the following new features:\n\n1. Support for ViewBoard split screen view.\n\n2. Support high quality screen sharing (up to 4K) through web sender.\n\n3. Mute device audio output when sharing through Windows sender.\n\n4. Enhanced stability.\n\n5. Fixed various bugs.\n",
+      "AirSync %s\n\nAirSync, ViewSonic\'e ait tescilli bir kablosuz ekran paylaşım çözümüdür. AirSync gönderici ile kullanıldığında, kullanıcıların ekranlarını ViewSonic interaktif ekranlarla sorunsuz bir şekilde paylaşmalarını sağlar.\n\nBu sürüm aşağıdaki yeni özellikleri içerir:\n\n1. ViewBoard bölünmüş ekran görünümü desteği.\n\n2. Web gönderici aracılığıyla yüksek kaliteli ekran paylaşımı (4K\'ya kadar) desteği.\n\n3. Windows gönderici aracılığıyla paylaşım yaparken cihaz ses çıkışını sessize alma.\n\n4. Gelişmiş kararlılık.\n\n5. Çeşitli hatalar giderildi.\n",
     ),
     "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
     "v3_shortcuts_cast_device": MessageLookupByLibrary.simpleMessage(
-      "Cast to devices",
+      "Cihazlara Yayınla",
     ),
     "v3_shortcuts_cast_device_desc": MessageLookupByLibrary.simpleMessage(
-      "Cast this screen to multiple devices, including laptops, tablets and mobile devices simultaneously.",
+      "Bu ekranı aynı anda birden fazla cihaza, dizüstü bilgisayarlara, tabletlere ve mobil cihazlara yayınlayın.",
     ),
     "v3_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
       "Google Cast",
     ),
     "v3_shortcuts_menu_title": MessageLookupByLibrary.simpleMessage(
-      "Shortcuts",
+      "Kısayollar",
     ),
     "v3_shortcuts_miracast": MessageLookupByLibrary.simpleMessage("Miracast"),
-    "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("Mirroring"),
+    "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage("Yansıtma"),
     "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
-      "You can only touchback one device at one time.",
+      "Aynı anda sadece bir cihaza dokunmatik geri dönüş yapabilirsiniz.",
     ),
     "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
-      "Touchback to %s？",
+      "%s\'ye dokunmatik geri dönüş?",
     ),
     "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
-      "TouchBack is disabled.",
+      "Dokunmatik Geri Dönüş devre dışı bırakıldı.",
     ),
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
-      "Pairing failed. TouchBack is not activated. Please try again",
+      "Eşleştirme başarısız oldu. Dokunmatik Geri Dönüş etkinleştirilmedi. Lütfen tekrar deneyin",
     ),
-    "v3_touchback_restart_bluetooth_btn_cancel":
-        MessageLookupByLibrary.simpleMessage("Cancel"),
     "v3_touchback_restart_bluetooth_btn_restart":
-        MessageLookupByLibrary.simpleMessage("Restart"),
+        MessageLookupByLibrary.simpleMessage("Yeniden Başlat"),
     "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
-      "Operation timeout. Please turn off and restart the Bluetooth function on the large screen, then restart the touchback.",
+      "İşlem zaman aşımına uğradı. Lütfen büyük ekrandaki Bluetooth işlevini kapatıp yeniden başlatın, ardından dokunmatik geri dönüşü yeniden başlatın.",
     ),
     "v3_touchback_restart_bluetooth_title":
         MessageLookupByLibrary.simpleMessage(
-          "Operation timed out, please restart Bluetooth",
+          "İşlem zaman aşımına uğradı, lütfen Bluetooth\'u yeniden başlatın",
         ),
     "v3_touchback_state_deviceFinding_message":
-        MessageLookupByLibrary.simpleMessage("Device Finding"),
+        MessageLookupByLibrary.simpleMessage("Cihaz Bulunuyor"),
     "v3_touchback_state_deviceFoundSuccess_message":
-        MessageLookupByLibrary.simpleMessage("Device Found Success"),
+        MessageLookupByLibrary.simpleMessage("Cihaz Başarıyla Bulundu"),
     "v3_touchback_state_devicePairedSuccess_message":
-        MessageLookupByLibrary.simpleMessage("Device Paired Success"),
+        MessageLookupByLibrary.simpleMessage("Cihaz Başarıyla Eşleştirildi"),
     "v3_touchback_state_devicePairing_message":
-        MessageLookupByLibrary.simpleMessage("Device Pairing"),
+        MessageLookupByLibrary.simpleMessage("Cihaz Eşleştiriliyor"),
     "v3_touchback_state_hidConnected_message":
-        MessageLookupByLibrary.simpleMessage("Hid Connected"),
+        MessageLookupByLibrary.simpleMessage("Hid Bağlandı"),
     "v3_touchback_state_hidConnecting_message":
-        MessageLookupByLibrary.simpleMessage("Hid Connecting"),
+        MessageLookupByLibrary.simpleMessage("Hid Bağlanıyor"),
     "v3_touchback_state_hidProfileServiceStartedSuccess_message":
         MessageLookupByLibrary.simpleMessage(
-          "Hid Profile Service Started Success",
+          "Hid Profil Hizmeti Başarıyla Başlatıldı",
         ),
     "v3_touchback_state_hidProfileServiceStarting_message":
-        MessageLookupByLibrary.simpleMessage("Hid Profile Service Starting"),
+        MessageLookupByLibrary.simpleMessage("Hid Profil Hizmeti Başlatılıyor"),
     "v3_touchback_state_initialized_message":
-        MessageLookupByLibrary.simpleMessage("Initialized"),
+        MessageLookupByLibrary.simpleMessage("Başlatıldı"),
     "v3_touchback_state_initializing_message":
-        MessageLookupByLibrary.simpleMessage("Initializing"),
+        MessageLookupByLibrary.simpleMessage("Başlatılıyor"),
     "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
-      "You can now control %s remotely from the IFP.",
+      "Artık IFP\'den %s\'yi uzaktan kontrol edebilirsiniz.",
     ),
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
-      "Waiting for this participant to share their screen",
+      "Bu katılımcının ekranını paylaşmasını bekliyor",
     ),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage(
-      "Waiting for others to join",
+      "Diğerlerinin katılmasını bekliyor",
     ),
-    "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Up next"),
+    "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Sırada"),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
-      "Downloading system updates",
+      "Sistem güncellemeleri indiriliyor",
     ),
   };
 }

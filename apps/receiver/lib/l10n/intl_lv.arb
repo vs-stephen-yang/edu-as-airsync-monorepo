@@ -364,5 +364,17 @@
   "v3_help_center_title": "Palīdzības Centrs",
   "v3_lbl_open_help_center": "Palīdzības centra izvēlnes atvēršana",
   "v3_lbl_close_help_center": "Aizvērt palīdzības centru",
-  "v3_settings_knowledge_base": "Zināšanu bāze"
+  "v3_settings_knowledge_base": "Zināšanu bāze",
+  "v3_lbl_settings_knowledge_base": "Zināšanu bāze",
+  "v3_settings_device_high_image_quality": "Augsta attēla kvalitāte",
+  "v3_lbl_settings_device_high_image_quality": "Augsta attēla kvalitāte",
+  "v3_lbl_streaming_page_control": "Nākamā lapaspuse",
+  "v3_instruction2_onethird": "Displeja kods",
+  "v3_instruction3_onethird": "Vienreizējā parole",
+  "v3_miracast_uibc_not_supported_message": "Šis avots neatbalsta Miracast pieskārienu",
+  "v3_lbl_cast_device_next": "Nākamā lapaspuse",
+  "v3_lbl_cast_device_previous": "Iepriekšējā lapa",
+  "v3_lbl_cast_device_sort_asc": "Kārtot augošā secībā",
+  "v3_lbl_cast_device_sort_desc": "Kārtot dilstošā secībā",
+  "v3_settings_device_not_supported": "Ierīces versija netiek atbalstīta"
 }

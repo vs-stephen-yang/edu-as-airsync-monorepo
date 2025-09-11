@@ -383,8 +383,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Įveskite ekrano kodą",
     ),
+    "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+      "Ekrano kodas",
+    ),
     "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Įveskite vienkartinį slaptažodį",
+    ),
+    "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+      "Vienkartinis slaptažodis",
     ),
     "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Bendrinkite savo ekranus",
@@ -406,6 +412,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Uždarykite perdavimo įrenginio ryšį",
+    ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "Kitas puslapis",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "Ankstesnis puslapis",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "Rūšiuoti didėjančia tvarka",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "Rūšiuoti mažėjančia tvarka",
     ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
@@ -607,6 +625,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Automatinio užpildymo OTP režimo įjungimas / išjungimas",
         ),
+    "v3_lbl_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Aukšta vaizdo kokybė"),
     "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Automatinio paleidimo režimo įjungimas / išjungimas",
@@ -635,6 +655,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Pasirinkite %s",
+    ),
+    "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Žinių bazė",
     ),
     "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Atidaryti teisinės strategijos parametrų meniu",
@@ -680,6 +703,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "\"Airplay\" jutiklinis ryšys",
+    ),
+    "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+      "Kitas puslapis",
     ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("\"AirPlay\" perjungimas"),
@@ -756,6 +782,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "\"Miracast\" dabar nepasiekiamas. Dabartinis \"Wi-Fi\" kanalas nepalaiko ekrano perdavimo.",
     ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Šis šaltinis nepalaiko \"Miracast\" atgalinio ryšio",
+        ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Slaptažodis",
     ),
@@ -888,6 +918,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Įjunkite vieno prisilietimo ryšį pasirinkdami įrenginį iš sąrašo.",
         ),
+    "v3_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Aukšta vaizdo kokybė"),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Paleisti AirSync paleidžiant sistemą",
@@ -900,6 +932,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Išsaugoti",
+    ),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Įrenginio versija nepalaikoma",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Įrenginio nustatymai",
