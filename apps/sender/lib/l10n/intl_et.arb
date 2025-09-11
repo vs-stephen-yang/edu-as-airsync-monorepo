@@ -260,5 +260,8 @@
   "v3_lbl_exit_action_exit": "Mine välja",
   "v3_main_present_or": "või",
   "v3_main_knowledge_base": "Teadmistepagas",
-  "v3_lbl_main_knowledge_base": "Teadmistepagas"
+  "v3_lbl_main_knowledge_base": "Teadmistepagas",
+  "v3_main_feedback": "Feedback",
+  "v3_lbl_main_feedback": "Feedback",
+  "v3_device_list_next": "Järgmine"
 }

@@ -1786,36 +1786,6 @@ class S {
     );
   }
 
-  /// `Moderator Mode is On`
-  String get v3_present_joined_before_moderator_on {
-    return Intl.message(
-      'Moderator Mode is On',
-      name: 'v3_present_joined_before_moderator_on',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Moderator is On. Please reconnect.`
-  String get v3_present_joined_before_moderator_on_description {
-    return Intl.message(
-      'Moderator is On. Please reconnect.',
-      name: 'v3_present_joined_before_moderator_on_description',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `OK`
-  String get v3_present_joined_before_moderator_on_action {
-    return Intl.message(
-      'OK',
-      name: 'v3_present_joined_before_moderator_on_action',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Currently, only Chrome and Edge browsers are supported.`
   String get v3_main_web_nonsupport {
     return Intl.message(
@@ -2685,6 +2655,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Moderator Mode is On`
+  String get v3_present_joined_before_moderator_on {
+    return Intl.message(
+      'Moderator Mode is On',
+      name: 'v3_present_joined_before_moderator_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Moderator is On. Please reconnect.`
+  String get v3_present_joined_before_moderator_on_description {
+    return Intl.message(
+      'Moderator is On. Please reconnect.',
+      name: 'v3_present_joined_before_moderator_on_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_present_joined_before_moderator_on_action {
+    return Intl.message(
+      'OK',
+      name: 'v3_present_joined_before_moderator_on_action',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -2703,8 +2703,10 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'lt'),
       Locale.fromSubtags(languageCode: 'lv'),
       Locale.fromSubtags(languageCode: 'no'),
+      Locale.fromSubtags(languageCode: 'pl'),
       Locale.fromSubtags(languageCode: 'ru'),
       Locale.fromSubtags(languageCode: 'sv'),
+      Locale.fromSubtags(languageCode: 'tr'),
       Locale.fromSubtags(languageCode: 'zh'),
     ];
   }

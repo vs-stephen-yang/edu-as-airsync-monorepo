@@ -240,6 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Ievadiet vienreizējo paroli",
     ),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Tālāk"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Piekrītu"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nepiekrītu"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
@@ -285,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Iegūt Windows versiju",
     ),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Zināšanu bāze",
     ),
@@ -485,6 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Displeja kods nav atrasts vai instance ir bezsaistē.",
