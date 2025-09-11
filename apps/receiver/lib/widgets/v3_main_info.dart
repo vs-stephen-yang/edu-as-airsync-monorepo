@@ -23,7 +23,8 @@ class V3MainInfo extends StatelessWidget {
       builder: (context, constraints, ratio, isMultiWindow, isPortrait,
           isFloatWindow) {
         if (!isPortrait) {
-          if (ratio == SplitScreenRatio.launcher) {
+          if (ratio == SplitScreenRatio.launcher ||
+              ratio == SplitScreenRatio.launcherFull) {
             return buildSmallFrame(
               width: 280,
               height: 157.3,

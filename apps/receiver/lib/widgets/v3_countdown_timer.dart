@@ -14,7 +14,8 @@ class V3CountdownTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     var circleSize = Size(40, 45);
     var circleStrokeWith = 3.0;
-    if (context.splitScreenRatio == SplitScreenRatio.launcher) {
+    if (context.splitScreenRatio.widthFraction ==
+        SplitScreenRatio.launcher.widthFraction) {
       circleSize = Size(13.3333, 13.3333);
       circleStrokeWith = 2.0;
     } else if (context.splitScreenRatio == SplitScreenRatio.floatingDefault) {

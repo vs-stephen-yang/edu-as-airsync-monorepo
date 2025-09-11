@@ -28,7 +28,9 @@ class V3MainInfoLandscape extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiWindowAdaptiveLayout(
       launcher: V3MainConnectionInfoLauncher(),
+      launcherFull: V3MainConnectionInfoLauncher(),
       landscapeOneThird: V3MainConnectionInfoOneThird(),
+      launcherMain: V3MainConnectionInfoLauncherMain(),
       floatingDefault: V3MainConnectionInfoFloatingDefault(),
       landscapeHalf: V3MainConnectionInfoHalf(),
       landscapeTwoThirds: V3MainConnectionInfo(),
@@ -197,6 +199,92 @@ class _V3MainConnectionInfoOneThirdState
             const V3MainInstructionSection(),
             const Gap(30.0),
           ],
+        );
+      },
+    );
+  }
+}
+
+class V3MainConnectionInfoLauncherMain extends StatefulWidget {
+  const V3MainConnectionInfoLauncherMain({super.key});
+
+  @override
+  State<V3MainConnectionInfoLauncherMain> createState() =>
+      _V3MainConnectionInfoLauncherMainState();
+}
+
+class _V3MainConnectionInfoLauncherMainState
+    extends State<V3MainConnectionInfoLauncherMain> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: AppPreferences().textSizeOptionNotifier,
+      builder: (context, value, child) {
+        return V3MainInstructionArea(
+          topPadding: 26.66,
+          scrollController: _scrollController,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    V3InstructionStep(
+                      showIcon: false,
+                      textContent: AutoHyphenatingText(
+                        S.of(context).v3_instruction2_onethird,
+                        style: context.tokens.textStyle.airsyncFontTitle.apply(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                        ),
+                        maxLines: 6,
+                      ),
+                      actionWidget: const V3DisplayCode(),
+                      actionPadding: EdgeInsets.zero,
+                    ),
+                    SizedBox(
+                        height: context.tokens.spacing.vsdslSpacing3xl.top),
+                    V3InstructionStep(
+                      showIcon: false,
+                      textContent: AutoHyphenatingText(
+                        S.of(context).v3_instruction3_onethird,
+                        style: context.tokens.textStyle.airsyncFontTitle.apply(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                        ),
+                      ),
+                      actionWidget: const V3OtpWithTimer(),
+                      actionPadding: EdgeInsets.only(
+                        top: context.tokens.spacing.vsdslSpacingXl.top,
+                      ),
+                    ),
+                    const Gap(10),
+                    const V3MainInstructionSection(
+                      horizontalPadding: 0,
+                      verticalPadding: 0,
+                    ),
+                    const Gap(26.66),
+                  ],
+                ),
+              ),
+              const V3MainQrCodeArea(),
+            ],
+          ),
         );
       },
     );

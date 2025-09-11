@@ -14,6 +14,7 @@ import 'package:display_flutter/utility/wifi_status_util.dart';
 import 'package:display_flutter/widgets/streaming/streaming_view_container.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:display_flutter/widgets/v3_debug_device_info_overlay.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_group_host_view.dart';
@@ -174,6 +175,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                     const V3GroupRejectPrompt(),
                     const V3GroupHostView(),
                     const V3MessageDialog(),
+                    const V3DebugDeviceInfoOverlay(),
                   ],
                 ),
               );

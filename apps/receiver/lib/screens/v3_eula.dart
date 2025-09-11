@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:display_flutter/widgets/v3_eula_disable_page.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3Eula extends StatefulWidget {
@@ -37,247 +37,17 @@ class _V3EulaState extends State<V3Eula> {
 
   @override
   Widget build(BuildContext context) {
-    final isCompat = context.splitScreenRatio.widthFraction <=
-        SplitScreenRatio.floatingDefault.widthFraction;
-    if (isCompat) {
-      if (showDisagreePage) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned.fill(
-                bottom: 0,
-                child: SvgPicture.asset(
-                  'assets/images/ic_launcher_disable_eula_bg.svg',
-                  excludeFromSemantics: true,
-                  width: 280,
-                  height: 157.333,
-                ),
-              ),
-              ConstrainedBox(
-                constraints: const BoxConstraints.expand(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      S.of(context).v3_instruction_share_screen,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdslColorOnSurface,
-                        fontSize: 13.33,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Gap(6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/ic_logo_airsync_icon.svg',
-                          excludeFromSemantics: true,
-                          width: 30,
-                          height: 30,
-                        ),
-                        Gap(6),
-                        SvgPicture.asset(
-                          'assets/images/ic_logo_airsync_text.svg',
-                          excludeFromSemantics: true,
-                          height: 25.8999,
-                        ),
-                      ],
-                    ),
-                    Gap(24.6666),
-                    SizedBox(
-                      width: 108,
-                      height: 26.6,
-                      child: V3Focus(
-                        label: S.of(context).v3_lbl_eula_launch,
-                        identifier: 'v3_qa_eula_launch',
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            shadowColor:
-                                context.tokens.color.vsdslColorSecondary,
-                            foregroundColor:
-                                context.tokens.color.vsdslColorOnSurfaceInverse,
-                            overlayColor:
-                                context.tokens.color.vsdslColorSecondary,
-                            // remove onFocused color, this is also ripple color
-                            backgroundColor:
-                                context.tokens.color.vsdslColorSecondary,
-                            textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            padding: EdgeInsets.zero,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              showDisagreePage = false;
-                            });
-                          },
-                          child: V3AutoHyphenatingText(
-                              S.of(context).v3_eula_launch),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-
-      return Scaffold(
-        body: FutureBuilder(
-            future: initOperation,
-            builder: (_, AsyncSnapshot<void> snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return Container();
-              }
-              return ConstrainedBox(
-                constraints: const BoxConstraints.expand(),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      color: const Color(0xFFEAEBF1),
-                    ),
-                    Container(
-                      width: 512,
-                      height: 507,
-                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                      child: Column(
-                        children: [
-                          V3AutoHyphenatingText(
-                            S.of(context).v3_eula_title,
-                            style: TextStyle(
-                              color: context.tokens.color.vsdslColorOnSurface,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13.3,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Expanded(
-                            child: Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: FutureBuilder<String>(
-                                future: _loadEulaFromAssets(),
-                                builder: (context, snapshot) {
-                                  String content;
-                                  if (snapshot.connectionState ==
-                                          ConnectionState.done &&
-                                      snapshot.data != null) {
-                                    content = (snapshot.data as String)
-                                        .replaceFirst('2016-%s',
-                                            '2016-${DateTime.now().year}');
-                                  } else {
-                                    content = S.of(context).eula_title;
-                                  }
-                                  return V3FocusSingleChildScrollView(
-                                    primaryFocusNode: widget.primaryFocusNode,
-                                    children: [
-                                      V3AutoHyphenatingText(
-                                        content,
-                                        style: TextStyle(
-                                          color: context
-                                              .tokens.color.vsdslColorNeutral,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10.666),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 108,
-                                height: 26.6,
-                                child: V3Focus(
-                                  label: S.of(context).v3_lbl_eula_disagree,
-                                  identifier: 'v3_qa_eula_disagree',
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: context
-                                          .tokens.color.vsdslColorSecondary,
-                                      backgroundColor: Colors.white,
-                                      overlayColor: Colors.transparent,
-                                      // remove onFocused color, this is also ripple color
-                                      side: BorderSide(
-                                        color: context
-                                            .tokens.color.vsdslColorSecondary,
-                                        width: 1.5,
-                                      ),
-                                      textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        showDisagreePage = true;
-                                      });
-                                    },
-                                    child: V3AutoHyphenatingText(
-                                        S.of(context).v3_eula_disagree),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              SizedBox(
-                                width: 108,
-                                height: 26.6,
-                                child: V3Focus(
-                                  label: S.of(context).v3_lbl_eula_agree,
-                                  identifier: 'v3_qa_eula_agree',
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 5.0,
-                                      shadowColor: context
-                                          .tokens.color.vsdslColorSecondary,
-                                      foregroundColor: context.tokens.color
-                                          .vsdslColorOnSurfaceInverse,
-                                      overlayColor: context
-                                          .tokens.color.vsdslColorSecondary,
-                                      // remove onFocused color, this is also ripple color
-                                      backgroundColor: context
-                                          .tokens.color.vsdslColorSecondary,
-                                      textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    onPressed: () {
-                                      AppPreferences().set(showEULA: false);
-                                      navService
-                                          .pushNamedAndRemoveUntil('/v3Home');
-                                    },
-                                    child: V3AutoHyphenatingText(
-                                        S.of(context).v3_eula_agree),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-      );
+    if (showDisagreePage) {
+      return V3EulaDisablePage(onPressed: () {
+        setState(() {
+          showDisagreePage = false;
+        });
+      });
     }
+    return _buildEula(context);
+  }
 
+  Scaffold _buildEula(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
           future: initOperation,
@@ -402,44 +172,56 @@ class _V3EulaState extends State<V3Eula> {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(
-                              width: 108,
-                              height: 40,
-                              child: V3Focus(
-                                label: S.of(context).v3_lbl_eula_disagree,
-                                identifier: 'v3_qa_eula_disagree',
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: context
-                                        .tokens.color.vsdslColorSecondary,
-                                    backgroundColor: Colors.white,
-                                    overlayColor: Colors.transparent,
-                                    // remove onFocused color, this is also ripple color
-                                    side: BorderSide(
-                                      color: context
-                                          .tokens.color.vsdslColorSecondary,
-                                      width: 1.5,
+                            FutureBuilder(
+                                future: DeviceInfoVs.isCorporateMode,
+                                builder: (context, snapshot) {
+                                  final isCorporateMode =
+                                      snapshot.hasData && snapshot.data == true;
+                                  return SizedBox(
+                                    width: 108,
+                                    height: 40,
+                                    child: V3Focus(
+                                      label: S.of(context).v3_lbl_eula_disagree,
+                                      identifier: 'v3_qa_eula_disagree',
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: context
+                                              .tokens.color.vsdslColorSecondary,
+                                          backgroundColor: Colors.white,
+                                          overlayColor: Colors.transparent,
+                                          // remove onFocused color, this is also ripple color
+                                          side: BorderSide(
+                                            color: context.tokens.color
+                                                .vsdslColorSecondary,
+                                            width: 1.5,
+                                          ),
+                                          textStyle: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          padding: EdgeInsets.zero,
+                                        ),
+                                        onPressed: () {
+                                          if (isCorporateMode) {
+                                            setState(() {
+                                              showDisagreePage = true;
+                                            });
+                                          }
+
+                                          if (Platform.isAndroid) {
+                                            SystemNavigator.pop();
+                                          } else if (Platform.isIOS) {
+                                            exit(0);
+                                          } else {
+                                            // todo: support other platform.
+                                          }
+                                        },
+                                        child: V3AutoHyphenatingText(
+                                            S.of(context).v3_eula_disagree),
+                                      ),
                                     ),
-                                    textStyle: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  onPressed: () {
-                                    if (Platform.isAndroid) {
-                                      SystemNavigator.pop();
-                                    } else if (Platform.isIOS) {
-                                      exit(0);
-                                    } else {
-                                      // todo: support other platform.
-                                    }
-                                  },
-                                  child: V3AutoHyphenatingText(
-                                      S.of(context).v3_eula_disagree),
-                                ),
-                              ),
-                            ),
+                                  );
+                                }),
                             const SizedBox(width: 8),
                             SizedBox(
                               width: 108,

@@ -29,6 +29,7 @@ class DebugSwitch extends StatefulWidget {
 class _DebugSwitchState extends State<DebugSwitch> {
   bool _showOldUI = false;
   bool _showDebugOverlay = false;
+  bool _showDeviceInfoOverlay = false;
   bool _useSoftwareDecode = false;
   bool _useQuickDecodeParams = false;
   bool _dumpSrtpPackets = false;
@@ -85,6 +86,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
     setState(() {
       _showDebugOverlay = value;
       _notifyRestart();
+    });
+  }
+
+  void _showDeviceInfoOverlayChanged(bool value) async {
+    DeviceFeatureAdapter.showDeviceInfoOverlay = value;
+
+    setState(() {
+      _showDeviceInfoOverlay = value;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Adjust screen size to apply the changes.")));
     });
   }
 
@@ -182,6 +193,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _initialize() {
     _showOldUI = DeviceFeatureAdapter.showOldUI;
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
+    _showDeviceInfoOverlay = DeviceFeatureAdapter.showDeviceInfoOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
     _enableWebRtcH264BaselineProfile =
         DeviceFeatureAdapter.enableWebRtcH264BaselineProfile;
@@ -266,6 +278,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           title: const Text('Show Debug Overlay'),
                           value: _showDebugOverlay,
                           onChanged: _showDebugOverlayChanged,
+                        ),
+                        SwitchListTile(
+                          title: const Text('Show Device Info Overlay'),
+                          value: _showDeviceInfoOverlay,
+                          onChanged: _showDeviceInfoOverlayChanged,
                         ),
                         SwitchListTile(
                           title: const Text('Software Decode'),

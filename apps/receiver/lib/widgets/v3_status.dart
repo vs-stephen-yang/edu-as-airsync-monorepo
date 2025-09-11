@@ -81,7 +81,7 @@ class V3Status extends StatelessWidget {
                     builder: (_, __, SplitScreenRatio splitScreenRatio, ___,
                         ____, _____) {
                       if (splitScreenRatio.index >=
-                          SplitScreenRatio.twoThirds.index) {
+                          SplitScreenRatio.twoThirdsFull.index) {
                         return Text(
                           connectivityProvider.ssidName!,
                           style: TextStyle(
@@ -116,6 +116,7 @@ class V3Status extends StatelessWidget {
               const V3TextClock(),
             ],
           ),
+          floatingDefault: SizedBox.shrink(),
           landscapeOneThird: SizedBox.shrink(),
           launcher: SizedBox.shrink(),
         ),

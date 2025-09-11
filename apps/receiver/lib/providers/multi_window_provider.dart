@@ -51,26 +51,30 @@ class MultiWindowProvider extends ChangeNotifier {
         PlatformDispatcher.instance.views.first.devicePixelRatio;
     final appHeight = appSize.height *
         PlatformDispatcher.instance.views.first.devicePixelRatio;
-    final ratio = double.parse(
-      (appWidth / _realScreenSize.width).toStringAsFixed(2),
-    );
+    final widthRatio =
+        double.parse((appWidth / _realScreenSize.width).toStringAsFixed(2));
 
     final fullHeight = (appHeight - _realScreenSize.height).abs() < 150;
-    return switch (ratio) {
-      < 0.33 => SplitScreenRatio.launcher,
-      >= 0.33 && < 0.416667 => fullHeight
-          ? SplitScreenRatio.floatingDefault
-          : SplitScreenRatio.launcher,
-      >= 0.416667 && < 0.5 => fullHeight
-          ? SplitScreenRatio.oneThird
-          : SplitScreenRatio.floatingDefault,
-      >= 0.5 && < 0.65 =>
-        fullHeight ? SplitScreenRatio.half : SplitScreenRatio.floatingDefault,
-      >= 0.65 => fullHeight
-          ? SplitScreenRatio.twoThirds
-          : SplitScreenRatio.floatingDefault,
-      _ => SplitScreenRatio.none
-    };
+    if (fullHeight) {
+      return switch (widthRatio) {
+        < 0.33 => SplitScreenRatio.launcherFull,
+        >= 0.33 && < 0.5 => SplitScreenRatio.oneThirdFull,
+        >= 0.5 && < 0.65 => SplitScreenRatio.halfFull,
+        >= 0.65 => SplitScreenRatio.twoThirdsFull,
+        _ => SplitScreenRatio.none
+      };
+    }
+
+    // 先看高度再看寬度
+    if (appSize.height < SplitScreenRatio.floatingDefault.heightDP ||
+        appSize.width < SplitScreenRatio.floatingDefault.widthDP) {
+      return SplitScreenRatio.launcher;
+    } else if (appSize.height < SplitScreenRatio.launcherMain.heightDP ||
+        appSize.width < SplitScreenRatio.launcherMain.widthDP) {
+      return SplitScreenRatio.floatingDefault;
+    } else {
+      return SplitScreenRatio.launcherMain;
+    }
   }
 
   bool _isFloatWindow(Size appSize) {
@@ -103,46 +107,89 @@ class MultiWindowProvider extends ChangeNotifier {
 }
 
 enum SplitScreenRatio {
-  half,
   launcher,
-  oneThird,
+  launcherFull,
+  oneThirdFull,
   floatingDefault,
-  twoThirds,
+  halfFull,
+  twoThirdsFull,
+  launcherMain,
   none,
 }
 
 extension SplitScreenRatioExt on SplitScreenRatio {
-  String get label {
-    switch (this) {
-      case SplitScreenRatio.launcher:
-        return "420/1920";
-      case SplitScreenRatio.half:
-        return "1/2";
-      case SplitScreenRatio.floatingDefault:
-        return "800/1920";
-      case SplitScreenRatio.oneThird:
-        return "1/3";
-      case SplitScreenRatio.twoThirds:
-        return "2/3";
-      case SplitScreenRatio.none:
-        return "None";
-    }
-  }
-
   double get widthFraction {
     switch (this) {
       case SplitScreenRatio.launcher:
+      case SplitScreenRatio.launcherFull:
         return 0.21875; // 420/1920
-      case SplitScreenRatio.oneThird:
+      case SplitScreenRatio.oneThirdFull:
         return 0.33;
       case SplitScreenRatio.floatingDefault:
         return 0.416667; // 800/1920
-      case SplitScreenRatio.half:
+      case SplitScreenRatio.halfFull:
         return 0.5;
-      case SplitScreenRatio.twoThirds:
+      case SplitScreenRatio.twoThirdsFull:
         return 2 / 3;
+      case SplitScreenRatio.launcherMain:
+        return 0.6979; // 1340/1920
       case SplitScreenRatio.none:
         return 0;
+    }
+  }
+
+  double get heightFraction {
+    switch (this) {
+      case SplitScreenRatio.launcher:
+        return 0.2185; // 236/1080
+      case SplitScreenRatio.floatingDefault:
+        return 0.4166; // 450/1080
+      case SplitScreenRatio.launcherMain:
+        return 0.6981; // 754/1080
+      case SplitScreenRatio.launcherFull:
+      case SplitScreenRatio.oneThirdFull:
+      case SplitScreenRatio.halfFull:
+      case SplitScreenRatio.twoThirdsFull:
+        return 1;
+      case SplitScreenRatio.none:
+        return 0;
+    }
+  }
+
+  double get widthDP {
+    switch (this) {
+      case SplitScreenRatio.launcher:
+      case SplitScreenRatio.launcherFull:
+        return (420 / 3) * 2;
+      case SplitScreenRatio.oneThirdFull:
+        return (640 / 3) * 2;
+      case SplitScreenRatio.floatingDefault:
+        return (800 / 3) * 2;
+      case SplitScreenRatio.halfFull:
+        return (960 / 3) * 2;
+      case SplitScreenRatio.twoThirdsFull:
+        return (1280 / 3) * 2;
+      case SplitScreenRatio.launcherMain:
+        return (1340 / 3) * 2;
+      case SplitScreenRatio.none:
+        return (1920 / 3) * 2;
+    }
+  }
+
+  double get heightDP {
+    switch (this) {
+      case SplitScreenRatio.launcher:
+        return (236 / 3) * 2;
+      case SplitScreenRatio.floatingDefault:
+        return (450 / 3) * 2;
+      case SplitScreenRatio.launcherMain:
+        return (754 / 3) * 2;
+      case SplitScreenRatio.launcherFull:
+      case SplitScreenRatio.oneThirdFull:
+      case SplitScreenRatio.halfFull:
+      case SplitScreenRatio.twoThirdsFull:
+      case SplitScreenRatio.none:
+        return (1080 / 3) * 2;
     }
   }
 }
@@ -212,20 +259,24 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
   final Widget? portrait;
   final Widget landscape;
   final Widget? launcher;
+  final Widget? launcherFull;
   final Widget? floatingDefault;
   final Widget? landscapeHalf;
   final Widget? landscapeOneThird;
   final Widget? landscapeTwoThirds;
+  final Widget? launcherMain;
 
   const MultiWindowAdaptiveLayout({
     super.key,
     this.portrait,
     required this.landscape,
     this.launcher,
+    this.launcherFull,
     this.floatingDefault,
     this.landscapeHalf,
     this.landscapeOneThird,
     this.landscapeTwoThirds,
+    this.launcherMain,
   });
 
   @override
@@ -249,12 +300,16 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
           return launcher ?? landscape;
         case SplitScreenRatio.floatingDefault:
           return floatingDefault ?? launcher ?? landscape;
-        case SplitScreenRatio.twoThirds:
+        case SplitScreenRatio.twoThirdsFull:
           return landscapeTwoThirds ?? landscape;
-        case SplitScreenRatio.half:
+        case SplitScreenRatio.halfFull:
           return landscapeHalf ?? landscape;
-        case SplitScreenRatio.oneThird:
+        case SplitScreenRatio.oneThirdFull:
           return landscapeOneThird ?? landscape;
+        case SplitScreenRatio.launcherFull:
+          return launcherFull ?? launcher ?? landscape;
+        case SplitScreenRatio.launcherMain:
+          return launcherMain ?? landscape;
         case SplitScreenRatio.none:
           return landscape;
       }
