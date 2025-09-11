@@ -70,7 +70,9 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
   Widget build(BuildContext context) {
     final isCompact = context.isInMultiWindow &&
         context.splitScreenRatio.widthFraction <=
-            SplitScreenRatio.floatingDefault.widthFraction;
+                SplitScreenRatio.floatingDefault.widthFraction ||
+        context.splitScreenRatio.heightFraction <
+            SplitScreenRatio.oneThirdFull.heightFraction;
 
     if (isCompact) return SizedBox.shrink();
     return AnimatedBuilder(

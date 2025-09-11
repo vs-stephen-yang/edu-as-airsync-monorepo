@@ -80,8 +80,14 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
     final color = widget.isWaitForStream ? Colors.white : Colors.black;
 
     if (isCompact) {
-      final width = ratio == SplitScreenRatio.launcher ? 55.133 : 100.0;
-      final height = ratio == SplitScreenRatio.launcher ? 12.133 : 24.0;
+      final width =
+          ratio.widthFraction == SplitScreenRatio.launcher.widthFraction
+              ? 55.133
+              : 100.0;
+      final height =
+          ratio.widthFraction == SplitScreenRatio.launcher.widthFraction
+              ? 12.133
+              : 24.0;
       return Row(
         children: [
           const Padding(padding: EdgeInsets.only(left: 3.03)),
@@ -94,7 +100,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
           ),
         ],
       );
-    } else if (ratio == SplitScreenRatio.twoThirds ||
+    } else if (ratio == SplitScreenRatio.twoThirdsFull ||
         !context.isInMultiWindow) {
       return Row(
         children: [
@@ -116,6 +122,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
     double size;
     switch (ratio) {
       case SplitScreenRatio.launcher:
+      case SplitScreenRatio.launcherFull:
         size = 18;
         break;
       case SplitScreenRatio.floatingDefault:
@@ -137,11 +144,17 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
     final isCompact = context.isInMultiWindow &&
         ratio.widthFraction <= SplitScreenRatio.floatingDefault.widthFraction;
 
-    final double horizontal =
-        isCompact ? (ratio == SplitScreenRatio.launcher ? 15.3 : 32.0) : 25.0;
+    final double horizontal = isCompact
+        ? (ratio.widthFraction == SplitScreenRatio.launcher.widthFraction
+            ? 15.3
+            : 32.0)
+        : 25.0;
 
-    final double vertical =
-        isCompact ? (ratio == SplitScreenRatio.launcher ? 15.3 : 32.0) : 25.0;
+    final double vertical = isCompact
+        ? (ratio.widthFraction == SplitScreenRatio.launcher.widthFraction
+            ? 15.3
+            : 32.0)
+        : 25.0;
 
     return _Padding(horizontal, vertical);
   }

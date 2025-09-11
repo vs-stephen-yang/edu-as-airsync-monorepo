@@ -39,17 +39,14 @@ class V3MainMiracastInstruction extends StatelessWidget {
 
   Widget _buildInstructionIcon(BuildContext context, String assetPath,
       {Color? color}) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 35),
-      child: SvgPicture.asset(
-        assetPath,
-        excludeFromSemantics: true,
-        width: 21,
-        height: 21,
-        colorFilter: ColorFilter.mode(
-          color ?? context.tokens.color.vsdslColorOnSurfaceVariant,
-          BlendMode.srcIn,
-        ),
+    return SvgPicture.asset(
+      assetPath,
+      excludeFromSemantics: true,
+      width: 21,
+      height: 21,
+      colorFilter: ColorFilter.mode(
+        color ?? context.tokens.color.vsdslColorOnSurfaceVariant,
+        BlendMode.srcIn,
       ),
     );
   }

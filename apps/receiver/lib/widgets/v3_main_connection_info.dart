@@ -123,7 +123,7 @@ class V3MainInstructionSection extends StatelessWidget {
 
   const V3MainInstructionSection({
     super.key,
-    this.horizontalPadding = 50.0,
+    this.horizontalPadding = 85.0,
     this.verticalPadding = 6.0,
   });
 

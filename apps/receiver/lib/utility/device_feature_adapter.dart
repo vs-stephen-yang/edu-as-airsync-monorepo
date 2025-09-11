@@ -21,6 +21,7 @@ class DeviceFeatureAdapter {
   static String _sdkVersion = '';
   static bool showOldUI = false;
   static bool showDebugOverlay = false;
+  static bool showDeviceInfoOverlay = false;
   static bool useSoftwareDecode = false;
   static bool useQuickDecodeParams = false;
   static bool enableWebRtcH264BaselineProfile = false;

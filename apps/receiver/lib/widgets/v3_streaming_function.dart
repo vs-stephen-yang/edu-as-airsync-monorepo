@@ -88,7 +88,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
           constraints: BoxConstraints.tightFor(
             width: isCollapsed
                 ? 37
-                : ((context.splitScreenRatio == SplitScreenRatio.oneThird ||
+                : ((context.splitScreenRatio == SplitScreenRatio.oneThirdFull ||
                                 HybridConnectionList
                                         .hybridSplitScreenCount.value >
                                     1) &&
@@ -182,7 +182,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 // Use Visibility Widget to Maintain Focus on the Correct Icon During Collapse/Expand.
                 Visibility(
                   visible: !isCollapsed &&
-                      (context.splitScreenRatio == SplitScreenRatio.oneThird ||
+                      (context.splitScreenRatio ==
+                              SplitScreenRatio.oneThirdFull ||
                           HybridConnectionList.hybridSplitScreenCount.value >
                               1) &&
                       (context.splitScreenRatio.widthFraction >

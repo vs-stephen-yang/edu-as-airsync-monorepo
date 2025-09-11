@@ -42,7 +42,7 @@ class _TitleBarStates extends State<TitleBar> {
                 onClick: () {
                   debugCounter++;
                   if (debugCounter == openDebugCounter) {
-                    _showMenuDialog(const DebugSwitch());
+                    _showMenuDialog(DebugSwitch());
                     debugCounter = 0;
                   }
                 },

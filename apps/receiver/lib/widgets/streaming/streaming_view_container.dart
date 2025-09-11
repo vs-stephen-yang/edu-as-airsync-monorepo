@@ -18,9 +18,9 @@ class StreamingViewContainer extends StatelessWidget {
       landscapeOneThird: V3StreamingView(
         config: listViewConfig,
       ),
-      launcher: V3StreamingView(
-        config: singleViewConfig,
-      ),
+      launcherMain: V3StreamingView(config: singleViewConfig),
+      floatingDefault: V3StreamingView(config: singleViewConfig),
+      launcher: V3StreamingView(config: singleViewConfig),
     );
   }
 }
