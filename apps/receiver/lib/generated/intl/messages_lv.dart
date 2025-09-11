@@ -383,8 +383,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Ievadiet displeja kodu",
     ),
+    "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+      "Displeja kods",
+    ),
     "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Ievadiet vienreizējo paroli",
+    ),
+    "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+      "Vienreizējā parole",
     ),
     "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Kopīgojiet savus ekrānus",
@@ -406,6 +412,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Aizvērt sūtīšanas ierīces savienojumu",
+    ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "Nākamā lapaspuse",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "Iepriekšējā lapa",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "Kārtot augošā secībā",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "Kārtot dilstošā secībā",
     ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
@@ -605,6 +623,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Ieslēgt/izslēgt automātiskās OTP aizpildīšanas režīmu",
         ),
+    "v3_lbl_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Augsta attēla kvalitāte"),
     "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Ieslēgt/izslēgt automātiskās palaišanas režīmu",
@@ -633,6 +653,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Izvēlēties %s",
+    ),
+    "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Zināšanu bāze",
     ),
     "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Atvērt juridiskās politikas iestatījumu izvēlni",
@@ -678,6 +701,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "AirPlay touchback",
+    ),
+    "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+      "Nākamā lapaspuse",
     ),
     "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay pārslēgs"),
@@ -750,6 +776,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast pašlaik nav pieejams. Pašreizējais Wi-Fi kanāls neatbalsta ekrāna apraidi.",
     ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Šis avots neatbalsta Miracast pieskārienu",
+        ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Piekļuves kods",
     ),
@@ -880,6 +910,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
       "Iespējot vienreiz pieskāriena savienojumu, izvēloties ierīci no ierīču saraksta.",
     ),
+    "v3_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Augsta attēla kvalitāte"),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Palaist AirSync startēšanas laikā",
@@ -892,6 +924,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Saglabāt",
+    ),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Ierīces versija netiek atbalstīta",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Ierīces iestatījumi",

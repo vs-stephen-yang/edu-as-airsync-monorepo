@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
+  static String m0(value) =>
+      "Die Bildschirmfreigabe endet in Kürze. Möchten Sie sie um 3 Stunden verlängern? Sie können sie bis zu ${value} Mal verlängern.";
+
   static String m1(year, version) => "AirSync ©${year}. Version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -207,6 +210,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
       "Akzeptieren",
     ),
+    "v3_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Alle akzeptieren",
+    ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Ablehnen",
     ),
@@ -239,8 +245,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_cast_to_device_touch_enabled": MessageLookupByLibrary.simpleMessage(
       "Touchback",
     ),
+    "v3_casting_ended_toast": MessageLookupByLibrary.simpleMessage(
+      "Die Bildschirmfreigabe wurde beendet.",
+    ),
+    "v3_casting_time_countdown": m0,
+    "v3_casting_time_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Nicht verlängern",
+    ),
+    "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage(
+      "Verlängern",
+    ),
+    "v3_casting_time_extend_success_toast":
+        MessageLookupByLibrary.simpleMessage("Um 3 Stunden verlängert."),
     "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
       "Scannen Sie den QR-Code mit Ihrem iOS- oder Android-Gerät zum Herunterladen",
+    ),
+    "v3_download_app_desktop": MessageLookupByLibrary.simpleMessage(
+      "Für die beste Nutzererfahrung!",
+    ),
+    "v3_download_app_desktop_hint": MessageLookupByLibrary.simpleMessage(
+      "*manuelle Installation",
+    ),
+    "v3_download_app_desktop_store": MessageLookupByLibrary.simpleMessage(
+      "Installieren Sie MacOS über den App Store.",
+    ),
+    "v3_download_app_desktop_store_hint": MessageLookupByLibrary.simpleMessage(
+      "*Nur für MacOS",
+    ),
+    "v3_download_app_desktop_title": MessageLookupByLibrary.simpleMessage(
+      "Desktop",
     ),
     "v3_download_app_entry": MessageLookupByLibrary.simpleMessage(
       "Absender-App herunterladen",
@@ -256,6 +289,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
       "Scannen Sie den QR-Code für sofortigen Zugriff.",
+    ),
+    "v3_download_app_mobile_title": MessageLookupByLibrary.simpleMessage(
+      "Mobil",
     ),
     "v3_download_app_or": MessageLookupByLibrary.simpleMessage("ODER"),
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage(
@@ -318,6 +354,92 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Unterstützt die Freigabe über AirPlay, Google Cast oder Miracast",
     ),
+    "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+      "Die Bildschirmfreigabe wird in Kürze beendet. Bitte starten Sie die Bildschirmfreigabe bei Bedarf neu.",
+    ),
+    "v3_lbl_authorize_prompt_accept": MessageLookupByLibrary.simpleMessage(
+      "Anfrage annehmen",
+    ),
+    "v3_lbl_authorize_prompt_accept_all": MessageLookupByLibrary.simpleMessage(
+      "Alle Anfragen akzeptieren",
+    ),
+    "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
+      "Anfrage ablehnen",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("EULA zustimmen"),
+    "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
+      "Nicht mit der EULA einverstanden",
+    ),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+      "Moderatormodus verlassen abbrechen",
+    ),
+    "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
+      "Moderatormodus verlassen bestätigen",
+    ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+      "Nur lokale Verbindung",
+    ),
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+      "Moderatormodus umschalten",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+      "Einstellungsmenü öffnen",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+      "Diesen Teilnehmer trennen",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+      "An den Spiegel dieses Teilnehmers weiterleiten",
+    ),
+    "v3_lbl_participant_touch_back_disable":
+        MessageLookupByLibrary.simpleMessage(
+          "Touchback für diesen Teilnehmer deaktivieren",
+        ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+      "Einstellungsmenü ist gesperrt",
+    ),
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+      "Streaming-Funktionen erweitern",
+    ),
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+      "Streaming-Funktionen ausblenden",
+    ),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Streaming-Ansicht erweitern",
+    ),
+    "v3_lbl_streaming_view_function_expand":
+        MessageLookupByLibrary.simpleMessage("Streaming-Funktion erweitern"),
+    "v3_lbl_streaming_view_function_minimize":
+        MessageLookupByLibrary.simpleMessage("Streaming-Funktion einblenden"),
+    "v3_lbl_streaming_view_minimize": MessageLookupByLibrary.simpleMessage(
+      "Streaming-Ansicht ausblenden",
+    ),
+    "v3_lbl_streaming_view_mute": MessageLookupByLibrary.simpleMessage(
+      "Ton stummschalten",
+    ),
+    "v3_lbl_streaming_view_stop": MessageLookupByLibrary.simpleMessage(
+      "Streaming beenden",
+    ),
+    "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
+      "Unmute audio",
+    ),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Schließen",
+    ),
+    "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
+      "Nur Internetverbindung",
+    ),
+    "v3_main_internet_connection_only_error": MessageLookupByLibrary.simpleMessage(
+      "Verbindungsfehler, bitte überprüfen Sie die Netzwerkeinstellungen des Geräts.",
+    ),
+    "v3_main_internet_connection_only_error_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Verbindungsfehler, bitte überprüfen Sie die Netzwerkeinstellungen des Geräts.",
+        ),
+    "v3_main_local_connection_only_dialog_desc":
+        MessageLookupByLibrary.simpleMessage(
+          "Nur LAN-Verbindung, bitte überprüfen Sie die Netzwerkeinstellungen des Geräts.",
+        ),
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Es konnte keine Internetverbindung erkannt werden. Bitte verbinden Sie sich mit einem WLAN- oder Intranet-Netzwerk und versuchen Sie es erneut.",
     ),
@@ -376,6 +498,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-Code",
+    ),
+    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+      "Abbrechen",
+    ),
+    "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
+      "Löschen",
+    ),
+    "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage(
+      "Bestätigen",
+    ),
+    "v3_setting_passcode_error_description":
+        MessageLookupByLibrary.simpleMessage(
+          "Ungültiges Passwort, bitte versuchen Sie es erneut.",
+        ),
+    "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+      "Passcode eingeben, um Einstellungen zu entsperren",
     ),
     "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Quell-IFP-Bildschirm die ganze Zeit übertragen.",
@@ -451,6 +589,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_smart_scaling": MessageLookupByLibrary.simpleMessage(
       "Smart Scaling",
+    ),
+    "v3_settings_device_smart_scaling_desc": MessageLookupByLibrary.simpleMessage(
+      "Passen Sie die Bildschirmgröße automatisch an, um den Bildschirmplatz optimal zu nutzen. Das Bild kann leicht verzerrt sein.",
     ),
     "v3_settings_device_unavailable": MessageLookupByLibrary.simpleMessage(
       "Nicht verfügbar",

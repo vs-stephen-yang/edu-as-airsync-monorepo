@@ -405,6 +405,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Stäng anslutningen av Cast-enheten",
     ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "Nästa sida",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "Föregående sida",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "Sortera stigande",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "Sortera fallande",
+    ),
     "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
           "Inaktivera touchback för Cast-enhet",
@@ -750,6 +762,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast är inte tillgängligt nu. Den aktuella Wi-Fi-kanalen har inte stöd för skärmcasting.",
     ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Den här källan stöder inte Miracast-touchback",
+        ),
     "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Lösenkod",
     ),
@@ -875,10 +891,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Hög bildkvalitet"),
-    "v3_settings_device_high_image_quality_desc":
-        MessageLookupByLibrary.simpleMessage(
-          "Aktivera för att ta emot högupplöst projektion från avsändaren.",
-        ),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Starta AirSync vid start"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
@@ -889,6 +901,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Spara",
+    ),
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Enhetsversionen stöds inte",
     ),
     "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Enhetsinställning",
