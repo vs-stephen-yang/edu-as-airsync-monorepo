@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
-import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' as svg;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
-import 'package:sprintf/sprintf.dart';
 
 /// 設備名稱顯示組件
 class DeviceNameDisplay extends StatelessWidget {
@@ -240,8 +238,7 @@ class RequestRow extends StatelessWidget {
 
             // 設備名稱
             DeviceNameDisplay(
-                deviceName: sprintf(
-                    S.of(context).main_mirror_from_client, [data.deviceName])),
+                deviceName: data.deviceName),
             Gap(context.tokens.spacing.vsdslSpacingSm.left),
             // Accept 按鈕
             AuthorizeButton(
