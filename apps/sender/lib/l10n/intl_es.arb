@@ -248,5 +248,20 @@
   "v3_setting_accessibility_size_normal": "Normal",
   "v3_setting_accessibility_size_large": "Grande",
   "v3_setting_accessibility_size_xlarge": "Muy grande",
-  "v3_present_touch_back_dialog_description": "Cuando habilites la compartición de pantalla, AirSync capturará y transmitirá temporalmente el contenido de tu pantalla al display seleccionado (por ejemplo, IFP). Para activar Touchback, AirSync necesita el permiso de Servicio de Accesibilidad para permitir el control remoto desde el display. AirSync no recopila tus datos personales ni supervisa tus acciones. Este permiso se utiliza únicamente para habilitar la función de control táctil."
+  "v3_lbl_setting_privacy_policy": "Política de privacidad",
+  "v3_present_touch_back_dialog_title": "Permitir el Touchback",
+  "v3_present_touch_back_dialog_description": "Cuando habilites la compartición de pantalla, AirSync capturará y transmitirá temporalmente el contenido de tu pantalla al display seleccionado (por ejemplo, IFP). Para activar Touchback, AirSync necesita el permiso de Servicio de Accesibilidad para permitir el control remoto desde el display. AirSync no recopila tus datos personales ni supervisa tus acciones. Este permiso se utiliza únicamente para habilitar la función de control táctil.",
+  "v3_present_touch_back_dialog_not_now": "No ahora",
+  "v3_present_touch_back_dialog_allow": "Permitir",
+  "v3_exit_title": "¿Realmente quieres salir?",
+  "v3_exit_action_cancel": "Cancelar",
+  "v3_exit_action_exit": "Salir",
+  "v3_lbl_exit_action_cancel": "Cancelar",
+  "v3_lbl_exit_action_exit": "Salir",
+  "v3_main_present_or": "o",
+  "v3_main_knowledge_base": "Base de Conocimiento",
+  "v3_lbl_main_knowledge_base": "Base de Conocimiento",
+  "v3_main_feedback": "Envía tus Comentarios",
+  "v3_lbl_main_feedback": "Envía tus Comentarios",
+  "v3_device_list_next": "Siguiente"
 }

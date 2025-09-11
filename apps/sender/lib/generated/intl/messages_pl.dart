@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a lt locale. All the
+// This is a library that provides messages for a pl locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,474 +18,462 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'lt';
+  String get localeName => 'pl';
 
   static String m0(value) =>
-      "Pasirinkite ekraną, kurį norite bendrinti per ${value} sekundes...";
+      "Wybierz ekran do udostępnienia w ciągu ${value} sekund...";
 
   static String m1(year) =>
-      "Autorių teisės © ViewSonic Corporation ${year}. Visos teisės saugomos.";
+      "Prawa autorskie © ViewSonic Corporation ${year}. Wszelkie prawa zastrzeżone.";
 
-  static String m2(year, version) => "AirSync ©${year}, versija ${version}";
+  static String m2(year, version) => "AirSync ©${year}. wersja ${version}";
 
   static String m3(year, version) =>
-      "AirSync © ${year}. versija ${version} (Ind.)";
+      "AirSync ©${year}. wersja ${version} (niezależna)";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "device_list_enter_pin": MessageLookupByLibrary.simpleMessage(
-      "Vienkartinis slaptažodis",
+      "Jednorazowe hasło",
     ),
-    "device_list_enter_pin_ok": MessageLookupByLibrary.simpleMessage("GERAI"),
+    "device_list_enter_pin_ok": MessageLookupByLibrary.simpleMessage("OK"),
     "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-      "Tinklo klaida. Patikrinkite tinklo ryšį ir bandykite dar kartą.",
+      "Błąd sieci. Sprawdź łączność z siecią i spróbuj ponownie.",
     ),
     "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
-      "AirSync sesija užimta. Bandykite vėliau.",
+      "Instancja AirSync jest zajęta. Spróbuj ponownie później.",
     ),
     "main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
-      "Nežinoma klaida.",
+      "Nieznany błąd.",
     ),
     "main_connection_mode_unsupported": MessageLookupByLibrary.simpleMessage(
-      "AirSync negali prisijungti prie interneto.",
+      "AirSync nie może połączyć się z internetem.",
     ),
     "main_device_list": MessageLookupByLibrary.simpleMessage(
-      "Greitas prisijungimas",
+      "Szybkie połączenie",
     ),
-    "main_display_code": MessageLookupByLibrary.simpleMessage("Ekrano kodas"),
+    "main_display_code": MessageLookupByLibrary.simpleMessage("Kod ekranu"),
     "main_display_code_description": MessageLookupByLibrary.simpleMessage(
-      "Įveskite ekrano kodą",
+      "Wprowadź kod ekranu",
     ),
     "main_display_code_error": MessageLookupByLibrary.simpleMessage(
-      "Priimami tik raidės ir skaičiai.",
+      "Akceptuje tylko litery i cyfry.",
     ),
     "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
-      "Pasiektas maksimalus dalyvių skaičius (6).",
+      "Osiągnięto maksymalną liczbę uczestników (6).",
     ),
     "main_display_code_exceed_split_screen":
         MessageLookupByLibrary.simpleMessage(
-          "Pasiektas maksimalus pranešėjų skaičius (4).",
+          "Osiągnięto maksymalną liczbę prezenterów (4).",
         ),
     "main_display_code_invalid": MessageLookupByLibrary.simpleMessage(
-      "Neteisingas ekrano kodas",
+      "Nieprawidłowy kod ekranu",
     ),
     "main_feature_reconnect_fail_toast": MessageLookupByLibrary.simpleMessage(
-      "Tinklas (Valdymas) nepavyko prisijungti iš naujo",
+      "Ponowne połączenie z siecią (sterowanie) nie powiodło się",
     ),
     "main_feature_reconnect_success_toast":
         MessageLookupByLibrary.simpleMessage(
-          "Tinklas (Valdymas) sėkmingai prisijungė iš naujo",
+          "Ponowne połączenie z siecią (sterowanie) powiodło się",
         ),
     "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-      "Tinklas (Valdymas) vėl prisijungia",
+      "Sieć (sterowanie) ponownie łączy się",
     ),
     "main_instance_not_found_or_offline": MessageLookupByLibrary.simpleMessage(
-      "Ekrano kodas nerastas arba sesija neprisijungusi.",
+      "Nie znaleziono kodu ekranu lub instancja jest w trybie offline.",
     ),
-    "main_language": MessageLookupByLibrary.simpleMessage("Kalba"),
-    "main_language_name": MessageLookupByLibrary.simpleMessage("Anglų"),
+    "main_language": MessageLookupByLibrary.simpleMessage("Język"),
+    "main_language_name": MessageLookupByLibrary.simpleMessage("Polski"),
     "main_notice_not_support_description": MessageLookupByLibrary.simpleMessage(
-      "Bendrinimas per naršyklę nepalaikomas mobiliuosiuose įrenginiuose. Atsisiųskite ir naudokite AirSync siuntėjo programėlę geresnei patirčiai.",
+      "Udostępnianie za pomocą przeglądarki nie jest obsługiwane na urządzeniach mobilnych. Pobierz i użyj aplikacji nadawcy AirSync, aby uzyskać lepsze wrażenia.",
     ),
     "main_notice_positive_button": MessageLookupByLibrary.simpleMessage(
-      "Atsisiųskite AirSync siuntėjo programėlę.",
+      "Pobierz aplikację nadawcy AirSync.",
     ),
-    "main_notice_title": MessageLookupByLibrary.simpleMessage("Pranešimas"),
+    "main_notice_title": MessageLookupByLibrary.simpleMessage("Uwaga"),
     "main_otp_error": MessageLookupByLibrary.simpleMessage(
-      "Priimami tik skaičiai.",
+      "Akceptuje tylko cyfry.",
     ),
-    "main_password": MessageLookupByLibrary.simpleMessage("Slaptažodis"),
+    "main_password": MessageLookupByLibrary.simpleMessage("Hasło"),
     "main_password_description": MessageLookupByLibrary.simpleMessage(
-      "Įveskite vienkartinį slaptažodį",
+      "Wprowadź jednorazowe hasło",
     ),
     "main_password_invalid": MessageLookupByLibrary.simpleMessage(
-      "Neteisingas slaptažodis.",
+      "Nieprawidłowe hasło.",
     ),
-    "main_present": MessageLookupByLibrary.simpleMessage("Toliau"),
-    "main_setting": MessageLookupByLibrary.simpleMessage("Nustatymai"),
+    "main_present": MessageLookupByLibrary.simpleMessage("Dalej"),
+    "main_setting": MessageLookupByLibrary.simpleMessage("Ustawienia"),
     "main_touch_back": MessageLookupByLibrary.simpleMessage(
-      "Grįžtamasis ryšys",
+      "Sterowanie dotykiem",
     ),
-    "main_update_deny_button": MessageLookupByLibrary.simpleMessage("Ne dabar"),
+    "main_update_deny_button": MessageLookupByLibrary.simpleMessage(
+      "Nie teraz",
+    ),
     "main_update_description_android": MessageLookupByLibrary.simpleMessage(
-      "Paspauskite „Atnaujinti“, kad įdiegtumėte naują versiją.",
+      "Kliknij „Aktualizuj”, aby zainstalować nową wersję.",
     ),
     "main_update_description_apple": MessageLookupByLibrary.simpleMessage(
-      "Paspauskite „Atnaujinti“, kad įdiegtumėte naują versiją.",
+      "Kliknij „Aktualizuj”, aby zainstalować nową wersję.",
     ),
     "main_update_description_windows": MessageLookupByLibrary.simpleMessage(
-      "Paspauskite „Atnaujinti“, kad įdiegtumėte naują versiją.",
+      "Kliknij „Aktualizuj”, aby zainstalować nową wersję.",
     ),
-    "main_update_error_detail": MessageLookupByLibrary.simpleMessage(
-      "Aprašymas:",
-    ),
+    "main_update_error_detail": MessageLookupByLibrary.simpleMessage("Opis: "),
     "main_update_error_title": MessageLookupByLibrary.simpleMessage(
-      "Nepavyko atnaujinti versijos",
+      "Błąd aktualizacji wersji",
     ),
     "main_update_error_type": MessageLookupByLibrary.simpleMessage(
-      "Klaidos priežastis:",
+      "Przyczyna błędu: ",
     ),
     "main_update_positive_button": MessageLookupByLibrary.simpleMessage(
-      "Atnaujinti",
+      "Aktualizuj",
     ),
     "main_update_title": MessageLookupByLibrary.simpleMessage(
-      "Prieinama nauja versija",
+      "Dostępna nowa wersja",
     ),
     "main_webrtc_reconnect_fail_toast": MessageLookupByLibrary.simpleMessage(
-      "Tinklas (WebRTC) nepavyko prisijungti iš naujo",
+      "Ponowne połączenie z siecią (WebRTC) nie powiodło się",
     ),
     "main_webrtc_reconnect_success_toast": MessageLookupByLibrary.simpleMessage(
-      "Tinklas (WebRTC) sėkmingai prisijungė iš naujo",
+      "Ponowne połączenie z siecią (WebRTC) powiodło się",
     ),
     "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-      "Tinklas (WebRTC) vėl prisijungia",
+      "Sieć (WebRTC) ponownie łączy się",
     ),
-    "moderator": MessageLookupByLibrary.simpleMessage("Įveskite savo vardą"),
-    "moderator_back": MessageLookupByLibrary.simpleMessage("Atgal"),
-    "moderator_exit": MessageLookupByLibrary.simpleMessage("IŠEITI"),
-    "moderator_fill_out": MessageLookupByLibrary.simpleMessage(
-      "Laukas būtinas",
-    ),
-    "moderator_name": MessageLookupByLibrary.simpleMessage("Vardas"),
+    "moderator": MessageLookupByLibrary.simpleMessage("Wprowadź swoje imię"),
+    "moderator_back": MessageLookupByLibrary.simpleMessage("Wstecz"),
+    "moderator_exit": MessageLookupByLibrary.simpleMessage("WYJŚCIE"),
+    "moderator_fill_out": MessageLookupByLibrary.simpleMessage("Pole wymagane"),
+    "moderator_name": MessageLookupByLibrary.simpleMessage("Imię"),
     "moderator_wait": MessageLookupByLibrary.simpleMessage(
-      "Palaukite, kol moderatorius pasirinks pranešėjus...",
+      "Poczekaj, aż moderator wybierze prezenterów...",
     ),
     "present_role_cast_screen": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti ekraną",
+      "Udostępnij ekran",
     ),
     "present_role_receive": MessageLookupByLibrary.simpleMessage(
-      "Gauti ekraną",
+      "Odbieraj ekran",
     ),
     "present_select_screen_cancel": MessageLookupByLibrary.simpleMessage(
-      "Atšaukti",
+      "Anuluj",
     ),
     "present_select_screen_description": MessageLookupByLibrary.simpleMessage(
-      "Pasirinkite vaizdą, kurį bendrinsite su gavėjo ekranu.",
+      "Wybierz widok do udostępnienia na ekranie odbiorcy.",
     ),
     "present_select_screen_entire": MessageLookupByLibrary.simpleMessage(
-      "Visas ekranas",
+      "Cały ekran",
     ),
     "present_select_screen_ios_restart": MessageLookupByLibrary.simpleMessage(
-      "Pradėti transliaciją",
+      "Rozpocznij transmisję",
     ),
     "present_select_screen_ios_restart_description":
         MessageLookupByLibrary.simpleMessage(
-          "Paspauskite „Pradėti transliaciją“, kad tęstumėte bendrinimą prieš baigiantis laikui, arba paspauskite „Atgal“, kad grįžtumėte į pradinį ekraną.",
+          "Kliknij „Rozpocznij transmisję”, aby wznowić udostępnianie przed upływem czasu, lub kliknij „Wstecz”, aby powrócić do ekranu początkowego.",
         ),
     "present_select_screen_share": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti",
+      "Udostępnij",
     ),
     "present_select_screen_share_audio": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti ekrano garsą",
+      "Udostępnij dźwięk z ekranu",
     ),
     "present_select_screen_window": MessageLookupByLibrary.simpleMessage(
-      "Langas",
+      "Okno",
     ),
     "present_state_high_quality_description":
         MessageLookupByLibrary.simpleMessage(
-          "Įjunkite aukštą kokybę, jei tinklo sąlygos geros.",
+          "Włącz wysoką jakość przy dobrych warunkach sieciowych.",
         ),
     "present_state_high_quality_title": MessageLookupByLibrary.simpleMessage(
-      "Aukšta kokybė",
+      "Wysoka jakość",
     ),
-    "present_state_pause": MessageLookupByLibrary.simpleMessage("Pristabdyti"),
-    "present_state_resume": MessageLookupByLibrary.simpleMessage("Tęsti"),
+    "present_state_pause": MessageLookupByLibrary.simpleMessage("Wstrzymaj"),
+    "present_state_resume": MessageLookupByLibrary.simpleMessage("Wznów"),
     "present_state_stop": MessageLookupByLibrary.simpleMessage(
-      "Sustabdyti pristatymą",
+      "Zakończ prezentację",
     ),
-    "present_time": MessageLookupByLibrary.simpleMessage("Praėjęs laikas"),
-    "present_time_unit_hour": MessageLookupByLibrary.simpleMessage("val"),
+    "present_time": MessageLookupByLibrary.simpleMessage("Czas, który upłynął"),
+    "present_time_unit_hour": MessageLookupByLibrary.simpleMessage("godz."),
     "present_time_unit_min": MessageLookupByLibrary.simpleMessage("min"),
     "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("sek"),
     "present_wait": m0,
     "remote_screen_connect_error": MessageLookupByLibrary.simpleMessage(
-      "Nuotolinio ekrano ryšio klaida",
+      "Błąd połączenia z ekranem zdalnym",
     ),
     "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
-      "Bendrinimas apdorojamas. Prašome palaukti.",
+      "Udostępnianie jest w trakcie przetwarzania. Proszę czekać.",
     ),
     "settings_audio_configuration": MessageLookupByLibrary.simpleMessage(
-      "Garso konfigūracija",
+      "Konfiguracja audio",
     ),
     "settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
-      "Žinių bazė",
+      "Baza wiedzy",
     ),
     "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
-      "Įjunkite funkciją „bendrinti ekraną įrenginyje“ AirSync programoje.",
+      "Włącz opcję \'Udostępnij ekran na urządzenie\' w AirSync.",
     ),
     "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
-      "Įdiekite virtualų garso tvarkyklę.",
+      "Zainstaluj wirtualny sterownik audio.",
     ),
     "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
-      "Pasiektas maksimalus moderuojamų sesijų skaičius.",
+      "Osiągnięto maksymalną liczbę moderowanych sesji.",
     ),
     "toast_maximum_remote_screen": MessageLookupByLibrary.simpleMessage(
-      "Pasiektas maksimalus bendrinamų ekranų skaičius.",
+      "Osiągnięto maksymalną liczbę udostępnionych ekranów.",
     ),
     "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-      "Pasiektas maksimalus padalintų ekranų skaičius.",
+      "Osiągnięto maksymalną liczbę podzielonych ekranów.",
     ),
     "v3_device_list_button_device_list": MessageLookupByLibrary.simpleMessage(
-      "Įrenginių sąrašas",
+      "Lista urządzeń",
     ),
     "v3_device_list_button_text": MessageLookupByLibrary.simpleMessage(
-      "Greitas prisijungimas per",
+      "Szybkie połączenie przez",
     ),
     "v3_device_list_dialog_connect": MessageLookupByLibrary.simpleMessage(
-      "Prisijungti",
+      "Połącz",
     ),
     "v3_device_list_dialog_invalid_otp": MessageLookupByLibrary.simpleMessage(
-      "Neteisingas vienkartinis slaptažodis",
+      "Nieprawidłowe jednorazowe hasło",
     ),
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
-      "Įveskite vienkartinį slaptažodį",
+      "Wprowadź jednorazowe hasło",
     ),
-    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Toliau"),
-    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Sutinku"),
-    "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nesutinku"),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Dalej"),
+    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Zgadzam się"),
+    "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nie zgadzam się"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
-      "Galutinio vartotojo licencijos sutartis",
+      "Umowa licencyjna użytkownika końcowego",
     ),
-    "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Atšaukti"),
-    "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("Išeiti"),
+    "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Anuluj"),
+    "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("Zakończ"),
     "v3_exit_title": MessageLookupByLibrary.simpleMessage(
-      "Ar tikrai norite mesti?",
+      "Czy na pewno chcesz zakończyć?",
     ),
     "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage(
-      "Kalbos keitimas",
+      "Zmień swój język",
     ),
     "v3_lbl_device_list_button_device_list":
-        MessageLookupByLibrary.simpleMessage("Įrenginių sąrašas"),
+        MessageLookupByLibrary.simpleMessage("Lista urządzeń"),
     "v3_lbl_device_list_close": MessageLookupByLibrary.simpleMessage(
-      "Uždarykite įrenginių sąrašus",
+      "Zamknij listę urządzeń",
     ),
-    "v3_lbl_device_list_next": MessageLookupByLibrary.simpleMessage("Toliau"),
+    "v3_lbl_device_list_next": MessageLookupByLibrary.simpleMessage("Dalej"),
     "v3_lbl_download_independent_version": MessageLookupByLibrary.simpleMessage(
-      "Gaukite nepriklausomą \"Mac\" versiją",
+      "Pobierz niezależną wersję dla Mac",
     ),
     "v3_lbl_download_menu_minimal": MessageLookupByLibrary.simpleMessage(
-      "Minimalus meniu",
+      "menu minimalistyczne",
     ),
-    "v3_lbl_exit_action_cancel": MessageLookupByLibrary.simpleMessage(
-      "Atšaukti",
-    ),
-    "v3_lbl_exit_action_exit": MessageLookupByLibrary.simpleMessage("Išeiti"),
+    "v3_lbl_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Anuluj"),
+    "v3_lbl_exit_action_exit": MessageLookupByLibrary.simpleMessage("Zakończ"),
     "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage(
-      "Įveskite rodomą kodą",
+      "Wpisz kod ekranu",
     ),
     "v3_lbl_main_display_code_remove": MessageLookupByLibrary.simpleMessage(
-      "Išvalyti rodymo kodą",
+      "Wyczyść kod ekranu",
     ),
     "v3_lbl_main_download": MessageLookupByLibrary.simpleMessage(
-      "Atsisiųsti siuntėjo programėlę",
+      "Pobierz aplikację nadawcy",
     ),
     "v3_lbl_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
-      "Gaukite \"Mac App Store\" versiją",
+      "Pobierz wersję z Mac App Store",
     ),
     "v3_lbl_main_download_mobile": MessageLookupByLibrary.simpleMessage(
-      "Gaukite mobiliąją versiją",
+      "Pobierz wersję mobilną",
     ),
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
-      "Gaukite \"Windows\" versiją",
+      "Pobierz wersję dla Windows",
     ),
-    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Opinie"),
     "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
-      "Žinių bazė",
+      "Baza wiedzy",
     ),
     "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
-      "Pateikti dalį",
+      "Wyślij udostępnienie",
     ),
     "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
-      "Įveskite savo vardą",
+      "Wpisz swoje imię",
     ),
-    "v3_lbl_main_password": MessageLookupByLibrary.simpleMessage(
-      "Įveskite slaptažodį",
-    ),
+    "v3_lbl_main_password": MessageLookupByLibrary.simpleMessage("Wpisz hasło"),
     "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage(
-      "Pateikti Kitą",
+      "Wyślij dalej",
     ),
     "v3_lbl_main_privacy": MessageLookupByLibrary.simpleMessage(
-      "Privatumo politika",
+      "Polityka prywatności",
     ),
     "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
-      "Pateikti ryšį",
+      "Wyślij połączenie",
     ),
-    "v3_lbl_moderator_back": MessageLookupByLibrary.simpleMessage(
-      "Grįžk atgal",
-    ),
+    "v3_lbl_moderator_back": MessageLookupByLibrary.simpleMessage("Wróć"),
     "v3_lbl_moderator_disconnect": MessageLookupByLibrary.simpleMessage(
-      "Atjungti",
+      "Rozłącz",
     ),
     "v3_lbl_present_idle_audio_driver_warning_close":
         MessageLookupByLibrary.simpleMessage(
-          "Uždaryti garso tvarkyklės įspėjimą",
+          "Zamknij ostrzeżenie o sterowniku audio",
         ),
     "v3_lbl_present_idle_audio_driver_warning_download":
-        MessageLookupByLibrary.simpleMessage("Atsisiųskite garso tvarkyklę"),
+        MessageLookupByLibrary.simpleMessage("Pobierz sterownik audio"),
     "v3_lbl_qr_close": MessageLookupByLibrary.simpleMessage(
-      "Uždarykite QR kodo skaitytuvą",
+      "Zamknij skaner kodu QR",
     ),
     "v3_lbl_qr_code": MessageLookupByLibrary.simpleMessage(
-      "Atidarykite QR kodo skaitytuvą",
+      "Otwórz skaner kodu QR",
     ),
     "v3_lbl_select_language": MessageLookupByLibrary.simpleMessage(
-      "Pasirinkite %s",
+      "Wybierz %s",
     ),
     "v3_lbl_select_role_receive": MessageLookupByLibrary.simpleMessage(
-      "Gauti ekraną",
+      "Odbierz ekran",
     ),
     "v3_lbl_select_role_share": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti ekraną",
+      "Udostępnij ekran",
     ),
     "v3_lbl_select_screen_audio": MessageLookupByLibrary.simpleMessage(
-      "Kompiuterio garso bendrinimas",
+      "Udostępnij dźwięk z komputera",
     ),
     "v3_lbl_select_screen_cancel": MessageLookupByLibrary.simpleMessage(
-      "Atšaukti bendrinimą",
+      "Anuluj udostępnianie",
     ),
     "v3_lbl_select_screen_close": MessageLookupByLibrary.simpleMessage(
-      "Uždaryti ekrano pasirinkimą",
+      "Zamknij wybór ekranu",
     ),
     "v3_lbl_select_screen_ios_back": MessageLookupByLibrary.simpleMessage(
-      "Grįžk atgal",
+      "Wróć",
     ),
     "v3_lbl_select_screen_ios_start_sharing":
-        MessageLookupByLibrary.simpleMessage("Pradėti bendrinimą"),
+        MessageLookupByLibrary.simpleMessage("Rozpocznij udostępnianie"),
     "v3_lbl_select_screen_share": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti ekraną",
+      "Udostępnij ekran",
     ),
     "v3_lbl_select_screen_source_name": MessageLookupByLibrary.simpleMessage(
-      "Ekrano šaltinis: %s",
+      "Źródło ekranu: %s",
     ),
-    "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("Nustatymai"),
+    "v3_lbl_setting": MessageLookupByLibrary.simpleMessage("Ustawienia"),
     "v3_lbl_setting_language_select": MessageLookupByLibrary.simpleMessage(
-      "Pasirinkite kalbą: %s",
+      "Wybierz język: %s",
     ),
     "v3_lbl_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
-      "Peržiūrėti teisinę politiką: %s",
+      "Wyświetl politykę prawną: %s",
     ),
     "v3_lbl_setting_menu_back": MessageLookupByLibrary.simpleMessage(
-      "Grįžti į ankstesnį meniu",
+      "Wróć do poprzedniego menu",
     ),
     "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage(
-      "Uždaryti nustatymų meniu",
+      "Zamknij menu ustawień",
     ),
     "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
-      "Privatumo politika",
+      "Polityka prywatności",
     ),
-    "v3_lbl_setting_select": MessageLookupByLibrary.simpleMessage(
-      "Pasirinkite %s",
-    ),
+    "v3_lbl_setting_select": MessageLookupByLibrary.simpleMessage("Wybierz %s"),
     "v3_lbl_setting_software_update_deny_action":
-        MessageLookupByLibrary.simpleMessage("Vėliau"),
+        MessageLookupByLibrary.simpleMessage("Później"),
     "v3_lbl_setting_software_update_fail_close":
         MessageLookupByLibrary.simpleMessage(
-          "Uždaryti naujinimo klaidos dialogo langą",
+          "Zamknij okno dialogowe błędu aktualizacji",
         ),
     "v3_lbl_setting_software_update_fail_ok":
-        MessageLookupByLibrary.simpleMessage("Gerai"),
+        MessageLookupByLibrary.simpleMessage("OK"),
     "v3_lbl_setting_software_update_no_available":
-        MessageLookupByLibrary.simpleMessage("Atnaujinimų nėra"),
+        MessageLookupByLibrary.simpleMessage("Brak dostępnych aktualizacji"),
     "v3_lbl_setting_software_update_no_available_action":
-        MessageLookupByLibrary.simpleMessage("Gerai"),
+        MessageLookupByLibrary.simpleMessage("OK"),
     "v3_lbl_setting_software_update_now_action":
-        MessageLookupByLibrary.simpleMessage("Atnaujinti dabar"),
+        MessageLookupByLibrary.simpleMessage("Aktualizuj teraz"),
     "v3_lbl_setting_software_update_positive_action":
-        MessageLookupByLibrary.simpleMessage("Atnaujinti"),
+        MessageLookupByLibrary.simpleMessage("Aktualizuj"),
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
-      "Uždaryti naujinimo dialogo langą",
+      "Zamknij okno dialogowe aktualizacji",
     ),
     "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
-      "Pristabdymas",
+      "Wstrzymaj wyłączone",
     ),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage(
-      "Pauzė įjungta",
+      "Wstrzymaj włączone",
     ),
     "v3_lbl_sharing_stop": MessageLookupByLibrary.simpleMessage(
-      "Bendrinimo stotelė",
+      "Zakończ udostępnianie",
     ),
     "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
-      "Srautinio perdavimo valdiklių išplėtimas",
+      "Rozwiń kontrolki strumieniowania",
     ),
     "v3_lbl_streaming_minimize_button": MessageLookupByLibrary.simpleMessage(
-      "Sumažinkite srautinio perdavimo valdiklius",
+      "Zwiń kontrolki strumieniowania",
     ),
     "v3_lbl_streaming_stop_button": MessageLookupByLibrary.simpleMessage(
-      "Sustabdyti srautinį perdavimą",
+      "Zatrzymaj strumieniowanie",
     ),
     "v3_lbl_touch_back_off": MessageLookupByLibrary.simpleMessage(
-      "Išjungti jutiklinį grąžinimą",
+      "Wyłącz sterowanie dotykiem",
     ),
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
-      "Įgalinti jutiklinį grąžinimą",
+      "Włącz sterowanie dotykiem",
     ),
     "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
-      "Prieinamumas",
+      "Ułatwienia dostępu",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
-      "Palaukite, kol šeimininkas patvirtins jūsų užklausą.",
+      "Proszę poczekać, aż host zatwierdzi Twoje żądanie.",
     ),
     "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-      "Tinklo ryšio klaida.",
+      "Błąd połączenia sieciowego.",
     ),
     "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
-      "AirSync sesija užimta. Bandykite vėliau.",
+      "Instancja AirSync jest zajęta. Spróbuj ponownie później.",
     ),
     "v3_main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
-      "Nežinoma klaida.",
+      "Nieznany błąd.",
     ),
     "v3_main_connection_mode_unsupported": MessageLookupByLibrary.simpleMessage(
-      "AirSync neprisijungia prie interneto.",
+      "Twój odbiornik tymczasowo nie obsługuje udostępniania ekranu przez internet.",
     ),
     "v3_main_copy_rights": m1,
-    "v3_main_display_code": MessageLookupByLibrary.simpleMessage(
-      "Ekrano kodas",
-    ),
+    "v3_main_display_code": MessageLookupByLibrary.simpleMessage("Kod ekranu"),
     "v3_main_display_code_error": MessageLookupByLibrary.simpleMessage(
-      "Priimami tik skaičiai.",
+      "Akceptuje tylko cyfry.",
     ),
     "v3_main_display_code_invalid": MessageLookupByLibrary.simpleMessage(
-      "Neteisingas ekrano kodas",
+      "Nieprawidłowy kod ekranu",
     ),
     "v3_main_download": MessageLookupByLibrary.simpleMessage(
-      "Atsisiųsti siuntėjo programėlę",
+      "Pobierz aplikację nadawcy",
     ),
     "v3_main_download_action_download": MessageLookupByLibrary.simpleMessage(
-      "Atsisiųsti",
+      "Pobierz",
     ),
     "v3_main_download_action_get": MessageLookupByLibrary.simpleMessage(
-      "Gauti",
+      "Pobierz",
     ),
     "v3_main_download_app_dialog_desc": MessageLookupByLibrary.simpleMessage(
-      "Nuskenuokite QR kodą su savo iOS ar Android įrenginiu, kad atsisiųstumėte",
+      "Zeskanuj kod QR za pomocą urządzenia z systemem iOS lub Android, aby pobrać aplikację",
     ),
     "v3_main_download_app_dialog_title": MessageLookupByLibrary.simpleMessage(
-      "Atsisiųsti siuntėjo programėlę",
+      "Pobierz aplikację nadawcy",
     ),
     "v3_main_download_app_subtitle": MessageLookupByLibrary.simpleMessage(
-      "iOS ir Android",
+      "iOS i Android",
     ),
     "v3_main_download_app_title": MessageLookupByLibrary.simpleMessage(
-      "AirSync programėlė",
+      "Aplikacja AirSync",
     ),
     "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
-      "Lengvas ekrano bendrinimas vienu paspaudimu.",
+      "Bezproblemowe udostępnianie ekranu za pomocą połączenia jednym kliknięciem.",
     ),
     "v3_main_download_mac_pkg_label": MessageLookupByLibrary.simpleMessage(
-      "Už geriausią vartotojo patirtį!",
+      "Dla najlepszego doświadczenia użytkownika!",
     ),
     "v3_main_download_mac_store": MessageLookupByLibrary.simpleMessage(
-      "\"App Store\"",
+      "App Store",
     ),
     "v3_main_download_mac_store_label": MessageLookupByLibrary.simpleMessage(
-      "Arba įdiekite per",
+      "Lub zainstaluj przez",
     ),
     "v3_main_download_mac_subtitle": MessageLookupByLibrary.simpleMessage(
       "macOS 10.15+",
     ),
     "v3_main_download_mac_title": MessageLookupByLibrary.simpleMessage("Mac"),
     "v3_main_download_title": MessageLookupByLibrary.simpleMessage(
-      "Gaukite savo AirSync siuntėjo programėlę",
+      "Pobierz aplikację nadawcy AirSync",
     ),
     "v3_main_download_win_subtitle": MessageLookupByLibrary.simpleMessage(
       "Win 10 (1709+)/ Win 11",
@@ -493,249 +481,251 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
-    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Opinie"),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
-          "Ekrano kodas nerastas arba sesija neprisijungusi.",
+          "Nie znaleziono kodu ekranu lub instancja jest w trybie offline.",
         ),
     "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
-      "Žinių bazė",
+      "Baza wiedzy",
     ),
     "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti",
+      "Udostępnij",
     ),
     "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Įveskite savo vardą prieš bendrindami ekraną",
+      "Wpisz swoje imię przed udostępnieniem ekranu",
     ),
     "v3_main_moderator_app_title": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti",
+      "Udostępnij",
     ),
     "v3_main_moderator_disconnect": MessageLookupByLibrary.simpleMessage(
-      "Atjungti",
+      "Rozłącz",
     ),
     "v3_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
-      "Įveskite savo vardą",
+      "Wpisz swoje imię",
     ),
     "v3_main_moderator_input_limit": MessageLookupByLibrary.simpleMessage(
-      "Pavadinimas turi būti ne ilgesnis kaip 20 simbolių.",
+      "Imię powinno mieć maksymalnie 20 znaków.",
     ),
     "v3_main_moderator_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Įveskite savo pristatymo pavadinimą",
+      "Wpisz tytuł swojej prezentacji",
     ),
     "v3_main_moderator_title": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti savo ekraną",
+      "Udostępnij swój ekran",
     ),
     "v3_main_moderator_wait": MessageLookupByLibrary.simpleMessage(
-      "Palaukite, kol moderatorius pakvies jus bendrinti",
+      "Czekaj, aż moderator zaprosi Cię do udostępnienia",
     ),
     "v3_main_otp_error": MessageLookupByLibrary.simpleMessage(
-      "Priimami tik skaičiai.",
+      "Akceptuje tylko cyfry.",
     ),
-    "v3_main_password": MessageLookupByLibrary.simpleMessage("Slaptažodis"),
+    "v3_main_password": MessageLookupByLibrary.simpleMessage("Hasło"),
     "v3_main_password_invalid": MessageLookupByLibrary.simpleMessage(
-      "Neteisingas slaptažodis.",
+      "Nieprawidłowe hasło.",
     ),
-    "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Toliau"),
-    "v3_main_present_or": MessageLookupByLibrary.simpleMessage("arba"),
+    "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Dalej"),
+    "v3_main_present_or": MessageLookupByLibrary.simpleMessage("lub"),
     "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Vykdykite šiuos veiksmus, kad pradėtumėte.",
+      "Postępuj zgodnie z instrukcjami, aby rozpocząć.",
     ),
     "v3_main_present_title": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti savo ekraną",
+      "Udostępnij swój ekran",
     ),
     "v3_main_presenting_message": MessageLookupByLibrary.simpleMessage(
-      "airsync.net bendrina jūsų ekraną.",
+      "airsync.net udostępnia Twój ekran.",
     ),
     "v3_main_privacy": MessageLookupByLibrary.simpleMessage(
-      "Privatumo politika",
+      "Polityka prywatności",
     ),
     "v3_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
-      "Prisijungti",
+      "Połącz",
     ),
     "v3_main_receive_app_receive_from": MessageLookupByLibrary.simpleMessage(
-      "Gauti iš %s",
+      "Odbieraj z %s",
     ),
     "v3_main_receive_app_stop": MessageLookupByLibrary.simpleMessage(
-      "Sustabdyti",
+      "Zatrzymaj",
     ),
     "v3_main_receive_app_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti ekraną su mano įrenginiu",
+      "Udostępnij ekran na moim urządzeniu",
     ),
-    "v3_main_receive_app_title": MessageLookupByLibrary.simpleMessage("Gauti"),
+    "v3_main_receive_app_title": MessageLookupByLibrary.simpleMessage(
+      "Odbierz",
+    ),
     "v3_main_select_role_receive": MessageLookupByLibrary.simpleMessage(
-      "Gauti",
+      "Odbierz",
     ),
     "v3_main_select_role_share": MessageLookupByLibrary.simpleMessage(
-      "Bendrinti",
+      "Udostępnij",
     ),
     "v3_main_select_role_title": MessageLookupByLibrary.simpleMessage(
-      "Pasirinkite savo pristatymo režimą",
+      "Wybierz tryb prezentacji",
     ),
-    "v3_main_terms": MessageLookupByLibrary.simpleMessage("Naudojimo sąlygos"),
+    "v3_main_terms": MessageLookupByLibrary.simpleMessage(
+      "Warunki użytkowania",
+    ),
     "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
-      "Šiuo metu palaikomos tik Chrome ir Edge naršyklės.",
+      "Obecnie obsługiwane są tylko przeglądarki Chrome i Edge.",
     ),
     "v3_main_web_nonsupport_confirm": MessageLookupByLibrary.simpleMessage(
-      "Supratau!",
+      "Rozumiem!",
     ),
     "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
-      "Ekrano bendrinimas sustabdytas %s.",
+      "Udostępnianie ekranu zostało zatrzymane.\nCałkowity czas udostępniania: %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Atsisiųsti siuntėjo programėlę"),
+        MessageLookupByLibrary.simpleMessage("Pobierz"),
     "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
-      "Moderatorius uždarytas",
+      "Moderator zakończył sesję",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(
-      "GERAI",
+      "OK",
     ),
     "v3_present_moderator_exited_description":
         MessageLookupByLibrary.simpleMessage(
-          "Moderatorius uždarytas, prašome prisijungti iš naujo.",
+          "Moderator zakończył sesję. Połącz się ponownie.",
         ),
     "v3_present_options_menu_he_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Naudokite įrenginio vaizdo plokštę srautui koduoti.",
+      "Użyj karty graficznej urządzenia do kodowania strumienia.",
     ),
     "v3_present_options_menu_he_title": MessageLookupByLibrary.simpleMessage(
-      "Aparatinis kodavimas",
+      "Kodowanie sprzętowe",
     ),
     "v3_present_options_menu_hq_subtitle": MessageLookupByLibrary.simpleMessage(
-      "Naudokite didesnį bitratą srauto perdavimui.",
+      "Użyj wyższej przepływności do przesyłania strumienia.",
     ),
     "v3_present_options_menu_hq_title": MessageLookupByLibrary.simpleMessage(
-      "Aukšta kokybė",
+      "Wysoka jakość",
     ),
     "v3_present_screen_full": MessageLookupByLibrary.simpleMessage(
-      "Ekranas pilnas",
+      "Ekran jest pełny",
     ),
-    "v3_present_screen_full_action": MessageLookupByLibrary.simpleMessage(
-      "GERAI",
-    ),
+    "v3_present_screen_full_action": MessageLookupByLibrary.simpleMessage("OK"),
     "v3_present_screen_full_description": MessageLookupByLibrary.simpleMessage(
-      "Pasiektas maksimalus padalintų ekranų skaičius.",
+      "Osiągnięto maksymalną liczbę podzielonych ekranów.",
     ),
     "v3_present_select_screen_extension": MessageLookupByLibrary.simpleMessage(
-      "Ekrano išplėtimas",
+      "Rozszerzenie ekranu",
     ),
     "v3_present_select_screen_extension_desc":
-        MessageLookupByLibrary.simpleMessage("Išplėskite savo darbo erdvę"),
+        MessageLookupByLibrary.simpleMessage(
+          "Rozszerz swoją przestrzeń roboczą",
+        ),
     "v3_present_select_screen_extension_desc2":
         MessageLookupByLibrary.simpleMessage(
-          "Ši funkcija leidžia perkelti turinį tarp jūsų asmeninio įrenginio ir IFP, užtikrinant sklandų realaus laiko sąveiką ir valdymą.",
+          "Przeciągaj zawartość między urządzeniem osobistym a IFP, co usprawni interakcję i kontrolę w czasie rzeczywistym.",
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Nepavyksta bendrinti garso. Atsisiųskite ir įdiekite garso tvarkyklę.",
+          "Nie można udostępnić dźwięku. Pobierz i zainstaluj sterownik audio.",
         ),
     "v3_present_select_screen_share_audio":
-        MessageLookupByLibrary.simpleMessage("Bendrinti kompiuterio garsą."),
+        MessageLookupByLibrary.simpleMessage("Udostępnij dźwięk z komputera."),
     "v3_present_select_screen_subtitle": MessageLookupByLibrary.simpleMessage(
-      "%s nori bendrinti jūsų ekraną. Pasirinkite, ką norite bendrinti.",
+      "%s chce udostępnić Twój ekran. Wybierz, co chcesz udostępnić.",
     ),
     "v3_present_session_full": MessageLookupByLibrary.simpleMessage(
-      "Sesija pilna",
+      "Sesja jest pełna",
     ),
     "v3_present_session_full_action": MessageLookupByLibrary.simpleMessage(
-      "GERAI",
+      "OK",
     ),
     "v3_present_session_full_description": MessageLookupByLibrary.simpleMessage(
-      "Nepavyko prisijungti. Sesija pasiekė maksimalų dalyvių skaičių.",
+      "Nie można dołączyć. Sesja osiągnęła maksymalny limit.",
     ),
     "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
-      "Leisti grįžtamąjį ryšį",
+      "Zezwalaj na sterowanie dotykiem",
     ),
     "v3_present_touch_back_dialog_allow": MessageLookupByLibrary.simpleMessage(
-      "Leisti",
+      "Zezwól",
     ),
     "v3_present_touch_back_dialog_description":
         MessageLookupByLibrary.simpleMessage(
-          "Leisti \"Touchback\"\nKai įgalinsite ekrano bendrinimą, \"AirSync\" laikinai užfiksuos ir perduos ekrano turinį į pasirinktą ekraną (pvz., IFP).Kad įgalintų jutiklinį grąžinimą, \"AirSync\" reikalauja pritaikymo neįgaliesiems paslaugos leidimo, kad būtų galima leisti nuotolinį valdymą iš ekrano.\"AirSync\" nerenka jūsų asmeninių duomenų ir nestebi jūsų veiksmų. Šis leidimas naudojamas tik jutiklinio valdymo funkcijai įjungti.",
+          "Po włączeniu udostępniania ekranu, AirSync tymczasowo przechwyci i prześle zawartość Twojego ekranu na wybrany wyświetlacz (np. IFP). Aby włączyć sterowanie dotykiem, AirSync wymaga uprawnienia Usługi ułatwień dostępu, aby umożliwić zdalne sterowanie z wyświetlacza. AirSync nie zbiera Twoich danych osobowych ani nie monitoruje Twoich działań. To uprawnienie jest używane wyłącznie do włączenia funkcji sterowania dotykowego.",
         ),
     "v3_present_touch_back_dialog_not_now":
-        MessageLookupByLibrary.simpleMessage("Ne dabar"),
+        MessageLookupByLibrary.simpleMessage("Nie teraz"),
     "v3_present_touch_back_dialog_title": MessageLookupByLibrary.simpleMessage(
-      "Leisti \"Touchback\"",
+      "Zezwalaj na sterowanie dotykiem",
     ),
     "v3_receiver_remote_screen_busy_action":
-        MessageLookupByLibrary.simpleMessage("Gerai"),
+        MessageLookupByLibrary.simpleMessage("OK"),
     "v3_receiver_remote_screen_busy_description":
         MessageLookupByLibrary.simpleMessage(
-          "Ekranas transliuojamas į kitus ekranus. Prašome bandyti vėliau.",
+          "Ekran jest transmitowany na inne ekrany. Spróbuj ponownie później.",
         ),
     "v3_receiver_remote_screen_busy_title":
-        MessageLookupByLibrary.simpleMessage("Ekranas transliuojamas."),
+        MessageLookupByLibrary.simpleMessage("Ekran jest transmitowany"),
     "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
-      "Greitas prisijungimas nuskenuojant QR kodą",
+      "Szybkie połączenie przez skanowanie kodu QR",
     ),
     "v3_select_screen_ios_countdown": MessageLookupByLibrary.simpleMessage(
-      "Bendrinimo laikas iš viso:",
+      "Pozostały czas",
     ),
     "v3_select_screen_ios_start_sharing": MessageLookupByLibrary.simpleMessage(
-      "Pradėti bendrinimą",
+      "Rozpocznij udostępnianie",
     ),
     "v3_setting_accessibility": MessageLookupByLibrary.simpleMessage(
-      "Prieinamumas",
+      "Ułatwienia dostępu",
     ),
     "v3_setting_accessibility_size_large": MessageLookupByLibrary.simpleMessage(
-      "Didelis",
+      "Duży",
     ),
     "v3_setting_accessibility_size_normal":
-        MessageLookupByLibrary.simpleMessage("Įprastas"),
+        MessageLookupByLibrary.simpleMessage("Normalny"),
     "v3_setting_accessibility_size_xlarge":
-        MessageLookupByLibrary.simpleMessage("XLarge"),
+        MessageLookupByLibrary.simpleMessage("Bardzo duży"),
     "v3_setting_accessibility_text_size": MessageLookupByLibrary.simpleMessage(
-      "Teksto dydis",
+      "Rozmiar tekstu",
     ),
     "v3_setting_app_version": m2,
     "v3_setting_app_version_independent": m3,
     "v3_setting_check_update": MessageLookupByLibrary.simpleMessage(
-      "Patikrinti atnaujinimus",
+      "Sprawdź aktualizacje",
     ),
     "v3_setting_knowledge_base": MessageLookupByLibrary.simpleMessage(
-      "Žinių bazė",
+      "Baza wiedzy",
     ),
-    "v3_setting_language": MessageLookupByLibrary.simpleMessage("Kalba"),
+    "v3_setting_language": MessageLookupByLibrary.simpleMessage("Język"),
     "v3_setting_legal_policy": MessageLookupByLibrary.simpleMessage(
-      "Teisiniai klausimai ir privatumas",
+      "Informacje prawne i polityka",
     ),
     "v3_setting_open_source_license": MessageLookupByLibrary.simpleMessage(
-      "Atvirojo kodo licencijos",
+      "Licencje na oprogramowanie open source",
     ),
     "v3_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
-      "Privatumo politika",
+      "Polityka prywatności",
     ),
     "v3_setting_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
-      "ViewSonic yra įsipareigojusi saugoti jūsų privatumą ir rimtai žiūri į asmens duomenų tvarkymą. Toliau pateikta privatumo politika išsamiai paaiškina, kaip ViewSonic tvarkys jūsų asmens duomenis, kai jie bus surinkti per jūsų naudojimąsi svetaine. ViewSonic saugo jūsų informaciją naudodama saugumo technologijas ir laikosi politikos, kuri neleidžia neteisėtai naudoti jūsų asmens duomenų. Naudodamiesi šia svetaine, jūs sutinkate, kad jūsų informacija būtų renkama ir naudojama.  \n\nSvetainės, į kurias galite patekti iš ViewSonic.com, gali turėti savo privatumo politiką, kuri gali skirtis nuo ViewSonic politikos. Prašome peržiūrėti tų svetainių privatumo politiką, kad sužinotumėte, kaip jos gali naudoti informaciją, surinktą jums lankantis.  \n\nSpustelėkite šias nuorodas, kad sužinotumėte daugiau apie mūsų privatumo politiką.  ",
+      "ViewSonic zobowiązuje się do ochrony Twojej prywatności i poważnie traktuje przetwarzanie danych osobowych. Poniższa Polityka prywatności szczegółowo opisuje, w jaki sposób ViewSonic będzie postępować z Twoimi danymi osobowymi, zebranymi za pośrednictwem Twojego korzystania z Witryny. ViewSonic zapewnia prywatność Twoich informacji, używając technologii bezpieczeństwa i przestrzegając zasad, które zapobiegają nieautoryzowanemu użyciu Twoich danych osobowych. Korzystając z tej Witryny, wyrażasz zgodę na zbieranie i wykorzystywanie Twoich informacji.\\n\\nWitryny, do których prowadzą linki z ViewSonic.com, mogą mieć własną politykę prywatności, która może różnić się od polityki ViewSonic. Zapoznaj się z politykami prywatności tych witryn, aby uzyskać szczegółowe informacje na temat sposobu, w jaki mogą one wykorzystywać informacje zebrane podczas Twojej wizyty.\n\nKliknij poniższe linki, aby dowiedzieć się więcej o naszej Polityce prywatności.",
     ),
     "v3_setting_software_update": MessageLookupByLibrary.simpleMessage(
-      "Programinės įrangos atnaujinimas",
+      "Aktualizacja oprogramowania",
     ),
     "v3_setting_software_update_deny_action":
-        MessageLookupByLibrary.simpleMessage("Vėliau"),
+        MessageLookupByLibrary.simpleMessage("Później"),
     "v3_setting_software_update_description":
         MessageLookupByLibrary.simpleMessage(
-          "Prieinama nauja versija. Ar norėtumėte atnaujinti dabar?",
+          "Dostępna jest nowa wersja. Czy chcesz zaktualizować teraz?",
         ),
     "v3_setting_software_update_force_action":
-        MessageLookupByLibrary.simpleMessage("Atnaujinti dabar"),
+        MessageLookupByLibrary.simpleMessage("Aktualizuj teraz"),
     "v3_setting_software_update_force_description":
-        MessageLookupByLibrary.simpleMessage("Prieinama nauja versija."),
+        MessageLookupByLibrary.simpleMessage("Nowa wersja jest już dostępna."),
     "v3_setting_software_update_no_available":
-        MessageLookupByLibrary.simpleMessage("Atnaujinimų nėra"),
+        MessageLookupByLibrary.simpleMessage("Brak dostępnych aktualizacji"),
     "v3_setting_software_update_no_available_action":
-        MessageLookupByLibrary.simpleMessage("Gerai"),
+        MessageLookupByLibrary.simpleMessage("OK"),
     "v3_setting_software_update_no_available_description":
-        MessageLookupByLibrary.simpleMessage(
-          "AirSync jau atnaujinta į naujausią versiją.",
-        ),
+        MessageLookupByLibrary.simpleMessage("AirSync jest już aktualny."),
     "v3_setting_software_update_no_internet_description":
         MessageLookupByLibrary.simpleMessage(
-          "Prašome patikrinti savo interneto ryšį ir bandykite dar kartą.",
+          "Sprawdź połączenie z internetem i spróbuj ponownie.",
         ),
     "v3_setting_software_update_no_internet_tittle":
-        MessageLookupByLibrary.simpleMessage("Nėra interneto ryšio"),
+        MessageLookupByLibrary.simpleMessage("Brak połączenia z internetem"),
     "v3_setting_software_update_positive_action":
-        MessageLookupByLibrary.simpleMessage("Atnaujinti"),
-    "v3_setting_title": MessageLookupByLibrary.simpleMessage("Nustatymai"),
+        MessageLookupByLibrary.simpleMessage("Aktualizuj"),
+    "v3_setting_title": MessageLookupByLibrary.simpleMessage("Ustawienia"),
   };
 }

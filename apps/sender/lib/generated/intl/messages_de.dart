@@ -238,6 +238,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Einmaliges Passwort eingeben",
     ),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Weiter"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Zustimmen"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Ablehnen"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
@@ -286,6 +287,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Zur Windows-Version",
+    ),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+    "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Knowledge Base",
     ),
     "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
       "Teilen",
@@ -476,10 +481,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Anzeigecode nicht gefunden oder Instanz ist offline.",
         ),
+    "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Knowledge Base",
+    ),
     "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Teilen"),
     "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
       "Geben Sie Ihren Namen ein, bevor Sie Ihren Bildschirm teilen",

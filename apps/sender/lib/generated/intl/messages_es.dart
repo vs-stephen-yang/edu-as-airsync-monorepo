@@ -238,10 +238,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Ingrese la contraseña de un solo uso",
     ),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("De acuerdo"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("En desacuerdo"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Acuerdo de licencia del usuario final",
+    ),
+    "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+    "v3_exit_action_exit": MessageLookupByLibrary.simpleMessage("Salir"),
+    "v3_exit_title": MessageLookupByLibrary.simpleMessage(
+      "¿Realmente quieres salir?",
     ),
     "v3_lbl_change_language": MessageLookupByLibrary.simpleMessage(
       "Cambiar tu idioma",
@@ -260,6 +266,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_download_menu_minimal": MessageLookupByLibrary.simpleMessage(
       "menú minimalista",
     ),
+    "v3_lbl_exit_action_cancel": MessageLookupByLibrary.simpleMessage(
+      "Cancelar",
+    ),
+    "v3_lbl_exit_action_exit": MessageLookupByLibrary.simpleMessage("Salir"),
     "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage(
       "Escribe el código de pantalla",
     ),
@@ -277,6 +287,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Obtener la versión de Windows",
+    ),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage(
+      "Envía tus Comentarios",
+    ),
+    "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Base de Conocimiento",
     ),
     "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
       "Enviar compartir",
@@ -353,6 +369,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_setting_menu_close": MessageLookupByLibrary.simpleMessage(
       "Cerrar menú de ajustes",
+    ),
+    "v3_lbl_setting_privacy_policy": MessageLookupByLibrary.simpleMessage(
+      "Política de privacidad",
     ),
     "v3_lbl_setting_select": MessageLookupByLibrary.simpleMessage(
       "Seleccionar %s",
@@ -474,10 +493,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage(
+      "Envía tus Comentarios",
+    ),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Código de pantalla no encontrado o la instancia está desconectada.",
         ),
+    "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Base de Conocimiento",
+    ),
     "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage(
       "Compartir",
     ),
@@ -513,6 +538,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Contraseña inválida.",
     ),
     "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Siguiente"),
+    "v3_main_present_or": MessageLookupByLibrary.simpleMessage("o"),
     "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
       "Sigue los pasos para empezar.",
     ),
@@ -618,10 +644,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
       "Permitir retroalimentación táctil",
     ),
+    "v3_present_touch_back_dialog_allow": MessageLookupByLibrary.simpleMessage(
+      "Permitir",
+    ),
     "v3_present_touch_back_dialog_description":
         MessageLookupByLibrary.simpleMessage(
           "Cuando habilites la compartición de pantalla, AirSync capturará y transmitirá temporalmente el contenido de tu pantalla al display seleccionado (por ejemplo, IFP). Para activar Touchback, AirSync necesita el permiso de Servicio de Accesibilidad para permitir el control remoto desde el display. AirSync no recopila tus datos personales ni supervisa tus acciones. Este permiso se utiliza únicamente para habilitar la función de control táctil.",
         ),
+    "v3_present_touch_back_dialog_not_now":
+        MessageLookupByLibrary.simpleMessage("No ahora"),
+    "v3_present_touch_back_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Permitir el Touchback",
+    ),
     "v3_receiver_remote_screen_busy_action":
         MessageLookupByLibrary.simpleMessage("Aceptar"),
     "v3_receiver_remote_screen_busy_description":

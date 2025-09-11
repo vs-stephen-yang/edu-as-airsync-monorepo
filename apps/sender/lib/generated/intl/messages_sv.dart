@@ -229,6 +229,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Ange engångslösenord",
     ),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Nästa"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Godkänn"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Avböj"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
@@ -274,6 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Skaffa Windows-versionen",
     ),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Kunskapsbas",
     ),
@@ -468,6 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Skärmkod hittades inte eller instansen är offline.",

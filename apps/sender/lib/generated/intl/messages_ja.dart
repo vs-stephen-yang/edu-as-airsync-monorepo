@@ -201,6 +201,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "クイック接続",
     ),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("次へ"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("拒否"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage("エンドユーザー使用許諾契約"),
@@ -240,6 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Windows 版を入手",
     ),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("フィードバック"),
     "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage("知識ベース"),
     "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage("共有"),
     "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
@@ -394,6 +396,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("フィードバック"),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "ディスプレイコードが見つからないか、インスタンスがオフラインです。",

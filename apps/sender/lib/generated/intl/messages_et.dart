@@ -236,6 +236,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Sisestage ühekordne parool",
     ),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Järgmine"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Nõustu"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Ei nõustu"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
@@ -285,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Hankige Windowsi versioon",
     ),
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Teadmistepagas",
     ),
@@ -477,6 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
     "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Kuvakoodi ei leitud või eksemplar on võrguühenduseta.",
