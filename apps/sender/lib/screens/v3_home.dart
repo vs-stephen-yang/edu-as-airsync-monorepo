@@ -43,7 +43,6 @@ class _V3HomeState extends State<V3Home> {
 
     _lifecycleListener = AppLifecycleListener(
       onResume: _handleResume,
-      onExitRequested: _handleExitRequest,
     );
     initOperation = initHyphenation();
 
