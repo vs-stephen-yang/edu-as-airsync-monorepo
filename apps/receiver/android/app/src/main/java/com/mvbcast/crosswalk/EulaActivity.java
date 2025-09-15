@@ -351,12 +351,10 @@ public class EulaActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
 
         // Check CPU architecture
-        if (BuildConfig.FLAVOR_channel != "open") { // ChromeOS may using x86_64 arch.
-            String abi = System.getProperty("os.arch");
-            if (abi != null && abi.contains("x86")) {
-                Toast.makeText(this, "This device architecture is not supported", Toast.LENGTH_LONG).show();
-                finish(); // Exit immediately
-            }
+        // The IFP uses the ARM architecture, while ChromeOS may use the x86_64 architecture.
+        if ("x86".equals(System.getProperty("os.arch"))) {
+            Toast.makeText(this, "This device architecture is not supported", Toast.LENGTH_LONG).show();
+            finish(); // Exit immediately
         }
 
         String myString = getIntent().getStringExtra("RESTART_REASON");
