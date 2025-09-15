@@ -49,7 +49,7 @@ jobs:
           signingConfig: "ifp"
           splitPerAbi: true
           targetPlatform: "--target-platform android-arm,android-arm64"
-          gradleArgsSuffix: "-PENABLE_ABI_FILTERS=true"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
 
         edlaProduction:
           flavor: "edlaProduction"
@@ -59,7 +59,7 @@ jobs:
           signingConfig: "ifp"
           splitPerAbi: true
           targetPlatform: "--target-platform android-arm,android-arm64"
-          gradleArgsSuffix: "-PENABLE_ABI_FILTERS=true"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
 
         ifpStage:
           flavor: "ifpStage"
@@ -69,7 +69,7 @@ jobs:
           signingConfig: "ifp"
           splitPerAbi: true
           targetPlatform: "--target-platform android-arm,android-arm64"
-          gradleArgsSuffix: "-PENABLE_ABI_FILTERS=true"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
 
         ifpProduction:
           flavor: "ifpProduction"
@@ -79,7 +79,7 @@ jobs:
           signingConfig: "ifp"
           splitPerAbi: true
           targetPlatform: "--target-platform android-arm,android-arm64"
-          gradleArgsSuffix: "-PENABLE_ABI_FILTERS=true"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
 
         openStage:
           flavor: "openStage"
@@ -87,8 +87,8 @@ jobs:
           target: "stage"
           appFileExt: '.apk'
           signingConfig: "store"
-          targetPlatform: ""
-          gradleArgsSuffix: ""
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
 
         openProduction:
           flavor: "openProduction"
@@ -96,8 +96,8 @@ jobs:
           target: "production"
           appFileExt: '.apk'
           signingConfig: "store"
-          targetPlatform: ""
-          gradleArgsSuffix: ""
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
 
         storeStage:
           flavor: "storeStage"
@@ -106,8 +106,8 @@ jobs:
           appFileExt: '.aab'
           signingConfig: "store"
           appbundle: true
-          targetPlatform: "--target-platform android-arm,android-arm64"
-          gradleArgsSuffix: "-PENABLE_ABI_FILTERS=true"
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
 
         storeProduction:
           flavor: "storeProduction"
@@ -116,8 +116,8 @@ jobs:
           appFileExt: '.aab'
           signingConfig: "store"
           appbundle: true
-          targetPlatform: "--target-platform android-arm,android-arm64"
-          gradleArgsSuffix: "-PENABLE_ABI_FILTERS=true"
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
     steps:
       - checkout: self
         fetchDepth: 1
