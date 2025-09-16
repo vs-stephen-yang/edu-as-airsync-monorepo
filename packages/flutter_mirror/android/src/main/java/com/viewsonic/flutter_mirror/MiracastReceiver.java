@@ -111,4 +111,9 @@ public class MiracastReceiver implements
   public void onSessionEnd(String mirrorId) {
     listener_.onMiracastStop(mirrorId);
   }
+
+  @Override
+  public void onVideoResolution(String mirrorId, int width, int height) {
+    listener_.onMiracastVideoResolution(mirrorId, width, height);
+  }
 }

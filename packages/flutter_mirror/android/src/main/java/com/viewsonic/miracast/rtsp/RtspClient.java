@@ -1,6 +1,8 @@
 package com.viewsonic.miracast.rtsp;
 
 import android.text.TextUtils;
+
+import com.viewsonic.miracast.rtp.OnPlayerListener;
 import com.viewsonic.miracast.rtp.RtpMpegTsPlayer;
 
 import android.util.Log;
@@ -11,7 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class RtspClient
-    implements OnReceiveRTSPListener {
+  implements OnReceiveRTSPListener, OnPlayerListener {
   private final static String TAG = "MiraRtspClient";
 
   private final static String METHOD_UDP = "udp";
@@ -62,6 +64,8 @@ public class RtspClient
 
   private AudioFormatListener audioFormatListener_;
   private SourceCapabilityListener sourceCapabilityListener_;
+
+  private VideoResolutionListener videoResolutionListener_;
 
   private boolean activate_ = true;
   private String receiverName_ = "";
@@ -118,6 +122,11 @@ public class RtspClient
     sourceCapabilityListener_ = listener;
   }
 
+  public void setVideoResolutionListener(VideoResolutionListener listener) {
+    videoResolutionListener_ = listener;
+  }
+
+
   public void pause() {
     if (isPlaying()) {
       sendRequestPause();
@@ -166,12 +175,23 @@ public class RtspClient
     return curState_ == STATE_PLAYING;
   }
 
+  @Override
+  public void onVideoResolution(int width, int height) {
+    if (videoResolutionListener_ != null) {
+      videoResolutionListener_.onVideoResolution(width, height);
+    }
+  }
+
   public interface AudioFormatListener {
     void onAudioFormatUpdate(String name, int sampleRate, int channelCount);
   }
 
   public interface SourceCapabilityListener {
     void onUibcCapability(boolean isUibcSupported);
+  }
+
+  public interface VideoResolutionListener {
+    void onVideoResolution(int width, int height);
   }
 
   /**
@@ -609,7 +629,7 @@ public class RtspClient
 
   private void startRTPReceiver(Surface surface) {
     if (rtpPlayer_ == null) {
-      rtpPlayer_ = new RtpMpegTsPlayer();
+      rtpPlayer_ = new RtpMpegTsPlayer(this);
     }
     boolean started = rtpPlayer_.start();
     if (!started) {

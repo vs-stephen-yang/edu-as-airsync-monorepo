@@ -10,4 +10,6 @@ public interface MiracastReceiverListener {
                        String deviceName);
 
   void onMiracastStop(String mirrorId);
+
+  void onMiracastVideoResolution(String mirrorId, int width, int height);
 }

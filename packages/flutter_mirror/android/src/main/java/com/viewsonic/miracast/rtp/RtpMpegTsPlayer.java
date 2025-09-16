@@ -5,9 +5,7 @@ import android.view.Surface;
 public class RtpMpegTsPlayer implements AutoCloseable {
     private long handle;
 
-    public RtpMpegTsPlayer() {
-        this.handle = nativeCreate();
-    }
+  private OnPlayerListener listener_;
 
     public boolean start() {
         if (this.handle == 0) {
@@ -15,6 +13,10 @@ public class RtpMpegTsPlayer implements AutoCloseable {
         }
         return nativeStart(this.handle);
     }
+  public RtpMpegTsPlayer(OnPlayerListener listener) {
+    this.handle = nativeCreate();
+    listener_ = listener;
+  }
 
     public void stop() {
         if (this.handle == 0) {
@@ -58,12 +60,15 @@ public class RtpMpegTsPlayer implements AutoCloseable {
             super.finalize();
         }
     }
+  public void onVideoResolution(int width, int height) {
+    listener_.onVideoResolution(width, height);
+  }
 
-    private static native long nativeCreate();
     private static native void nativeDestroy(long handle);
     private static native boolean nativeStart(long handle);
     private static native void nativeStop(long handle);
     private static native void nativeSetSurface(long handle, Surface surface);
     private static native int nativeGetPort(long handle);
+  private native long nativeCreate();
 }
 

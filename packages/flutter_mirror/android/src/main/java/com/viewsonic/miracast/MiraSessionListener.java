@@ -8,4 +8,6 @@ public interface MiraSessionListener {
   void onAudioFormatUpdate(String mirrorId, String codecName, int sampleRate, int channelCount);
 
   void onMiracastSessionError(String mirrorId, String errorMessage);
+
+  void onVideoResolution(String mirrorId, int width, int height);
 }

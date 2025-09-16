@@ -18,4 +18,6 @@ public interface MiraMgrListener {
                        String deviceName);
 
   void onSessionEnd(String mirrorId);
+
+  void onVideoResolution(String mirrorId, int width, int height);
 }
