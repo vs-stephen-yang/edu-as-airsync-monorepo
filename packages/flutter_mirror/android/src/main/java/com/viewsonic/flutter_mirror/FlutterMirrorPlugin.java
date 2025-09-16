@@ -26,21 +26,24 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
-import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 import android.os.Handler;
 import android.os.Looper;
 
-/** FlutterMirrorPlugin */
+/**
+ * FlutterMirrorPlugin
+ */
 @Keep
 public class FlutterMirrorPlugin implements
-    FlutterPlugin,
-    ActivityAware,
-    TexRegistry,
-    MirrorListener,
-    BluetoothTouchBackListener,
-    MethodCallHandler {
+  FlutterPlugin,
+  ActivityAware,
+  TexRegistry,
+  MirrorListener,
+  BluetoothTouchBackListener,
+  MethodCallHandler,
+  MiracastReceiverListener,
+  com.viewsonic.miracast.SurfaceTextureProvider {
   private static final String TAG = "FlutterMirrorPlugin";
 
   // A wrapper for SurfaceTextureEntry
@@ -233,8 +236,7 @@ public class FlutterMirrorPlugin implements
     } else if (call.method.equals("startMiracast")) {
       String name = call.argument("name");
 
-      startMiracast(
-          name);
+      startMiracast(name);
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -370,6 +372,10 @@ public class FlutterMirrorPlugin implements
     }
 
     mirrorReceiver_.stopMirror(mirrorId);
+
+    if (mirrorId.contains("miracast")) {
+      miracastReceiver_.stopMirror(mirrorId);
+    }
   }
 
   private void enableAudio(String mirrorId, boolean enable) {
@@ -466,29 +472,37 @@ public class FlutterMirrorPlugin implements
 
   @Override
   public void onMiracastError(String errorMessage) {
-
+    onMirrorError("miracast", errorMessage);
   }
 
   @Override
   public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
-
+    onMirrorCapabilities(mirrorId, isUibcSupported);
   }
 
   @Override
-  public void onMiracastStart(long textureId) {
+  public void onMiracastStart(String mirrorId,
+                              long textureId,
+                              String deviceName) {
     Log.d(TAG, "FlutterMirrorPlugin.onMiracastStart() ");
 
     // Must run on the platform thread
     post(() -> {
       Map<String, Object> arguments = new HashMap<>();
-      arguments.put("mirrorId", "miracast");
+      arguments.put("mirrorId", mirrorId);
       arguments.put("textureId", textureId);
-      arguments.put("deviceName", "aaa");
+      arguments.put("deviceName", deviceName);
       arguments.put("mirrorType", "miracast");
-      arguments.put("deviceModel", "bbb");
+      arguments.put("deviceModel", "");
 
       channel_.invokeMethod("onMirrorStart", arguments);
     });
+  }
+
+  public void onMiracastStop(String mirrorId) {
+    Log.d(TAG, "FlutterMirrorPlugin.onMiracastStop() " + mirrorId);
+
+    onMirrorStop(mirrorId);
   }
 
   public void onMirrorAuth(String pin, int timeoutSec) {

@@ -1,7 +1,7 @@
 package com.viewsonic.miracast;
 
 public interface MiraMgrListener {
-  public void onAudioFormatUpdate(
+  void onAudioFormatUpdate(
     String mirrorId,
     String codecName,
     int sampleRate,
@@ -9,9 +9,13 @@ public interface MiraMgrListener {
 
   void onMiracastError(String errorMessage);
 
-  public void onSourceCapabilities(
+  void onSourceCapabilities(
     String mirrorId,
     boolean isUibcSupported);
 
-  void onMiracastStart(long textureId);
+  void onMiracastStart(String mirrorId,
+                       long textureId,
+                       String deviceName);
+
+  void onSessionEnd(String mirrorId);
 }
