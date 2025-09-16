@@ -1,7 +1,5 @@
-import 'dart:ui';
-
 import 'package:device_info_vs/device_info_vs.dart';
-import 'package:flutter/foundation.dart';
+import 'package:display_flutter/utility/view_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +13,20 @@ class MultiWindowProvider extends ChangeNotifier {
   Size _realScreenSize = Size.zero;
 
   Size get realScreenSize => _realScreenSize;
+
+  SystemBarMetrics _systemBarMetrics = const SystemBarMetrics();
+
+  SystemBarMetrics get systemBarMetrics => _systemBarMetrics;
+
+  double get statusBarHeightPx => _systemBarMetrics.statusBarHeightPx;
+
+  double get navigationBarHeightPx => _systemBarMetrics.navigationBarHeightPx;
+
+  bool get isStatusBarVisible => _systemBarMetrics.isStatusBarVisible;
+
+  bool get isNavigationBarVisible => _systemBarMetrics.isNavigationBarVisible;
+
+  bool _systemBarRefreshScheduled = false;
 
   String _deviceModel = "";
 
@@ -34,35 +46,75 @@ class MultiWindowProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint("Failed to get screen resolution: $e");
     }
+    _scheduleSystemBarRefresh();
+
     _channel.setMethodCallHandler(_handleMultiWindowChange);
   }
 
-  void _updateMultiWindow(bool value) {
+  Future<bool> _loadAndSetSystemBarMetrics() async {
+    var metricsChanged = false;
+
+    try {
+      final metrics = await _channel
+          .invokeMethod<Map<dynamic, dynamic>>('getSystemBarMetrics');
+      if (metrics != null) {
+        final updated = _applySystemBarMetrics(
+          Map<dynamic, dynamic>.from(metrics),
+        );
+        metricsChanged = metricsChanged || updated;
+      } else {
+        debugPrint('System bar metrics result is null');
+      }
+    } catch (e) {
+      debugPrint('Failed to load system bar metrics: $e');
+    }
+
+    return metricsChanged;
+  }
+
+  bool _applySystemBarMetrics(Map<dynamic, dynamic> metrics) {
+    final nextMetrics = SystemBarMetrics.fromMap(metrics);
+    if (nextMetrics == _systemBarMetrics) {
+      return false;
+    }
+    _systemBarMetrics = nextMetrics;
+    return true;
+  }
+
+  bool _updateMultiWindow(bool value) {
     if (_isInMultiWindow != value) {
       _isInMultiWindow = value;
-      notifyListeners();
+      return true;
     }
+    return false;
   }
 
   SplitScreenRatio getSplitScreenRatio(Size appSize) {
     if (_realScreenSize == Size.zero) return SplitScreenRatio.none;
     // 轉成pixel計算比例
-    final appWidth = appSize.width *
-        PlatformDispatcher.instance.views.first.devicePixelRatio;
-    final appHeight = appSize.height *
-        PlatformDispatcher.instance.views.first.devicePixelRatio;
+    final dpr = getSafeDevicePixelRatio();
+    final appWidth = appSize.width * dpr;
+    final appHeight = appSize.height * dpr;
     final widthRatio =
         double.parse((appWidth / _realScreenSize.width).toStringAsFixed(2));
 
-    final fullHeight = (appHeight - _realScreenSize.height).abs() < 150;
+    final metrics = _systemBarMetrics;
+    final statusBarHeightPx =
+        (metrics.isStatusBarVisible) ? metrics.statusBarHeightPx : 0;
+    final adjustedNavigationBarHeightPx =
+        (metrics.isNavigationBarVisible) ? metrics.navigationBarHeightPx : 0;
+    final totalHeight =
+        appHeight + statusBarHeightPx + adjustedNavigationBarHeightPx;
+    final fullHeight = totalHeight >= _realScreenSize.height;
     if (fullHeight) {
-      return switch (widthRatio) {
+      final r = switch (widthRatio) {
         < 0.33 => SplitScreenRatio.launcherFull,
         >= 0.33 && < 0.5 => SplitScreenRatio.oneThirdFull,
         >= 0.5 && < 0.65 => SplitScreenRatio.halfFull,
         >= 0.65 => SplitScreenRatio.twoThirdsFull,
         _ => SplitScreenRatio.none
       };
+      return r;
     }
 
     // 先看高度再看寬度
@@ -79,8 +131,7 @@ class MultiWindowProvider extends ChangeNotifier {
 
   bool _isFloatWindow(Size appSize) {
     if (_isInMultiWindow) {
-      final appHeight = appSize.height *
-          PlatformDispatcher.instance.views.first.devicePixelRatio;
+      final appHeight = appSize.height * getSafeDevicePixelRatio();
       if (appHeight != _realScreenSize.height) {
         return true;
       }
@@ -89,9 +140,34 @@ class MultiWindowProvider extends ChangeNotifier {
   }
 
   Future<void> _handleMultiWindowChange(MethodCall call) async {
-    if (call.method == "onMultiWindowChanged") {
-      _updateMultiWindow(call.arguments as bool);
-    }
+    if (call.method != "onMultiWindowChanged") return;
+
+    final multiWindowChanged = _updateMultiWindow(call.arguments as bool);
+    if (!multiWindowChanged) return;
+
+    notifyListeners();
+
+    _scheduleSystemBarRefresh();
+  }
+
+  void _scheduleSystemBarRefresh(
+      {Duration delay = const Duration(seconds: 1)}) {
+    if (_systemBarRefreshScheduled) return;
+    final binding = WidgetsBinding.instance;
+    _systemBarRefreshScheduled = true;
+    binding.addPostFrameCallback((_) async {
+      try {
+        if (delay > Duration.zero) {
+          await Future.delayed(delay);
+        }
+        final metricsChanged = await _loadAndSetSystemBarMetrics();
+        if (metricsChanged) {
+          notifyListeners();
+        }
+      } finally {
+        _systemBarRefreshScheduled = false;
+      }
+    });
   }
 
   bool _isFloatingIFPModel(String deviceModel) {
@@ -103,6 +179,63 @@ class MultiWindowProvider extends ChangeNotifier {
     // 轉成大寫後比較以防大小寫錯誤
     final normalizedModel = deviceModel.toUpperCase();
     return unsupportedModels.any((model) => normalizedModel.contains(model));
+  }
+}
+
+@immutable
+class SystemBarMetrics {
+  final double statusBarHeightPx;
+  final double navigationBarHeightPx;
+  final bool isStatusBarVisible;
+  final bool isNavigationBarVisible;
+
+  const SystemBarMetrics({
+    this.statusBarHeightPx = 0,
+    this.navigationBarHeightPx = 0,
+    this.isStatusBarVisible = false,
+    this.isNavigationBarVisible = false,
+  });
+
+  factory SystemBarMetrics.fromMap(Map<dynamic, dynamic> map) {
+    final statusBarHeight = (map['statusBarHeight'] as num?)?.toDouble() ?? 0;
+    final navigationBarHeight =
+        (map['navigationBarHeight'] as num?)?.toDouble() ?? 0;
+    final statusBarVisible = map['isStatusBarVisible'] as bool? ?? false;
+    final navigationBarVisible =
+        map['isNavigationBarVisible'] as bool? ?? false;
+
+    return SystemBarMetrics(
+      statusBarHeightPx: statusBarHeight > 0 ? statusBarHeight : 0,
+      navigationBarHeightPx: navigationBarHeight > 0 ? navigationBarHeight : 0,
+      isStatusBarVisible: statusBarVisible,
+      isNavigationBarVisible: navigationBarVisible,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is SystemBarMetrics &&
+        other.statusBarHeightPx == statusBarHeightPx &&
+        other.navigationBarHeightPx == navigationBarHeightPx &&
+        other.isStatusBarVisible == isStatusBarVisible &&
+        other.isNavigationBarVisible == isNavigationBarVisible;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        statusBarHeightPx,
+        navigationBarHeightPx,
+        isStatusBarVisible,
+        isNavigationBarVisible,
+      );
+
+  @override
+  String toString() {
+    return 'SystemBarMetrics(statusBarHeightPx: $statusBarHeightPx, '
+        'navigationBarHeightPx: $navigationBarHeightPx, '
+        'isStatusBarVisible: $isStatusBarVisible, '
+        'isNavigationBarVisible: $isNavigationBarVisible)';
   }
 }
 
@@ -198,10 +331,11 @@ extension MultiWindowContext on BuildContext {
   MultiWindowProvider get multiWindow => watch<MultiWindowProvider>();
 
   bool get isInMultiWindow {
+    final size = MediaQuery.of(this).size;
     // IFP92與105只能用高度來判斷是否為全屏，原生的isInMultiWindowMode無效。
     if (multiWindow._isFloatingIFPModel(multiWindow._deviceModel)) {
-      final appHeight = MediaQuery.of(this).size.height *
-          PlatformDispatcher.instance.views.first.devicePixelRatio;
+      final dpr = MediaQuery.of(this).devicePixelRatio;
+      final appHeight = size.height * dpr;
       if (appHeight != multiWindow._realScreenSize.height) {
         return true;
       }
@@ -217,6 +351,14 @@ extension MultiWindowContext on BuildContext {
   // 目前是不正確的，待調整
   bool get isFloatWindow =>
       multiWindow._isFloatWindow(MediaQuery.of(this).size);
+
+  double get statusBarHeightPx => multiWindow.statusBarHeightPx;
+
+  double get navigationBarHeightPx => multiWindow.navigationBarHeightPx;
+
+  bool get isStatusBarVisible => multiWindow.isStatusBarVisible;
+
+  bool get isNavigationBarVisible => multiWindow.isNavigationBarVisible;
 }
 
 typedef MultiWindowLayoutBuilder = Widget Function(

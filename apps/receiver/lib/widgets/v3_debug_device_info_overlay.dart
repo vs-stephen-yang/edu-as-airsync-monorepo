@@ -34,9 +34,11 @@ class V3DebugDeviceInfoOverlay extends StatelessWidget {
               Text(context.splitScreenRatio.name,
                   style: TextStyle(fontSize: 14, color: Colors.red)),
               Text(
-                'Device Pixel Ratio: ${dpr.toStringAsFixed(2)},\n'
+                'isInMultiWindow: ${context.isInMultiWindow}, DPR: ${dpr.toStringAsFixed(2)},\n'
                 'Logical: ${size.width.toStringAsFixed(1)} × ${size.height.toStringAsFixed(1)} dp,\n'
-                'Physical: $physicalWidth × $physicalHeight px',
+                'Physical: $physicalWidth × $physicalHeight px\n'
+                'Status Bar(${context.isNavigationBarVisible}), Height: ${context.statusBarHeightPx}px\n'
+                'Navigation Bar(${context.isNavigationBarVisible}), Height: ${context.navigationBarHeightPx}px',
                 style: TextStyle(fontSize: 10),
               ),
             ],
