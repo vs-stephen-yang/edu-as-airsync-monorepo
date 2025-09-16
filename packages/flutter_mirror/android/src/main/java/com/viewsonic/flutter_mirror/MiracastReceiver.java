@@ -58,17 +58,17 @@ public class MiracastReceiver implements
   }
 
   public void onMirrorTouch(
-      String mirrorId,
-      int touchId,
-      boolean touch,
-      double x,
-      double y) {
+    String mirrorId,
+    int touchId,
+    boolean touch,
+    double x,
+    double y) {
     MiraMgrProxy.getInstance().onTouchEvent(
-        mirrorId,
-        touchId,
-        touch,
-        x,
-        y);
+      mirrorId,
+      touchId,
+      touch,
+      x,
+      y);
   }
 
   // Called from native
