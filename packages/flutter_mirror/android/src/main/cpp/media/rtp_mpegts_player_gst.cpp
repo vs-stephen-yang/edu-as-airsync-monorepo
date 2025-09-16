@@ -156,6 +156,8 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
       gst_object_unref(resample);
     if (sink)
       gst_object_unref(sink);
+
+    TeardownPipeline();
     return;
   }
 
@@ -175,6 +177,7 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
 
   if (!gst_element_link_many(queue, aacparse, decoder, convert, resample, sink, NULL)) {
     ALOGE("Failed to link audio elements");
+    TeardownPipeline();
     return;
   }
 
@@ -183,6 +186,7 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
     GstPadLinkReturn ret = gst_pad_link(pad, queue_sink_pad);
     if (ret != GST_PAD_LINK_OK) {
       ALOGE("Failed to link demux pad to audio queue");
+      TeardownPipeline();
     }
     gst_object_unref(queue_sink_pad);
   }
@@ -202,6 +206,7 @@ void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
 
   if (!queue || !decodebin) {
     ALOGE("Failed to create elements");
+    TeardownPipeline();
     return;
   }
 
@@ -286,7 +291,7 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
 
   // 單獨添加 glimagesink（避免在 gst_bin_add_many 中的問題）
   if (!gst_bin_add(GST_BIN(self->pipeline_), self->video_sink_)) {
-    ALOGE("[PAD_ADDED] Failed to add glsink to pipeline");
+    self->TeardownPipeline();
     return;
   }
   ALOGI("[PAD_ADDED] Added glsink separately");
@@ -305,19 +310,19 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
   // decodebin pad → videoconvert:sink
   GstPad* convert_sinkpad = gst_element_get_static_pad(convert, "sink");
   if (!convert_sinkpad) {
-    ALOGE("[PAD_ADDED] Failed to get videoconvert sink pad");
+    self->TeardownPipeline();
     return;
   }
   GstPadLinkReturn ret = gst_pad_link(pad, convert_sinkpad);
   if (GST_PAD_LINK_FAILED(ret)) {
-    ALOGE("[PAD_ADDED] Failed to link decodebin pad to videoconvert: %d", ret);
+    self->TeardownPipeline();
     return;
   }
   gst_object_unref(convert_sinkpad);
 
   bool link_ok = gst_element_link_many(convert, capsfilter, queue, self->video_sink_, NULL);
   if (!link_ok) {
-    ALOGE("gst_element_link_many failed");
+    self->TeardownPipeline();
     return;
   }
 
@@ -471,9 +476,6 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   gst_object_unref(udp_src_pad);
   if (udplink != GST_PAD_LINK_OK) {
     ALOGE("udplink != GST_PAD_LINK_OK");
-    gst_element_release_request_pad(rtpbin_, rtpbin_rtp_sink_pad_);
-    gst_object_unref(rtpbin_rtp_sink_pad_);
-    rtpbin_rtp_sink_pad_ = nullptr;
     TeardownPipeline();
     return;
   }
@@ -524,42 +526,34 @@ void RtpMpegTsPlayerGst::TeardownPipeline() {
   }
   if (video_sink_) {
     gst_bin_remove(GST_BIN(pipeline_), video_sink_);
-    gst_object_unref(video_sink_);
     video_sink_ = nullptr;
   }
   if (decodebin_) {
     gst_bin_remove(GST_BIN(pipeline_), decodebin_);
-    gst_object_unref(decodebin_);
     decodebin_ = nullptr;
   }
   if (video_queue_) {
     gst_bin_remove(GST_BIN(pipeline_), video_queue_);
-    gst_object_unref(video_queue_);
     video_queue_ = nullptr;
   }
   if (tsdemux_) {
     gst_bin_remove(GST_BIN(pipeline_), tsdemux_);
-    gst_object_unref(tsdemux_);
     tsdemux_ = nullptr;
   }
   if (tsparse_) {
     gst_bin_remove(GST_BIN(pipeline_), tsparse_);
-    gst_object_unref(tsparse_);
     tsparse_ = nullptr;
   }
   if (depay_) {
     gst_bin_remove(GST_BIN(pipeline_), depay_);
-    gst_object_unref(depay_);
     depay_ = nullptr;
   }
   if (rtpbin_) {
     gst_bin_remove(GST_BIN(pipeline_), rtpbin_);
-    gst_object_unref(rtpbin_);
     rtpbin_ = nullptr;
   }
   if (udpsrc_) {
     gst_bin_remove(GST_BIN(pipeline_), udpsrc_);
-    gst_object_unref(udpsrc_);
     udpsrc_ = nullptr;
   }
   if (rtpbin_rtp_sink_pad_) {
