@@ -197,6 +197,13 @@ public class MiraMgr
   }
 
   @Override
+  public void onVideoResolution(String mirrorId, int width, int height) {
+    if (listener_ != null) {
+      listener_.onVideoResolution(mirrorId, width, height);
+    }
+  }
+
+  @Override
   public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
     if (listener_ != null) {
       listener_.onSourceCapabilities(mirrorId, isUibcSupported);

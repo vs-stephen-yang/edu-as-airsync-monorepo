@@ -100,6 +100,15 @@ public class MiraSession
       }
     });
     Log.d(TAG, "#" + id_ + " rtsp client->" + "rtsp://" + ip_ + ":" + port_);
+
+    rtspClient_.setVideoResolutionListener(new RtspClient.VideoResolutionListener() {
+      @Override
+      public void onVideoResolution(int width, int height) {
+        if (mirrorListener_ != null) {
+          mirrorListener_.onVideoResolution(id_, width, height);
+        }
+      }
+    });
   }
 
   public String getPeerAddress() {

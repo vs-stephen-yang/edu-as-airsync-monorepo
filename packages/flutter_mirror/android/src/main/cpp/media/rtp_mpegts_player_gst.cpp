@@ -233,6 +233,8 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
     return;
   }
 
+  gst_pad_add_probe(pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM, OnCapsProbe, self, nullptr);  // get video size
+
   GstCaps* pad_caps = gst_pad_get_current_caps(pad);
   if (pad_caps) {
     gchar* caps_str = gst_caps_to_string(pad_caps);
@@ -338,6 +340,32 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
     gst_element_set_state(self->video_sink_, GST_STATE_PLAYING);
     ALOGI("[PAD_ADDED] ✅ New elements set to PLAYING");
   }
+}
+
+GstPadProbeReturn RtpMpegTsPlayerGst::OnCapsProbe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
+  if (!self) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM) {
+    GstEvent* event = GST_PAD_PROBE_INFO_EVENT(info);
+    if (GST_EVENT_TYPE(event) == GST_EVENT_CAPS) {
+      GstCaps* caps = NULL;
+      gst_event_parse_caps(event, &caps);
+
+      if (caps) {
+        GstStructure* s = gst_caps_get_structure(caps, 0);
+        int width = 0, height = 0;
+        gst_structure_get_int(s, "width", &width);
+        gst_structure_get_int(s, "height", &height);
+
+        ALOGI("video size: %d x %d", width, height);
+        self->NotifyVideoResolution(width, height);
+      }
+    }
+  }
+  return GST_PAD_PROBE_OK;
 }
 
 void RtpMpegTsPlayerGst::OnRtpbinPadAdded(GstElement* element, GstPad* pad, gpointer user_data) {
@@ -649,4 +677,37 @@ void RtpMpegTsPlayerGst::RunMainLoop() {
     return;
   }
   g_main_loop_run(loop_);
+}
+
+void RtpMpegTsPlayerGst::SetJavaInstance(JNIEnv* env, jobject thiz) {
+  if (java_instance_) {
+    env->DeleteGlobalRef(java_instance_);
+  }
+  java_instance_ = env->NewGlobalRef(thiz);
+}
+
+extern JavaVM* g_vm;
+
+void RtpMpegTsPlayerGst::NotifyVideoResolution(int width, int height) {
+  if (!java_instance_)
+    return;
+
+  JNIEnv* env = nullptr;
+  if (g_vm->AttachCurrentThread(&env, nullptr) != JNI_OK)
+    return;
+
+  jclass cls = env->GetObjectClass(java_instance_);
+  if (!cls) {
+    ALOGE("NotifyVideoResolution: GetObjectClass failed");
+    return;
+  }
+
+  jmethodID method = env->GetMethodID(cls, "onVideoResolution", "(II)V");
+  if (!method) {
+    ALOGE("NotifyVideoResolution: GetMethodID failed");
+    return;
+  }
+  if (method) {
+    env->CallVoidMethod(java_instance_, method, width, height);
+  }
 }

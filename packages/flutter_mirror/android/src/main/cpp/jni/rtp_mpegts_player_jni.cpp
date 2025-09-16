@@ -18,6 +18,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsPlay
   if (!p) {
     return 0;
   }
+  p->SetJavaInstance(env, thiz);
   return ptr_to_jlong(p);
 }
 

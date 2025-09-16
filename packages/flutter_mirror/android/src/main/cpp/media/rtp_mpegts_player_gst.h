@@ -25,14 +25,18 @@ class RtpMpegTsPlayerGst final {
   uint16_t GetPort() const;
   void SetSurface(JNIEnv* env, jobject surface);
 
+  void SetJavaInstance(JNIEnv* env, jobject thiz);
+
  private:
   static void OnBusMessage(GstBus* bus, GstMessage* message, gpointer user_data);
   static void OnDemuxPadAdded(GstElement* demux, GstPad* pad, gpointer user_data);
   static void OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad, gpointer user_data);
   static void OnRtpbinPadAdded(GstElement* rtpbin, GstPad* new_pad, gpointer user_data);
+  static GstPadProbeReturn OnCapsProbe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
   static GstCaps* OnRequestPtMap(GstElement* rtpbin, guint session, guint pt, gpointer user_data);
   void ConnectAudioPad(GstPad* pad);
   void ConnectVideoPad(GstPad* pad);
+  void NotifyVideoResolution(int width, int height);
 
   void HandleBusMessage(GstMessage* message);
   void EnsurePipeline();
@@ -66,4 +70,6 @@ class RtpMpegTsPlayerGst final {
   bool playing_;
 
   GstPad* rtpbin_rtp_sink_pad_;
+
+  jobject java_instance_ = nullptr;
 };

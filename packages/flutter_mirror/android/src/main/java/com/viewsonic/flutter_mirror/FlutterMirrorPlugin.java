@@ -493,6 +493,13 @@ public class FlutterMirrorPlugin implements
     onMirrorStop(mirrorId);
   }
 
+  @Override
+  public void onMiracastVideoResolution(String mirrorId, int width, int height) {
+    Log.d(TAG, "FlutterMirrorPlugin.onMiracastVideoResolution() " + mirrorId + " width: " + width + " height: " + height);
+
+    onMirrorVideoResize(mirrorId, width, height);
+  }
+
   public void onMirrorAuth(String pin, int timeoutSec) {
     Log.d(TAG, "FlutterMirrorPlugin.onMirrorAuth() " + pin);
 
