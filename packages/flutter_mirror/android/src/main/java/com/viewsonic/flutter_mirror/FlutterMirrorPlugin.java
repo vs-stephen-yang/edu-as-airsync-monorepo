@@ -484,18 +484,7 @@ public class FlutterMirrorPlugin implements
                               long textureId,
                               String deviceName) {
     Log.d(TAG, "FlutterMirrorPlugin.onMiracastStart() ");
-
-    // Must run on the platform thread
-    post(() -> {
-      Map<String, Object> arguments = new HashMap<>();
-      arguments.put("mirrorId", mirrorId);
-      arguments.put("textureId", textureId);
-      arguments.put("deviceName", deviceName);
-      arguments.put("mirrorType", "miracast");
-      arguments.put("deviceModel", "");
-
-      channel_.invokeMethod("onMirrorStart", arguments);
-    });
+    onMirrorStart(mirrorId, textureId, deviceName, "", "miracast");
   }
 
   public void onMiracastStop(String mirrorId) {
