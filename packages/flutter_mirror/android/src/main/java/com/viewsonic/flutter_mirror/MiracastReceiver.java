@@ -1,41 +1,48 @@
 package com.viewsonic.flutter_mirror;
 
 import androidx.annotation.Keep;
+
 import android.app.Activity;
 import android.content.Context;
 
 import com.viewsonic.miracast.MiraMgrListener;
 import com.viewsonic.miracast.MiraMgrProxy;
+import com.viewsonic.miracast.SurfaceTextureProvider;
 
 import android.util.Log;
 
 @Keep
 public class MiracastReceiver implements
-    MiraMgrListener {
+  MiraMgrListener {
 
   private static final String TAG = "MiracastReceiver";
 
-//  MiracastReceiverListener listener_;
+  MiracastReceiverListener listener_;
+
 
   public MiracastReceiver(
-      ) {
-
-//    listener_ = listener;
+    MiracastReceiverListener listener
+  ) {
+    listener_ = listener;
   }
 
   public void start(
-      String name,
-      Context context,
-      Activity activity) {
+    String name,
+    Context context,
+    Activity activity,
+    SurfaceTextureProvider surfaceTextureProvider
+  ) {
     assert context != null;
     assert activity != null;
 
     Log.d(TAG, "MiracastReceiver.start()");
     MiraMgrProxy.getInstance().start(
-        context,
-        activity,
-        this,
-        name);
+      context,
+      activity,
+      this,
+      name,
+      surfaceTextureProvider
+    );
   }
 
   public void stop() {
@@ -91,10 +98,15 @@ public class MiracastReceiver implements
 
   @Override
   public void onSourceCapabilities(
-      String mirrorId,
-      boolean isUibcSupported) {
+    String mirrorId,
+    boolean isUibcSupported) {
 //    listener_.onSourceCapabilities(
 //        mirrorId,
 //        isUibcSupported);
+  }
+
+  @Override
+  public void onMiracastStart(long textureId) {
+    listener_.onMiracastStart(textureId);
   }
 }
