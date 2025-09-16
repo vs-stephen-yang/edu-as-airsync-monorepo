@@ -16,6 +16,8 @@ public class MiraMgr
   private static final String kMirrorIdPrefix_ = "miracast-";
   private final Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
 
+  private final Map<String, Long> session_textures_ = new HashMap<>();
+
   private final EventBase eventBase_;
   private SurfaceTextureProvider surfaceProvider_;
 
@@ -133,6 +135,7 @@ public class MiraMgr
 
             session.setSurface(surface);
             listener_.onMiracastStart(session.getId(), textureId, peerName);
+            session_textures_.put(session.getId(), textureId);
           } catch (Exception e) {
             Log.e(TAG, "get surface failed" + e);
           }
@@ -154,6 +157,11 @@ public class MiraMgr
     if (removeSessionId != null) {
       if (listener_ != null) {
         listener_.onSessionEnd(removeSessionId);
+      }
+
+      Long textureId = session_textures_.get(removeSessionId);
+      if (textureId != null) {
+        surfaceProvider_.releaseSurfaceTexture(textureId);
       }
     }
   }

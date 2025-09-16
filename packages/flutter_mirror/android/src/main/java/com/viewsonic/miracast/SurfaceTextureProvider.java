@@ -6,5 +6,7 @@ public interface SurfaceTextureProvider {
   void createSurfaceTextureAsync(SurfaceTextureProviderCallback callback);
 
   Surface getSurfaceTexture(long textureId) throws java.lang.Exception;
+
+  void releaseSurfaceTexture(long textureId);
 }
 
