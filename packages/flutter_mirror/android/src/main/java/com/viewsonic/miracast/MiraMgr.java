@@ -83,9 +83,9 @@ public class MiraMgr
     for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
       entry.getValue().stop();
       mirror_sessions_.remove(entry.getKey());
-//      if (listener_ != null) {
-//        listener_.onSessionEnd(entry.getKey());
-//      }
+      if (listener_ != null) {
+        listener_.onSessionEnd(entry.getKey());
+      }
     }
   }
 
@@ -132,7 +132,7 @@ public class MiraMgr
             Log.d(TAG, "Surface is valid: " + surface.isValid());
 
             session.setSurface(surface);
-            listener_.onMiracastStart(textureId);
+            listener_.onMiracastStart(session.getId(), textureId, peerName);
           } catch (Exception e) {
             Log.e(TAG, "get surface failed" + e);
           }
@@ -151,11 +151,11 @@ public class MiraMgr
   public void onPeerDisconnected(String peerMacAddress) {
     Log.d(TAG, "onPeerDisconnected:" + peerMacAddress);
     String removeSessionId = removeSessionByPeerAddress(peerMacAddress);
-//    if (removeSessionId != null) {
-//      if (listener_ != null) {
-//        listener_.onSessionEnd(removeSessionId);
-//      }
-//    }
+    if (removeSessionId != null) {
+      if (listener_ != null) {
+        listener_.onSessionEnd(removeSessionId);
+      }
+    }
   }
 
   @Override
@@ -167,9 +167,7 @@ public class MiraMgr
 
   @Override
   public void onRtspConnected(String mirrorId, String deviceName) {
-//    if (listener_ != null) {
-//      listener_.onSessionBegin(mirrorId, deviceName);
-//    }
+    // Miracast already started when peer connect
   }
 
   @Override
@@ -186,21 +184,14 @@ public class MiraMgr
   @Override
   public void onMiracastSessionError(String mirrorId, String errorMessage) {
     if (listener_ != null) {
-      try {
-        listener_.onMiracastError(errorMessage);
-      } catch (Exception e) {
-      }
+      listener_.onMiracastError(errorMessage);
     }
   }
 
   @Override
   public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
     if (listener_ != null) {
-      try {
-        listener_.onSourceCapabilities(mirrorId, isUibcSupported);
-      } catch (Exception e) {
-      }
+      listener_.onSourceCapabilities(mirrorId, isUibcSupported);
     }
   }
-
 }

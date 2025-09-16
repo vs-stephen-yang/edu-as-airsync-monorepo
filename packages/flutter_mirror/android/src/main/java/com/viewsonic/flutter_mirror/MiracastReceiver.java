@@ -79,34 +79,36 @@ public class MiracastReceiver implements
   // implements MiraMgrListener
   @Override
   public void onAudioFormatUpdate(
-      String mirrorId,
-      String codecName,
-      int sampleRate,
-      int channelCount) {
+    String mirrorId,
+    String codecName,
+    int sampleRate,
+    int channelCount) {
 
-//    onAudioFormatUpdateNative(
-//        mirrorId,
-//        codecName,
-//        sampleRate,
-//        channelCount);
   }
 
   @Override
   public void onMiracastError(String errorMessage) {
-//    listener_.onMiracastError(errorMessage);
+    listener_.onMiracastError(errorMessage);
   }
 
   @Override
   public void onSourceCapabilities(
     String mirrorId,
     boolean isUibcSupported) {
-//    listener_.onSourceCapabilities(
-//        mirrorId,
-//        isUibcSupported);
+    listener_.onSourceCapabilities(
+      mirrorId,
+      isUibcSupported);
   }
 
   @Override
-  public void onMiracastStart(long textureId) {
-    listener_.onMiracastStart(textureId);
+  public void onMiracastStart(String mirrorId,
+                              long textureId,
+                              String deviceName) {
+    listener_.onMiracastStart(mirrorId, textureId, deviceName);
+  }
+
+  @Override
+  public void onSessionEnd(String mirrorId) {
+    listener_.onMiracastStop(mirrorId);
   }
 }
