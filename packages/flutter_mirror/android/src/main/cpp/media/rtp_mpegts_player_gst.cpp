@@ -258,7 +258,6 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
       g_object_set(self->video_sink_,
                    "sync", TRUE,
                    "async", TRUE,
-                   "latency-time", G_GINT64_CONSTANT(33000),
                    "enable-last-sample", FALSE,
                    "force-aspect-ratio", FALSE,
                    NULL);
