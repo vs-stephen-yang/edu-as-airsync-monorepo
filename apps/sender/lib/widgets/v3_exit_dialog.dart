@@ -16,51 +16,106 @@ class _V3ExitDialogState extends State<V3ExitDialog> {
     return PopScope(
       canPop: false,
       child: AlertDialog(
-        // Can not use V3AutoHyphenatingText
-        title: Text(S.of(context).v3_exit_title),
-        actions: [
-          V3Focus(
-            label: S.of(context).v3_lbl_exit_action_exit,
-            identifier: 'v3_qa_exit_action_exit',
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              style: TextButton.styleFrom(
-                side: BorderSide(
-                    color: context.tokens.color.vsdswColorPrimary, width: 1),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(25),
+        backgroundColor: context.tokens.color.vsdswColorSurface100,
+        title: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: V3Focus(
+                identifier: 'v3_exit_close',
+                child: IconButton(
+                  iconSize: 12,
+                  icon: Icon(
+                    Icons.close,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: context.tokens.spacing.vsdswSpacingMd.top),
+              child: Center(
+                // Can not use V3AutoHyphenatingText
+                child: Text(
+                  S.of(context).v3_exit_title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdswColorOnSurface,
+                    fontWeight: FontWeight.bold,
+                    fontSize: context.tokens.textStyle.vsdswHeadingMd.fontSize,
                   ),
                 ),
               ),
-              // Can not use V3AutoHyphenatingText
-              child: Text(S.of(context).v3_exit_action_exit),
             ),
+          ],
+        ),
+        content: SizedBox(
+          width: 436,
+          height: 128,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(),
+              const Divider(),
+            ],
           ),
-          V3Focus(
+        ),
+        actions: [
+          _updateDialogButton(
+            label: S.of(context).v3_lbl_exit_action_exit,
+            identifier: 'v3_qa_exit_action_exit',
+            text: S.of(context).v3_exit_action_exit,
+            textColor: context.tokens.color.vsdswColorSecondary,
+            backgroundColor: Colors.transparent,
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          _updateDialogButton(
             label: S.of(context).v3_lbl_exit_action_cancel,
             identifier: 'v3_qa_exit_action_cancel',
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 5.0,
-                shadowColor: context.tokens.color.vsdswColorPrimary,
-                foregroundColor: context.tokens.color.vsdswColorOnPrimary,
-                backgroundColor: context.tokens.color.vsdswColorPrimary,
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-              // Can not use V3AutoHyphenatingText
-              child: Text(S.of(context).v3_exit_action_cancel),
-            ),
+            text: S.of(context).v3_exit_action_cancel,
+            textColor: context.tokens.color.vsdswColorOnPrimary,
+            backgroundColor: context.tokens.color.vsdswColorPrimary,
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _updateDialogButton(
+      {required String text,
+      required Color textColor,
+      required Color backgroundColor,
+      required String label,
+      required String identifier,
+      required GestureTapCallback onPressed}) {
+    return V3Focus(
+      label: label,
+      identifier: identifier,
+      child: Material(
+        color: Colors.transparent,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor,
+            foregroundColor: textColor,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            elevation: backgroundColor == Colors.transparent ? 0 : 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(9999),
+            ),
+            shadowColor: backgroundColor.withValues(alpha: 0.31),
+          ),
+          child: Text(text),
+        ),
       ),
     );
   }
