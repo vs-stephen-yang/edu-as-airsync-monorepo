@@ -2,7 +2,6 @@ package com.viewsonic.flutter_mirror;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -116,7 +115,7 @@ public class FlutterMirrorPlugin implements
     bluetoothTouchBackController_ = new BluetoothTouchBackController(context_, activity_, this, false);
     activityPluginBinding.addActivityResultListener(bluetoothTouchBackController_.getActivityResultListener());
     activityPluginBinding
-        .addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
+      .addRequestPermissionsResultListener(bluetoothTouchBackController_.getRequestPermissionsResultListener());
 
     // Correct way to register lifecycle callbacks
     application_.registerActivityLifecycleCallbacks(bluetoothTouchBackController_.getActivityLifecycleCallbacks());
@@ -165,19 +164,19 @@ public class FlutterMirrorPlugin implements
       double y = call.argument("y");
       if (miracastReceiver_ != null) {
         miracastReceiver_.onMirrorTouch(
-            mirrorId,
-            touchId,
-            touch,
-            x,
-            y);
+          mirrorId,
+          touchId,
+          touch,
+          x,
+          y);
       }
       if (bluetoothTouchBackController_ != null) {
         bluetoothTouchBackController_.onMirrorTouch(
-            mirrorId,
-            touchId,
-            touch,
-            x,
-            y);
+          mirrorId,
+          touchId,
+          touch,
+          x,
+          y);
       }
       result.success(new HashMap<>());
     } else if (call.method.equals("enableTouchback")) {
@@ -204,9 +203,9 @@ public class FlutterMirrorPlugin implements
       Map<String, Map<String, Integer>> airPlayResolutionMap = (Map<String, Map<String, Integer>>) call.argument("airPlayResolutionMap");
 
       startAirplay(
-          name,
-          security,
-          airPlayResolutionMap);
+        name,
+        security,
+        airPlayResolutionMap);
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -222,9 +221,9 @@ public class FlutterMirrorPlugin implements
       Map<String, Object> credentials = call.argument("credentials");
 
       startGooglecast(
-          name,
-          uniqueId,
-          GooglecastCredentials.fromMap(credentials));
+        name,
+        uniqueId,
+        GooglecastCredentials.fromMap(credentials));
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -264,7 +263,7 @@ public class FlutterMirrorPlugin implements
       Map<String, Object> credentials = call.argument("credentials");
 
       updateCredentials(
-          GooglecastCredentials.fromMap(credentials));
+        GooglecastCredentials.fromMap(credentials));
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -318,9 +317,9 @@ public class FlutterMirrorPlugin implements
   }
 
   private void startGooglecast(
-      String name,
-      String uniqueId,
-      GooglecastCredentials credentials) {
+    String name,
+    String uniqueId,
+    GooglecastCredentials credentials) {
     if (mirrorReceiver_ == null) {
       return;
     }
@@ -519,11 +518,11 @@ public class FlutterMirrorPlugin implements
   }
 
   public void onMirrorStart(
-      String mirrorId,
-      long textureId,
-      String deviceName,
-      String deviceModel,
-      String mirrorType) {
+    String mirrorId,
+    long textureId,
+    String deviceName,
+    String deviceModel,
+    String mirrorType) {
     Log.d(TAG, "FlutterMirrorPlugin.onMirrorStart() " + mirrorId);
 
     if (bluetoothTouchBackController_ != null) {
@@ -588,8 +587,8 @@ public class FlutterMirrorPlugin implements
 
   @Override
   public void onMirrorCapabilities(
-      String mirrorId,
-      boolean isUibcSupported) {
+    String mirrorId,
+    boolean isUibcSupported) {
 
     // Must run on the platform thread
     post(() -> {
@@ -616,9 +615,10 @@ public class FlutterMirrorPlugin implements
 
   @Override
   public void onCredentialsRequest(
-      int year,
-      int month,
-      int day) {
+    int year,
+    int month,
+    int day
+  ) {
     Log.d(TAG, "FlutterMirrorPlugin.onCredentialsRequest() ");
 
     // Must run on the platform thread
