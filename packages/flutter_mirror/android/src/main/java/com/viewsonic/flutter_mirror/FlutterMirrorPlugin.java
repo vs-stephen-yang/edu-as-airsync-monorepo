@@ -436,7 +436,7 @@ public class FlutterMirrorPlugin implements
 
   // release a surface
   @Override
-  public void releaseSurfaceTexture(long textureId) throws java.lang.Exception {
+  public void releaseSurfaceTexture(long textureId) {
     Log.d(TAG, "FlutterMirrorPlugin.releaseSurfaceTexture() " + textureId);
 
     // Must run on the platform thread
