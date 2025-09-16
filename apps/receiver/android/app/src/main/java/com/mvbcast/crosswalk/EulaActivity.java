@@ -35,6 +35,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.mvbcast.crosswalk.helper.WifiHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
@@ -255,6 +258,8 @@ public class EulaActivity extends FlutterActivity {
                         map.put("width", resolution.getWidth());
                         map.put("height", resolution.getHeight());
                         result.success(map);
+                    } else if (call.method.equals("getSystemBarMetrics")) {
+                        result.success(getSystemBarMetrics());
                     } else {
                         result.notImplemented();
                     }
@@ -343,6 +348,67 @@ public class EulaActivity extends FlutterActivity {
             // getSize() → 只會算可用空間（不含 navigation bar）
             display.getRealSize(point);
             return new Size(point.x, point.y);
+        }
+    }
+
+    private Map<String, Object> getSystemBarMetrics() {
+        SystemBarMetrics metrics = captureSystemBarMetrics();
+        Map<String, Object> result = new HashMap<>();
+        result.put("statusBarHeight", metrics.statusBarHeight);
+        result.put("navigationBarHeight", metrics.navigationBarHeight);
+        result.put("isStatusBarVisible", metrics.isStatusBarVisible);
+        result.put("isNavigationBarVisible", metrics.isNavigationBarVisible);
+        return result;
+    }
+
+    private SystemBarMetrics captureSystemBarMetrics() {
+        View decorView = (getWindow() != null) ? getWindow().getDecorView() : null;
+        Integer statusHeight = null;
+        Integer navigationHeight = null;
+        Boolean statusVisible = null;
+        Boolean navigationVisible = null;
+
+        if (decorView != null) {
+            WindowInsetsCompat insetsCompat = ViewCompat.getRootWindowInsets(decorView);
+            if (insetsCompat != null) {
+                Insets statusInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.statusBars());
+                Insets navigationInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.navigationBars());
+                statusHeight = statusInsets.top;
+                navigationHeight = navigationInsets.bottom;
+                statusVisible = insetsCompat.isVisible(WindowInsetsCompat.Type.statusBars());
+                navigationVisible = insetsCompat.isVisible(WindowInsetsCompat.Type.navigationBars());
+            }
+        }
+
+        if (statusHeight == null || statusHeight <= 0) {
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+        }
+
+        if (navigationHeight == null || navigationHeight <= 0) {
+            int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                navigationHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+        }
+
+        return new SystemBarMetrics(statusHeight, navigationHeight, statusVisible, navigationVisible);
+    }
+
+    private static class SystemBarMetrics {
+        final Integer statusBarHeight;
+        final Integer navigationBarHeight;
+        final Boolean isStatusBarVisible;
+        final Boolean isNavigationBarVisible;
+
+        SystemBarMetrics(Integer statusBarHeight, Integer navigationBarHeight,
+                         Boolean isStatusBarVisible, Boolean isNavigationBarVisible) {
+            this.statusBarHeight = statusBarHeight;
+            this.navigationBarHeight = navigationBarHeight;
+            this.isStatusBarVisible = isStatusBarVisible;
+            this.isNavigationBarVisible = isNavigationBarVisible;
         }
     }
 

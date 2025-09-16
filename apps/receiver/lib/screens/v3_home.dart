@@ -115,6 +115,8 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final realScreenSizeHeight = context
+        .select<MultiWindowProvider, double>((p) => p.realScreenSize.height);
     return PopScope<Object?>(
       canPop: Platform.isAndroid ? false : true,
       onPopInvokedWithResult: (bool didPop, Object? result) async {
@@ -137,32 +139,48 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
               if (snapshot.connectionState != ConnectionState.done) {
                 return Container();
               }
+
+              final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+              final appHeight =
+                  MediaQuery.of(context).size.height * devicePixelRatio;
+
+              var paddingBottom = 0.0;
+              if (context.isNavigationBarVisible &&
+                  context.isStatusBarVisible &&
+                  appHeight == realScreenSizeHeight &&
+                  context.isInMultiWindow) {
+                paddingBottom =
+                    context.navigationBarHeightPx / devicePixelRatio;
+              }
               return ConstrainedBox(
                 constraints: const BoxConstraints.expand(),
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
                     const StreamingViewContainer(),
-                    MultiWindowAdaptiveLayout(
-                      landscape: ValueListenableBuilder(
-                        valueListenable: V3Home.isShowHeaderFooterBar,
-                        builder: (_, bool value, __) {
-                          return value
-                              ? Stack(
-                                  fit: StackFit.expand,
-                                  children: <Widget>[
-                                    Container(
-                                      color: const Color(0xFFEAEBF1),
-                                    ),
-                                    const V3HeaderBar(),
-                                    const V3FooterBar(),
-                                  ],
-                                )
-                              : const SizedBox.shrink();
-                        },
+                    Padding(
+                      padding: EdgeInsets.only(bottom: paddingBottom),
+                      child: MultiWindowAdaptiveLayout(
+                        landscape: ValueListenableBuilder(
+                          valueListenable: V3Home.isShowHeaderFooterBar,
+                          builder: (_, bool value, __) {
+                            return value
+                                ? Stack(
+                                    fit: StackFit.expand,
+                                    children: <Widget>[
+                                      Container(
+                                        color: const Color(0xFFEAEBF1),
+                                      ),
+                                      const V3HeaderBar(),
+                                      const V3FooterBar(),
+                                    ],
+                                  )
+                                : const SizedBox.shrink();
+                          },
+                        ),
+                        launcher: SizedBox.shrink(),
+                        floatingDefault: SizedBox.shrink(),
                       ),
-                      launcher: SizedBox.shrink(),
-                      floatingDefault: SizedBox.shrink(),
                     ),
                     ValueListenableBuilder(
                       valueListenable: V3Home.isShowDisplayCode,
