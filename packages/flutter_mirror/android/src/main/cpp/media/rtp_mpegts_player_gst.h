@@ -32,6 +32,7 @@ class RtpMpegTsPlayerGst final {
   static void OnRtpbinPadAdded(GstElement* rtpbin, GstPad* new_pad, gpointer user_data);
   static GstCaps* OnRequestPtMap(GstElement* rtpbin, guint session, guint pt, gpointer user_data);
   void ConnectAudioPad(GstPad* pad);
+  void ConnectVideoPad(GstPad* pad);
 
   void HandleBusMessage(GstMessage* message);
   void EnsurePipeline();

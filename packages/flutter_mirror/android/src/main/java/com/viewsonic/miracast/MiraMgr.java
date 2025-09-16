@@ -1,6 +1,7 @@
 package com.viewsonic.miracast;
 
 import android.util.Log;
+import android.view.Surface;
 
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.wifidirect.WiFiDirectListener;
@@ -9,34 +10,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MiraMgr
-    implements WiFiDirectListener, MiraSessionListener {
+  implements WiFiDirectListener, MiraSessionListener {
   private MiraMgrListener listener_;
   private int mirror_increment_seq_ = 0;
   private static final String kMirrorIdPrefix_ = "miracast-";
   private final Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
 
   private final EventBase eventBase_;
+  private SurfaceTextureProvider surfaceProvider_;
 
   static String formatMirrorId(int seq) {
     return kMirrorIdPrefix_ + seq;
   }
 
   public MiraSession createSession(
-      String peerMacAddress,
-      String peerName,
-      String peerIp,
-      int peerPort,
-      String receiverName) {
+    String peerMacAddress,
+    String peerName,
+    String peerIp,
+    int peerPort,
+    String receiverName) {
     mirror_increment_seq_++;
     MiraSession session = new MiraSession(
-        formatMirrorId(mirror_increment_seq_),
-        peerIp,
-        peerPort,
-        peerMacAddress,
-        peerName,
-        receiverName,
-        eventBase_,
-        this);
+      formatMirrorId(mirror_increment_seq_),
+      peerIp,
+      peerPort,
+      peerMacAddress,
+      peerName,
+      receiverName,
+      eventBase_,
+      this);
     mirror_sessions_.put(formatMirrorId(mirror_increment_seq_), session);
     return session;
   }
@@ -64,8 +66,13 @@ public class MiraMgr
     eventBase_ = eventBase;
   }
 
-  public void start(MiraMgrListener listener, String receiverName) {
+  public void start(
+    MiraMgrListener listener,
+    String receiverName,
+    SurfaceTextureProvider surfaceProvider
+  ) {
     receiverName_ = receiverName;
+    surfaceProvider_ = surfaceProvider;
 
     if (listener != null) {
       listener_ = listener;
@@ -108,13 +115,36 @@ public class MiraMgr
   private void connectionPrompt(String peerMacAddress, String peerName, String peerIp, int peerPort) {
     MiraSession session = createSession(peerMacAddress, peerName, peerIp, peerPort, receiverName_);
     session.startRtsp();
+
+    if (surfaceProvider_ != null) {
+      surfaceProvider_.createSurfaceTextureAsync(new SurfaceTextureProviderCallback() {
+        @Override
+        public void onResult(long textureId) {
+          Log.d(TAG, "Created SurfaceTexture id=" + textureId);
+          try {
+            Surface surface = surfaceProvider_.getSurfaceTexture(textureId);
+
+            if (surface == null) {
+              Log.e(TAG, "Surface is null!");
+              return;
+            }
+
+            Log.d(TAG, "Surface is valid: " + surface.isValid());
+
+            session.setSurface(surface);
+            listener_.onMiracastStart(textureId);
+          } catch (Exception e) {
+            Log.e(TAG, "get surface failed" + e);
+          }
+        }
+      });
+    }
   }
 
   @Override
   public void onPeerConnected(String peerMacAddress, String name, String ip, int port) {
     Log.d(TAG, "onPeerConnected: " + peerMacAddress);
     connectionPrompt(peerMacAddress, name, ip, port);
-
   }
 
   @Override

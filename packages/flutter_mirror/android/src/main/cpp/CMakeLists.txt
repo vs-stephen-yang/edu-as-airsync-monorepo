@@ -70,6 +70,10 @@ find_package(GStreamerMobile REQUIRED COMPONENTS
         autodetect
         audioparsers
         opensles
+        videoparsersbad
+        videoconvertscale
+        opengl
+        playback
 )
 
 target_link_libraries(GStreamerMobile PRIVATE

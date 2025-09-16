@@ -1,6 +1,7 @@
 package com.viewsonic.miracast;
 
 import android.util.Log;
+import android.view.Surface;
 
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.net.TcpConnection;
@@ -332,6 +333,12 @@ public class MiraSession
     } catch (Exception e) {
       // TODO
       e.printStackTrace();
+    }
+  }
+
+  public void setSurface(Surface surface) {
+    if (rtspClient_ != null) {
+      rtspClient_.setSurface(surface);
     }
   }
 

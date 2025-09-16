@@ -35,9 +35,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsP
   (void)env;
   (void)thiz;
   RtpMpegTsPlayerGst* p = jlong_to_player(handle);
-  __android_log_print(ANDROID_LOG_ERROR, "JNI", "native start");
   if (!p) {
-    __android_log_print(ANDROID_LOG_ERROR, "JNI", "RtpMpegTsPlayerGst is false");
     return JNI_FALSE;
   }
 

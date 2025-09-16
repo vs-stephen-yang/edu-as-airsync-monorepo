@@ -13,7 +13,7 @@ import com.viewsonic.miracast.wifidirect.WiFiDirectListener;
 import java.io.IOException;
 
 public class MiraMgrProxy
-    implements WiFiDirectListener {
+  implements WiFiDirectListener {
 
   private static final String TAG = "MiraMgrProxy";
 
@@ -58,14 +58,20 @@ public class MiraMgrProxy
     miraHandler_ = new Handler(mMiraHandlerThread.getLooper());
   }
 
-  public void start(Context context, Activity activity, MiraMgrListener listener, String receiverName) {
+  public void start(
+    Context context,
+    Activity activity,
+    MiraMgrListener listener,
+    String receiverName,
+    SurfaceTextureProvider surfaceTextureProvider
+  ) {
     eventBase_.post(() -> {
       context_ = context;
       activity_ = activity;
 
       receiverName_ = receiverName;
 
-      miraMgr_.start(listener, receiverName);
+      miraMgr_.start(listener, receiverName, surfaceTextureProvider);
       miraHandler_.post(wifiDirectRunnable_);
     });
   }
@@ -82,17 +88,17 @@ public class MiraMgrProxy
 
   public void rtspRequestIdr(String mirrorId) {
     eventBase_.post(
-        () -> miraMgr_.rtspRequestIdr(mirrorId));
+      () -> miraMgr_.rtspRequestIdr(mirrorId));
   }
 
   public void stopMirror(String mirrorId) {
     eventBase_.post(
-        () -> miraMgr_.stopMirror(mirrorId));
+      () -> miraMgr_.stopMirror(mirrorId));
   }
 
   public void onTouchEvent(String mirrorId_, int touchId, boolean touch, double x, double y) {
     eventBase_.post(
-        () -> miraMgr_.onTouchEvent(mirrorId_, touchId, touch, x, y));
+      () -> miraMgr_.onTouchEvent(mirrorId_, touchId, touch, x, y));
   }
 
   private void initWiFiDirectRunnable() {
@@ -102,18 +108,18 @@ public class MiraMgrProxy
   @Override
   public void onPeerConnected(String peerMacAddress, String name, String ip, int port) {
     eventBase_.post(
-        () -> miraMgr_.onPeerConnected(peerMacAddress, name, ip, port));
+      () -> miraMgr_.onPeerConnected(peerMacAddress, name, ip, port));
   }
 
   @Override
   public void onPeerDisconnected(String peerMacAddress) {
     eventBase_.post(
-        () -> miraMgr_.onPeerDisconnected(peerMacAddress));
+      () -> miraMgr_.onPeerDisconnected(peerMacAddress));
   }
 
   @Override
   public void onWifiDirectError(String errorMessage) {
     eventBase_.post(
-        () -> miraMgr_.onWifiDirectError(errorMessage));
+      () -> miraMgr_.onWifiDirectError(errorMessage));
   }
 }

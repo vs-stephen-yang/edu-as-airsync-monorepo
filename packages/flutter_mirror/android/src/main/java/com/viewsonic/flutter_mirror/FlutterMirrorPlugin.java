@@ -82,7 +82,7 @@ public class FlutterMirrorPlugin implements
   private Activity activity_;
   private Application application_;
 
-  private HashMap<Long, Texture> textures_ = new HashMap<Long, Texture>();
+  final private HashMap<Long, Surface> surfaces_ = new HashMap<>();
   private Handler handler_ = new Handler(Looper.getMainLooper());
 
   private MirrorReceiver mirrorReceiver_;
@@ -280,7 +280,7 @@ public class FlutterMirrorPlugin implements
 
     mirrorReceiver_ = new MirrorReceiver(this, this, additionalCodecParams, context_);
 
-    miracastReceiver_ = new MiracastReceiver();
+    miracastReceiver_ = new MiracastReceiver(this);
   }
 
   private void enableDump(String dumpPath) {
@@ -359,7 +359,7 @@ public class FlutterMirrorPlugin implements
       return;
     }
 
-    miracastReceiver_.start(name, context_, activity_);
+    miracastReceiver_.start(name, context_, activity_, this);
   }
 
   private void stopMirror(String mirrorId) {
@@ -407,14 +407,17 @@ public class FlutterMirrorPlugin implements
 
     // Must run on the platform thread
     return post(() -> {
-      Texture tex = new Texture(
-          textureRegistry_.createSurfaceTexture());
+      TextureRegistry.SurfaceProducer producer = textureRegistry_.createSurfaceProducer();
+      producer.setSize(1920, 1080);
+      Surface surface = producer.getSurface();
+      long textureId = producer.id();
 
-      textures_.put(tex.id(), tex);
+      surfaces_.put(textureId, surface);
 
-      Log.d(TAG, "surface texture has been created " + tex.id());
 
-      return tex.id();
+      Log.d(TAG, "surface texture has been created " + textureId);
+
+      return textureId;
     });
   }
 
@@ -423,12 +426,7 @@ public class FlutterMirrorPlugin implements
     Log.d(TAG, "FlutterMirrorPlugin.getSurfaceTexture()");
 
     // Must run on the platform thread
-    return post(() -> {
-      Texture tex = textures_.get(textureId);
-      assert tex != null;
-
-      return tex.surface();
-    });
+    return post(() -> surfaces_.get(textureId));
   }
 
   // release a surface
@@ -438,17 +436,58 @@ public class FlutterMirrorPlugin implements
 
     // Must run on the platform thread
     post(() -> {
-      Texture tex = textures_.get(textureId);
-      if (tex == null) {
+      Surface surface = surfaces_.get(textureId);
+      if (surface == null) {
         Log.w(TAG, "no such surface texture " + textureId);
         return;
       }
 
-      textures_.remove(textureId);
-      tex.release();
+      surfaces_.remove(textureId);
+      surface.release();
 
       Log.d(TAG, "surface texture has been released " + textureId);
-      Log.d(TAG, "remaining surface textures " + textures_.size());
+      Log.d(TAG, "remaining surface textures " + surfaces_.size());
+    });
+  }
+
+  // Implement SurfaceTextureProvider without static helpers
+  @Override
+  public void createSurfaceTextureAsync(com.viewsonic.miracast.SurfaceTextureProviderCallback callback) {
+    // Must run on platform thread to interact with TextureRegistry
+    handler_.post(() -> {
+      try {
+        long id = createSurfaceTexture();
+        callback.onResult(id);
+      } catch (Exception e) {
+        callback.onError(e);
+      }
+    });
+  }
+
+  @Override
+  public void onMiracastError(String errorMessage) {
+
+  }
+
+  @Override
+  public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
+
+  }
+
+  @Override
+  public void onMiracastStart(long textureId) {
+    Log.d(TAG, "FlutterMirrorPlugin.onMiracastStart() ");
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorId", "miracast");
+      arguments.put("textureId", textureId);
+      arguments.put("deviceName", "aaa");
+      arguments.put("mirrorType", "miracast");
+      arguments.put("deviceModel", "bbb");
+
+      channel_.invokeMethod("onMirrorStart", arguments);
     });
   }
 

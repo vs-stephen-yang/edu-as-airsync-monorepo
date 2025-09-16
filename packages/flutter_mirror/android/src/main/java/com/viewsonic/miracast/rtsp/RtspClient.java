@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import com.viewsonic.miracast.rtp.RtpMpegTsPlayer;
 
 import android.util.Log;
+import android.view.Surface;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,6 +72,8 @@ public class RtspClient
   private String sourceProductId_ = "";
   private boolean isWindowsSource_ = false;
   private RtpMpegTsPlayer rtpPlayer_;
+
+  private Surface surface_;
 
   public RtspClient(String method, String address) {
     String url = address.substring(address.indexOf("//") + 2);
@@ -233,7 +236,7 @@ public class RtspClient
       if (!TextUtils.isEmpty(rParams.methodType)) {
         switch (rParams.methodType) {
           case METHOD_OPTIONS: {
-            startRTPReceiver();
+            startRTPReceiver(surface_);
             sendResponseM1();
             sendRequestM2();
             break;
@@ -267,6 +270,10 @@ public class RtspClient
     } catch (Exception e) {
       Log.e(TAG, "Exception:" + e);
     }
+  }
+
+  public void setSurface(Surface surface) {
+    surface_ = surface;
   }
 
   private void handleSourceProductId(RtspResponseMessage rParams) {
@@ -600,7 +607,7 @@ public class RtspClient
 
   }
 
-  private void startRTPReceiver() {
+  private void startRTPReceiver(Surface surface) {
     if (rtpPlayer_ == null) {
       rtpPlayer_ = new RtpMpegTsPlayer();
     }
@@ -612,6 +619,7 @@ public class RtspClient
     }
     rtpPort_ = rtpPlayer_.getPort();
     Log.d(TAG, "RtpMpegTsPlayer started on port: " + rtpPort_);
+    rtpPlayer_.setSurface(surface);
   }
 
   private void startUibc() {

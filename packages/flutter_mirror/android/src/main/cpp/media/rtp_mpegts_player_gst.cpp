@@ -7,50 +7,6 @@ namespace {
 static std::once_flag g_gst_once;
 }
 
-static void android_log_function(GstDebugCategory* category,
-                                 GstDebugLevel level,
-                                 const gchar* file,
-                                 const gchar* function,
-                                 gint line,
-                                 GObject* object,
-                                 GstDebugMessage* message,
-                                 gpointer user_data) {
-  android_LogPriority priority = ANDROID_LOG_DEBUG;
-  const char* level_str = "DEBUG";
-
-  switch (level) {
-    case GST_LEVEL_ERROR:
-      priority = ANDROID_LOG_ERROR;
-      level_str = "ERROR";
-      break;
-    case GST_LEVEL_WARNING:
-      priority = ANDROID_LOG_WARN;
-      level_str = "WARN";
-      break;
-    case GST_LEVEL_INFO:
-      priority = ANDROID_LOG_INFO;
-      level_str = "INFO";
-      break;
-    case GST_LEVEL_DEBUG:
-      priority = ANDROID_LOG_DEBUG;
-      level_str = "DEBUG";
-      break;
-    case GST_LEVEL_LOG:
-      priority = ANDROID_LOG_VERBOSE;
-      level_str = "LOG";
-      break;
-    default:
-      priority = ANDROID_LOG_VERBOSE;
-      level_str = "TRACE";
-      break;
-  }
-
-  const gchar* category_name = gst_debug_category_get_name(category);
-  const gchar* msg = gst_debug_message_get(message);
-
-  __android_log_print(priority, "GST_DEBUG", "[%s] %s", category_name, msg);
-}
-
 RtpMpegTsPlayerGst::RtpMpegTsPlayerGst()
     : native_window_(nullptr), overlay_handle_(0), context_(nullptr), loop_(nullptr), pipeline_(nullptr), udpsrc_(nullptr), rtpbin_(nullptr), depay_(nullptr), tsparse_(nullptr), tsdemux_(nullptr), video_queue_(nullptr), decodebin_(nullptr), video_sink_(nullptr), bus_(nullptr), socket_(nullptr), bound_port_(0), playing_(false), rtpbin_rtp_sink_pad_(nullptr) {
   std::call_once(g_gst_once, []() {
@@ -58,10 +14,7 @@ RtpMpegTsPlayerGst::RtpMpegTsPlayerGst()
     char** argv = nullptr;
     gst_init(&argc, &argv);
     gst_debug_set_default_threshold(GST_LEVEL_WARNING);
-
     gst_debug_remove_log_function(gst_debug_log_default);
-
-    // 加上我們的 log function
     gst_debug_add_log_function(android_log_function, NULL, NULL);
   });
 }
@@ -85,7 +38,6 @@ bool RtpMpegTsPlayerGst::Start() {
   }
   GstStateChangeReturn ret = gst_element_set_state(pipeline_, GST_STATE_PLAYING);
   if (ret == GST_STATE_CHANGE_FAILURE) {
-    ALOGI("pipeline_ playing failed");
     TeardownPipeline();
     return false;
   }
@@ -124,6 +76,14 @@ void RtpMpegTsPlayerGst::SetSurface(JNIEnv* env, jobject surface) {
   }
   if (surface) {
     native_window_ = ANativeWindow_fromSurface(env, surface);
+
+    if (native_window_) {
+      // 檢查 ANativeWindow 屬性
+      int32_t width = ANativeWindow_getWidth(native_window_);
+      int32_t height = ANativeWindow_getHeight(native_window_);
+      int32_t format = ANativeWindow_getFormat(native_window_);
+      ALOGI("ANativeWindow: %dx%d, format=%d", width, height, format);
+    }
   }
   if (pipeline_ && video_sink_) {
     AttachOverlay();
@@ -152,27 +112,15 @@ void RtpMpegTsPlayerGst::OnDemuxPadAdded(GstElement* element, GstPad* pad, gpoin
     const GstStructure* s = gst_caps_get_structure(caps, 0);
     const gchar* name = gst_structure_get_name(s);
 
-    ALOGI("Structure name: %s", name);  // 加上這個 debug
+    ALOGI("Structure name: %s", name);
 
     // 檢查是否為音頻
     if (g_str_has_prefix(name, "audio/")) {
       ALOGI("Found audio pad, connecting...");
       self->ConnectAudioPad(pad);
     } else if (g_str_has_prefix(name, "video/")) {
-      ALOGI("Found video pad, connecting to fakesink...");
-      // 連接 video 到 fakesink 避免 not-linked 錯誤
-      GstElement* video_fakesink = gst_element_factory_make("fakesink", NULL);
-      if (video_fakesink) {
-        gst_bin_add(GST_BIN(self->pipeline_), video_fakesink);
-        gst_element_sync_state_with_parent(video_fakesink);
-
-        GstPad* sink_pad = gst_element_get_static_pad(video_fakesink, "sink");
-        if (sink_pad) {
-          GstPadLinkReturn ret = gst_pad_link(pad, sink_pad);
-          ALOGI("Video pad link result: %d", ret);
-          gst_object_unref(sink_pad);
-        }
-      }
+      ALOGI("Found video pad, connecting...");
+      self->ConnectVideoPad(pad);
     } else {
       ALOGI("Unknown pad type: %s", name);
     }
@@ -248,46 +196,143 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
   gst_element_sync_state_with_parent(sink);
 }
 
+void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
+  GstElement* queue = gst_element_factory_make("queue", "decode_queue");
+  GstElement* decodebin = gst_element_factory_make("decodebin", "decodebin");
+
+  if (!queue || !decodebin) {
+    ALOGE("Failed to create elements");
+    return;
+  }
+
+  gst_debug_set_threshold_for_name("decodebin", GST_LEVEL_WARNING);
+
+  gst_bin_add_many(GST_BIN(pipeline_), queue, decodebin, NULL);
+  gst_element_link(queue, decodebin);
+
+  // decodebin 會自動選擇正確的 parser 和 decoder
+  g_signal_connect(decodebin, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDecodebinPadAdded), this);
+
+  // 連接 demux pad 到 queue
+  GstPad* queue_sink = gst_element_get_static_pad(queue, "sink");
+  gst_pad_link(pad, queue_sink);
+  gst_object_unref(queue_sink);
+
+  gst_element_sync_state_with_parent(queue);
+  gst_element_sync_state_with_parent(decodebin);
+}
+
 void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad, gpointer user_data) {
   RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
   if (!self) {
     return;
   }
+
+  GstCaps* pad_caps = gst_pad_get_current_caps(pad);
+  if (pad_caps) {
+    gchar* caps_str = gst_caps_to_string(pad_caps);
+    ALOGI("Decodebin output caps: %s", caps_str);
+    g_free(caps_str);
+    gst_caps_unref(pad_caps);
+  }
+
+  GstElement* convert = gst_element_factory_make("videoconvert", "videoconvert");
+  GstElement* capsfilter = gst_element_factory_make("capsfilter", "capsfilter");
+  GstElement* queue = gst_element_factory_make("queue", "gl_queue");
+
+  // 設定 queue 屬性
+  g_object_set(queue,
+               "max-size-buffers", 5,
+               "max-size-time", G_GINT64_CONSTANT(50000000),  // 50ms
+               "leaky", 1,                                    // upstream
+               NULL);
+
   if (!self->video_sink_) {
-    self->video_sink_ = gst_element_factory_make("glimagesink", "video_sink");
+    self->video_sink_ = gst_element_factory_make("glimagesink", "glimagesink");
     if (self->video_sink_) {
-      g_object_set(self->video_sink_, "sync", TRUE, NULL);
-      g_object_set(self->video_sink_, "force-aspect-ratio", TRUE, NULL);
-      gst_bin_add(GST_BIN(self->pipeline_), self->video_sink_);
-      gst_element_sync_state_with_parent(self->video_sink_);
+      g_object_set(self->video_sink_,
+                   "sync", TRUE,
+                   "async", TRUE,
+                   "latency-time", G_GINT64_CONSTANT(33000),
+                   "enable-last-sample", FALSE,
+                   "force-aspect-ratio", FALSE,
+                   NULL);
+
       self->AttachOverlay();
     }
   }
   if (!self->video_sink_) {
     return;
   }
-  GstCaps* caps = gst_pad_get_current_caps(pad);
-  if (!caps) {
-    caps = gst_pad_query_caps(pad, nullptr);
-  }
-  if (!caps) {
+
+  gst_debug_set_threshold_for_name("videoconvert", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("capsfilter", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("glimagesink", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("gldebug", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("glwindow", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("opengl", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("glcontext", GST_LEVEL_WARNING);
+
+  // 設定 RGBA 格式 caps
+  GstCaps* rgba_caps = gst_caps_new_simple("video/x-raw",
+                                           "format", G_TYPE_STRING, "RGBA",
+                                           NULL);
+  g_object_set(G_OBJECT(capsfilter), "caps", rgba_caps, NULL);
+  gst_caps_unref(rgba_caps);
+
+  // 添加元素到 pipeline
+  gst_bin_add_many(GST_BIN(self->pipeline_), convert, capsfilter, queue, NULL);
+  ALOGI("[PAD_ADDED] Added videoconvert and capsfilter using gst_bin_add_many");
+
+  // 單獨添加 glimagesink（避免在 gst_bin_add_many 中的問題）
+  if (!gst_bin_add(GST_BIN(self->pipeline_), self->video_sink_)) {
+    ALOGE("[PAD_ADDED] Failed to add glsink to pipeline");
     return;
   }
-  GstPad* sinkpad = gst_element_get_static_pad(self->video_sink_, "sink");
-  if (!sinkpad) {
-    gst_caps_unref(caps);
+  ALOGI("[PAD_ADDED] Added glsink separately");
+
+  GstState current_state, pending_state;
+  gst_element_get_state(self->pipeline_, &current_state, &pending_state, 0);
+  ALOGI("[PAD_ADDED] Pipeline current state: %s", gst_element_state_get_name(current_state));
+
+  gst_element_sync_state_with_parent(convert);
+  gst_element_sync_state_with_parent(capsfilter);
+  gst_element_sync_state_with_parent(queue);
+  gst_element_sync_state_with_parent(self->video_sink_);
+  ALOGI("[PAD_ADDED] Synced all elements with parent");
+
+  // 連接元素鏈
+  // decodebin pad → videoconvert:sink
+  GstPad* convert_sinkpad = gst_element_get_static_pad(convert, "sink");
+  if (!convert_sinkpad) {
+    ALOGE("[PAD_ADDED] Failed to get videoconvert sink pad");
     return;
   }
-  if (gst_pad_is_linked(sinkpad)) {
-    gst_object_unref(sinkpad);
-    gst_caps_unref(caps);
+  GstPadLinkReturn ret = gst_pad_link(pad, convert_sinkpad);
+  if (GST_PAD_LINK_FAILED(ret)) {
+    ALOGE("[PAD_ADDED] Failed to link decodebin pad to videoconvert: %d", ret);
     return;
   }
-  GstPadLinkReturn linkret = gst_pad_link(pad, sinkpad);
-  gst_object_unref(sinkpad);
-  gst_caps_unref(caps);
-  if (linkret != GST_PAD_LINK_OK) {
+  gst_object_unref(convert_sinkpad);
+
+  bool link_ok = gst_element_link_many(convert, capsfilter, queue, self->video_sink_, NULL);
+  if (!link_ok) {
+    ALOGE("gst_element_link_many failed");
     return;
+  }
+
+  GstClock* video_clock = gst_element_get_clock(self->video_sink_);
+  gst_pipeline_use_clock(GST_PIPELINE(self->pipeline_), video_clock);
+  gst_object_unref(video_clock);
+  gst_pipeline_set_latency(GST_PIPELINE(self->pipeline_), 200 * GST_MSECOND);
+
+  if (current_state == GST_STATE_PLAYING) {
+    ALOGI("[PAD_ADDED] Pipeline is playing, setting new elements to PLAYING...");
+    gst_element_set_state(convert, GST_STATE_PLAYING);
+    gst_element_set_state(capsfilter, GST_STATE_PLAYING);
+    gst_element_set_state(queue, GST_STATE_PLAYING);
+    gst_element_set_state(self->video_sink_, GST_STATE_PLAYING);
+    ALOGI("[PAD_ADDED] ✅ New elements set to PLAYING");
   }
 }
 
@@ -395,11 +440,11 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
 
   GST_DEBUG("Testing debug output - this should appear in logcat");
 
-  gst_debug_set_threshold_for_name("udpsrc", GST_LEVEL_DEBUG);
-  gst_debug_set_threshold_for_name("rtpbin", GST_LEVEL_DEBUG);
-  gst_debug_set_threshold_for_name("rtpmp2tdepay", GST_LEVEL_DEBUG);
+  gst_debug_set_threshold_for_name("udpsrc", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("rtpbin", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("rtpmp2tdepay", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("tsparse", GST_LEVEL_WARNING);
-  gst_debug_set_threshold_for_name("tsdemux", GST_LEVEL_DEBUG);
+  gst_debug_set_threshold_for_name("tsdemux", GST_LEVEL_WARNING);
 
   g_object_set(udpsrc_, "socket", socket_, NULL);
   g_object_set(rtpbin_, "latency", 200, NULL);
@@ -554,6 +599,7 @@ void RtpMpegTsPlayerGst::AttachOverlay() {
   }
   overlay_handle_ = reinterpret_cast<guintptr>(native_window_);
   gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(video_sink_), overlay_handle_);
+  gst_video_overlay_handle_events(GST_VIDEO_OVERLAY(video_sink_), FALSE);
 }
 
 GSocket* RtpMpegTsPlayerGst::CreateBoundSocket(uint16_t requested_port) {
