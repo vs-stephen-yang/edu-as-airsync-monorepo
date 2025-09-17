@@ -534,7 +534,7 @@ class RTCConnector {
   }
 
   int getFullFrameRate(bool isFullFrameRate, String? deviceType) {
-    if (!isFullFrameRate) return 0;
+    if (!isFullFrameRate) return 18;
     if (isMtk9950Model(deviceType)) {
       return 24;
     } else {
