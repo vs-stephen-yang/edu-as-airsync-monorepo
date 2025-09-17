@@ -51,6 +51,14 @@ enum MaxVideoResolution {
   final int height;
 }
 
+class OnStreamingCapability {
+  final int width;
+  final int height;
+  final int frameRate;
+
+  const OnStreamingCapability(this.width, this.height, this.frameRate);
+}
+
 class RTCConnector {
   String mUid = const Uuid().v4();
   final Channel _channel;
@@ -511,15 +519,19 @@ class RTCConnector {
   int getFullResolutionHeight() => maxVideoResolution.height;
   int getFullResolutionWidth()  => maxVideoResolution.width;
 
-  int getFullHeight(bool isFullHeight, int attenderCount) {
-    return (isFullHeight || attenderCount <= 2)
+  int getFullHeight(bool isFullResolution, int attenderCount) {
+    return (isFullResolution)
         ? getFullResolutionHeight()
+        : (attenderCount == 2)
+        ? MaxVideoResolution.wqxga1600p_16x10.height
         : MaxVideoResolution.r960x600_16x10.height;
   }
 
-  int getFullWidth(bool isFullHeight, int attenderCount) {
-    return (isFullHeight || attenderCount <= 2)
+  int getFullWidth(bool isFullResolution, int attenderCount) {
+    return (isFullResolution)
         ? getFullResolutionWidth()
+        : (attenderCount == 2)
+        ? MaxVideoResolution.wqxga1600p_16x10.width
         : MaxVideoResolution.r960x600_16x10.width;
   }
 
@@ -536,20 +548,79 @@ class RTCConnector {
   int getFullFrameRate(bool isFullFrameRate, String? deviceType) {
     if (!isFullFrameRate) return 18;
     if (isMtk9950Model(deviceType)) {
+      if (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9) {
+        return 20;
+      } else if (maxVideoResolution == MaxVideoResolution.wqxga1600p_16x10) {
+        return 27;
+      } else {
+        return 30;
+      }
+    }
+    if (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9) {
       return 24;
     } else {
-      return 30;
+      return 27;
     }
+  }
+
+  OnStreamingCapability currentStreamingQuality(bool isFullResolution, int attendeeCount, String? deviceType) {
+    OnStreamingCapability capability = OnStreamingCapability(MaxVideoResolution.fhd1080p_16x9.width, MaxVideoResolution.fhd1080p_16x9.height, 30);
+    /// Resolution-framerate limitation
+    // | Res.@FPS |     MTK9950 Devices     |     Normal  Devices     |
+    // | Attendee | UHD (4K)   | QHD (2K)   | UHD (4K)   | QHD (2K)   |
+    // |----------|------------|------------|------------|------------|
+    // | 1        | UHD@20     | QHD@24     | UHD@24     | QHD@27     |
+    // | 2        | FHD@30     | FHD@30     | QHD@27     | QHD@27     |
+    // | 3+       | 960x600@30 | 960x600@30 | 960x600@30 | 960x600@30 |
+
+    if (isMtk9950Model(deviceType)) {
+      if (isFullResolution) {
+        capability = OnStreamingCapability(
+            maxVideoResolution.width,
+            maxVideoResolution.height,
+            (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9)? 20 : 24);
+      } else if (attendeeCount <= 2) {
+        capability = OnStreamingCapability(
+            MaxVideoResolution.fhd1080p_16x9.width,
+            MaxVideoResolution.fhd1080p_16x9.height,
+            30);
+      } else {
+        capability = OnStreamingCapability(
+            MaxVideoResolution.r960x600_16x10.width,
+            MaxVideoResolution.r960x600_16x10.height,
+            30);
+      }
+    } else {
+      if (isFullResolution) {
+        capability = OnStreamingCapability(
+            maxVideoResolution.width,
+            maxVideoResolution.height,
+            (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9)? 24 : 27);
+      } else if (attendeeCount <= 2) {
+        capability = OnStreamingCapability(
+            MaxVideoResolution.wqxga1600p_16x10.width,
+            MaxVideoResolution.wqxga1600p_16x10.height,
+            27);
+      } else {
+        capability = OnStreamingCapability(
+            MaxVideoResolution.r960x600_16x10.width,
+            MaxVideoResolution.r960x600_16x10.height,
+            30);
+      }
+    }
+    return capability;
   }
 
   void sendChangeQuality(
       bool isFullResolution, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
 
+    OnStreamingCapability capability = currentStreamingQuality(isFullResolution, attendeeCount, _deviceType);
+
     message.constraints = PresentQualityConstraints(
-        frameRate: getFullFrameRate(isFullFrameRate, _deviceType),
-        width: getFullWidth(isFullResolution, attendeeCount),
-        height: getFullHeight(isFullResolution, attendeeCount),
+        frameRate: capability.frameRate,
+        width: capability.width,
+        height: capability.height,
         decodeHeightLimit: getDecodeHeightLimit(_deviceType, attendeeCount));
     log.info(
         '[$clientId] Changing present quality. width:${message.constraints?.width} height:${message.constraints?.height}');
