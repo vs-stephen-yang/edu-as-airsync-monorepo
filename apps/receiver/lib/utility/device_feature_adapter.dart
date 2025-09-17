@@ -192,6 +192,11 @@ class DeviceFeatureAdapter {
       options.addAll(opts);
     }
 
+    // [BUG #94450] only allows 1 hardware decode session on MT9950 devices
+    if ((_deviceType == 'IFP52_K' || _deviceType == 'IFP52_1C')) {
+      options['maxHardwareDecodeSession'] = 1;
+    }
+
     if (useSoftwareDecode) {
       options['maxHardwareDecodeSession'] = 0;
     }
