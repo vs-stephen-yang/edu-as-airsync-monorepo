@@ -711,3 +711,53 @@ void RtpMpegTsPlayerGst::NotifyVideoResolution(int width, int height) {
     env->CallVoidMethod(java_instance_, method, width, height);
   }
 }
+
+void RtpMpegTsPlayerGst::Pause() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  ALOGD("Pausing pipeline to prepare for surface destruction");
+
+  if (is_paused_) {
+    return;
+  }
+
+  is_paused_ = true;
+
+  if (pipeline_) {
+    // 快速停止渲染，避免寫入已銷毀的 Surface
+    gst_element_set_state(pipeline_, GST_STATE_PAUSED);
+    // 等待 pipeline 完全進入 PAUSED，避免還在寫舊 surface
+    gst_element_get_state(pipeline_, NULL, NULL, GST_CLOCK_TIME_NONE);
+
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(video_sink_), 0);
+    ALOGD("Cleared old surface");
+  }
+
+  ReleaseWindowHandle();
+
+  ALOGD("Pipeline paused safely");
+}
+
+void RtpMpegTsPlayerGst::Restart(JNIEnv* env, jobject surface) {
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  ALOGD("Restart pipeline with new window");
+
+  if (surface) {
+    native_window_ = ANativeWindow_fromSurface(env, surface);
+  }
+  if (pipeline_ && video_sink_) {
+    AttachOverlay();
+  }
+
+  gst_element_set_state(pipeline_, GST_STATE_PLAYING);
+
+  is_paused_ = false;
+}
+
+void RtpMpegTsPlayerGst::ReleaseWindowHandle() {
+  if (native_window_) {
+    ANativeWindow_release(native_window_);
+    native_window_ = nullptr;
+    ALOGD("Released ANativeWindow handle");
+  }
+}

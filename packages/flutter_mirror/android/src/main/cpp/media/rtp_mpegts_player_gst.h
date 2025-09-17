@@ -26,6 +26,8 @@ class RtpMpegTsPlayerGst final {
   void SetSurface(JNIEnv* env, jobject surface);
 
   void SetJavaInstance(JNIEnv* env, jobject thiz);
+  void Pause();
+  void Restart(JNIEnv* env, jobject surface);
 
  private:
   static void OnBusMessage(GstBus* bus, GstMessage* message, gpointer user_data);
@@ -44,6 +46,7 @@ class RtpMpegTsPlayerGst final {
   void AttachOverlay();
   GSocket* CreateBoundSocket(uint16_t requested_port);
   void RunMainLoop();
+  void ReleaseWindowHandle();
 
  private:
   mutable std::mutex mutex_;
@@ -72,4 +75,6 @@ class RtpMpegTsPlayerGst final {
   GstPad* rtpbin_rtp_sink_pad_;
 
   jobject java_instance_ = nullptr;
+
+  std::atomic<bool> is_paused_{false};
 };

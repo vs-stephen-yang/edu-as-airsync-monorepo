@@ -220,6 +220,21 @@ public class MiraSession
     }
   }
 
+  public void pausePlayer() {
+    if (rtspClient_ == null) {
+      return;
+    }
+
+    rtspClient_.pausePlayer();
+  }
+
+  public void restartPlayer(Surface surface) {
+    if (rtspClient_ == null) {
+      return;
+    }
+    rtspClient_.restartPlayer(surface);
+  }
+
   private TcpConnectionListener buildRtspConnectionListener() {
     return new TcpConnectionListener() {
       @Override

@@ -52,6 +52,13 @@ public class RtpMpegTsPlayer implements AutoCloseable {
         release();
     }
 
+  public void pause() {
+    if (this.handle == 0) {
+      return;
+    }
+    nativePause(this.handle);
+  }
+
     @Override
     protected void finalize() throws Throwable {
         try {
@@ -60,6 +67,14 @@ public class RtpMpegTsPlayer implements AutoCloseable {
             super.finalize();
         }
     }
+
+  public void restart(Surface surface) {
+    if (this.handle == 0) {
+      return;
+    }
+    nativeRestart(this.handle, surface);
+  }
+
   public void onVideoResolution(int width, int height) {
     listener_.onVideoResolution(width, height);
   }
@@ -70,5 +85,7 @@ public class RtpMpegTsPlayer implements AutoCloseable {
     private static native void nativeSetSurface(long handle, Surface surface);
     private static native int nativeGetPort(long handle);
   private native long nativeCreate();
+  private static native void nativePause(long handle);
+  private static native void nativeRestart(long handle, Surface surface);
 }
 

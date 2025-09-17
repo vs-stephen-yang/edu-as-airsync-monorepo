@@ -72,3 +72,21 @@ extern "C" JNIEXPORT jint JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsPlaye
   }
   return static_cast<jint>(p->GetPort());
 }
+
+extern "C" JNIEXPORT void JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsPlayer_nativePause(JNIEnv* env, jobject thiz, jlong handle) {
+  (void)thiz;
+  RtpMpegTsPlayerGst* p = jlong_to_player(handle);
+  if (!p) {
+    return;
+  }
+  p->Pause();
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsPlayer_nativeRestart(JNIEnv* env, jobject thiz, jlong handle, jobject surface) {
+  (void)thiz;
+  RtpMpegTsPlayerGst* p = jlong_to_player(handle);
+  if (!p) {
+    return;
+  }
+  p->Restart(env, surface);
+}

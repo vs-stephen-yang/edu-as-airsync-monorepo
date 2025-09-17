@@ -139,6 +139,23 @@ public class RtspClient
     }
   }
 
+  public void pausePlayer() {
+    if (rtpPlayer_ == null) {
+      return;
+    }
+
+    rtpPlayer_.pause();
+  }
+
+  public void restartPlayer(Surface surface) {
+    if (rtpPlayer_ == null) {
+      return;
+    }
+
+    rtpPlayer_.restart(surface);
+  }
+
+
   public void setActivate(boolean activate) {
     activate_ = activate;
   }
