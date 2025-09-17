@@ -85,6 +85,7 @@ public class FlutterMirrorPlugin implements
   private Activity activity_;
   private Application application_;
 
+  private HashMap<Long, Texture> textures_ = new HashMap<Long, Texture>();
   final private HashMap<Long, Surface> surfaces_ = new HashMap<>();
   final private HashMap<Long, SurfaceCallbackHandler> surfaceHandlers_ = new HashMap<>();
   private Handler handler_ = new Handler(Looper.getMainLooper());
@@ -414,25 +415,18 @@ public class FlutterMirrorPlugin implements
 
     // Must run on the platform thread
     return post(() -> {
-      TextureRegistry.SurfaceProducer producer = textureRegistry_.createSurfaceProducer();
-      producer.setSize(1920, 1080);
+      Texture tex = new Texture(
+        textureRegistry_.createSurfaceTexture());
 
-      SurfaceCallbackHandler surfaceHandler = new SurfaceCallbackHandler(producer, this);
-      Surface surface = surfaceHandler.getSurface();
-      long textureId = surfaceHandler.getTextureId();
+      textures_.put(tex.id(), tex);
 
-      surfaceHandlers_.put(textureId, surfaceHandler);
-      surfaces_.put(textureId, surface);
+      Log.d(TAG, "surface texture has been created " + tex.id());
 
-      Log.d(TAG, "surface texture has been created " + textureId);
-
-      surfaceHandler.setActive(true);
-
-      return textureId;
+      return tex.id();
     });
   }
 
-  public long createSurfaceTextureWithMirrorId(String mirrorId) throws java.lang.Exception {
+  public long createMiracastSurfaceTexture(String mirrorId) throws java.lang.Exception {
     Log.d(TAG, "FlutterMirrorPlugin.createSurfaceTextureWithMirrorId()");
 
     // Must run on the platform thread
@@ -460,8 +454,15 @@ public class FlutterMirrorPlugin implements
   public Surface getSurfaceTexture(long textureId) throws java.lang.Exception {
     Log.d(TAG, "FlutterMirrorPlugin.getSurfaceTexture()");
 
+    Surface surface;
     // Must run on the platform thread
-    return post(() -> surfaceHandlers_.get(textureId).getSurface());
+    Texture texture = textures_.get(textureId);
+    if (texture != null) {
+      return texture.surface();
+    }
+
+    surface = surfaces_.get(textureId);
+    return surface;
   }
 
   // release a surface
@@ -492,7 +493,7 @@ public class FlutterMirrorPlugin implements
     // Must run on platform thread to interact with TextureRegistry
     handler_.post(() -> {
       try {
-        long id = createSurfaceTextureWithMirrorId(mirrorId);
+        long id = createMiracastSurfaceTexture(mirrorId);
         callback.onResult(id);
       } catch (Exception e) {
         callback.onError(e);
