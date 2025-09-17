@@ -80,6 +80,10 @@ public class RtpMpegTsPlayer implements AutoCloseable {
     listener_.onVideoResolution(width, height);
   }
 
+  public void onPacketLost() {
+    listener_.onPacketLost();
+  }
+
   private static native void nativeDestroy(long handle);
 
   private static native boolean nativeStart(long handle);

@@ -109,6 +109,13 @@ public class MiraSession
         }
       }
     });
+
+    rtspClient_.setPacketLostListener(new RtspClient.PacketLostListener() {
+      @Override
+      public void onPacketLost() {
+        requestIdr();
+      }
+    });
   }
 
   public String getPeerAddress() {
@@ -143,12 +150,13 @@ public class MiraSession
 
       isRequestIdrQueued_ = true;
 
-      eventBase_.setTimer(() -> {
-        isRequestIdrQueued_ = false;
-        lastRequestIdrTime_ = System.currentTimeMillis();
-
-        rtspClient_.requestIdr();
-      }, delayMs);
+      eventBase_.post(() -> {
+        eventBase_.setTimer(() -> {
+          isRequestIdrQueued_ = false;
+          lastRequestIdrTime_ = System.currentTimeMillis();
+          rtspClient_.requestIdr();
+        }, delayMs);
+      });
     }
   }
 
