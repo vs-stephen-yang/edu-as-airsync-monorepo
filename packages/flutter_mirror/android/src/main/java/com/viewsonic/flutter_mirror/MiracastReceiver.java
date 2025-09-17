@@ -7,9 +7,11 @@ import android.content.Context;
 
 import com.viewsonic.miracast.MiraMgrListener;
 import com.viewsonic.miracast.MiraMgrProxy;
+import com.viewsonic.miracast.MiraSession;
 import com.viewsonic.miracast.SurfaceTextureProvider;
 
 import android.util.Log;
+import android.view.Surface;
 
 @Keep
 public class MiracastReceiver implements
@@ -74,6 +76,14 @@ public class MiracastReceiver implements
   // Called from native
   public void sendIdrRequest(String mirrorId) {
     MiraMgrProxy.getInstance().rtspRequestIdr(mirrorId);
+  }
+
+  public void pausePlayer(String mirrorId) {
+    MiraMgrProxy.getInstance().pausePlayer(mirrorId);
+  }
+
+  public void restartPlayer(String mirrorId, Surface surface) {
+    MiraMgrProxy.getInstance().restartPlayer(mirrorId, surface);
   }
 
   // implements MiraMgrListener

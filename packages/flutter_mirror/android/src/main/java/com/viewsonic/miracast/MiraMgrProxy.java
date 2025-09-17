@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
+import android.view.Surface;
 
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.wifidirect.WiFiDirectMgr;
@@ -121,5 +122,15 @@ public class MiraMgrProxy
   public void onWifiDirectError(String errorMessage) {
     eventBase_.post(
       () -> miraMgr_.onWifiDirectError(errorMessage));
+  }
+
+  public void pausePlayer(String mirrorId) {
+    eventBase_.post(
+      () -> miraMgr_.pausePlayer(mirrorId));
+  }
+
+  public void restartPlayer(String mirrorId, Surface surface) {
+    eventBase_.post(
+      () -> miraMgr_.restartPlayer(mirrorId, surface));
   }
 }

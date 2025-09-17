@@ -119,7 +119,7 @@ public class MiraMgr
     session.startRtsp();
 
     if (surfaceProvider_ != null) {
-      surfaceProvider_.createSurfaceTextureAsync(new SurfaceTextureProviderCallback() {
+      surfaceProvider_.createSurfaceTextureAsync(session.getId(), new SurfaceTextureProviderCallback() {
         @Override
         public void onResult(long textureId) {
           Log.d(TAG, "Created SurfaceTexture id=" + textureId);
@@ -207,6 +207,22 @@ public class MiraMgr
   public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
     if (listener_ != null) {
       listener_.onSourceCapabilities(mirrorId, isUibcSupported);
+    }
+  }
+
+  public void pausePlayer(String mirrorId) {
+    Log.d(TAG, "Surface destroyed - pause player: " + mirrorId);
+    MiraSession session = mirror_sessions_.get(mirrorId);
+    if (session != null) {
+      session.pausePlayer();
+    }
+  }
+
+  public void restartPlayer(String mirrorId, Surface surface) {
+    Log.d(TAG, "Surface ready - restart player: " + mirrorId);
+    MiraSession session = mirror_sessions_.get(mirrorId);
+    if (session != null) {
+      session.restartPlayer(surface);
     }
   }
 }

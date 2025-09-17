@@ -42,7 +42,8 @@ public class FlutterMirrorPlugin implements
   BluetoothTouchBackListener,
   MethodCallHandler,
   MiracastReceiverListener,
-  com.viewsonic.miracast.SurfaceTextureProvider {
+  com.viewsonic.miracast.SurfaceTextureProvider,
+  SurfaceCallbackHandler.SurfaceLifecycleListener {
   private static final String TAG = "FlutterMirrorPlugin";
 
   // A wrapper for SurfaceTextureEntry
@@ -85,6 +86,7 @@ public class FlutterMirrorPlugin implements
   private Application application_;
 
   final private HashMap<Long, Surface> surfaces_ = new HashMap<>();
+  final private HashMap<Long, SurfaceCallbackHandler> surfaceHandlers_ = new HashMap<>();
   private Handler handler_ = new Handler(Looper.getMainLooper());
 
   private MirrorReceiver mirrorReceiver_;
@@ -414,13 +416,41 @@ public class FlutterMirrorPlugin implements
     return post(() -> {
       TextureRegistry.SurfaceProducer producer = textureRegistry_.createSurfaceProducer();
       producer.setSize(1920, 1080);
-      Surface surface = producer.getSurface();
-      long textureId = producer.id();
 
+      SurfaceCallbackHandler surfaceHandler = new SurfaceCallbackHandler(producer, this);
+      Surface surface = surfaceHandler.getSurface();
+      long textureId = surfaceHandler.getTextureId();
+
+      surfaceHandlers_.put(textureId, surfaceHandler);
       surfaces_.put(textureId, surface);
 
+      Log.d(TAG, "surface texture has been created " + textureId);
+
+      surfaceHandler.setActive(true);
+
+      return textureId;
+    });
+  }
+
+  public long createSurfaceTextureWithMirrorId(String mirrorId) throws java.lang.Exception {
+    Log.d(TAG, "FlutterMirrorPlugin.createSurfaceTextureWithMirrorId()");
+
+    // Must run on the platform thread
+    return post(() -> {
+      TextureRegistry.SurfaceProducer producer = textureRegistry_.createSurfaceProducer();
+      producer.setSize(1920, 1080);
+
+      SurfaceCallbackHandler surfaceHandler = new SurfaceCallbackHandler(producer, this);
+      surfaceHandler.setMirrorId(mirrorId);
+      Surface surface = surfaceHandler.getSurface();
+      long textureId = surfaceHandler.getTextureId();
+
+      surfaceHandlers_.put(textureId, surfaceHandler);
+      surfaces_.put(textureId, surface);
 
       Log.d(TAG, "surface texture has been created " + textureId);
+
+      surfaceHandler.setActive(true);
 
       return textureId;
     });
@@ -431,7 +461,7 @@ public class FlutterMirrorPlugin implements
     Log.d(TAG, "FlutterMirrorPlugin.getSurfaceTexture()");
 
     // Must run on the platform thread
-    return post(() -> surfaces_.get(textureId));
+    return post(() -> surfaceHandlers_.get(textureId).getSurface());
   }
 
   // release a surface
@@ -441,14 +471,15 @@ public class FlutterMirrorPlugin implements
 
     // Must run on the platform thread
     post(() -> {
-      Surface surface = surfaces_.get(textureId);
-      if (surface == null) {
+      SurfaceCallbackHandler surfaceHandler = surfaceHandlers_.get(textureId);
+      if (surfaceHandler == null) {
         Log.w(TAG, "no such surface texture " + textureId);
         return;
       }
 
-      surfaces_.remove(textureId);
-      surface.release();
+      surfaceHandler.setActive(false);
+      surfaceHandler.release();
+      surfaceHandlers_.remove(textureId);
 
       Log.d(TAG, "surface texture has been released " + textureId);
       Log.d(TAG, "remaining surface textures " + surfaces_.size());
@@ -457,11 +488,11 @@ public class FlutterMirrorPlugin implements
 
   // Implement SurfaceTextureProvider without static helpers
   @Override
-  public void createSurfaceTextureAsync(com.viewsonic.miracast.SurfaceTextureProviderCallback callback) {
+  public void createSurfaceTextureAsync(String mirrorId, com.viewsonic.miracast.SurfaceTextureProviderCallback callback) {
     // Must run on platform thread to interact with TextureRegistry
     handler_.post(() -> {
       try {
-        long id = createSurfaceTexture();
+        long id = createSurfaceTextureWithMirrorId(mirrorId);
         callback.onResult(id);
       } catch (Exception e) {
         callback.onError(e);
@@ -487,6 +518,7 @@ public class FlutterMirrorPlugin implements
     onMirrorStart(mirrorId, textureId, deviceName, "", "miracast");
   }
 
+  @Override
   public void onMiracastStop(String mirrorId) {
     Log.d(TAG, "FlutterMirrorPlugin.onMiracastStop() " + mirrorId);
 
@@ -498,6 +530,18 @@ public class FlutterMirrorPlugin implements
     Log.d(TAG, "FlutterMirrorPlugin.onMiracastVideoResolution() " + mirrorId + " width: " + width + " height: " + height);
 
     onMirrorVideoResize(mirrorId, width, height);
+  }
+
+  @Override
+  public void onSurfaceReady(String mirrorId, Surface surface) {
+    Log.d(TAG, "Surface ready - restart player");
+    miracastReceiver_.restartPlayer(mirrorId, surface);
+  }
+
+  @Override
+  public void onSurfaceDestroyed(String mirrorId) {
+    Log.d(TAG, "Surface destroyed - pause player");
+    miracastReceiver_.pausePlayer(mirrorId);
   }
 
   public void onMirrorAuth(String pin, int timeoutSec) {
