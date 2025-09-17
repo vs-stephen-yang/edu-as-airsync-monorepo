@@ -368,6 +368,29 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnCapsProbe(GstPad* pad, GstPadProbeInfo* 
   return GST_PAD_PROBE_OK;
 }
 
+GstPadProbeReturn RtpMpegTsPlayerGst::OnDepayEvent(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
+  if (!self) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM) {
+    GstEvent* event = GST_PAD_PROBE_INFO_EVENT(info);
+    if (GST_EVENT_TYPE(event) == GST_EVENT_CUSTOM_DOWNSTREAM) {
+      const GstStructure* s = gst_event_get_structure(event);
+      if (gst_structure_has_name(s, "GstRTPPacketLost")) {
+        guint seqnum = 0;
+        guint ssrc = 0;
+        gst_structure_get_uint(s, "seqnum", &seqnum);
+        gst_structure_get_uint(s, "ssrc", &ssrc);
+        ALOGD("Lost RTP packet (event)! SSRC=%u, Seq=%u\n", ssrc, seqnum);
+        self->NotifyPacketLost();
+      }
+    }
+  }
+  return GST_PAD_PROBE_OK;
+}
+
 void RtpMpegTsPlayerGst::OnRtpbinPadAdded(GstElement* element, GstPad* pad, gpointer user_data) {
   RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
 
@@ -385,6 +408,9 @@ void RtpMpegTsPlayerGst::OnRtpbinPadAdded(GstElement* element, GstPad* pad, gpoi
       } else {
         ALOGE("Failed to link rtpbin to depay: %d", ret);
       }
+
+      gst_pad_add_probe(depay_sink, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM, OnDepayEvent, self, nullptr);
+
       gst_object_unref(depay_sink);
     } else {
       ALOGE("Could not get depay sink pad");
@@ -470,6 +496,10 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
     return;
   }
 
+  g_object_set(rtpbin_,
+               "do-lost", TRUE,
+               NULL);
+
   GST_DEBUG("Testing debug output - this should appear in logcat");
 
   gst_debug_set_threshold_for_name("udpsrc", GST_LEVEL_WARNING);
@@ -506,6 +536,8 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
     TeardownPipeline();
     return;
   }
+
+  gst_object_unref(rtpbin_rtp_sink_pad_);
 
   bool link_ok = gst_element_link_many(depay_, tsparse_, tsdemux_, NULL);
   if (!link_ok) {
@@ -709,6 +741,30 @@ void RtpMpegTsPlayerGst::NotifyVideoResolution(int width, int height) {
   }
   if (method) {
     env->CallVoidMethod(java_instance_, method, width, height);
+  }
+}
+
+void RtpMpegTsPlayerGst::NotifyPacketLost() {
+  if (!java_instance_)
+    return;
+
+  JNIEnv* env = nullptr;
+  if (g_vm->AttachCurrentThread(&env, nullptr) != JNI_OK)
+    return;
+
+  jclass cls = env->GetObjectClass(java_instance_);
+  if (!cls) {
+    ALOGE("NotifyPacketLost: GetObjectClass failed");
+    return;
+  }
+
+  jmethodID method = env->GetMethodID(cls, "onPacketLost", "()V");
+  if (!method) {
+    ALOGE("NotifyPacketLost: GetMethodID failed");
+    return;
+  }
+  if (method) {
+    env->CallVoidMethod(java_instance_, method);
   }
 }
 

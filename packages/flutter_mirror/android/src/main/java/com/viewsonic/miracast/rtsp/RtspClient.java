@@ -67,6 +67,8 @@ public class RtspClient
 
   private VideoResolutionListener videoResolutionListener_;
 
+  private PacketLostListener packetLostListener_;
+
   private boolean activate_ = true;
   private String receiverName_ = "";
 
@@ -124,6 +126,10 @@ public class RtspClient
 
   public void setVideoResolutionListener(VideoResolutionListener listener) {
     videoResolutionListener_ = listener;
+  }
+
+  public void setPacketLostListener(PacketLostListener listener) {
+    packetLostListener_ = listener;
   }
 
 
@@ -199,6 +205,12 @@ public class RtspClient
     }
   }
 
+  @Override
+  public void onPacketLost() {
+    packetLostListener_.onPacketLost();
+  }
+
+
   public interface AudioFormatListener {
     void onAudioFormatUpdate(String name, int sampleRate, int channelCount);
   }
@@ -209,6 +221,10 @@ public class RtspClient
 
   public interface VideoResolutionListener {
     void onVideoResolution(int width, int height);
+  }
+
+  public interface PacketLostListener {
+    void onPacketLost();
   }
 
   /**
