@@ -209,7 +209,7 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
 }
 
 void RtpMpegTsPlayerGst::SetMute(bool mute) {
-  if (!volume_) {
+  if (!volume_ || !GST_IS_ELEMENT(volume_)) {
     return;
   }
   g_object_set(volume_,
