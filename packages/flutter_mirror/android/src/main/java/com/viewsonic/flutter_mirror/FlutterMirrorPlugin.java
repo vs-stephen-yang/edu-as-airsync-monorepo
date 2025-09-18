@@ -430,7 +430,7 @@ public class FlutterMirrorPlugin implements
     });
   }
 
-  public long createMiracastSurfaceTexture(String mirrorId) throws java.lang.Exception {
+  private long createMiracastSurfaceTexture(String mirrorId) throws java.lang.Exception {
     Log.d(TAG, "FlutterMirrorPlugin.createSurfaceTextureWithMirrorId()");
 
     // Must run on the platform thread
