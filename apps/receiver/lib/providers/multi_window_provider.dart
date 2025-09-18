@@ -28,14 +28,14 @@ class MultiWindowProvider extends ChangeNotifier {
 
   bool _systemBarRefreshScheduled = false;
 
-  String _deviceModel = "";
+  bool _isCorporateMode = false;
 
   MultiWindowProvider() {
     _init();
   }
 
   Future<void> _init() async {
-    _deviceModel = await DeviceInfoVs.deviceType ?? '';
+    _isCorporateMode = await DeviceInfoVs.isCorporateMode ?? false;
     notifyListeners();
     try {
       final resolution =
@@ -161,24 +161,26 @@ class MultiWindowProvider extends ChangeNotifier {
           await Future.delayed(delay);
         }
         final metricsChanged = await _loadAndSetSystemBarMetrics();
-        if (metricsChanged) {
-          notifyListeners();
+
+        if (!metricsChanged) return;
+        notifyListeners();
+
+        if (!_isCorporateMode &&
+            _systemBarMetrics.isStatusBarVisible &&
+            _isInMultiWindow) {
+          // In the multiWindow mode(Split Screen mode) the system status and bottom navigation bar will appear, also not able to hide due to the rule by android's design
+          // so we need to set status bar to visible
+          await SystemChrome.setEnabledSystemUIMode(
+              SystemUiMode.immersiveSticky);
+        } else if (!_isCorporateMode && !_isInMultiWindow) {
+          // set status to hide status bar and bottom navigation bar when it is not multi mode
+          await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+              overlays: []);
         }
       } finally {
         _systemBarRefreshScheduled = false;
       }
     });
-  }
-
-  bool _isFloatingIFPModel(String deviceModel) {
-    final unsupportedModels = [
-      'IFP105',
-      'IFP51',
-      'IFP92',
-    ];
-    // 轉成大寫後比較以防大小寫錯誤
-    final normalizedModel = deviceModel.toUpperCase();
-    return unsupportedModels.any((model) => normalizedModel.contains(model));
   }
 }
 
@@ -332,17 +334,14 @@ extension MultiWindowContext on BuildContext {
 
   bool get isInMultiWindow {
     final size = MediaQuery.of(this).size;
-    // IFP92與105只能用高度來判斷是否為全屏，原生的isInMultiWindowMode無效。
-    if (multiWindow._isFloatingIFPModel(multiWindow._deviceModel)) {
-      final dpr = MediaQuery.of(this).devicePixelRatio;
-      final appHeight = size.height * dpr;
-      if (appHeight != multiWindow._realScreenSize.height) {
-        return true;
-      }
-      return false;
-    } else {
-      return multiWindow._isInMultiWindow;
+    final appHeight = size.height * getSafeDevicePixelRatio();
+    final appWidth = size.width * getSafeDevicePixelRatio();
+    if (appHeight != multiWindow._realScreenSize.height ||
+        appWidth != multiWindow._realScreenSize.width) {
+      return true;
     }
+
+    return false;
   }
 
   SplitScreenRatio get splitScreenRatio =>

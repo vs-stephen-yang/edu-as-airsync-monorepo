@@ -140,27 +140,16 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                 return Container();
               }
 
-              final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-              final appHeight =
-                  MediaQuery.of(context).size.height * devicePixelRatio;
-
-              var paddingBottom = 0.0;
-              if (context.isNavigationBarVisible &&
-                  context.isStatusBarVisible &&
-                  appHeight == realScreenSizeHeight &&
-                  context.isInMultiWindow) {
-                paddingBottom =
-                    context.navigationBarHeightPx / devicePixelRatio;
-              }
               return ConstrainedBox(
                 constraints: const BoxConstraints.expand(),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    const StreamingViewContainer(),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: paddingBottom),
-                      child: MultiWindowAdaptiveLayout(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom: _getBottomPadding(context, realScreenSizeHeight)),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      const StreamingViewContainer(),
+                      MultiWindowAdaptiveLayout(
                         landscape: ValueListenableBuilder(
                           valueListenable: V3Home.isShowHeaderFooterBar,
                           builder: (_, bool value, __) {
@@ -181,25 +170,39 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                         launcher: SizedBox.shrink(),
                         floatingDefault: SizedBox.shrink(),
                       ),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: V3Home.isShowDisplayCode,
-                      builder: (_, bool value, __) {
-                        return value ? const V3MainInfo() : const SizedBox();
-                      },
-                    ),
-                    const V3FeatureSet(),
-                    const V3AuthorizePrompt(),
-                    const V3GroupRejectPrompt(),
-                    const V3GroupHostView(),
-                    const V3MessageDialog(),
-                    const V3DebugDeviceInfoOverlay(),
-                  ],
+                      ValueListenableBuilder(
+                        valueListenable: V3Home.isShowDisplayCode,
+                        builder: (_, bool value, __) {
+                          return value ? const V3MainInfo() : const SizedBox();
+                        },
+                      ),
+                      const V3FeatureSet(),
+                      const V3AuthorizePrompt(),
+                      const V3GroupRejectPrompt(),
+                      const V3GroupHostView(),
+                      const V3MessageDialog(),
+                      const V3DebugDeviceInfoOverlay(),
+                    ],
+                  ),
                 ),
               );
             }),
       ),
     );
+  }
+
+  double _getBottomPadding(BuildContext context, double realScreenSizeHeight) {
+    // In the multiWindow mode the system status and bottom navigation bar will appear, also not able to hide due to the rule by android's design
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final appHeight = MediaQuery.of(context).size.height * devicePixelRatio;
+    var bottomPadding = 0.0;
+    if (context.isNavigationBarVisible &&
+        context.isStatusBarVisible &&
+        appHeight == realScreenSizeHeight &&
+        context.isInMultiWindow) {
+      bottomPadding = context.navigationBarHeightPx / devicePixelRatio;
+    }
+    return bottomPadding;
   }
 
   _showSnackBarMessage(String message) {
