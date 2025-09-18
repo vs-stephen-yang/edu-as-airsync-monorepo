@@ -225,4 +225,11 @@ public class MiraMgr
       session.restartPlayer(surface);
     }
   }
+
+  public void mutePlayer(String mirrorId, boolean mute) {
+    MiraSession session = mirror_sessions_.get(mirrorId);
+    if (session != null) {
+      session.mutePlayer(mute);
+    }
+  }
 }

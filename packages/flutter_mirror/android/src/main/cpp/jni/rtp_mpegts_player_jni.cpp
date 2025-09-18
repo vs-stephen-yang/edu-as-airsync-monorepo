@@ -90,3 +90,12 @@ extern "C" JNIEXPORT void JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsPlaye
   }
   p->Restart(env, surface);
 }
+
+extern "C" JNIEXPORT void JNICALL Java_com_viewsonic_miracast_rtp_RtpMpegTsPlayer_nativeSetMute(JNIEnv* env, jobject thiz, jlong handle, jboolean mute) {
+  (void)thiz;
+  RtpMpegTsPlayerGst* p = jlong_to_player(handle);
+  if (!p) {
+    return;
+  }
+  p->SetMute(mute);
+}

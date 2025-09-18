@@ -76,6 +76,7 @@ find_package(GStreamerMobile REQUIRED COMPONENTS
         videoconvertscale
         opengl
         playback
+        volume
 )
 
 target_link_libraries(GStreamerMobile PRIVATE
