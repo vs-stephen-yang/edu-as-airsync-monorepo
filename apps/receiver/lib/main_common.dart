@@ -36,6 +36,7 @@ import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -45,7 +46,10 @@ import 'package:uuid/uuid.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   await runZonedGuarded<Future<void>>(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+    // 顯示原生啟動畫面
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     if (settings.sentry != null) {
       initSentry(settings.sentry!);

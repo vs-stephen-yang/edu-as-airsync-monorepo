@@ -7,7 +7,9 @@ import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:display_flutter/widgets/v3_global_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,11 +45,13 @@ class AppOTADialogState extends State<AppOTADialog>
   }
 
   @override
-  void onUpdateCheckFinished(UpdateStatus status, OtaInfo? info,
-      {double? progress}) {
+  Future<void> onUpdateCheckFinished(UpdateStatus status, OtaInfo? info,
+      {double? progress}) async {
     switch (status) {
       case UpdateStatus.updateDownloading:
         if (progress == -1) {
+          FlutterNativeSplash.remove();
+          await GlobalToast.show('updateDownloading');
           // [USER STORY 90944]Silent software OTA，不顯示UI
           // _showOTADialog(status, info);
         } else if (progress != null) {
@@ -62,7 +66,11 @@ class AppOTADialogState extends State<AppOTADialog>
           // 如果這次是下載，則略過安裝流程。如果是Alarm就安裝。
           if (!_appUpdateHelper.newVersionDownloaded ||
               _appUpdateHelper.appAlarmOTA) {
-            _installNow(info);
+            AppOtaFlutter().isNeedInAppUpdate = true;
+            await _installNow(info);
+            if (_appUpdateHelper.otaFlavor == OtaFlavor.edla) {
+              FlutterNativeSplash.remove();
+            }
           }
         } else {
           _showOTADialog(status, info);
@@ -183,7 +191,7 @@ class AppOTADialogState extends State<AppOTADialog>
   _installNow(OtaInfo? info) async {
     var folder = await getExternalStorageDirectory();
     var otaFile = File("${folder?.path}/${info?.fileName}");
-    AppUpdateHelper().startAppUpdate(otaFile.path);
+    await AppUpdateHelper().startAppUpdate(otaFile.path);
   }
 
   Widget _updateDialogButton(
