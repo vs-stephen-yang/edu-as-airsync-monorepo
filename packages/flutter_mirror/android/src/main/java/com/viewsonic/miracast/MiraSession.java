@@ -6,7 +6,6 @@ import android.view.Surface;
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.net.TcpConnection;
 import com.viewsonic.miracast.net.TcpConnectionListener;
-import com.viewsonic.miracast.rtp.OnReceiveRTPListener;
 import com.viewsonic.miracast.rtp.RTPServer;
 import com.viewsonic.miracast.rtsp.RtspClient;
 import com.viewsonic.miracast.rtsp.RtspHandler;

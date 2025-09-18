@@ -557,7 +557,10 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   g_signal_connect(tsdemux, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDemuxPadAdded), this);
   bus_ = gst_element_get_bus(pipeline_);
   if (bus_) {
-    gst_bus_add_signal_watch_full(bus_, G_PRIORITY_DEFAULT);
+    GSource* src = gst_bus_create_watch(bus_);
+    g_source_set_callback(src, (GSourceFunc)gst_bus_async_signal_func, bus_, NULL);
+    g_source_attach(src, context_);
+    g_source_unref(src);
     g_signal_connect(bus_, "message", G_CALLBACK(RtpMpegTsPlayerGst::OnBusMessage), this);
   }
 }
