@@ -26,6 +26,7 @@ class V3MainInfo extends StatelessWidget {
           if (ratio == SplitScreenRatio.launcher ||
               ratio == SplitScreenRatio.launcherFull) {
             return buildSmallFrame(
+              context,
               width: 280,
               height: 157.3,
               badNetworkStatus: V3NoNetworkStatus(
@@ -38,6 +39,7 @@ class V3MainInfo extends StatelessWidget {
           }
           if (ratio == SplitScreenRatio.floatingDefault) {
             return buildSmallFrame(
+              context,
               width: 533.3333,
               height: 300,
               badNetworkStatus: V3NoNetworkStatus(),
@@ -65,35 +67,36 @@ class V3MainInfo extends StatelessWidget {
     );
   }
 
-  Widget buildSmallFrame({
+  Widget buildSmallFrame(
+    BuildContext context, {
     required double width,
     required double height,
     required V3NoNetworkStatus badNetworkStatus,
   }) {
-    return Expanded(
-      child: Consumer<ConnectivityProvider>(
-        builder: (_, connectivityProvider, __) {
-          final isOffline =
-              connectivityProvider.connectionStatus == ConnectivityResult.none;
+    return Consumer<ConnectivityProvider>(
+      builder: (_, connectivityProvider, __) {
+        final isOffline =
+            connectivityProvider.connectionStatus == ConnectivityResult.none;
 
-          return Container(
-            color: Color.fromRGBO(234, 235, 241, 1),
-            child: Center(
-              child: SizedBox(
-                width: width,
-                height: height,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (!isOffline) V3HeaderBar(),
-                    isOffline ? badNetworkStatus : const V3MainInfoLandscape(),
-                  ],
-                ),
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Color.fromRGBO(234, 235, 241, 1),
+          child: Center(
+            child: SizedBox(
+              width: width,
+              height: height,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!isOffline) V3HeaderBar(),
+                  isOffline ? badNetworkStatus : const V3MainInfoLandscape(),
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
