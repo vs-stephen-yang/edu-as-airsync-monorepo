@@ -7,8 +7,7 @@ namespace {
 static std::once_flag g_gst_once;
 }
 
-RtpMpegTsPlayerGst::RtpMpegTsPlayerGst()
-    : native_window_(nullptr), overlay_handle_(0), context_(nullptr), loop_(nullptr), pipeline_(nullptr), udpsrc_(nullptr), rtpbin_(nullptr), depay_(nullptr), video_sink_(nullptr), bus_(nullptr), socket_(nullptr), bound_port_(0), playing_(false) {
+RtpMpegTsPlayerGst::RtpMpegTsPlayerGst() {
   std::call_once(g_gst_once, []() {
     int argc = 0;
     char** argv = nullptr;

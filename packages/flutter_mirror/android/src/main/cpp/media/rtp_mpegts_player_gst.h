@@ -53,26 +53,26 @@ class RtpMpegTsPlayerGst final {
 
  private:
   mutable std::mutex mutex_;
-  ANativeWindow* native_window_;
-  guintptr overlay_handle_;
+  ANativeWindow* native_window_ = nullptr;
+  guintptr overlay_handle_ = 0;
 
-  GMainContext* context_;
-  GMainLoop* loop_;
+  GMainContext* context_ = nullptr;
+  GMainLoop* loop_ = nullptr;
   std::thread loop_thread_;
 
-  GstElement* pipeline_;
-  GstElement* udpsrc_;
-  GstElement* rtpbin_;
-  GstElement* depay_;
-  GstElement* video_sink_;
-  GstElement* volume_;
-  GstBus* bus_;
+  GstElement* pipeline_ = nullptr;
+  GstElement* udpsrc_ = nullptr;
+  GstElement* rtpbin_ = nullptr;
+  GstElement* depay_ = nullptr;
+  GstElement* video_sink_ = nullptr;
+  GstElement* volume_ = nullptr;
+  GstBus* bus_ = nullptr;
 
-  GSocket* socket_;
-  uint16_t bound_port_;
-  bool playing_;
+  GSocket* socket_ = nullptr;
+  uint16_t bound_port_ = 0;
+  bool playing_ = false;
 
-  GstPad* rtpbin_rtp_sink_pad_;
+  GstPad* rtpbin_rtp_sink_pad_ = nullptr;
 
   jobject java_instance_ = nullptr;
 
