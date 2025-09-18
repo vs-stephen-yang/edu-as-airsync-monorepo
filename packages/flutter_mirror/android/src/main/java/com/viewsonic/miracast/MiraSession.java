@@ -76,7 +76,7 @@ public class MiraSession
     peerName_ = peerName;
     peerMacAddress_ = peerMacAddress;
     receiverName_ = receiverName;
-    rtspClient_ = new RtspClient("rtsp://" + ip_ + "/", port_);
+    rtspClient_ = new RtspClient(eventBase, "rtsp://" + ip_ + "/", port_);
     mirrorListener_ = listener;
     eventBase_ = eventBase;
 
@@ -150,13 +150,11 @@ public class MiraSession
 
       isRequestIdrQueued_ = true;
 
-      eventBase_.post(() -> {
-        eventBase_.setTimer(() -> {
-          isRequestIdrQueued_ = false;
-          lastRequestIdrTime_ = System.currentTimeMillis();
-          rtspClient_.requestIdr();
-        }, delayMs);
-      });
+      eventBase_.setTimer(() -> {
+        isRequestIdrQueued_ = false;
+        lastRequestIdrTime_ = System.currentTimeMillis();
+        rtspClient_.requestIdr();
+      }, delayMs);
     }
   }
 

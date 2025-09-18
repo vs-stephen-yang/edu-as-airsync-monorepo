@@ -2,6 +2,7 @@ package com.viewsonic.miracast.rtsp;
 
 import android.text.TextUtils;
 
+import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.rtp.OnPlayerListener;
 import com.viewsonic.miracast.rtp.RtpMpegTsPlayer;
 
@@ -81,7 +82,10 @@ public class RtspClient
 
   private Surface surface_;
 
-  public RtspClient(String method, String address) {
+  private final EventBase eventBase_;
+
+  public RtspClient(EventBase eventBase, String method, String address) {
+    eventBase_ = eventBase;
     String url = address.substring(address.indexOf("//") + 2);
     url = url.substring(0, url.indexOf("/"));
     String[] tmp = url.split(":");
@@ -92,13 +96,15 @@ public class RtspClient
     }
   }
 
-  public RtspClient(String address, int port) {
+  public RtspClient(EventBase eventBase, String address, int port) {
+    eventBase_ = eventBase;
     String host = address.substring(address.indexOf("//") + 2);
     host = host.substring(0, host.indexOf("/"));
     initClientConfig("udp", host, address, port);
   }
 
-  public RtspClient(String method, String address, int port) {
+  public RtspClient(EventBase eventBase, String method, String address, int port) {
+    eventBase_ = eventBase;
     String host = address.substring(address.indexOf("//") + 2);
     host = host.substring(0, host.indexOf("/"));
     initClientConfig(method, host, address, port);
@@ -670,7 +676,7 @@ public class RtspClient
 
   private void startRTPReceiver(Surface surface) {
     if (rtpPlayer_ == null) {
-      rtpPlayer_ = new RtpMpegTsPlayer(this);
+      rtpPlayer_ = new RtpMpegTsPlayer(this, eventBase_);
     }
     boolean started = rtpPlayer_.start();
     if (!started) {
