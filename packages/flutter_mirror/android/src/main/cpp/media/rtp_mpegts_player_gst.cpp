@@ -8,7 +8,7 @@ static std::once_flag g_gst_once;
 }
 
 RtpMpegTsPlayerGst::RtpMpegTsPlayerGst()
-    : native_window_(nullptr), overlay_handle_(0), context_(nullptr), loop_(nullptr), pipeline_(nullptr), udpsrc_(nullptr), rtpbin_(nullptr), depay_(nullptr), tsparse_(nullptr), tsdemux_(nullptr), video_queue_(nullptr), decodebin_(nullptr), video_sink_(nullptr), bus_(nullptr), socket_(nullptr), bound_port_(0), playing_(false), rtpbin_rtp_sink_pad_(nullptr) {
+    : native_window_(nullptr), overlay_handle_(0), context_(nullptr), loop_(nullptr), pipeline_(nullptr), udpsrc_(nullptr), rtpbin_(nullptr), depay_(nullptr), tsdemux_(nullptr), video_queue_(nullptr), decodebin_(nullptr), video_sink_(nullptr), bus_(nullptr), socket_(nullptr), bound_port_(0), playing_(false) {
   std::call_once(g_gst_once, []() {
     int argc = 0;
     char** argv = nullptr;
@@ -485,7 +485,7 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   udpsrc_ = gst_element_factory_make("udpsrc", "udpsrc");
   rtpbin_ = gst_element_factory_make("rtpbin", "rtpbin");
   depay_ = gst_element_factory_make("rtpmp2tdepay", "depay");
-  tsparse_ = gst_element_factory_make("tsparse", "tsparse");
+  GstElement* tsparse = gst_element_factory_make("tsparse", "tsparse");
   tsdemux_ = gst_element_factory_make("tsdemux", "tsdemux");
 
   if (!udpsrc_)
@@ -494,12 +494,12 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
     ALOGE("rtpbin is null");
   if (!depay_)
     ALOGE("rtpmp2tdepay is null");
-  if (!tsparse_)
+  if (!tsparse)
     ALOGE("tsparse is null");
   if (!tsdemux_)
     ALOGE("tsdemux is null");
 
-  if (!udpsrc_ || !rtpbin_ || !depay_ || !tsparse_ || !tsdemux_) {
+  if (!udpsrc_ || !rtpbin_ || !depay_ || !tsparse || !tsdemux_) {
     ALOGE("something is null -> teardown");
     TeardownPipeline();
     return;
@@ -520,7 +520,7 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   g_object_set(udpsrc_, "socket", socket_, NULL);
   g_object_set(rtpbin_, "latency", 200, NULL);
 
-  gst_bin_add_many(GST_BIN(pipeline_), udpsrc_, rtpbin_, depay_, tsparse_, tsdemux_, NULL);
+  gst_bin_add_many(GST_BIN(pipeline_), udpsrc_, rtpbin_, depay_, tsparse, tsdemux_, NULL);
 
   rtpbin_rtp_sink_pad_ = gst_element_get_request_pad(rtpbin_, "recv_rtp_sink_0");
   GstPad* udp_src_pad = gst_element_get_static_pad(udpsrc_, "src");
@@ -546,9 +546,7 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
     return;
   }
 
-  gst_object_unref(rtpbin_rtp_sink_pad_);
-
-  bool link_ok = gst_element_link_many(depay_, tsparse_, tsdemux_, NULL);
+  bool link_ok = gst_element_link_many(depay_, tsparse, tsdemux_, NULL);
   if (!link_ok) {
     ALOGE("gst_element_link_many failed");
     TeardownPipeline();
