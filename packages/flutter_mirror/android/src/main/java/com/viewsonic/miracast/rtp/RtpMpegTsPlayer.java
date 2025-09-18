@@ -76,6 +76,13 @@ public class RtpMpegTsPlayer implements AutoCloseable {
     nativeRestart(this.handle, surface);
   }
 
+  public void setMute(boolean mute) {
+    if (this.handle == 0) {
+      return;
+    }
+    nativeSetMute(this.handle, mute);
+  }
+
   public void onVideoResolution(int width, int height) {
     listener_.onVideoResolution(width, height);
   }
@@ -99,4 +106,6 @@ public class RtpMpegTsPlayer implements AutoCloseable {
   private static native void nativePause(long handle);
 
   private static native void nativeRestart(long handle, Surface surface);
+
+  private static native void nativeSetMute(long handle, boolean mute);
 }

@@ -161,6 +161,14 @@ public class RtspClient
     rtpPlayer_.restart(surface);
   }
 
+  public void mutePlayer(boolean mute) {
+    if (rtpPlayer_ == null) {
+      return;
+    }
+
+    rtpPlayer_.setMute(mute);
+  }
+
 
   public void setActivate(boolean activate) {
     activate_ = activate;

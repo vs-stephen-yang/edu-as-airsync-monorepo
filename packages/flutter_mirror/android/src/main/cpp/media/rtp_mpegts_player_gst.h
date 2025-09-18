@@ -28,6 +28,7 @@ class RtpMpegTsPlayerGst final {
   void SetJavaInstance(JNIEnv* env, jobject thiz);
   void Pause();
   void Restart(JNIEnv* env, jobject surface);
+  void SetMute(bool mute);
 
  private:
   static void OnBusMessage(GstBus* bus, GstMessage* message, gpointer user_data);
@@ -68,6 +69,7 @@ class RtpMpegTsPlayerGst final {
   GstElement* video_queue_;
   GstElement* decodebin_;
   GstElement* video_sink_;
+  GstElement* volume_;
   GstBus* bus_;
 
   GSocket* socket_;

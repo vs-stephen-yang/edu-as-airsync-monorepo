@@ -243,6 +243,14 @@ public class MiraSession
     rtspClient_.restartPlayer(surface);
   }
 
+  public void mutePlayer(boolean mute) {
+    if (rtspClient_ == null) {
+      return;
+    }
+
+    rtspClient_.mutePlayer(mute);
+  }
+
   private TcpConnectionListener buildRtspConnectionListener() {
     return new TcpConnectionListener() {
       @Override

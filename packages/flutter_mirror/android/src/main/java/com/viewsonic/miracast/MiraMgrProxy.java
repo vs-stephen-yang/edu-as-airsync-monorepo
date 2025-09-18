@@ -133,4 +133,9 @@ public class MiraMgrProxy
     eventBase_.post(
       () -> miraMgr_.restartPlayer(mirrorId, surface));
   }
+
+  public void mutePlayer(String mirrorId, boolean mute) {
+    eventBase_.post(
+      () -> miraMgr_.mutePlayer(mirrorId, mute));
+  }
 }

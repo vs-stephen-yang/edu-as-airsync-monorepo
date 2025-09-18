@@ -86,6 +86,10 @@ public class MiracastReceiver implements
     MiraMgrProxy.getInstance().restartPlayer(mirrorId, surface);
   }
 
+  public void mutePlayer(String mirrorId, boolean mute) {
+    MiraMgrProxy.getInstance().mutePlayer(mirrorId, mute);
+  }
+
   // implements MiraMgrListener
   @Override
   public void onAudioFormatUpdate(

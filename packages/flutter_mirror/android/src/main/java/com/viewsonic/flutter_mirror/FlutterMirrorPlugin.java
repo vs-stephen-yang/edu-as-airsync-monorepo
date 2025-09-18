@@ -386,6 +386,10 @@ public class FlutterMirrorPlugin implements
     }
 
     mirrorReceiver_.enableAudio(mirrorId, enable);
+
+    if (mirrorId.contains("miracast")) {
+      miracastReceiver_.mutePlayer(mirrorId, !enable);
+    }
   }
 
   @Override

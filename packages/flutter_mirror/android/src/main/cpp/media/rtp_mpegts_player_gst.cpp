@@ -138,16 +138,22 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
   GstElement* queue = gst_element_factory_make("queue", NULL);
   GstElement* aacparse = gst_element_factory_make("aacparse", NULL);
   GstElement* decoder = gst_element_factory_make("avdec_aac", NULL);
+  GstElement* volume_convert = gst_element_factory_make("audioconvert", NULL);
+  volume_ = gst_element_factory_make("volume", "volume");
   GstElement* convert = gst_element_factory_make("audioconvert", NULL);
   GstElement* resample = gst_element_factory_make("audioresample", NULL);
   GstElement* sink = gst_element_factory_make("openslessink", NULL);
 
-  if (!queue || !aacparse || !decoder || !convert || !resample || !sink) {
+  if (!queue || !aacparse || !volume_convert || !volume_ || !decoder || !convert || !resample || !sink) {
     // cleanup if any element creation failed
     if (queue)
       gst_object_unref(queue);
     if (aacparse)
       gst_object_unref(aacparse);
+    if (volume_convert)
+      gst_object_unref(volume_convert);
+    if (volume_)
+      gst_object_unref(volume_);
     if (decoder)
       gst_object_unref(decoder);
     if (convert)
@@ -173,9 +179,9 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
                NULL);
 #endif
 
-  gst_bin_add_many(GST_BIN(pipeline_), queue, aacparse, decoder, convert, resample, sink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline_), queue, aacparse, decoder, volume_convert, volume_, convert, resample, sink, NULL);
 
-  if (!gst_element_link_many(queue, aacparse, decoder, convert, resample, sink, NULL)) {
+  if (!gst_element_link_many(queue, aacparse, decoder, volume_convert, volume_, convert, resample, sink, NULL)) {
     ALOGE("Failed to link audio elements");
     TeardownPipeline();
     return;
@@ -195,9 +201,20 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
   gst_element_sync_state_with_parent(queue);
   gst_element_sync_state_with_parent(aacparse);
   gst_element_sync_state_with_parent(decoder);
+  gst_element_sync_state_with_parent(volume_convert);
+  gst_element_sync_state_with_parent(volume_);
   gst_element_sync_state_with_parent(convert);
   gst_element_sync_state_with_parent(resample);
   gst_element_sync_state_with_parent(sink);
+}
+
+void RtpMpegTsPlayerGst::SetMute(bool mute) {
+  if (!volume_) {
+    return;
+  }
+  g_object_set(volume_,
+               "mute", mute,
+               NULL);
 }
 
 void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
