@@ -86,6 +86,7 @@ dependencies:
   convert: ^3.1.1
   flutter_launcher_icons: ^0.14.1
   url_launcher: ^6.3.2
+  flutter_native_splash: ^2.4.1
 
   # ViewSonic plug-in
   app_ota_flutter:
@@ -237,3 +238,19 @@ flutter_launcher_icons:
     generate: true
     image_path: "assets/icon/AirSync.png"
     icon_size: 256 # min:48, max:256, default: 48
+
+
+
+
+flutter_native_splash:
+  # 背景顏色
+  color: "#FFFFFF"
+  # 啟動畫面圖片 (置於專案的 assets/images/splash.png)
+  image: assets/images/splash.png
+  # Android 12+ 的特殊設定
+  android_12:
+    color: "#FFFFFF"
+    image: assets/images/splash.png
+
+  # 全螢幕顯示
+  fullscreen: true

@@ -569,6 +569,14 @@ packages:
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin"
     source: git
     version: "0.0.1"
+  flutter_native_splash:
+    dependency: "direct main"
+    description:
+      name: flutter_native_splash
+      sha256: aa06fec78de2190f3db4319dd60fdc8d12b2626e93ef9828633928c2dcaea840
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   flutter_oss_licenses:
     dependency: "direct main"
     description:

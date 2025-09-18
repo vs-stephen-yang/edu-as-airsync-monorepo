@@ -1,16 +1,12 @@
-import 'dart:async';
-
 import 'package:app_ota_flutter/app_ota_flutter.dart';
-import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import 'model/hybrid_connection_list.dart';
 
 /// IFP (arch):  Can Updated with silent install
 /// EDLA (arch): Can Updated with silent install
@@ -26,8 +22,6 @@ class AppUpdateHelper {
   bool appAlarmOTA = false;
 
   get otaFlavor => _otaFlavor;
-
-  late StreamSubscription<bool> _sub;
 
   ensureInitialized(ConfigSettings configSettings) async {
     if (configSettings.isDevelopEnvironment) {
@@ -58,35 +52,29 @@ class AppUpdateHelper {
         await checkAppUpdate(true);
       }
     });
-
-    // 監聽變化
-    _sub = DeviceInfoVs.onSleepStateChanged.listen((onSleep) async {
-      print('***** onSleepStateChanged $onSleep');
-      if (!onSleep) {
-        newVersionDownloaded = false;
-        if (HybridConnectionList.hybridSplitScreenCount.value == 0) {
-          await checkAppUpdate(true);
-        }
-      }
-    });
   }
 
   initializeChecking({required AppUpdateListener listener}) async {
+    if (AppOtaFlutter().isCheckingUpdate) return;
     AppOtaFlutter().setListener(listener);
     if (_otaFlavor == OtaFlavor.store) {
-      checkInAppUpdate();
+      await checkInAppUpdate();
     }
     await checkAppUpdate(true);
+    if (!AppOtaFlutter().isNeedInAppUpdate) {
+      FlutterNativeSplash.remove();
+    }
   }
 
   checkAppUpdate(bool isStartupCheck) async {
     log.info('InApp _otaState: $_otaEnvironment');
     log.info('InApp _otaFlavor: $_otaFlavor');
     if (_otaFlavor != OtaFlavor.edla) {
-      unawaited(
-        AppOtaFlutter().startOTAProcess(
-            OtaApp.display, _otaEnvironment, _otaFlavor,
-            isStartupCheck: isStartupCheck),
+      await AppOtaFlutter().startOTAProcess(
+        OtaApp.display,
+        _otaEnvironment,
+        _otaFlavor,
+        isStartupCheck: isStartupCheck,
       );
     }
   }
@@ -95,10 +83,10 @@ class AppUpdateHelper {
     DisplayServiceBroadcast.instance.dispose();
     if (_otaFlavor == OtaFlavor.ifp || _otaFlavor == OtaFlavor.edla) {
       // silent install
-      unawaited(AppOtaFlutter().startSilentInstallApk(filePath));
+      await AppOtaFlutter().startSilentInstallApk(filePath);
     } else {
       // using google UI
-      unawaited(AppOtaFlutter().startInstallApk(filePath));
+      await AppOtaFlutter().startInstallApk(filePath);
     }
   }
 
