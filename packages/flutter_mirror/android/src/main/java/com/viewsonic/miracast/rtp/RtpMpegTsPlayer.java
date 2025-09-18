@@ -2,10 +2,14 @@ package com.viewsonic.miracast.rtp;
 
 import android.view.Surface;
 
+import com.viewsonic.miracast.net.EventBase;
+
 public class RtpMpegTsPlayer implements AutoCloseable {
   private long handle;
 
   private OnPlayerListener listener_;
+
+  private final EventBase eventBase_;
 
   public boolean start() {
     if (this.handle == 0) {
@@ -14,9 +18,10 @@ public class RtpMpegTsPlayer implements AutoCloseable {
     return nativeStart(this.handle);
   }
 
-  public RtpMpegTsPlayer(OnPlayerListener listener) {
+  public RtpMpegTsPlayer(OnPlayerListener listener, EventBase eventBase) {
     this.handle = nativeCreate();
     listener_ = listener;
+    eventBase_ = eventBase;
   }
 
   public void stop() {
@@ -84,11 +89,11 @@ public class RtpMpegTsPlayer implements AutoCloseable {
   }
 
   public void onVideoResolution(int width, int height) {
-    listener_.onVideoResolution(width, height);
+    eventBase_.post(() -> listener_.onVideoResolution(width, height));
   }
 
   public void onPacketLost() {
-    listener_.onPacketLost();
+    eventBase_.post(() -> listener_.onPacketLost());
   }
 
   private static native void nativeDestroy(long handle);
