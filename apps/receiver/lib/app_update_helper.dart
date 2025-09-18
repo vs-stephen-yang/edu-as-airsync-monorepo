@@ -55,13 +55,19 @@ class AppUpdateHelper {
   }
 
   initializeChecking({required AppUpdateListener listener}) async {
-    if (AppOtaFlutter().isCheckingUpdate) return;
+    if (AppOtaFlutter().isCheckingUpdate) {
+      return;
+    }
     AppOtaFlutter().setListener(listener);
     if (_otaFlavor == OtaFlavor.store) {
       await checkInAppUpdate();
     }
-    await checkAppUpdate(true);
-    if (!AppOtaFlutter().isNeedInAppUpdate) {
+    try {
+      await checkAppUpdate(true);
+      if (!AppOtaFlutter().isNeedInAppUpdate) {
+        FlutterNativeSplash.remove();
+      }
+    } catch (e) {
       FlutterNativeSplash.remove();
     }
   }
