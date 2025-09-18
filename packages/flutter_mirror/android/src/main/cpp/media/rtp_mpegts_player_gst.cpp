@@ -757,9 +757,6 @@ void RtpMpegTsPlayerGst::Pause() {
   if (pipeline_) {
     // 快速停止渲染，避免寫入已銷毀的 Surface
     gst_element_set_state(pipeline_, GST_STATE_PAUSED);
-    // 等待 pipeline 完全進入 PAUSED，避免還在寫舊 surface
-    gst_element_get_state(pipeline_, NULL, NULL, GST_CLOCK_TIME_NONE);
-
     gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(video_sink_), 0);
     ALOGD("Cleared old surface");
   }
