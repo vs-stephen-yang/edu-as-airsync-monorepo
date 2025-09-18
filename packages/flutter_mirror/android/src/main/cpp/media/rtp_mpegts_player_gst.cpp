@@ -76,14 +76,6 @@ void RtpMpegTsPlayerGst::SetSurface(JNIEnv* env, jobject surface) {
   }
   if (surface) {
     native_window_ = ANativeWindow_fromSurface(env, surface);
-
-    if (native_window_) {
-      // 檢查 ANativeWindow 屬性
-      int32_t width = ANativeWindow_getWidth(native_window_);
-      int32_t height = ANativeWindow_getHeight(native_window_);
-      int32_t format = ANativeWindow_getFormat(native_window_);
-      ALOGI("ANativeWindow: %dx%d, format=%d", width, height, format);
-    }
   }
   if (pipeline_ && video_sink_) {
     AttachOverlay();
@@ -599,38 +591,6 @@ void RtpMpegTsPlayerGst::TeardownPipeline() {
   }
   if (pipeline_) {
     gst_element_set_state(pipeline_, GST_STATE_NULL);
-  }
-  if (video_sink_) {
-    gst_bin_remove(GST_BIN(pipeline_), video_sink_);
-    video_sink_ = nullptr;
-  }
-  if (decodebin_) {
-    gst_bin_remove(GST_BIN(pipeline_), decodebin_);
-    decodebin_ = nullptr;
-  }
-  if (video_queue_) {
-    gst_bin_remove(GST_BIN(pipeline_), video_queue_);
-    video_queue_ = nullptr;
-  }
-  if (tsdemux_) {
-    gst_bin_remove(GST_BIN(pipeline_), tsdemux_);
-    tsdemux_ = nullptr;
-  }
-  if (tsparse_) {
-    gst_bin_remove(GST_BIN(pipeline_), tsparse_);
-    tsparse_ = nullptr;
-  }
-  if (depay_) {
-    gst_bin_remove(GST_BIN(pipeline_), depay_);
-    depay_ = nullptr;
-  }
-  if (rtpbin_) {
-    gst_bin_remove(GST_BIN(pipeline_), rtpbin_);
-    rtpbin_ = nullptr;
-  }
-  if (udpsrc_) {
-    gst_bin_remove(GST_BIN(pipeline_), udpsrc_);
-    udpsrc_ = nullptr;
   }
   if (rtpbin_rtp_sink_pad_) {
     if (rtpbin_) {
