@@ -528,8 +528,6 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   if (!rtpbin_rtp_sink_pad_ || !udp_src_pad) {
     if (rtpbin_rtp_sink_pad_) {
       ALOGE("udp_src_pad is null");
-      gst_object_unref(rtpbin_rtp_sink_pad_);
-      rtpbin_rtp_sink_pad_ = nullptr;
     }
     if (udp_src_pad) {
       ALOGE("rtpbin_rtp_sink_pad_ is null");
