@@ -8,14 +8,16 @@ static std::once_flag g_gst_once;
 }
 
 RtpMpegTsPlayerGst::RtpMpegTsPlayerGst() {
-  std::call_once(g_gst_once, []() {
-    int argc = 0;
-    char** argv = nullptr;
-    gst_init(&argc, &argv);
-    gst_debug_set_default_threshold(GST_LEVEL_WARNING);
-    gst_debug_remove_log_function(gst_debug_log_default);
-    gst_debug_add_log_function(android_log_function, NULL, NULL);
-  });
+  std::call_once(
+      g_gst_once,
+      []() {
+        int argc = 0;
+        char** argv = nullptr;
+        gst_init(&argc, &argv);
+        gst_debug_set_default_threshold(GST_LEVEL_WARNING);
+        gst_debug_remove_log_function(gst_debug_log_default);
+        gst_debug_add_log_function(android_log_function, NULL, NULL);
+      });
 }
 
 RtpMpegTsPlayerGst::~RtpMpegTsPlayerGst() {
