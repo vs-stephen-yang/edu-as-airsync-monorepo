@@ -167,7 +167,7 @@ class V3InstructionStep extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showIcon && iconAsset != null) ...[
               SvgPicture.asset(

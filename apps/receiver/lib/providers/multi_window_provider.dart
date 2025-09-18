@@ -98,14 +98,7 @@ class MultiWindowProvider extends ChangeNotifier {
     final widthRatio =
         double.parse((appWidth / _realScreenSize.width).toStringAsFixed(2));
 
-    final metrics = _systemBarMetrics;
-    final statusBarHeightPx =
-        (metrics.isStatusBarVisible) ? metrics.statusBarHeightPx : 0;
-    final adjustedNavigationBarHeightPx =
-        (metrics.isNavigationBarVisible) ? metrics.navigationBarHeightPx : 0;
-    final totalHeight =
-        appHeight + statusBarHeightPx + adjustedNavigationBarHeightPx;
-    final fullHeight = totalHeight >= _realScreenSize.height;
+    final fullHeight = _calculateIsFullHeight(appWidth, appHeight);
     if (fullHeight) {
       final r = switch (widthRatio) {
         < 0.33 => SplitScreenRatio.launcherFull,
@@ -127,6 +120,24 @@ class MultiWindowProvider extends ChangeNotifier {
     } else {
       return SplitScreenRatio.launcherMain;
     }
+  }
+
+  bool _calculateIsFullHeight(double appWidth, double appHeight) {
+    final metrics = _systemBarMetrics;
+    final statusBarHeightPx =
+        (metrics.isStatusBarVisible) ? metrics.statusBarHeightPx : 0;
+    final adjustedNavigationBarHeightPx =
+        (metrics.isNavigationBarVisible) ? metrics.navigationBarHeightPx : 0;
+    final totalHeight =
+        appHeight + statusBarHeightPx + adjustedNavigationBarHeightPx;
+    final fullWidth = appWidth == _realScreenSize.width;
+    final isFullHeight = totalHeight >= _realScreenSize.height;
+    if (!_isCorporateMode || fullWidth) {
+      return isFullHeight;
+    }
+
+    /// CorporateMode bottom floating bar is 84
+    return totalHeight >= (_realScreenSize.height - 84);
   }
 
   bool _isFloatWindow(Size appSize) {
