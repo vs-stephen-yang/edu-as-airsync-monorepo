@@ -64,8 +64,6 @@ class RtpMpegTsPlayerGst final {
   GstElement* udpsrc_;
   GstElement* rtpbin_;
   GstElement* depay_;
-  GstElement* video_queue_;
-  GstElement* decodebin_;
   GstElement* video_sink_;
   GstElement* volume_;
   GstBus* bus_;
