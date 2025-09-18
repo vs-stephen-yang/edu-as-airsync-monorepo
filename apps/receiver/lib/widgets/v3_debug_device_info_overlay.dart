@@ -13,8 +13,8 @@ class V3DebugDeviceInfoOverlay extends StatelessWidget {
     }
     final size = MediaQuery.of(context).size;
     final dpr = MediaQuery.of(context).devicePixelRatio;
-    final physicalWidth = (size.width * dpr).toStringAsFixed(0);
-    final physicalHeight = (size.height * dpr).toStringAsFixed(0);
+    final physicalWidth = (size.width * dpr).toStringAsFixed(1);
+    final physicalHeight = (size.height * dpr).toStringAsFixed(1);
 
     return Positioned(
       top: 0,
@@ -35,8 +35,8 @@ class V3DebugDeviceInfoOverlay extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.red)),
               Text(
                 'isInMultiWindow: ${context.isInMultiWindow}, DPR: ${dpr.toStringAsFixed(2)},\n'
-                'Logical: ${size.width.toStringAsFixed(1)} × ${size.height.toStringAsFixed(1)} dp,\n'
-                'Physical: $physicalWidth × $physicalHeight px\n'
+                '$physicalWidth × $physicalHeight px, ${size.width.toStringAsFixed(1)} × ${size.height.toStringAsFixed(1)} dp\n'
+                '${context.multiWindow.realScreenSize.width.toStringAsFixed(1)} x ${context.multiWindow.realScreenSize.height.toStringAsFixed(1)}px (Screen size)\n'
                 'Status Bar(${context.isNavigationBarVisible}), Height: ${context.statusBarHeightPx}px\n'
                 'Navigation Bar(${context.isNavigationBarVisible}), Height: ${context.navigationBarHeightPx}px',
                 style: TextStyle(fontSize: 10),
