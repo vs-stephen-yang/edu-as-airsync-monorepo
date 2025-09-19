@@ -32,5 +32,8 @@ class StageConfig implements ConfigSettings {
   String appStoreUrl = 'https://www.stage.airsync.net/download';
 
   @override
+  String storeMobileUrl = 'https://stage.airsync.net/app/download';
+
+  @override
   bool? appA11yDebug; // For development only. Keep null
 }
