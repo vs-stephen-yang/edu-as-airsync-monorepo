@@ -122,6 +122,10 @@ class RTCConnector {
     'IFP52_1C',
   ];
 
+  static const List<String> _dvLedModels = [
+    'dvLED',
+  ];
+
   static const List<String> _fhdOnlyWebRtcModels = [
     'IFP50_3',
     'IFP50_3_9850',
@@ -516,6 +520,10 @@ class RTCConnector {
     return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
   }
 
+  static bool isDvLedModel(String? deviceType) {
+    return RTCConnector._dvLedModels.contains(deviceType) ? true : false;
+  }
+
   int getFullResolutionHeight() => maxVideoResolution.height;
   int getFullResolutionWidth()  => maxVideoResolution.width;
 
@@ -541,6 +549,9 @@ class RTCConnector {
     }
     if (_fhdOnlyWebRtcModels.contains(deviceType)) {
       return MaxVideoResolution.fhd1080p_16x9.height;
+    }
+    if (isDvLedModel(deviceType)) {
+      return MaxVideoResolution.uhd2160p_16x9.height;
     }
     return 0; // no limitation
   }
