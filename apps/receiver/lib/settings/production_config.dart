@@ -32,5 +32,8 @@ class ProductionConfig implements ConfigSettings {
   String appStoreUrl = 'https://www.airsync.net/download';
 
   @override
+  String storeMobileUrl = 'https://airsync.net/app/download';
+
+  @override
   bool? appA11yDebug; // For development only. Keep null
 }

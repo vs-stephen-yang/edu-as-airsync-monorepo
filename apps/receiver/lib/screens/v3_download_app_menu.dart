@@ -19,10 +19,12 @@ class V3DownloadAppMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storeUrl = AppConfig.of(context)!.settings.appStoreUrl;
+    final storeMobileUrl = AppConfig.of(context)!.settings.storeMobileUrl;
     final portraitWidget = _DialogContainer(
       child: PortraitWidget(
         primaryFocusNode: primaryFocusNode,
         storeUrl: storeUrl,
+        storeMobileUrl: storeMobileUrl,
       ),
     );
     return MultiWindowAdaptiveLayout(
@@ -30,6 +32,7 @@ class V3DownloadAppMenu extends StatelessWidget {
         child: LandscapeWidget(
           primaryFocusNode: primaryFocusNode,
           storeUrl: storeUrl,
+          storeMobileUrl: storeMobileUrl,
         ),
       ),
       landscapeHalf: portraitWidget,
@@ -65,9 +68,14 @@ class _DialogContainer extends StatelessWidget {
 class PortraitWidget extends StatelessWidget {
   final FocusNode primaryFocusNode;
   final String storeUrl;
+  final String storeMobileUrl;
 
-  const PortraitWidget(
-      {super.key, required this.primaryFocusNode, required this.storeUrl});
+  const PortraitWidget({
+    super.key,
+    required this.primaryFocusNode,
+    required this.storeUrl,
+    required this.storeMobileUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +107,7 @@ class PortraitWidget extends StatelessWidget {
                   DownloadDesktop(storeUrl: storeUrl),
                   DividerWithText(S.of(context).v3_download_app_or),
                   const Gap(21),
-                  DownloadMobile(storeUrl: storeUrl),
+                  DownloadMobile(storeUrl: storeMobileUrl),
                   const Gap(32),
                 ],
               ),
@@ -140,9 +148,12 @@ class PortraitWidget extends StatelessWidget {
 class LandscapeWidget extends StatelessWidget {
   final FocusNode primaryFocusNode;
   final String storeUrl;
+  final String storeMobileUrl;
 
-  const LandscapeWidget(
-      {super.key, required this.primaryFocusNode, required this.storeUrl});
+  const LandscapeWidget({super.key,
+    required this.primaryFocusNode,
+    required this.storeUrl,
+    required this.storeMobileUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +209,7 @@ class LandscapeWidget extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 11,
-                    child: DownloadMobile(storeUrl: storeUrl),
+                    child: DownloadMobile(storeUrl: storeMobileUrl),
                   ),
                 ],
               ),
