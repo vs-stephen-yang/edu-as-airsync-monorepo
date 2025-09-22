@@ -266,5 +266,6 @@
   "v3_device_list_next": "Next",
   "v3_present_joined_before_moderator_on": "Moderator Mode is On",
   "v3_present_joined_before_moderator_on_description": "Moderator is On. Please reconnect.",
-  "v3_present_joined_before_moderator_on_action": "OK"
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "close"
 }

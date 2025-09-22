@@ -2685,6 +2685,16 @@ class S {
       args: [],
     );
   }
+
+  /// `close`
+  String get v3_lbl_v3_exit_close {
+    return Intl.message(
+      'close',
+      name: 'v3_lbl_v3_exit_close',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

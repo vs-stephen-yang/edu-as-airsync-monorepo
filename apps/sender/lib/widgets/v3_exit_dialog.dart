@@ -26,6 +26,7 @@ class _V3ExitDialogState extends State<V3ExitDialog> {
                 child: IconButton(
                   iconSize: 12,
                   icon: Icon(
+                    semanticLabel: S.of(context).v3_lbl_v3_exit_close,
                     Icons.close,
                   ),
                   onPressed: () {
