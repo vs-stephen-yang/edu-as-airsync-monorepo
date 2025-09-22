@@ -397,6 +397,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Enable touchback",
     ),
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("close"),
     "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Accessibility",
     ),
