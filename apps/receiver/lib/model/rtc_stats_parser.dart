@@ -274,7 +274,7 @@ class RtcStatsParser {
       timestamp: videoInboundRtp.timestamp,
     );
 
-    publishRtcVideoOutboundStats(stats);
+    publishRtcVideoInboundStats(stats);
 
     // update
     _previousVideoInboundStats = stats;
@@ -296,7 +296,7 @@ class RtcStatsParser {
     _subscribers.add(s);
   }
 
-  void publishRtcVideoOutboundStats(RtcVideoInboundStats stats) {
+  void publishRtcVideoInboundStats(RtcVideoInboundStats stats) {
     for (final subscriber in _subscribers) {
       subscriber.updateVideoStats(stats);
     }
