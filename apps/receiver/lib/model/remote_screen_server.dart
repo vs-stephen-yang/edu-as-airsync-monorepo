@@ -218,17 +218,21 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
     client.onConnectionState = (RTCPeerConnectionState state) async {
       log.info('ionSfuClient $uuid Connection state: ${state.name}');
+      if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+        await recreateIonSfuClient();
+      }
     };
 
     return client;
   }
 
-  void recreateIonSfuClient() async {
+  Future<void> recreateIonSfuClient() async {
     await _lock.synchronized(() async {
       if (_ionSfuClient == null) {
         return;
       }
 
+      log.info('ionSfuClient recreate');
       final client = await _createIonSfuClient();
       if (client == null) {
         return;

@@ -427,8 +427,6 @@ class ChannelProvider extends ChangeNotifier {
     _instanceInfo.ipAddress = ipAddress;
 
     _channelServer.onIpAddressChange(ipAddress);
-
-    _remoteScreenProvider.recreateIonSfuClient();
   }
 
   _onTunnelStatusChange(TunnelStatus status) {
@@ -577,8 +575,9 @@ class ChannelProvider extends ChangeNotifier {
   void _onNewChannel(Channel channel, ChannelMode mode) {
     RTCConnector rtcConnector = RTCConnector(
       channel,
-      maxVideoResolution:
-          _highImageQuality ? MaxVideoResolution.uhd2160p_16x9 : MaxVideoResolution.wqxga1600p_16x10,
+      maxVideoResolution: _highImageQuality
+          ? MaxVideoResolution.uhd2160p_16x9
+          : MaxVideoResolution.wqxga1600p_16x10,
     );
     log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;

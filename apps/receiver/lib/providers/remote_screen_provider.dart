@@ -73,10 +73,6 @@ class RemoteScreenProvider {
     _server.removeConnector(c);
   }
 
-  recreateIonSfuClient() {
-    _server.recreateIonSfuClient();
-  }
-
   bool isRemoteScreenPublisherStarted() {
     return _server.isRemoteScreenPublisherStarted();
   }
