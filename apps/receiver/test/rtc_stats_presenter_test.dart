@@ -13,7 +13,7 @@ void main() {
 
     setUp(() {
       presenter = RtcStatsPresenter(
-        maxVideoStats: 3,
+        maxVideoInboundStats: 3,
         maxCandidates: 2,
         maxCandidatePairs: 2,
         maxCodecStats: 2,
@@ -49,10 +49,10 @@ void main() {
       );
 
       // Act
-      presenter.updateVideoStats(stats1);
-      presenter.updateVideoStats(stats2);
-      presenter.updateVideoStats(stats3);
-      presenter.updateVideoStats(stats4);
+      presenter.updateVideoInboundStats(stats1);
+      presenter.updateVideoInboundStats(stats2);
+      presenter.updateVideoInboundStats(stats3);
+      presenter.updateVideoInboundStats(stats4);
 
       // Assert
       expect(callbackResults.length, equals(4));

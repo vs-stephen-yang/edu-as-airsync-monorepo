@@ -20,13 +20,19 @@ dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
 }
 
 abstract class RtcStatsSubscriber {
-  void updateVideoStats(RtcVideoInboundStats stats);
+  void updateVideoInboundStats(RtcVideoInboundStats stats);
+
   void updateLocalCandidate(List<StatsReport> reports);
+
   void updateRemoteCandidate(List<StatsReport> reports);
+
   void updateCandidatePairStats(StatsReport report);
+
   void updateCodecStats(StatsReport report);
+
   void pairCandidates(
       StatsReport localCandidateReport, StatsReport remoteCandidateReport);
+
   void selectedCandidatePair(StatsReport selectedCandidatePair);
 }
 
@@ -103,7 +109,7 @@ class RtcStatsParser {
         .where((StatsReport report) => report.values['kind'] == 'video')
         .toList();
 
-    _onVideoStatsReports(videoInboundRtps);
+    _onVideoInboundStatsReports(videoInboundRtps);
   }
 
   // Helper method to get the first non-null value from a list of reports
@@ -117,7 +123,7 @@ class RtcStatsParser {
     return null;
   }
 
-  void _onVideoStatsReports(List<StatsReport> reports) {
+  void _onVideoInboundStatsReports(List<StatsReport> reports) {
     if (reports.isEmpty) {
       return;
     }
@@ -298,7 +304,7 @@ class RtcStatsParser {
 
   void publishRtcVideoInboundStats(RtcVideoInboundStats stats) {
     for (final subscriber in _subscribers) {
-      subscriber.updateVideoStats(stats);
+      subscriber.updateVideoInboundStats(stats);
     }
   }
 

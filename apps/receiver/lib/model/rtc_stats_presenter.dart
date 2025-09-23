@@ -25,17 +25,17 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
   Function(RTCSessionDescription sdp)? onRemoteSDPPresent;
 
   RtcStatsPresenter(
-      {int maxVideoStats = 300,
+      {int maxVideoInboundStats = 300,
       int maxCandidates = 10,
       int maxCandidatePairs = 100,
       int maxCodecStats = 10})
       : _maxCodecStats = maxCodecStats,
         _maxCandidatePairs = maxCandidatePairs,
         _maxCandidates = maxCandidates,
-        _maxVideoStats = maxVideoStats;
+        _maxVideoStats = maxVideoInboundStats;
 
   @override
-  void updateVideoStats(RtcVideoInboundStats stats) {
+  void updateVideoInboundStats(RtcVideoInboundStats stats) {
     if (_videoStats.length >= _maxVideoStats) {
       _videoStats.removeAt(0);
     }

@@ -17,7 +17,7 @@ class RtcStatsReporter implements RtcStatsSubscriber {
   );
 
   @override
-  void updateVideoStats(RtcVideoInboundStats stats) {
+  void updateVideoInboundStats(RtcVideoInboundStats stats) {
     _onVideoInboundStats(stats);
   }
 
@@ -55,4 +55,5 @@ class RtcStatsReporter implements RtcStatsSubscriber {
 
   @override
   void updateRemoteCandidate(List<StatsReport> reports) {}
+  void updateVideoOutboundStats(RtcVideoOutboundStats stats) {}
 }
