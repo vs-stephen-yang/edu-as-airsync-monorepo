@@ -1,4 +1,8 @@
 // https://www.w3.org/TR/webrtc-stats/
+import 'dart:convert';
+
+import 'package:display_flutter/utility/list_util.dart';
+
 class RtcVideoInboundStats {
   final String? decoderName;
   final int? frameWidth;
@@ -182,4 +186,183 @@ class RtcCodecStats {
       clockRate: map['clockRate'],
     );
   }
+}
+
+class RtcVideoOutboundStats {
+  String? transportId;
+  String? mediaSourceId;
+  String? encoderImplementation;
+  int? frameWidth;
+  int? frameHeight;
+  double? framesPerSecond;
+  String? contentType;
+  String? qualityLimitationReason;
+  int? pliCount;
+  double? targetBitrate;
+  bool? powerEfficientEncoder;
+
+  double? timestamp;
+
+  int? bytesSent;
+  int? packetsSent;
+  bool? active;
+  int? firCount;
+  int? framesEncoded;
+  int? framesSent;
+  int? headerBytesSent;
+  int? hugeFramesSent;
+  int? keyFramesEncoded;
+  int? nackCount;
+  int? retransmittedBytesSent;
+  int? retransmittedPacketsSent;
+  double? totalEncodeTime;
+  int? totalEncodedBytesTarget;
+  double? totalPacketSendDelay;
+  int? qpSum;
+
+  // Calculated metrics (per second or averages)
+  int? packetsSentPerSecond;
+  int? bytesSentPerSecond;
+  int? framesSentPerSecond;
+  int? framesEncodedPerSecond;
+  int? hugeFramesSentPerSecond;
+  int? keyFramesEncodedPerSecond;
+  double? retransmittedPacketsSentPerSecond;
+  double? headerBytesSentPerSecond;
+  double? retransmittedBytesSentPerSecond;
+  double? encodeTimeAvgMs;
+  double? totalEncodedBytesTargetPerSecond;
+  double? packetSendDelayAvgMs;
+  double? qpSumAvg;
+
+  // extend field from other dictionary
+  double? availableOutgoingBitrate;
+  double? mediaSourceFramesPerSecond;
+
+  RtcVideoOutboundStats({
+    this.transportId,
+    this.mediaSourceId,
+    this.encoderImplementation,
+    this.frameWidth,
+    this.frameHeight,
+    this.framesPerSecond,
+    this.contentType,
+    this.qualityLimitationReason,
+    this.pliCount,
+    this.targetBitrate,
+    this.powerEfficientEncoder,
+    this.timestamp,
+    this.bytesSent,
+    this.packetsSent,
+    this.active,
+    this.firCount,
+    this.framesEncoded,
+    this.framesSent,
+    this.headerBytesSent,
+    this.hugeFramesSent,
+    this.keyFramesEncoded,
+    this.nackCount,
+    this.retransmittedBytesSent,
+    this.retransmittedPacketsSent,
+    this.totalEncodeTime,
+    this.totalEncodedBytesTarget,
+    this.totalPacketSendDelay,
+    this.qpSum,
+    this.packetsSentPerSecond,
+    this.bytesSentPerSecond,
+    this.retransmittedPacketsSentPerSecond,
+    this.headerBytesSentPerSecond,
+    this.retransmittedBytesSentPerSecond,
+    this.framesEncodedPerSecond,
+    this.hugeFramesSentPerSecond,
+    this.keyFramesEncodedPerSecond,
+    this.encodeTimeAvgMs,
+    this.totalEncodedBytesTargetPerSecond,
+    this.framesSentPerSecond,
+    this.packetSendDelayAvgMs,
+    this.qpSumAvg,
+    this.availableOutgoingBitrate,
+    this.mediaSourceFramesPerSecond,
+  });
+}
+
+String formatVideoOutboundStatsList(List<RtcVideoOutboundStats> list) {
+  final Map<String, List<double?>> perSecondFieldValues = {};
+  final Map<String, String> lastValueFields = {};
+
+  for (final stat in list) {
+    final data = <String, dynamic>{
+      "transportId": stat.transportId,
+      "mediaSourceId": stat.mediaSourceId,
+      "encoderImplementation": stat.encoderImplementation,
+      "frameWidth": stat.frameWidth,
+      "frameHeight": stat.frameHeight,
+      "framesPerSecond": stat.framesPerSecond,
+      "contentType": stat.contentType,
+      "qualityLimitationReason": stat.qualityLimitationReason,
+      "pliCount": stat.pliCount,
+      "targetBitrate": stat.targetBitrate,
+      "powerEfficientEncoder": stat.powerEfficientEncoder,
+      "timestamp": stat.timestamp,
+      "bytesSent": stat.bytesSent,
+      "packetsSent": stat.packetsSent,
+      "active": stat.active,
+      "firCount": stat.firCount,
+      "framesEncoded": stat.framesEncoded,
+      "framesSent": stat.framesSent,
+      "headerBytesSent": stat.headerBytesSent,
+      "hugeFramesSent": stat.hugeFramesSent,
+      "keyFramesEncoded": stat.keyFramesEncoded,
+      "nackCount": stat.nackCount,
+      "retransmittedBytesSent": stat.retransmittedBytesSent,
+      "retransmittedPacketsSent": stat.retransmittedPacketsSent,
+      "totalEncodeTime": stat.totalEncodeTime,
+      "totalEncodedBytesTarget": stat.totalEncodedBytesTarget,
+      "totalPacketSendDelay": stat.totalPacketSendDelay,
+      "qpSum": stat.qpSum,
+      "packetsSentPerSecond": stat.packetsSentPerSecond?.toDouble(),
+      "bytesSentPerSecond": stat.bytesSentPerSecond?.toDouble(),
+      "framesSentPerSecond": stat.framesSentPerSecond?.toDouble(),
+      "framesEncodedPerSecond": stat.framesEncodedPerSecond?.toDouble(),
+      "hugeFramesSentPerSecond": stat.hugeFramesSentPerSecond?.toDouble(),
+      "keyFramesEncodedPerSecond": stat.keyFramesEncodedPerSecond?.toDouble(),
+      "retransmittedPacketsSentPerSecond":
+          stat.retransmittedPacketsSentPerSecond,
+      "headerBytesSentPerSecond": stat.headerBytesSentPerSecond,
+      "retransmittedBytesSentPerSecond": stat.retransmittedBytesSentPerSecond,
+      "encodeTimeAvgMs": stat.encodeTimeAvgMs,
+      "totalEncodedBytesTargetPerSecond": stat.totalEncodedBytesTargetPerSecond,
+      "packetSendDelayAvgMs": stat.packetSendDelayAvgMs,
+      "qpSumAvg": stat.qpSumAvg,
+      "availableOutgoingBitrate": stat.availableOutgoingBitrate,
+      "mediaSourceFramesPerSecond": stat.mediaSourceFramesPerSecond,
+    };
+
+    for (final entry in data.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      final isPerSecond = key.contains("PerSecond") || key.contains("Avg");
+
+      if (isPerSecond) {
+        if (value is num) {
+          perSecondFieldValues.putIfAbsent(key, () => []).add(value.toDouble());
+        } else {
+          perSecondFieldValues.putIfAbsent(key, () => []).add(null);
+        }
+      } else {
+        if (value != null) {
+          lastValueFields[key] = value.toString();
+        }
+      }
+    }
+  }
+
+  final perSecondFormatted = <String, String>{
+    for (final entry in perSecondFieldValues.entries)
+      entry.key: formatDoubleList(entry.value, 2).join(',')
+  };
+
+  final result = {...perSecondFormatted, ...lastValueFields};
+  return jsonEncode(result);
 }

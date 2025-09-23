@@ -3,12 +3,14 @@ import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class RtcStatsPresenter implements RtcStatsSubscriber {
-  final int _maxVideoStats;
+  final int _maxVideoInboundStats;
+  final int _maxVideoOutboundStats;
   final int _maxCandidates;
   final int _maxCandidatePairs;
   final int _maxCodecStats;
 
-  final List<RtcVideoInboundStats> _videoStats = [];
+  final List<RtcVideoInboundStats> _videoInboundStats = [];
+  final List<RtcVideoOutboundStats> _videoOutboundStats = [];
   final Map<String, RtcIceCandidate> _localCandidates = {};
   final Map<String, RtcIceCandidate> _remoteCandidates = {};
   final Map<String, RtcIceCandidatePairStats> _candidatePairs = {};
@@ -16,7 +18,8 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
   late RTCSessionDescription? _localSDP;
   late RTCSessionDescription? _remoteSDP;
 
-  Function(List<RtcVideoInboundStats> stats)? onVideoStatsPresent;
+  Function(List<RtcVideoInboundStats> stats)? onVideoInboundStatsPresent;
+  Function(List<RtcVideoOutboundStats> stats)? onVideoOutboundStatsPresent;
   Function(Map<String, RtcIceCandidate> candidates)? onLocalCandidatesPresent;
   Function(Map<String, RtcIceCandidate> candidates)? onRemoteCandidatesPresent;
   Function(Map<String, RtcIceCandidatePairStats> pairs)? onCandidatePairPresent;
@@ -24,23 +27,34 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
   Function(RTCSessionDescription sdp)? onLocalSDPPresent;
   Function(RTCSessionDescription sdp)? onRemoteSDPPresent;
 
-  RtcStatsPresenter(
-      {int maxVideoInboundStats = 300,
-      int maxCandidates = 10,
-      int maxCandidatePairs = 100,
-      int maxCodecStats = 10})
-      : _maxCodecStats = maxCodecStats,
+  RtcStatsPresenter({
+    int maxVideoInboundStats = 300,
+    int maxCandidates = 10,
+    int maxCandidatePairs = 100,
+    int maxCodecStats = 10,
+    int maxVideoOutboundStats = 300,
+  })  : _maxCodecStats = maxCodecStats,
         _maxCandidatePairs = maxCandidatePairs,
         _maxCandidates = maxCandidates,
-        _maxVideoStats = maxVideoInboundStats;
+        _maxVideoInboundStats = maxVideoInboundStats,
+        _maxVideoOutboundStats = maxVideoOutboundStats;
 
   @override
   void updateVideoInboundStats(RtcVideoInboundStats stats) {
-    if (_videoStats.length >= _maxVideoStats) {
-      _videoStats.removeAt(0);
+    if (_videoInboundStats.length >= _maxVideoInboundStats) {
+      _videoInboundStats.removeAt(0);
     }
-    _videoStats.add(stats);
-    onVideoStatsPresent?.call(_videoStats);
+    _videoInboundStats.add(stats);
+    onVideoInboundStatsPresent?.call(_videoInboundStats);
+  }
+
+  @override
+  void updateVideoOutboundStats(RtcVideoOutboundStats stats) {
+    if (_videoInboundStats.length >= _maxVideoOutboundStats) {
+      _videoOutboundStats.removeAt(0);
+    }
+    _videoOutboundStats.add(stats);
+    onVideoOutboundStatsPresent?.call(_videoOutboundStats);
   }
 
   @override

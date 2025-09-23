@@ -23,7 +23,7 @@ void main() {
     test('Should add and maintain limited video stats with callback', () {
       // Arrange
       final List<List<RtcVideoInboundStats>> callbackResults = [];
-      presenter.onVideoStatsPresent = (stats) {
+      presenter.onVideoInboundStatsPresent = (stats) {
         callbackResults.add(List.from(stats));
       };
 

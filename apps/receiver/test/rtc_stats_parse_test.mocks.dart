@@ -114,7 +114,7 @@ class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
   }
 
   @override
-  set onVideoStatsPresent(
+  set onVideoInboundStatsPresent(
           dynamic Function(List<_i3.RtcVideoInboundStats>)?
               _onVideoStatsPresent) =>
       super.noSuchMethod(

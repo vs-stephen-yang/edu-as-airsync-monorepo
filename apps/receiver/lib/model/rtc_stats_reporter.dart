@@ -7,11 +7,12 @@ class RtcStatsReporter implements RtcStatsSubscriber {
       _onPairCandidateType;
 
   final Function(RtcVideoInboundStats stats) _onVideoInboundStats;
-
+  final Function(RtcVideoOutboundStats stats) _onVideoOutboundStats;
   final Function(RtcIceCandidatePairStats stats) _onIceCandidatePairStats;
 
   RtcStatsReporter(
     this._onVideoInboundStats,
+    this._onVideoOutboundStats,
     this._onPairCandidateType,
     this._onIceCandidatePairStats,
   );
@@ -19,6 +20,11 @@ class RtcStatsReporter implements RtcStatsSubscriber {
   @override
   void updateVideoInboundStats(RtcVideoInboundStats stats) {
     _onVideoInboundStats(stats);
+  }
+
+  @override
+  void updateVideoOutboundStats(RtcVideoOutboundStats stats) {
+    _onVideoOutboundStats(stats);
   }
 
   @override
@@ -55,5 +61,4 @@ class RtcStatsReporter implements RtcStatsSubscriber {
 
   @override
   void updateRemoteCandidate(List<StatsReport> reports) {}
-  void updateVideoOutboundStats(RtcVideoOutboundStats stats) {}
 }
