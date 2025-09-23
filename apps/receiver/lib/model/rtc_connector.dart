@@ -235,6 +235,7 @@ class RTCConnector {
     _rtcStatsMonitor = RtcStatsMonitor();
     final rtcStatsReporter = RtcStatsReporter(
       _handleVideoStatsReport,
+      (RtcVideoOutboundStats stats) {},
       (String localCandidateType, String remoteCandidateType) {
         onPairCandidateType?.call(localCandidateType, remoteCandidateType);
 
@@ -525,22 +526,22 @@ class RTCConnector {
   }
 
   int getFullResolutionHeight() => maxVideoResolution.height;
-  int getFullResolutionWidth()  => maxVideoResolution.width;
+  int getFullResolutionWidth() => maxVideoResolution.width;
 
   int getFullHeight(bool isFullResolution, int attenderCount) {
     return (isFullResolution)
         ? getFullResolutionHeight()
         : (attenderCount == 2)
-        ? MaxVideoResolution.wqxga1600p_16x10.height
-        : MaxVideoResolution.r960x600_16x10.height;
+            ? MaxVideoResolution.wqxga1600p_16x10.height
+            : MaxVideoResolution.r960x600_16x10.height;
   }
 
   int getFullWidth(bool isFullResolution, int attenderCount) {
     return (isFullResolution)
         ? getFullResolutionWidth()
         : (attenderCount == 2)
-        ? MaxVideoResolution.wqxga1600p_16x10.width
-        : MaxVideoResolution.r960x600_16x10.width;
+            ? MaxVideoResolution.wqxga1600p_16x10.width
+            : MaxVideoResolution.r960x600_16x10.width;
   }
 
   int getDecodeHeightLimit(String? deviceType, int attenderCount) {
@@ -574,8 +575,13 @@ class RTCConnector {
     }
   }
 
-  OnStreamingCapability currentStreamingQuality(bool isFullResolution, int attendeeCount, String? deviceType) {
-    OnStreamingCapability capability = OnStreamingCapability(MaxVideoResolution.fhd1080p_16x9.width, MaxVideoResolution.fhd1080p_16x9.height, 30);
+  OnStreamingCapability currentStreamingQuality(
+      bool isFullResolution, int attendeeCount, String? deviceType) {
+    OnStreamingCapability capability = OnStreamingCapability(
+        MaxVideoResolution.fhd1080p_16x9.width,
+        MaxVideoResolution.fhd1080p_16x9.height,
+        30);
+
     /// Resolution-framerate limitation
     // | Res.@FPS |     MTK9950 Devices     |     Normal  Devices     |
     // | Attendee | UHD (4K)   | QHD (2K)   | UHD (4K)   | QHD (2K)   |
@@ -589,7 +595,7 @@ class RTCConnector {
         capability = OnStreamingCapability(
             maxVideoResolution.width,
             maxVideoResolution.height,
-            (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9)? 20 : 24);
+            (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9) ? 20 : 24);
       } else if (attendeeCount <= 2) {
         capability = OnStreamingCapability(
             MaxVideoResolution.fhd1080p_16x9.width,
@@ -606,7 +612,7 @@ class RTCConnector {
         capability = OnStreamingCapability(
             maxVideoResolution.width,
             maxVideoResolution.height,
-            (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9)? 24 : 27);
+            (maxVideoResolution == MaxVideoResolution.uhd2160p_16x9) ? 24 : 27);
       } else if (attendeeCount <= 2) {
         capability = OnStreamingCapability(
             MaxVideoResolution.wqxga1600p_16x10.width,
@@ -626,7 +632,8 @@ class RTCConnector {
       bool isFullResolution, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
 
-    OnStreamingCapability capability = currentStreamingQuality(isFullResolution, attendeeCount, _deviceType);
+    OnStreamingCapability capability =
+        currentStreamingQuality(isFullResolution, attendeeCount, _deviceType);
 
     message.constraints = PresentQualityConstraints(
         frameRate: capability.frameRate,

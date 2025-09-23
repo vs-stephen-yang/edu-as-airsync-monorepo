@@ -65,3 +65,17 @@ Future<void> writeLogToFile(File file) async {
     flush: true,
   );
 }
+
+class ChunkedLogger {
+  final Logger _logger;
+
+  ChunkedLogger(this._logger);
+
+  void info(String message, {int chunkSize = 800}) {
+    for (int i = 0; i < message.length; i += chunkSize) {
+      final end =
+          (i + chunkSize < message.length) ? i + chunkSize : message.length;
+      _logger.info(message.substring(i, end));
+    }
+  }
+}

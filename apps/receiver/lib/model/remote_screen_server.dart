@@ -1,11 +1,16 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
+import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_parser.dart';
+import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
+import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
@@ -84,6 +89,13 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   TouchEventManager? _touchEventManager;
 
   final _connectorChannels = <int, RtcScreenConnector>{};
+
+  RtcStatsParser? _rtcStatsParser;
+
+  Timer? _statsTimer;
+  final _statsTimerInterval = const Duration(seconds: 1);
+
+  final _videoOutboundStatsHistory = BoundedList<RtcVideoOutboundStats>(5);
 
   RemoteScreenServer() {
     initTouchEventManager();
@@ -185,6 +197,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       _localStream =
           await LocalStream.getDisplayMedia(constraints: constraints);
       await _ionSfuClient?.publish(_localStream!);
+      _startStatsTimer();
       return true;
     });
   }
@@ -296,6 +309,9 @@ class RemoteScreenServer extends FlutterIonSfuListener {
         _ionSfuClient = null;
         client?.close();
       }
+      if (_statsTimer != null) {
+        _stopStatsTimer();
+      }
     });
   }
 
@@ -313,6 +329,11 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       connector.registerSignalHandler((String message) {
         _sendSignalToSfu(channelId, message);
       });
+
+      final remoteScreenStats =
+          formatVideoOutboundStatsList(_videoOutboundStatsHistory.elements);
+      final chunkLogger = ChunkedLogger(log);
+      chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
     } catch (e) {
       log.warning(e);
     }
@@ -362,6 +383,37 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       return;
     }
     channel.setControlAllowed(enable);
+  }
+
+  void _startStatsTimer() {
+    _rtcStatsParser = RtcStatsParser();
+    final rtcStatsReporter = RtcStatsReporter(
+      (RtcVideoInboundStats stats) {},
+      _handleVideoStatsReport,
+      (String localCandidateType, String remoteCandidateType) {},
+      (RtcIceCandidatePairStats stats) {},
+    );
+    _rtcStatsParser!.addSubscriber(rtcStatsReporter);
+
+    _statsTimer?.cancel();
+    _statsTimer = Timer.periodic(
+      _statsTimerInterval,
+      (timer) async {
+        final reports = await _ionSfuClient?.getPubStats(null);
+        if (reports != null) {
+          _rtcStatsParser?.onStatsReports(reports);
+        }
+      },
+    );
+  }
+
+  void _stopStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
+  void _handleVideoStatsReport(RtcVideoOutboundStats stats) {
+    _videoOutboundStatsHistory.add(stats);
   }
 
   // onError callback from FlutterIonSfu
