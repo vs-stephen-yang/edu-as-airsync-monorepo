@@ -31,7 +31,8 @@ class MockRtcStatsReporter extends _i1.Mock implements _i2.RtcStatsReporter {
   }
 
   @override
-  void updateVideoStats(_i3.RtcVideoInboundStats? stats) => super.noSuchMethod(
+  void updateVideoInboundStats(_i3.RtcVideoInboundStats? stats) =>
+      super.noSuchMethod(
         Invocation.method(
           #updateVideoStats,
           [stats],
@@ -195,7 +196,8 @@ class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
       );
 
   @override
-  void updateVideoStats(_i3.RtcVideoInboundStats? stats) => super.noSuchMethod(
+  void updateVideoInboundStats(_i3.RtcVideoInboundStats? stats) =>
+      super.noSuchMethod(
         Invocation.method(
           #updateVideoStats,
           [stats],

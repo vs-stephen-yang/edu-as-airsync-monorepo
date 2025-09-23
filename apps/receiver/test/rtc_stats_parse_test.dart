@@ -124,18 +124,20 @@ void main() {
       parser.onStatsReports(reports);
 
       // Assert
-      verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
-              .having((s) => s.decoderName, 'decoderName', 'vp8')
-              .having((s) => s.frameWidth, 'frameWidth', 1280)
-              .having((s) => s.frameHeight, 'frameHeight', 720)
-              .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
-              .having((s) => s.bytesReceived, 'bytesReceived', 500000)
-              .having((s) => s.packetsLost, 'packetsLost', 5)
-              .having((s) => s.packetsReceived, 'packetsReceived', 1000)
-              .having((s) => s.jitter, 'jitter', 5.2))))
+      verify(mockReporter.updateVideoInboundStats(argThat(
+              isA<RtcVideoInboundStats>()
+                  .having((s) => s.decoderName, 'decoderName', 'vp8')
+                  .having((s) => s.frameWidth, 'frameWidth', 1280)
+                  .having((s) => s.frameHeight, 'frameHeight', 720)
+                  .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
+                  .having((s) => s.bytesReceived, 'bytesReceived', 500000)
+                  .having((s) => s.packetsLost, 'packetsLost', 5)
+                  .having((s) => s.packetsReceived, 'packetsReceived', 1000)
+                  .having((s) => s.jitter, 'jitter', 5.2))))
           .called(1);
 
-      verify(mockPresenter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
+      verify(mockPresenter.updateVideoInboundStats(argThat(isA<
+                  RtcVideoInboundStats>()
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
               .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
@@ -252,17 +254,19 @@ void main() {
       parser.onStatsReports([videoReport2]);
 
       // Assert
-      verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
-              .having((s) => s.framesReceivedPerSecond,
-                  'framesReceivedPerSecond', 30)
-              .having(
-                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
-              .having(
-                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
-              .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
-              .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
+      verify(mockReporter.updateVideoInboundStats(argThat(
+              isA<RtcVideoInboundStats>()
+                  .having((s) => s.framesReceivedPerSecond,
+                      'framesReceivedPerSecond', 30)
+                  .having((s) => s.framesDecodedPerSecond,
+                      'framesDecodedPerSecond', 25)
+                  .having((s) => s.framesDroppedPerSecond,
+                      'framesDroppedPerSecond', 5)
+                  .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
+                  .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
           .called(1);
-      verify(mockPresenter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
+      verify(mockPresenter.updateVideoInboundStats(argThat(isA<
+                  RtcVideoInboundStats>()
               // Per-second differentials
               .having((s) => s.packetsReceivedPerSecond,
                   'packetsReceivedPerSecond', 50)
