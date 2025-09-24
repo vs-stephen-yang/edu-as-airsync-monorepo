@@ -42,6 +42,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                 ),
                 showWhiteBorder: true,
                 onClick: () {
+                  if (!mounted) return;
                   setState(() {
                     if (prefLanguageProvider.language != language) {
                       prefLanguageProvider.setLanguage(language);

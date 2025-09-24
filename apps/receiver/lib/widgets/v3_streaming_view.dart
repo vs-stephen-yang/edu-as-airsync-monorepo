@@ -369,6 +369,7 @@ class _V3StreamingViewState extends State {
 
   _showNewSharingMessageDialog(List<String> names) async {
     String name = names.first;
+    if (!mounted) return;
     setState(() {
       _isNewSharingOnScreen = true;
     });
@@ -387,6 +388,7 @@ class _V3StreamingViewState extends State {
             List.from(channelProvider.showNewSharingNameList.value);
       }
     }).whenComplete(() {
+      if (!mounted) return;
       setState(() {
         _isNewSharingOnScreen = false;
       });

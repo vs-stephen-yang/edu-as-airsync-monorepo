@@ -61,6 +61,9 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
                 .setModeratorMode(false);
 
             _switchModeratorOff();
+            if (!mounted) {
+              return;
+            }
             setState(() {});
           },
           onNegative: () {},
@@ -71,12 +74,5 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
 
   _switchModeratorOff() {
     HybridConnectionList().removeAllPresenters();
-  }
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
   }
 }

@@ -70,6 +70,7 @@ class _V3TextClockState extends State<V3TextClock> {
   }
 
   _updateTime() {
+    if (!mounted) return;
     setState(() {
       _timer = Timer(
         const Duration(seconds: 60) - Duration(seconds: DateTime.now().second),

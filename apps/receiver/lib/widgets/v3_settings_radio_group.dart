@@ -83,6 +83,7 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                 onTap: settingsProvider.isConnectivityLock
                     ? null
                     : () {
+                        if (!mounted) return;
                         setState(() {
                           _selectedRadio = key.value;
                           widget.onChanged(key.value);

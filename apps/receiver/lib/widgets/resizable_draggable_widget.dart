@@ -61,6 +61,9 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
       );
       textPainter.layout();
 
+      if (!mounted) {
+        return;
+      }
       setState(() {
         final textWidth = textPainter.size.width;
 
@@ -126,6 +129,9 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
     double widgetCenter = _currentX + (widgetCurrentWidth / 2);
     double screenCenter = screenWidth / 2;
 
+    if (!mounted) {
+      return;
+    }
     setState(() {
       if (widgetCenter > screenCenter) {
         if (isExpanding) {
@@ -165,12 +171,14 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         onMute: () {},
       ),
       onDragUpdate: (details) {
+        if (!mounted) return;
         setState(() {
           _currentX =
               (_currentX + details.delta.dx).clamp(0.0, screenWidth - _width);
         });
       },
       onDragEnd: (_) {
+        if (!mounted) return;
         setState(() {
           _currentX = _currentX.clamp(0.0, screenWidth - _width);
         });
@@ -184,6 +192,7 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         onMinimize: () {
           _updatePositionForExpandOrCollapse(
               false, _collapsedWidth, screenWidth);
+          if (!mounted) return;
           setState(() {
             _isExpanded = false;
             _focusPrimaryOnExpandedChanged(false);
@@ -220,19 +229,27 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         isTapped: false,
       ),
       onDragUpdate: (details) {
+        if (!mounted) return;
         setState(() {
           _currentX = (_currentX + details.delta.dx)
               .clamp(0.0, screenWidth - _collapsedWidth);
         });
       },
       onDragEnd: (_) {
+        if (!mounted) return;
         setState(() {
           _currentX = _currentX.clamp(0.0, screenWidth - _collapsedWidth);
         });
       },
       child: GestureDetector(
-        onTapDown: (_) => setState(() => _isCollapsedTapDown = true),
-        onTapCancel: () => setState(() => _isCollapsedTapDown = false),
+        onTapDown: (_) {
+          if (!mounted) return;
+          setState(() => _isCollapsedTapDown = true);
+        },
+        onTapCancel: () {
+          if (!mounted) return;
+          setState(() => _isCollapsedTapDown = false);
+        },
         child: CollapsedContentWidget(
           primaryFocusNode: collapsedFocusNode,
           width: _collapsedWidth,
@@ -242,6 +259,7 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
           onTap: () {
             _updatePositionForExpandOrCollapse(
                 true, _collapsedWidth, screenWidth);
+            if (!mounted) return;
             setState(() {
               _isExpanded = true;
               _isCollapsedTapDown = false;

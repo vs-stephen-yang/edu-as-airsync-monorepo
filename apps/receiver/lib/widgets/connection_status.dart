@@ -90,13 +90,18 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
     // 若新狀態屬於警告/錯誤，先顯示預期最終狀態，再等 2 秒 fallback 顯示錯誤
     if (newState == ConnectionStatusState.bothTunnelOff ||
         newState == ConnectionStatusState.internetTunnelOff) {
+      if (!mounted) {
+        return;
+      }
       setState(() => _currentState = stableState);
 
       _debounceTimer = Timer(const Duration(seconds: 2), () {
+        if (!mounted) return;
         setState(() => _currentState = newState);
       });
     } else {
       // 若是正常狀態，立即顯示
+      if (!mounted) return;
       setState(() => _currentState = newState);
     }
   }

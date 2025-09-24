@@ -55,6 +55,10 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
     } else {
       _controller.forward();
     }
+
+    if (!mounted) {
+      return;
+    }
     setState(() {
       isExpanded = !isExpanded;
     });
@@ -157,6 +161,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                               _showShortcutsMenuDialog(
                                   context, settingsProvider);
                             });
+                            if (!mounted) return;
                             setState(() {
                               _showShortcut = true;
                             });
@@ -196,6 +201,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             _showQuickConnectMenuDialog();
                           });
+                          if (!mounted) return;
                           setState(() {
                             _showQuickConnect = true;
                           });
@@ -236,6 +242,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
           builder: (primaryFocusNode) =>
               V3ShortcutsMenu(primaryFocusNode: primaryFocusNode)),
     ).then((_) {
+      if (!mounted) return;
       setState(() {
         _showShortcut = false;
       });
@@ -251,6 +258,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
             V3QuickConnectMenu(primaryFocusNode: primaryFocusNode),
       ),
     ).then((_) {
+      if (!mounted) return;
       setState(() {
         _showQuickConnect = false;
       });

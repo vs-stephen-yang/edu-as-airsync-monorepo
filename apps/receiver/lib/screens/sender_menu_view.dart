@@ -45,6 +45,7 @@ class _SenderMenuViewState extends State<SenderMenuView> {
               } else {
                 await channelProvider.startRemoteScreen(fromSender: true);
               }
+              if (!mounted) return;
               setState(() {});
             },
           ),

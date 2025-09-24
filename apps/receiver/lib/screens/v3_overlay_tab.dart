@@ -36,6 +36,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
     bool isCDE = deviceType?.toString().startsWith('CDE') ?? false;
     bool isLED = deviceType?.toString().startsWith('dvLED') ?? false;
     if (isCDE || isLED) {
+      if (!mounted) return;
       setState(() {
         _isExpandedMode = true;
       });
@@ -93,6 +94,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
+                              if (!mounted) return;
                               setState(() {
                                 _isExpandedMode = false;
                               });
@@ -173,6 +175,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
+                      if (!mounted) return;
                       setState(() {
                         _isExpandedMode = true;
                       });
@@ -199,6 +202,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
 
         case OverlayTabHandler.nameInitValue:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
@@ -212,6 +216,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
 
         case OverlayTabHandler.nameSetVisibility:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               AndroidWindow.setVisibility(
@@ -232,6 +237,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
 
         case OverlayTabHandler.nameSetMainInfo:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
@@ -244,6 +250,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
 
         case OverlayTabHandler.nameSetOtp:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             self.setState(() {
               var info = Map<String, String>.from(data);
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';

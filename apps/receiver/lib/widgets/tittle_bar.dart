@@ -77,6 +77,7 @@ class _TitleBarStates extends State<TitleBar> {
         return widget;
       },
     ).then((_) {
+      if (!mounted) return;
       setState(() {});
     });
   }

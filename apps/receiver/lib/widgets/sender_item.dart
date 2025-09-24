@@ -82,6 +82,7 @@ class _SenderItemState extends State<SenderItem>
                     .enableRemoteControlBySessionId(
                         remoteScreenConnector.sessionId!,
                         remoteScreenConnector.isTouchEnabled);
+                if (!mounted) return;
                 setState(() {});
               },
             ),

@@ -39,6 +39,7 @@ class _V3EulaState extends State<V3Eula> {
   Widget build(BuildContext context) {
     if (showDisagreePage) {
       return V3EulaDisablePage(onPressed: () {
+        if (!mounted) return;
         setState(() {
           showDisagreePage = false;
         });
@@ -203,6 +204,7 @@ class _V3EulaState extends State<V3Eula> {
                                         ),
                                         onPressed: () {
                                           if (isCorporateMode) {
+                                            if (!mounted) return;
                                             setState(() {
                                               showDisagreePage = true;
                                             });

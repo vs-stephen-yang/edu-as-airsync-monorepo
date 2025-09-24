@@ -218,6 +218,7 @@ class _TextSizeAwareStatefulState extends State<_TextSizeAwareStateful> {
   void initState() {
     super.initState();
     listener = () {
+      if (!mounted) return;
       setState(() {}); // 只要 textSizeOptionNotifier 改變就重新 build
     };
     AppPreferences().textSizeOptionNotifier.addListener(listener);
@@ -231,6 +232,9 @@ class _TextSizeAwareStatefulState extends State<_TextSizeAwareStateful> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.buildWithTextSize(context, () => setState(() {}));
+    return widget.buildWithTextSize(context, () {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 }

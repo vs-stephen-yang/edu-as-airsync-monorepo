@@ -33,6 +33,7 @@ class _V3DialogActionButtonsState extends State<V3DialogActionButtons> {
     if (context != null) {
       final height = context.size?.height ?? 0;
       if (height > 40 && !_shouldWrap) {
+        if (!mounted) return;
         setState(() => _shouldWrap = true);
       }
     }

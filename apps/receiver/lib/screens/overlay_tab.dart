@@ -93,6 +93,7 @@ class _OverlayTabState extends State<OverlayTab> {
 
         case OverlayTabHandler.nameInitValue:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
@@ -106,6 +107,7 @@ class _OverlayTabState extends State<OverlayTab> {
 
         case OverlayTabHandler.nameSetVisibility:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               AndroidWindow.setVisibility(
@@ -126,6 +128,7 @@ class _OverlayTabState extends State<OverlayTab> {
 
         case OverlayTabHandler.nameSetMainInfo:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
@@ -138,6 +141,7 @@ class _OverlayTabState extends State<OverlayTab> {
 
         case OverlayTabHandler.nameSetOtp:
           if (data is Map<Object?, Object?>) {
+            if (!mounted) return OverlayTabHandler.resultEmptyString;
             setState(() {
               var info = Map<String, String>.from(data);
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';

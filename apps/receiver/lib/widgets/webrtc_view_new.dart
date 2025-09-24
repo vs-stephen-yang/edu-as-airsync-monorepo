@@ -95,6 +95,7 @@ class WebRTCViewState extends State<WebRTCView> {
 
       pairCandidateInfo =
           'Local: $localCandidateType, Remote: $remoteCandidateType';
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '$videoInfo\n$pairCandidateInfo';
       });
@@ -126,6 +127,7 @@ class WebRTCViewState extends State<WebRTCView> {
           'Decode: $decodeTimeSec s\n'
           '${stats.decoderName}';
 
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '$videoInfo\n$pairCandidateInfo';
       });
@@ -373,6 +375,7 @@ class WebRTCViewState extends State<WebRTCView> {
 
   void _clearDebugOverlay() {
     if (debugOverlayText != '') {
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '';
       });
@@ -396,6 +399,7 @@ class WebRTCViewState extends State<WebRTCView> {
         }
       }
     }
+    if (!mounted) return;
     setState(() {});
   }
 

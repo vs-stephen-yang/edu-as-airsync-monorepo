@@ -62,6 +62,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
       itemParticipant = ParticipantControllingFeature(
         rtcConnector: rtcConnector,
         callback: () {
+          if (!mounted) return;
           setState(() {});
         },
       );
@@ -70,6 +71,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
       itemParticipant = ParticipantReceivingFeature(
         rtcConnector: rtcConnector,
         callback: () {
+          if (!mounted) return;
           setState(() {});
         },
       );

@@ -272,6 +272,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
   }
 
   _showParticipantsMenuDialog(BuildContext context) async {
+    if (!mounted) return;
     setState(() {
       _isModeratorOnScreen = true;
     });
@@ -282,6 +283,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
           builder: (primaryFocusNode) =>
               V3ParticipantsMenu(primaryFocusNode: primaryFocusNode)),
     ).then((_) {
+      if (!mounted) return;
       setState(() {
         _isModeratorOnScreen = false;
       });
@@ -289,6 +291,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
   }
 
   _showCastDeviceMenuDialog(BuildContext context) async {
+    if (!mounted) return;
     setState(() {
       _isCastDeviceOnScreen = true;
     });
@@ -304,6 +307,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
         );
       },
     ).then((_) {
+      if (!mounted) return;
       setState(() {
         _isCastDeviceOnScreen = false;
       });

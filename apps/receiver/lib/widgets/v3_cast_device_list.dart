@@ -40,6 +40,7 @@ class _V3CastDeviceListState extends State<V3CastDeviceList> {
 
   void _goPrev() {
     if (_page > 0) {
+      if (!mounted) return;
       setState(() => _page--);
       _scrollController.jumpTo(0);
     }
@@ -47,6 +48,7 @@ class _V3CastDeviceListState extends State<V3CastDeviceList> {
 
   void _goNext(int totalPages) {
     if (_page < totalPages - 1) {
+      if (!mounted) return;
       setState(() => _page++);
       _scrollController.jumpTo(0);
     }
@@ -78,7 +80,10 @@ class _V3CastDeviceListState extends State<V3CastDeviceList> {
             showToolbar ? _page.clamp(0, totalPages - 1) : 0;
         if (clampedPage != _page) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) setState(() => _page = clampedPage);
+            if (!mounted) {
+              return;
+            }
+            setState(() => _page = clampedPage);
           });
         }
 

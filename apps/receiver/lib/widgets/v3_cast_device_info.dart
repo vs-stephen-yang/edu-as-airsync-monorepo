@@ -122,6 +122,7 @@ class _V3CastDevicePortraitLayoutState
     final context = _topKey.currentContext;
     if (context != null) {
       final renderBox = context.findRenderObject() as RenderBox;
+      if (!mounted) return;
       setState(() {
         _topHeight = renderBox.size.height;
       });

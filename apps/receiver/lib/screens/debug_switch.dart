@@ -73,6 +73,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.showOldUI = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _showOldUI = value;
       _notifyRestart();
@@ -83,6 +84,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.showDebugOverlay = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _showDebugOverlay = value;
       _notifyRestart();
@@ -92,6 +94,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _showDeviceInfoOverlayChanged(bool value) async {
     DeviceFeatureAdapter.showDeviceInfoOverlay = value;
 
+    if (!mounted) return;
     setState(() {
       _showDeviceInfoOverlay = value;
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -103,6 +106,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.useSoftwareDecode = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _useSoftwareDecode = value;
       _notifyRestart();
@@ -113,6 +117,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.useQuickDecodeParams = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _useQuickDecodeParams = value;
       _notifyRestart();
@@ -123,6 +128,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.iceGatheringContinually = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _iceGatheringContinually = value;
       _notifyRestart();
@@ -133,6 +139,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.dumpSrtpPackets = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _dumpSrtpPackets = value;
       _notifyRestart();
@@ -143,6 +150,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.enableWebRtcH264BaselineProfile = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _enableWebRtcH264BaselineProfile = value;
       _notifyRestart();
@@ -153,6 +161,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.enableWebRtcTracing = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _enableWebRtcTracing = value;
       _notifyRestart();
@@ -166,6 +175,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
       await WebRTCUtil.stopWebRtcTracingCapture();
     }
 
+    if (!mounted) return;
     setState(() {
       _startWebRtcTracing = value;
     });
@@ -175,6 +185,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     DeviceFeatureAdapter.verboseWebRtcLog = value;
     await DeviceFeatureAdapter.save();
 
+    if (!mounted) return;
     setState(() {
       _verboseWebRtcLog = value;
       _notifyRestart();
@@ -184,6 +195,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _changeMulticast(bool value) async {
     await context.read<AppSettings>().setUseMulticast(value);
 
+    if (!mounted) return;
     setState(() {
       _useMulticast = value;
       _notifyRestart();
@@ -398,6 +410,7 @@ class _CastingTimeAdjusterState extends State<_CastingTimeAdjuster> {
   }
 
   void _increment() {
+    if (!mounted) return;
     setState(() {
       if (currentMinutes + stepMinutes <= maxMinutes) {
         currentMinutes += stepMinutes;
@@ -407,6 +420,7 @@ class _CastingTimeAdjusterState extends State<_CastingTimeAdjuster> {
   }
 
   void _decrement() {
+    if (!mounted) return;
     setState(() {
       if (currentMinutes - stepMinutes >= minMinutes) {
         currentMinutes -= stepMinutes;

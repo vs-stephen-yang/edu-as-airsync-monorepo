@@ -128,6 +128,7 @@ class _V3SettingsPasswordContentState extends State<V3SettingsPasswordContent> {
               LengthLimitingTextInputFormatter(4),
             ],
             onChanged: (value) {
+              if (!mounted) return;
               setState(() {
                 _errorState = false;
               });
@@ -265,6 +266,7 @@ class _V3SettingsPasswordContentState extends State<V3SettingsPasswordContent> {
           Navigator.pop(context, true);
         }
       } else {
+        if (!mounted) return;
         setState(() {
           _clearFields();
           _errorState = true;

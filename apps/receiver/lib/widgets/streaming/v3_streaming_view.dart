@@ -141,6 +141,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
 
   Future<void> _showNewSharingMessageDialog(List<String> names) async {
     final name = names.first;
+    if (!mounted) return;
     setState(() => _isNewSharingOnScreen = true);
     await showDialog(
       context: context,
@@ -156,6 +157,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
   }
 
   void _nextPage() {
+    if (!mounted) return;
     setState(() {
       _pageIndex = (_pageIndex + 1) % _dotCount;
     });

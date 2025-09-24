@@ -198,6 +198,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
         });
       },
     ).then((_) {
+      if (!mounted) return;
       setState(() {
         isShowDialogMenu = false;
       });

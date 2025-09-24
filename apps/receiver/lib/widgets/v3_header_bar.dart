@@ -166,6 +166,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
       barrierDismissible: false,
       builder: (context) => widget,
     );
+    if (!mounted) return;
     setState(() {}); // 確保切換 debug 後能刷新畫面
   }
 }
