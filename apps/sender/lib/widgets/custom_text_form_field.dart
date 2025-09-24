@@ -82,6 +82,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   void setDescriptionMsg(String text) {
+    if (!mounted) return;
     setState(() {
       _errorText = text;
       errorTextStyle = const TextStyle(color: Color.fromRGBO(153, 153, 153, 1));
@@ -89,6 +90,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   void setErrorMsg(String text) {
+    if (!mounted) return;
     setState(() {
       _errorText = text;
       errorTextStyle = const TextStyle(color: Colors.red);

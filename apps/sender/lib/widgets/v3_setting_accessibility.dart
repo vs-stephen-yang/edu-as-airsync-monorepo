@@ -64,6 +64,7 @@ class TextSizeDropdownState extends State<TextSizeDropdown> {
                   onSelected: (option) {
                     Provider.of<TextScaleProvider>(context, listen: false)
                         .setTextSize(option);
+                    if (!mounted) return;
                     setState(() {
                       selected = option;
                     });
@@ -175,6 +176,7 @@ class _SizeDropdownState extends State<SizeDropdown> {
                     ),
                   ),
                   onTap: () {
+                    if (!mounted) return;
                     setState(() {
                       _selected = option;
                     });

@@ -37,6 +37,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
         onResume: () async {
           isButtonEnabled = await webrtcHelper.isAccessibilityServiceAllowed();
           webrtcHelper.setTouchBack(isButtonEnabled);
+          if (!mounted) return;
           setState(() {});
         },
       );
@@ -113,6 +114,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
 
                   isButtonEnabled = !isButtonEnabled;
                   webrtcHelper.setTouchBack(isButtonEnabled);
+                  if (!mounted) return;
                   setState(() {});
                   if (isButtonEnabled && Platform.isAndroid) {
                     _showAccessibilityServiceDialog(webrtcHelper);
@@ -157,6 +159,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton>
                       isButtonEnabled =
                           await webrtcHelper.isAccessibilityServiceAllowed();
                       webrtcHelper.setTouchBack(isButtonEnabled);
+                      if (!mounted) return;
                       setState(() {});
                       if (navService.canPop()) {
                         navService.goBack();

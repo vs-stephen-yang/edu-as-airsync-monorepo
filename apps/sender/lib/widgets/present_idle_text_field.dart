@@ -108,6 +108,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                         key: Key(displayList[index]),
                         background: Container(color: Colors.red),
                         onDismissed: (direction) {
+                          if (!mounted) return;
                           setState(() {
                             DataDisplayCode.getInstance()
                                 .remove(displayList[index]);

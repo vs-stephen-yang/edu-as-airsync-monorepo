@@ -321,6 +321,9 @@ class SelectScreenDialog extends Dialog {
                                                 SourceType.Screen)
                                             .map((e) => ThumbnailWidget(
                                                   onTap: (source) {
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
                                                     setState(() {
                                                       _selectedSource = source;
                                                     });
@@ -343,6 +346,9 @@ class SelectScreenDialog extends Dialog {
                                                 SourceType.Window)
                                             .map((e) => ThumbnailWidget(
                                                   onTap: (source) {
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
                                                     setState(() {
                                                       _selectedSource = source;
                                                     });
@@ -504,9 +510,11 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
   void initState() {
     super.initState();
     _subscriptions.add(widget.source.onThumbnailChanged.stream.listen((event) {
+      if (!mounted) return;
       setState(() {});
     }));
     _subscriptions.add(widget.source.onNameChanged.stream.listen((event) {
+      if (!mounted) return;
       setState(() {});
     }));
   }

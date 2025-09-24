@@ -55,6 +55,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
 
   void setEnable(bool presentBtnEnable,
       {String? displayCode, String? password}) {
+    if (!mounted) return;
     setState(() {
       // update the button state
       isButtonEnabled = presentBtnEnable;
@@ -62,6 +63,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
   }
 
   void setLoadingState(bool loading) {
+    if (!mounted) return;
     setState(() {
       isButtonLoading = loading;
       if (loading) {

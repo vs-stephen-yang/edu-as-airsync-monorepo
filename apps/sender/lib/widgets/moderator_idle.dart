@@ -121,6 +121,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                     } else {
                       presentBtnEnable = false;
                     }
+                    if (!mounted) return;
                     setState(() {});
                   },
                   onFieldSubmitted: (String value) async {

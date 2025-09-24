@@ -243,6 +243,7 @@ class _CountDownTextState extends State<CountDownText> {
     ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
       // onFinish
     }, onTick: (tick) {
+      if (!mounted) return;
       setState(() {
         countdown = 30 - tick;
       });
@@ -460,6 +461,7 @@ class SelectScreenDialog extends Dialog {
                                               null;
                                           break;
                                       }
+                                      if (!context.mounted) return;
                                       setState(() {
                                         if (index == 1) {
                                           enableAudioCheckbox = false;
@@ -564,6 +566,10 @@ class SelectScreenDialog extends Dialog {
                                                 onChanged:
                                                     (!isVirtualAudioMissing)
                                                         ? (bool? value) {
+                                                            if (!context
+                                                                .mounted) {
+                                                              return;
+                                                            }
                                                             setState(() {
                                                               _systemAudio =
                                                                   value!;
@@ -1008,9 +1014,11 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
   void initState() {
     super.initState();
     _subscriptions.add(widget.source.onThumbnailChanged.stream.listen((event) {
+      if (!mounted) return;
       setState(() {});
     }));
     _subscriptions.add(widget.source.onNameChanged.stream.listen((event) {
+      if (!mounted) return;
       setState(() {});
     }));
   }

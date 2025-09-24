@@ -147,6 +147,9 @@ class _V3DeviceListState extends State<V3DeviceList> {
                                 child: buildMobileItem(
                                     airSyncBonsoirService, context),
                                 onTap: () {
+                                  if (!context.mounted) {
+                                    return;
+                                  }
                                   setState(() {
                                     _connectService = airSyncBonsoirService;
                                   });
@@ -550,6 +553,7 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
   bool buttonEnable = false;
 
   void _onChanged(String value) {
+    if (!mounted) return;
     setState(() {
       if (value.isNotEmpty) {
         buttonEnable = true;
@@ -564,6 +568,7 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
     super.initState();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
+        if (!mounted) return;
         setState(() {});
       }
     });

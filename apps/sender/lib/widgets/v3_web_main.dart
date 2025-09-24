@@ -167,6 +167,9 @@ class V3WebMain extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
+                        if (!context.mounted) {
+                          return;
+                        }
                         setState(() {
                           showUnsupportedMassage = false;
                         });
@@ -260,6 +263,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
 
   // This method shows a custom dropdown (using showMenu)
   void _showCustomDropdown(BuildContext context) async {
+    if (!mounted) return;
     setState(() {
       _menuOn = true;
     });
@@ -314,6 +318,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
     if (newValue != null) {
       prefLanguageProvider.setLanguage(newValue);
     }
+    if (!mounted) return;
     setState(() {
       _menuOn = false;
     });
@@ -628,11 +633,18 @@ class _V3PopupMenuItemState<T> extends State<V3PopupMenuItem<T>> {
         },
         child: FocusableActionDetector(
           autofocus: widget.selected && openedWithLogicalKey,
-          onShowHoverHighlight: (hovering) =>
-              setState(() => _isHovered = hovering),
-          onShowFocusHighlight: (focused) =>
-              setState(() => _isFocused = focused),
-          onFocusChange: (focused) => setState(() => _isFocused = focused),
+          onShowHoverHighlight: (hovering) {
+            if (!mounted) return;
+            setState(() => _isHovered = hovering);
+          },
+          onShowFocusHighlight: (focused) {
+            if (!mounted) return;
+            setState(() => _isFocused = focused);
+          },
+          onFocusChange: (focused) {
+            if (!mounted) return;
+            setState(() => _isFocused = focused);
+          },
           child: Semantics(
             label: widget.label,
             identifier: widget.identifier,

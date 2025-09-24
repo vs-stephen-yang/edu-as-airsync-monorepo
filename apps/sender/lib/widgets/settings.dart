@@ -165,6 +165,7 @@ class _Settings extends State<Settings> {
         return widget;
       },
     ).then((_) {
+      if (!mounted) return;
       setState(() {});
     });
   }

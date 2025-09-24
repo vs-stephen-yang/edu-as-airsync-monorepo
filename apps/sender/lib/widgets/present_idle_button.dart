@@ -1,7 +1,8 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:flutter/material.dart';
-import 'custom_icons_icons.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:flutter/material.dart';
+
+import 'custom_icons_icons.dart';
 
 class PresentIdleButton extends StatefulWidget {
   const PresentIdleButton({super.key, required this.onPressed});
@@ -41,6 +42,7 @@ class PresentIdleButtonState extends State<PresentIdleButton>
 
   void setEnable(bool presentBtnEnable,
       {String? displayCode, String? password}) {
+    if (!mounted) return;
     setState(() {
       // update the button state
       isButtonEnabled = presentBtnEnable;
@@ -48,6 +50,7 @@ class PresentIdleButtonState extends State<PresentIdleButton>
   }
 
   void setLoadingState(bool loading) {
+    if (!mounted) return;
     setState(() {
       isButtonLoading = loading;
     });

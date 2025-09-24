@@ -139,6 +139,7 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
   }
 
   void setErrorMsg(String text) {
+    if (!mounted) return;
     setState(() {
       _errorText = text;
     });

@@ -23,6 +23,7 @@ class _V3OptionsMenuState extends State<V3OptionsMenu> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       setState(() {
         _addOptionsToList();
       });
@@ -79,6 +80,7 @@ class _V3OptionsMenuState extends State<V3OptionsMenu> {
                                   _listOptions[index].isEnabled =
                                       !_listOptions[index].isEnabled;
                                   _listOptions[index].callback?.call();
+                                  if (!mounted) return;
                                   setState(() {});
                                 },
                               ),

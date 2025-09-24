@@ -29,6 +29,7 @@ class _RemoteScreenToolStates extends State<RemoteScreenTool> {
       if (context.findRenderObject() is RenderBox) {
         box = context.findRenderObject() as RenderBox;
         var width = MediaQuery.of(context).size.width;
+        if (!mounted) return;
         setState(() {
           _position = Offset(width - box!.size.width - 25, 25);
         });
@@ -45,6 +46,7 @@ class _RemoteScreenToolStates extends State<RemoteScreenTool> {
       top: _position.dy,
       child: Draggable(
         onDragEnd: (details) {
+          if (!mounted) return;
           setState(() {
             _position = details.offset;
           });

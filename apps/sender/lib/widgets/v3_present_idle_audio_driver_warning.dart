@@ -37,6 +37,7 @@ class _V3PresentIdleAudioDriverWarningState
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      if (!mounted) return;
       setState(() {
         _isVisible = true; // 当应用回到前台时重新显示警告
       });
@@ -140,6 +141,7 @@ class _V3PresentIdleAudioDriverWarningState
                       ),
                     ),
                     onTap: () {
+                      if (!mounted) return;
                       setState(() {
                         _isVisible = false;
                       });
