@@ -12,6 +12,9 @@
 		<string>applinks:www.airsync.net</string>
 		<string>applinks:www.stage.airsync.net/download</string>
 		<string>applinks:www.stage.airsync.net</string>
+		<string>applinks:airsync.net/app/download</string>
+		<string>applinks:stage.airsync.net/app/download</string>
+		<string>applinks:dev.airsync.net/app/download</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>

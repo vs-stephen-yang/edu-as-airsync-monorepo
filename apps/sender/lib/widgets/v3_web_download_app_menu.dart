@@ -58,7 +58,7 @@ class V3DownloadAppMenu extends StatelessWidget {
                             ),
                           ),
                           QrImageView(
-                            data: AppConfig.of(context)!.settings.appStoreUrl,
+                            data: AppConfig.of(context)!.settings.storeMobileUrl,
                             version: QrVersions.auto,
                             size: 144,
                           ),

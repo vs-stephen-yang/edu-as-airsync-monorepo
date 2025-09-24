@@ -64,6 +64,20 @@
                     android:host="www.airsync.net"
                     android:pathPattern="/download"
                     android:scheme="https" />
+
+                <data
+                    android:host="airsync.net"
+                    android:pathPattern="/app"
+                    android:scheme="https" />
+                <data
+                    android:host="stage.airsync.net"
+                    android:pathPattern="/app"
+                    android:scheme="https" />
+                <data
+                    android:host="dev.airsync.net"
+                    android:pathPattern="/app"
+                    android:scheme="https" />
+                <data android:pathPattern="/app/..*" />
             </intent-filter>
         </activity>
         <service
