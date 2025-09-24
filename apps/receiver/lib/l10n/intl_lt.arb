@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "Ankstesnis puslapis",
   "v3_lbl_cast_device_sort_asc": "Rūšiuoti didėjančia tvarka",
   "v3_lbl_cast_device_sort_desc": "Rūšiuoti mažėjančia tvarka",
-  "v3_settings_device_not_supported": "Įrenginio versija nepalaikoma"
+  "v3_settings_device_not_supported": "Įrenginio versija nepalaikoma",
+  "v3_broadcast_multicast_checkbox": "Transliuoti į 10–100 įrenginių",
+  "v3_broadcast_multicast_desc": "Prasidėjus projekcijai, priimančių įrenginių skaičiaus pakeisti negalima.",
+  "v3_broadcast_multicast_warn": "Norėdami redaguoti, nutraukite visą projekciją.",
+  "v3_broadcast_cast_device_on": "Transliacija vyksta",
+  "v3_broadcast_cast_board_on": "Transliacija vyksta",
+  "v3_lbl_broadcast_multicast_checkbox": "Transliuoti į 10–100 įrenginių",
+  "v3_settings_device_high_image_quality_on_desc": "Didžiausias UHD (4K) ekrano bendrinimas iš žiniatinklio siuntėjo ir 3K+ iš „Windows“ ir „macOS“ siuntėjo, priklausomai nuo siuntėjo ekrano skiriamosios gebos. Reikia aukštos kokybės tinklo.",
+  "v3_settings_device_high_image_quality_off_desc": "Didžiausias QHD (2K) ekrano bendrinimas, priklausomai nuo siuntėjo ekrano skiriamosios gebos.",
+  "v3_lbl_eula_launch": "Paleisti",
+  "v3_eula_launch": "Paleisti",
+  "v3_authorize_prompt_title_launcher": "Dalyviai norėtų pasidalinti savo ekranu"
 }

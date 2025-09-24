@@ -383,5 +383,8 @@
   "v3_broadcast_cast_board_on": "有進行中的分享畫面",
   "v3_lbl_broadcast_multicast_checkbox": "多點傳送 (最多100台裝置)",
   "v3_settings_device_high_image_quality_on_desc": "依據裝置端可支援的解析度，支援最高UHD 4K(web sender)或QHD以上解析度(Windows及macOS sender)，需良好的網路環境．",
-  "v3_settings_device_high_image_quality_off_desc": "依據裝置端可支援的解析度，支援最高QHD解析度"
+  "v3_settings_device_high_image_quality_off_desc": "依據裝置端可支援的解析度，支援最高QHD解析度",
+  "v3_lbl_eula_launch": "啟動",
+  "v3_eula_launch": "啟動",
+  "v3_authorize_prompt_title_launcher": "參與者請求分享螢幕"
 }

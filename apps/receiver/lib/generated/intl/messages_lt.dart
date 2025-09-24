@@ -218,8 +218,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Atsisakyti",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ĮJUNGTA"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Dalyviai norėtų pasidalinti savo ekranu",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "Transliacija vyksta",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "Transliacija vyksta",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ĮJUNGTA"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "Transliuoti į 10–100 įrenginių",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "Prasidėjus projekcijai, priimančių įrenginių skaičiaus pakeisti negalima.",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "Norėdami redaguoti, nutraukite visą projekciją.",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Gavimas",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -299,7 +318,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Sutinku"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nesutinku"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Paleisti"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Galutinio vartotojo licencijos sutartis",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -410,7 +430,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Atmetimo užklausa",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "Transliuoti į 10–100 įrenginių",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Uždarykite perdavimo įrenginio ryšį",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
@@ -458,7 +482,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Nesutinka su EULA",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Paleisti"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Atšaukti išeinantį moderatoriaus režimą",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -920,7 +945,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Aukšta vaizdo kokybė"),
-    "v3_settings_device_launch_on_startup":
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Didžiausias QHD (2K) ekrano bendrinimas, priklausomai nuo siuntėjo ekrano skiriamosios gebos.",
+        ),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Didžiausias UHD (4K) ekrano bendrinimas iš žiniatinklio siuntėjo ir 3K+ iš „Windows“ ir „macOS“ siuntėjo, priklausomai nuo siuntėjo ekrano skiriamosios gebos. Reikia aukštos kokybės tinklo.",
+        ),
+        "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Paleisti AirSync paleidžiant sistemą",
         ),

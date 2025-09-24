@@ -212,8 +212,27 @@ class MessageLookup extends MessageLookupByLibrary {
       "Acceptera alla",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("Neka"),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("På"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Deltagarna vill dela sin skärm",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "Skärmdelning pågår",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "Skärmdelning pågår",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("På"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "Casta till 10–100 enheter",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "Antalet mottagande enheter kan inte ändras när prognosen startar.",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "Avbryt all projektion för att redigera.",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Tar emot",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -293,7 +312,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Samtycker"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Ej ok"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Starta"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Slutanvändarlicensavtal",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -402,7 +422,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Avvisa begäran",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "Casta till 10–100 enheter ",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Stäng anslutningen av Cast-enheten",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
@@ -448,7 +472,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Accepterar inte EULA",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Starta"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Avbryt att avsluta moderatorläget",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -891,7 +916,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Hög bildkvalitet"),
-    "v3_settings_device_launch_on_startup":
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Maximal QHD-skärmdelning (2K) beroende på avsändarens skärmupplösning.",
+        ),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Maximal UHD-skärmdelning (4K) från webbavsändaren och 3K+ från Windows- och macOS-avsändaren beroende på avsändarens skärmupplösning. Kräver ett nätverk av hög kvalitet.",
+        ),
+        "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Starta AirSync vid start"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Enhets namn",

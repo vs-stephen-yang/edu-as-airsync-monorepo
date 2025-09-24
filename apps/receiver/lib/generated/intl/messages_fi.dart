@@ -212,8 +212,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Hylkää",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("PÄÄLLÄ"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Osallistujat haluaisivat jakaa näyttönsä",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "Lähetys käynnissä",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "Lähetys käynnissä",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("PÄÄLLÄ"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "Lähetä 10–100 laitteeseen",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "Vastaanottavien laitteiden määrää ei voi muuttaa projektoinnin aloittamisen jälkeen.",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "Keskeytä kaikki projektiot muokataksesi.",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Vastaanotetaan",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -293,7 +312,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksy"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Hylkää"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage("Käyttöehtosopimus"),
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Käynnistä"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage("Käyttöehtosopimus"),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
       "Peruuta",
     ),
@@ -371,10 +391,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Avaa lähettäjäsovellus",
     ),
     "v3_instruction2": MessageLookupByLibrary.simpleMessage("Anna näyttökoodi"),
-    "v3_instruction3": MessageLookupByLibrary.simpleMessage(
+        "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+          "Näytä koodi",
+        ),
+        "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Anna kertakäyttösalasana",
     ),
-    "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
+        "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+          "Kertakäyttösalasana",
+        ),
+        "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Jaa näyttösi",
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
@@ -392,10 +418,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Hylkää pyyntö",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "Lähetä 10–100 laitteeseen",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Sulje lähetettävän laitteen yhteys",
     ),
-    "v3_lbl_cast_device_touchback_disable":
+        "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+          "seuraava sivu",
+        ),
+        "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+          "edellinen sivu",
+        ),
+        "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+          "järjestä nousevasti",
+        ),
+        "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+          "lajittele laskevasti",
+        ),
+        "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
           "Poista touchback käytöstä lähetettävälle laitteelle",
         ),
@@ -422,7 +464,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksy EULA"),
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage("Hylkää EULA"),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Käynnistä"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Peruuta moderaattoritilan poistuminen",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -589,7 +632,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Ota käyttöön/poista käytöstä automaattinen OTP-täyttötila",
         ),
-    "v3_lbl_settings_device_launch_on_startup":
+        "v3_lbl_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("Korkea kuvanlaatu"),
+        "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Ota käyttöön/poista käytöstä automaattinen käynnistystila",
         ),
@@ -618,7 +663,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Valitse %s",
     ),
-    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+          "Tietokanta",
+        ),
+        "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Avaa lakikäytäntöjen asetusvalikko",
     ),
     "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
@@ -663,7 +711,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "AirPlay touchback",
     ),
-    "v3_lbl_streaming_shortcut_airplay_toggle":
+        "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+          "seuraava sivu",
+        ),
+        "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay-kytkin"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
         MessageLookupByLibrary.simpleMessage("Lähetä laitteisiin -kytkin"),
@@ -734,7 +785,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast ei ole nyt käytettävissä. Nykyinen Wi-Fi-kanava ei tue näytönjakoa.",
     ),
-    "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
+        "v3_miracast_uibc_not_supported_message":
+            MessageLookupByLibrary.simpleMessage(
+          "Tämä lähde ei tue Miracast-kosketuspalautetta",
+        ),
+        "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Salasana",
     ),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
@@ -863,7 +918,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
       "Ota käyttöön yhden kosketuksen yhteys, kun valitset laitteen laitelistasta.",
     ),
-    "v3_settings_device_launch_on_startup":
+        "v3_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("Korkea kuvanlaatu"),
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Suurin QHD (2K) -näytönjako lähettäjän näytön tarkkuudesta riippuen.",
+        ),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Suurin UHD (4K) -näytönjako web-lähettäjältä ja 3K+ Windows- ja macOS-lähettäjältä lähettäjän näytön tarkkuudesta riippuen. Vaatii korkealaatuisen verkon.",
+        ),
+        "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Käynnistä AirSync käynnistyksen yhteydessä",
         ),
@@ -876,7 +941,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Tallenna",
     ),
-    "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+        "v3_settings_device_not_supported":
+            MessageLookupByLibrary.simpleMessage(
+          "Laitteen versiota ei tueta",
+        ),
+        "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Laitteen asetukset",
     ),
     "v3_settings_device_show_display_code":

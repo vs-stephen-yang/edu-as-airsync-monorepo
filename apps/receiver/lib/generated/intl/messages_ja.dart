@@ -187,8 +187,27 @@ class MessageLookup extends MessageLookupByLibrary {
       "すべてを許可",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒否"),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("有効"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage("受信中"),
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "参加者が画面を共有しようとしています",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "キャスト実行中",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "キャスト実行中",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("有効"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "10〜100台のデバイスにキャスト",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "投影の開始後に受信デバイスの数を変更することはできません。",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "編集するには、すべての投影を中断してください。",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage("受信中"),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
       "デバイス数は最大 10 台までです。",
     ),
@@ -264,7 +283,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("拒否"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage("エンドユーザー使用許諾契約"),
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("起動"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage("エンドユーザー使用許諾契約"),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
       "キャンセル",
     ),
@@ -361,7 +381,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "リクエストを拒否",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "10〜100台のデバイスにキャスト",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "キャストデバイスの接続を終了",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage("次のページ"),
@@ -393,7 +417,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("同意する"),
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage("同意しない"),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("起動"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "モデレーターモードの終了をキャンセル",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -803,7 +828,14 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("高画質"),
-    "v3_settings_device_launch_on_startup":
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "送信者の画面解像度に応じて、最大QHD（2K）画面共有。"),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "送信者の画面解像度に応じて、Web送信者からの最大UHD（4K）画面共有、およびWindowsおよびmacOS送信者からの3K +。 高品質のネットワークが必要です。",
+        ),
+        "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("起動時に AirSync を立ち上げる"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage("デバイス名"),
     "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(

@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "Eelmine lehekülg",
   "v3_lbl_cast_device_sort_asc": "Sortige tõusvas järjekorras",
   "v3_lbl_cast_device_sort_desc": "Sordi kahanevas järjekorras",
-  "v3_settings_device_not_supported": "Seadme versiooni ei toetata"
+  "v3_settings_device_not_supported": "Seadme versiooni ei toetata",
+  "v3_broadcast_multicast_checkbox": "Edasta 10-100 seadmesse",
+  "v3_broadcast_multicast_desc": "Vastuvõtvate seadmete arvu ei saa projektsiooni alustamisel muuta.",
+  "v3_broadcast_multicast_warn": "Muutmiseks katkesta kogu projektsioon.",
+  "v3_broadcast_cast_device_on": "Ülekanne on pooleli",
+  "v3_broadcast_cast_board_on": "Ülekanne on pooleli",
+  "v3_lbl_broadcast_multicast_checkbox": "Edasta 10-100 seadmesse",
+  "v3_settings_device_high_image_quality_on_desc": "Maksimaalne UHD (4K) ekraani jagamine veebisaatjalt ja 3K+ Windowsi ja macOS-i saatjalt, olenevalt saatja ekraani eraldusvõimest. Nõuab kvaliteetset võrku.",
+  "v3_settings_device_high_image_quality_off_desc": "Maksimaalne QHD (2K) ekraani jagamine olenevalt saatja ekraani eraldusvõimest.",
+  "v3_lbl_eula_launch": "Käivita",
+  "v3_eula_launch": "Käivita",
+  "v3_authorize_prompt_title_launcher": "Osalejad soovivad oma ekraani jagada"
 }
