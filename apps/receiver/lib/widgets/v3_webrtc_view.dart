@@ -75,6 +75,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
 
       pairCandidateInfo =
           'Local: $localCandidateType, Remote: $remoteCandidateType';
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '$videoInfo\n$pairCandidateInfo';
       });
@@ -106,6 +107,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
           'Decode: $decodeTimeSec s\n'
           '${stats.decoderName}';
 
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '$videoInfo\n$pairCandidateInfo';
       });
@@ -380,6 +382,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
 
   void _clearDebugOverlay() {
     if (debugOverlayText != '') {
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '';
       });
@@ -439,6 +442,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
         }
       }
     }
+    if (!mounted) return;
     setState(() {});
   }
 

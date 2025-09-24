@@ -46,10 +46,12 @@ class _VbsOTAState extends State<VbsOTA> {
   Widget build(BuildContext context) {
     _vbsOTA.setMethodCallHandler((call) async {
       if (call.method == 'setSystemOTAEnableUI') {
+        if (!mounted) return;
         setState(() {
           _systemOTAEnableUI = call.arguments as bool;
         });
       } else if (call.method == 'setDownloadProgress') {
+        if (!mounted) return;
         setState(() {
           _downloadProgress = call.arguments as int;
         });
@@ -87,6 +89,7 @@ class _VbsOTAState extends State<VbsOTA> {
                                   : null,
                               tristate: true,
                               onChanged: (bool? value) {
+                                if (!mounted) return;
                                 setState(() {
                                   _autoStartUp.invokeMethod(
                                       'setAutoStartupValue',

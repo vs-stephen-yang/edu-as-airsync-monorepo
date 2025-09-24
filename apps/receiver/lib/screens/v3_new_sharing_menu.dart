@@ -154,6 +154,9 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
     int elapsedTime = 0;
 
     _timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         elapsedTime++;
         _progress = 1.0 - (elapsedTime / _duration);

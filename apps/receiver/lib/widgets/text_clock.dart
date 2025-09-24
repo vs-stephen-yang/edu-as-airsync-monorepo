@@ -52,6 +52,7 @@ class _TextClockState extends State<TextClock> {
   }
 
   _updateTime() {
+    if (!mounted) return;
     setState(() {
       _now = DateTime.now();
       _timer = Timer(

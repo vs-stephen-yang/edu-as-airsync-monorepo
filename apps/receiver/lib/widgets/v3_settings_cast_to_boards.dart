@@ -506,7 +506,10 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       if (!isChecked == false && channelProvider.groupActivated()) {
         startDisplayGroup(groupNotifier, channelProvider);
       }
-      if (!fromTouch) setState(() {});
+      if (!fromTouch) {
+        if (!mounted) return;
+        setState(() {});
+      }
     }
 
     return Container(

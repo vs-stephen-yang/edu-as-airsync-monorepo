@@ -34,6 +34,7 @@ class _V3SettingMenuListItemFocusState
   bool _isFocused = false;
 
   void _onFocusChange(bool hasFocus) {
+    if (!mounted) return;
     setState(() {
       _isFocused = hasFocus;
     });

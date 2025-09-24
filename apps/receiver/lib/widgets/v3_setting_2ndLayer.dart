@@ -31,6 +31,7 @@ class _V3Setting2ndLayerState extends State<V3Setting2ndLayer> {
 
   void _onHeightMeasured(double height) {
     if (_warningMessagesHeight != height) {
+      if (!mounted) return;
       setState(() {
         _warningMessagesHeight = height;
       });

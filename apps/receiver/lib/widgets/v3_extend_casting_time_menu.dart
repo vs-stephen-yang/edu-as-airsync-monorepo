@@ -95,6 +95,7 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
             !onlyCountdown)
         .listen((event) {
       // According to the design, the dialog will be changed to countdown view when after 5 seconds of the last countdown.
+      if (!mounted) return;
       setState(() {
         onlyCountdown = true;
       });
@@ -181,8 +182,10 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
                     const SizedBox(height: 13),
                     _ExtendButtons(
                         wrapAlignment: WrapAlignment.spaceEvenly,
-                        onDoNotExtend: () =>
-                            setState(() => onlyCountdown = true)),
+                        onDoNotExtend: () {
+                          if (!mounted) return;
+                          setState(() => onlyCountdown = true);
+                        }),
                   ],
                   const SizedBox(height: 8),
                 ],
@@ -216,8 +219,10 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
             _MessageText(message: message),
             if (!lastTime) ...[
               const SizedBox(height: 13),
-              _ExtendButtons(
-                  onDoNotExtend: () => setState(() => onlyCountdown = true)),
+              _ExtendButtons(onDoNotExtend: () {
+                if (!mounted) return;
+                setState(() => onlyCountdown = true);
+              }),
             ],
           ],
         ),

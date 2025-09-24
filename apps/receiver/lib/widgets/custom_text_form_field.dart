@@ -91,6 +91,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   void setErrorMsg(String text) {
+    if (!mounted) return;
     setState(() {
       _errorText = text;
       errorTextStyle = const TextStyle(color: Colors.red);

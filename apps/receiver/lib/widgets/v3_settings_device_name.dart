@@ -140,6 +140,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                                     LengthLimitingTextInputFormatter(15),
                                   ],
                                   onChanged: (value) {
+                                    if (!mounted) return;
                                     setState(() {
                                       _errorText = validateDeviceName(value);
                                     });
@@ -190,6 +191,10 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                           padding: const EdgeInsets.only(right: 8),
                           onPressed: () {
                             _controller.text = '';
+
+                            if (!mounted) {
+                              return;
+                            }
                             setState(() {
                               _errorText = validateDeviceName('');
                             });
@@ -212,6 +217,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                 // Validate before saving
                 final error = validateDeviceName(_controller.text);
                 if (error != null) {
+                  if (!mounted) return;
                   setState(() {
                     _errorText = error;
                   });
@@ -231,6 +237,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
 
   void listenToFocusNode() {
     if (mounted) {
+      if (!mounted) return;
       setState(() {
         _isEditing = widget.focusNode.hasFocus;
       });

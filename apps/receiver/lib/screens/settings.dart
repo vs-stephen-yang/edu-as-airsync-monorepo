@@ -32,6 +32,7 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       setState(() {
         _addSettingsToList();
       });
@@ -78,6 +79,7 @@ class _SettingsState extends State<Settings> {
                     splashRadius: 20,
                     focusColor: Colors.grey,
                     onClick: () {
+                      if (!mounted) return;
                       setState(() {
                         _callInstanceNameEditorDialog();
                       });
@@ -300,6 +302,7 @@ class _SettingsState extends State<Settings> {
         builder: (BuildContext context) {
           return const InstanceNameEditorDialog();
         }).then((_) {
+      if (!mounted) return;
       setState(() {});
     });
   }
@@ -314,6 +317,7 @@ class _SettingsState extends State<Settings> {
         return widget;
       },
     ).then((_) {
+      if (!mounted) return;
       setState(() {
         // After change language, the settings list need re-create
         // to using new language text.
@@ -326,6 +330,7 @@ class _SettingsState extends State<Settings> {
 
   _setVisibility(bool visible) async {
     await AppOverlayTab().setVisibility(visible);
+    if (!mounted) return;
     setState(() {});
   }
 }

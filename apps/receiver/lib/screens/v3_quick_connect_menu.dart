@@ -212,7 +212,10 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
           return Expanded(
             child: Focus(
               focusNode: _focusNodes[index],
-              onFocusChange: (hasFocus) => setState(() {}),
+              onFocusChange: (hasFocus) {
+                if (!mounted) return;
+                setState(() {});
+              },
               onKeyEvent: (node, event) {
                 if (event.logicalKey == LogicalKeyboardKey.enter ||
                     event.logicalKey == LogicalKeyboardKey.select) {
@@ -245,6 +248,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
         child: PageView(
           controller: _pageController,
           onPageChanged: (index) {
+            if (!mounted) return;
             setState(() {
               selected = index;
               if (HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty) {
@@ -300,6 +304,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
   }
 
   void _onTabSelected(int index) {
+    if (!mounted) return;
     setState(() {
       selected = index;
     });

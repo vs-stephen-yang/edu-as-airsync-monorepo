@@ -86,6 +86,7 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
                   } else {
                     _saveBtnEnable = false;
                   }
+                  if (!mounted) return;
                   setState(() {});
                 },
                 onFieldSubmitted: (String value) async {

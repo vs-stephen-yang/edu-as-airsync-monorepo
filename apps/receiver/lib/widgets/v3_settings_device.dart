@@ -240,6 +240,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                   isDisable: settingsProvider.isDeviceSettingLock,
                   tristate: true,
                   onChanged: (bool? value) {
+                    if (!mounted) return;
                     setState(() {
                       _setAutoStartUpSettings(value ?? false);
                     });
@@ -258,6 +259,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                         bool? startup =
                             (snapshot.hasData) ? snapshot.data as bool : null;
                         if (startup != null) {
+                          if (!mounted) return;
                           setState(() {
                             _setAutoStartUpSettings(!startup);
                           });
@@ -374,6 +376,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             selectedValue: InvitedToGroupOption.getInvitedToGroupString(
                 context, int.parse(AppPreferences().invitedToGroup)),
             onChange: (String? value) {
+              if (!mounted) return;
               setState(() {
                 final int optionValue =
                     InvitedToGroupOption.invitedToGroupItems(context)
@@ -495,6 +498,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
 
     await AppOverlayTab().setVisibility(visible);
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -721,6 +725,7 @@ class CustomDropdownState extends State<CustomDropdown> {
           onTap: widget.isDisable
               ? null
               : () {
+                  if (!mounted) return;
                   setState(() {
                     if (_overlayEntry == null) {
                       _showDropdownMenu();

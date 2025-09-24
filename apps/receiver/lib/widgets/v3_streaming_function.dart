@@ -46,6 +46,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
       if (_ifpSupportsBluetoothHID == null) {
         final String? deviceModel = await DeviceInfoVs.deviceType;
         if (deviceModel != null) {
+          if (!mounted) return;
           setState(() {
             _ifpSupportsBluetoothHID = !_isUnsupportedIFPModel(deviceModel);
           });
@@ -148,6 +149,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                 if (connection.touchBackState()) {
                                   await _disableAllTouchback();
                                   if (context.mounted) {
+                                    if (!mounted) return;
                                     setState(() {
                                       V3Toast().makeBluetoothStateToast(
                                           context,
@@ -165,6 +167,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                   log.info(
                                       'enable bluetooth touchback $success');
                                   // 更新按鈕狀態
+                                  if (!mounted) return;
                                   setState(() {
                                     if (!success) {
                                       _showTouchbackAlertDialog(
@@ -280,6 +283,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                             onPressed: () {
                               _startAutoCollapseTimer();
 
+                              if (!mounted) return;
                               setState(() {
                                 HybridConnectionList()
                                     .updateAudioEnableStateByIndex(
@@ -402,6 +406,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                             // setState用來更新按鈕狀態
                             var connection = HybridConnectionList()
                                 .getConnection<MirrorRequest>(widget.index);
+                            if (!mounted) return;
                             setState(() {
                               V3BluetoothStatusNotification.showStatusAlert
                                   .value = BluetoothProgress(percent: 0.0);
@@ -469,6 +474,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
   void _startAutoCollapseTimer() {
     autoCollapseTimer?.cancel();
     autoCollapseTimer = Timer(const Duration(seconds: 10), () {
+      if (!mounted) return;
       setState(() {
         isCollapsed = true;
       });
@@ -476,6 +482,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
   }
 
   void _toggleCollapse() {
+    if (!mounted) return;
     setState(() {
       isCollapsed = !isCollapsed;
     });
@@ -511,6 +518,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
               var connection = HybridConnectionList()
                   .getConnection<MirrorRequest>(widget.index);
               if (connection.mirrorState == MirrorState.mirroring) {
+                if (!mounted) return;
                 setState(() async {
                   final success = await connection.enableTouchback();
                   log.info('change touchback device $success');

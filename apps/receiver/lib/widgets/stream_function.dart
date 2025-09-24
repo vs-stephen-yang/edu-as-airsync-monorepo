@@ -272,6 +272,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
         return widget;
       },
     ).then((_) {
+      if (!mounted) return;
       setState(() {});
     });
   }

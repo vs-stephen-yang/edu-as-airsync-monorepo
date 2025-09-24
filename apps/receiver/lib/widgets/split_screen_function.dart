@@ -100,6 +100,7 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
+                          if (!mounted) return;
                           setState(() {
                             HybridConnectionList()
                                 .updateAudioEnableStateByIndex(
