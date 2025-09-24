@@ -65,6 +65,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
       if (eventName == kSystemTrayEventClick) {
         await widget.windowController!.show();
         await Future.delayed(const Duration(milliseconds: 100));
+        if (!mounted) return;
         setState(() {
           _points.addAll(_pointSave);
           _pointSave.clear();
@@ -76,6 +77,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   void _setDrawMode() {
     trackEvent('click_pen', EventCategory.annotation);
 
+    if (!mounted) return;
     setState(() {
       _isEraser = false;
       refreshCheck();
@@ -85,6 +87,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   void _setEraserMode() {
     trackEvent('click_eraser', EventCategory.annotation);
 
+    if (!mounted) return;
     setState(() {
       _isEraser = true;
       refreshCheck();
@@ -93,6 +96,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
   void _clearAll() {
     trackEvent('click_clean', EventCategory.annotation);
+    if (!mounted) return;
     setState(() {
       _points.clear();
       refreshCheck();
@@ -107,12 +111,14 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
     if (_isEraser) {
       paint.blendMode = BlendMode.clear;
     }
+    if (!mounted) return;
     setState(() {
       _points.add(DrawingPoint(offset: offset, paint: paint));
     });
   }
 
   Future<void> _endDrawing() async {
+    if (!mounted) return;
     setState(() {
       _points.add(null);
       refreshCheck();
@@ -217,6 +223,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             icon: 'assets/images/v3_ic_annotation_stroke_thin.svg',
             selected: _strokeWidth == 2.0,
             onPressed: () {
+              if (!mounted) return;
               setState(() {
                 _strokeWidth = 2.0;
                 refreshCheck();
@@ -228,6 +235,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             icon: 'assets/images/v3_ic_annotation_stroke_medium.svg',
             selected: _strokeWidth == 5.0,
             onPressed: () {
+              if (!mounted) return;
               setState(() {
                 _strokeWidth = 5.0;
                 refreshCheck();
@@ -239,6 +247,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             icon: 'assets/images/v3_ic_annotation_stroke_thick.svg',
             selected: _strokeWidth == 12.0,
             onPressed: () {
+              if (!mounted) return;
               setState(() {
                 _strokeWidth = 12.0;
                 refreshCheck();
@@ -280,6 +289,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
   Future<void> refreshScreen() async {
     // mac如果設定透明背景會有殘影，需要刷新整個視窗殘影才能消失(刷新flutter層Widget無效)。
+    if (!mounted) return;
     setState(() {
       _pointSave.addAll(_points.toList());
       _points.clear();
@@ -291,6 +301,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
         await Future.delayed(const Duration(milliseconds: 50));
         await widget.windowController!.show();
         await Future.delayed(const Duration(milliseconds: 50));
+        if (!mounted) return;
         setState(() {
           _points.addAll(_pointSave);
           _pointSave.clear();

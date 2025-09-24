@@ -65,6 +65,7 @@ class DraggableWidgetState extends State<DraggableWidget> {
           widget.onMoveStart?.call();
         },
         onPanUpdate: (details) {
+          if (!mounted) return;
           setState(() {
             _xPosition =
                 _initialChildX + (details.globalPosition.dx - _initialX);

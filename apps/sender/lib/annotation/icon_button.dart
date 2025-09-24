@@ -28,16 +28,25 @@ class AnnotationIconButton extends StatelessWidget {
       builder: (BuildContext context, StateSetter setState) {
         return GestureDetector(
           onTapDown: (_) {
+            if (!context.mounted) {
+              return;
+            }
             setState(() {
               tapDown = true;
             });
           },
           onTapUp: (_) {
+            if (!context.mounted) {
+              return;
+            }
             setState(() {
               tapDown = false;
             });
           },
           onTapCancel: () {
+            if (!context.mounted) {
+              return;
+            }
             setState(() {
               tapDown = false;
             });

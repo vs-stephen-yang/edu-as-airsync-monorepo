@@ -206,12 +206,14 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                             _nameController.selection =
                                 const TextSelection.collapsed(offset: 0);
                             buttonKey.currentState!.setEnable(false);
+                            if (!mounted) return;
                             setState(() {});
                             return;
                           }
 
                           final bool hasNonWhitespace = text.trim().isNotEmpty;
                           buttonKey.currentState!.setEnable(hasNonWhitespace);
+                          if (!mounted) return;
                           setState(() {});
                         },
                         onFieldSubmitted: (String value) async {

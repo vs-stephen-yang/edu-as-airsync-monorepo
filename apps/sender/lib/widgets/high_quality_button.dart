@@ -53,6 +53,7 @@ class HighQualityButtonState extends State<HighQualityButton> {
               onPressed: () {
                 isButtonEnabled = !isButtonEnabled;
                 widget.onPressed(isButtonEnabled);
+                if (!mounted) return;
                 setState(() {});
               },
             ),

@@ -46,6 +46,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     WebRTCUtil.showDebugOverlay = value;
     await WebRTCUtil.saveShowDebugOverlay(value);
 
+    if (!mounted) return;
     setState(() {
       _showDebugOverlay = value;
       _notifyRestart();
@@ -55,6 +56,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _changeLogVerbose(bool value) async {
     setLogLevelVerbose(value);
 
+    if (!mounted) return;
     setState(() {
       _isLogVerbose = value;
     });
@@ -80,6 +82,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
       }
     }
 
+    if (!mounted) return;
     setState(() {
       if (type == WebRTCLogType.stats) {
         _enableRTCStatsLogs = value;
@@ -108,6 +111,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     }
     await ProfileUtil.saveSelectedProfile(selectedProfile);
 
+    if (!mounted) return;
     setState(() {
       _isVideoQualityFirst = value;
       _notifyRestart();
@@ -117,6 +121,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _changeGatheringPolicy(bool value) async {
     await WebRTCUtil.saveIceGatheringContinually(value);
 
+    if (!mounted) return;
     setState(() {
       _iceGatheringContinually = value;
       _notifyRestart();

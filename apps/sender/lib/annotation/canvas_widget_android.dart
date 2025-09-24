@@ -62,6 +62,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   void _setEraserMode() {
     trackEvent('click_eraser', EventCategory.annotation);
 
+    if (!mounted) return;
     setState(() {
       _isEraser = true;
     });
@@ -70,6 +71,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   void _clearAll() {
     trackEvent('click_clean', EventCategory.annotation);
 
+    if (!mounted) return;
     setState(() {
       _points.clear();
     });
@@ -83,12 +85,14 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
     if (_isEraser) {
       paint.blendMode = BlendMode.clear;
     }
+    if (!mounted) return;
     setState(() {
       _points.add(DrawingPoint(offset: offset, paint: paint));
     });
   }
 
   void _endDrawing() {
+    if (!mounted) return;
     setState(() {
       _points.add(null);
     });
@@ -102,6 +106,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
     AndroidWindow.resize(width, height);
     _removeOverlay();
     await Future.delayed(const Duration(milliseconds: 150));
+    if (!mounted) return;
     setState(() {
       _isCollapsed = true;
     });
@@ -115,6 +120,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
 
   @override
   void didChangeMetrics() {
+    if (!mounted) return;
     setState(() {
       _removeOverlay();
     });
@@ -174,6 +180,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
                           _removeOverlay();
                           await Future.delayed(
                               const Duration(milliseconds: 150));
+                          if (!mounted) return;
                           setState(() {
                             _isCollapsed = false;
                           });
@@ -248,6 +255,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
               _createOverlayEntry(colorKey, createSelectColor(), 170);
               trackEvent('click_pen', EventCategory.annotation);
 
+              if (!mounted) return;
               setState(() {
                 _isEraser = false;
               });
@@ -300,6 +308,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
               selected: _strokeWidth == 2.0,
               circleStyle: false,
               onPressed: () {
+                if (!mounted) return;
                 setState(() {
                   _removeOverlay();
                   _strokeWidth = 2.0;
@@ -312,6 +321,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
               selected: _strokeWidth == 5.0,
               circleStyle: false,
               onPressed: () {
+                if (!mounted) return;
                 setState(() {
                   _removeOverlay();
                   _strokeWidth = 5.0;
@@ -324,6 +334,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
               selected: _strokeWidth == 12.0,
               circleStyle: false,
               onPressed: () {
+                if (!mounted) return;
                 setState(() {
                   _removeOverlay();
                   _strokeWidth = 12.0;
@@ -349,6 +360,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
               size: 36,
               spacing: 10,
               callback: (Color color) {
+                if (!mounted) return;
                 setState(() {
                   _removeOverlay();
                   _penColor = color;

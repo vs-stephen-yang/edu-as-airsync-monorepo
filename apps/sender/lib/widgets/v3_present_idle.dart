@@ -367,6 +367,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isSessionFullDialogOnScreen = false;
+      if (!mounted) return;
       setState(() {});
     });
   }
@@ -385,6 +386,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isScreenFullDialogOnScreen = false;
+      if (!mounted) return;
       setState(() {});
     });
   }
@@ -403,6 +405,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isModeratorExitedDialogOnScreen = false;
+      if (!mounted) return;
       setState(() {});
     });
   }
@@ -423,6 +426,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isJoinedBeforeModeratorDialogOnScreen = false;
+      if (!mounted) return;
       setState(() {});
     });
   }
@@ -444,6 +448,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       isReceiverRemoteScreenBusyDialogOnScreen = false;
       presentBtnKey.currentState?.setEnable(false);
       presentBtnKey.currentState?.setLoadingState(false);
+      if (!mounted) return;
       setState(() {});
     });
   }

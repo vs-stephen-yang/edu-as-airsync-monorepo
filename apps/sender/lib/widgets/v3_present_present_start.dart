@@ -190,6 +190,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                               onClick: () async {
                                 // desktop annotation在didChangeAppLifecycleState去檢查是否開啟
                                 if (Platform.isAndroid) {
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+
                                   setState(() {
                                     annotationOn = !annotationOn;
                                   });
@@ -444,6 +448,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           'Encoder: ${stats.encoderImplementation}\n'
           'EncodeTime: ${stats.encodeTimeAvgMs?.toStringAsFixed(2)}\n';
 
+      if (!mounted) return;
       setState(() {
         debugOverlayText = videoInfo;
       });
@@ -452,6 +457,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
   void _clearDebugOverlay() {
     if (debugOverlayText != '') {
+      if (!mounted) return;
       setState(() {
         debugOverlayText = '';
       });

@@ -118,6 +118,9 @@ class _V3PresentPresentStartDemoState extends State<V3PresentPresentStartDemo> {
                       return AnnotationButton(
                         isOn: annotationOn,
                         onClick: () async {
+                          if (!context.mounted) {
+                            return;
+                          }
                           setState(() {
                             annotationOn = !annotationOn;
                           });

@@ -46,6 +46,7 @@ class _ColorBarState extends State<ColorBar> {
         Colors.white,
       ],
       onTap: (color) {
+        if (!mounted) return;
         setState(() {
           penColor = color;
           widget.callback.call(color);

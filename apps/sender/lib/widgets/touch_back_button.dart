@@ -52,6 +52,7 @@ class TouchBackButtonState extends State<TouchBackButton> {
           onPressed: () {
             isButtonEnabled = !isButtonEnabled;
             widget.onPressed(isButtonEnabled);
+            if (!mounted) return;
             setState(() {});
           },
         ),
