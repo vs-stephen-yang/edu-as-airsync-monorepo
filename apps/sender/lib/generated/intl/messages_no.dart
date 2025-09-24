@@ -230,7 +230,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Tast inn engangspassord",
     ),
-    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Godta"),
+        "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Neste"),
+        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Godta"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Avslå"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage("Sluttbrukeravtale"),
     "v3_exit_action_cancel": MessageLookupByLibrary.simpleMessage("Avbryt"),
@@ -273,7 +274,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Hent Windows-versjon",
     ),
-    "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage(
+          "Tilbakemelding",
+        ),
+        "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+          "Kunnskapsbase",
+        ),
+        "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
       "Send inn Del",
     ),
     "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
@@ -460,11 +467,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
-    "v3_main_instance_not_found_or_offline":
+        "v3_main_feedback":
+            MessageLookupByLibrary.simpleMessage("Tilbakemelding"),
+        "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Display-kode ikke funnet eller instansen er frakoblet.",
         ),
-    "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Del"),
+        "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+          "Kunnskapsbase",
+        ),
+        "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Del"),
     "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
       "Skriv inn navnet ditt før du deler skjermen",
     ),
@@ -536,7 +548,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Last ned"),
-    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+        "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Moderator er på"),
+        "v3_present_joined_before_moderator_on_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_joined_before_moderator_on_description":
+            MessageLookupByLibrary.simpleMessage(
+          "Moderator er på. Vennligst koble til igjen.",
+        ),
+        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderator er stengt",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

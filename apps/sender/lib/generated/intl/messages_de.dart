@@ -569,7 +569,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Download"),
-    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+        "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage(
+          "Der Moderatormodus ist aktiviert",
+        ),
+        "v3_present_joined_before_moderator_on_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_joined_before_moderator_on_description":
+            MessageLookupByLibrary.simpleMessage(
+          "Moderator ist aktiviert. Bitte verbinden Sie sich erneut.",
+        ),
+        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderator ist geschlossen",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

@@ -234,7 +234,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Anna kertakäyttösalasana",
     ),
-    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksy"),
+        "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Seuraava"),
+        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksy"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Hylkää"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Loppukäyttäjän lisenssisopimus",
@@ -281,7 +282,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Hanki Windows-versio",
     ),
-    "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Palaute"),
+        "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+          "Tietopankki",
+        ),
+        "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
       "Lähetä Jaa",
     ),
     "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
@@ -472,11 +477,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
-    "v3_main_instance_not_found_or_offline":
+        "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Palaute"),
+        "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Näyttökoodia ei löytynyt tai esiintymä on offline-tilassa.",
         ),
-    "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Jaa"),
+        "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+          "Tietopankki",
+        ),
+        "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Jaa"),
     "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
       "Kirjoita nimesi ennen näytön jakamista",
     ),
@@ -552,7 +561,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Lataa"),
-    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+        "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Moderaattori on käytössä"),
+        "v3_present_joined_before_moderator_on_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_joined_before_moderator_on_description":
+            MessageLookupByLibrary.simpleMessage(
+          "Moderaattori on käytössä, ole hyvä ja yhdistä uudelleen.",
+        ),
+        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderaattori on suljettu",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

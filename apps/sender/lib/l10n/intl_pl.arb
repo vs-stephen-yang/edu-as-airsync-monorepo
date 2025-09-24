@@ -263,5 +263,8 @@
   "v3_lbl_main_knowledge_base": "Baza wiedzy",
   "v3_main_feedback": "Opinie",
   "v3_lbl_main_feedback": "Opinie",
-  "v3_device_list_next": "Dalej"
+  "v3_device_list_next": "Dalej",
+  "v3_present_joined_before_moderator_on": "Tryb moderatora jest włączony",
+  "v3_present_joined_before_moderator_on_description": "Tryb moderatora jest włączony. Proszę połączyć się ponownie.",
+  "v3_present_joined_before_moderator_on_action": "OK"
 }

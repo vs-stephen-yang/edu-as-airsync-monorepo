@@ -258,5 +258,13 @@
   "v3_exit_action_exit": "Avslutt",
   "v3_lbl_exit_action_cancel": "Avbryt",
   "v3_lbl_exit_action_exit": "Avslutt",
-  "v3_main_present_or": "eller"
+  "v3_main_present_or": "eller",
+  "v3_main_knowledge_base": "Kunnskapsbase",
+  "v3_lbl_main_knowledge_base": "Kunnskapsbase",
+  "v3_main_feedback": "Tilbakemelding",
+  "v3_lbl_main_feedback": "Tilbakemelding",
+  "v3_device_list_next": "Neste",
+  "v3_present_joined_before_moderator_on": "Moderator er på",
+  "v3_present_joined_before_moderator_on_description": "Moderator er på. Vennligst koble til igjen.",
+  "v3_present_joined_before_moderator_on_action": "OK"
 }

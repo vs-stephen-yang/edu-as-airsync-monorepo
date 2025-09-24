@@ -258,5 +258,13 @@
   "v3_exit_action_exit": "Afslut",
   "v3_lbl_exit_action_cancel": "Annuller",
   "v3_lbl_exit_action_exit": "Afslut",
-  "v3_main_present_or": "eller"
+  "v3_main_present_or": "eller",
+  "v3_main_knowledge_base": "Vidensbase",
+  "v3_lbl_main_knowledge_base": "Vidensbase",
+  "v3_main_feedback": "Feedback",
+  "v3_lbl_main_feedback": "Feedback",
+  "v3_device_list_next": "Næste",
+  "v3_present_joined_before_moderator_on": "Moderator-tilstand er aktiveret",
+  "v3_present_joined_before_moderator_on_description": "Moderator-tilstand er aktiveret. Opret venligst forbindelse igen.",
+  "v3_present_joined_before_moderator_on_action": "OK"
 }

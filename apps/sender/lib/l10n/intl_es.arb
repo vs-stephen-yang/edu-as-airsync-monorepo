@@ -263,5 +263,8 @@
   "v3_lbl_main_knowledge_base": "Base de Conocimiento",
   "v3_main_feedback": "Envía tus Comentarios",
   "v3_lbl_main_feedback": "Envía tus Comentarios",
-  "v3_device_list_next": "Siguiente"
+  "v3_device_list_next": "Siguiente",
+  "v3_present_joined_before_moderator_on": "El modo moderador está activado",
+  "v3_present_joined_before_moderator_on_description": "El modo moderador está activado. Por favor, vuelve a conectarte.",
+  "v3_present_joined_before_moderator_on_action": "Aceptar"
 }

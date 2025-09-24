@@ -425,7 +425,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("去下載"),
-    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+        "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("已開啟主持人模式"),
+        "v3_present_joined_before_moderator_on_action":
+            MessageLookupByLibrary.simpleMessage("確定"),
+        "v3_present_joined_before_moderator_on_description":
+            MessageLookupByLibrary.simpleMessage("已開啟主持人模式，請重新連線"),
+        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "結束主持人模式",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

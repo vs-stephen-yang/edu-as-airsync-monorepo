@@ -263,5 +263,9 @@
   "v3_lbl_main_knowledge_base": "Kunskapsbas",
   "v3_main_feedback": "Feedback",
   "v3_lbl_main_feedback": "Feedback",
-  "v3_device_list_next": "Nästa"
+  "v3_device_list_next": "Nästa",
+  "v3_present_joined_before_moderator_on": "Moderatorläget är på",
+  "v3_present_joined_before_moderator_on_description": "Moderatorn är på. Anslut igen.",
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "Stäng"
 }

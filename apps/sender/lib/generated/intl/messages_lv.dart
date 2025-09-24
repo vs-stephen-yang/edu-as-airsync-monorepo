@@ -415,7 +415,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Iespējot pieskārienu",
     ),
-    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("Pieejamība"),
+        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Aizvērt"),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("Pieejamība"),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
       "Lūdzu, uzgaidiet, kamēr saimnieks apstiprina jūsu pieprasījumu.",
     ),
@@ -575,7 +576,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Lejupielādēt"),
-    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+        "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage(
+                "Moderatora režīms ir ieslēgts"),
+        "v3_present_joined_before_moderator_on_action":
+            MessageLookupByLibrary.simpleMessage("Labi"),
+        "v3_present_joined_before_moderator_on_description":
+            MessageLookupByLibrary.simpleMessage(
+          "Moderators ir ieslēgts. Lūdzu, izveidojiet savienojumu vēlreiz.",
+        ),
+        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderators ir aizvērts",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

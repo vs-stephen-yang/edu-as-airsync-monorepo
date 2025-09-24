@@ -263,5 +263,9 @@
   "v3_lbl_main_knowledge_base": "Zināšanu bāze",
   "v3_main_feedback": "Feedback",
   "v3_lbl_main_feedback": "Feedback",
-  "v3_device_list_next": "Tālāk"
+  "v3_device_list_next": "Tālāk",
+  "v3_present_joined_before_moderator_on": "Moderatora režīms ir ieslēgts",
+  "v3_present_joined_before_moderator_on_description": "Moderators ir ieslēgts. Lūdzu, izveidojiet savienojumu vēlreiz.",
+  "v3_present_joined_before_moderator_on_action": "Labi",
+  "v3_lbl_v3_exit_close": "Aizvērt"
 }
