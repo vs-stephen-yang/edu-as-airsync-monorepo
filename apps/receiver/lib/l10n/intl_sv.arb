@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "Föregående sida",
   "v3_lbl_cast_device_sort_asc": "Sortera stigande",
   "v3_lbl_cast_device_sort_desc": "Sortera fallande",
-  "v3_settings_device_not_supported": "Enhetsversionen stöds inte"
+  "v3_settings_device_not_supported": "Enhetsversionen stöds inte",
+  "v3_broadcast_multicast_checkbox": "Casta till 10–100 enheter",
+  "v3_broadcast_multicast_desc": "Antalet mottagande enheter kan inte ändras när prognosen startar.",
+  "v3_broadcast_multicast_warn": "Avbryt all projektion för att redigera.",
+  "v3_broadcast_cast_device_on": "Skärmdelning pågår",
+  "v3_broadcast_cast_board_on": "Skärmdelning pågår",
+  "v3_lbl_broadcast_multicast_checkbox": "Casta till 10–100 enheter ",
+  "v3_settings_device_high_image_quality_on_desc": "Maximal UHD-skärmdelning (4K) från webbavsändaren och 3K+ från Windows- och macOS-avsändaren beroende på avsändarens skärmupplösning. Kräver ett nätverk av hög kvalitet.",
+  "v3_settings_device_high_image_quality_off_desc": "Maximal QHD-skärmdelning (2K) beroende på avsändarens skärmupplösning.",
+  "v3_lbl_eula_launch": "Starta",
+  "v3_eula_launch": "Starta",
+  "v3_authorize_prompt_title_launcher": "Deltagarna vill dela sin skärm"
 }

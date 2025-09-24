@@ -218,8 +218,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Noraidīt",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("IESLĒGTS"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Dalībnieki vēlas kopīgot savu ekrānu",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "Straume notiek",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "Straume notiek",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("IESLĒGTS"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "Raidīt uz 10-100 ierīcēm",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "Saņēmēju ierīču skaitu nevar mainīt, kad projekcija ir sākusies.",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "Lai rediģētu, pārtrauciet visu projekciju.",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Saņemšana",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -299,7 +318,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Piekrītu"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nepiekrītu"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Palaist"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Galalietotāja licences līgums",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -410,7 +430,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Noraidīt pieprasījumu",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "Raidīt uz 10-100 ierīcēm",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Aizvērt sūtīšanas ierīces savienojumu",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
@@ -456,7 +480,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Nepiekrist EULA",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Palaist"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Atcelt moderatora režīma iziešanu",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -912,7 +937,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Augsta attēla kvalitāte"),
-    "v3_settings_device_launch_on_startup":
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Maksimāla QHD (2K) ekrāna koplietošana atkarībā no sūtītāja ekrāna izšķirtspējas.",
+        ),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Maksimāla UHD (4K) ekrāna koplietošana no tīmekļa sūtītāja un 3K+ no Windows un macOS sūtītāja atkarībā no sūtītāja ekrāna izšķirtspējas. Nepieciešams augstas kvalitātes tīkls.",
+        ),
+        "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage(
           "Palaist AirSync startēšanas laikā",
         ),

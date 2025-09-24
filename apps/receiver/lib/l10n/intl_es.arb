@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "página anterior",
   "v3_lbl_cast_device_sort_asc": "ordenar asc",
   "v3_lbl_cast_device_sort_desc": "ordenar desc",
-  "v3_settings_device_not_supported": "La versión del dispositivo no es compatible"
+  "v3_settings_device_not_supported": "La versión del dispositivo no es compatible",
+  "v3_broadcast_multicast_checkbox": "Transmitir a 10-100 dispositivos",
+  "v3_broadcast_multicast_desc": "El número de dispositivos receptores no se puede cambiar cuando empieza la proyección.",
+  "v3_broadcast_multicast_warn": "Interrumpir toda la proyección para editar.",
+  "v3_broadcast_cast_device_on": "Transmisión en curso",
+  "v3_broadcast_cast_board_on": "Transmisión en curso",
+  "v3_lbl_broadcast_multicast_checkbox": "Transmitir a 10-100 dispositivos",
+  "v3_settings_device_high_image_quality_on_desc": "Compartir pantalla en UHD máximo (4K) desde el remitente web y 3K+ desde remitentes de Windows y macOS dependiendo de la resolución de pantalla del remitente. Requiere una red de alta calidad.",
+  "v3_settings_device_high_image_quality_off_desc": "Compartir pantalla en QHD máximo (2K) dependiendo de la resolución de pantalla del remitente.",
+  "v3_lbl_eula_launch": "Lanzar",
+  "v3_eula_launch": "Lanzar",
+  "v3_authorize_prompt_title_launcher": "Los participantes quieren compartir su pantalla"
 }

@@ -216,7 +216,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Odrzuć",
     ),
-    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Uczestnicy chcieliby udostępnić swój ekran",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
       "Przesyłanie w toku",
     ),
     "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
@@ -312,7 +316,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Zgadzam się"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Nie zgadzam się"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Uruchom"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Umowa licencyjna użytkownika końcowego",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -474,7 +479,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Nie zgadzam się z EULA",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Uruchom"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Anuluj wychodzenie z trybu moderatora",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -1071,7 +1077,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Parowanie nie powiodło się. Sterowanie dotykowe nie jest aktywowane. Spróbuj ponownie",
     ),
-    "v3_touchback_restart_bluetooth_btn_restart":
+        "v3_touchback_restart_bluetooth_btn_cancel":
+            MessageLookupByLibrary.simpleMessage("Anuluj"),
+        "v3_touchback_restart_bluetooth_btn_restart":
         MessageLookupByLibrary.simpleMessage("Uruchom ponownie"),
     "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
       "Przekroczono limit czasu operacji. Proszę wyłączyć i ponownie uruchomić funkcję Bluetooth na dużym ekranie, a następnie ponownie uruchomić sterowanie dotykowe.",

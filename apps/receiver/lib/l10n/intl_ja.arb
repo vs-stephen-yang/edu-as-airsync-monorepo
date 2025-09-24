@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "前のページ",
   "v3_lbl_cast_device_sort_asc": "昇順",
   "v3_lbl_cast_device_sort_desc": "降順",
-  "v3_settings_device_not_supported": "このデバイスのバージョンはサポートされていません。"
+  "v3_settings_device_not_supported": "このデバイスのバージョンはサポートされていません。",
+  "v3_broadcast_multicast_checkbox": "10〜100台のデバイスにキャスト",
+  "v3_broadcast_multicast_desc": "投影の開始後に受信デバイスの数を変更することはできません。",
+  "v3_broadcast_multicast_warn": "編集するには、すべての投影を中断してください。",
+  "v3_broadcast_cast_device_on": "キャスト実行中",
+  "v3_broadcast_cast_board_on": "キャスト実行中",
+  "v3_lbl_broadcast_multicast_checkbox": "10〜100台のデバイスにキャスト",
+  "v3_settings_device_high_image_quality_on_desc": "送信者の画面解像度に応じて、Web送信者からの最大UHD（4K）画面共有、およびWindowsおよびmacOS送信者からの3K +。 高品質のネットワークが必要です。",
+  "v3_settings_device_high_image_quality_off_desc": "送信者の画面解像度に応じて、最大QHD（2K）画面共有。",
+  "v3_lbl_eula_launch": "起動",
+  "v3_eula_launch": "起動",
+  "v3_authorize_prompt_title_launcher": "参加者が画面を共有しようとしています"
 }

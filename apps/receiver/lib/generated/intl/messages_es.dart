@@ -220,8 +220,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Rechazar",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ENCENDIDO"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Los participantes quieren compartir su pantalla",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "Transmisión en curso",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "Transmisión en curso",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ENCENDIDO"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "Transmitir a 10-100 dispositivos",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "El número de dispositivos receptores no se puede cambiar cuando empieza la proyección.",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "Interrumpir toda la proyección para editar.",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Recibiendo",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -303,7 +322,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Aceptar"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Rechazar"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Lanzar"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Acuerdo de Licencia de Usuario Final",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -414,7 +434,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Rechazar solicitud",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "Transmitir a 10-100 dispositivos",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Cerrar conexión del dispositivo de transmisión",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
@@ -462,7 +486,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "No aceptar el EULA",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Lanzar"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Cancelar salida del modo moderador",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -918,7 +943,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Alta calidad de imagen"),
-    "v3_settings_device_launch_on_startup":
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Compartir pantalla en QHD máximo (2K) dependiendo de la resolución de pantalla del remitente.",
+        ),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Compartir pantalla en UHD máximo (4K) desde el remitente web y 3K+ desde remitentes de Windows y macOS dependiendo de la resolución de pantalla del remitente. Requiere una red de alta calidad.",
+        ),
+        "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Lanzar AirSync al iniciar"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Nombre del dispositivo",

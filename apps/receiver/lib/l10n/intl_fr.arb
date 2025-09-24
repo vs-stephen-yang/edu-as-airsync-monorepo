@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "Page précédente",
   "v3_lbl_cast_device_sort_asc": "trier par ordre croissant",
   "v3_lbl_cast_device_sort_desc": "trier par ordre décroissant",
-  "v3_settings_device_not_supported": "La version de l'appareil n'est pas prise en charge"
+  "v3_settings_device_not_supported": "La version de l'appareil n'est pas prise en charge",
+  "v3_broadcast_multicast_checkbox": "Diffuser vers 10-100 appareils",
+  "v3_broadcast_multicast_desc": "Le nombre d'appareils de réception ne peut pas être modifié lors de la projection.",
+  "v3_broadcast_multicast_warn": "Interrompre la projection pour modifier.",
+  "v3_broadcast_cast_device_on": "Diffusion en cours",
+  "v3_broadcast_cast_board_on": "Diffusion en cours",
+  "v3_lbl_broadcast_multicast_checkbox": "Diffuser vers 10-100 appareils",
+  "v3_settings_device_high_image_quality_on_desc": "Partage d'écran limité à UHD (4K) depuis un expéditeur Web et 3K+ de l'expéditeur Windows et macOS, selon la résolution de l'écran de l'expéditeur. Nécessite un réseau haute qualité.",
+  "v3_settings_device_high_image_quality_off_desc": "Partage d'écran limité à QHD (2K) en fonction de la résolution de l'écran de l'expéditeur.",
+  "v3_lbl_eula_launch": "Démarrer",
+  "v3_eula_launch": "Démarrer",
+  "v3_authorize_prompt_title_launcher": "Les participants souhaitent partager leur écran"
 }

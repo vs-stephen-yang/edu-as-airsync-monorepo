@@ -214,9 +214,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Afvis",
     ),
-    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("TIL"),
-    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
-      "Modtager",
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "Deltagere vil gerne dele deres skærm",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+          "Casting i gang",
+        ),
+        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+          "Casting i gang",
+        ),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("TIL"),
+        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+          "Cast til 10-100 enheder",
+        ),
+        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+          "Antallet af modtagende enheder kan ikke ændres, når projektionen er startet.",
+        ),
+        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+          "Afbryd al projektion for at redigere.",
+        ),
+        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+          "Modtager",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
       "Maksimalt op til 10 enheder.",
@@ -295,8 +314,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Acceptér"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Afvis"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
-      "Slutbrugerlicensaftale",
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Start"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+          "Slutbrugerlicensaftale",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
       "Annuller",
@@ -379,11 +399,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Indtast display-kode",
     ),
-    "v3_instruction3": MessageLookupByLibrary.simpleMessage(
-      "Indtast engangskode",
+        "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+          "Vis kode",
+        ),
+        "v3_instruction3": MessageLookupByLibrary.simpleMessage(
+          "Indtast engangskode",
     ),
-    "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
-      "Del dine skærme",
+        "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+          "Engangsadgangskode",
+        ),
+        "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
+          "Del dine skærme",
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
       "Understøtter deling via AirPlay, Google Cast eller Miracast",
@@ -400,11 +426,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Afvis anmodning",
     ),
-    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
-      "Luk cast-enhedsforbindelse",
+        "v3_lbl_broadcast_multicast_checkbox":
+            MessageLookupByLibrary.simpleMessage(
+          "Cast til 10-100 enheder",
+        ),
+        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+          "Luk cast-enhedsforbindelse",
     ),
-    "v3_lbl_cast_device_touchback_disable":
-        MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+          "næste side",
+        ),
+        "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+          "forrige side",
+        ),
+        "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+          "sorter stigende",
+        ),
+        "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+          "sorter faldende",
+        ),
+        "v3_lbl_cast_device_touchback_disable":
+            MessageLookupByLibrary.simpleMessage(
           "Deaktivér touchback for cast-enhed",
         ),
     "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
@@ -428,8 +470,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("Acceptér EULA"),
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage("Afvis EULA"),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
-      "Annuller afslutning af moderator-tilstand",
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Start"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+          "Annuller afslutning af moderator-tilstand",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
       "Bekræft afslutning af moderator-tilstand",
@@ -593,8 +636,10 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Slå automatisk udfyld OTP-tilstand til/fra",
         ),
-    "v3_lbl_settings_device_launch_on_startup":
-        MessageLookupByLibrary.simpleMessage("Slå autostart-tilstand til/fra"),
+        "v3_lbl_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("Høj billedkvalitet"),
+        "v3_lbl_settings_device_launch_on_startup":
+            MessageLookupByLibrary.simpleMessage("Slå autostart-tilstand til/fra"),
     "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Rediger enhedsnavn",
     ),
@@ -618,8 +663,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Vælg %s",
     ),
-    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
-      "Åbn juridisk politik-indstillingsmenu",
+        "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+          "Vidensbase",
+        ),
+        "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+          "Åbn juridisk politik-indstillingsmenu",
     ),
     "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
       "Indstillingsmenuen er låst",
@@ -661,8 +709,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "AirPlay touchback",
     ),
-    "v3_lbl_streaming_shortcut_airplay_toggle":
-        MessageLookupByLibrary.simpleMessage("AirPlay skift"),
+        "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+          "næste side",
+        ),
+        "v3_lbl_streaming_shortcut_airplay_toggle":
+            MessageLookupByLibrary.simpleMessage("AirPlay skift"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
         MessageLookupByLibrary.simpleMessage("Cast til enheder skift"),
     "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
@@ -730,8 +781,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast er ikke tilgængelig nu. Nuværende Wi-Fi-kanal understøtter ikke skærmcasting.",
     ),
-    "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
-      "Adgangskode",
+        "v3_miracast_uibc_not_supported_message":
+            MessageLookupByLibrary.simpleMessage(
+          "Denne kilde understøtter ikke Miracast touchback",
+        ),
+        "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
+          "Adgangskode",
     ),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
       "Annuller",
@@ -857,8 +912,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
       "Aktivér et-tryk forbindelse, når der vælges en enhed fra enhedslisten.",
     ),
-    "v3_settings_device_launch_on_startup":
-        MessageLookupByLibrary.simpleMessage("Start AirSync ved opstart"),
+        "v3_settings_device_high_image_quality":
+            MessageLookupByLibrary.simpleMessage("Høj billedkvalitet"),
+        "v3_settings_device_high_image_quality_off_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Maksimal QHD (2K) skærmdeling afhængigt af afsenderens skærmopløsning.",
+        ),
+        "v3_settings_device_high_image_quality_on_desc":
+            MessageLookupByLibrary.simpleMessage(
+          "Maksimal UHD (4K) skærmdeling fra webafsender og 3K+ fra Windows og macOS afsender afhængigt af afsenderens skærmopløsning. Kræver et netværk af høj kvalitet.",
+        ),
+        "v3_settings_device_launch_on_startup":
+            MessageLookupByLibrary.simpleMessage("Start AirSync ved opstart"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Enhedsnavn",
     ),
@@ -866,8 +931,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enhedsnavn kan ikke være tomt",
     ),
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage("Gem"),
-    "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
-      "Enhedsindstillinger",
+        "v3_settings_device_not_supported":
+            MessageLookupByLibrary.simpleMessage(
+          "Enhedsversionen understøttes ikke",
+        ),
+        "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+          "Enhedsindstillinger",
     ),
     "v3_settings_device_show_display_code":
         MessageLookupByLibrary.simpleMessage("Vis display-kode øverst"),

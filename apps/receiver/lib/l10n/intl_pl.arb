@@ -339,6 +339,7 @@
   "v3_touchback_restart_bluetooth_btn_restart": "Uruchom ponownie",
   "v3_lbl_touchback_restart_bluetooth_btn_cancel": "Anuluj",
   "v3_lbl_touchback_restart_bluetooth_btn_restart": "Uruchom ponownie",
+  "v3_touchback_restart_bluetooth_btn_cancel": "Anuluj",
   "v3_lbl_overlay_bring_app_to_top": "Pływająca karta informacji o połączeniu",
   "v3_lbl_overlay_menu_expand": "Rozwiń menu nakładki",
   "v3_lbl_overlay_menu_minimize": "Zminimalizuj menu nakładki",
@@ -383,5 +384,8 @@
   "v3_broadcast_cast_board_on": "Przesyłanie w toku",
   "v3_lbl_broadcast_multicast_checkbox": "Prześlij do 10-100 urządzeń",
   "v3_settings_device_high_image_quality_on_desc": "Maksymalne udostępnianie ekranu UHD (4K) z nadajnika internetowego i 3K+ z nadajników Windows i macOS, w zależności od rozdzielczości ekranu nadawcy. Wymaga wysokiej jakości sieci.",
-  "v3_settings_device_high_image_quality_off_desc": "Maksymalne udostępnianie ekranu QHD (2K), w zależności od rozdzielczości ekranu nadawcy."
+  "v3_settings_device_high_image_quality_off_desc": "Maksymalne udostępnianie ekranu QHD (2K), w zależności od rozdzielczości ekranu nadawcy.",
+  "v3_lbl_eula_launch": "Uruchom",
+  "v3_eula_launch": "Uruchom",
+  "v3_authorize_prompt_title_launcher": "Uczestnicy chcieliby udostępnić swój ekran"
 }

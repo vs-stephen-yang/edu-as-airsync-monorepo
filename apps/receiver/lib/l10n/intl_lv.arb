@@ -376,5 +376,16 @@
   "v3_lbl_cast_device_previous": "Iepriekšējā lapa",
   "v3_lbl_cast_device_sort_asc": "Kārtot augošā secībā",
   "v3_lbl_cast_device_sort_desc": "Kārtot dilstošā secībā",
-  "v3_settings_device_not_supported": "Ierīces versija netiek atbalstīta"
+  "v3_settings_device_not_supported": "Ierīces versija netiek atbalstīta",
+  "v3_broadcast_multicast_checkbox": "Raidīt uz 10-100 ierīcēm",
+  "v3_broadcast_multicast_desc": "Saņēmēju ierīču skaitu nevar mainīt, kad projekcija ir sākusies.",
+  "v3_broadcast_multicast_warn": "Lai rediģētu, pārtrauciet visu projekciju.",
+  "v3_broadcast_cast_device_on": "Straume notiek",
+  "v3_broadcast_cast_board_on": "Straume notiek",
+  "v3_lbl_broadcast_multicast_checkbox": "Raidīt uz 10-100 ierīcēm",
+  "v3_settings_device_high_image_quality_on_desc": "Maksimāla UHD (4K) ekrāna koplietošana no tīmekļa sūtītāja un 3K+ no Windows un macOS sūtītāja atkarībā no sūtītāja ekrāna izšķirtspējas. Nepieciešams augstas kvalitātes tīkls.",
+  "v3_settings_device_high_image_quality_off_desc": "Maksimāla QHD (2K) ekrāna koplietošana atkarībā no sūtītāja ekrāna izšķirtspējas.",
+  "v3_lbl_eula_launch": "Palaist",
+  "v3_eula_launch": "Palaist",
+  "v3_authorize_prompt_title_launcher": "Dalībnieki vēlas kopīgot savu ekrānu"
 }

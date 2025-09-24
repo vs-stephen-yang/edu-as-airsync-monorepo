@@ -339,6 +339,7 @@
   "v3_touchback_restart_bluetooth_btn_restart": "Yeniden Başlat",
   "v3_lbl_touchback_restart_bluetooth_btn_cancel": "İptal",
   "v3_lbl_touchback_restart_bluetooth_btn_restart": "Yeniden Başlat",
+  "v3_touchback_restart_bluetooth_btn_cancel": "İptal",
   "v3_lbl_overlay_bring_app_to_top": "Kayan bağlantı bilgisi sekmesi",
   "v3_lbl_overlay_menu_expand": "Katman menüsünü genişlet",
   "v3_lbl_overlay_menu_minimize": "Katman menüsünü küçült",
@@ -383,5 +384,8 @@
   "v3_broadcast_cast_board_on": "Yayın devam ediyor",
   "v3_lbl_broadcast_multicast_checkbox": "10-100 Cihaza Yayınla",
   "v3_settings_device_high_image_quality_on_desc": "Web göndericiden maksimum UHD (4K) ekran paylaşımı ve gönderici ekran çözünürlüğüne bağlı olarak Windows ve macOS göndericiden 3K+ ekran paylaşımı. Yüksek kaliteli ağ gerektirir.",
-  "v3_settings_device_high_image_quality_off_desc": "Gönderici ekran çözünürlüğüne bağlı olarak maksimum QHD (2K) ekran paylaşımı."
+  "v3_settings_device_high_image_quality_off_desc": "Gönderici ekran çözünürlüğüne bağlı olarak maksimum QHD (2K) ekran paylaşımı.",
+  "v3_lbl_eula_launch": "Başlat",
+  "v3_eula_launch": "Başlat",
+  "v3_authorize_prompt_title_launcher": "Katılımcılar ekranlarını paylaşmak istiyor"
 }

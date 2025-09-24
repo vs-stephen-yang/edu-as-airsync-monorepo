@@ -168,7 +168,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "一律接受",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒絕"),
-    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_title_launcher":
+            MessageLookupByLibrary.simpleMessage(
+          "參與者請求分享螢幕",
+        ),
+        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
       "有進行中的分享畫面",
     ),
     "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
@@ -252,7 +256,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_download_app_title": MessageLookupByLibrary.simpleMessage("下載傳送端App"),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("不同意"),
-    "v3_eula_title": MessageLookupByLibrary.simpleMessage("最終用戶許可協議"),
+        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("啟動"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage("最終用戶許可協議"),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage("取消"),
     "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(
       "確定結束主持人模式並中斷所有連線嗎? ",
@@ -378,7 +383,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "不同意終端使用者授權合約",
     ),
-    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("啟動"),
+        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "取消結束主持人模式",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
