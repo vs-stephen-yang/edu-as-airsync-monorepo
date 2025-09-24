@@ -258,5 +258,13 @@
   "v3_exit_action_exit": "Poistu",
   "v3_lbl_exit_action_cancel": "Peruuta",
   "v3_lbl_exit_action_exit": "Poistu",
-  "v3_main_present_or": "tai"
+  "v3_main_present_or": "tai",
+  "v3_main_knowledge_base": "Tietopankki",
+  "v3_lbl_main_knowledge_base": "Tietopankki",
+  "v3_main_feedback": "Palaute",
+  "v3_lbl_main_feedback": "Palaute",
+  "v3_device_list_next": "Seuraava",
+  "v3_present_joined_before_moderator_on": "Moderaattori on käytössä",
+  "v3_present_joined_before_moderator_on_description": "Moderaattori on käytössä, ole hyvä ja yhdistä uudelleen.",
+  "v3_present_joined_before_moderator_on_action": "OK"
 }

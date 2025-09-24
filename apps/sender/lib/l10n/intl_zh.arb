@@ -262,5 +262,8 @@
   "v3_lbl_main_knowledge_base": "知識庫",
   "v3_main_feedback": "意見回饋",
   "v3_lbl_main_feedback": "意見回饋",
-  "v3_device_list_next": "下一步"
+  "v3_device_list_next": "下一步",
+  "v3_present_joined_before_moderator_on": "已開啟主持人模式",
+  "v3_present_joined_before_moderator_on_description": "已開啟主持人模式，請重新連線",
+  "v3_present_joined_before_moderator_on_action": "確定"
 }

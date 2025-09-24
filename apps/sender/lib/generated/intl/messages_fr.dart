@@ -240,7 +240,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Entrez le mot de passe à usage unique",
     ),
-    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Accepter"),
+        "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Suivant"),
+        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Accepter"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Refuser"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Contrat de Licence Utilisateur Final",
@@ -287,7 +288,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Obtenez la version Windows",
     ),
-    "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage(
+          "Commentaires",
+        ),
+        "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Base de connaissances",
     ),
     "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
@@ -489,7 +493,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
-    "v3_main_instance_not_found_or_offline":
+        "v3_main_feedback":
+            MessageLookupByLibrary.simpleMessage("Commentaires"),
+        "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Code d\'affichage non trouvé ou instance hors ligne.",
         ),
@@ -580,7 +586,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Télécharger"),
-    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+        "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage(
+                "Le mode modérateur est activé"),
+        "v3_present_joined_before_moderator_on_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_joined_before_moderator_on_description":
+            MessageLookupByLibrary.simpleMessage(
+          "Le mode modérateur est activé. Veuillez vous reconnecter.",
+        ),
+        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Le modérateur est fermé",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

@@ -260,5 +260,11 @@
   "v3_lbl_exit_action_exit": "Quitter",
   "v3_main_present_or": "ou",
   "v3_main_knowledge_base": "Base de connaissances",
-  "v3_lbl_main_knowledge_base": "Base de connaissances"
+  "v3_lbl_main_knowledge_base": "Base de connaissances",
+  "v3_main_feedback": "Commentaires",
+  "v3_lbl_main_feedback": "Commentaires",
+  "v3_device_list_next": "Suivant",
+  "v3_present_joined_before_moderator_on": "Le mode modérateur est activé",
+  "v3_present_joined_before_moderator_on_description": "Le mode modérateur est activé. Veuillez vous reconnecter.",
+  "v3_present_joined_before_moderator_on_action": "OK"
 }

@@ -263,5 +263,8 @@
   "v3_lbl_main_knowledge_base": "База знаний",
   "v3_main_feedback": "Обратная связь",
   "v3_lbl_main_feedback": "Обратная связь",
-  "v3_device_list_next": "Далее"
+  "v3_device_list_next": "Далее",
+  "v3_present_joined_before_moderator_on": "Режим модератора включён",
+  "v3_present_joined_before_moderator_on_description": "Режим модератора включён. Пожалуйста, переподключитесь.",
+  "v3_present_joined_before_moderator_on_action": "OK"
 }
