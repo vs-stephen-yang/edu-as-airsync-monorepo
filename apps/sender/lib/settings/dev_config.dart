@@ -32,5 +32,8 @@ class DevConfig implements ConfigSettings {
       'https://appconfig.dev.airsync.net/airsync-sender/mac_appcast_d.xml';
 
   @override
+  String storeMobileUrl = 'https://dev.airsync.net/app/download';
+
+  @override
   bool appA11yDebug = true;
 }
