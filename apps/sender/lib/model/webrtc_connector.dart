@@ -87,12 +87,11 @@ class WebRTCConnector {
   ChangePresentQuality? _pendingChangePresentQuality;
 
   static final _resolutionUltraHd = (width: 3840, height: 2160);
-  static final _resolutionQuadHdPlus = (width: 3024, height: 1964);
 
-  double _screenWidth = _resolutionQuadHdPlus.width.toDouble();
-  double _screenHeight = _resolutionQuadHdPlus.height.toDouble();
-  static int _maxTrackWidth = _resolutionQuadHdPlus.width;
-  static int _maxTrackHeight = _resolutionQuadHdPlus.height;
+  double _screenWidth = _resolutionUltraHd.width.toDouble();
+  double _screenHeight = _resolutionUltraHd.height.toDouble();
+  static int _maxTrackWidth = _resolutionUltraHd.width;
+  static int _maxTrackHeight = _resolutionUltraHd.height;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
   int _actualWidth = 1920;
@@ -934,7 +933,7 @@ class WebRTCConnector {
 
   Future changePresentQuality(ChangePresentQuality msg) async {
     log.info(
-        "Received quality change request. height:${msg.constraints?.height}");
+        "Received quality change request. resolution: ${msg.constraints?.width} x ${msg.constraints?.height}");
 
     if (!_streamPublished) {
       _pendingChangePresentQuality = msg;
