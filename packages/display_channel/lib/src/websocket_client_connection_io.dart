@@ -118,6 +118,7 @@ class WebSocketClientConnection implements ClientConnection {
           return _state != ConnectionState.closed &&
               (e is SocketException ||
                   e is HttpException ||
+                  e is TlsException ||
                   e is WebSocketException);
         },
         onRetry: (p0) {},
@@ -132,7 +133,13 @@ class WebSocketClientConnection implements ClientConnection {
     } on SocketException catch (e) {
       await _handleConnectFailed(ConnectErrorType.socket, e.toString());
       return;
+    } on TlsException catch (e) {
+      await _handleConnectFailed(ConnectErrorType.socket, e.toString());
+      return;
     } on ConnectionClosedException catch (_) {
+      return;
+    } catch (e) {
+      await _handleConnectFailed(ConnectErrorType.unknown, e.toString());
       return;
     }
 
@@ -194,7 +201,8 @@ class WebSocketClientConnection implements ClientConnection {
     }
   }
 
-  Future<void> _handleConnectFailed(ConnectErrorType error, String message) async {
+  Future<void> _handleConnectFailed(
+      ConnectErrorType error, String message) async {
     if (_state == ConnectionState.closed) {
       return;
     }

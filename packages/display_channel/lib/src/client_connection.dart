@@ -3,6 +3,7 @@ enum ConnectErrorType {
   socket,
   http,
   webTransport,
+  unknown,
 }
 
 enum ConnectionState {
