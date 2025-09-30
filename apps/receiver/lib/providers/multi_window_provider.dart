@@ -261,10 +261,23 @@ enum SplitScreenRatio {
   halfFull,
   twoThirdsFull,
   launcherMain,
-  none,
-}
+  none;
 
-extension SplitScreenRatioExt on SplitScreenRatio {
+  bool get isFullHeight {
+    switch (this) {
+      case SplitScreenRatio.launcherFull:
+      case SplitScreenRatio.oneThirdFull:
+      case SplitScreenRatio.twoThirdsFull:
+      case SplitScreenRatio.halfFull:
+      case SplitScreenRatio.none:
+        return true;
+      case SplitScreenRatio.launcher:
+      case SplitScreenRatio.floatingDefault:
+      case SplitScreenRatio.launcherMain:
+        return false;
+    }
+  }
+
   double get widthFraction {
     switch (this) {
       case SplitScreenRatio.launcher:
