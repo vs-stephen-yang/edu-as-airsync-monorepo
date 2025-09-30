@@ -208,27 +208,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Keeldu",
     ),
-        "v3_authorize_prompt_title_launcher":
-            MessageLookupByLibrary.simpleMessage(
-          "Osalejad soovivad oma ekraani jagada",
-        ),
-        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
-          "Ülekanne on pooleli",
-        ),
-        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
-          "Ülekanne on pooleli",
-        ),
-        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("SEES"),
-        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
-          "Edasta 10-100 seadmesse",
-        ),
-        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
-          "Vastuvõtvate seadmete arvu ei saa projektsiooni alustamisel muuta.",
-        ),
-        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
-          "Muutmiseks katkesta kogu projektsioon.",
-        ),
-        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
+      "Osalejad soovivad oma ekraani jagada",
+    ),
+    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+      "Ülekanne on pooleli",
+    ),
+    "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+      "Ülekanne on pooleli",
+    ),
+    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("SEES"),
+    "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Edasta 10-100 seadmesse",
+    ),
+    "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+      "Vastuvõtvate seadmete arvu ei saa projektsiooni alustamisel muuta.",
+    ),
+    "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+      "Muutmiseks katkesta kogu projektsioon.",
+    ),
+    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Vastuvõtt",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -308,8 +307,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Nõustu"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Ei nõustu"),
-        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Käivita"),
-        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+    "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Käivita"),
+    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Lõppkasutaja litsentsileping",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -418,11 +417,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Keeldu päringust",
     ),
-        "v3_lbl_broadcast_multicast_checkbox":
-            MessageLookupByLibrary.simpleMessage(
-          "Edasta 10-100 seadmesse",
-        ),
-        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Edasta 10-100 seadmesse",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Sulge seadme ühendus",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
@@ -462,8 +460,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Ei nõustu EULA-ga",
     ),
-        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Käivita"),
-        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Käivita"),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Tühista moderaatori režiimist väljumine",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -922,15 +920,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Kõrge pildikvaliteet"),
-        "v3_settings_device_high_image_quality_off_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality_off_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Maksimaalne QHD (2K) ekraani jagamine olenevalt saatja ekraani eraldusvõimest.",
         ),
-        "v3_settings_device_high_image_quality_on_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality_on_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Maksimaalne UHD (4K) ekraani jagamine veebisaatjalt ja 3K+ Windowsi ja macOS-i saatjalt, olenevalt saatja ekraani eraldusvõimest. Nõuab kvaliteetset võrku.",
         ),
-        "v3_settings_device_launch_on_startup":
+    "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Käivita AirSync automaatselt"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Seadme nimi",
