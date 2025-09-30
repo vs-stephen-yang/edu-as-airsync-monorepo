@@ -244,13 +244,31 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
         final ratio = dialogContext.splitScreenRatio;
         final isMultiWindow = dialogContext.isInMultiWindow;
         final isCompact = isMultiWindow &&
-            ratio.widthFraction <=
-                SplitScreenRatio.floatingDefault.widthFraction;
-        var dialogWidth = isCompact
-            ? double.infinity
-            : MediaQuery.of(context).textScaler.scale(1.0) > 1.0
-                ? 628.0
-                : 700.0;
+            ratio.widthFraction <
+                (ratio.isFullHeight
+                    ? SplitScreenRatio.halfFull.widthFraction
+                    : SplitScreenRatio.launcherMain.widthFraction);
+
+        var dialogWidth = double.infinity;
+        if (!isMultiWindow) {
+          dialogWidth = dialogWidth =
+              MediaQuery.of(context).textScaler.scale(1.0) > 1.0
+                  ? 628.0
+                  : 700.0;
+        } else if (!isCompact) {
+          if (ratio.widthFraction >
+              SplitScreenRatio.twoThirdsFull.widthFraction) {
+            dialogWidth = MediaQuery.of(context).textScaler.scale(1.0) > 1.0
+                ? 600.0
+                : 620.0;
+          } else if (ratio.widthFraction >
+              SplitScreenRatio.floatingDefault.widthFraction) {
+            dialogWidth = MediaQuery.of(context).textScaler.scale(1.0) > 1.0
+                ? 450.0
+                : 470.0;
+          }
+        }
+
         dialogContextList.add(dialogContext);
         return PopScope(
           // Using canPop=false to block back key return,
@@ -634,8 +652,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     }
                     final sc = ScrollController();
                     return ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxHeight: 400,
+                      constraints: BoxConstraints(
+                        maxHeight: isCompact
+                            ? MediaQuery.of(context).size.height
+                            : 400,
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
