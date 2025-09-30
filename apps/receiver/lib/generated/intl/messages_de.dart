@@ -216,27 +216,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Ablehnen",
     ),
-        "v3_authorize_prompt_title_launcher":
-            MessageLookupByLibrary.simpleMessage(
-          "Teilnehmer möchten ihren Bildschirm freigeben",
-        ),
-        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
-          "Übertragung läuft",
-        ),
-        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
-          "Übertragung läuft",
-        ),
-        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("AN"),
-        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
-          "Auf 10-100 Geräte übertragen",
-        ),
-        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
-          "Die Anzahl der empfangenden Geräte kann nach dem Start der Projektion nicht mehr geändert werden.",
-        ),
-        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
-          "Unterbrechen Sie alle Projektionen, um sie zu bearbeiten.",
-        ),
-        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
+      "Teilnehmer möchten ihren Bildschirm freigeben",
+    ),
+    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+      "Übertragung läuft",
+    ),
+    "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+      "Übertragung läuft",
+    ),
+    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("AN"),
+    "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Auf 10-100 Geräte übertragen",
+    ),
+    "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+      "Die Anzahl der empfangenden Geräte kann nach dem Start der Projektion nicht mehr geändert werden.",
+    ),
+    "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+      "Unterbrechen Sie alle Projektionen, um sie zu bearbeiten.",
+    ),
+    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Empfängt",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -318,8 +317,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Zustimmen"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Ablehnen"),
-        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Starten"),
-        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+    "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Starten"),
+    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Endbenutzer-Lizenzvereinbarung",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -356,52 +355,47 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
       "hat Ihre Übertragungsanfrage abgelehnt, bitte überprüfen Sie die Übertragungseinstellungen.",
     ),
-        "v3_help_center_cast_device_title":
-            MessageLookupByLibrary.simpleMessage(
-          "Auf Gerät übertragen",
-        ),
-        "v3_help_center_cast_device_title_sub":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_help_center_cast_device_title": MessageLookupByLibrary.simpleMessage(
+      "Auf Gerät übertragen",
+    ),
+    "v3_help_center_cast_device_title_sub":
+        MessageLookupByLibrary.simpleMessage(
           "IFP überträgt seinen Bildschirm auf Geräte.",
         ),
-        "v3_help_center_close":
-            MessageLookupByLibrary.simpleMessage("Schließen"),
-        "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
-          "Vollbild",
-        ),
-        "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
-          "Benutzer stummschalten",
-        ),
-        "v3_help_center_remove_user_title":
-            MessageLookupByLibrary.simpleMessage(
-          "Benutzer entfernen",
-        ),
-        "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
-          "Zum Teilen einladen",
-        ),
-        "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
-          "Geräte, die ihren Bildschirm auf IFP teilen.",
-        ),
-        "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
-          "Freigabe beenden",
-        ),
-        "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
-          "Hilfe-Center",
-        ),
-        "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
-          "Touchback",
-        ),
-        "v3_help_center_touchback_title_sub":
-            MessageLookupByLibrary.simpleMessage(
-          "Benutzerfernsteuerung zulassen.",
-        ),
-        "v3_help_center_untouchback_title":
-            MessageLookupByLibrary.simpleMessage(
-          "Untouchback",
-        ),
-        "v3_help_center_untouchback_title_sub":
-            MessageLookupByLibrary.simpleMessage("Touchback-Modus trennen."),
-        "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
+    "v3_help_center_close": MessageLookupByLibrary.simpleMessage("Schließen"),
+    "v3_help_center_fullscreen_title": MessageLookupByLibrary.simpleMessage(
+      "Vollbild",
+    ),
+    "v3_help_center_mute_user_title": MessageLookupByLibrary.simpleMessage(
+      "Benutzer stummschalten",
+    ),
+    "v3_help_center_remove_user_title": MessageLookupByLibrary.simpleMessage(
+      "Benutzer entfernen",
+    ),
+    "v3_help_center_share_title": MessageLookupByLibrary.simpleMessage(
+      "Zum Teilen einladen",
+    ),
+    "v3_help_center_share_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Geräte, die ihren Bildschirm auf IFP teilen.",
+    ),
+    "v3_help_center_stop_share_title": MessageLookupByLibrary.simpleMessage(
+      "Freigabe beenden",
+    ),
+    "v3_help_center_title": MessageLookupByLibrary.simpleMessage(
+      "Hilfe-Center",
+    ),
+    "v3_help_center_touchback_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback",
+    ),
+    "v3_help_center_touchback_title_sub": MessageLookupByLibrary.simpleMessage(
+      "Benutzerfernsteuerung zulassen.",
+    ),
+    "v3_help_center_untouchback_title": MessageLookupByLibrary.simpleMessage(
+      "Untouchback",
+    ),
+    "v3_help_center_untouchback_title_sub":
+        MessageLookupByLibrary.simpleMessage("Touchback-Modus trennen."),
+    "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
       "Besuchen Sie airsync.net oder öffnen Sie die Absender-App",
     ),
     "v3_instruction1b": MessageLookupByLibrary.simpleMessage(
@@ -410,16 +404,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Anzeigecode eingeben",
     ),
-        "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
-          "Code anzeigen",
-        ),
-        "v3_instruction3": MessageLookupByLibrary.simpleMessage(
+    "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+      "Code anzeigen",
+    ),
+    "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Einmaliges Passwort eingeben",
     ),
-        "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
-          "Einmalpasswort",
-        ),
-        "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
+    "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+      "Einmalpasswort",
+    ),
+    "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Teilen Sie Ihre Bildschirme",
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
@@ -437,345 +431,325 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Anfrage ablehnen",
     ),
-        "v3_lbl_broadcast_multicast_checkbox":
-            MessageLookupByLibrary.simpleMessage(
-          "Auf 10-100 Geräte übertragen",
-        ),
-        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
-          "Übertragungsgeräteverbindung schließen",
-        ),
-        "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
-          "Nächste Seite",
-        ),
-        "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
-          "Vorherige Seite",
-        ),
-        "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
-          "Aufsteigend sortieren",
-        ),
-        "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
-          "Absteigend sortieren",
-        ),
-        "v3_lbl_cast_device_touchback_disable":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Auf 10-100 Geräte übertragen",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+      "Übertragungsgeräteverbindung schließen",
+    ),
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "Nächste Seite",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "Vorherige Seite",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "Aufsteigend sortieren",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "Absteigend sortieren",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
+        MessageLookupByLibrary.simpleMessage(
           "Touchback für Übertragungsgerät deaktivieren",
         ),
-        "v3_lbl_cast_device_touchback_enable":
-            MessageLookupByLibrary.simpleMessage(
-          "Touchback für Übertragungsgerät aktivieren",
-        ),
-        "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
-          "Download-Sender-App-Menü schließen",
-        ),
-        "v3_lbl_close_feature_set_cast_device":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_cast_device_touchback_enable": MessageLookupByLibrary.simpleMessage(
+      "Touchback für Übertragungsgerät aktivieren",
+    ),
+    "v3_lbl_close_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Download-Sender-App-Menü schließen",
+    ),
+    "v3_lbl_close_feature_set_cast_device":
+        MessageLookupByLibrary.simpleMessage(
           "Geräteliste für Übertragung schließen",
         ),
-        "v3_lbl_close_feature_set_moderator":
-            MessageLookupByLibrary.simpleMessage(
-          "Moderatorenliste schließen",
-        ),
-        "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
-          "Hilfecenter schließen",
-        ),
-        "v3_lbl_close_streaming_shortcut_menu":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_close_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Moderatorenliste schließen",
+    ),
+    "v3_lbl_close_help_center": MessageLookupByLibrary.simpleMessage(
+      "Hilfecenter schließen",
+    ),
+    "v3_lbl_close_streaming_shortcut_menu":
+        MessageLookupByLibrary.simpleMessage(
           "Streaming-Kontextmenü schließen\n",
         ),
-        "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
-          "Dialogfeld „Verbindungsstatus schließen“\n",
-        ),
-        "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("EULA zustimmen"),
+    "v3_lbl_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+      "Dialogfeld „Verbindungsstatus schließen“\n",
+    ),
+    "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("EULA zustimmen"),
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Nicht mit der EULA einverstanden",
     ),
-        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Starten"),
-        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Starten"),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Moderatormodus verlassen abbrechen",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
       "Moderatormodus verlassen bestätigen",
     ),
-        "v3_lbl_extend_casting_do_not_extend":
-            MessageLookupByLibrary.simpleMessage(
-          "Verlängere die Übertragungszeit nicht",
-        ),
-        "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
-          "Übertragungszeit verlängern",
-        ),
-        "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
-          "Gruppenablehnungsbenachrichtigung schließen",
-        ),
-        "v3_lbl_internet_connection_only_error":
-            MessageLookupByLibrary.simpleMessage(
-          "Verbindungsfehler, bitte überprüfen Sie die Netzwerkeinstellungen des Geräts.",
-        ),
-        "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_extend_casting_do_not_extend": MessageLookupByLibrary.simpleMessage(
+      "Verlängere die Übertragungszeit nicht",
+    ),
+    "v3_lbl_extend_casting_extend": MessageLookupByLibrary.simpleMessage(
+      "Übertragungszeit verlängern",
+    ),
+    "v3_lbl_group_reject_close": MessageLookupByLibrary.simpleMessage(
+      "Gruppenablehnungsbenachrichtigung schließen",
+    ),
+    "v3_lbl_internet_connection_only_error": MessageLookupByLibrary.simpleMessage(
+      "Verbindungsfehler, bitte überprüfen Sie die Netzwerkeinstellungen des Geräts.",
+    ),
+    "v3_lbl_internet_connection_warning": MessageLookupByLibrary.simpleMessage(
       "Nur lokale Verbindung",
     ),
-        "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
-          "Sprache auswählen",
-        ),
-        "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
-          "%s auswählen",
-        ),
-        "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
-          "Dialog abbrechen",
-        ),
-        "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
-          "Dialog bestätigen",
-        ),
-        "v3_lbl_minimal_quick_connect_menu":
-            MessageLookupByLibrary.simpleMessage(
-          "Schnellverbindungsmenü minimieren",
-        ),
-        "v3_lbl_minimal_streaming_qrcode_menu":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_main_language_title": MessageLookupByLibrary.simpleMessage(
+      "Sprache auswählen",
+    ),
+    "v3_lbl_main_language_title_item": MessageLookupByLibrary.simpleMessage(
+      "%s auswählen",
+    ),
+    "v3_lbl_message_dialog_cancel": MessageLookupByLibrary.simpleMessage(
+      "Dialog abbrechen",
+    ),
+    "v3_lbl_message_dialog_confirm": MessageLookupByLibrary.simpleMessage(
+      "Dialog bestätigen",
+    ),
+    "v3_lbl_minimal_quick_connect_menu": MessageLookupByLibrary.simpleMessage(
+      "Schnellverbindungsmenü minimieren",
+    ),
+    "v3_lbl_minimal_streaming_qrcode_menu":
+        MessageLookupByLibrary.simpleMessage(
           "Minimieren Streaming QR-Code-Menü",
         ),
-        "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_moderator_toggle": MessageLookupByLibrary.simpleMessage(
       "Moderatormodus umschalten",
     ),
-        "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
-          "Menü der Download-Sender-App öffnen",
-        ),
-        "v3_lbl_open_feature_set_cast_device":
-            MessageLookupByLibrary.simpleMessage(
-          "Geräteliste für Übertragung öffnen",
-        ),
-        "v3_lbl_open_feature_set_moderator":
-            MessageLookupByLibrary.simpleMessage(
-          "Moderatorenliste öffnen",
-        ),
-        "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
-          "Hilfe-Center-Menü öffnen",
-        ),
-        "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_open_download_app_menu": MessageLookupByLibrary.simpleMessage(
+      "Menü der Download-Sender-App öffnen",
+    ),
+    "v3_lbl_open_feature_set_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Geräteliste für Übertragung öffnen",
+    ),
+    "v3_lbl_open_feature_set_moderator": MessageLookupByLibrary.simpleMessage(
+      "Moderatorenliste öffnen",
+    ),
+    "v3_lbl_open_help_center": MessageLookupByLibrary.simpleMessage(
+      "Hilfe-Center-Menü öffnen",
+    ),
+    "v3_lbl_open_menu_settings": MessageLookupByLibrary.simpleMessage(
       "Einstellungsmenü öffnen",
     ),
-        "v3_lbl_open_streaming_qrcode_menu":
-            MessageLookupByLibrary.simpleMessage(
-          "Streaming-QR-Code-Menü öffnen",
-        ),
-        "v3_lbl_open_streaming_shortcut_menu":
-            MessageLookupByLibrary.simpleMessage(
-          "Kontextmenü für Streaming öffnen\n",
-        ),
-        "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
-          "Schwebende Registerkarte mit Verbindungsinformationen",
-        ),
-        "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
-          "Overlay-Menü erweitern",
-        ),
-        "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
-          "Overlay-Menü minimieren",
-        ),
-        "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
-          "Gerät an diesen Teilnehmer übertragen",
-        ),
-        "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
-          "Teilnehmerverbindung schließen",
-        ),
-        "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_open_streaming_qrcode_menu": MessageLookupByLibrary.simpleMessage(
+      "Streaming-QR-Code-Menü öffnen",
+    ),
+    "v3_lbl_open_streaming_shortcut_menu": MessageLookupByLibrary.simpleMessage(
+      "Kontextmenü für Streaming öffnen\n",
+    ),
+    "v3_lbl_overlay_bring_app_to_top": MessageLookupByLibrary.simpleMessage(
+      "Schwebende Registerkarte mit Verbindungsinformationen",
+    ),
+    "v3_lbl_overlay_menu_expand": MessageLookupByLibrary.simpleMessage(
+      "Overlay-Menü erweitern",
+    ),
+    "v3_lbl_overlay_menu_minimize": MessageLookupByLibrary.simpleMessage(
+      "Overlay-Menü minimieren",
+    ),
+    "v3_lbl_participant_cast_device": MessageLookupByLibrary.simpleMessage(
+      "Gerät an diesen Teilnehmer übertragen",
+    ),
+    "v3_lbl_participant_close": MessageLookupByLibrary.simpleMessage(
+      "Teilnehmerverbindung schließen",
+    ),
+    "v3_lbl_participant_disconnect": MessageLookupByLibrary.simpleMessage(
       "Diesen Teilnehmer trennen",
     ),
-        "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
-          "Teilnehmerspiegelverbindung schließen",
-        ),
-        "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_participant_mirror_close": MessageLookupByLibrary.simpleMessage(
+      "Teilnehmerspiegelverbindung schließen",
+    ),
+    "v3_lbl_participant_mirror_share": MessageLookupByLibrary.simpleMessage(
       "An den Spiegel dieses Teilnehmers weiterleiten",
     ),
-        "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
-          "Streaming des Spiegelteilnehmers stoppen",
-        ),
-        "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
-          "Auf den Bildschirm dieses Teilnehmers übertragen",
-        ),
-        "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
-          "Streaming des Teilnehmers beenden",
-        ),
-        "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
-          "Touchback für diesen Teilnehmer aktivieren",
-        ),
-        "v3_lbl_participant_touch_back_disable":
+    "v3_lbl_participant_mirror_stop": MessageLookupByLibrary.simpleMessage(
+      "Streaming des Spiegelteilnehmers stoppen",
+    ),
+    "v3_lbl_participant_share": MessageLookupByLibrary.simpleMessage(
+      "Auf den Bildschirm dieses Teilnehmers übertragen",
+    ),
+    "v3_lbl_participant_stop": MessageLookupByLibrary.simpleMessage(
+      "Streaming des Teilnehmers beenden",
+    ),
+    "v3_lbl_participant_touch_back": MessageLookupByLibrary.simpleMessage(
+      "Touchback für diesen Teilnehmer aktivieren",
+    ),
+    "v3_lbl_participant_touch_back_disable":
         MessageLookupByLibrary.simpleMessage(
           "Touchback für diesen Teilnehmer deaktivieren",
         ),
-        "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
-          "Präsentationssteuerung erweitern",
-        ),
-        "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
-          "Präsentationssteuerung minimieren",
-        ),
-        "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
-          "Präsentation stummschalten",
-        ),
-        "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
-          "Präsentation stoppen",
-        ),
-        "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
-          "Barrierefreiheit",
-        ),
-        "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
-          "Zur vorherigen Seite zurückkehren",
-        ),
-        "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
-          "Broadcast-Einstellungsmenü öffnen",
-        ),
-        "v3_lbl_settings_broadcast_boards":
-            MessageLookupByLibrary.simpleMessage(
-          "Broadcast-Boards-Menü öffnen",
-        ),
-        "v3_lbl_settings_broadcast_devices":
-            MessageLookupByLibrary.simpleMessage(
-          "Broadcast-Geräte-Menü öffnen",
-        ),
-        "v3_lbl_settings_broadcast_to_display_group":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
+      "Präsentationssteuerung erweitern",
+    ),
+    "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
+      "Präsentationssteuerung minimieren",
+    ),
+    "v3_lbl_resizable_mute": MessageLookupByLibrary.simpleMessage(
+      "Präsentation stummschalten",
+    ),
+    "v3_lbl_resizable_stop": MessageLookupByLibrary.simpleMessage(
+      "Präsentation stoppen",
+    ),
+    "v3_lbl_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Barrierefreiheit",
+    ),
+    "v3_lbl_settings_back_icon": MessageLookupByLibrary.simpleMessage(
+      "Zur vorherigen Seite zurückkehren",
+    ),
+    "v3_lbl_settings_broadcast": MessageLookupByLibrary.simpleMessage(
+      "Broadcast-Einstellungsmenü öffnen",
+    ),
+    "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
+      "Broadcast-Boards-Menü öffnen",
+    ),
+    "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
+      "Broadcast-Geräte-Menü öffnen",
+    ),
+    "v3_lbl_settings_broadcast_to_display_group":
+        MessageLookupByLibrary.simpleMessage(
           "Broadcast-zu-Anzeigegruppen-Menü öffnen",
         ),
-        "v3_lbl_settings_broadcast_to_display_group_cast":
-            MessageLookupByLibrary.simpleMessage("Übertragen"),
-        "v3_lbl_settings_broadcast_to_display_group_checkbox":
-            MessageLookupByLibrary.simpleMessage("%s auswählen"),
-        "v3_lbl_settings_broadcast_to_display_group_confirm":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_broadcast_to_display_group_cast":
+        MessageLookupByLibrary.simpleMessage("Übertragen"),
+    "v3_lbl_settings_broadcast_to_display_group_checkbox":
+        MessageLookupByLibrary.simpleMessage("%s auswählen"),
+    "v3_lbl_settings_broadcast_to_display_group_confirm":
+        MessageLookupByLibrary.simpleMessage(
           "Bestätigen Sie, dass kein Gerät ausgewählt ist.",
         ),
-        "v3_lbl_settings_broadcast_to_display_group_item":
-            MessageLookupByLibrary.simpleMessage("%s auswählen"),
-        "v3_lbl_settings_broadcast_to_display_group_save":
-            MessageLookupByLibrary.simpleMessage("Speichern"),
-        "v3_lbl_settings_broadcast_to_display_group_type":
-            MessageLookupByLibrary.simpleMessage("%s auswählen"),
-        "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
-          "Einstellungen-Menü schließen",
-        ),
-        "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
-          "Menü für Konnektivitätseinstellungen öffnen",
-        ),
-        "v3_lbl_settings_connectivity_item":
-            MessageLookupByLibrary.simpleMessage(
-          "%s auswählen",
-        ),
-        "v3_lbl_settings_device_authorize_mode":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_broadcast_to_display_group_item":
+        MessageLookupByLibrary.simpleMessage("%s auswählen"),
+    "v3_lbl_settings_broadcast_to_display_group_save":
+        MessageLookupByLibrary.simpleMessage("Speichern"),
+    "v3_lbl_settings_broadcast_to_display_group_type":
+        MessageLookupByLibrary.simpleMessage("%s auswählen"),
+    "v3_lbl_settings_close_icon": MessageLookupByLibrary.simpleMessage(
+      "Einstellungen-Menü schließen",
+    ),
+    "v3_lbl_settings_connectivity": MessageLookupByLibrary.simpleMessage(
+      "Menü für Konnektivitätseinstellungen öffnen",
+    ),
+    "v3_lbl_settings_connectivity_item": MessageLookupByLibrary.simpleMessage(
+      "%s auswählen",
+    ),
+    "v3_lbl_settings_device_authorize_mode":
+        MessageLookupByLibrary.simpleMessage(
           "Autorisierungsmodus ein- / ausschalten",
         ),
-        "v3_lbl_settings_device_auto_fill_otp":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_device_auto_fill_otp":
+        MessageLookupByLibrary.simpleMessage(
           "Auto-Fill-OTP-Modus ein- / ausschalten",
         ),
-        "v3_lbl_settings_device_high_image_quality":
-            MessageLookupByLibrary.simpleMessage("Hohe Bildqualität"),
-        "v3_lbl_settings_device_launch_on_startup":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Hohe Bildqualität"),
+    "v3_lbl_settings_device_launch_on_startup":
+        MessageLookupByLibrary.simpleMessage(
           "Auto-Startmodus ein- / ausschalten",
         ),
-        "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
-          "Gerätenamen ändern",
-        ),
-        "v3_lbl_settings_device_name_close":
-            MessageLookupByLibrary.simpleMessage(
-          "Gerätenamen-Einstellung schließen",
-        ),
-        "v3_lbl_settings_device_name_save":
-            MessageLookupByLibrary.simpleMessage(
-          "Gerätenamen speichern",
-        ),
-        "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
-          "Geräteeinstellungsmenü öffnen",
-        ),
-        "v3_lbl_settings_device_smart_scaling":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
+      "Gerätenamen ändern",
+    ),
+    "v3_lbl_settings_device_name_close": MessageLookupByLibrary.simpleMessage(
+      "Gerätenamen-Einstellung schließen",
+    ),
+    "v3_lbl_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+      "Gerätenamen speichern",
+    ),
+    "v3_lbl_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+      "Geräteeinstellungsmenü öffnen",
+    ),
+    "v3_lbl_settings_device_smart_scaling":
+        MessageLookupByLibrary.simpleMessage(
           "Smart Scaling-Umschalter ein- / ausschalten",
         ),
-        "v3_lbl_settings_enter_device_name":
-            MessageLookupByLibrary.simpleMessage(
-          "Gerätenamen eingeben",
-        ),
-        "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
-          "Dropdown-Menü für Bildschirmübertragung öffnen",
-        ),
-        "v3_lbl_settings_invite_group_item":
-            MessageLookupByLibrary.simpleMessage(
-          "%s auswählen",
-        ),
-        "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
-          "Wissensdatenbank",
-        ),
-        "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
-          "Menü für die Einstellung der Rechtsgrundlage öffnen",
-        ),
-        "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_enter_device_name": MessageLookupByLibrary.simpleMessage(
+      "Gerätenamen eingeben",
+    ),
+    "v3_lbl_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+      "Dropdown-Menü für Bildschirmübertragung öffnen",
+    ),
+    "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
+      "%s auswählen",
+    ),
+    "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Wissensdatenbank",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+      "Menü für die Einstellung der Rechtsgrundlage öffnen",
+    ),
+    "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
       "Einstellungsmenü ist gesperrt",
     ),
-        "v3_lbl_settings_mirroring_auto_accept":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_mirroring_auto_accept":
+        MessageLookupByLibrary.simpleMessage(
           "Automatische Annahme aktivieren / deaktivieren",
         ),
-        "v3_lbl_settings_mirroring_require_passcode":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_mirroring_require_passcode":
+        MessageLookupByLibrary.simpleMessage(
           "Passcode aktivieren / deaktivieren",
         ),
-        "v3_lbl_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
           "Weitere Informationen zum Senden an eine Anzeigegruppe",
         ),
-        "v3_lbl_settings_open_source_license":
-            MessageLookupByLibrary.simpleMessage(
-          "%s auswählen",
-        ),
-        "v3_lbl_settings_show_display_code":
-            MessageLookupByLibrary.simpleMessage(
-          "Displaycode-Umschalter ein- / ausschalten",
-        ),
-        "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
-          "\"Was gibt´s neues?\" Menü öffnen",
-        ),
-        "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
-          "Symbol „Neuigkeiten“",
-        ),
-        "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
-          "AirPlay ein- / ausschalten",
-        ),
-        "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
-          "Google Cast ein- / ausschalten",
-        ),
-        "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
-          "Miracast ein- / ausschalten",
-        ),
-        "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
-          "Menü für Bildschirmsynchronisierung öffnen",
-        ),
-        "v3_lbl_streaming_airplay_touchback":
-            MessageLookupByLibrary.simpleMessage(
-          "Airplay-Touchback",
-        ),
-        "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
-          "Nächste Seite",
-        ),
-        "v3_lbl_streaming_shortcut_airplay_toggle":
-            MessageLookupByLibrary.simpleMessage("AirPlay-Umschalter"),
-        "v3_lbl_streaming_shortcut_cast_device_toggle":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
+      "%s auswählen",
+    ),
+    "v3_lbl_settings_show_display_code": MessageLookupByLibrary.simpleMessage(
+      "Displaycode-Umschalter ein- / ausschalten",
+    ),
+    "v3_lbl_settings_whats_new": MessageLookupByLibrary.simpleMessage(
+      "\"Was gibt´s neues?\" Menü öffnen",
+    ),
+    "v3_lbl_settings_whats_new_icon": MessageLookupByLibrary.simpleMessage(
+      "Symbol „Neuigkeiten“",
+    ),
+    "v3_lbl_shortcuts_airplay": MessageLookupByLibrary.simpleMessage(
+      "AirPlay ein- / ausschalten",
+    ),
+    "v3_lbl_shortcuts_google_cast": MessageLookupByLibrary.simpleMessage(
+      "Google Cast ein- / ausschalten",
+    ),
+    "v3_lbl_shortcuts_miracast": MessageLookupByLibrary.simpleMessage(
+      "Miracast ein- / ausschalten",
+    ),
+    "v3_lbl_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
+      "Menü für Bildschirmsynchronisierung öffnen",
+    ),
+    "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
+      "Airplay-Touchback",
+    ),
+    "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+      "Nächste Seite",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
+        MessageLookupByLibrary.simpleMessage("AirPlay-Umschalter"),
+    "v3_lbl_streaming_shortcut_cast_device_toggle":
+        MessageLookupByLibrary.simpleMessage(
           "Auf Geräte übertragen umschalten",
         ),
-        "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_streaming_shortcut_expand": MessageLookupByLibrary.simpleMessage(
       "Streaming-Funktionen erweitern",
     ),
-        "v3_lbl_streaming_shortcut_google_cast_toggle":
-            MessageLookupByLibrary.simpleMessage("Google Cast umschalten"),
-        "v3_lbl_streaming_shortcut_menu_locked":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_streaming_shortcut_google_cast_toggle":
+        MessageLookupByLibrary.simpleMessage("Google Cast umschalten"),
+    "v3_lbl_streaming_shortcut_menu_locked":
+        MessageLookupByLibrary.simpleMessage(
           "Das Kontextmenü für Streaming ist gesperrt.",
         ),
-        "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_streaming_shortcut_minimize": MessageLookupByLibrary.simpleMessage(
       "Streaming-Funktionen ausblenden",
     ),
-        "v3_lbl_streaming_shortcut_miracast_toggle":
-            MessageLookupByLibrary.simpleMessage("Miracast-Umschaltung"),
-        "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_streaming_shortcut_miracast_toggle":
+        MessageLookupByLibrary.simpleMessage("Miracast-Umschaltung"),
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Streaming-Ansicht erweitern",
     ),
     "v3_lbl_streaming_view_function_expand":
@@ -794,19 +768,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_view_unmute": MessageLookupByLibrary.simpleMessage(
       "Unmute audio",
     ),
-        "v3_lbl_touchback_one_device_cancel":
-            MessageLookupByLibrary.simpleMessage(
-          "Dialogfeld abbrechen",
-        ),
-        "v3_lbl_touchback_one_device_confirm":
-            MessageLookupByLibrary.simpleMessage(
-          "Dialogfeld bestätigen",
-        ),
-        "v3_lbl_touchback_restart_bluetooth_btn_cancel":
-            MessageLookupByLibrary.simpleMessage("Abbrechen"),
-        "v3_lbl_touchback_restart_bluetooth_btn_restart":
-            MessageLookupByLibrary.simpleMessage("Neustart"),
-        "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_touchback_one_device_cancel": MessageLookupByLibrary.simpleMessage(
+      "Dialogfeld abbrechen",
+    ),
+    "v3_lbl_touchback_one_device_confirm": MessageLookupByLibrary.simpleMessage(
+      "Dialogfeld bestätigen",
+    ),
+    "v3_lbl_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Abbrechen"),
+    "v3_lbl_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Neustart"),
+    "v3_main_connection_dialog_close": MessageLookupByLibrary.simpleMessage(
       "Schließen",
     ),
     "v3_main_internet_connection_only": MessageLookupByLibrary.simpleMessage(
@@ -826,14 +798,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
       "Es konnte keine Internetverbindung erkannt werden. Bitte verbinden Sie sich mit einem WLAN- oder Intranet-Netzwerk und versuchen Sie es erneut.",
     ),
-        "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
-          "Miracast ist jetzt nicht verfügbar. Der aktuelle WLAN-Kanal unterstützt keine Bildschirmübertragung.",
-        ),
-        "v3_miracast_uibc_not_supported_message":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
+      "Miracast ist jetzt nicht verfügbar. Der aktuelle WLAN-Kanal unterstützt keine Bildschirmübertragung.",
+    ),
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
           "Diese Quelle unterstützt kein Miracast-Touchback",
         ),
-        "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
+    "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Passcode",
     ),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
@@ -905,10 +877,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
       "Passcode eingeben, um Einstellungen zu entsperren",
     ),
-        "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
-          "Barrierefreiheit",
-        ),
-        "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
+    "v3_settings_accessibility": MessageLookupByLibrary.simpleMessage(
+      "Barrierefreiheit",
+    ),
+    "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
       "Quell-IFP-Bildschirm die ganze Zeit übertragen.",
     ),
     "v3_settings_broadcast": MessageLookupByLibrary.simpleMessage(
@@ -963,33 +935,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
       "Aktivieren Sie die Ein-Klick-Verbindung, wenn dieses Gerät im Schnellverbindungsmenü der Absender-App ausgewählt ist.",
     ),
-        "v3_settings_device_high_image_quality":
-            MessageLookupByLibrary.simpleMessage("Hohe Bildqualität"),
-        "v3_settings_device_high_image_quality_off_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Hohe Bildqualität"),
+    "v3_settings_device_high_image_quality_off_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Maximale QHD (2K) Bildschirmfreigabe, abhängig von der Bildschirmauflösung des Absenders.",
         ),
-        "v3_settings_device_high_image_quality_on_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality_on_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Maximale UHD (4K) Bildschirmfreigabe vom Web-Absender und 3K+ vom Windows- und macOS-Absender, abhängig von der Bildschirmauflösung des Absenders. Erfordert ein hochwertiges Netzwerk.",
         ),
-        "v3_settings_device_launch_on_startup":
+    "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("AirSync beim Start starten"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Gerätename",
     ),
-        "v3_settings_device_name_empty_error":
-            MessageLookupByLibrary.simpleMessage(
-          "Der Gerätename darf nicht leer sein",
-        ),
-        "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_name_empty_error": MessageLookupByLibrary.simpleMessage(
+      "Der Gerätename darf nicht leer sein",
+    ),
+    "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Speichern",
     ),
-        "v3_settings_device_not_supported":
-            MessageLookupByLibrary.simpleMessage(
-          "Die Geräteversion wird nicht unterstützt",
-        ),
-        "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Die Geräteversion wird nicht unterstützt",
+    ),
+    "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Geräteeinstellung",
     ),
     "v3_settings_device_show_display_code":
@@ -1063,20 +1033,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
       "ViewSonic verpflichtet sich, Ihre Privatsphäre zu schützen und behandelt den Umgang mit personenbezogenen Daten mit großer Sorgfalt. Die nachstehende Datenschutzrichtlinie erläutert, wie ViewSonic Ihre personenbezogenen Daten behandelt, nachdem sie von ViewSonic durch Ihre Nutzung der Website erfasst wurden. ViewSonic wahrt die Vertraulichkeit Ihrer Daten durch den Einsatz von Sicherheitstechnologien und hält sich an Richtlinien, die eine unbefugte Nutzung Ihrer personenbezogenen Daten verhindern. Durch die Nutzung dieser Website erklären Sie sich mit der Erfassung und Nutzung Ihrer Daten einverstanden.\n\nWebsites, auf die Sie von ViewSonic.com aus verlinken, haben möglicherweise eigene Datenschutzrichtlinien, die von denen von ViewSonic abweichen können. Bitte lesen Sie die Datenschutzrichtlinien dieser Websites, um detaillierte Informationen darüber zu erhalten, wie sie die während Ihres Besuchs erfassten Daten verwenden können.\n\nBitte klicken Sie auf die folgenden Links, um mehr über unsere Datenschutzrichtlinie zu erfahren.",
     ),
-        "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
-          "Textgröße ändern",
-        ),
-        "v3_settings_resize_text_size_extra_large":
-            MessageLookupByLibrary.simpleMessage("XLarge"),
-        "v3_settings_resize_text_size_large":
-            MessageLookupByLibrary.simpleMessage(
-          "Groß",
-        ),
-        "v3_settings_resize_text_size_normal":
-            MessageLookupByLibrary.simpleMessage(
-          "Normal",
-        ),
-        "v3_settings_version": m1,
+    "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
+      "Textgröße ändern",
+    ),
+    "v3_settings_resize_text_size_extra_large":
+        MessageLookupByLibrary.simpleMessage("XLarge"),
+    "v3_settings_resize_text_size_large": MessageLookupByLibrary.simpleMessage(
+      "Groß",
+    ),
+    "v3_settings_resize_text_size_normal": MessageLookupByLibrary.simpleMessage(
+      "Normal",
+    ),
+    "v3_settings_version": m1,
     "v3_settings_whats_new": MessageLookupByLibrary.simpleMessage(
       "Was ist neu",
     ),
@@ -1100,58 +1068,56 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_shortcuts_mirroring": MessageLookupByLibrary.simpleMessage(
       "Spiegelung",
     ),
-        "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
-          "Sie können jeweils nur ein Gerät per Touchback verbinden.",
-        ),
-        "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
-          "Touchback zu %s?",
-        ),
-        "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
-          "TouchBack ist deaktiviert.",
-        ),
-        "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
-          "Kopplung fehlgeschlagen. TouchBack ist nicht aktiviert. Bitte versuchen Sie es erneut.",
-        ),
-        "v3_touchback_restart_bluetooth_btn_cancel":
-            MessageLookupByLibrary.simpleMessage("Abbrechen"),
-        "v3_touchback_restart_bluetooth_btn_restart":
-            MessageLookupByLibrary.simpleMessage("Neustart"),
-        "v3_touchback_restart_bluetooth_message":
-            MessageLookupByLibrary.simpleMessage(
-          "Zeitüberschreitung der Operation. Bitte schalten Sie die Bluetooth-Funktion auf dem großen Bildschirm aus und starten Sie sie neu. Starten Sie dann den Touchback neu.",
-        ),
-        "v3_touchback_restart_bluetooth_title":
-            MessageLookupByLibrary.simpleMessage(
-          "Zeitüberschreitung bei der Operation, bitte starten Sie Bluetooth neu",
-        ),
-        "v3_touchback_state_deviceFinding_message":
-            MessageLookupByLibrary.simpleMessage("Gerätesuche"),
-        "v3_touchback_state_deviceFoundSuccess_message":
-            MessageLookupByLibrary.simpleMessage("Gerät erfolgreich gefunden"),
-        "v3_touchback_state_devicePairedSuccess_message":
-            MessageLookupByLibrary.simpleMessage("Gerät erfolgreich gekoppelt"),
-        "v3_touchback_state_devicePairing_message":
-            MessageLookupByLibrary.simpleMessage("Gerätekopplung"),
-        "v3_touchback_state_hidConnected_message":
-            MessageLookupByLibrary.simpleMessage("Hid verbunden"),
-        "v3_touchback_state_hidConnecting_message":
-            MessageLookupByLibrary.simpleMessage("Hid verbindet"),
-        "v3_touchback_state_hidProfileServiceStartedSuccess_message":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_touchback_alert_message": MessageLookupByLibrary.simpleMessage(
+      "Sie können jeweils nur ein Gerät per Touchback verbinden.",
+    ),
+    "v3_touchback_alert_title": MessageLookupByLibrary.simpleMessage(
+      "Touchback zu %s?",
+    ),
+    "v3_touchback_disable_message": MessageLookupByLibrary.simpleMessage(
+      "TouchBack ist deaktiviert.",
+    ),
+    "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
+      "Kopplung fehlgeschlagen. TouchBack ist nicht aktiviert. Bitte versuchen Sie es erneut.",
+    ),
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("Abbrechen"),
+    "v3_touchback_restart_bluetooth_btn_restart":
+        MessageLookupByLibrary.simpleMessage("Neustart"),
+    "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
+      "Zeitüberschreitung der Operation. Bitte schalten Sie die Bluetooth-Funktion auf dem großen Bildschirm aus und starten Sie sie neu. Starten Sie dann den Touchback neu.",
+    ),
+    "v3_touchback_restart_bluetooth_title": MessageLookupByLibrary.simpleMessage(
+      "Zeitüberschreitung bei der Operation, bitte starten Sie Bluetooth neu",
+    ),
+    "v3_touchback_state_deviceFinding_message":
+        MessageLookupByLibrary.simpleMessage("Gerätesuche"),
+    "v3_touchback_state_deviceFoundSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Gerät erfolgreich gefunden"),
+    "v3_touchback_state_devicePairedSuccess_message":
+        MessageLookupByLibrary.simpleMessage("Gerät erfolgreich gekoppelt"),
+    "v3_touchback_state_devicePairing_message":
+        MessageLookupByLibrary.simpleMessage("Gerätekopplung"),
+    "v3_touchback_state_hidConnected_message":
+        MessageLookupByLibrary.simpleMessage("Hid verbunden"),
+    "v3_touchback_state_hidConnecting_message":
+        MessageLookupByLibrary.simpleMessage("Hid verbindet"),
+    "v3_touchback_state_hidProfileServiceStartedSuccess_message":
+        MessageLookupByLibrary.simpleMessage(
           "Hid-Profil-Dienst wurde erfolgreich gestartet",
         ),
-        "v3_touchback_state_hidProfileServiceStarting_message":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_touchback_state_hidProfileServiceStarting_message":
+        MessageLookupByLibrary.simpleMessage(
           "Hid-Profil-Dienst wird gestartet",
         ),
-        "v3_touchback_state_initialized_message":
-            MessageLookupByLibrary.simpleMessage("Initialisiert"),
-        "v3_touchback_state_initializing_message":
-            MessageLookupByLibrary.simpleMessage("Initialisierung"),
-        "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
-          "Sie können %s jetzt per Fernzugriff vom IFP aus steuern.",
-        ),
-        "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
+    "v3_touchback_state_initialized_message":
+        MessageLookupByLibrary.simpleMessage("Initialisiert"),
+    "v3_touchback_state_initializing_message":
+        MessageLookupByLibrary.simpleMessage("Initialisierung"),
+    "v3_touchback_success_message": MessageLookupByLibrary.simpleMessage(
+      "Sie können %s jetzt per Fernzugriff vom IFP aus steuern.",
+    ),
+    "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
       "Warten, bis dieser Teilnehmer seinen Bildschirm freigibt",
     ),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage(

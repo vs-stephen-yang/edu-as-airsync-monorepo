@@ -208,27 +208,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Avslå",
     ),
-        "v3_authorize_prompt_title_launcher":
-            MessageLookupByLibrary.simpleMessage(
-          "Deltakere ønsker å dele skjermen sin",
-        ),
-        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
-          "Casting pågår",
-        ),
-        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
-          "Casting pågår",
-        ),
-        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("PÅ"),
-        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
-          "Cast til 10-100 enheter",
-        ),
-        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
-          "Antall mottakende enheter kan ikke endres når projiseringen starter.",
-        ),
-        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
-          "Avbryt all projisering for å redigere.",
-        ),
-        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
+      "Deltakere ønsker å dele skjermen sin",
+    ),
+    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+      "Casting pågår",
+    ),
+    "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+      "Casting pågår",
+    ),
+    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("PÅ"),
+    "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Cast til 10-100 enheter",
+    ),
+    "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+      "Antall mottakende enheter kan ikke endres når projiseringen starter.",
+    ),
+    "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+      "Avbryt all projisering for å redigere.",
+    ),
+    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Mottar",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -308,8 +307,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Godta"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Avslå"),
-        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Start"),
-        "v3_eula_title": MessageLookupByLibrary.simpleMessage("Sluttbrukeravtale"),
+    "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Start"),
+    "v3_eula_title": MessageLookupByLibrary.simpleMessage("Sluttbrukeravtale"),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
       "Avbryt",
     ),
@@ -391,16 +390,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_instruction2": MessageLookupByLibrary.simpleMessage(
       "Skriv inn skjermkode",
     ),
-        "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
-          "Vis kode",
-        ),
-        "v3_instruction3": MessageLookupByLibrary.simpleMessage(
+    "v3_instruction2_onethird": MessageLookupByLibrary.simpleMessage(
+      "Vis kode",
+    ),
+    "v3_instruction3": MessageLookupByLibrary.simpleMessage(
       "Skriv inn engangspassord",
     ),
-        "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
-          "Engangspassord",
-        ),
-        "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
+    "v3_instruction3_onethird": MessageLookupByLibrary.simpleMessage(
+      "Engangspassord",
+    ),
+    "v3_instruction_share_screen": MessageLookupByLibrary.simpleMessage(
       "Del skjermene dine",
     ),
     "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
@@ -418,26 +417,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Avslå forespørsel",
     ),
-        "v3_lbl_broadcast_multicast_checkbox":
-            MessageLookupByLibrary.simpleMessage(
-          "Cast til 10-100 enheter",
-        ),
-        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Cast til 10-100 enheter",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Lukk cast-enhetstilkobling",
     ),
-        "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
-          "neste side",
-        ),
-        "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
-          "forrige side",
-        ),
-        "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
-          "sorter stigende",
-        ),
-        "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
-          "sorter ned",
-        ),
-        "v3_lbl_cast_device_touchback_disable":
+    "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
+      "neste side",
+    ),
+    "v3_lbl_cast_device_previous": MessageLookupByLibrary.simpleMessage(
+      "forrige side",
+    ),
+    "v3_lbl_cast_device_sort_asc": MessageLookupByLibrary.simpleMessage(
+      "sorter stigende",
+    ),
+    "v3_lbl_cast_device_sort_desc": MessageLookupByLibrary.simpleMessage(
+      "sorter ned",
+    ),
+    "v3_lbl_cast_device_touchback_disable":
         MessageLookupByLibrary.simpleMessage(
           "Deaktiver touchback for cast-enhet",
         ),
@@ -462,8 +460,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_eula_agree": MessageLookupByLibrary.simpleMessage("Godta EULA"),
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage("Avvis EULA"),
-        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Start"),
-        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Start"),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Avbryt avslutning av moderator-modus",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -624,9 +622,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Slå på/av autorisasjonsmodus"),
     "v3_lbl_settings_device_auto_fill_otp":
         MessageLookupByLibrary.simpleMessage("Slå på/av autofyll OTP-modus"),
-        "v3_lbl_settings_device_high_image_quality":
-            MessageLookupByLibrary.simpleMessage("Høy bildekvalitet"),
-        "v3_lbl_settings_device_launch_on_startup":
+    "v3_lbl_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Høy bildekvalitet"),
+    "v3_lbl_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Slå på/av autooppstartmodus"),
     "v3_lbl_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Endre enhetsnavn",
@@ -653,10 +651,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Velg %s",
     ),
-        "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
-          "Knowledge Base",
-        ),
-        "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Knowledge Base",
+    ),
+    "v3_lbl_settings_legal_policy": MessageLookupByLibrary.simpleMessage(
       "Åpne juridisk policy-innstillingsmeny",
     ),
     "v3_lbl_settings_menu_locked": MessageLookupByLibrary.simpleMessage(
@@ -697,10 +695,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_streaming_airplay_touchback": MessageLookupByLibrary.simpleMessage(
       "AirPlay touchback",
     ),
-        "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
-          "neste side",
-        ),
-        "v3_lbl_streaming_shortcut_airplay_toggle":
+    "v3_lbl_streaming_page_control": MessageLookupByLibrary.simpleMessage(
+      "neste side",
+    ),
+    "v3_lbl_streaming_shortcut_airplay_toggle":
         MessageLookupByLibrary.simpleMessage("AirPlay-bryter"),
     "v3_lbl_streaming_shortcut_cast_device_toggle":
         MessageLookupByLibrary.simpleMessage("Cast til enheter-bryter"),
@@ -769,11 +767,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_miracast_not_support": MessageLookupByLibrary.simpleMessage(
       "Miracast ikke tilgjengelig nå. Nåværende Wi-Fi-kanal støtter ikke skjermcasting.",
     ),
-        "v3_miracast_uibc_not_supported_message":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_miracast_uibc_not_supported_message":
+        MessageLookupByLibrary.simpleMessage(
           "Denne kilden støtter ikke Miracast touchback",
         ),
-        "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
+    "v3_mirror_request_passcode": MessageLookupByLibrary.simpleMessage(
       "Passord",
     ),
     "v3_moderator_disable_mirror_cancel": MessageLookupByLibrary.simpleMessage(
@@ -899,17 +897,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_auto_fill_otp_desc": MessageLookupByLibrary.simpleMessage(
       "Aktiver ett-klikks tilkobling når du velger en enhet fra enhetslisten.",
     ),
-        "v3_settings_device_high_image_quality":
-            MessageLookupByLibrary.simpleMessage("Høy bildekvalitet"),
-        "v3_settings_device_high_image_quality_off_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality":
+        MessageLookupByLibrary.simpleMessage("Høy bildekvalitet"),
+    "v3_settings_device_high_image_quality_off_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Maksimal QHD (2K) skjermdeling avhengig av senderens skjermoppløsning.",
         ),
-        "v3_settings_device_high_image_quality_on_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality_on_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Maksimal UHD (4K) skjermdeling fra websender og 3K+ fra Windows- og macOS-sender avhengig av senderens skjermoppløsning. Krever et høykvalitetsnettverk.",
         ),
-        "v3_settings_device_launch_on_startup":
+    "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Start AirSync ved oppstart"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Enhetsnavn",
@@ -920,11 +918,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_device_name_save": MessageLookupByLibrary.simpleMessage(
       "Lagre",
     ),
-        "v3_settings_device_not_supported":
-            MessageLookupByLibrary.simpleMessage(
-          "Enhetsversjonen støttes ikke",
-        ),
-        "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_not_supported": MessageLookupByLibrary.simpleMessage(
+      "Enhetsversjonen støttes ikke",
+    ),
+    "v3_settings_device_setting": MessageLookupByLibrary.simpleMessage(
       "Enhetsinnstilling",
     ),
     "v3_settings_device_show_display_code":

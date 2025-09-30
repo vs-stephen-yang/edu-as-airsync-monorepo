@@ -213,11 +213,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Reddet",
     ),
-        "v3_authorize_prompt_title_launcher":
-            MessageLookupByLibrary.simpleMessage(
-          "Katılımcılar ekranlarını paylaşmak istiyor",
-        ),
-        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
+      "Katılımcılar ekranlarını paylaşmak istiyor",
+    ),
+    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
       "Yayın devam ediyor",
     ),
     "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
@@ -313,8 +312,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Kabul Et"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Kabul Etme"),
-        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Başlat"),
-        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+    "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Başlat"),
+    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Son Kullanıcı Lisans Sözleşmesi",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -476,8 +475,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "EULA\'yı kabul etme",
     ),
-        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Başlat"),
-        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Başlat"),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Moderatör modundan çıkışı iptal et",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -1056,9 +1055,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Eşleştirme başarısız oldu. Dokunmatik Geri Dönüş etkinleştirilmedi. Lütfen tekrar deneyin",
     ),
-        "v3_touchback_restart_bluetooth_btn_cancel":
-            MessageLookupByLibrary.simpleMessage("İptal"),
-        "v3_touchback_restart_bluetooth_btn_restart":
+    "v3_touchback_restart_bluetooth_btn_cancel":
+        MessageLookupByLibrary.simpleMessage("İptal"),
+    "v3_touchback_restart_bluetooth_btn_restart":
         MessageLookupByLibrary.simpleMessage("Yeniden Başlat"),
     "v3_touchback_restart_bluetooth_message": MessageLookupByLibrary.simpleMessage(
       "İşlem zaman aşımına uğradı. Lütfen büyük ekrandaki Bluetooth işlevini kapatıp yeniden başlatın, ardından dokunmatik geri dönüşü yeniden başlatın.",

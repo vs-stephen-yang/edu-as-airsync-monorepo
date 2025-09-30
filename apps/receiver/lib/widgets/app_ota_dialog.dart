@@ -7,7 +7,6 @@ import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
-import 'package:display_flutter/widgets/v3_global_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -51,7 +50,6 @@ class AppOTADialogState extends State<AppOTADialog>
       case UpdateStatus.updateDownloading:
         if (progress == -1) {
           FlutterNativeSplash.remove();
-          await GlobalToast.show('updateDownloading');
           // [USER STORY 90944]Silent software OTA，不顯示UI
           // _showOTADialog(status, info);
         } else if (progress != null) {

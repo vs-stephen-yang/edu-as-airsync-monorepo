@@ -214,27 +214,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Refuser",
     ),
-        "v3_authorize_prompt_title_launcher":
-            MessageLookupByLibrary.simpleMessage(
-          "Les participants souhaitent partager leur écran",
-        ),
-        "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
-          "Diffusion en cours",
-        ),
-        "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
-          "Diffusion en cours",
-        ),
-        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ACTIVÉ"),
-        "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
-          "Diffuser vers 10-100 appareils",
-        ),
-        "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
-          "Le nombre d\'appareils de réception ne peut pas être modifié lors de la projection.",
-        ),
-        "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
-          "Interrompre la projection pour modifier.",
-        ),
-        "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
+    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
+      "Les participants souhaitent partager leur écran",
+    ),
+    "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
+      "Diffusion en cours",
+    ),
+    "v3_broadcast_cast_device_on": MessageLookupByLibrary.simpleMessage(
+      "Diffusion en cours",
+    ),
+    "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ACTIVÉ"),
+    "v3_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Diffuser vers 10-100 appareils",
+    ),
+    "v3_broadcast_multicast_desc": MessageLookupByLibrary.simpleMessage(
+      "Le nombre d\'appareils de réception ne peut pas être modifié lors de la projection.",
+    ),
+    "v3_broadcast_multicast_warn": MessageLookupByLibrary.simpleMessage(
+      "Interrompre la projection pour modifier.",
+    ),
+    "v3_cast_to_device_Receiving": MessageLookupByLibrary.simpleMessage(
       "Réception",
     ),
     "v3_cast_to_device_list_msg": MessageLookupByLibrary.simpleMessage(
@@ -314,8 +313,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Accepter"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Refuser"),
-        "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Démarrer"),
-        "v3_eula_title": MessageLookupByLibrary.simpleMessage(
+    "v3_eula_launch": MessageLookupByLibrary.simpleMessage("Démarrer"),
+    "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Contrat de licence utilisateur final",
     ),
     "v3_exit_moderator_mode_cancel": MessageLookupByLibrary.simpleMessage(
@@ -426,11 +425,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Refuser la demande",
     ),
-        "v3_lbl_broadcast_multicast_checkbox":
-            MessageLookupByLibrary.simpleMessage(
-          "Diffuser vers 10-100 appareils",
-        ),
-        "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_broadcast_multicast_checkbox": MessageLookupByLibrary.simpleMessage(
+      "Diffuser vers 10-100 appareils",
+    ),
+    "v3_lbl_cast_device_close": MessageLookupByLibrary.simpleMessage(
       "Fermer la connexion de l\'appareil de diffusion",
     ),
     "v3_lbl_cast_device_next": MessageLookupByLibrary.simpleMessage(
@@ -478,8 +476,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_eula_disagree": MessageLookupByLibrary.simpleMessage(
       "Refuser le CLUF",
     ),
-        "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Démarrer"),
-        "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_eula_launch": MessageLookupByLibrary.simpleMessage("Démarrer"),
+    "v3_lbl_exit_moderator_cancel": MessageLookupByLibrary.simpleMessage(
       "Annuler la sortie du mode modérateur",
     ),
     "v3_lbl_exit_moderator_exit": MessageLookupByLibrary.simpleMessage(
@@ -944,15 +942,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_device_high_image_quality":
         MessageLookupByLibrary.simpleMessage("Haute qualité d\'image"),
-        "v3_settings_device_high_image_quality_off_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality_off_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Partage d\'écran limité à QHD (2K) en fonction de la résolution de l\'écran de l\'expéditeur.",
         ),
-        "v3_settings_device_high_image_quality_on_desc":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_settings_device_high_image_quality_on_desc":
+        MessageLookupByLibrary.simpleMessage(
           "Partage d\'écran limité à UHD (4K) depuis un expéditeur Web et 3K+ de l\'expéditeur Windows et macOS, selon la résolution de l\'écran de l\'expéditeur. Nécessite un réseau haute qualité.",
         ),
-        "v3_settings_device_launch_on_startup":
+    "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Lancer AirSync au démarrage"),
     "v3_settings_device_name": MessageLookupByLibrary.simpleMessage(
       "Nom de l\'appareil",
