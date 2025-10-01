@@ -2,8 +2,11 @@ package com.viewsonic.miracast.rtp;
 
 import android.view.Surface;
 
+import androidx.annotation.Keep;
+
 import com.viewsonic.miracast.net.EventBase;
 
+@Keep
 public class RtpMpegTsPlayer implements AutoCloseable {
   private long handle;
 
