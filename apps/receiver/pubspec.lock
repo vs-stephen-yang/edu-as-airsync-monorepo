@@ -555,8 +555,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.8.2"
-      resolved-ref: "1d0679bc535386ab54b62fe13608c00d01ed4a42"
+      ref: "release-3.8.3"
+      resolved-ref: "43e67e5bdf5ab0bf3b25053d855704da477330fa"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror"
     source: git
     version: "0.0.1"
