@@ -100,7 +100,8 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
           ),
         ],
       );
-    } else if (ratio == SplitScreenRatio.twoThirdsFull ||
+    } else if (ratio.widthFraction >=
+            SplitScreenRatio.twoThirdsFull.widthFraction ||
         !context.isInMultiWindow) {
       return Row(
         children: [
