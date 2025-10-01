@@ -43,6 +43,7 @@ class MultiWindowProvider extends ChangeNotifier {
       final deviceWidth = (resolution?['width'] ?? 0) as int;
       final deviceHeight = (resolution?['height'] ?? 0) as int;
       _realScreenSize = Size(deviceWidth.toDouble(), deviceHeight.toDouble());
+      notifyListeners();
     } catch (e) {
       debugPrint("Failed to get screen resolution: $e");
     }
@@ -280,7 +281,7 @@ extension SplitScreenRatioExt on SplitScreenRatio {
       case SplitScreenRatio.launcherMain:
         return 0.6979; // 1340/1920
       case SplitScreenRatio.none:
-        return 0;
+        return 1;
     }
   }
 
@@ -298,7 +299,7 @@ extension SplitScreenRatioExt on SplitScreenRatio {
       case SplitScreenRatio.twoThirdsFull:
         return 1;
       case SplitScreenRatio.none:
-        return 0;
+        return 1;
     }
   }
 
