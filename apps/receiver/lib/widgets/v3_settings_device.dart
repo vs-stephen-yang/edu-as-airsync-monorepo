@@ -5,6 +5,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
@@ -47,6 +48,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             _buildDeviceName(context, settingsProvider),
             _buildDivider(context),
             _buildLanguage(context, settingsProvider),
+            _buildDivider(context),
+            _buildModeratorMode(context, settingsProvider),
             _buildDivider(context),
             _buildShowDisplayCode(context, settingsProvider),
             Padding(
@@ -414,6 +417,28 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         },
       );
     });
+  }
+
+  Widget _buildModeratorMode(
+      BuildContext context, SettingsProvider settingsProvider) {
+    return Consumer<ChannelProvider>(
+      builder: (_, channelProvider, __) {
+        return V3SettingMenuItemToggleTile(
+          label: S.of(context).v3_lbl_settings_moderator_mode,
+          identifier: "v3_qa_settings_moderator_mode",
+          switchOn: channelProvider.moderatorMode,
+          isLocked: settingsProvider.isDeviceSettingLock,
+          title: S.of(context).v3_settings_moderator_mode,
+          onTap: () async {
+            channelProvider.setModeratorMode(!channelProvider.moderatorMode);
+            // when the user want to set moderator moe to close, then remove all Presenters
+            if (channelProvider.moderatorMode) {
+              HybridConnectionList().removeAllPresenters();
+            }
+          },
+        );
+      },
+    );
   }
 
   Widget _buildShowDisplayCode(

@@ -90,6 +90,8 @@ class ChannelProvider extends ChangeNotifier {
 
   static bool isModeratorMode = false;
 
+  bool get moderatorMode => isModeratorMode;
+
   setModeratorMode(bool value) {
     isModeratorMode = value;
     if (isModeratorMode) {
@@ -1198,6 +1200,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
   }
+
 // endregion
 
   void sortRemoteScreenConnectors(bool asc) {
