@@ -674,8 +674,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                                   .getConnectionCount() >=
                                               HybridConnectionList
                                                   .maxHybridConnection))
-                              ? SizedBox(
-                                  height: 26.6,
+                              ? ConstrainedBox(
+                                  constraints: BoxConstraints(minHeight: 26.6),
                                   child: AuthorizeButton(
                                     minWidth: 146.66,
                                     minHeight: 26.6,
@@ -733,8 +733,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   ),
                                 )
                               : authRequestIdles.isNotEmpty
-                                  ? SizedBox(
-                                      height: 26.6,
+                                  ? ConstrainedBox(
+                                      constraints:
+                                          BoxConstraints(minHeight: 26.6),
                                       child: AuthorizeButton(
                                         minWidth: 146.66,
                                         minHeight: 26.6,
