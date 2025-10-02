@@ -25,6 +25,13 @@ RtpMpegTsPlayerGst::~RtpMpegTsPlayerGst() {
 }
 
 bool RtpMpegTsPlayerGst::Start() {
+  GstRegistry* registry = gst_registry_get();
+  GstPluginFeature* f = gst_registry_find_feature(registry, "avdec_h264", GST_TYPE_ELEMENT_FACTORY);
+  if (f) {
+    gst_plugin_feature_set_rank(f, GST_RANK_NONE);
+    gst_object_unref(f);
+  }
+
   std::lock_guard<std::mutex> lock(mutex_);
   if (playing_) {
     return true;
@@ -210,6 +217,19 @@ void RtpMpegTsPlayerGst::SetMute(bool mute) {
                NULL);
 }
 
+static void on_element_added(GstBin* bin, GstElement* element, gpointer user_data) {
+  const gchar* element_name = gst_element_get_name(element);
+  const gchar* factory_name = gst_plugin_feature_get_name(
+      GST_PLUGIN_FEATURE(gst_element_get_factory(element)));
+
+  ALOGI("decodebin added element: %s (factory: %s)", element_name, factory_name);
+
+  // 特別留意解碼器
+  if (strstr(factory_name, "dec") || strstr(factory_name, "decoder")) {
+    ALOGI("*** DECODER SELECTED: %s ***", factory_name);
+  }
+}
+
 void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
   GstElement* queue = gst_element_factory_make("queue", "decode_queue");
   GstElement* decodebin = gst_element_factory_make("decodebin", "decodebin");
@@ -227,6 +247,7 @@ void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
 
   // decodebin 會自動選擇正確的 parser 和 decoder
   g_signal_connect(decodebin, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDecodebinPadAdded), this);
+  g_signal_connect(decodebin, "element-added", G_CALLBACK(on_element_added), nullptr);
 
   // 連接 demux pad 到 queue
   GstPad* queue_sink = gst_element_get_static_pad(queue, "sink");
