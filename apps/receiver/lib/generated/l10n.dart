@@ -1111,6 +1111,16 @@ class S {
     );
   }
 
+  /// `Moderator mode`
+  String get v3_settings_moderator_mode {
+    return Intl.message(
+      'Moderator mode',
+      name: 'v3_settings_moderator_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Show display code on top`
   String get v3_settings_device_show_display_code {
     return Intl.message(
@@ -2886,6 +2896,16 @@ class S {
     return Intl.message(
       'Select %s',
       name: 'v3_lbl_main_language_title_item',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off moderator mode`
+  String get v3_lbl_settings_moderator_mode {
+    return Intl.message(
+      'Turn on/off moderator mode',
+      name: 'v3_lbl_settings_moderator_mode',
       desc: '',
       args: [],
     );

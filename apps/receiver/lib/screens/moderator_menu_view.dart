@@ -30,7 +30,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
       topTitleText: S.of(context).moderator_presentersList,
       topTitleAction: FocusIconButton(
         childNotFocus: Image(
-          image: Svg(ChannelProvider.isModeratorMode == true
+          image: Svg(channelProvider.moderatorMode == true
               ? 'assets/images/ic_activate_on.svg'
               : 'assets/images/ic_activate_off.svg'),
         ),

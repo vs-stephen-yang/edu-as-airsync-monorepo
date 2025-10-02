@@ -662,8 +662,11 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Turn on/off auto accept"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Turn on/off require passcode"),
-    "v3_lbl_settings_only_when_casting_info":
-        MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+          "Turn on/off moderator mode",
+        ),
+        "v3_lbl_settings_only_when_casting_info":
+            MessageLookupByLibrary.simpleMessage(
           "More information about broadcast to display group",
         ),
     "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
@@ -984,9 +987,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Require passcode"),
-    "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
-      "Broadcast the source IFP screen only when it is receiving a shared screen.",
-    ),
+        "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+          "Moderator mode",
+        ),
+        "v3_settings_only_when_casting_info":
+            MessageLookupByLibrary.simpleMessage(
+          "Broadcast the source IFP screen only when it is receiving a shared screen.",
+        ),
     "v3_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
       "Open Source Licenses",
     ),
