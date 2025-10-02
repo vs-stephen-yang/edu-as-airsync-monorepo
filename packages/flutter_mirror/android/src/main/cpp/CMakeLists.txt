@@ -77,6 +77,7 @@ find_package(GStreamerMobile REQUIRED COMPONENTS
         opengl
         playback
         volume
+        androidmedia
 )
 
 target_link_libraries(GStreamerMobile PRIVATE
