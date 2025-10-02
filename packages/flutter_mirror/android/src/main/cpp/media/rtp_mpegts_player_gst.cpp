@@ -240,6 +240,11 @@ void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
     return;
   }
 
+  g_object_set(queue,
+               "max-size-time", 1000 * GST_MSECOND,
+               "leaky", 0,
+               NULL);
+
   gst_debug_set_threshold_for_name("decodebin", GST_LEVEL_WARNING);
 
   gst_bin_add_many(GST_BIN(pipeline_), queue, decodebin, NULL);
@@ -274,17 +279,6 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
     gst_caps_unref(pad_caps);
   }
 
-  GstElement* convert = gst_element_factory_make("videoconvert", "videoconvert");
-  GstElement* capsfilter = gst_element_factory_make("capsfilter", "capsfilter");
-  GstElement* queue = gst_element_factory_make("queue", "gl_queue");
-
-  // 設定 queue 屬性
-  g_object_set(queue,
-               "max-size-buffers", 5,
-               "max-size-time", G_GINT64_CONSTANT(50000000),  // 50ms
-               "leaky", 1,                                    // upstream
-               NULL);
-
   if (!self->video_sink_) {
     self->video_sink_ = gst_element_factory_make("glimagesink", "glimagesink");
     if (self->video_sink_) {
@@ -302,72 +296,45 @@ void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad,
     return;
   }
 
-  gst_debug_set_threshold_for_name("videoconvert", GST_LEVEL_WARNING);
-  gst_debug_set_threshold_for_name("capsfilter", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("glupload", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("glcolorconvert", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("queue", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("glimagesink", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("gldebug", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("glwindow", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("opengl", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("glcontext", GST_LEVEL_WARNING);
 
-  // 設定 RGBA 格式 caps
-  GstCaps* rgba_caps = gst_caps_new_simple("video/x-raw",
-                                           "format", G_TYPE_STRING, "RGBA",
-                                           NULL);
-  g_object_set(G_OBJECT(capsfilter), "caps", rgba_caps, NULL);
-  gst_caps_unref(rgba_caps);
-
-  // 添加元素到 pipeline
-  gst_bin_add_many(GST_BIN(self->pipeline_), convert, capsfilter, queue, NULL);
-  ALOGI("[PAD_ADDED] Added videoconvert and capsfilter using gst_bin_add_many");
-
-  // 單獨添加 glimagesink（避免在 gst_bin_add_many 中的問題）
   if (!gst_bin_add(GST_BIN(self->pipeline_), self->video_sink_)) {
     self->TeardownPipeline();
     return;
   }
-  ALOGI("[PAD_ADDED] Added glsink separately");
 
   GstState current_state, pending_state;
   gst_element_get_state(self->pipeline_, &current_state, &pending_state, 0);
   ALOGI("[PAD_ADDED] Pipeline current state: %s", gst_element_state_get_name(current_state));
 
-  gst_element_sync_state_with_parent(convert);
-  gst_element_sync_state_with_parent(capsfilter);
-  gst_element_sync_state_with_parent(queue);
   gst_element_sync_state_with_parent(self->video_sink_);
-  ALOGI("[PAD_ADDED] Synced all elements with parent");
 
-  // 連接元素鏈
-  // decodebin pad → videoconvert:sink
-  GstPad* convert_sinkpad = gst_element_get_static_pad(convert, "sink");
-  if (!convert_sinkpad) {
+  GstPad* glimagesink_sinkpad = gst_element_get_static_pad(self->video_sink_, "sink");
+  if (!glimagesink_sinkpad) {
     self->TeardownPipeline();
     return;
   }
-  GstPadLinkReturn ret = gst_pad_link(pad, convert_sinkpad);
+  GstPadLinkReturn ret = gst_pad_link(pad, glimagesink_sinkpad);
   if (GST_PAD_LINK_FAILED(ret)) {
     self->TeardownPipeline();
     return;
   }
-  gst_object_unref(convert_sinkpad);
-
-  bool link_ok = gst_element_link_many(convert, capsfilter, queue, self->video_sink_, NULL);
-  if (!link_ok) {
-    self->TeardownPipeline();
-    return;
-  }
+  gst_object_unref(glimagesink_sinkpad);
 
   GstClock* video_clock = gst_element_get_clock(self->video_sink_);
   gst_pipeline_use_clock(GST_PIPELINE(self->pipeline_), video_clock);
   gst_object_unref(video_clock);
-  gst_pipeline_set_latency(GST_PIPELINE(self->pipeline_), 200 * GST_MSECOND);
+  gst_pipeline_set_latency(GST_PIPELINE(self->pipeline_), 400 * GST_MSECOND);
 
   if (current_state == GST_STATE_PLAYING) {
     ALOGI("[PAD_ADDED] Pipeline is playing, setting new elements to PLAYING...");
-    gst_element_set_state(convert, GST_STATE_PLAYING);
-    gst_element_set_state(capsfilter, GST_STATE_PLAYING);
-    gst_element_set_state(queue, GST_STATE_PLAYING);
     gst_element_set_state(self->video_sink_, GST_STATE_PLAYING);
     ALOGI("[PAD_ADDED] ✅ New elements set to PLAYING");
   }
@@ -529,6 +496,8 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
 
   g_object_set(rtpbin_,
                "do-lost", TRUE,
+               "latency", 500,
+               "drop-on-latency", TRUE,
                NULL);
 
   GST_DEBUG("Testing debug output - this should appear in logcat");
@@ -539,8 +508,10 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   gst_debug_set_threshold_for_name("tsparse", GST_LEVEL_WARNING);
   gst_debug_set_threshold_for_name("tsdemux", GST_LEVEL_WARNING);
 
-  g_object_set(udpsrc_, "socket", socket_, NULL);
-  g_object_set(rtpbin_, "latency", 200, NULL);
+  g_object_set(udpsrc_,
+               "socket", socket_,
+               "buffer-size", 4194304,
+               NULL);
 
   gst_bin_add_many(GST_BIN(pipeline_), udpsrc_, rtpbin_, depay_, tsparse, tsdemux, NULL);
 
