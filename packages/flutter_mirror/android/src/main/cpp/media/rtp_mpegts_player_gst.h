@@ -65,6 +65,8 @@ class RtpMpegTsPlayerGst final {
   GstElement* rtpbin_ = nullptr;
   GstElement* depay_ = nullptr;
   GstElement* video_sink_ = nullptr;
+  GstElement* decodebin_ = nullptr;
+  GstElement* queue_ = nullptr;
   GstElement* volume_ = nullptr;
   GstBus* bus_ = nullptr;
 
