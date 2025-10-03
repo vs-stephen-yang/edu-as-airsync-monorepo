@@ -3925,6 +3925,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Turn off “Require approval” in the Settings menu to skip manual confirmation.`
+  String get v3_authorize_prompt_notification_cast {
+    return Intl.message(
+      'Turn off “Require approval” in the Settings menu to skip manual confirmation.',
+      name: 'v3_authorize_prompt_notification_cast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.`
+  String get v3_authorize_prompt_notification_mirror {
+    return Intl.message(
+      'Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.',
+      name: 'v3_authorize_prompt_notification_mirror',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
