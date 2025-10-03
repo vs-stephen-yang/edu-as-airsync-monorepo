@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <mutex>
 #include <thread>
@@ -33,15 +34,23 @@ class RtpMpegTsPlayerGst final {
  private:
   static void OnBusMessage(GstBus* bus, GstMessage* message, gpointer user_data);
   static void OnDemuxPadAdded(GstElement* demux, GstPad* pad, gpointer user_data);
-  static void OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad, gpointer user_data);
   static void OnRtpbinPadAdded(GstElement* rtpbin, GstPad* new_pad, gpointer user_data);
   static GstPadProbeReturn OnCapsProbe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
   static GstCaps* OnRequestPtMap(GstElement* rtpbin, guint session, guint pt, gpointer user_data);
   static GstPadProbeReturn OnDepayEvent(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
+  static GstPadProbeReturn OnQueueSinkProbe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
+  static GstPadProbeReturn OnDecoderInput(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
+
+  static void OnNewJitterBuffer(GstElement* rtpbin, GstElement* jitterbuffer, guint session, guint ssrc, gpointer user_data);
+  static void OnQueueOverrun(GstElement* queue, gpointer user_data);
+  static GstPadProbeReturn OnDecoderOutput(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
+  static GstPadProbeReturn OnSinkInput(GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
+
   void ConnectAudioPad(GstPad* pad);
   void ConnectVideoPad(GstPad* pad);
   void NotifyVideoResolution(int width, int height);
   void NotifyPacketLost();
+  void ResetBacklogTracker();
 
   void HandleBusMessage(GstMessage* message);
   void EnsurePipeline();
@@ -50,6 +59,9 @@ class RtpMpegTsPlayerGst final {
   GSocket* CreateBoundSocket(uint16_t requested_port);
   void RunMainLoop();
   void ReleaseWindowHandle();
+
+  void EnterKeyframeWait();
+  void ExitKeyframeWait();
 
  private:
   mutable std::mutex mutex_;
@@ -64,8 +76,11 @@ class RtpMpegTsPlayerGst final {
   GstElement* udpsrc_ = nullptr;
   GstElement* rtpbin_ = nullptr;
   GstElement* depay_ = nullptr;
+  GstElement* tsdemux_ = nullptr;
   GstElement* video_sink_ = nullptr;
-  GstElement* decodebin_ = nullptr;
+  GstElement* h264parse_ = nullptr;
+  GstElement* capsfilter_ = nullptr;
+  GstElement* decoder_ = nullptr;
   GstElement* queue_ = nullptr;
   GstElement* volume_ = nullptr;
   GstBus* bus_ = nullptr;
@@ -79,4 +94,9 @@ class RtpMpegTsPlayerGst final {
   jobject java_instance_ = nullptr;
 
   std::atomic<bool> is_paused_{false};
+  std::atomic<GstClockTime> backlog_first_pts_{GST_CLOCK_TIME_NONE};
+  GstClockTime backlog_threshold_ns_ = 1000 * GST_MSECOND;
+  std::atomic<bool> waiting_for_keyframe_{true};
+  std::atomic<bool> queue_restore_pending_{false};
+  std::atomic<GstClockTime> pts_offset_{GST_CLOCK_TIME_NONE};  // PTS offset to reset to 0
 };

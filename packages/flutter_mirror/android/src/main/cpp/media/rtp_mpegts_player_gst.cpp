@@ -8,19 +8,6 @@ namespace {
 static std::once_flag g_gst_once;
 }
 
-static void on_element_added(GstBin* bin, GstElement* element, gpointer user_data) {
-  const gchar* element_name = gst_element_get_name(element);
-  const gchar* factory_name = gst_plugin_feature_get_name(
-      GST_PLUGIN_FEATURE(gst_element_get_factory(element)));
-
-  ALOGI("decodebin added element: %s (factory: %s)", element_name, factory_name);
-
-  // 特別留意解碼器
-  if (strstr(factory_name, "dec") || strstr(factory_name, "decoder")) {
-    ALOGI("*** DECODER SELECTED: %s ***", factory_name);
-  }
-}
-
 RtpMpegTsPlayerGst::RtpMpegTsPlayerGst() {
   std::call_once(
       g_gst_once,
@@ -58,6 +45,14 @@ bool RtpMpegTsPlayerGst::Start() {
   if (native_window_ != nullptr) {
     AttachOverlay();
   }
+
+  // *** 讓 video_sink 提供 clock ***
+  // 不手動設定 use_clock，而是設定 sink 的 provide-clock 屬性
+  if (video_sink_) {
+    g_object_set(video_sink_, "provide-clock", TRUE, NULL);
+    ALOGI("Set video_sink provide-clock=TRUE");
+  }
+
   GstStateChangeReturn ret = gst_element_set_state(pipeline_, GST_STATE_PLAYING);
   if (ret == GST_STATE_CHANGE_FAILURE) {
     TeardownPipeline();
@@ -116,12 +111,12 @@ void RtpMpegTsPlayerGst::OnDemuxPadAdded(GstElement* element, GstPad* pad, gpoin
   RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
 
   gchar* pad_name = gst_pad_get_name(pad);
-  ALOGW("TSdemux pad added: %s", pad_name);
+  ALOGI("TSdemux pad added: %s", pad_name);
 
   GstCaps* caps = gst_pad_get_current_caps(pad);
   if (caps) {
     gchar* caps_str = gst_caps_to_string(caps);
-    ALOGW("TSdemux pad caps: %s", caps_str);
+    ALOGI("TSdemux pad caps: %s", caps_str);
 
     const GstStructure* s = gst_caps_get_structure(caps, 0);
     const gchar* name = gst_structure_get_name(s);
@@ -133,7 +128,7 @@ void RtpMpegTsPlayerGst::OnDemuxPadAdded(GstElement* element, GstPad* pad, gpoin
       ALOGI("Found audio pad, connecting...");
       self->ConnectAudioPad(pad);
     } else if (g_str_has_prefix(name, "video/")) {
-      ALOGW("Found video pad, connecting...");
+      ALOGI("Found video pad, connecting...");
       self->ConnectVideoPad(pad);
     } else {
       ALOGI("Unknown pad type: %s", name);
@@ -232,89 +227,102 @@ void RtpMpegTsPlayerGst::SetMute(bool mute) {
 }
 
 void RtpMpegTsPlayerGst::ConnectVideoPad(GstPad* pad) {
-  // queue_ = gst_element_factory_make("queue", "decode_queue");
-  // GstElement* decodebin = gst_element_factory_make("decodebin", "decodebin");
+  ALOGI("Connecting video pad");
 
-  // if (!queue_ || !decodebin_) {
-  //   ALOGE("Failed to create elements");
-  //   TeardownPipeline();
-  //   return;
-  // }
+  // *** 初始狀態 ***
+  EnterKeyframeWait();
+  pts_offset_.store(GST_CLOCK_TIME_NONE);  // *** 重置 PTS offset ***
+  ResetBacklogTracker();
 
-  // g_object_set(queue_,
-  //              "max-size-time", 1000 * GST_MSECOND,
-  //              "leaky", 0,
-  //              NULL);
+  ALOGI("ConnectVideoPad: waiting_for_keyframe set to TRUE");
 
-  // gst_debug_set_threshold_for_name("decodebin", GST_LEVEL_LOG);
+  // 先取得 queue sink pad
+  GstPad* queue_sink = gst_element_get_static_pad(queue_, "sink");
+  if (!queue_sink) {
+    ALOGE("Failed to get queue sink pad");
+    TeardownPipeline();
+    return;
+  }
 
-  // gst_bin_add_many(GST_BIN(pipeline_), queue_, decodebin_, NULL);
-  gst_element_link(queue_, decodebin_);
-
-  // decodebin 會自動選擇正確的 parser 和 decoder
-  // g_signal_connect(decodebin, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDecodebinPadAdded), this);
-  // g_signal_connect(decodebin, "element-added", G_CALLBACK(on_element_added), nullptr);
+  // *** 添加 probe（在連接之前）***
+  // 在 queue sink 添加 probe 用於 keyframe 檢測和丟幀邏輯
+  gst_pad_add_probe(queue_sink,
+                    static_cast<GstPadProbeType>(GST_PAD_PROBE_TYPE_BUFFER |
+                                                 GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM),
+                    OnQueueSinkProbe,
+                    this,
+                    nullptr);
 
   // 連接 demux pad 到 queue
-  GstPad* queue_sink = gst_element_get_static_pad(queue_, "sink");
-  gst_pad_link(pad, queue_sink);
+  GstPadLinkReturn link_ret = gst_pad_link(pad, queue_sink);
   gst_object_unref(queue_sink);
 
+  if (link_ret != GST_PAD_LINK_OK) {
+    ALOGE("Failed to link demux to queue: %d", link_ret);
+    TeardownPipeline();
+    return;
+  }
+
+  // 連接後續元素
+  // Pipeline: queue → h264parse → capsfilter → decoder → sink
+  bool link_ok = gst_element_link_many(queue_, h264parse_, capsfilter_, decoder_, video_sink_, NULL);
+  if (!link_ok) {
+    ALOGE("gst_element_link_many failed");
+    TeardownPipeline();
+    return;
+  }
+
+  // *** 在 decoder 輸入加 probe 檢查 PTS 是否正確調整 ***
+  GstPad* decoder_sink = gst_element_get_static_pad(decoder_, "sink");
+  if (decoder_sink) {
+    gst_pad_add_probe(decoder_sink,
+                      GST_PAD_PROBE_TYPE_BUFFER,
+                      OnDecoderInput,
+                      this,
+                      nullptr);
+    gst_object_unref(decoder_sink);
+  }
+
+  // *** 在 decoder 輸出加 probe 監控 ***
+  GstPad* decoder_src = gst_element_get_static_pad(decoder_, "src");
+  if (decoder_src) {
+    gst_pad_add_probe(decoder_src,
+                      static_cast<GstPadProbeType>(
+                          GST_PAD_PROBE_TYPE_BUFFER |
+                          GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM |
+                          GST_PAD_PROBE_TYPE_EVENT_UPSTREAM  // QoS events
+                          ),
+                      OnDecoderOutput,
+                      this,
+                      nullptr);
+    gst_object_unref(decoder_src);
+  }
+
+  // *** 在 sink 輸入加 probe 監控 ***
+  GstPad* sink_pad = gst_element_get_static_pad(video_sink_, "sink");
+  if (sink_pad) {
+    gst_pad_add_probe(sink_pad,
+                      GST_PAD_PROBE_TYPE_BUFFER,
+                      OnSinkInput,
+                      this,
+                      nullptr);
+    gst_object_unref(sink_pad);
+  }
+
+  // 同步所有元素狀態
   gst_element_sync_state_with_parent(queue_);
-  gst_element_sync_state_with_parent(decodebin_);
-}
+  gst_element_sync_state_with_parent(h264parse_);
+  gst_element_sync_state_with_parent(capsfilter_);
+  gst_element_sync_state_with_parent(decoder_);
+  gst_element_sync_state_with_parent(video_sink_);
 
-void RtpMpegTsPlayerGst::OnDecodebinPadAdded(GstElement* decodebin, GstPad* pad, gpointer user_data) {
-  ALOGW("Decodebin Pad added");
-  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
-  if (!self) {
-    return;
-  }
+  ALOGI("Video pad connected, waiting for first keyframe");
 
-  gst_pad_add_probe(pad, GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM, OnCapsProbe, self, nullptr);  // get video size
-
-  GstCaps* pad_caps = gst_pad_get_current_caps(pad);
-  if (pad_caps) {
-    gchar* caps_str = gst_caps_to_string(pad_caps);
-    ALOGW("Decodebin output caps: %s", caps_str);
-    g_free(caps_str);
-    gst_caps_unref(pad_caps);
-  }
-
-  if (!self->video_sink_) {
-    return;
-  }
-
-  GstState current_state, pending_state;
-  gst_element_get_state(self->pipeline_, &current_state, &pending_state, 0);
-  ALOGW("[PAD_ADDED] Pipeline current state: %s", gst_element_state_get_name(current_state));
-
-  gst_element_sync_state_with_parent(self->video_sink_);
-
-  GstPad* glimagesink_sinkpad = gst_element_get_static_pad(self->video_sink_, "sink");
-  if (!glimagesink_sinkpad) {
-    self->TeardownPipeline();
-    return;
-  }
-  GstPadLinkReturn ret = gst_pad_link(pad, glimagesink_sinkpad);
-  if (GST_PAD_LINK_FAILED(ret)) {
-    self->TeardownPipeline();
-    return;
-  }
-  gst_object_unref(glimagesink_sinkpad);
-
-  GstClock* video_clock = gst_element_get_clock(self->video_sink_);
-  gst_pipeline_use_clock(GST_PIPELINE(self->pipeline_), video_clock);
-  gst_object_unref(video_clock);
-  // gst_pipeline_set_latency(GST_PIPELINE(self->pipeline_), 400 * GST_MSECOND);
-
-  GstStateChangeReturn pipe_state_ret = gst_element_set_state(self->pipeline_, GST_STATE_PLAYING);
+  GstStateChangeReturn pipe_state_ret = gst_element_set_state(pipeline_, GST_STATE_PLAYING);
   if (pipe_state_ret == GST_STATE_CHANGE_FAILURE) {
-    self->TeardownPipeline();
+    TeardownPipeline();
     return;
   }
-
-  gst_element_set_state(self->video_sink_, GST_STATE_PLAYING);
 }
 
 GstPadProbeReturn RtpMpegTsPlayerGst::OnCapsProbe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
@@ -343,6 +351,10 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnCapsProbe(GstPad* pad, GstPadProbeInfo* 
   return GST_PAD_PROBE_OK;
 }
 
+void RtpMpegTsPlayerGst::ResetBacklogTracker() {
+  backlog_first_pts_.store(GST_CLOCK_TIME_NONE);
+}
+
 GstPadProbeReturn RtpMpegTsPlayerGst::OnDepayEvent(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
   RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
   if (!self) {
@@ -358,11 +370,189 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnDepayEvent(GstPad* pad, GstPadProbeInfo*
         guint ssrc = 0;
         gst_structure_get_uint(s, "seqnum", &seqnum);
         gst_structure_get_uint(s, "ssrc", &ssrc);
-        ALOGD("Lost RTP packet (event)! SSRC=%u, Seq=%u\n", ssrc, seqnum);
+        ALOGD("Lost RTP packet! SSRC=%u, Seq=%u (no flush, decoder will handle)", ssrc, seqnum);
         self->NotifyPacketLost();
       }
     }
   }
+  return GST_PAD_PROBE_OK;
+}
+
+GstPadProbeReturn RtpMpegTsPlayerGst::OnQueueSinkProbe(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
+  if (!self) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  const GstPadProbeType type = GST_PAD_PROBE_INFO_TYPE(info);
+
+  if (type & GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM) {
+    GstEvent* event = GST_PAD_PROBE_INFO_EVENT(info);
+    if (!event) {
+      return GST_PAD_PROBE_OK;
+    }
+    switch (GST_EVENT_TYPE(event)) {
+      case GST_EVENT_FLUSH_START:
+        ALOGW("Queue sink: FLUSH_START (external flush, letting GStreamer handle)");
+        self->ResetBacklogTracker();
+        break;
+      case GST_EVENT_FLUSH_STOP:
+        ALOGW("Queue sink: FLUSH_STOP (external flush, letting GStreamer handle)");
+        self->ResetBacklogTracker();
+        break;
+      case GST_EVENT_SEGMENT:
+        self->ResetBacklogTracker();
+        break;
+      default:
+        break;
+    }
+    return GST_PAD_PROBE_OK;
+  }
+
+  if (!(type & GST_PAD_PROBE_TYPE_BUFFER)) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  GstBuffer* buffer = gst_pad_probe_info_get_buffer(info);
+  if (!buffer) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  bool is_keyframe = !GST_BUFFER_FLAG_IS_SET(buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+  bool waiting = self->waiting_for_keyframe_.load();
+
+  // *** 第一個 keyframe：記錄 PTS offset ***
+  if (waiting && is_keyframe && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
+    GstClockTime first_pts = GST_BUFFER_PTS(buffer);
+    if (self->pts_offset_.load() == GST_CLOCK_TIME_NONE) {
+      self->pts_offset_.store(first_pts);
+      ALOGI("=== PTS OFFSET RECORDED ===");
+      ALOGI("  First keyframe PTS: %" GST_TIME_FORMAT, GST_TIME_ARGS(first_pts));
+    }
+  }
+
+  GstClockTime pts = GST_BUFFER_PTS(buffer);
+
+  // *** 智能丟棄策略 ***
+  guint current_level = 0;
+  guint max_level = 0;
+  g_object_get(self->queue_,
+               "current-level-buffers", &current_level,
+               "max-size-buffers", &max_level,
+               NULL);
+
+  float fill_percent = (max_level > 0) ? (100.0f * current_level / max_level) : 0.0f;
+
+  if (fill_percent > 70.0f) {
+    if (is_keyframe) {
+      static int keyframe_preserved_count = 0;
+      if (++keyframe_preserved_count % 5 == 0) {
+        ALOGW("Queue %.1f%% full - PRESERVING keyframe", fill_percent);
+      }
+    } else {
+      static int drop_count = 0;
+      if (++drop_count % 10 == 0) {
+        ALOGW("Queue %.1f%% full - DROPPING delta unit (dropped %d)", fill_percent, drop_count);
+      }
+      return GST_PAD_PROBE_DROP;
+    }
+  }
+
+  static int frame_count = 0;
+  if (++frame_count % 30 == 0) {
+    ALOGI("Queue status: %u/%u buffers (%.1f%% full), keyframe=%d",
+          current_level, max_level, fill_percent, is_keyframe);
+  }
+
+  // 等待第一個 keyframe
+  if (waiting) {
+    if (GST_BUFFER_FLAG_IS_SET(buffer, GST_BUFFER_FLAG_DELTA_UNIT)) {
+      return GST_PAD_PROBE_DROP;
+    }
+
+    ALOGI("*** GOT KEYFRAME - Starting playback ***");
+    ALOGI("  Keyframe PTS: %" GST_TIME_FORMAT, GST_TIME_ARGS(pts));
+
+    self->ExitKeyframeWait();
+    self->ResetBacklogTracker();
+
+    return GST_PAD_PROBE_OK;
+  }
+
+  // Keyframe 重置 backlog
+  if (is_keyframe) {
+    self->ResetBacklogTracker();
+    return GST_PAD_PROBE_OK;
+  }
+
+  // Backlog 檢查
+  if (pts == GST_CLOCK_TIME_NONE) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  GstClockTime first_pts = self->backlog_first_pts_.load();
+  if (first_pts == GST_CLOCK_TIME_NONE) {
+    self->backlog_first_pts_.store(pts);
+    return GST_PAD_PROBE_OK;
+  }
+
+  if (pts > first_pts) {
+    GstClockTime backlog = pts - first_pts;
+
+    if (backlog > 500 * GST_MSECOND) {
+      static int warning_count = 0;
+      if (++warning_count % 30 == 0) {
+        ALOGW("High backlog: %" GST_TIME_FORMAT " (this is OK, decoder will catch up)",
+              GST_TIME_ARGS(backlog));
+      }
+    }
+  }
+
+  return GST_PAD_PROBE_OK;
+}
+
+GstPadProbeReturn RtpMpegTsPlayerGst::OnDecoderInput(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
+  if (!self) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  GstBuffer* buffer = GST_PAD_PROBE_INFO_BUFFER(info);
+  if (!buffer) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  // *** [TRACE] 檢查第一個進入 decoder 的 buffer PTS 和 running_time ***
+  static bool first_decoder_input_logged = false;
+  if (!first_decoder_input_logged && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
+    first_decoder_input_logged = true;
+    bool is_keyframe = !GST_BUFFER_FLAG_IS_SET(buffer, GST_BUFFER_FLAG_DELTA_UNIT);
+
+    // 計算 running_time
+    GstClockTime base_time = gst_element_get_base_time(GST_ELEMENT(gst_pad_get_parent(pad)));
+    GstClock* clock = gst_element_get_clock(GST_ELEMENT(gst_pad_get_parent(pad)));
+    GstClockTime now = clock ? gst_clock_get_time(clock) : GST_CLOCK_TIME_NONE;
+    GstClockTime running_time = (now != GST_CLOCK_TIME_NONE && base_time != GST_CLOCK_TIME_NONE)
+                                    ? now - base_time
+                                    : GST_CLOCK_TIME_NONE;
+
+    ALOGI("  [TRACE] First buffer entering decoder: PTS=%" GST_TIME_FORMAT ", is_keyframe=%d",
+          GST_TIME_ARGS(GST_BUFFER_PTS(buffer)), is_keyframe);
+    ALOGI("  [TRACE] Decoder input: base_time=%" GST_TIME_FORMAT ", now=%" GST_TIME_FORMAT ", running_time=%" GST_TIME_FORMAT,
+          GST_TIME_ARGS(base_time), GST_TIME_ARGS(now), GST_TIME_ARGS(running_time));
+
+    if (clock) {
+      gst_object_unref(clock);
+    }
+  }
+
+  // 調試日誌（每 30 幀記錄一次）
+  static int decoder_input_count = 0;
+  if (++decoder_input_count % 30 == 0) {
+    ALOGI("Decoder input PTS: %" GST_TIME_FORMAT,
+          GST_TIME_ARGS(GST_BUFFER_PTS(buffer)));
+  }
+
   return GST_PAD_PROBE_OK;
 }
 
@@ -395,6 +585,120 @@ void RtpMpegTsPlayerGst::OnRtpbinPadAdded(GstElement* element, GstPad* pad, gpoi
   g_free(pad_name);
 }
 
+GstPadProbeReturn RtpMpegTsPlayerGst::OnDecoderOutput(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
+  if (!self) {
+    return GST_PAD_PROBE_OK;
+  }
+
+  // *** 監控 QoS events ***
+  if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_EVENT_UPSTREAM) {
+    GstEvent* event = GST_PAD_PROBE_INFO_EVENT(info);
+
+    if (GST_EVENT_TYPE(event) == GST_EVENT_QOS) {
+      GstQOSType type;
+      gdouble proportion;
+      GstClockTimeDiff diff;
+      GstClockTime timestamp;
+
+      gst_event_parse_qos(event, &type, &proportion, &diff, &timestamp);
+
+      static int qos_log_count = 0;
+      if (++qos_log_count % 30 == 0) {
+        ALOGW(">>> QoS event: proportion=%.2f, diff=%" GST_STIME_FORMAT,
+              proportion, GST_STIME_ARGS(diff));
+      }
+    }
+  }
+
+  // *** 監控 CAPS ***
+  if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM) {
+    GstEvent* event = GST_PAD_PROBE_INFO_EVENT(info);
+    if (GST_EVENT_TYPE(event) == GST_EVENT_CAPS) {
+      GstCaps* caps = NULL;
+      gst_event_parse_caps(event, &caps);
+
+      if (caps) {
+        GstStructure* s = gst_caps_get_structure(caps, 0);
+        int width = 0, height = 0;
+        gst_structure_get_int(s, "width", &width);
+        gst_structure_get_int(s, "height", &height);
+
+        gchar* caps_str = gst_caps_to_string(caps);
+        ALOGI("=== Decoder output CAPS: %s ===", caps_str);
+        g_free(caps_str);
+
+        ALOGI("video size: %d x %d", width, height);
+        self->NotifyVideoResolution(width, height);
+      }
+    }
+  }
+
+  // *** 監控 Buffers - 計算 FPS ***
+  if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_BUFFER) {
+    GstBuffer* buffer = gst_pad_probe_info_get_buffer(info);
+    if (buffer) {
+      static int decoded_count = 0;
+      static GstClockTime last_log_time = 0;
+      static GstClockTime first_buffer_time = 0;
+
+      GstClockTime now = g_get_monotonic_time() * 1000;
+
+      if (first_buffer_time == 0) {
+        first_buffer_time = now;
+        ALOGI("*** FIRST DECODED FRAME OUTPUT ***");
+        if (GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
+          ALOGI("  First output buffer PTS: %" GST_TIME_FORMAT, GST_TIME_ARGS(GST_BUFFER_PTS(buffer)));
+        }
+      }
+
+      decoded_count++;
+
+      if (last_log_time == 0) {
+        last_log_time = now;
+      } else if (now - last_log_time > GST_SECOND) {
+        double fps = decoded_count * GST_SECOND / (double)(now - last_log_time);
+        ALOGI(">>> Decoder output: %.2f fps", fps);
+        decoded_count = 0;
+        last_log_time = now;
+      }
+    }
+  }
+
+  return GST_PAD_PROBE_OK;
+}
+
+GstPadProbeReturn RtpMpegTsPlayerGst::OnSinkInput(GstPad* pad, GstPadProbeInfo* info, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
+
+  GstBuffer* buffer = gst_pad_probe_info_get_buffer(info);
+  if (buffer) {
+    static int sink_count = 0;
+    static GstClockTime last_log = 0;
+
+    sink_count++;
+    GstClockTime now = g_get_monotonic_time() * 1000;
+
+    static int logged_buffers = 0;
+    if (logged_buffers == 0 && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
+      ALOGI("*** FIRST FRAME REACHED SINK ***");
+      ALOGI("  PTS: %" GST_TIME_FORMAT, GST_TIME_ARGS(GST_BUFFER_PTS(buffer)));
+      logged_buffers++;
+    }
+
+    if (last_log == 0) {
+      last_log = now;
+    } else if (now - last_log > GST_SECOND) {
+      double fps = sink_count * GST_SECOND / (double)(now - last_log);
+      ALOGI(">>> Sink: %.2f fps", fps);
+      sink_count = 0;
+      last_log = now;
+    }
+  }
+
+  return GST_PAD_PROBE_OK;
+}
+
 void RtpMpegTsPlayerGst::HandleBusMessage(GstMessage* message) {
   switch (GST_MESSAGE_TYPE(message)) {
     case GST_MESSAGE_ERROR: {
@@ -424,6 +728,9 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
     return;
   }
 
+  ResetBacklogTracker();
+  waiting_for_keyframe_.store(true);  // *** 初始設為 true ***
+
   socket_ = CreateBoundSocket(0);
   if (!socket_) {
     return;
@@ -433,6 +740,7 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
     ALOGI("pipeline_ is already created");
     return;
   }
+
   context_ = g_main_context_new();
   loop_ = g_main_loop_new(context_, FALSE);
   loop_thread_ = std::thread([this]() {
@@ -452,93 +760,106 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   rtpbin_ = gst_element_factory_make("rtpbin", "rtpbin");
   depay_ = gst_element_factory_make("rtpmp2tdepay", "depay");
   GstElement* tsparse = gst_element_factory_make("tsparse", "tsparse");
-  GstElement* tsdemux = gst_element_factory_make("tsdemux", "tsdemux");
+  tsdemux_ = gst_element_factory_make("tsdemux", "tsdemux");
   queue_ = gst_element_factory_make("queue", "decode_queue");
-  decodebin_ = gst_element_factory_make("decodebin", "decodebin");
-
+  h264parse_ = gst_element_factory_make("h264parse", "h264parse");
+  capsfilter_ = gst_element_factory_make("capsfilter", "capsfilter");
+  decoder_ = gst_element_factory_make("amcviddec-omxgoogleh264decoder", "decoder");
   video_sink_ = gst_element_factory_make("glimagesink", "glimagesink");
-  if (video_sink_) {
-    g_object_set(video_sink_,
-                 "sync", TRUE,
-                 "async", FALSE,
-                 "enable-last-sample", FALSE,
-                 "force-aspect-ratio", FALSE,
-                 NULL);
 
-    AttachOverlay();
+  // *** 禁用 decoder 的 QoS，避免在 base_time 重置期間 drop frames ***
+  if (decoder_) {
+    g_object_set(decoder_, "qos", FALSE, NULL);
+
+    // 驗證設定是否生效
+    gboolean qos_enabled = TRUE;
+    g_object_get(decoder_, "qos", &qos_enabled, NULL);
+    ALOGI("Decoder: qos set to FALSE, verified qos=%s", qos_enabled ? "TRUE" : "FALSE");
   }
 
-  if (!udpsrc_)
-    ALOGE("udpsrc is null");
-  if (!rtpbin_)
-    ALOGE("rtpbin is null");
-  if (!depay_)
-    ALOGE("rtpmp2tdepay is null");
-  if (!tsparse)
-    ALOGE("tsparse is null");
-  if (!tsdemux)
-    ALOGE("tsdemux is null");
-  if (!decodebin_)
-    ALOGE("decodebin is null");
-
-  if (!udpsrc_ || !rtpbin_ || !depay_ || !tsparse || !tsdemux || !queue_ || !decodebin_) {
-    ALOGE("something is null -> teardown");
+  if (!udpsrc_ || !rtpbin_ || !depay_ || !tsparse || !tsdemux_ ||
+      !queue_ || !h264parse_ || !capsfilter_ || !decoder_ || !video_sink_) {
+    ALOGE("Failed to create elements -> teardown");
     TeardownPipeline();
     return;
   }
 
-  g_object_set(queue_,
-               "max-size-time", 1000 * GST_MSECOND,
-               "leaky", 0,
-               NULL);
-
-  g_signal_connect(decodebin_, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDecodebinPadAdded), this);
-  g_signal_connect(decodebin_, "element-added", G_CALLBACK(on_element_added), nullptr);
-
+  // *** RTPbin - 低延遲配置 ***
   g_object_set(rtpbin_,
+               "latency", 50,  // 降低到 50ms
                "do-lost", TRUE,
-               "latency", 500,
-               //  "drop-on-latency", TRUE,
                NULL);
 
-  GST_DEBUG("Testing debug output - this should appear in logcat");
+  // *** 監聽 jitterbuffer 創建 ***
+  g_signal_connect(rtpbin_, "new-jitterbuffer",
+                   G_CALLBACK(OnNewJitterBuffer), this);
 
+  // *** Queue - 小 buffer + leaky ***
+  g_object_set(queue_,
+               "max-size-buffers", 20,  // 增加到 20
+               "max-size-bytes", 0,
+               "max-size-time", 0,
+               "leaky", 0,  // *** 關閉 leaky ***
+               "silent", FALSE,
+               NULL);
+
+  // *** 監聽 queue overrun ***
+  g_signal_connect(queue_, "overrun", G_CALLBACK(OnQueueOverrun), this);
+
+  // *** Video Sink - 啟用 sync 以保持 A/V 同步 ***
+  if (video_sink_) {
+    g_object_set(video_sink_,
+                 "sync", TRUE,  // *** 啟用 sync，配合 clock provider 設定 ***
+                 "async", FALSE,
+                 "enable-last-sample", FALSE,
+                 "force-aspect-ratio", FALSE,
+                 "qos", TRUE,
+                 "max-lateness", (gint64)-1,  // *** -1 = 永不 drop late buffers ***
+                 "throttle-time", (guint64)0,
+                 NULL);
+    ALOGI("Video sink: sync=TRUE, qos=TRUE, max-lateness=-1, using video_sink as clock provider");
+
+    AttachOverlay();
+  }
+
+  // Capsfilter
+  GstCaps* caps = gst_caps_from_string(
+      "video/x-h264, "
+      "stream-format=(string)byte-stream, "
+      "alignment=(string)au");
+  g_object_set(capsfilter_, "caps", caps, nullptr);
+  gst_caps_unref(caps);
+
+  // Debug levels
   gst_debug_set_threshold_for_name("udpsrc", GST_LEVEL_WARNING);
-  gst_debug_set_threshold_for_name("rtpbin", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("rtpmp2tdepay", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("tsparse", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("tsdemux", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("decodebin", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("glupload", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("glcolorconvert", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("queue", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("glimagesink", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("gldebug", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("glwindow", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("opengl", GST_LEVEL_LOG);
-  gst_debug_set_threshold_for_name("glcontext", GST_LEVEL_LOG);
+  gst_debug_set_threshold_for_name("rtpbin", GST_LEVEL_INFO);
+  gst_debug_set_threshold_for_name("rtpjitterbuffer", GST_LEVEL_INFO);
+  gst_debug_set_threshold_for_name("rtpmp2tdepay", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("tsparse", GST_LEVEL_WARNING);
+  gst_debug_set_threshold_for_name("tsdemux", GST_LEVEL_INFO);
+  gst_debug_set_threshold_for_name("amcviddec-omxgoogleh264decoder", GST_LEVEL_INFO);
+  gst_debug_set_threshold_for_name("h264parse", GST_LEVEL_INFO);
+  gst_debug_set_threshold_for_name("queue", GST_LEVEL_INFO);
+  gst_debug_set_threshold_for_name("glimagesink", GST_LEVEL_INFO);
 
   g_object_set(udpsrc_,
                "socket", socket_,
                "buffer-size", 4194304,
                NULL);
 
-  gst_bin_add_many(GST_BIN(pipeline_), udpsrc_, rtpbin_, depay_, tsparse, tsdemux, queue_, decodebin_, NULL);
+  gst_bin_add_many(GST_BIN(pipeline_), udpsrc_, rtpbin_, depay_, tsparse,
+                   tsdemux_, queue_, h264parse_, capsfilter_, decoder_, NULL);
 
   if (!gst_bin_add(GST_BIN(pipeline_), video_sink_)) {
     TeardownPipeline();
     return;
   }
 
+  // 連接 udpsrc → rtpbin
   rtpbin_rtp_sink_pad_ = gst_element_get_request_pad(rtpbin_, "recv_rtp_sink_0");
   GstPad* udp_src_pad = gst_element_get_static_pad(udpsrc_, "src");
   if (!rtpbin_rtp_sink_pad_ || !udp_src_pad) {
-    if (rtpbin_rtp_sink_pad_) {
-      ALOGE("udp_src_pad is null");
-    }
     if (udp_src_pad) {
-      ALOGE("rtpbin_rtp_sink_pad_ is null");
       gst_object_unref(udp_src_pad);
     }
     TeardownPipeline();
@@ -548,21 +869,25 @@ void RtpMpegTsPlayerGst::EnsurePipeline() {
   GstPadLinkReturn udplink = gst_pad_link(udp_src_pad, rtpbin_rtp_sink_pad_);
   gst_object_unref(udp_src_pad);
   if (udplink != GST_PAD_LINK_OK) {
-    ALOGE("udplink != GST_PAD_LINK_OK");
+    ALOGE("Failed to link udpsrc to rtpbin");
     TeardownPipeline();
     return;
   }
 
-  bool link_ok = gst_element_link_many(depay_, tsparse, tsdemux, NULL);
+  // 連接 depay → tsparse → tsdemux
+  bool link_ok = gst_element_link_many(depay_, tsparse, tsdemux_, NULL);
   if (!link_ok) {
-    ALOGE("gst_element_link_many failed");
+    ALOGE("Failed to link depay → tsparse → tsdemux");
     TeardownPipeline();
     return;
   }
 
+  // 連接信號
   g_signal_connect(rtpbin_, "request-pt-map", G_CALLBACK(RtpMpegTsPlayerGst::OnRequestPtMap), this);
   g_signal_connect(rtpbin_, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnRtpbinPadAdded), this);
-  g_signal_connect(tsdemux, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDemuxPadAdded), this);
+  g_signal_connect(tsdemux_, "pad-added", G_CALLBACK(RtpMpegTsPlayerGst::OnDemuxPadAdded), this);
+
+  // Bus
   bus_ = gst_element_get_bus(pipeline_);
   if (bus_) {
     GSource* src = gst_bus_create_watch(bus_);
@@ -591,12 +916,22 @@ GstCaps* RtpMpegTsPlayerGst::OnRequestPtMap(GstElement* rtpbin, guint session, g
   return NULL;
 }
 
+void RtpMpegTsPlayerGst::EnterKeyframeWait() {
+  waiting_for_keyframe_.store(true);
+}
+
+void RtpMpegTsPlayerGst::ExitKeyframeWait() {
+  waiting_for_keyframe_.store(false);
+}
+
 void RtpMpegTsPlayerGst::TeardownPipeline() {
   if (bus_) {
     gst_bus_remove_signal_watch(bus_);
     gst_object_unref(bus_);
     bus_ = nullptr;
   }
+  ResetBacklogTracker();
+  queue_restore_pending_.store(false);
   if (pipeline_) {
     gst_element_set_state(pipeline_, GST_STATE_NULL);
   }
@@ -611,6 +946,16 @@ void RtpMpegTsPlayerGst::TeardownPipeline() {
     gst_object_unref(pipeline_);
     pipeline_ = nullptr;
   }
+  queue_ = nullptr;
+  h264parse_ = nullptr;
+  decoder_ = nullptr;
+  video_sink_ = nullptr;
+  udpsrc_ = nullptr;
+  rtpbin_ = nullptr;
+  depay_ = nullptr;
+  capsfilter_ = nullptr;
+  tsdemux_ = nullptr;
+  volume_ = nullptr;
   if (socket_) {
     g_object_unref(socket_);
     socket_ = nullptr;
@@ -687,6 +1032,35 @@ GSocket* RtpMpegTsPlayerGst::CreateBoundSocket(uint16_t requested_port) {
   }
   g_object_unref(local);
   return sock;
+}
+
+void RtpMpegTsPlayerGst::OnNewJitterBuffer(GstElement* rtpbin, GstElement* jitterbuffer, guint session, guint ssrc, gpointer user_data) {
+  ALOGI("Configuring jitterbuffer for session %u, ssrc %u", session, ssrc);
+
+  g_object_set(jitterbuffer,
+               "latency", 50,  // 50ms 低延遲
+               "do-lost", TRUE,
+               "max-dropout-time", 500,
+               "max-misorder-time", 100,
+               "rtx-max-retries", 0,  // 不重傳
+               NULL);
+
+  // 驗證配置
+  guint actual_latency = 0;
+  gint actual_mode = 0;
+  g_object_get(jitterbuffer,
+               "latency", &actual_latency,
+               "mode", &actual_mode,
+               NULL);
+  ALOGI("Jitterbuffer: latency=%u ms, mode=%d (1=SLAVE)", actual_latency, actual_mode);
+}
+
+void RtpMpegTsPlayerGst::OnQueueOverrun(GstElement* queue, gpointer user_data) {
+  // Queue 滿了，但不會自動丟棄，因為我們在 probe 中已經處理了
+  static int overrun_count = 0;
+  if (++overrun_count % 10 == 0) {
+    ALOGW("Queue OVERRUN #%d - probe should be dropping delta units", overrun_count);
+  }
 }
 
 void RtpMpegTsPlayerGst::RunMainLoop() {
