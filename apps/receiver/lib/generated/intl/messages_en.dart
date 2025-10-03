@@ -206,6 +206,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Decline",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Turn off “Require approval” in the Settings menu to skip manual confirmation.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Participants would like to share their screen",
     ),
@@ -662,11 +668,11 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Turn on/off auto accept"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Turn on/off require passcode"),
-        "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
-          "Turn on/off moderator mode",
-        ),
-        "v3_lbl_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Turn on/off moderator mode",
+    ),
+    "v3_lbl_settings_only_when_casting_info":
+        MessageLookupByLibrary.simpleMessage(
           "More information about broadcast to display group",
         ),
     "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
@@ -987,13 +993,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Require passcode"),
-        "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
-          "Moderator mode",
-        ),
-        "v3_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
-          "Broadcast the source IFP screen only when it is receiving a shared screen.",
-        ),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderator mode",
+    ),
+    "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
+      "Broadcast the source IFP screen only when it is receiving a shared screen.",
+    ),
     "v3_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
       "Open Source Licenses",
     ),

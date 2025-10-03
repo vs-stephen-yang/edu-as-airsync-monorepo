@@ -389,5 +389,7 @@
   "v3_settings_device_high_image_quality_off_desc": "Maximum QHD (2K) screen sharing depending on the sender screen resolution.",
   "v3_lbl_eula_launch": "Launch",
   "v3_eula_launch": "Launch",
-  "v3_authorize_prompt_title_launcher": "Participants would like to share their screen"
+  "v3_authorize_prompt_title_launcher": "Participants would like to share their screen",
+  "v3_authorize_prompt_notification_cast": "Turn off “Require approval” in the Settings menu to skip manual confirmation.",
+  "v3_authorize_prompt_notification_mirror": "Turn on “Auto Accept” in the Settings menu to accept all streaming automatically."
 }

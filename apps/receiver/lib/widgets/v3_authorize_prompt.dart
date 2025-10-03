@@ -8,8 +8,10 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/user_timer_manager.dart';
 import 'package:display_flutter/widgets/authorize_prompt_components.dart';
+import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -86,7 +88,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
           dialogContextList.isEmpty) {
         Future.delayed(Duration.zero, () {
           if (context.mounted) {
-            print('------mounted--showing auth dialog');
+            log.info('------mounted--showing auth dialog');
             _showAuthDialog(context);
           }
         });
@@ -676,107 +678,17 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                                   .maxHybridConnection))
                               ? ConstrainedBox(
                                   constraints: BoxConstraints(minHeight: 26.6),
-                                  child: AuthorizeButton(
-                                    minWidth: 146.66,
-                                    minHeight: 26.6,
-                                    type: AuthorizeButtonType.acceptAll,
-                                    text: S
-                                        .of(context)
-                                        .v3_authorize_prompt_accept_all,
-                                    onPressed: () async {
-                                      // 重置所有 mirror 計時器
-
-                                      for (var req in mirrorRequestIdles) {
-                                        _resetTimerForUser(
-                                            'mirror_${req.mirrorId}');
-                                      }
-
-                                      final String mirrorType =
-                                          mirrorRequestIdles
-                                              .toList()
-                                              .first
-                                              .mirrorType
-                                              .name
-                                              .replaceAll(
-                                                  'googlecast', 'google_cast');
-                                      trackEvent('click_accept_all_device',
-                                          EventCategory.session,
-                                          mode: mirrorType);
-
-                                      for (int i = mirrorRequestIdles
-                                              .toList()
-                                              .length;
-                                          i > 0;
-                                          i--) {
-                                        String? mirrorId = mirrorRequestIdles
-                                            .toList()[i - 1]
-                                            .mirrorId;
-                                        if (ChannelProvider.isModeratorMode) {
-                                          mirrorStateProvider
-                                              .setModeratorIdleMirrorId(
-                                                  mirrorId);
-                                        } else {
-                                          mirrorStateProvider
-                                              .setAcceptMirrorId(mirrorId);
-                                        }
-                                      }
-
-                                      mirrorStateProvider.isMirrorConfirmation =
-                                          false;
-                                    },
-                                    focusLabel: S
-                                        .of(context)
-                                        .v3_authorize_prompt_accept_all,
-                                    focusIdentifier:
-                                        'v3_qa_authorize_prompt_accept_all',
-                                    // minHeight: containerHeight,
-                                  ),
+                                  child: V3AutoHyphenatingText(S
+                                      .of(context)
+                                      .v3_authorize_prompt_notification_mirror),
                                 )
                               : authRequestIdles.isNotEmpty
                                   ? ConstrainedBox(
                                       constraints:
                                           BoxConstraints(minHeight: 26.6),
-                                      child: AuthorizeButton(
-                                        minWidth: 146.66,
-                                        minHeight: 26.6,
-                                        type: AuthorizeButtonType.acceptAll,
-                                        text: S
-                                            .of(context)
-                                            .v3_authorize_prompt_accept_all,
-                                        onPressed: () {
-                                          // 重置所有 WebRTC 計時器
-                                          for (var req in authRequestIdles) {
-                                            final reqDeviceName =
-                                                req.entries.first.key;
-                                            _resetTimerForUser(
-                                                'webrtc_$reqDeviceName');
-                                          }
-
-                                          trackEvent('click_accept_all_device',
-                                    EventCategory.session,
-                                    mode: 'webrtc');
-
-                                          for (int i = authRequestIdles.length;
-                                              i > 0;
-                                              i--) {
-                                            authRequestIdles[i - 1]
-                                                .entries
-                                                .first
-                                                .value
-                                                .sendAllowPresent();
-                                            channelProvider.authorizeRequestList
-                                                .removeAt(i - 1);
-                                          }
-                                          channelProvider.isAuthorizeMode =
-                                              false;
-                                        },
-                                        focusLabel: S
-                                            .of(context)
-                                            .v3_authorize_prompt_accept_all,
-                                        focusIdentifier:
-                                            'v3_qa_authorize_prompt_accept_all',
-                                        // minHeight: containerHeight,
-                                      ),
+                                      child: V3AutoHyphenatingText(S
+                                          .of(context)
+                                          .v3_authorize_prompt_notification_cast),
                                     )
                                   : SizedBox.shrink(),
                           Gap(16),
