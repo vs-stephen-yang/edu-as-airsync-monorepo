@@ -9,6 +9,7 @@ import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +24,11 @@ class V3ExtendCastingTimeMenu extends StatefulWidget {
 
 class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
   StreamSubscription<int>? sub;
-
   late V3Toast _v3Toast;
 
   @override
   void initState() {
     super.initState();
-
     _v3Toast = context.read<V3Toast>();
 
     sub = ConnectionTimer.getInstance()
@@ -39,7 +38,6 @@ class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
             event == 0 && !V3ExtendCastingTimeMenu.showReamingTimeAlert.value)
         .listen((event) {
       if (!mounted) return;
-
       _v3Toast
           .makeMessageToast(context, S.of(context).v3_casting_ended_toast)
           .show(context);
@@ -55,64 +53,53 @@ class _V3ExtendCastingTimeMenuState extends State<V3ExtendCastingTimeMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AnimatedBuilder(
-          animation: Listenable.merge([
-            V3ExtendCastingTimeMenu.showReamingTimeAlert,
-          ]),
-          builder: (BuildContext context, Widget? child) {
-            if (V3ExtendCastingTimeMenu.showReamingTimeAlert.value) {
-              return const V3ExtendSharingTimeMenu();
-            }
-
-            return const SizedBox.shrink();
-          },
+    return ValueListenableBuilder(
+      valueListenable: V3ExtendCastingTimeMenu.showReamingTimeAlert,
+      builder: (ctx, showReamingTimeAlert, c) => Visibility(
+        visible: showReamingTimeAlert,
+        child: V3ExtendSharingTimeMenu(
+          timer: ConnectionTimer.getInstance(),
         ),
-      ],
+      ),
     );
   }
 }
 
 class V3ExtendSharingTimeMenu extends StatefulWidget {
-  const V3ExtendSharingTimeMenu({super.key});
+  final ConnectionTimer timer;
+  static ValueNotifier<bool> onlyCountdown = ValueNotifier(false);
+
+  const V3ExtendSharingTimeMenu({super.key, required this.timer});
 
   @override
   State<StatefulWidget> createState() => _V3ExtendSharingTimeMenuState();
 }
 
 class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
-  bool onlyCountdown = false;
-
   @override
   void initState() {
-    ConnectionTimer.getInstance()
-        .remainingTimeTimeout
-        .stream
+    widget.timer.remainingTimeTimeout.stream
         .where((event) =>
-            ConnectionTimer.getInstance().exceedMaxExtendTimes &&
+            widget.timer.exceedMaxExtendTimes &&
             event < (ConnectionTimer.hintStartTimeSec - 5) &&
-            !onlyCountdown)
+            !V3ExtendSharingTimeMenu.onlyCountdown.value)
         .listen((event) {
       // According to the design, the dialog will be changed to countdown view when after 5 seconds of the last countdown.
-      if (!mounted) return;
-      setState(() {
-        onlyCountdown = true;
-      });
+      V3ExtendSharingTimeMenu.onlyCountdown.value = true;
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return onlyCountdown
-        ? _buildPureCountdownView(context)
-        : _buildMainDialog(context);
+    return ValueListenableBuilder(
+        valueListenable: V3ExtendSharingTimeMenu.onlyCountdown,
+        builder: (ctx, onlyCountdown, c) => onlyCountdown
+            ? _buildPureCountdownView(context)
+            : _buildMainDialog(context));
   }
 
   Widget _buildPureCountdownView(BuildContext context) {
-    final isCompat = context.splitScreenRatio.widthFraction <=
-        SplitScreenRatio.floatingDefault.widthFraction;
     final r = _buildDialog(
       context: context,
       width: 108,
@@ -128,7 +115,8 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
       ),
     );
 
-    if (isCompat) {
+    if (context.splitScreenRatio.widthFraction <
+        SplitScreenRatio.floatingDefault.widthFraction) {
       return Positioned(
         top: 0,
         left: 0,
@@ -146,87 +134,115 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
   }
 
   Widget _buildMainDialog(BuildContext context) {
-    final lastTime = ConnectionTimer.getInstance().exceedMaxExtendTimes;
+    final lastTime = widget.timer.exceedMaxExtendTimes;
     final height = lastTime ? 100.0 : 154.0;
     final message = lastTime
         ? S.of(context).v3_last_casting_time_countdown
         : S.of(context).v3_casting_time_countdown(
-              ConnectionTimer.getInstance().remainExtendTime,
+              widget.timer.remainExtendTime,
             );
 
-    final compat = UnconstrainedBox(
-      constrainedAxis: Axis.vertical,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero, // 移除圓角
-          ),
-          insetPadding: EdgeInsets.zero,
-          backgroundColor: context.tokens.color.vsdslColorSurface1000,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 16),
-                  const _CountdownText(),
-                  Spacer(),
-                  const SizedBox(height: 8),
-                  _MessageText(message: message),
-                  Spacer(),
-                  if (!lastTime) ...[
-                    const SizedBox(height: 13),
-                    _ExtendButtons(
-                        wrapAlignment: WrapAlignment.spaceEvenly,
-                        onDoNotExtend: () {
-                          if (!mounted) return;
-                          setState(() => onlyCountdown = true);
-                        }),
-                  ],
-                  const SizedBox(height: 8),
+    final compat = Center(
+      child: UnconstrainedBox(
+        constrainedAxis: Axis.vertical,
+        child: SizedBox(
+          /// based on spec, be full screen when screen is launcher width an height
+          height: context.splitScreenRatio == SplitScreenRatio.launcher &&
+                  MediaQuery.of(context).size.width <=
+                      SplitScreenRatio.launcher.widthDP + 10 &&
+                  MediaQuery.of(context).size.height <=
+                      SplitScreenRatio.launcher.heightDP + 10
+              ? MediaQuery.of(context).size.height
+              : SplitScreenRatio.launcher.heightDP,
+          width: MediaQuery.of(context).size.width,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero, // 移除圓角
+            ),
+            insetPadding: EdgeInsets.zero,
+            backgroundColor: context.tokens.color.vsdslColorSurface1000,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: 0,
+                    maxHeight: 16,
+                  ),
+                  child: SizedBox.shrink(), // or any child you want
+                ),
+                const _CountdownText(),
+                Spacer(),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: 0,
+                    maxHeight: 8,
+                  ),
+                  child: SizedBox.shrink(), // or any child you want
+                ),
+                _MessageText(
+                  message: message,
+                  height: 52,
+                ),
+                Spacer(),
+                if (!lastTime) ...[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: 0,
+                      maxHeight: 13,
+                    ),
+                    child: SizedBox.shrink(), // or any child you want
+                  ),
+                  _ExtendButtons(
+                      wrapAlignment: WrapAlignment.spaceEvenly,
+                      onDoNotExtend: () {
+                        V3ExtendSharingTimeMenu.onlyCountdown.value = true;
+                      }),
                 ],
-              )),
-              const Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: _CountDownProgressIndicatorBar(),
-              ),
-            ],
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: 4,
+                    maxHeight: 8,
+                  ),
+                  child: SizedBox.shrink(), // or any child you want
+                ),
+                _CountDownProgressIndicatorBar(),
+              ],
+            ),
           ),
         ),
       ),
     );
+    final landscape = _buildDialog(
+      context: context,
+      width: 242,
+      height: height,
+      backgroundColor: context.tokens.color.vsdslColorSurface1000,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 16),
+          const _CountdownText(),
+          const SizedBox(height: 8),
+          _MessageText(
+            message: message,
+            height: lastTime ? 30 : 52,
+          ),
+          if (!lastTime) ...[
+            const SizedBox(height: 13),
+            _ExtendButtons(onDoNotExtend: () {
+              V3ExtendSharingTimeMenu.onlyCountdown.value = true;
+            }),
+          ],
+        ],
+      ),
+    );
     return MultiWindowAdaptiveLayout(
       launcher: compat,
-      floatingDefault: compat,
-      landscape: _buildDialog(
-        context: context,
-        width: 242,
-        height: height,
-        backgroundColor: context.tokens.color.vsdslColorSurface1000,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 16),
-            const _CountdownText(),
-            const SizedBox(height: 8),
-            _MessageText(message: message),
-            if (!lastTime) ...[
-              const SizedBox(height: 13),
-              _ExtendButtons(onDoNotExtend: () {
-                if (!mounted) return;
-                setState(() => onlyCountdown = true);
-              }),
-            ],
-          ],
-        ),
-      ),
+      floatingDefault: landscape,
+      landscape: landscape,
     );
   }
 
@@ -296,26 +312,42 @@ class _CountdownText extends StatelessWidget {
 
 class _MessageText extends StatelessWidget {
   final String message;
+  final double height;
 
-  const _MessageText({required this.message});
+  const _MessageText({required this.message, required this.height});
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 13),
-        child: AutoSizeText.rich(
-          TextSpan(
-            text: message,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.normal,
-              color: context.tokens.color.vsdslColorOnSurfaceInverse,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: height,
+        maxHeight: height,
+      ),
+      child: Builder(
+        builder: (context) {
+          final sc = ScrollController();
+          return V3Scrollbar(
+            controller: sc,
+            child: SingleChildScrollView(
+              controller: sc,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 13),
+                child: AutoSizeText.rich(
+                  TextSpan(
+                    text: message,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.normal,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
+                  ),
+                  textAlign: TextAlign.center,
+                  minFontSize: 8,
+                ),
+              ),
             ),
-          ),
-          textAlign: TextAlign.center,
-          minFontSize: 8,
-        ),
+          );
+        },
       ),
     );
   }
