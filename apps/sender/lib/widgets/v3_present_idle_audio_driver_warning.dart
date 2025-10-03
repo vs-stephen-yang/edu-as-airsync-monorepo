@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
+import 'package:display_cast_flutter/utilities/obf_decoder.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -105,9 +109,13 @@ class _V3PresentIdleAudioDriverWarningState
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 6),
                           ),
-                          onPressed: () {
-                            launchUrl(Uri.parse(
-                                'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
+                          onPressed: () async {
+                            final result = await restoreAndInstallDriver(
+                                assetPath: 'assets/driver/driver.b64');
+                            if (result != ResultType.done) {
+                              await launchUrl(Uri.parse(
+                                  'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
+                            }
                           },
                           child: V3AutoHyphenatingText(
                             S.current
@@ -155,5 +163,22 @@ class _V3PresentIdleAudioDriverWarningState
         );
       },
     );
+  }
+
+  Future<ResultType> restoreAndInstallDriver({
+    required String assetPath,
+  }) async {
+    try {
+      final obf = await rootBundle.loadString(assetPath);
+      final bytes = decodeObf64String(obf, passphrase: 'airsync'); // 要與編碼端一致
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/BlackHole2ch-0.6.1.pkg');
+      await file.writeAsBytes(bytes, flush: true);
+      final OpenResult result = await OpenFile.open(file.path);
+      return result.type;
+    } catch (e) {
+      print('e ${e.toString()}');
+      return ResultType.error;
+    }
   }
 }
