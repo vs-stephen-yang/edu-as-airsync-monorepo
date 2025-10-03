@@ -13,16 +13,17 @@ class ConnectionTimer {
 
   static const maxExtendTime = 2;
 
-  static final ConnectionTimer _instance = ConnectionTimer.internal();
+  static final ConnectionTimer _instance = ConnectionTimer._internal();
 
   static ConnectionTimer getInstance() => _instance;
 
-  ConnectionTimer.internal();
+  ConnectionTimer._internal();
 
   Timer? _remainingTimeTimer, _shareSenderTimer;
   StreamController<int> remainingTimeTimeout =
       StreamController<int>.broadcast();
 
+  int get currentRemainingTime => (threeHourTimeLimitSec - elapsedSec);
   StreamController<int> shareSenderTimeout = StreamController<int>.broadcast();
 
   int extendTimes = 0;
@@ -72,6 +73,7 @@ class ConnectionTimer {
     _remainingTimeTimer = null;
     remainingTimeTimeout.sink.add(-1);
     V3ExtendCastingTimeMenu.showReamingTimeAlert.value = false;
+    V3ExtendSharingTimeMenu.onlyCountdown.value = false;
     extendTimes = 0;
     elapsedSec = 0;
   }

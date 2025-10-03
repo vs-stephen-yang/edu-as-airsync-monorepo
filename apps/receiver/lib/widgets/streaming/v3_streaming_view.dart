@@ -171,10 +171,8 @@ class BottomOverlayMenus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isCompat = context.splitScreenRatio.widthFraction <=
-        SplitScreenRatio.floatingDefault.widthFraction;
-
-    if (isCompat) {
+    if (context.splitScreenRatio.widthFraction <
+        SplitScreenRatio.oneThirdFull.widthFraction) {
       return Positioned.fill(
         child: Stack(
           children: [
