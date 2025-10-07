@@ -229,6 +229,45 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
     ).show(context);
   }
 
+  bool _isDeviceFull() {
+    if (!ChannelProvider.isModeratorMode) {
+      return HybridConnectionList.hybridSplitScreenCount.value >=
+          HybridConnectionList.maxHybridSplitScreen;
+    } else {
+      return HybridConnectionList().getConnectionCount() >=
+          HybridConnectionList.maxHybridConnection;
+    }
+  }
+
+  Widget _buildHintApproveAll({
+    required Iterable<MirrorRequest> mirrorRequestIdles,
+    required MirrorStateProvider mirrorStateProvider,
+    required List<Map<String, dynamic>> authRequestIdles,
+    required double dialogWidth,
+  }) {
+    final shouldShowMirrorHint = mirrorRequestIdles.isNotEmpty &&
+        mirrorStateProvider.isMirrorConfirmation &&
+        !_isDeviceFull();
+
+    final String? hintText = shouldShowMirrorHint
+        ? S.of(context).v3_authorize_prompt_notification_mirror
+        : authRequestIdles.isNotEmpty
+            ? S.of(context).v3_authorize_prompt_notification_cast
+            : null;
+
+    if (hintText == null) {
+      return const SizedBox.shrink();
+    }
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: 26.6, maxWidth: dialogWidth),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        child: V3AutoHyphenatingText(hintText),
+      ),
+    );
+  }
+
   _showAuthDialog(BuildContext context) {
     if (navService.canPop() &&
         HybridConnectionList.hybridSplitScreenCount.value == 0) {
@@ -650,7 +689,47 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                         ),
                       ]);
                     }
+
+                    final hintApproveAll = _buildHintApproveAll(
+                      mirrorRequestIdles: mirrorRequestIdles,
+                      mirrorStateProvider: mirrorStateProvider,
+                      authRequestIdles: authRequestIdles,
+                      dialogWidth: dialogWidth,
+                    );
                     final sc = ScrollController();
+                    final fullH = MediaQuery.of(context).size.height;
+                    if (isCompact &&
+                        MediaQuery.of(context).textScaler.scale(1.0) > 1) {
+                      return SizedBox(
+                        height: fullH,
+                        child: V3Scrollbar(
+                          controller: sc,
+                          child: SingleChildScrollView(
+                            controller: sc,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: fullH,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [title, ...widgetList],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: hintApproveAll,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
                     return ConstrainedBox(
                       constraints: BoxConstraints(
                         maxHeight: isCompact
@@ -683,34 +762,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                     ),
                                   ),
                                 ),
-                          mirrorRequestIdles.isNotEmpty &&
-                                  (mirrorStateProvider.isMirrorConfirmation) &&
-                                  !(!ChannelProvider.isModeratorMode &&
-                                          HybridConnectionList
-                                                  .hybridSplitScreenCount
-                                                  .value >=
-                                              HybridConnectionList
-                                                  .maxHybridSplitScreen ||
-                                      (ChannelProvider.isModeratorMode &&
-                                          HybridConnectionList()
-                                                  .getConnectionCount() >=
-                                              HybridConnectionList
-                                                  .maxHybridConnection))
-                              ? ConstrainedBox(
-                                  constraints: BoxConstraints(minHeight: 26.6),
-                                  child: V3AutoHyphenatingText(S
-                                      .of(context)
-                                      .v3_authorize_prompt_notification_mirror),
-                                )
-                              : authRequestIdles.isNotEmpty
-                                  ? ConstrainedBox(
-                                      constraints:
-                                          BoxConstraints(minHeight: 26.6),
-                                      child: V3AutoHyphenatingText(S
-                                          .of(context)
-                                          .v3_authorize_prompt_notification_cast),
-                                    )
-                                  : SizedBox.shrink(),
+                          hintApproveAll,
                           Gap(16),
                         ],
                       ),
