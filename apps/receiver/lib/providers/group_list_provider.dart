@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -17,8 +18,6 @@ final discoveryModelProvider = ChangeNotifierProvider<GroupListModel>((ref) {
 
 class GroupListModel with ChangeNotifier {
   GroupListModel();
-
-  static const String discoveryType = '_vs-airsync._tcp';
 
   BonsoirDiscovery? _discovery;
   StreamSubscription<BonsoirDiscoveryEvent>? _discoverySub;
@@ -41,7 +40,8 @@ class GroupListModel with ChangeNotifier {
         // 先確保沒有殘留 listener
         await _safeStop();
 
-        final discovery = BonsoirDiscovery(type: discoveryType);
+        final discovery =
+            BonsoirDiscovery(type: DisplayServiceBroadcast.serviceType);
         await discovery.ready;
 
         // 使用「這次的 discovery」當作 resolver 來源，避免 race

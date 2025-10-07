@@ -93,7 +93,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     AppManagerConfig().stopHandleManagerUpdateRequest();
-    DisplayServiceBroadcast.instance.dispose();
+    DisplayServiceBroadcast.instance?.dispose();
   }
 
   @override

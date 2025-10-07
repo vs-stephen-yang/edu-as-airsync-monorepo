@@ -68,6 +68,17 @@ Future<void> commonEntry(ConfigSettings settings) async {
     await HybridConnectionList.ensureInitialized();
     await AppManagerConfig().ensureInitialized();
 
+    final instanceInfoProvider = InstanceInfoProvider();
+
+    DisplayServiceBroadcast.ensureInitialized(
+      appVersion: packageInfo.version,
+      instanceInfoProvider: instanceInfoProvider,
+      invitedToGroupOption: AppPreferences().invitedToGroup,
+    );
+
+    // Initialize the instance name
+    instanceInfoProvider.instanceName = AppPreferences().instanceName;
+
     var configureApp = AppConfig(
       settings: settings,
       appName: packageInfo.appName,
@@ -77,19 +88,6 @@ Future<void> commonEntry(ConfigSettings settings) async {
         child: const riverpod.ProviderScope(child: MyApp()),
       ),
     );
-
-    final instanceInfoProvider = InstanceInfoProvider();
-
-    DisplayServiceBroadcast.ensureInitialized(
-      directChannelPort: 5100,
-      broadcastServiceType: '_vs-airsync._tcp',
-      appVersion: configureApp.appVersion,
-      instanceInfoProvider: instanceInfoProvider,
-      invitedToGroupOption: AppPreferences().invitedToGroup,
-    );
-
-    // Initialize the instance name
-    instanceInfoProvider.instanceName = AppPreferences().instanceName;
 
     await AppAnalytics.initializeApp(
       instrumentationKey: settings.instrumentationKey,

@@ -9,19 +9,20 @@ import 'package:uuid/uuid.dart';
 class DisplayServiceBroadcast {
   static DisplayServiceBroadcast? _singleton;
 
-  static DisplayServiceBroadcast get instance => _singleton!;
+  static DisplayServiceBroadcast? get instance => _singleton;
+
+  static const channelPort = 5100;
+  static const serviceType = '_vs-airsync._tcp';
 
   static void ensureInitialized({
-    required String broadcastServiceType,
-    required int directChannelPort,
     required String appVersion,
     required InstanceInfoProvider instanceInfoProvider,
     required String invitedToGroupOption,
   }) {
     if (_singleton != null) return;
     _singleton = DisplayServiceBroadcast._internal(
-      broadcastServiceType,
-      directChannelPort,
+      serviceType,
+      channelPort,
       appVersion,
       instanceInfoProvider,
       invitedToGroupOption,
