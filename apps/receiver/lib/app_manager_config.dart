@@ -165,7 +165,7 @@ class AppManagerConfig {
 
         // Apply new settings
         await DisplayServiceBroadcast.instance
-            .updateInvitedToGroupOption(AppPreferences().invitedToGroup);
+            ?.updateInvitedToGroupOption(AppPreferences().invitedToGroup);
 
         // clear manager update request
         await prefs.setBool('mgr_UpdateInvitedToGroup', false);

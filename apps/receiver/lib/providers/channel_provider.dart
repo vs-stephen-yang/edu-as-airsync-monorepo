@@ -312,7 +312,7 @@ class ChannelProvider extends ChangeNotifier {
       baseApiUrl: appConfig.settings.baseApiUrl,
       instanceId: AppInstanceCreate().displayInstanceID,
       webTransportServerPort: appConfig.webTransportServerPort,
-      directChannelPort: DisplayServiceBroadcast.instance.directChannelPort,
+      directChannelPort: DisplayServiceBroadcast.channelPort,
       reportPortBindResult: _networkDiagnostic.importPortTestResult,
       reportTunnelConnectResult: _networkDiagnostic.reportTunnelConnectResult,
       reportWebTransportCertDate: _networkDiagnostic.reportWebTransportCertDate,
@@ -1042,7 +1042,7 @@ class ChannelProvider extends ChangeNotifier {
     if (countDownProgress.value == 0) {
       countDownProgress.value = maxCountDown;
       _updateOTP();
-      DisplayServiceBroadcast.instance.onBroadcastRestart();
+      DisplayServiceBroadcast.instance?.onBroadcastRestart();
     }
   }
 

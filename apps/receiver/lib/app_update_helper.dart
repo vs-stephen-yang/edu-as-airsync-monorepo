@@ -86,7 +86,7 @@ class AppUpdateHelper {
   }
 
   startAppUpdate(String filePath) async {
-    DisplayServiceBroadcast.instance.dispose();
+    DisplayServiceBroadcast.instance?.dispose();
     if (_otaFlavor == OtaFlavor.ifp || _otaFlavor == OtaFlavor.edla) {
       // silent install
       await AppOtaFlutter().startSilentInstallApk(filePath);

@@ -394,7 +394,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                 AppPreferences().setInvitedToGroupSelectedItem(
                     item: optionValue.toString());
                 DisplayServiceBroadcast.instance
-                    .updateInvitedToGroupOption(optionValue.toString());
+                    ?.updateInvitedToGroupOption(optionValue.toString());
               });
             },
           ),
