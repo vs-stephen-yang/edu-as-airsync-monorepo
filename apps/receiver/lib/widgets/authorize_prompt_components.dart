@@ -60,6 +60,7 @@ class AuthorizeButton extends StatelessWidget {
   final String? focusIdentifier;
   final double minWidth;
   final double minHeight;
+  final double? maxHeight;
   final String? iconPath;
   final bool showText;
 
@@ -72,6 +73,7 @@ class AuthorizeButton extends StatelessWidget {
     this.focusIdentifier,
     this.minWidth = 80,
     required this.minHeight,
+    this.maxHeight,
     this.iconPath,
     this.showText = true,
   });
@@ -86,6 +88,7 @@ class AuthorizeButton extends StatelessWidget {
           minWidth: showText ? minWidth : 26.6,
           maxWidth: showText ? double.infinity : 26.6,
           minHeight: minHeight,
+          maxHeight: maxHeight ?? double.infinity,
         ),
         child: ElevatedButton(
           style: _getButtonStyle(context),
