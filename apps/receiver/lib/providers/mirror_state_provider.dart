@@ -63,6 +63,10 @@ class MirrorStateProvider extends ChangeNotifier
 
   bool _isSpecifiedModuleAndDFSChannel = false;
 
+  get isPermissionGranted => _isPermissionGranted;
+
+  bool _isPermissionGranted = false;
+
   final InstanceInfoProvider _instanceInfoProvider;
 
   FlutterMirror? _flutterMirrorPlugin;
@@ -504,6 +508,13 @@ class MirrorStateProvider extends ChangeNotifier
               await startMiracast(updatePreference: false);
             }
           }
+        } else if (event is String) {
+          if (event == 'permission_granted') {
+            _isPermissionGranted = true;
+          } else {
+            _isPermissionGranted = false;
+          }
+          notifyListeners();
         }
       }, onError: (error) {
         print('error: $error');

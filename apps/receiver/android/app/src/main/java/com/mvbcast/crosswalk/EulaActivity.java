@@ -455,6 +455,13 @@ public class EulaActivity extends FlutterActivity {
     protected void onResume() {
         super.onResume();
         enableFullscreenMode(this);
+        WifiHelper.getInstance().startWifiMonitorLoop(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WifiHelper.getInstance().stopWifiMonitorLoop();
     }
 
     @Override

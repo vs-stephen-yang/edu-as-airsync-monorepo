@@ -12,12 +12,14 @@ import android.hardware.usb.UsbManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,21 +57,30 @@ public class WifiHelper {
 
     private final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     /**
-     * @noinspection FieldCanBeLocal
+     * 可擴充的 USB Wi-Fi 模組清單 (VendorId, ProductId)
      */
-    private final int VB004_VENDOR_ID = 0xA69C;
+    private static final List<DeviceId> SPECIFIED_USB_MODULES = Arrays.asList(
+            new DeviceId(0xA69C, 0x8801), // VB004
+            new DeviceId(0x0BDA, 0xA85B)  // VB005
+    );
+
     /**
-     * @noinspection FieldCanBeLocal
+     * Inner Class
+     * 用於儲存 VendorId 與 ProductId 的結構
      */
-    private final int VB004_PRODUCT_ID = 0x8801;
-    /**
-     * @noinspection FieldCanBeLocal
-     */
-    private final int VB005_VENDOR_ID = 0x0BDA;
-    /**
-     * @noinspection FieldCanBeLocal
-     */
-    private final int VB005_PRODUCT_ID = 0xA85B;
+    private static class DeviceId {
+        final int vendorId;
+        final int productId;
+
+        DeviceId(int vendorId, int productId) {
+            this.vendorId = vendorId;
+            this.productId = productId;
+        }
+
+        boolean matches(UsbDevice device) {
+            return device.getVendorId() == vendorId && device.getProductId() == productId;
+        }
+    }
 
     private final List<Integer> mDFSChannel = Arrays.asList(
             52, 56, 60, 64, 100, 104, 108, 112,
@@ -83,6 +94,9 @@ public class WifiHelper {
     private boolean mIsSpecifiedModuleAndDFSChannel = false;
     private Boolean mLastSpecifiedModuleAndDFSChannel;
 
+    private Handler monitorHandler = null;
+    private Runnable monitorRunnable = null;
+
     public void initSpecifiedModuleDFSChannelMonitor(Activity activity, BinaryMessenger binaryMessenger) {
         new EventChannel(binaryMessenger, "com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel")
                 .setStreamHandler(new EventChannel.StreamHandler() {
@@ -90,6 +104,8 @@ public class WifiHelper {
                     public void onListen(Object arguments, EventChannel.EventSink events) {
                         mWiFiHelperEventSink = events;
                         mLastSpecifiedModuleAndDFSChannel = null;
+                        // need wait sink ready.
+                        startWifiMonitoringIfGrantPermission(activity);
                     }
 
                     @Override
@@ -101,8 +117,6 @@ public class WifiHelper {
 
         checkConnectedUsbDevices(activity);
 
-        monitorWifiChannelChange(activity);
-
         mIsMonitorUSB = true;
     }
 
@@ -112,8 +126,7 @@ public class WifiHelper {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String action = intent.getAction();
-                    if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action) ||
-                            UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                    if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action) || UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                         if (mIsMonitorUSB) {
                             checkConnectedUsbDevices(activity);
                         }
@@ -142,7 +155,12 @@ public class WifiHelper {
      */
     public boolean onRequestPermissionsResult(@NonNull Activity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendPermissionStatusToFlutter("permission_granted");
+                // 權限取得成功後開始 Wi-Fi 偵測
+                startWifiMonitorLoop(activity);
+            } else {
+                sendPermissionStatusToFlutter("permission_denied_permanently");
                 Toast.makeText(activity, "Location permission is required!", Toast.LENGTH_LONG).show();
             }
             return true;
@@ -157,12 +175,11 @@ public class WifiHelper {
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             if (!deviceList.isEmpty()) {
                 for (UsbDevice device : deviceList.values()) {
-                    int vendorId = device.getVendorId();
-                    int productId = device.getProductId();
-                    if ((vendorId == VB004_VENDOR_ID && productId == VB004_PRODUCT_ID) ||
-                            (vendorId == VB005_VENDOR_ID && productId == VB005_PRODUCT_ID)) {
-                        foundSpecifiedWirelessModule = true;
-                        break;
+                    for (DeviceId specifiedModule : SPECIFIED_USB_MODULES) {
+                        if (specifiedModule.matches(device)) {
+                            foundSpecifiedWirelessModule = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -170,36 +187,68 @@ public class WifiHelper {
         }
     }
 
-    private void monitorWifiChannelChange(Activity activity) {
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
+    // 檢查權限，並依狀態回傳給 Flutter
+    private void startWifiMonitoringIfGrantPermission(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            sendPermissionStatusToFlutter("permission_denied");
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            sendPermissionStatusToFlutter("permission_granted");
+            startWifiMonitorLoop(activity);
+        }
+    }
+
+    public void startWifiMonitorLoop(Activity activity) {
+        if (!mIsSpecifiedWirelessModuleFound) return;
+        if (monitorHandler != null) return;
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+
+        monitorHandler = new Handler(Looper.getMainLooper());
+        monitorRunnable = new Runnable() {
             @Override
             public void run() {
                 refreshWifiStatus(activity);
-                handler.postDelayed(this, 5000);
+                if (monitorHandler != null) monitorHandler.postDelayed(this, 5000);
             }
         };
-        handler.postDelayed(runnable, 5000);
+        monitorHandler.post(monitorRunnable);
+    }
+
+    public void stopWifiMonitorLoop() {
+        if (monitorHandler != null && monitorRunnable != null) {
+            monitorHandler.removeCallbacks(monitorRunnable);
+        }
+        monitorHandler = null;
+        monitorRunnable = null;
     }
 
     private void refreshWifiStatus(Activity activity) {
-        if (checkAndRequestLocationPermissions(activity)) {
-            return;
-        }
-
         if (!isLocationEnabled(activity)) {
             Toast.makeText(activity, "Location service is OFF. Please enable it.", Toast.LENGTH_LONG).show();
+            sendPermissionStatusToFlutter("location_service_off");
             activity.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         } else {
             checkWifiConnectionInfo(activity);
+            // invoke method to update UI when status changes
+            sendDFSStatusToFlutter();
         }
-        // invoke method to update UI when status changes
-        if (mWiFiHelperEventSink != null) {
-            if (mLastSpecifiedModuleAndDFSChannel == null ||
-                    mLastSpecifiedModuleAndDFSChannel != mIsSpecifiedModuleAndDFSChannel) {
-                mLastSpecifiedModuleAndDFSChannel = mIsSpecifiedModuleAndDFSChannel;
+    }
+
+    // 發送 DFS 狀態給 Flutter
+    private void sendDFSStatusToFlutter() {
+        if (mLastSpecifiedModuleAndDFSChannel == null || mLastSpecifiedModuleAndDFSChannel != mIsSpecifiedModuleAndDFSChannel) {
+            mLastSpecifiedModuleAndDFSChannel = mIsSpecifiedModuleAndDFSChannel;
+            if (mWiFiHelperEventSink != null) {
                 mWiFiHelperEventSink.success(mIsSpecifiedModuleAndDFSChannel);
             }
+        }
+    }
+
+    // 發送 Permission 狀態給 Flutter
+    private void sendPermissionStatusToFlutter(String status) {
+        if (mWiFiHelperEventSink != null) {
+            mWiFiHelperEventSink.success(status);
         }
     }
 
@@ -238,13 +287,5 @@ public class WifiHelper {
             e.printStackTrace();
         }
         return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-    }
-
-    private boolean checkAndRequestLocationPermissions(Activity activity) {
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-            return true;
-        }
-        return false;
     }
 }
