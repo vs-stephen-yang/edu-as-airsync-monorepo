@@ -1,5 +1,7 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
@@ -17,6 +19,12 @@ class V3FooterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hide = context.watch<ConnectivityProvider>().connectionStatus ==
+            ConnectivityResult.none &&
+        context.splitScreenRatio == SplitScreenRatio.oneThirdFull;
+    if (hide) {
+      return const SizedBox();
+    }
     return Positioned(
       left: 0,
       right: 0,

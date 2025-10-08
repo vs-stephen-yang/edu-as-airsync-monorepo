@@ -1,8 +1,11 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/widgets/v3_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class V3HeaderBar extends StatefulWidget {
   const V3HeaderBar({super.key, this.isWaitForStream = false});
@@ -24,7 +27,12 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
     final isCompact = isMultiWindow &&
         ratio.widthFraction <= SplitScreenRatio.launcherFull.widthFraction;
     final padding = _calculatePadding(ratio);
-
+    final hide = context.watch<ConnectivityProvider>().connectionStatus ==
+            ConnectivityResult.none &&
+        ratio == SplitScreenRatio.oneThirdFull;
+    if (hide) {
+      return const SizedBox();
+    }
     final logo = GestureDetector(
       excludeFromSemantics: true,
       onTap: _handleDebugTap,
