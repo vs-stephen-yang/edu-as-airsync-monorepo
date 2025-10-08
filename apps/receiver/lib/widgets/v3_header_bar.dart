@@ -55,7 +55,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
             children: [logo, logoText],
           ),
           Expanded(
-            child: !widget.isWaitForStream && !isCompact
+            child: !widget.isWaitForStream && !isCompact && !context.isLessThanOneThird
                 ? const V3Status()
                 : const SizedBox(),
           ),

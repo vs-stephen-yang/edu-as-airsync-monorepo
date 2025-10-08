@@ -194,6 +194,18 @@ class MultiWindowProvider extends ChangeNotifier {
       }
     });
   }
+
+  bool lessThanOneThird(Size appSize) {
+    final dpr = getSafeDevicePixelRatio();
+    final appWidth = appSize.width * dpr;
+    final widthRatio =
+        double.parse((appWidth / _realScreenSize.width).toStringAsFixed(2));
+
+    if (widthRatio < 0.33) {
+      return true;
+    }
+    return false;
+  }
 }
 
 @immutable
@@ -383,6 +395,9 @@ extension MultiWindowContext on BuildContext {
   bool get isStatusBarVisible => multiWindow.isStatusBarVisible;
 
   bool get isNavigationBarVisible => multiWindow.isNavigationBarVisible;
+
+  bool get isLessThanOneThird =>
+      multiWindow.lessThanOneThird(MediaQuery.of(this).size);
 }
 
 typedef MultiWindowLayoutBuilder = Widget Function(
@@ -460,7 +475,6 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
 
       final ratio = context.splitScreenRatio;
 
-      print('**** ratio ${ratio.name}');
       //w420、w640、w800、w960、w1280
       switch (ratio) {
         case SplitScreenRatio.launcher:
