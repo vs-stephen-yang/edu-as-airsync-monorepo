@@ -22,6 +22,7 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_eula.dart';
 import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/screens/v3_request_permission.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/theme_config.dart';
@@ -223,18 +224,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               title: 'AirSync',
               debugShowCheckedModeBanner: false,
               theme: createThemeData(context),
-              initialRoute: AppPreferences().showEULA &&
-                      !AppInstanceCreate().isInstalledInVBS100
-                  ? '/v3Eula'
-                  : '/v3Home',
+              initialRoute: '/v3RequestPermission',
               navigatorKey: NavigationService.navigationKey,
               routes: {
                 // for "navService.popUntil('/v3Home')"
                 '/v3Home': (context) => const AppOTADialog(child: V3Home()),
+                '/v3RequestPermission': (context) => AppOTADialog(
+                      child: FocusAwareBuilder(
+                        builder: (primaryFocusNode) => V3RequestPermission(
+                            primaryFocusNode: primaryFocusNode),
+                      ),
+                    ),
                 '/v3Eula': (context) => AppOTADialog(
-                    child: FocusAwareBuilder(
+                      child: FocusAwareBuilder(
                         builder: (primaryFocusNode) =>
-                            V3Eula(primaryFocusNode: primaryFocusNode))),
+                            V3Eula(primaryFocusNode: primaryFocusNode),
+                      ),
+                    ),
               },
               builder: (context, child) {
                 return ValueListenableBuilder(
