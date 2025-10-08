@@ -22,8 +22,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
     final ratio = context.splitScreenRatio;
     final isMultiWindow = context.isInMultiWindow;
     final isCompact = isMultiWindow &&
-        ratio.widthFraction <= SplitScreenRatio.floatingDefault.widthFraction;
-
+        ratio.widthFraction <= SplitScreenRatio.launcherFull.widthFraction;
     final padding = _calculatePadding(ratio);
 
     final logo = GestureDetector(
@@ -32,7 +31,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
       child: buildAirsyncIcon(ratio),
     );
 
-    final logoText = _buildLogoText(context, ratio, isCompact);
+    final logoText = _buildLogoText(context, ratio);
 
     final content = Padding(
       padding: EdgeInsets.only(
@@ -74,49 +73,31 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
     }
   }
 
-  Widget _buildLogoText(
-      BuildContext context, SplitScreenRatio ratio, bool isCompact) {
+  Widget _buildLogoText(BuildContext context, SplitScreenRatio ratio) {
     const String assetPath = 'assets/images/ic_logo_airsync_text.svg';
     final color = widget.isWaitForStream ? Colors.white : Colors.black;
+    final inLauncher = ratio == SplitScreenRatio.launcher;
+    final logoText = Row(
+      children: [
+        const Padding(padding: EdgeInsets.only(left: 7)),
+        SvgPicture.asset(
+          assetPath,
+          excludeFromSemantics: true,
+          height: inLauncher ? 15 : 31,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
+      ],
+    );
 
-    if (isCompact) {
-      final width =
-          ratio.widthFraction == SplitScreenRatio.launcher.widthFraction
-              ? 55.133
-              : 100.0;
-      final height =
-          ratio.widthFraction == SplitScreenRatio.launcher.widthFraction
-              ? 12.133
-              : 24.0;
-      return Row(
-        children: [
-          const Padding(padding: EdgeInsets.only(left: 3.03)),
-          SvgPicture.asset(
-            assetPath,
-            excludeFromSemantics: true,
-            width: width,
-            height: height,
-            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-          ),
-        ],
-      );
-    } else if (ratio.widthFraction >=
-            SplitScreenRatio.twoThirdsFull.widthFraction ||
-        !context.isInMultiWindow) {
-      return Row(
-        children: [
-          const Padding(padding: EdgeInsets.only(left: 7)),
-          SvgPicture.asset(
-            assetPath,
-            excludeFromSemantics: true,
-            width: 140,
-            height: 31,
-            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-          ),
-        ],
-      );
-    }
-    return const SizedBox();
+    return MultiWindowAdaptiveLayout(
+      launcher: logoText,
+      landscape: logoText,
+      landscapeOneThird: const SizedBox(),
+      floatingDefault: const SizedBox(),
+      landscapeHalf: const SizedBox(),
+      landscapeTwoThirds: const SizedBox(),
+      launcherMain: const SizedBox(),
+    );
   }
 
   Widget buildAirsyncIcon(SplitScreenRatio ratio) {

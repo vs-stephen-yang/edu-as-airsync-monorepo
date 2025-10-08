@@ -5,6 +5,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/connection_status.dart';
@@ -160,9 +161,12 @@ class V3InstructionStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inOneThird =
+        context.splitScreenRatio == SplitScreenRatio.oneThirdFull;
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          inOneThird ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,

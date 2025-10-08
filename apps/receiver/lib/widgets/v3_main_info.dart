@@ -49,9 +49,13 @@ class V3MainInfo extends StatelessWidget {
         return Container(
           alignment: Alignment.center,
           margin: !isPortrait
-              ? const EdgeInsets.symmetric(vertical: 106, horizontal: 53)
+              ? ratio == SplitScreenRatio.oneThirdFull
+                  ? const EdgeInsets.only(top: 106, bottom: 60)
+                  : const EdgeInsets.symmetric(vertical: 106, horizontal: 53)
               : const EdgeInsets.symmetric(vertical: 120, horizontal: 29),
-          decoration: _buildContainerDecoration(context),
+          decoration: ratio == SplitScreenRatio.oneThirdFull
+              ? null
+              : _buildContainerDecoration(context),
           child: Consumer<ConnectivityProvider>(
             builder: (_, connectivityProvider, __) {
               return connectivityProvider.connectionStatus ==

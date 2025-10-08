@@ -1,4 +1,5 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/material.dart';
 
@@ -16,12 +17,16 @@ class V3MainQrCodeArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inOneThird =
+        context.splitScreenRatio == SplitScreenRatio.oneThirdFull;
     return Container(
-      margin: EdgeInsets.only(right: rightMargin),
+      margin: EdgeInsets.only(right: inOneThird ? 0 : rightMargin),
       width: width,
       constraints: BoxConstraints(maxHeight: maxHeight),
-      decoration: _buildDecoration(context),
-      child: const V3QrCodeQuickConnect(),
+      decoration: inOneThird ? null : _buildDecoration(context),
+      child: V3QrCodeQuickConnect(
+        isStringOnTop: inOneThird,
+      ),
     );
   }
 

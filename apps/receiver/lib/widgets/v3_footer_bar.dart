@@ -31,13 +31,13 @@ class V3FooterBar extends StatelessWidget {
               excludeFromSemantics: true,
               width: 1280,
             ),
+            landscapeOneThird: SizedBox(width: 1280, height: 60),
           ),
           Positioned(
             right: 13,
             bottom: 13,
             child: MultiWindowAdaptiveLayout(
               launcher: SizedBox.shrink(),
-              landscapeOneThird: SizedBox.shrink(),
               landscape: Image.asset(
                 'assets/images/ic_logo_viewsonic.png',
                 excludeFromSemantics: true,
