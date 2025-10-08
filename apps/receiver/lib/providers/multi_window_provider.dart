@@ -102,7 +102,7 @@ class MultiWindowProvider extends ChangeNotifier {
     final fullHeight = _calculateIsFullHeight(appWidth, appHeight);
     if (fullHeight) {
       final r = switch (widthRatio) {
-        < 0.33 => SplitScreenRatio.launcherFull,
+        < 0.33 => SplitScreenRatio.oneThirdFull,
         >= 0.33 && < 0.5 => SplitScreenRatio.oneThirdFull,
         >= 0.5 && < 0.65 => SplitScreenRatio.halfFull,
         >= 0.65 => SplitScreenRatio.twoThirdsFull,
@@ -460,6 +460,7 @@ class MultiWindowAdaptiveLayout extends StatelessWidget {
 
       final ratio = context.splitScreenRatio;
 
+      print('**** ratio ${ratio.name}');
       //w420、w640、w800、w960、w1280
       switch (ratio) {
         case SplitScreenRatio.launcher:

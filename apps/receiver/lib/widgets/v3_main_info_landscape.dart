@@ -149,56 +149,63 @@ class _V3MainConnectionInfoOneThirdState
     return ValueListenableBuilder<int>(
       valueListenable: AppPreferences().textSizeOptionNotifier,
       builder: (context, value, child) {
-        return Column(
-          children: [
-            Expanded(
-              child: V3MainInstructionArea(
-                scrollController: _scrollController,
-                child: Column(
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        V3InstructionStep(
-                          showIcon: false,
-                          textContent: AutoHyphenatingText(
-                            S.of(context).v3_instruction2_onethird,
-                            style:
-                                context.tokens.textStyle.airsyncFontTitle.apply(
-                              color: context.tokens.color.vsdslColorOnSurface,
+        return Container(
+          color: const Color(0xFFEAEBF1),
+          child: Column(
+            children: [
+              Expanded(
+                child: V3MainInstructionArea(
+                  leftPadding: 0,
+                  topPadding: 0,
+                  scrollController: _scrollController,
+                  child: Column(
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          V3InstructionStep(
+                            showIcon: false,
+                            textContent: AutoHyphenatingText(
+                              textAlign: TextAlign.center,
+                              S.of(context).v3_instruction2_onethird,
+                              style: context.tokens.textStyle.airsyncFontTitle
+                                  .apply(
+                                color: context.tokens.color.vsdslColorOnSurface,
+                              ),
+                              maxLines: 6,
                             ),
-                            maxLines: 6,
+                            actionWidget: const V3DisplayCode(),
+                            actionPadding: EdgeInsets.zero,
                           ),
-                          actionWidget: const V3DisplayCode(),
-                          actionPadding: EdgeInsets.zero,
-                        ),
-                        SizedBox(
-                            height: context.tokens.spacing.vsdslSpacing3xl.top),
-                        V3InstructionStep(
-                          showIcon: false,
-                          textContent: AutoHyphenatingText(
-                            S.of(context).v3_instruction3_onethird,
-                            style:
-                                context.tokens.textStyle.airsyncFontTitle.apply(
-                              color: context.tokens.color.vsdslColorOnSurface,
+                          SizedBox(
+                              height:
+                                  context.tokens.spacing.vsdslSpacing3xl.top),
+                          V3InstructionStep(
+                            showIcon: false,
+                            textContent: AutoHyphenatingText(
+                              textAlign: TextAlign.center,
+                              S.of(context).v3_instruction3_onethird,
+                              style: context.tokens.textStyle.airsyncFontTitle
+                                  .apply(
+                                color: context.tokens.color.vsdslColorOnSurface,
+                              ),
+                            ),
+                            actionWidget: const V3OtpWithTimer(),
+                            actionPadding: EdgeInsets.only(
+                              top: context.tokens.spacing.vsdslSpacingXl.top,
                             ),
                           ),
-                          actionWidget: const V3OtpWithTimer(),
-                          actionPadding: EdgeInsets.only(
-                            top: context.tokens.spacing.vsdslSpacingXl.top,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const V3MainQrCodeArea(),
-                  ],
+                        ],
+                      ),
+                      const V3MainQrCodeArea(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const V3MainInstructionSection(),
-            const Gap(30.0),
-          ],
+              const V3MainInstructionSection(),
+            ],
+          ),
         );
       },
     );
