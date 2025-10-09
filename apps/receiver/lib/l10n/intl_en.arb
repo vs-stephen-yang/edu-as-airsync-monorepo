@@ -107,7 +107,6 @@
   "v3_settings_whats_new": "What's new",
   "v3_settings_device_name": "Device Name",
   "v3_settings_device_name_save": "Save",
-  "v3_settings_moderator_mode": "Moderator mode",
   "v3_settings_device_show_display_code": "Show display code on top",
   "v3_settings_device_show_display_code_desc": "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.",
   "v3_settings_invite_group": "If invited to a display group",
@@ -287,7 +286,6 @@
   "v3_lbl_settings_device_name_save": "Save device name",
   "v3_lbl_main_language_title": "Select language",
   "v3_lbl_main_language_title_item": "Select %s",
-  "v3_lbl_settings_moderator_mode": "Turn on/off moderator mode",
   "v3_lbl_settings_show_display_code": "Turn on/off display code toggle",
   "v3_lbl_settings_device_smart_scaling": "Turn on/off smart scaling toggle",
   "v3_lbl_settings_invite_group": "Open screen broadcasting dropdown menu",
@@ -390,6 +388,8 @@
   "v3_lbl_eula_launch": "Launch",
   "v3_eula_launch": "Launch",
   "v3_authorize_prompt_title_launcher": "Participants would like to share their screen",
+  "v3_settings_moderator_mode": "Moderator mode",
+  "v3_lbl_settings_moderator_mode": "Turn on/off moderator mode",
   "v3_authorize_prompt_notification_cast": "Turn off “Require approval” in the Settings menu to skip manual confirmation.",
   "v3_authorize_prompt_notification_mirror": "Turn on “Auto Accept” in the Settings menu to accept all streaming automatically."
 }
