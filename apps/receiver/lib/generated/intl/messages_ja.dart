@@ -607,6 +607,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("自動承認のオン/オフを切り替える"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("パスコードの要求をオン/オフに切り替える"),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "モデレーターモード",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage("ディスプレイグループへブロードキャストの詳細情報"),
     "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
@@ -904,6 +907,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("パスコードを要求する"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "モデレーターモード",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "デバイスがブロードキャストを受信するのは、メイン画面がアクティブにキャストされているときだけです。",
     ),

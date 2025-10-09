@@ -387,5 +387,7 @@
   "v3_settings_device_high_image_quality_off_desc": "送信者の画面解像度に応じて、最大QHD（2K）画面共有。",
   "v3_lbl_eula_launch": "起動",
   "v3_eula_launch": "起動",
-  "v3_authorize_prompt_title_launcher": "参加者が画面を共有しようとしています"
+  "v3_authorize_prompt_title_launcher": "参加者が画面を共有しようとしています",
+  "v3_settings_moderator_mode": "モデレーターモード",
+  "v3_lbl_settings_moderator_mode": "モデレーターモード"
 }

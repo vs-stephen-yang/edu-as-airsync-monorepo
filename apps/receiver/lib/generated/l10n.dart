@@ -1111,16 +1111,6 @@ class S {
     );
   }
 
-  /// `Moderator mode`
-  String get v3_settings_moderator_mode {
-    return Intl.message(
-      'Moderator mode',
-      name: 'v3_settings_moderator_mode',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Show display code on top`
   String get v3_settings_device_show_display_code {
     return Intl.message(
@@ -2901,16 +2891,6 @@ class S {
     );
   }
 
-  /// `Turn on/off moderator mode`
-  String get v3_lbl_settings_moderator_mode {
-    return Intl.message(
-      'Turn on/off moderator mode',
-      name: 'v3_lbl_settings_moderator_mode',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Turn on/off display code toggle`
   String get v3_lbl_settings_show_display_code {
     return Intl.message(
@@ -3921,6 +3901,26 @@ class S {
     return Intl.message(
       'Participants would like to share their screen',
       name: 'v3_authorize_prompt_title_launcher',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Moderator mode`
+  String get v3_settings_moderator_mode {
+    return Intl.message(
+      'Moderator mode',
+      name: 'v3_settings_moderator_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn on/off moderator mode`
+  String get v3_lbl_settings_moderator_mode {
+    return Intl.message(
+      'Turn on/off moderator mode',
+      name: 'v3_lbl_settings_moderator_mode',
       desc: '',
       args: [],
     );
