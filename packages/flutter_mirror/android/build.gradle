@@ -70,6 +70,23 @@ android {
         }
       }
     }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+                // 只排除 GStreamer.java，讓 flutter_multicast_plugin 提供（避免 DEX 衝突）
+                // androidmedia 檔案直接在根目錄編譯，不複製到子目錄
+                exclude 'org/freedesktop/gstreamer/GStreamer.java'
+            }
+        }
+    }
+}
+
+// 在 Java 編譯前執行，確保 CMake 已經產生並複製了 GStreamer Java 檔案
+tasks.withType(JavaCompile).configureEach {
+    // Make Java compilation depend on native build (which generates GStreamer Java files)
+    dependsOn tasks.matching { it.name.startsWith('externalNativeBuild') }
 }
 
 dependencies {
