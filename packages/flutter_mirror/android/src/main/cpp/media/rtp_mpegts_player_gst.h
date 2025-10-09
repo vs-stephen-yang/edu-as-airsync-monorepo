@@ -99,4 +99,20 @@ class RtpMpegTsPlayerGst final {
   std::atomic<bool> waiting_for_keyframe_{true};
   std::atomic<bool> queue_restore_pending_{false};
   std::atomic<GstClockTime> pts_offset_{GST_CLOCK_TIME_NONE};  // PTS offset to reset to 0
+
+  // Per-instance statistics (instead of static)
+  int keyframe_preserved_count_ = 0;
+  int drop_count_ = 0;
+  int frame_count_ = 0;
+  int warning_count_ = 0;
+  bool first_decoder_input_logged_ = false;
+  int decoder_input_count_ = 0;
+  int qos_log_count_ = 0;
+  int decoded_count_ = 0;
+  GstClockTime last_log_time_ = 0;
+  GstClockTime first_buffer_time_ = 0;
+  int sink_count_ = 0;
+  GstClockTime last_log_ = 0;
+  int logged_buffers_ = 0;
+  int overrun_count_ = 0;
 };

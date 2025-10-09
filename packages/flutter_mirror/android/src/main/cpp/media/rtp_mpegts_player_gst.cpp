@@ -445,21 +445,18 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnQueueSinkProbe(GstPad* pad, GstPadProbeI
 
   if (fill_percent > 70.0f) {
     if (is_keyframe) {
-      static int keyframe_preserved_count = 0;
-      if (++keyframe_preserved_count % 5 == 0) {
+      if (++self->keyframe_preserved_count_ % 5 == 0) {
         ALOGW("Queue %.1f%% full - PRESERVING keyframe", fill_percent);
       }
     } else {
-      static int drop_count = 0;
-      if (++drop_count % 10 == 0) {
-        ALOGW("Queue %.1f%% full - DROPPING delta unit (dropped %d)", fill_percent, drop_count);
+      if (++self->drop_count_ % 10 == 0) {
+        ALOGW("Queue %.1f%% full - DROPPING delta unit (dropped %d)", fill_percent, self->drop_count_);
       }
       return GST_PAD_PROBE_DROP;
     }
   }
 
-  static int frame_count = 0;
-  if (++frame_count % 30 == 0) {
+  if (++self->frame_count_ % 30 == 0) {
     ALOGI("Queue status: %u/%u buffers (%.1f%% full), keyframe=%d",
           current_level, max_level, fill_percent, is_keyframe);
   }
@@ -500,8 +497,7 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnQueueSinkProbe(GstPad* pad, GstPadProbeI
     GstClockTime backlog = pts - first_pts;
 
     if (backlog > 500 * GST_MSECOND) {
-      static int warning_count = 0;
-      if (++warning_count % 30 == 0) {
+      if (++self->warning_count_ % 30 == 0) {
         ALOGW("High backlog: %" GST_TIME_FORMAT " (this is OK, decoder will catch up)",
               GST_TIME_ARGS(backlog));
       }
@@ -523,9 +519,8 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnDecoderInput(GstPad* pad, GstPadProbeInf
   }
 
   // *** [TRACE] 檢查第一個進入 decoder 的 buffer PTS 和 running_time ***
-  static bool first_decoder_input_logged = false;
-  if (!first_decoder_input_logged && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
-    first_decoder_input_logged = true;
+  if (!self->first_decoder_input_logged_ && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
+    self->first_decoder_input_logged_ = true;
     bool is_keyframe = !GST_BUFFER_FLAG_IS_SET(buffer, GST_BUFFER_FLAG_DELTA_UNIT);
 
     // 計算 running_time
@@ -547,8 +542,7 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnDecoderInput(GstPad* pad, GstPadProbeInf
   }
 
   // 調試日誌（每 30 幀記錄一次）
-  static int decoder_input_count = 0;
-  if (++decoder_input_count % 30 == 0) {
+  if (++self->decoder_input_count_ % 30 == 0) {
     ALOGI("Decoder input PTS: %" GST_TIME_FORMAT,
           GST_TIME_ARGS(GST_BUFFER_PTS(buffer)));
   }
@@ -603,8 +597,7 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnDecoderOutput(GstPad* pad, GstPadProbeIn
 
       gst_event_parse_qos(event, &type, &proportion, &diff, &timestamp);
 
-      static int qos_log_count = 0;
-      if (++qos_log_count % 30 == 0) {
+      if (++self->qos_log_count_ % 30 == 0) {
         ALOGW(">>> QoS event: proportion=%.2f, diff=%" GST_STIME_FORMAT,
               proportion, GST_STIME_ARGS(diff));
       }
@@ -638,29 +631,25 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnDecoderOutput(GstPad* pad, GstPadProbeIn
   if (GST_PAD_PROBE_INFO_TYPE(info) & GST_PAD_PROBE_TYPE_BUFFER) {
     GstBuffer* buffer = gst_pad_probe_info_get_buffer(info);
     if (buffer) {
-      static int decoded_count = 0;
-      static GstClockTime last_log_time = 0;
-      static GstClockTime first_buffer_time = 0;
-
       GstClockTime now = g_get_monotonic_time() * 1000;
 
-      if (first_buffer_time == 0) {
-        first_buffer_time = now;
+      if (self->first_buffer_time_ == 0) {
+        self->first_buffer_time_ = now;
         ALOGI("*** FIRST DECODED FRAME OUTPUT ***");
         if (GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
           ALOGI("  First output buffer PTS: %" GST_TIME_FORMAT, GST_TIME_ARGS(GST_BUFFER_PTS(buffer)));
         }
       }
 
-      decoded_count++;
+      self->decoded_count_++;
 
-      if (last_log_time == 0) {
-        last_log_time = now;
-      } else if (now - last_log_time > GST_SECOND) {
-        double fps = decoded_count * GST_SECOND / (double)(now - last_log_time);
+      if (self->last_log_time_ == 0) {
+        self->last_log_time_ = now;
+      } else if (now - self->last_log_time_ > GST_SECOND) {
+        double fps = self->decoded_count_ * GST_SECOND / (double)(now - self->last_log_time_);
         ALOGI(">>> Decoder output: %.2f fps", fps);
-        decoded_count = 0;
-        last_log_time = now;
+        self->decoded_count_ = 0;
+        self->last_log_time_ = now;
       }
     }
   }
@@ -673,26 +662,22 @@ GstPadProbeReturn RtpMpegTsPlayerGst::OnSinkInput(GstPad* pad, GstPadProbeInfo* 
 
   GstBuffer* buffer = gst_pad_probe_info_get_buffer(info);
   if (buffer) {
-    static int sink_count = 0;
-    static GstClockTime last_log = 0;
-
-    sink_count++;
+    self->sink_count_++;
     GstClockTime now = g_get_monotonic_time() * 1000;
 
-    static int logged_buffers = 0;
-    if (logged_buffers == 0 && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
+    if (self->logged_buffers_ == 0 && GST_BUFFER_PTS(buffer) != GST_CLOCK_TIME_NONE) {
       ALOGI("*** FIRST FRAME REACHED SINK ***");
       ALOGI("  PTS: %" GST_TIME_FORMAT, GST_TIME_ARGS(GST_BUFFER_PTS(buffer)));
-      logged_buffers++;
+      self->logged_buffers_++;
     }
 
-    if (last_log == 0) {
-      last_log = now;
-    } else if (now - last_log > GST_SECOND) {
-      double fps = sink_count * GST_SECOND / (double)(now - last_log);
+    if (self->last_log_ == 0) {
+      self->last_log_ = now;
+    } else if (now - self->last_log_ > GST_SECOND) {
+      double fps = self->sink_count_ * GST_SECOND / (double)(now - self->last_log_);
       ALOGI(">>> Sink: %.2f fps", fps);
-      sink_count = 0;
-      last_log = now;
+      self->sink_count_ = 0;
+      self->last_log_ = now;
     }
   }
 
@@ -1056,10 +1041,10 @@ void RtpMpegTsPlayerGst::OnNewJitterBuffer(GstElement* rtpbin, GstElement* jitte
 }
 
 void RtpMpegTsPlayerGst::OnQueueOverrun(GstElement* queue, gpointer user_data) {
+  RtpMpegTsPlayerGst* self = static_cast<RtpMpegTsPlayerGst*>(user_data);
   // Queue 滿了，但不會自動丟棄，因為我們在 probe 中已經處理了
-  static int overrun_count = 0;
-  if (++overrun_count % 10 == 0) {
-    ALOGW("Queue OVERRUN #%d - probe should be dropping delta units", overrun_count);
+  if (++self->overrun_count_ % 10 == 0) {
+    ALOGW("Queue OVERRUN #%d - probe should be dropping delta units", self->overrun_count_);
   }
 }
 
