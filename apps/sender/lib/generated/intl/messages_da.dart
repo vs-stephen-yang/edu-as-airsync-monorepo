@@ -236,8 +236,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_device_list_dialog_title": MessageLookupByLibrary.simpleMessage(
       "Indtast engangskode",
     ),
-        "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Næste"),
-        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Enig"),
+    "v3_device_list_next": MessageLookupByLibrary.simpleMessage("Næste"),
+    "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Enig"),
     "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Uenig"),
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "Slutbrugerlicensaftale",
@@ -284,12 +284,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_main_download_windows": MessageLookupByLibrary.simpleMessage(
       "Hent Windows-versionen",
     ),
-        "v3_lbl_main_feedback":
-            MessageLookupByLibrary.simpleMessage("Feedback"),
-        "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
-          "Vidensbase",
-        ),
-        "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+    "v3_lbl_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Vidensbase",
+    ),
+    "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
       "Indsend Del",
     ),
     "v3_lbl_main_moderator_input_hint": MessageLookupByLibrary.simpleMessage(
@@ -478,15 +477,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_main_download_win_title": MessageLookupByLibrary.simpleMessage(
       "Windows",
     ),
-        "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
-        "v3_main_instance_not_found_or_offline":
+    "v3_main_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+    "v3_main_instance_not_found_or_offline":
         MessageLookupByLibrary.simpleMessage(
           "Display-kode ikke fundet eller sessionen er offline.",
         ),
-        "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
-          "Vidensbase",
-        ),
-        "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Del"),
+    "v3_main_knowledge_base": MessageLookupByLibrary.simpleMessage(
+      "Vidensbase",
+    ),
+    "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("Del"),
     "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
       "Indtast dit navn, før du deler din skærm",
     ),
@@ -560,16 +559,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Download"),
-        "v3_present_joined_before_moderator_on":
-            MessageLookupByLibrary.simpleMessage(
-                "Moderator-tilstand er aktiveret"),
-        "v3_present_joined_before_moderator_on_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_present_joined_before_moderator_on_description":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Moderator-tilstand er aktiveret"),
+    "v3_present_joined_before_moderator_on_action":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_present_joined_before_moderator_on_description":
+        MessageLookupByLibrary.simpleMessage(
           "Moderator-tilstand er aktiveret. Opret venligst forbindelse igen.",
         ),
-        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderator er lukket",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(
