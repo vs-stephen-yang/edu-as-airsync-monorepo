@@ -328,8 +328,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_touch_back_off": MessageLookupByLibrary.simpleMessage("タッチバックを無効"),
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage("タッチバックを有効"),
-        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("終了"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("アクセシビリティ"),
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("終了"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("アクセシビリティ"),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
       "ホストがリクエストを承認するまでお待ちください。",
     ),
@@ -471,13 +471,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("ダウンロード"),
-        "v3_present_joined_before_moderator_on":
-            MessageLookupByLibrary.simpleMessage("モデレーターモードが有効です"),
-        "v3_present_joined_before_moderator_on_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_present_joined_before_moderator_on_description":
-            MessageLookupByLibrary.simpleMessage("モデレーターが有効です。再接続してください。"),
-        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+    "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("モデレーターモードが有効です"),
+    "v3_present_joined_before_moderator_on_action":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_present_joined_before_moderator_on_description":
+        MessageLookupByLibrary.simpleMessage("モデレーターが有効です。再接続してください。"),
+    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "モデレーターは終了しました",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

@@ -405,6 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Dokunmatik geri dönüşü etkinleştir",
     ),
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Kapat"),
     "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Erişilebilirlik",
     ),
@@ -557,15 +558,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("İndir"),
-        "v3_present_joined_before_moderator_on":
-            MessageLookupByLibrary.simpleMessage("Moderatör açık"),
-        "v3_present_joined_before_moderator_on_action":
-            MessageLookupByLibrary.simpleMessage("TAMAM"),
-        "v3_present_joined_before_moderator_on_description":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Moderatör açık"),
+    "v3_present_joined_before_moderator_on_action":
+        MessageLookupByLibrary.simpleMessage("TAMAM"),
+    "v3_present_joined_before_moderator_on_description":
+        MessageLookupByLibrary.simpleMessage(
           "Moderatör açık. Lütfen yeniden bağlanın.",
         ),
-        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderatör oturumu kapattı",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

@@ -419,9 +419,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Įgalinti jutiklinį grąžinimą",
     ),
-        "v3_lbl_v3_exit_close":
-            MessageLookupByLibrary.simpleMessage("Uždaryti"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Uždaryti"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Prieinamumas",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -585,15 +584,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Atsisiųsti siuntėjo programėlę"),
-        "v3_present_joined_before_moderator_on":
-            MessageLookupByLibrary.simpleMessage("Moderatorius įjungtas"),
-        "v3_present_joined_before_moderator_on_action":
-            MessageLookupByLibrary.simpleMessage("Gerai"),
-        "v3_present_joined_before_moderator_on_description":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Moderatorius įjungtas"),
+    "v3_present_joined_before_moderator_on_action":
+        MessageLookupByLibrary.simpleMessage("Gerai"),
+    "v3_present_joined_before_moderator_on_description":
+        MessageLookupByLibrary.simpleMessage(
           "Moderatorius įjungtas, prašome prisijungti iš naujo.",
         ),
-        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderatorius uždarytas",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(

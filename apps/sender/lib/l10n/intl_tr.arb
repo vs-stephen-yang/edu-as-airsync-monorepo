@@ -266,5 +266,6 @@
   "v3_device_list_next": "İleri",
   "v3_present_joined_before_moderator_on": "Moderatör açık",
   "v3_present_joined_before_moderator_on_description": "Moderatör açık. Lütfen yeniden bağlanın.",
-  "v3_present_joined_before_moderator_on_action": "TAMAM"
+  "v3_present_joined_before_moderator_on_action": "TAMAM",
+  "v3_lbl_v3_exit_close": "Kapat"
 }

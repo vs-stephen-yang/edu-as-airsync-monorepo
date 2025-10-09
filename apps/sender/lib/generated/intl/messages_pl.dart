@@ -575,16 +575,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_present_idle_download_virtual_audio_device":
         MessageLookupByLibrary.simpleMessage("Pobierz"),
-        "v3_present_joined_before_moderator_on":
-            MessageLookupByLibrary.simpleMessage(
-                "Tryb moderatora jest włączony"),
-        "v3_present_joined_before_moderator_on_action":
-            MessageLookupByLibrary.simpleMessage("OK"),
-        "v3_present_joined_before_moderator_on_description":
-            MessageLookupByLibrary.simpleMessage(
+    "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Tryb moderatora jest włączony"),
+    "v3_present_joined_before_moderator_on_action":
+        MessageLookupByLibrary.simpleMessage("OK"),
+    "v3_present_joined_before_moderator_on_description":
+        MessageLookupByLibrary.simpleMessage(
           "Tryb moderatora jest włączony. Proszę połączyć się ponownie.",
         ),
-        "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
+    "v3_present_moderator_exited": MessageLookupByLibrary.simpleMessage(
       "Moderator zakończył sesję",
     ),
     "v3_present_moderator_exited_action": MessageLookupByLibrary.simpleMessage(
