@@ -178,6 +178,7 @@ android {
         pickFirst '**/liblog.so'
         pickFirst '**/libc++_shared.so'
         pickFirst '**/libgstreamer_android.so'
+        pickFirst '**/org/freedesktop/gstreamer/GStreamer.class'
         // see: https://issuetracker.google.com/issues/299314630?pli=1
         resources.excludes.add("META-INF/LICENSE.md")
         resources.excludes.add("META-INF/LICENSE-notice.md")
