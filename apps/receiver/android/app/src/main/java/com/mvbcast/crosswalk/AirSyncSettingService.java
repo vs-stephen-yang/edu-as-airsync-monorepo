@@ -66,17 +66,41 @@ public class AirSyncSettingService extends Service {
                     break;
                 case IAirSyncSettingService.KEY_LANGUAGE:
                     switch (value) {
+                        case VAL_LANGUAGE_DANISH:
+                            flutterEditor.putString("flutter.app_language", "Danish").commit();
+                            break;
                         case VAL_LANGUAGE_GERMAN:
                             flutterEditor.putString("flutter.app_language", "Deutsch").commit();
                             break;
                         case VAL_LANGUAGE_SPANISH:
                             flutterEditor.putString("flutter.app_language", "Español").commit();
                             break;
+                        case VAL_LANGUAGE_ESTONIAN:
+                            flutterEditor.putString("flutter.app_language", "Estonian").commit();
+                            break;
+                        case VAL_LANGUAGE_FINNISH:
+                            flutterEditor.putString("flutter.app_language", "Finnish").commit();
+                            break;
                         case VAL_LANGUAGE_FRENCH:
                             flutterEditor.putString("flutter.app_language", "Français").commit();
                             break;
+                        case VAL_LANGUAGE_LATVIAN:
+                            flutterEditor.putString("flutter.app_language", "Latvian").commit();
+                            break;
+                        case VAL_LANGUAGE_LITHUANIAN:
+                            flutterEditor.putString("flutter.app_language", "Lithuanian").commit();
+                            break;
+                        case VAL_LANGUAGE_NORWEGIAN:
+                            flutterEditor.putString("flutter.app_language", "Norwegian").commit();
+                            break;
+                        case VAL_LANGUAGE_SWEDISH:
+                            flutterEditor.putString("flutter.app_language", "Swedish").commit();
+                            break;
                         case VAL_LANGUAGE_CHINESE_ZH:
                             flutterEditor.putString("flutter.app_language", "繁體中文").commit();
+                            break;
+                        case VAL_LANGUAGE_JAPANESE:
+                            flutterEditor.putString("flutter.app_language", "日本語").commit();
                             break;
                         case VAL_LANGUAGE_ENGLISH:
                         default:
@@ -231,17 +255,41 @@ public class AirSyncSettingService extends Service {
                     String language = flutterPref.getString("flutter.app_language",
                             "English");
                     switch (language) {
+                        case "Danish":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_DANISH, language);
+                            break;
                         case "Deutsch":
                             value = String.format("%s (%s)", VAL_LANGUAGE_GERMAN, language);
                             break;
                         case "Español":
                             value = String.format("%s (%s)", VAL_LANGUAGE_SPANISH, language);
                             break;
+                        case "Estonian":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_ESTONIAN, language);
+                            break;
+                        case "Finnish":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_FINNISH, language);
+                            break;
                         case "Français":
                             value = String.format("%s (%s)", VAL_LANGUAGE_FRENCH, language);
                             break;
+                        case "Latvian":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_LATVIAN, language);
+                            break;
+                        case "Lithuanian":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_LITHUANIAN, language);
+                            break;
+                        case "Norwegian":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_NORWEGIAN, language);
+                            break;
+                        case "Swedish":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_SWEDISH, language);
+                            break;
                         case "繁體中文":
                             value = String.format("%s (%s)", VAL_LANGUAGE_CHINESE_ZH, language);
+                            break;
+                        case "日本語":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_JAPANESE, language);
                             break;
                         case "English":
                         default:

@@ -1,7 +1,15 @@
 package com.mvbcast.crosswalk;
 
 interface IAirSyncSettingService {
-    const String AIRSYNC_SETTING_SERVICE_VERSION = "1.1.0";
+    const String AIRSYNC_SETTING_SERVICE_VERSION = "1.2.0";
+
+    // V1.2.0 start
+    // region new language value
+    const String VAL_LANGUAGE_ESTONIAN = "val_language_estonian";
+    const String VAL_LANGUAGE_LATVIAN = "val_language_latvian";
+    const String VAL_LANGUAGE_LITHUANIAN = "val_language_lithuanian";
+    const String VAL_LANGUAGE_JAPANESE = "val_language_japanese";
+    // endregion
 
     // V1.1.0 start
     // region settings
