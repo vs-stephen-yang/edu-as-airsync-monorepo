@@ -136,7 +136,7 @@ class ChannelProvider extends ChangeNotifier {
   bool _isShareMode = false;
   final InstanceInfoProvider _instanceInfo;
 
-  static const defaultSmartScaling = false;
+  static const defaultSmartScaling = true;
   bool _smartScaling = defaultSmartScaling;
 
   bool get smartScaling => _smartScaling;
