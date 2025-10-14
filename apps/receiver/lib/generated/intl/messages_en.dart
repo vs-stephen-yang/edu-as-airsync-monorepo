@@ -570,6 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Disable touchback for this participant",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Expand presentation control",
     ),
@@ -823,6 +824,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
       "Participants",
+    ),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Please go to setting to grant permission",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Exit"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Permission required",
     ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Quick Connect",

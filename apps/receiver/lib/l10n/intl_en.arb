@@ -391,5 +391,9 @@
   "v3_settings_moderator_mode": "Moderator mode",
   "v3_lbl_settings_moderator_mode": "Turn on/off moderator mode",
   "v3_authorize_prompt_notification_cast": "Turn off “Require approval” in the Settings menu to skip manual confirmation.",
-  "v3_authorize_prompt_notification_mirror": "Turn on “Auto Accept” in the Settings menu to accept all streaming automatically."
+  "v3_authorize_prompt_notification_mirror": "Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.",
+  "v3_permission_title":"Permission required",
+  "v3_permission_description":"Please go to setting to grant permission",
+  "v3_lbl_permission_exit":"Exit",
+  "v3_permission_exit":"Exit"
 }
