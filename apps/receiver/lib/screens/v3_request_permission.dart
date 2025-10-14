@@ -126,7 +126,7 @@ class V3RequestPermissionState extends State<V3RequestPermission> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             V3AutoHyphenatingText(
-                              'Permission required',
+                              S.of(context).v3_permission_title,
                               style: TextStyle(
                                 color: context.tokens.color.vsdslColorOnSurface,
                                 fontWeight: FontWeight.w600,
@@ -135,7 +135,7 @@ class V3RequestPermissionState extends State<V3RequestPermission> {
                             ),
                             const Gap(20),
                             V3AutoHyphenatingText(
-                              'Please go to setting to grant permission',
+                              S.of(context).v3_permission_description,
                               style: TextStyle(
                                 color: context.tokens.color.vsdslColorOnSurface,
                                 fontWeight: FontWeight.w600,
@@ -147,8 +147,8 @@ class V3RequestPermissionState extends State<V3RequestPermission> {
                               width: 108,
                               height: 40,
                               child: V3Focus(
-                                label: S.of(context).v3_lbl_eula_disagree,
-                                identifier: 'v3_qa_eula_disagree',
+                                label: S.of(context).v3_lbl_permission_exit,
+                                identifier: 'v3_qa_permission_exit',
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: context
@@ -175,7 +175,8 @@ class V3RequestPermissionState extends State<V3RequestPermission> {
                                       // todo: support other platform.
                                     }
                                   },
-                                  child: V3AutoHyphenatingText('Exit'),
+                                  child: V3AutoHyphenatingText(
+                                      S.of(context).v3_permission_exit),
                                 ),
                               ),
                             ),

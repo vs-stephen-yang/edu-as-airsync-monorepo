@@ -3945,6 +3945,41 @@ class S {
       args: [],
     );
   }
+
+  /// `Permission required`
+  String get v3_permission_title {
+    return Intl.message(
+      'Permission required',
+      name: 'v3_permission_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please go to setting to grant permission`
+  String get v3_permission_description {
+    return Intl.message(
+      'Please go to setting to grant permission',
+      name: 'v3_permission_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit`
+  String get v3_lbl_permission_exit {
+    return Intl.message(
+      'Exit',
+      name: 'v3_lbl_permission_exit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit`
+  String get v3_permission_exit {
+    return Intl.message('Exit', name: 'v3_permission_exit', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
