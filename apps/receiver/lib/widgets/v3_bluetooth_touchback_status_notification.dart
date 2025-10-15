@@ -63,11 +63,6 @@ class _V3BluetoothStatusNotificationState
               },
             );
           });
-        } else if (value.show) {
-          return StatusCard(
-            statusMessage: value.getStatusMessage(context),
-            progressPercent: value.percent,
-          );
         }
         return const SizedBox.shrink();
       },
