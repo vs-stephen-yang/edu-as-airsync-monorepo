@@ -257,11 +257,13 @@ public class MiraSession
 
       @Override
       public void onDisconnected(TcpConnection connection) {
-
+        Log.w(TAG, "RTSP TCP connection disconnected");
+        mirrorListener_.onMiracastSessionError(id_, "RTSP connection disconnected");
       }
 
       @Override
       public void onConnectTimeout(TcpConnection connection) {
+        Log.e(TAG, "RTSP connection timeout");
         mirrorListener_.onMiracastSessionError(id_, "RTSP connection failed to establish");
       }
 
@@ -277,12 +279,13 @@ public class MiraSession
 
       @Override
       public void onError(TcpConnection connection) {
-
+        Log.e(TAG, "RTSP TCP connection error");
+        mirrorListener_.onMiracastSessionError(id_, "RTSP connection error");
       }
 
       @Override
       public void onReconnect(TcpConnection connection, int attempts) {
-
+        Log.d(TAG, "RTSP attempting to reconnect (attempt " + attempts + ")");
       }
     };
   }
@@ -315,8 +318,10 @@ public class MiraSession
       for (RtspMessage message : messages) {
         onRtspMessage(message);
       }
+    } catch (IOException e) {
+      Log.e(TAG, "RTSP read error", e);
     } catch (Exception e) {
-      // TODO
+      Log.e(TAG, "RTSP parse error", e);
       e.printStackTrace();
     }
   }

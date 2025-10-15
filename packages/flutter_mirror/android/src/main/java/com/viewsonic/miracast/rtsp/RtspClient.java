@@ -345,13 +345,17 @@ public class RtspClient
 
   private void handleSourceProductId(RtspResponseMessage rParams) {
     if (!TextUtils.isEmpty(rParams.headers.get(KEY_SERVER))) {
-      String[] serverArray = rParams.headers.get(KEY_SERVER).split(" ");
+      String serverHeader = rParams.headers.get(KEY_SERVER);
+      String[] serverArray = serverHeader.split(" ");
       if (serverArray.length > 0) {
         sourceProductId_ = serverArray[0];
         if (sourceProductId_.contains(WINDOWS_SOURCE_PRODUCT_ID)) {
           isWindowsSource_ = true;
         }
-        Log.d(TAG, "product id of miracast source: " + sourceProductId_ + " , isWindowsSource: " + isWindowsSource_);
+        Log.w(TAG, "========== RTSP SOURCE DEVICE INFO ==========");
+        Log.w(TAG, "Server Header: " + serverHeader);
+        Log.w(TAG, "Product ID: " + sourceProductId_);
+        Log.w(TAG, "Is Windows Source: " + isWindowsSource_);
       }
     }
   }
