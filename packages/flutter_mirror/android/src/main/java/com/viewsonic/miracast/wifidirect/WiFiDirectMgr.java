@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
@@ -431,14 +430,8 @@ public class WiFiDirectMgr {
         // Connection state changed! We should probably do something about that.
         WifiP2pGroup wifiP2pGroup = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
         WifiP2pInfo wifiP2pInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO);
-        NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
         Log.d(TAG, "===== WIFI_P2P_CONNECTION_CHANGED_ACTION =====");
-        if (networkInfo != null) {
-          Log.d(TAG, "NetworkInfo state: " + networkInfo.getState());
-          Log.d(TAG, "NetworkInfo detailed state: " + networkInfo.getDetailedState());
-          Log.d(TAG, "NetworkInfo reason: " + networkInfo.getReason());
-        }
         if (wifiP2pInfo != null) {
           Log.d(TAG, "P2P Info - groupFormed: " + wifiP2pInfo.groupFormed);
           Log.d(TAG, "P2P Info - isGroupOwner: " + wifiP2pInfo.isGroupOwner);
