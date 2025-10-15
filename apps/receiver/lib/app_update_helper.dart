@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -63,16 +65,19 @@ class AppUpdateHelper {
       await checkInAppUpdate();
     }
     try {
-      await checkAppUpdate(true);
+      await checkAppUpdate(true).timeout(const Duration(seconds: 30));
       if (!AppOtaFlutter().isNeedInAppUpdate) {
         FlutterNativeSplash.remove();
       }
+    } on TimeoutException {
+      log.info('checkAppUpdate timeout');
+      FlutterNativeSplash.remove();
     } catch (e) {
       FlutterNativeSplash.remove();
     }
   }
 
-  checkAppUpdate(bool isStartupCheck) async {
+  Future<void> checkAppUpdate(bool isStartupCheck) async {
     log.info('InApp _otaState: $_otaEnvironment');
     log.info('InApp _otaFlavor: $_otaFlavor');
     if (_otaFlavor != OtaFlavor.edla) {
