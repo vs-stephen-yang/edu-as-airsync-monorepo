@@ -127,57 +127,13 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                       child: SizedBox(
                         width: 27,
                         height: 27,
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            (HybridConnectionList()
-                                    .getConnection<MirrorRequest>(widget.index)
-                                    .touchBackState())
-                                ? 'assets/images/ic_streaming_airplay_touchback_enable.svg'
-                                : 'assets/images/ic_streaming_airplay_touchback_disable.svg',
+                        child: _TouchBackButton(
+                          widget.index,
+                          () => onTouchBackPressed(
+                            mirrorStateProvider,
+                            isMirrorRequest,
+                            context,
                           ),
-                          focusColor: Colors.transparent,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () async {
-                            mirrorStateProvider.bluetoothTouchbackIndex =
-                                widget.index;
-                            if (isMirrorRequest) {
-                              var connection = HybridConnectionList()
-                                  .getConnection<MirrorRequest>(widget.index);
-                              if (connection.mirrorState ==
-                                  MirrorState.mirroring) {
-                                if (connection.touchBackState()) {
-                                  await _disableAllTouchback();
-                                  if (context.mounted) {
-                                    if (!mounted) return;
-                                    setState(() {
-                                      V3Toast().makeBluetoothStateToast(
-                                          context,
-                                          S.current
-                                              .v3_touchback_disable_message,
-                                          widget.index,
-                                          _layerLink);
-                                    });
-                                  }
-                                } else {
-                                  final success =
-                                      await connection.enableTouchback();
-                                  // 更新尺寸
-                                  mirrorStateProvider.onWidgetSizeChanged();
-                                  log.info(
-                                      'enable bluetooth touchback $success');
-                                  // 更新按鈕狀態
-                                  if (!mounted) return;
-                                  setState(() {
-                                    if (!success) {
-                                      _showTouchbackAlertDialog(
-                                          context, mirrorStateProvider);
-                                    }
-                                  });
-                                }
-                              }
-                            }
-                          },
                         ),
                       ),
                     ),
@@ -456,6 +412,42 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
     );
   }
 
+  Future<void> onTouchBackPressed(MirrorStateProvider mirrorStateProvider,
+      bool isMirrorRequest, BuildContext context) async {
+    mirrorStateProvider.bluetoothTouchbackIndex = widget.index;
+    if (isMirrorRequest) {
+      var connection =
+          HybridConnectionList().getConnection<MirrorRequest>(widget.index);
+      if (connection.mirrorState == MirrorState.mirroring) {
+        if (connection.touchBackState()) {
+          await _disableAllTouchback();
+          if (context.mounted) {
+            if (!mounted) return;
+            setState(() {
+              V3Toast().makeBluetoothStateToast(
+                  context,
+                  S.current.v3_touchback_disable_message,
+                  widget.index,
+                  _layerLink);
+            });
+          }
+        } else {
+          final success = await connection.enableTouchback();
+          // 更新尺寸
+          mirrorStateProvider.onWidgetSizeChanged();
+          log.info('enable bluetooth touchback $success');
+          // 更新按鈕狀態
+          if (!mounted) return;
+          setState(() {
+            if (!success) {
+              _showTouchbackAlertDialog(context, mirrorStateProvider);
+            }
+          });
+        }
+      }
+    }
+  }
+
   // 不支援HID
   bool _isUnsupportedIFPModel(String deviceModel) {
     final unsupportedModels = [
@@ -542,5 +534,55 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
         await Future.delayed(const Duration(milliseconds: 200));
       }
     }
+  }
+}
+
+class _TouchBackButton extends StatefulWidget {
+  const _TouchBackButton(this.index, this.onPressed);
+
+  final int index;
+  final VoidCallback onPressed;
+
+  @override
+  State<_TouchBackButton> createState() => _TouchBackButtonState();
+}
+
+class _TouchBackButtonState extends State<_TouchBackButton> {
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: V3BluetoothStatusNotification.showStatusAlert,
+      builder: (context, value, child) {
+        return value.show
+            ? Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: context.tokens.color.vsdslColorSurface1000,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: context.tokens.color.vsdslColorOutline,
+                    width: 1,
+                  ),
+                ),
+                child: CircularProgressIndicator(
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  strokeWidth: 2,
+                ),
+              )
+            : IconButton(
+                icon: SvgPicture.asset(
+                  (HybridConnectionList()
+                          .getConnection<MirrorRequest>(widget.index)
+                          .touchBackState())
+                      ? 'assets/images/ic_streaming_airplay_touchback_enable.svg'
+                      : 'assets/images/ic_streaming_airplay_touchback_disable.svg',
+                ),
+                focusColor: Colors.transparent,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: widget.onPressed,
+              );
+      },
+    );
   }
 }
