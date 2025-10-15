@@ -197,9 +197,7 @@ class MirrorStateProvider extends ChangeNotifier
 
     // Track miracast connection start time for log upload
     if (mirrorId.contains('miracast')) {
-      _miracastStartTimes[mirrorId] = DateTime.now();
-      log.info(
-          'Miracast connection started: $mirrorId at ${_miracastStartTimes[mirrorId]}');
+      onMiracastStart(mirrorId);
     }
 
     if (HybridConnectionList().connectionListFull()) {
@@ -217,36 +215,19 @@ class MirrorStateProvider extends ChangeNotifier
     AppOverlayTab().launchApp();
   }
 
+  void onMiracastStart(String mirrorId) {
+    _miracastStartTimes[mirrorId] = DateTime.now();
+    log.info(
+        'Miracast connection started: $mirrorId at ${_miracastStartTimes[mirrorId]}');
+  }
+
   @override
   void onMirrorStop(String mirrorId) {
     log.info('onMirrorStop $mirrorId');
 
     // Check if this is a miracast connection and if it should upload log
-    if (mirrorId.contains('miracast') &&
-        _miracastStartTimes.containsKey(mirrorId)) {
-      final startTime = _miracastStartTimes[mirrorId]!;
-      final endTime = DateTime.now();
-      final duration = endTime.difference(startTime);
-      final durationInMinutes = duration.inMinutes;
-
-      log.info('Miracast connection duration: $durationInMinutes minutes');
-
-      if (durationInMinutes <= _miracastLogUploadThresholdMinutes) {
-        log.info(
-            'Miracast connection stopped within $_miracastLogUploadThresholdMinutes minutes. Uploading log...');
-        uploadSystemLog(
-                'Miracast connection stopped early. Duration: $durationInMinutes minutes, MirrorId: $mirrorId')
-            .then((success) {
-          if (success) {
-            log.info('Log uploaded successfully for mirrorId: $mirrorId');
-          } else {
-            log.warning('Failed to upload log for mirrorId: $mirrorId');
-          }
-        });
-      }
-
-      // Clean up the tracking map
-      _miracastStartTimes.remove(mirrorId);
+    if (mirrorId.contains('miracast')) {
+      onMiracastStop(mirrorId);
     }
 
     for (MirrorRequest request
@@ -257,6 +238,35 @@ class MirrorStateProvider extends ChangeNotifier
         notifyListeners();
       }
     }
+  }
+
+  void onMiracastStop(String mirrorId) {
+    if (!_miracastStartTimes.containsKey(mirrorId)) {
+      return;
+    }
+    final startTime = _miracastStartTimes[mirrorId]!;
+    final endTime = DateTime.now();
+    final duration = endTime.difference(startTime);
+    final durationInMinutes = duration.inMinutes;
+
+    log.info('Miracast connection duration: $durationInMinutes minutes');
+
+    if (durationInMinutes <= _miracastLogUploadThresholdMinutes) {
+      log.info(
+          'Miracast connection stopped within $_miracastLogUploadThresholdMinutes minutes. Uploading log...');
+      uploadSystemLog(
+              'Miracast connection stopped early. Duration: $durationInMinutes minutes, MirrorId: $mirrorId')
+          .then((success) {
+        if (success) {
+          log.info('Log uploaded successfully for mirrorId: $mirrorId');
+        } else {
+          log.warning('Failed to upload log for mirrorId: $mirrorId');
+        }
+      });
+    }
+
+    // Clean up the tracking map
+    _miracastStartTimes.remove(mirrorId);
   }
 
   @override
