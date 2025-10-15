@@ -9,6 +9,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/log_upload.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_global_toast.dart';
@@ -89,6 +90,12 @@ class MirrorStateProvider extends ChangeNotifier
     MirrorType.googlecast: false,
     MirrorType.miracast: false,
   };
+
+  // Track miracast connection start times for log upload
+  final Map<String, DateTime> _miracastStartTimes = {};
+
+  // Time threshold for log upload (in minutes)
+  static const int _miracastLogUploadThresholdMinutes = 2;
 
   static const defaultMirrorConfirmation = true;
   bool _isMirrorConfirmation = defaultMirrorConfirmation;
@@ -188,6 +195,13 @@ class MirrorStateProvider extends ChangeNotifier
       _pinCode = '';
     }
 
+    // Track miracast connection start time for log upload
+    if (mirrorId.contains('miracast')) {
+      _miracastStartTimes[mirrorId] = DateTime.now();
+      log.info(
+          'Miracast connection started: $mirrorId at ${_miracastStartTimes[mirrorId]}');
+    }
+
     if (HybridConnectionList().connectionListFull()) {
       stopAcceptedMirror(mirrorId);
     } else {
@@ -206,6 +220,35 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorStop(String mirrorId) {
     log.info('onMirrorStop $mirrorId');
+
+    // Check if this is a miracast connection and if it should upload log
+    if (mirrorId.contains('miracast') &&
+        _miracastStartTimes.containsKey(mirrorId)) {
+      final startTime = _miracastStartTimes[mirrorId]!;
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      final durationInMinutes = duration.inMinutes;
+
+      log.info('Miracast connection duration: $durationInMinutes minutes');
+
+      if (durationInMinutes <= _miracastLogUploadThresholdMinutes) {
+        log.info(
+            'Miracast connection stopped within $_miracastLogUploadThresholdMinutes minutes. Uploading log...');
+        uploadSystemLog(
+                'Miracast connection stopped early. Duration: $durationInMinutes minutes, MirrorId: $mirrorId')
+            .then((success) {
+          if (success) {
+            log.info('Log uploaded successfully for mirrorId: $mirrorId');
+          } else {
+            log.warning('Failed to upload log for mirrorId: $mirrorId');
+          }
+        });
+      }
+
+      // Clean up the tracking map
+      _miracastStartTimes.remove(mirrorId);
+    }
+
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorId == mirrorId) {
