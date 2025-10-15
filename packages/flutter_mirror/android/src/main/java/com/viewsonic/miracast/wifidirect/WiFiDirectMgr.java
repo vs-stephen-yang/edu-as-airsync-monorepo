@@ -306,11 +306,11 @@ public class WiFiDirectMgr {
         " (name: " + device.deviceName + ", status: " + device.status + ")");
       return;
     }
-    Log.w(TAG, "========== DEVICE DISCONNECTED ==========");
-    Log.w(TAG, "MAC: " + device.deviceAddress);
-    Log.w(TAG, "Name: " + device.deviceName);
-    Log.w(TAG, "Status: " + device.status + " (0=CONNECTED, 1=INVITED, 2=FAILED, 3=AVAILABLE, 4=UNAVAILABLE)");
-    Log.w(TAG, "Primary Type: " + device.primaryDeviceType);
+    Log.d(TAG, "========== DEVICE DISCONNECTED ==========");
+    Log.d(TAG, "MAC: " + device.deviceAddress);
+    Log.d(TAG, "Name: " + device.deviceName);
+    Log.d(TAG, "Status: " + device.status + " (0=CONNECTED, 1=INVITED, 2=FAILED, 3=AVAILABLE, 4=UNAVAILABLE)");
+    Log.d(TAG, "Primary Type: " + device.primaryDeviceType);
 
     peers_.remove(device.deviceAddress);
 
