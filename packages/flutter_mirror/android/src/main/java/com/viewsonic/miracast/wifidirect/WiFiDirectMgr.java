@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
@@ -268,10 +269,13 @@ public class WiFiDirectMgr {
     }
 
     if (peers_.contains(device.deviceAddress)) {
+      Log.d(TAG, "Device already connected, skipping: " + device.deviceAddress);
       return;
     }
 
-    Log.d(TAG, "Device connected: " + device.deviceAddress);
+    Log.d(TAG, "Device connected: " + device.deviceAddress +
+      ", name: " + device.deviceName +
+      ", type: " + device.primaryDeviceType);
 
     new Thread(() -> {
       try {
@@ -298,9 +302,15 @@ public class WiFiDirectMgr {
 
   private void onDeviceDisconnected(WifiP2pDevice device) {
     if (!peers_.contains(device.deviceAddress)) {
+      Log.d(TAG, "Device disconnect ignored (not in peers list): " + device.deviceAddress +
+        " (name: " + device.deviceName + ", status: " + device.status + ")");
       return;
     }
-    Log.d(TAG, "Device disconnected: " + device.deviceAddress);
+    Log.w(TAG, "========== DEVICE DISCONNECTED ==========");
+    Log.w(TAG, "MAC: " + device.deviceAddress);
+    Log.w(TAG, "Name: " + device.deviceName);
+    Log.w(TAG, "Status: " + device.status + " (0=CONNECTED, 1=INVITED, 2=FAILED, 3=AVAILABLE, 4=UNAVAILABLE)");
+    Log.w(TAG, "Primary Type: " + device.primaryDeviceType);
 
     peers_.remove(device.deviceAddress);
 
@@ -308,11 +318,14 @@ public class WiFiDirectMgr {
   }
 
   private void processPeerListChanged(final Collection<WifiP2pDevice> peerList) {
+    Log.d(TAG, "PEERS_CHANGED: " + peerList.size() + " peers");
+
     for (WifiP2pDevice peer : peerList) {
       Log.d(TAG, String.format("Peer: %s - %s - status: %d",
-          peer.deviceName,
-          peer.deviceAddress,
-          peer.status));
+        peer.deviceName,
+        peer.deviceAddress,
+        peer.status));
+      Log.d(TAG, "  Currently in peers list: " + peers_.contains(peer.deviceAddress));
 
       if (peer.status == WifiP2pDevice.CONNECTED) {
         onDeviceConnected(peer);
@@ -418,14 +431,21 @@ public class WiFiDirectMgr {
         // Connection state changed! We should probably do something about that.
         WifiP2pGroup wifiP2pGroup = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
         WifiP2pInfo wifiP2pInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO);
+        NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
-        Log.d(TAG, "onReceive: WIFI_P2P_CONNECTION_CHANGED_ACTION");
-
+        Log.d(TAG, "===== WIFI_P2P_CONNECTION_CHANGED_ACTION =====");
+        if (networkInfo != null) {
+          Log.d(TAG, "NetworkInfo state: " + networkInfo.getState());
+          Log.d(TAG, "NetworkInfo detailed state: " + networkInfo.getDetailedState());
+          Log.d(TAG, "NetworkInfo reason: " + networkInfo.getReason());
+        }
         if (wifiP2pInfo != null) {
+          Log.d(TAG, "P2P Info - groupFormed: " + wifiP2pInfo.groupFormed);
+          Log.d(TAG, "P2P Info - isGroupOwner: " + wifiP2pInfo.isGroupOwner);
           onConnectionInfoAvailable(wifiP2pInfo);
         }
-
         if (wifiP2pGroup != null) {
+          Log.d(TAG, "Group - clientList size: " + wifiP2pGroup.getClientList().size());
           onGroupInfoAvailable(wifiP2pGroup);
         }
       }
