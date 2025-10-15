@@ -856,11 +856,81 @@ class SelectScreenDialog extends Dialog {
     // Wait for the virtual display to start or timeout
     try {
       final result = await completer.future.timeout(const Duration(seconds: 5));
+      if (result && Platform.isWindows) {
+        await _waitForVirtualDisplayRegistration();
+        await _switchToExtendedDisplayMode();
+      }
       return result;
     } on TimeoutException {
       log.warning('Timed out waiting for virtual display to start');
       await _virtualDisplaySubscription?.cancel();
       return false;
+    }
+  }
+
+  Future<void> _waitForVirtualDisplayRegistration() async {
+    const pollingInterval = Duration(milliseconds: 333);
+    const maxWait = Duration(seconds: 3);
+
+    final stopwatch = Stopwatch()..start();
+    while (stopwatch.elapsed <= maxWait) {
+      try {
+        final sources =
+            await desktopCapturer.getSources(types: [SourceType.Screen]);
+        if (sources.length > 1) {
+          log.info('Detected ${sources.length} screen sources; proceeding with display switch.');
+          return;
+        }
+      } catch (error, stackTrace) {
+        log.warning('Failed to query screen sources while waiting for virtual display', error, stackTrace);
+        break;
+      }
+      await Future.delayed(pollingInterval);
+    }
+
+    log.warning('Virtual display not detected within timeout; attempting display switch anyway.');
+  }
+
+  Future<void> _switchToExtendedDisplayMode() async {
+    final systemRoot = Platform.environment['SystemRoot'];
+    if (systemRoot == null) {
+      log.warning('SystemRoot environment variable missing; skipping display mode switch.');
+      return;
+    }
+
+    final candidatePaths = <String>[
+      '$systemRoot\\Sysnative\\DisplaySwitch.exe',
+      '$systemRoot\\System32\\DisplaySwitch.exe',
+      '$systemRoot\\SysWOW64\\DisplaySwitch.exe',
+    ];
+
+    String? displaySwitchPath;
+    for (final path in candidatePaths) {
+      if (File(path).existsSync()) {
+        displaySwitchPath = path;
+        break;
+      }
+    }
+
+    if (displaySwitchPath == null) {
+      log.warning('DisplaySwitch.exe not found in candidate locations; skipping display mode switch.');
+      return;
+    }
+
+    log.info('Using DisplaySwitch path: $displaySwitchPath');
+
+    // Give Windows a moment to register the virtual display before switching modes.
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      final result = await Process.run(displaySwitchPath, ['/extend'], runInShell: true);
+      if (result.exitCode != 0) {
+        log.warning('DisplaySwitch.exe failed (exit ${result.exitCode}): ${result.stderr}');
+      } else {
+        log.info('DisplaySwitch.exe succeeded: ${result.stdout}');
+      }
+    } catch (error, stackTrace) {
+      log.severe('Error while switching display mode to extend', error, stackTrace);
     }
   }
 
