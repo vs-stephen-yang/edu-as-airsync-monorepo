@@ -352,10 +352,10 @@ public class RtspClient
         if (sourceProductId_.contains(WINDOWS_SOURCE_PRODUCT_ID)) {
           isWindowsSource_ = true;
         }
-        Log.w(TAG, "========== RTSP SOURCE DEVICE INFO ==========");
-        Log.w(TAG, "Server Header: " + serverHeader);
-        Log.w(TAG, "Product ID: " + sourceProductId_);
-        Log.w(TAG, "Is Windows Source: " + isWindowsSource_);
+        Log.d(TAG, "========== RTSP SOURCE DEVICE INFO ==========");
+        Log.d(TAG, "Server Header: " + serverHeader);
+        Log.d(TAG, "Product ID: " + sourceProductId_);
+        Log.d(TAG, "Is Windows Source: " + isWindowsSource_);
       }
     }
   }
