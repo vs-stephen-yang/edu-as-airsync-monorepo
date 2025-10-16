@@ -122,6 +122,16 @@ class DisplayGroupMember {
         stop();
         onStopped(stayOnList);
         break;
+      case ChannelMessageType.remoteScreenStatus:
+        final statusMessage = message as RemoteScreenStatusMessage;
+        final status = statusMessage.status;
+
+        if (status == RemoteScreenStatus.fpsZero) {
+          // TODO: upload log to sentry
+          log.warning("receive remote screen fps zero");
+        }
+
+        break;
       default:
     }
   }

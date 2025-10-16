@@ -1,6 +1,6 @@
 import 'package:display_channel/display_channel.dart';
-import 'package:display_flutter/model/remote_screen_client.dart';
 import 'package:display_flutter/model/multicast_info.dart';
+import 'package:display_flutter/model/remote_screen_client.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -86,6 +86,13 @@ class DisplayGroupSession {
         break;
       case ChannelMessageType.multicastInfo:
         await _onMulticastInfo(message as MulticastInfoMessage);
+        break;
+      case ChannelMessageType.stopDisplayGroup:
+        // Host is stopping, check FPS before closing
+        if (_remoteScreenClient is RtcScreenClient) {
+          final rtcClient = _remoteScreenClient as RtcScreenClient;
+          rtcClient.checkFpsBeforeClose();
+        }
         break;
       default:
         break;

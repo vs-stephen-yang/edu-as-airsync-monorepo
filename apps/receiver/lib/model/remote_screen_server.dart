@@ -334,6 +334,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
           formatVideoOutboundStatsList(_videoOutboundStatsHistory.elements);
       final chunkLogger = ChunkedLogger(log);
       chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
+      // TODO: upload remoteScreenStats to appInsight
     } catch (e) {
       log.warning(e);
     }
