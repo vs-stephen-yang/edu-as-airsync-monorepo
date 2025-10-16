@@ -25,6 +25,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_retriever/screen_retriever.dart';
 import 'package:sprintf/sprintf.dart';
 
 class V3PresentSelectScreen extends StatelessWidget {
@@ -843,8 +844,12 @@ class SelectScreenDialog extends Dialog {
     final baseScreenNumber =
         (await desktopCapturer.getSources(types: [SourceType.Screen])).length;
     log.info('Starting virtual display');
-    final startResult =
-        await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    final display = await ScreenRetriever.instance.getPrimaryDisplay();
+    final scale = (display.scaleFactor ?? 1).toDouble();
+    final pixelWidth  = (display.size.width  * scale).round();
+    final pixelHeight = (display.size.height * scale).round();
+
+    final startResult = await FlutterVirtualDisplay.instance.startVirtualDisplay(pixelWidth, pixelHeight);
 
     if (!startResult!) {
       log.warning('Failed to start virtual display');
