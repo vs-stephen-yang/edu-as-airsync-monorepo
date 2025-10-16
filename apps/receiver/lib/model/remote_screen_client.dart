@@ -1,14 +1,20 @@
-import 'package:display_flutter/model/remote_screen_channel_signal.dart';
-import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/webrtc_util.dart';
+import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/multicast_info.dart';
+import 'package:display_flutter/model/remote_screen_channel_signal.dart';
+import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_parser.dart';
+import 'package:display_flutter/model/rtc_stats_reporter.dart';
+import 'package:display_flutter/protoc/event.pb.dart' as pb;
+import 'package:display_flutter/protoc/internal.pb.dart';
+import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/rtc_fps_zero_detector.dart';
+import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
-import 'package:display_flutter/protoc/event.pb.dart' as pb;
-import 'package:display_flutter/protoc/internal.pb.dart';
-import 'package:display_flutter/model/multicast_info.dart';
 
 abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel, String? sessionId)
@@ -56,9 +62,11 @@ abstract class RemoteScreenClient {
 
 class RtcScreenClient extends RemoteScreenClient {
   Client? _client;
+
   RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
   RTCDataChannel? _dataChannel;
+
   GlobalKey get rtcWidgetKey => _rtcWidgetKey;
   final GlobalKey _rtcWidgetKey = GlobalKey();
   Size _textureSize = const Size(0, 0);
@@ -66,6 +74,12 @@ class RtcScreenClient extends RemoteScreenClient {
   bool _isFirstConnected = true;
 
   RemoteScreenChannelSignal? _channelSignal;
+
+  // RTC stats monitoring
+  RtcStatsParser? _rtcStatsParser;
+  RtcFpsZeroDetector? _fpsZeroDetector;
+  Timer? _statsTimer;
+  final _statsTimerInterval = const Duration(seconds: 1);
 
   @override
   bool get isAudioEnable {
@@ -81,6 +95,66 @@ class RtcScreenClient extends RemoteScreenClient {
       );
 
   RtcScreenClient(super.channel, super.sessionId);
+
+  void startStatsMonitoring(
+    Duration checkDelay,
+    int minSamples,
+    OnFpsZeroDetected onFpsZeroDetected,
+  ) {
+    // Initialize FPS zero detector
+    _fpsZeroDetector = RtcFpsZeroDetector(
+      checkDelay: checkDelay,
+      minSamples: minSamples,
+      onFpsZeroDetected: onFpsZeroDetected,
+    );
+
+    // Initialize stats parser
+    _rtcStatsParser = RtcStatsParser();
+
+    // Create RtcStatsReporter to feed stats to the FPS detector
+    final rtcStatsReporter = RtcStatsReporter(
+      // onVideoInboundStats: feed to FPS detector
+      (RtcVideoInboundStats stats) {
+        _fpsZeroDetector?.onVideoInboundStats(stats);
+      },
+      (RtcVideoOutboundStats stats) {},
+      (String localCandidateType, String remoteCandidateType) {},
+      (RtcIceCandidatePairStats stats) {},
+    );
+
+    _rtcStatsParser!.addSubscriber(rtcStatsReporter);
+
+    // Start periodic stats collection
+    _statsTimer?.cancel();
+    _statsTimer = Timer.periodic(_statsTimerInterval, (timer) async {
+      final reports = await _client?.getSubStats(null);
+      if (reports != null) {
+        _rtcStatsParser?.onStatsReports(reports);
+      }
+    });
+
+    // Start collecting FPS data and schedule the delayed check
+    _fpsZeroDetector?.startCollecting();
+
+    log.info('Remote screen: Stats monitoring started');
+  }
+
+  /// Stop RTC stats monitoring
+  void stopStatsMonitoring() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+    _fpsZeroDetector?.dispose();
+    _fpsZeroDetector = null;
+    _rtcStatsParser = null;
+
+    log.info('Remote screen: Stats monitoring stopped');
+  }
+
+  /// Check FPS before closing (called when sender initiates stop)
+  void checkFpsBeforeClose() {
+    log.info('Remote screen: Checking FPS before close');
+    _fpsZeroDetector?.checkOnDisconnect();
+  }
 
   onDataChannelState(RTCDataChannelState state) {
     log.info('Remote screen: Data channel state ${state.name}');
@@ -149,9 +223,38 @@ class RtcScreenClient extends RemoteScreenClient {
 
       switch (state) {
         case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
+          // Check FPS on disconnection
+          _fpsZeroDetector?.checkOnDisconnect();
           onClose();
           break;
+        case RTCPeerConnectionState.RTCPeerConnectionStateDisconnected:
+          // Check FPS on disconnection
+          _fpsZeroDetector?.checkOnDisconnect();
+          break;
         case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
+          // Start stats monitoring when connected
+          if (_statsTimer == null) {
+            log.info('Remote screen: Starting stats monitoring');
+            startStatsMonitoring(
+              const Duration(seconds: 10),
+              3,
+              ({required sampleCount, required duration, required reason}) {
+                log.warning(
+                  'Remote screen FPS is zero! '
+                  'Sample count: $sampleCount, Duration: $duration, Reason: $reason',
+                );
+
+                // Request sender to write log
+                _channel?.send(RemoteScreenStatusMessage(
+                  _sessionId,
+                  RemoteScreenStatus.fpsZero,
+                ));
+
+                // TODO: upload log to sentry
+              },
+            );
+          }
+
           if (_isFirstConnected) {
             onTrack();
             _isFirstConnected = false;
@@ -183,6 +286,10 @@ class RtcScreenClient extends RemoteScreenClient {
 
   @override
   Future remove() async {
+    _fpsZeroDetector?.checkOnDisconnect();
+    // Stop stats monitoring and clean up
+    stopStatsMonitoring();
+
     if (_remoteScreenRenderer.textureId != null) {
       _remoteScreenRenderer.srcObject = null;
     }
