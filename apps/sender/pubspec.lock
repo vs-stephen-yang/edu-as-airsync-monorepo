@@ -655,8 +655,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-1.0.4"
-      resolved-ref: "2ab728dc70c2534942c8373073d980a7b2e1a1e7"
+      ref: "release-1.0.5"
+      resolved-ref: "2a6c2568e88d9f7f31dff511106cba5fe93fb995"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-virtual-display"
     source: git
     version: "0.0.1"
@@ -1340,7 +1340,7 @@ packages:
     source: hosted
     version: "0.28.0"
   screen_retriever:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: screen_retriever
       sha256: "570dbc8e4f70bac451e0efc9c9bb19fa2d6799a11e6ef04f946d7886d2e23d0c"

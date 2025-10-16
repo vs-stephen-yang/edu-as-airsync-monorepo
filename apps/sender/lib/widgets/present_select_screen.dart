@@ -20,6 +20,9 @@ class PresentSelectScreen extends StatelessWidget {
 
   static SelectScreenDialog? selectScreenDialog;
 
+  static const defaultScreenExtensionWidth = 1920;
+  static const defaultScreenExtensionHeight = 1080;
+
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
@@ -51,7 +54,7 @@ class PresentSelectScreen extends StatelessWidget {
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
     if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {
-      await FlutterVirtualDisplay.instance.startVirtualDisplay();
+      await FlutterVirtualDisplay.instance.startVirtualDisplay(defaultScreenExtensionWidth, defaultScreenExtensionHeight);
     }
 
     // start timeout timer (30 sec)
