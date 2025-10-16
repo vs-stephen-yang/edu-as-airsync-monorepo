@@ -840,6 +840,8 @@ class SelectScreenDialog extends Dialog {
     });
 
     // Start the virtual display
+    final baseScreenNumber =
+        (await desktopCapturer.getSources(types: [SourceType.Screen])).length;
     log.info('Starting virtual display');
     final startResult =
         await FlutterVirtualDisplay.instance.startVirtualDisplay();
@@ -857,7 +859,7 @@ class SelectScreenDialog extends Dialog {
     try {
       final result = await completer.future.timeout(const Duration(seconds: 5));
       if (result && Platform.isWindows) {
-        await _waitForVirtualDisplayRegistration();
+        await _waitForVirtualDisplayRegistration(baseScreenNumber);
         await _switchToExtendedDisplayMode();
       }
       return result;
@@ -868,7 +870,7 @@ class SelectScreenDialog extends Dialog {
     }
   }
 
-  Future<void> _waitForVirtualDisplayRegistration() async {
+  Future<void> _waitForVirtualDisplayRegistration(int baseScreenNumber) async {
     const pollingInterval = Duration(milliseconds: 333);
     const maxWait = Duration(seconds: 3);
 
@@ -877,8 +879,8 @@ class SelectScreenDialog extends Dialog {
       try {
         final sources =
             await desktopCapturer.getSources(types: [SourceType.Screen]);
-        if (sources.length > 1) {
-          log.info('Detected ${sources.length} screen sources; proceeding with display switch.');
+        if (sources.length > baseScreenNumber) {
+          log.info('Virtual display detected');
           return;
         }
       } catch (error, stackTrace) {
@@ -906,7 +908,7 @@ class SelectScreenDialog extends Dialog {
 
     String? displaySwitchPath;
     for (final path in candidatePaths) {
-      if (File(path).existsSync()) {
+      if (await File(path).exists()) {
         displaySwitchPath = path;
         break;
       }
