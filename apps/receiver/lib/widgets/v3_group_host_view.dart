@@ -82,7 +82,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                 onMute: provider.displayGroupOnMute,
                 onStop: () {
                   provider.stopReceivedFromHost(
-                      closeReason: 'stop received from host');
+                      closeReason: 'member click stop');
                   mirrorStateProvider.restartMirror();
                 },
                 isMute: !audioEnabled,
