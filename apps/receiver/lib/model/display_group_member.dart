@@ -142,7 +142,14 @@ class DisplayGroupMember {
 
   void stop() {
     if (_channel.state == ChannelState.connected) {
-      _channel.close(null);
+      // Send stop message to trigger FPS check on receiver side
+      // before closing the channel
+      _channel.send(StopDisplayGroupMessage());
+
+      // Delay closing to allow receiver to send FPS zero notification
+      Future.delayed(const Duration(milliseconds: 500), () {
+        _channel.close(null);
+      });
     }
   }
 }
