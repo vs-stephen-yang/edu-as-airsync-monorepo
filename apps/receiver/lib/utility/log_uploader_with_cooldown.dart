@@ -19,12 +19,10 @@ class LogUploaderWithCooldown {
     if (_lastUploadTime != null) {
       final timeSinceLastUpload = now.difference(_lastUploadTime!);
       if (timeSinceLastUpload < cooldownPeriod) {
-        final minutesSinceLastUpload = timeSinceLastUpload.inMinutes;
-        final minutesUntilNext =
-            cooldownPeriod.inMinutes - minutesSinceLastUpload;
+        final timeUntilNext = cooldownPeriod - timeSinceLastUpload;
         log.info(
-          '$name log upload skipped. Last upload was $minutesSinceLastUpload minutes ago. '
-          'Next upload allowed in $minutesUntilNext minutes.',
+          '$name log upload skipped. Last upload was ${timeSinceLastUpload.inMinutes} minutes ago. '
+          'Next upload allowed in ${timeUntilNext.inMinutes} minutes.',
         );
         return false;
       }
