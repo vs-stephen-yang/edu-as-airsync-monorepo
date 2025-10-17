@@ -37,3 +37,32 @@ Future<bool> uploadSystemLog(String message) async {
     return false;
   }
 }
+
+DateTime? _lastFpsZeroUploadTime;
+
+/// Upload system log for FPS zero detection (max once per hour)
+Future<bool> uploadSystemLogForFpsZero(String message) async {
+  // Check if upload is allowed (max once per hour)
+  final now = DateTime.now();
+  if (_lastFpsZeroUploadTime != null) {
+    final timeSinceLastUpload = now.difference(_lastFpsZeroUploadTime!);
+    if (timeSinceLastUpload.inHours < 1) {
+      log.info(
+        'FPS zero log upload skipped. Last upload was ${timeSinceLastUpload.inMinutes} minutes ago. '
+        'Next upload allowed in ${60 - timeSinceLastUpload.inMinutes} minutes.',
+      );
+      return false;
+    }
+  }
+
+  try {
+    final logContent = await LogcatReader.readLog(lines: 1000);
+
+    await uploadLog(message, logContent);
+    _lastFpsZeroUploadTime = now;
+    return true;
+  } catch (e) {
+    log.warning('Failed to upload FPS zero log', e);
+    return false;
+  }
+}
