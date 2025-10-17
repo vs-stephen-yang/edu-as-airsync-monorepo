@@ -254,7 +254,7 @@ class MirrorStateProvider extends ChangeNotifier
     if (durationInMinutes <= _miracastLogUploadThresholdMinutes) {
       log.info(
           'Miracast connection stopped within $_miracastLogUploadThresholdMinutes minutes. Uploading log...');
-      uploadSystemLog(
+      uploadSystemLogForMiracastDisconnect(
               'Miracast connection stopped early. Duration: $durationInMinutes minutes, MirrorId: $mirrorId')
           .then((success) {
         if (success) {
