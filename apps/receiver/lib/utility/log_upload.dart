@@ -37,27 +37,3 @@ Future<bool> uploadSystemLog(String message) async {
     return false;
   }
 }
-
-DateTime? _lastMiracastDisconnectUploadTime;
-
-Future<bool> uploadSystemLogForMiracastDisconnect(String message) async {
-  // Check if upload is allowed (max once per hour)
-  final now = DateTime.now();
-  if (_lastMiracastDisconnectUploadTime != null) {
-    final timeSinceLastUpload =
-        now.difference(_lastMiracastDisconnectUploadTime!);
-    if (timeSinceLastUpload.inHours < 1) {
-      log.info(
-        'Miracast disconnect log upload skipped. Last upload was ${timeSinceLastUpload.inMinutes} minutes ago. '
-        'Next upload allowed in ${60 - timeSinceLastUpload.inMinutes} minutes.',
-      );
-      return false;
-    }
-  }
-
-  final result = await uploadSystemLog(message);
-  if (result) {
-    _lastMiracastDisconnectUploadTime = now;
-  }
-  return result;
-}

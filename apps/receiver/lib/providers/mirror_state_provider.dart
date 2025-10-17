@@ -9,7 +9,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/log_upload.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_global_toast.dart';
@@ -37,6 +37,7 @@ class MirrorStateProvider extends ChangeNotifier
     implements FlutterMirrorListener, BluetoothTouchbackListener {
   MirrorStateProvider(
     this._instanceInfoProvider,
+    this._logUploader,
   ) {
     _load();
     _flutterMirrorPlugin = FlutterMirror();
@@ -69,6 +70,7 @@ class MirrorStateProvider extends ChangeNotifier
   bool _isPermissionGranted = false;
 
   final InstanceInfoProvider _instanceInfoProvider;
+  final LogUploaderWithCooldown _logUploader;
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
@@ -254,7 +256,8 @@ class MirrorStateProvider extends ChangeNotifier
     if (durationInMinutes <= _miracastLogUploadThresholdMinutes) {
       log.info(
           'Miracast connection stopped within $_miracastLogUploadThresholdMinutes minutes. Uploading log...');
-      uploadSystemLogForMiracastDisconnect(
+      _logUploader
+          .upload(
               'Miracast connection stopped early. Duration: $durationInMinutes minutes, MirrorId: $mirrorId')
           .then((success) {
         if (success) {
