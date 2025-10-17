@@ -10,6 +10,7 @@ import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/log_upload.dart';
 import 'package:display_flutter/utility/rtc_fps_zero_detector.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:flutter/cupertino.dart';
@@ -288,7 +289,10 @@ class RtcScreenClient extends RemoteScreenClient {
     final chunkLogger = ChunkedLogger(log);
     chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
 
-    // TODO: upload log to sentry
+    // Upload log to Sentry (max once per hour)
+    uploadSystemLogForFpsZero(
+      'Remote screen FPS is zero. Sample count: $sampleCount, Duration: $duration, Reason: $reason',
+    );
   }
 
   void handleSignalMessage(String signal) {
