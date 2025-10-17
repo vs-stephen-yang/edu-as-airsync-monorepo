@@ -2,6 +2,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/log_upload.dart';
 import 'package:uuid/uuid.dart';
 
 import 'display_group_mediator.dart';
@@ -127,8 +128,11 @@ class DisplayGroupMember {
         final status = statusMessage.status;
 
         if (status == RemoteScreenStatus.fpsZero) {
-          // TODO: upload log to sentry
-          log.warning("receive remote screen fps zero");
+          log.warning(
+              "Uploading log due to remote screen FPS zero from ${_info.displayCode}");
+          uploadSystemLog(
+            'Host received FPS zero request from member. Display code: ${_info.displayCode}',
+          );
         }
 
         break;
