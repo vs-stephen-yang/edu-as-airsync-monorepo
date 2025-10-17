@@ -1,14 +1,29 @@
 parameters:
-  artifactRoot: ''
+  platform: ''          # Platform name (Android/iOS/macOS/Windows)
   versionName: ''
   runNumber: ''
   envName: ''
-  apkFile: ''
-  aabFile: ''
+
+  # Flexible file uploads (up to 3 files)
+  file1: ''
+  file1_subfolder: ''   # e.g., "apk_production", "ipa_stage", "dmg_dev"
+
+  file2: ''
+  file2_subfolder: ''
+
+  file3: ''
+  file3_subfolder: ''
+
+  # Flexible directory uploads (up to 2 directories)
+  dir1: ''
+  dir1_subfolder: ''    # e.g., "archive_stage", "app_production"
+
+  dir2: ''
+  dir2_subfolder: ''
 
 steps:
   - task: Bash@3
-    displayName: Upload to Dropbox
+    displayName: Upload to Dropbox (${{ parameters.platform }})
     env:
       DROPBOX_APP_KEY: $(DROPBOX_APP_KEY)
       DROPBOX_APP_SECRET: $(DROPBOX_APP_SECRET)
@@ -64,8 +79,7 @@ steps:
         echo "✅ All Dropbox credentials are present"
         echo ""
 
-        APK_FILE="${{ parameters.apkFile }}"
-        AAB_FILE="${{ parameters.aabFile }}"
+        PLATFORM="${{ parameters.platform }}"
 
         echo "🔐 Getting Dropbox access token..."
         RESPONSE=$(curl -s -X POST https://api.dropboxapi.com/oauth2/token \
@@ -80,11 +94,10 @@ steps:
           echo "❗ Full Dropbox response for debugging: $RESPONSE"
           exit 1
         fi
-        TIMESTAMP="${{ parameters.timestamp }}"
+
         VERSION_FOLDER="v${{ parameters.versionName }}-build-${{ parameters.runNumber }}"
-        DROPBOX_BASE="/Apps/airsync-sender-ci/Sender-Android/${VERSION_FOLDER}"
-        ENV_NAME="${{ parameters.envName }}"
-        
+        DROPBOX_BASE="/Apps/airsync-sender-ci/Sender-${PLATFORM}/${VERSION_FOLDER}"
+
         upload_file() {
           local file_path="$1"
           local relative_path="$2"
@@ -100,29 +113,92 @@ steps:
         upload_dir() {
           local dir_path="$1"
           local relative_base="$2"
+          echo "📂 Uploading directory: $dir_path → ${DROPBOX_BASE}/${relative_base}"
           find "$dir_path" -type f | while read -r file; do
             rel_path="${relative_base}/${file#$dir_path/}"
             upload_file "$file" "$rel_path"
           done
         }
 
-        for kind in aab apk; do
-          case "$kind" in
-            apk) file_path="$APK_FILE" ;;
-            aab) file_path="$AAB_FILE" ;;
-          esac
+        # Upload file1
+        FILE1="${{ parameters.file1 }}"
+        SUBFOLDER1="${{ parameters.file1_subfolder }}"
+        if [ -n "$FILE1" ] && [ -f "$FILE1" ]; then
+          filename=$(basename "$FILE1")
+          rel_path="${SUBFOLDER1}/${filename}"
+          upload_file "$FILE1" "$rel_path"
 
-          if [ -n "$file_path" ] && [ -f "$file_path" ]; then
-            rel_path="${kind}_${ENV_NAME}/$(basename "$file_path")"
-            upload_file "$file_path" "$rel_path"
-
-            debug_info_dir="${file_path}.debug_info"
-            if [ -d "$debug_info_dir" ]; then
-              debug_info_rel_path="${kind}_${ENV_NAME}/$(basename "$debug_info_dir")"
-              echo "📂 Uploading debug info directory: $debug_info_dir → $debug_info_rel_path"
-              upload_dir "$debug_info_dir" "$debug_info_rel_path"
-            fi
-          else
-            echo "⚠️ Skipping $kind: no valid file provided or file not found"
+          # Auto-upload debug_info directory if exists
+          debug_info_dir="${FILE1}.debug_info"
+          if [ -d "$debug_info_dir" ]; then
+            debug_info_rel_path="${SUBFOLDER1}/${filename}.debug_info"
+            echo "📂 Uploading debug info directory: $debug_info_dir"
+            upload_dir "$debug_info_dir" "$debug_info_rel_path"
           fi
-        done
+        elif [ -n "$FILE1" ]; then
+          echo "⚠️  Skipping file1: file not found at $FILE1"
+        fi
+
+        # Upload file2
+        FILE2="${{ parameters.file2 }}"
+        SUBFOLDER2="${{ parameters.file2_subfolder }}"
+        if [ -n "$FILE2" ] && [ -f "$FILE2" ]; then
+          filename=$(basename "$FILE2")
+          rel_path="${SUBFOLDER2}/${filename}"
+          upload_file "$FILE2" "$rel_path"
+
+          debug_info_dir="${FILE2}.debug_info"
+          if [ -d "$debug_info_dir" ]; then
+            debug_info_rel_path="${SUBFOLDER2}/${filename}.debug_info"
+            echo "📂 Uploading debug info directory: $debug_info_dir"
+            upload_dir "$debug_info_dir" "$debug_info_rel_path"
+          fi
+        elif [ -n "$FILE2" ]; then
+          echo "⚠️  Skipping file2: file not found at $FILE2"
+        fi
+
+        # Upload file3
+        FILE3="${{ parameters.file3 }}"
+        SUBFOLDER3="${{ parameters.file3_subfolder }}"
+        if [ -n "$FILE3" ] && [ -f "$FILE3" ]; then
+          filename=$(basename "$FILE3")
+          rel_path="${SUBFOLDER3}/${filename}"
+          upload_file "$FILE3" "$rel_path"
+
+          debug_info_dir="${FILE3}.debug_info"
+          if [ -d "$debug_info_dir" ]; then
+            debug_info_rel_path="${SUBFOLDER3}/${filename}.debug_info"
+            echo "📂 Uploading debug info directory: $debug_info_dir"
+            upload_dir "$debug_info_dir" "$debug_info_rel_path"
+          fi
+        elif [ -n "$FILE3" ]; then
+          echo "⚠️  Skipping file3: file not found at $FILE3"
+        fi
+
+        # Upload dir1
+        DIR1="${{ parameters.dir1 }}"
+        DIR1_SUBFOLDER="${{ parameters.dir1_subfolder }}"
+        if [ -n "$DIR1" ] && [ -d "$DIR1" ]; then
+          dirname=$(basename "$DIR1")
+          rel_path="${DIR1_SUBFOLDER}/${dirname}"
+          upload_dir "$DIR1" "$rel_path"
+        elif [ -n "$DIR1" ]; then
+          echo "⚠️  Skipping dir1: directory not found at $DIR1"
+        fi
+
+        # Upload dir2
+        DIR2="${{ parameters.dir2 }}"
+        DIR2_SUBFOLDER="${{ parameters.dir2_subfolder }}"
+        if [ -n "$DIR2" ] && [ -d "$DIR2" ]; then
+          dirname=$(basename "$DIR2")
+          rel_path="${DIR2_SUBFOLDER}/${dirname}"
+          upload_dir "$DIR2" "$rel_path"
+        elif [ -n "$DIR2" ]; then
+          echo "⚠️  Skipping dir2: directory not found at $DIR2"
+        fi
+
+        echo ""
+        echo "=================================="
+        echo "✅ Upload to Dropbox completed!"
+        echo "=================================="
+        echo "📁 Dropbox path: $DROPBOX_BASE"
