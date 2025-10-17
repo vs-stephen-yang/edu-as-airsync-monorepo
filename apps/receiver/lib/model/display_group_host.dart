@@ -2,6 +2,7 @@ import 'package:display_flutter/model/display_group_mediator.dart';
 import 'package:display_flutter/model/display_group_member_info.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,8 +12,9 @@ class DisplayGroupHost {
   final _members = <String, DisplayGroupMember>{};
   final _rejectMemberOption = <String, InvitedToGroupOption>{};
   final DisplayGroupMediator _mediator;
+  final LogUploaderWithCooldown _hostFpsZeroLogUploader;
 
-  DisplayGroupHost(this._mediator);
+  DisplayGroupHost(this._mediator, this._hostFpsZeroLogUploader);
 
   get members => _members;
 
@@ -38,7 +40,8 @@ class DisplayGroupHost {
       }
     }
 
-    final member = DisplayGroupMember(memberInfo, _mediator, onRejected: () {
+    final member = DisplayGroupMember(
+        memberInfo, _mediator, _hostFpsZeroLogUploader, onRejected: () {
       _rejectMemberOption[item.id()] =
           (item.invitedState() == InvitedToGroupOption.ignore.value.toString())
               ? InvitedToGroupOption.ignore

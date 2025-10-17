@@ -2,7 +2,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/log_upload.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:uuid/uuid.dart';
 
 import 'display_group_mediator.dart';
@@ -16,6 +16,7 @@ class DisplayGroupMember {
   late DisplayChannelClient _channel;
 
   final DisplayGroupMediator _mediator;
+  final LogUploaderWithCooldown _hostFpsZeroLogUploader;
 
   final void Function() onRejected;
 
@@ -25,9 +26,13 @@ class DisplayGroupMember {
 
   RemoteScreenConnector? _connector;
 
-  DisplayGroupMember(this._info, this._mediator,
-      {required this.onRejected, required this.onStopped})
-      : _uri = Uri(
+  DisplayGroupMember(
+    this._info,
+    this._mediator,
+    this._hostFpsZeroLogUploader, {
+    required this.onRejected,
+    required this.onStopped,
+  }) : _uri = Uri(
           scheme: 'wss',
           host: _info.host,
           port: _info.port,
@@ -129,9 +134,9 @@ class DisplayGroupMember {
 
         if (status == RemoteScreenStatus.fpsZero) {
           log.warning(
-              "Uploading log due to remote screen FPS zero from ${_info.displayCode}");
-          uploadSystemLog(
-            'Host received FPS zero request from member. Display code: ${_info.displayCode}',
+              "Host received FPS zero notification from Display Group member: ${_info.displayCode}");
+          _hostFpsZeroLogUploader.upload(
+            'Host received FPS zero request from Display Group member. Display code: ${_info.displayCode}',
           );
         }
 
