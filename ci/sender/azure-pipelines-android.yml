@@ -220,9 +220,11 @@ jobs:
 
       - template: ci/upload-to-dropbox.yml
         parameters:
+          platform: Android
           envName: $(envName)
           versionName: $(APP_VERSION_NAME)
           runNumber: $(Build.BuildNumber)
-          artifactRoot: $(Build.ArtifactStagingDirectory)
-          apkFile: "$(Build.ArtifactStagingDirectory)/apk/$(APK_FILE_NAME)"
-          aabFile: "$(Build.ArtifactStagingDirectory)/aab/$(AAB_FILE_NAME)"
+          file1: "$(Build.ArtifactStagingDirectory)/aab/$(AAB_FILE_NAME)"
+          file1_subfolder: "aab_$(envName)"
+          file2: "$(Build.ArtifactStagingDirectory)/apk/$(APK_FILE_NAME)"
+          file2_subfolder: "apk_$(envName)"
