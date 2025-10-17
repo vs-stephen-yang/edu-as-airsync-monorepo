@@ -55,14 +55,9 @@ Future<bool> uploadSystemLogForFpsZero(String message) async {
     }
   }
 
-  try {
-    final logContent = await LogcatReader.readLog(lines: 1000);
-
-    await uploadLog(message, logContent);
+  final result = await uploadSystemLog(message);
+  if (result) {
     _lastFpsZeroUploadTime = now;
-    return true;
-  } catch (e) {
-    log.warning('Failed to upload FPS zero log', e);
-    return false;
   }
+  return result;
 }
