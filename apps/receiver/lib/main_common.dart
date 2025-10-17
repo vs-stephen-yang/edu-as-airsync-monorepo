@@ -72,10 +72,20 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     final instanceInfoProvider = InstanceInfoProvider();
 
-    // Create log uploader with cooldown for Miracast disconnect
-    final miracastLogUploader = LogUploaderWithCooldown(
-      name: 'Miracast disconnect',
-      cooldownPeriod: const Duration(hours: 1),
+    // Create log uploaders with cooldown
+    final logUploaders = AppLogUploaders(
+      miracastDisconnect: LogUploaderWithCooldown(
+        name: 'Miracast disconnect',
+        cooldownPeriod: const Duration(hours: 1),
+      ),
+      memberFpsZero: LogUploaderWithCooldown(
+        name: 'Member FPS zero',
+        cooldownPeriod: const Duration(hours: 1),
+      ),
+      hostFpsZero: LogUploaderWithCooldown(
+        name: 'Host FPS zero',
+        cooldownPeriod: const Duration(hours: 1),
+      ),
     );
 
     DisplayServiceBroadcast.ensureInitialized(
@@ -131,8 +141,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
           Provider<V3Toast>.value(
             value: V3Toast(),
           ),
-          Provider<LogUploaderWithCooldown>.value(
-            value: miracastLogUploader,
+          Provider<AppLogUploaders>.value(
+            value: logUploaders,
           ),
         ],
         child: configureApp,
@@ -191,7 +201,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     //debugPaintSizeEnabled = true;
 
     final instanceInfoProvider = context.read<InstanceInfoProvider>();
-    final miracastLogUploader = context.read<LogUploaderWithCooldown>();
+    final logUploaders = context.read<AppLogUploaders>();
 
     return MultiProvider(
       providers: [
@@ -201,13 +211,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create: (_) => ChannelProvider(
             AppConfig.of(context)!,
             instanceInfoProvider,
+            logUploaders.memberFpsZero,
+            logUploaders.hostFpsZero,
           ),
           update: (_, settings, model) => model!..bindSettings(settings),
         ),
         ChangeNotifierProvider.value(
           value: MirrorStateProvider(
             instanceInfoProvider,
-            miracastLogUploader,
+            logUploaders.miracastDisconnect,
           ),
         ),
         ChangeNotifierProvider.value(

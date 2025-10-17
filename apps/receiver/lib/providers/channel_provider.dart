@@ -31,6 +31,7 @@ import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_info.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -135,6 +136,8 @@ class ChannelProvider extends ChangeNotifier {
   bool _isGroupMode = false;
   bool _isShareMode = false;
   final InstanceInfoProvider _instanceInfo;
+  final LogUploaderWithCooldown _memberFpsZeroLogUploader;
+  final LogUploaderWithCooldown _hostFpsZeroLogUploader;
 
   static const defaultSmartScaling = true;
   bool _smartScaling = defaultSmartScaling;
@@ -294,6 +297,8 @@ class ChannelProvider extends ChangeNotifier {
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
+    this._memberFpsZeroLogUploader,
+    this._hostFpsZeroLogUploader,
   ) : maxCountDown =
             _otpDuration.inMilliseconds ~/ _otpTickInterval.inMilliseconds {
     countDownProgress = ValueNotifier(maxCountDown);
@@ -472,6 +477,7 @@ class ChannelProvider extends ChangeNotifier {
 
     _displayGroupSession = DisplayGroupSession(
       channel,
+      _memberFpsZeroLogUploader,
       onInvitation: (String hostName, String displayCode) {
         final invitedToGroup = AppPreferences().invitedToGroup;
         switch (invitedToGroup) {
@@ -779,6 +785,19 @@ class ChannelProvider extends ChangeNotifier {
           if (_isShareMode) {
             rtcConnector.isModeratorShare = false;
             notifyListeners();
+          }
+          break;
+
+        case ChannelMessageType.remoteScreenStatus:
+          final statusMessage = message as RemoteScreenStatusMessage;
+          final status = statusMessage.status;
+
+          if (status == RemoteScreenStatus.fpsZero) {
+            log.warning(
+                "Host received FPS zero notification from Cast to Device receiver");
+            await _hostFpsZeroLogUploader.upload(
+              'Host received FPS zero request from Cast to Device receiver.',
+            );
           }
           break;
 
@@ -1100,7 +1119,7 @@ class ChannelProvider extends ChangeNotifier {
     var mediator = DisplayGroupMediatorObject(
         _remoteScreenProvider, getIceServersForDirect);
 
-    _displayGroupHost ??= DisplayGroupHost(mediator);
+    _displayGroupHost ??= DisplayGroupHost(mediator, _hostFpsZeroLogUploader);
 
     if (!anyCasting) {
       _displayGroupHost!.resetCastRejectMember();

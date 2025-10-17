@@ -2,6 +2,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/multicast_info.dart';
 import 'package:display_flutter/model/remote_screen_client.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,13 +19,15 @@ class DisplayGroupSession {
   void Function()? onWebRtcClose;
 
   final Channel _channel;
+  final LogUploaderWithCooldown _memberFpsZeroLogUploader;
 
   RemoteScreenClient? _remoteScreenClient;
 
   String? hostName;
 
   DisplayGroupSession(
-    this._channel, {
+    this._channel,
+    this._memberFpsZeroLogUploader, {
     this.onInvitation,
     this.onChannelStateChange,
     this.onWebRtcClose,
@@ -114,7 +117,11 @@ class DisplayGroupSession {
   Future<void> _onRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
-    final rtcClient = RtcScreenClient(_channel, infoMessage.sessionId);
+    final rtcClient = RtcScreenClient(
+      _channel,
+      infoMessage.sessionId,
+      _memberFpsZeroLogUploader,
+    );
     await rtcClient.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
@@ -132,7 +139,7 @@ class DisplayGroupSession {
   }
 
   Future<void> _onMulticastInfo(MulticastInfoMessage infoMessage) async {
-    final client = MulticastScreenClient(_channel, infoMessage.sessionId);
+    final client = MulticastScreenClient(_channel, infoMessage.sessionId, null);
     await client.handleMulticastInfo(MulticastInfo.fromMessage(infoMessage));
     _remoteScreenClient = client;
   }

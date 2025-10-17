@@ -1,6 +1,19 @@
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_upload.dart';
 
+/// Container for all log uploaders with cooldown used in the app
+class AppLogUploaders {
+  final LogUploaderWithCooldown miracastDisconnect;
+  final LogUploaderWithCooldown memberFpsZero;
+  final LogUploaderWithCooldown hostFpsZero;
+
+  AppLogUploaders({
+    required this.miracastDisconnect,
+    required this.memberFpsZero,
+    required this.hostFpsZero,
+  });
+}
+
 /// Log uploader with cooldown period to prevent excessive uploads
 class LogUploaderWithCooldown {
   final String name;

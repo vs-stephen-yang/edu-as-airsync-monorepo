@@ -10,7 +10,7 @@ import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/log_upload.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/utility/rtc_fps_zero_detector.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,11 +19,15 @@ import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class RemoteScreenClient {
-  RemoteScreenClient(this._channel, String? sessionId)
-      : _sessionId = sessionId ?? const Uuid().v4();
+  RemoteScreenClient(
+    this._channel,
+    String? sessionId,
+    this._logUploader,
+  ) : _sessionId = sessionId ?? const Uuid().v4();
 
   final Channel? _channel;
   final String? _sessionId;
+  final LogUploaderWithCooldown? _logUploader;
 
   bool _textureSizeChanged = false;
 
@@ -99,7 +103,7 @@ class RtcScreenClient extends RemoteScreenClient {
         key: rtcWidgetKey,
       );
 
-  RtcScreenClient(super.channel, super.sessionId);
+  RtcScreenClient(super.channel, super.sessionId, super.logUploader);
 
   void startStatsMonitoring(
     Duration checkDelay,
@@ -290,7 +294,7 @@ class RtcScreenClient extends RemoteScreenClient {
     chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
 
     // Upload log to Sentry (max once per hour)
-    uploadSystemLogForFpsZero(
+    _logUploader?.upload(
       'Remote screen FPS is zero. Sample count: $sampleCount, Duration: $duration, Reason: $reason',
     );
   }
@@ -397,7 +401,7 @@ class MulticastScreenClient extends RemoteScreenClient {
   // TODO: implement videoView
   StatelessWidget? get videoView => throw UnimplementedError();
 
-  MulticastScreenClient(super.channel, super.sessionId);
+  MulticastScreenClient(super.channel, super.sessionId, super.logUploader);
 
   handleMulticastInfo(MulticastInfo info) {
     // TODO: multicast plugin receive start
