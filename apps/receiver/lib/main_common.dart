@@ -29,6 +29,7 @@ import 'package:display_flutter/settings/theme_config.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/utility/user_timer_manager.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
@@ -70,6 +71,12 @@ Future<void> commonEntry(ConfigSettings settings) async {
     await AppManagerConfig().ensureInitialized();
 
     final instanceInfoProvider = InstanceInfoProvider();
+
+    // Create log uploader with cooldown for Miracast disconnect
+    final miracastLogUploader = LogUploaderWithCooldown(
+      name: 'Miracast disconnect',
+      cooldownPeriod: const Duration(hours: 1),
+    );
 
     DisplayServiceBroadcast.ensureInitialized(
       appVersion: packageInfo.version,
@@ -123,6 +130,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
           ),
           Provider<V3Toast>.value(
             value: V3Toast(),
+          ),
+          Provider<LogUploaderWithCooldown>.value(
+            value: miracastLogUploader,
           ),
         ],
         child: configureApp,
@@ -181,6 +191,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     //debugPaintSizeEnabled = true;
 
     final instanceInfoProvider = context.read<InstanceInfoProvider>();
+    final miracastLogUploader = context.read<LogUploaderWithCooldown>();
 
     return MultiProvider(
       providers: [
@@ -196,6 +207,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ChangeNotifierProvider.value(
           value: MirrorStateProvider(
             instanceInfoProvider,
+            miracastLogUploader,
           ),
         ),
         ChangeNotifierProvider.value(
