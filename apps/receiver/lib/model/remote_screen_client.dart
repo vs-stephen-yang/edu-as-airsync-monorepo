@@ -8,6 +8,7 @@ import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
+import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_fps_zero_detector.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
@@ -81,6 +82,9 @@ class RtcScreenClient extends RemoteScreenClient {
   Timer? _statsTimer;
   final _statsTimerInterval = const Duration(seconds: 1);
 
+  // Keep recent stats history for debugging (last 20 seconds)
+  final _videoInboundStatsHistory = BoundedList<RtcVideoInboundStats>(20);
+
   @override
   bool get isAudioEnable {
     return remoteScreenRenderer.srcObject != null &&
@@ -113,9 +117,10 @@ class RtcScreenClient extends RemoteScreenClient {
 
     // Create RtcStatsReporter to feed stats to the FPS detector
     final rtcStatsReporter = RtcStatsReporter(
-      // onVideoInboundStats: feed to FPS detector
+      // onVideoInboundStats: feed to FPS detector and save to history
       (RtcVideoInboundStats stats) {
         _fpsZeroDetector?.onVideoInboundStats(stats);
+        _videoInboundStatsHistory.add(stats);
       },
       (RtcVideoOutboundStats stats) {},
       (String localCandidateType, String remoteCandidateType) {},
@@ -238,20 +243,7 @@ class RtcScreenClient extends RemoteScreenClient {
             startStatsMonitoring(
               const Duration(seconds: 10),
               3,
-              ({required sampleCount, required duration, required reason}) {
-                log.warning(
-                  'Remote screen FPS is zero! '
-                  'Sample count: $sampleCount, Duration: $duration, Reason: $reason',
-                );
-
-                // Request sender to write log
-                _channel?.send(RemoteScreenStatusMessage(
-                  _sessionId,
-                  RemoteScreenStatus.fpsZero,
-                ));
-
-                // TODO: upload log to sentry
-              },
+              _onFpsZero,
             );
           }
 
@@ -276,6 +268,27 @@ class RtcScreenClient extends RemoteScreenClient {
       log.info('Remote screen: signal closed');
       onClose();
     };
+  }
+
+  void _onFpsZero({required sampleCount, required duration, required reason}) {
+    log.warning(
+      'Remote screen FPS is zero! '
+      'Sample count: $sampleCount, Duration: $duration, Reason: $reason',
+    );
+
+    // Request host to write log
+    _channel?.send(RemoteScreenStatusMessage(
+      _sessionId,
+      RemoteScreenStatus.fpsZero,
+    ));
+
+    // Log recent RTC stats history
+    final remoteScreenStats =
+        formatVideoInboundStatsList(_videoInboundStatsHistory.elements);
+    final chunkLogger = ChunkedLogger(log);
+    chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
+
+    // TODO: upload log to sentry
   }
 
   void handleSignalMessage(String signal) {

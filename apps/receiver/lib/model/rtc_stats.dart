@@ -140,6 +140,7 @@ class RtcIceCandidatePairStats {
 
   // Represents the latest round trip time measured in seconds
   final double? currentRoundTripTime;
+
   // Represents the sum of all round trip time measurements in seconds since the beginning of the session
   final double? totalRoundTripTime;
 
@@ -286,58 +287,12 @@ class RtcVideoOutboundStats {
   });
 }
 
-String formatVideoOutboundStatsList(List<RtcVideoOutboundStats> list) {
+/// Format a list of stats data by separating per-second/average fields from last-value fields
+String _formatStatsList(List<Map<String, dynamic>> dataList) {
   final Map<String, List<double?>> perSecondFieldValues = {};
   final Map<String, String> lastValueFields = {};
 
-  for (final stat in list) {
-    final data = <String, dynamic>{
-      "transportId": stat.transportId,
-      "mediaSourceId": stat.mediaSourceId,
-      "encoderImplementation": stat.encoderImplementation,
-      "frameWidth": stat.frameWidth,
-      "frameHeight": stat.frameHeight,
-      "framesPerSecond": stat.framesPerSecond,
-      "contentType": stat.contentType,
-      "qualityLimitationReason": stat.qualityLimitationReason,
-      "pliCount": stat.pliCount,
-      "targetBitrate": stat.targetBitrate,
-      "powerEfficientEncoder": stat.powerEfficientEncoder,
-      "timestamp": stat.timestamp,
-      "bytesSent": stat.bytesSent,
-      "packetsSent": stat.packetsSent,
-      "active": stat.active,
-      "firCount": stat.firCount,
-      "framesEncoded": stat.framesEncoded,
-      "framesSent": stat.framesSent,
-      "headerBytesSent": stat.headerBytesSent,
-      "hugeFramesSent": stat.hugeFramesSent,
-      "keyFramesEncoded": stat.keyFramesEncoded,
-      "nackCount": stat.nackCount,
-      "retransmittedBytesSent": stat.retransmittedBytesSent,
-      "retransmittedPacketsSent": stat.retransmittedPacketsSent,
-      "totalEncodeTime": stat.totalEncodeTime,
-      "totalEncodedBytesTarget": stat.totalEncodedBytesTarget,
-      "totalPacketSendDelay": stat.totalPacketSendDelay,
-      "qpSum": stat.qpSum,
-      "packetsSentPerSecond": stat.packetsSentPerSecond?.toDouble(),
-      "bytesSentPerSecond": stat.bytesSentPerSecond?.toDouble(),
-      "framesSentPerSecond": stat.framesSentPerSecond?.toDouble(),
-      "framesEncodedPerSecond": stat.framesEncodedPerSecond?.toDouble(),
-      "hugeFramesSentPerSecond": stat.hugeFramesSentPerSecond?.toDouble(),
-      "keyFramesEncodedPerSecond": stat.keyFramesEncodedPerSecond?.toDouble(),
-      "retransmittedPacketsSentPerSecond":
-          stat.retransmittedPacketsSentPerSecond,
-      "headerBytesSentPerSecond": stat.headerBytesSentPerSecond,
-      "retransmittedBytesSentPerSecond": stat.retransmittedBytesSentPerSecond,
-      "encodeTimeAvgMs": stat.encodeTimeAvgMs,
-      "totalEncodedBytesTargetPerSecond": stat.totalEncodedBytesTargetPerSecond,
-      "packetSendDelayAvgMs": stat.packetSendDelayAvgMs,
-      "qpSumAvg": stat.qpSumAvg,
-      "availableOutgoingBitrate": stat.availableOutgoingBitrate,
-      "mediaSourceFramesPerSecond": stat.mediaSourceFramesPerSecond,
-    };
-
+  for (final data in dataList) {
     for (final entry in data.entries) {
       final key = entry.key;
       final value = entry.value;
@@ -365,4 +320,114 @@ String formatVideoOutboundStatsList(List<RtcVideoOutboundStats> list) {
 
   final result = {...perSecondFormatted, ...lastValueFields};
   return jsonEncode(result);
+}
+
+String formatVideoOutboundStatsList(List<RtcVideoOutboundStats> list) {
+  final dataList = list
+      .map((stat) => <String, dynamic>{
+            "transportId": stat.transportId,
+            "mediaSourceId": stat.mediaSourceId,
+            "encoderImplementation": stat.encoderImplementation,
+            "frameWidth": stat.frameWidth,
+            "frameHeight": stat.frameHeight,
+            "framesPerSecond": stat.framesPerSecond,
+            "contentType": stat.contentType,
+            "qualityLimitationReason": stat.qualityLimitationReason,
+            "pliCount": stat.pliCount,
+            "targetBitrate": stat.targetBitrate,
+            "powerEfficientEncoder": stat.powerEfficientEncoder,
+            "timestamp": stat.timestamp,
+            "bytesSent": stat.bytesSent,
+            "packetsSent": stat.packetsSent,
+            "active": stat.active,
+            "firCount": stat.firCount,
+            "framesEncoded": stat.framesEncoded,
+            "framesSent": stat.framesSent,
+            "headerBytesSent": stat.headerBytesSent,
+            "hugeFramesSent": stat.hugeFramesSent,
+            "keyFramesEncoded": stat.keyFramesEncoded,
+            "nackCount": stat.nackCount,
+            "retransmittedBytesSent": stat.retransmittedBytesSent,
+            "retransmittedPacketsSent": stat.retransmittedPacketsSent,
+            "totalEncodeTime": stat.totalEncodeTime,
+            "totalEncodedBytesTarget": stat.totalEncodedBytesTarget,
+            "totalPacketSendDelay": stat.totalPacketSendDelay,
+            "qpSum": stat.qpSum,
+            "packetsSentPerSecond": stat.packetsSentPerSecond?.toDouble(),
+            "bytesSentPerSecond": stat.bytesSentPerSecond?.toDouble(),
+            "framesSentPerSecond": stat.framesSentPerSecond?.toDouble(),
+            "framesEncodedPerSecond": stat.framesEncodedPerSecond?.toDouble(),
+            "hugeFramesSentPerSecond": stat.hugeFramesSentPerSecond?.toDouble(),
+            "keyFramesEncodedPerSecond":
+                stat.keyFramesEncodedPerSecond?.toDouble(),
+            "retransmittedPacketsSentPerSecond":
+                stat.retransmittedPacketsSentPerSecond,
+            "headerBytesSentPerSecond": stat.headerBytesSentPerSecond,
+            "retransmittedBytesSentPerSecond":
+                stat.retransmittedBytesSentPerSecond,
+            "encodeTimeAvgMs": stat.encodeTimeAvgMs,
+            "totalEncodedBytesTargetPerSecond":
+                stat.totalEncodedBytesTargetPerSecond,
+            "packetSendDelayAvgMs": stat.packetSendDelayAvgMs,
+            "qpSumAvg": stat.qpSumAvg,
+            "availableOutgoingBitrate": stat.availableOutgoingBitrate,
+            "mediaSourceFramesPerSecond": stat.mediaSourceFramesPerSecond,
+          })
+      .toList();
+
+  return _formatStatsList(dataList);
+}
+
+String formatVideoInboundStatsList(List<RtcVideoInboundStats> list) {
+  final dataList = list
+      .map((stat) => <String, dynamic>{
+            "decoderName": stat.decoderName,
+            "frameWidth": stat.frameWidth,
+            "frameHeight": stat.frameHeight,
+            "bytesReceived": stat.bytesReceived,
+            "packetsLost": stat.packetsLost,
+            "packetsReceived": stat.packetsReceived,
+            "jitter": stat.jitter,
+            "pauseCount": stat.pauseCount,
+            "jitterBufferDelay": stat.jitterBufferDelay,
+            "timestamp": stat.timestamp,
+            "powerEfficientDecoder": stat.powerEfficientDecoder,
+            "qpSum": stat.qpSum,
+            "nackCount": stat.nackCount,
+            "firCount": stat.firCount,
+            "pliCount": stat.pliCount,
+            "freezeCount": stat.freezeCount,
+            "totalFreezesDuration": stat.totalFreezesDuration,
+            "keyFramesDecoded": stat.keyFramesDecoded,
+            "totalInterFrameDelay": stat.totalInterFrameDelay,
+            "totalSquaredInterFrameDelay": stat.totalSquaredInterFrameDelay,
+            "totalPausesDuration": stat.totalPausesDuration,
+            "totalAssemblyTime": stat.totalAssemblyTime,
+            "framesAssembledFromMultiplePackets":
+                stat.framesAssembledFromMultiplePackets,
+            "framesDropped": stat.framesDropped,
+            "framesReceived": stat.framesReceived,
+            "framesDecoded": stat.framesDecoded,
+            "jitterBufferEmittedCount": stat.jitterBufferEmittedCount,
+            "headerBytesReceived": stat.headerBytesReceived,
+            "totalProcessingDelay": stat.totalProcessingDelay,
+            "totalDecodeTime": stat.totalDecodeTime,
+            "packetsReceivedPerSecond": stat.packetsReceivedPerSecond,
+            "framesPerSecond": stat.framesPerSecond,
+            "framesReceivedPerSecond": stat.framesReceivedPerSecond?.toDouble(),
+            "framesDecodedPerSecond": stat.framesDecodedPerSecond?.toDouble(),
+            "framesDroppedPerSecond": stat.framesDroppedPerSecond?.toDouble(),
+            "bytesPerSecond": stat.bytesPerSecond?.toDouble(),
+            "keyFramesDecodedPerSecond": stat.keyFramesDecodedPerSecond,
+            "interFrameDelayPerSecond": stat.interFrameDelayPerSecond,
+            "headerBytesPerSecond": stat.headerBytesPerSecond,
+            "decodeTime": stat.decodeTime,
+            "totalInterFrameDelayAvg": stat.totalInterFrameDelayAvg,
+            "totalAssemblyTimeAvg": stat.totalAssemblyTimeAvg,
+            "jitterBufferDelayAvg": stat.jitterBufferDelayAvg,
+            "qpSumAvg": stat.qpSumAvg,
+          })
+      .toList();
+
+  return _formatStatsList(dataList);
 }
