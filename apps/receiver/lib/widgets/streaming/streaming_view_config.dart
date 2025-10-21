@@ -4,6 +4,7 @@ enum StreamingLayoutMode {
   single,
   list,
   grid,
+  split
 }
 
 typedef PositionCalculator = LayoutPosition Function({
