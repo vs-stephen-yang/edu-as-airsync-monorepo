@@ -332,11 +332,19 @@ class CircleCountBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 18.0 + countPadding,
-      height: 18.0 + countPadding,
+      width: 25.0 + countPadding,
+      height: 25.0 + countPadding,
       decoration: BoxDecoration(
         color: backgroundColor,
         shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: context.tokens.color.vsdslColorOpacityNeutralSm,
+            offset: Offset(0, 8),
+            blurRadius: 5,
+            spreadRadius: 1,
+          ),
+        ],
       ),
       padding: EdgeInsets.zero,
       alignment: Alignment.center,
@@ -344,7 +352,7 @@ class CircleCountBadge extends StatelessWidget {
         count.toString(),
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: 12,
           fontWeight: FontWeight.w500,
           color: textColor,
         ),
