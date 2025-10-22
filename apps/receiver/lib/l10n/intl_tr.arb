@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Gönderici ekran çözünürlüğüne bağlı olarak maksimum QHD (2K) ekran paylaşımı.",
   "v3_lbl_eula_launch": "Başlat",
   "v3_eula_launch": "Başlat",
-  "v3_authorize_prompt_title_launcher": "Katılımcılar ekranlarını paylaşmak istiyor"
+  "v3_authorize_prompt_title_launcher": "Katılımcılar ekranlarını paylaşmak istiyor",
+  "v3_settings_moderator_mode": "Moderatör modu",
+  "v3_lbl_settings_moderator_mode": "Moderatör modunu aç/kapat",
+  "v3_authorize_prompt_notification_cast": "Tüm yayın isteklerini kabul etmek için Ayarlar menüsünde “Onay gerektir” seçimini kaldırın.",
+  "v3_authorize_prompt_notification_mirror": "Tüm yansıtma isteklerini kabul etmek için Ayarlar menüsünde “Otomatik Kabul” seçimini işaretleyin.",
+  "v3_permission_title": "İzin gerekli",
+  "v3_permission_description": "Lütfen cihaz \"Ayarlar\" ardından \"Uygulama\" menüsüne giderek izni verin.",
+  "v3_lbl_permission_exit": "Çıkış",
+  "v3_permission_exit": "Çıkış"
 }

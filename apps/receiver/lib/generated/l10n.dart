@@ -3926,20 +3926,20 @@ class S {
     );
   }
 
-  /// `Turn off “Require approval” in the Settings menu to skip manual confirmation.`
+  /// `Uncheck “Require approval” in the Settings menu to accept all casting requests.`
   String get v3_authorize_prompt_notification_cast {
     return Intl.message(
-      'Turn off “Require approval” in the Settings menu to skip manual confirmation.',
+      'Uncheck “Require approval” in the Settings menu to accept all casting requests.',
       name: 'v3_authorize_prompt_notification_cast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.`
+  /// `Check “Auto Accept” in the Settings menu to accept all mirror requests.`
   String get v3_authorize_prompt_notification_mirror {
     return Intl.message(
-      'Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.',
+      'Check “Auto Accept” in the Settings menu to accept all mirror requests.',
       name: 'v3_authorize_prompt_notification_mirror',
       desc: '',
       args: [],
@@ -3956,10 +3956,10 @@ class S {
     );
   }
 
-  /// `Please go to setting to grant permission`
+  /// `Please go to device "Setting" then "App" menu to grant the permission.`
   String get v3_permission_description {
     return Intl.message(
-      'Please go to setting to grant permission',
+      'Please go to device "Setting" then "App" menu to grant the permission.',
       name: 'v3_permission_description',
       desc: '',
       args: [],

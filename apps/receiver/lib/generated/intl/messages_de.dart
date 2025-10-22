@@ -216,6 +216,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Ablehnen",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Deaktivieren Sie „Genehmigung erforderlich“ im Einstellungsmenü, um alle Casting-Anfragen zu akzeptieren.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Aktivieren Sie „Automatisch akzeptieren“ im Einstellungsmenü, um alle Spiegelungsanfragen zu akzeptieren.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Teilnehmer möchten ihren Bildschirm freigeben",
     ),
@@ -585,6 +591,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Touchback für diesen Teilnehmer deaktivieren",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Beenden"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Präsentationssteuerung erweitern",
     ),
@@ -695,6 +702,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Passcode aktivieren / deaktivieren",
         ),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderator-Modus ein/ausschalten",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Weitere Informationen zum Senden an eine Anzeigegruppe",
@@ -849,6 +859,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maximal bis zu 9 Teilnehmer.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Teilnehmer"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Bitte gehen Sie zu \"Einstellungen\" des Geräts und dann zum \"App\"-Menü, um die Erlaubnis zu erteilen.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Beenden"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Erlaubnis erforderlich",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Schnellverbindung",
     ),
@@ -1021,6 +1038,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Passcode erforderlich"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderator-Modus",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Übertragen Sie den Quell-IFP-Bildschirm nur, wenn er einen freigegebenen Bildschirm empfängt.",
     ),

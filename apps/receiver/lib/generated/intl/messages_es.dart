@@ -589,6 +589,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Desactivar retroalimentación táctil para este participante",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Salir"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Expandir controles de presentación",
     ),
@@ -855,6 +856,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
       "Participantes",
     ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Salir"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Permiso requerido",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Conexión rápida",
     ),
@@ -1027,6 +1032,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Requiere código de acceso"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Modo moderador",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Transmitir la pantalla del panel interactivo solo cuando esté recibiendo una pantalla compartida.",
     ),

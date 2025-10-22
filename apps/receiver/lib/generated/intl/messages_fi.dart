@@ -212,6 +212,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Hylkää",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Poista valinta \"Vaadi hyväksyntä\" Asetukset-valikossa hyväksyäksesi kaikki lähetyspyynnöt.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Valitse \"Hyväksy automaattisesti\" Asetukset-valikossa hyväksyäksesi kaikki peilauspyynnöt.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Osallistujat haluaisivat jakaa näyttönsä",
     ),
@@ -568,6 +574,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Poista touchback käytöstä tälle osallistujalle",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Poistu"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Laajenna esityksen hallinta",
     ),
@@ -678,6 +685,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Ota käyttöön/poista käytöstä vaadi pääsykoodi",
         ),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Kytke päälle/pois moderaattoritila",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Lisätietoja lähetyksestä näyttöryhmälle",
@@ -832,6 +842,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
       "Osallistujat",
+    ),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Siirry laitteen \"Asetukset\"-kohtaan ja sitten \"Sovellus\"-valikkoon myöntääksesi luvan.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Poistu"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Lupa vaaditaan",
     ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Pikayhteys",
@@ -1005,6 +1022,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Vaadi salasana"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderaattoritila",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Lähetä lähteen IFP-näyttö vain silloin, kun se vastaanottaa jaetun näytön.",
     ),

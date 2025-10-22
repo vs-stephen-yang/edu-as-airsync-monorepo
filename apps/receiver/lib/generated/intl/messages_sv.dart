@@ -212,6 +212,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Acceptera alla",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("Neka"),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Avmarkera “Kräv godkännande” i inställningsmenyn för att acceptera alla castingförfrågningar.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Markera “Acceptera automatiskt” i inställningsmenyn för att acceptera alla speglingsförfrågningar.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Deltagarna vill dela sin skärm",
     ),
@@ -576,6 +582,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Inaktivera touchback för den här mötesdeltagaren",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Avsluta"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Expandera presentationskontrollen",
     ),
@@ -680,6 +687,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Slå på/av automatisk accept"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Slå på/av krav för lösenkod"),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av moderatorläge",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Mer information om sändning till visningsgrupp",
@@ -831,6 +841,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Max upp till 9 deltagare.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Deltagare"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Gå till enhetens \"Inställningar\" och sedan \"App\"-menyn för att ge behörigheten.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Avsluta"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Behörighet krävs",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Snabbanslutning",
     ),
@@ -999,6 +1016,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Kräv lösenkod"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderatorläge",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Sänd endast IFP-källskärmen när den tar emot en delad skärmbild",
     ),

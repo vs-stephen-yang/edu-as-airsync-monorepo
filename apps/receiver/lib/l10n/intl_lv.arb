@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Maksimāla QHD (2K) ekrāna koplietošana atkarībā no sūtītāja ekrāna izšķirtspējas.",
   "v3_lbl_eula_launch": "Palaist",
   "v3_eula_launch": "Palaist",
-  "v3_authorize_prompt_title_launcher": "Dalībnieki vēlas kopīgot savu ekrānu"
+  "v3_authorize_prompt_title_launcher": "Dalībnieki vēlas kopīgot savu ekrānu",
+  "v3_settings_moderator_mode": "Moderatoru režīms",
+  "v3_lbl_settings_moderator_mode": "Ieslēgt/izslēgt moderatoru režīmu",
+  "v3_authorize_prompt_notification_cast": "Noņemiet atzīmi no “Nepieciešama apstiprināšana” iestatījumu izvēlnē, lai pieņemtu visus straumēšanas pieprasījumus.",
+  "v3_authorize_prompt_notification_mirror": "Atzīmējiet “Automātiski pieņemt” iestatījumu izvēlnē, lai pieņemtu visus spoguļošanas pieprasījumus.",
+  "v3_permission_title": "Nepieciešama atļauja",
+  "v3_permission_description": "Lūdzu, dodieties uz ierīces \"Iestatījumi\", pēc tam uz \"Lietotņu\" izvēlni, lai piešķirtu atļauju.",
+  "v3_lbl_permission_exit": "Iziet",
+  "v3_permission_exit": "Iziet"
 }

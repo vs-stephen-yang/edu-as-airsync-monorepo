@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Partage d'écran limité à QHD (2K) en fonction de la résolution de l'écran de l'expéditeur.",
   "v3_lbl_eula_launch": "Démarrer",
   "v3_eula_launch": "Démarrer",
-  "v3_authorize_prompt_title_launcher": "Les participants souhaitent partager leur écran"
+  "v3_authorize_prompt_title_launcher": "Les participants souhaitent partager leur écran",
+  "v3_settings_moderator_mode": "Mode modérateur",
+  "v3_lbl_settings_moderator_mode": "Activer/désactiver le mode modérateur",
+  "v3_authorize_prompt_notification_cast": "Décochez « Exiger une approbation » dans le menu Paramètres pour accepter toutes les demandes de diffusion.",
+  "v3_authorize_prompt_notification_mirror": "Cochez « Accepter automatiquement » dans le menu Paramètres pour accepter toutes les demandes de mise en miroir.",
+  "v3_permission_title": "Permission requise",
+  "v3_permission_description": "Veuillez accéder au menu « Paramètres » de l'appareil, puis au menu « Application » pour autoriser.",
+  "v3_lbl_permission_exit": "Quitter",
+  "v3_permission_exit": "Quitter"
 }

@@ -386,5 +386,11 @@
   "v3_settings_device_high_image_quality_off_desc": "依據裝置端可支援的解析度，支援最高QHD解析度",
   "v3_lbl_eula_launch": "啟動",
   "v3_eula_launch": "啟動",
-  "v3_authorize_prompt_title_launcher": "參與者請求分享螢幕"
+  "v3_authorize_prompt_title_launcher": "參與者請求分享螢幕",
+  "v3_authorize_prompt_notification_cast": "可在\"設定\"中取消\"允許後才能分享螢幕\"",
+  "v3_authorize_prompt_notification_mirror": "可在\"設定\"中勾選\"自動接受螢幕鏡射\"",
+  "v3_permission_title": "需要授權",
+  "v3_permission_description": "請至設備端“設定”內的“應用程式”中，開放相關權限",
+  "v3_lbl_permission_exit": "離開",
+  "v3_permission_exit": "離開"
 }

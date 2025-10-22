@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Maksimal QHD (2K) skærmdeling afhængigt af afsenderens skærmopløsning.",
   "v3_lbl_eula_launch": "Start",
   "v3_eula_launch": "Start",
-  "v3_authorize_prompt_title_launcher": "Deltagere vil gerne dele deres skærm"
+  "v3_authorize_prompt_title_launcher": "Deltagere vil gerne dele deres skærm",
+  "v3_settings_moderator_mode": "Moderator tilstand",
+  "v3_lbl_settings_moderator_mode": "Tænd/sluk for moderator tilstand",
+  "v3_authorize_prompt_notification_cast": "Fjern markeringen af “Kræv godkendelse” i menuen Indstillinger for at acceptere alle casting-anmodninger.",
+  "v3_authorize_prompt_notification_mirror": "Markér “Auto Accept” i menuen Indstillinger for at acceptere alle spejlingsanmodninger.",
+  "v3_permission_title": "Tilladelse påkrævet",
+  "v3_permission_description": "Gå venligst til enhedens \"Indstilling\" og derefter \"App\"-menuen for at give tilladelsen.",
+  "v3_lbl_permission_exit": "Afslut",
+  "v3_permission_exit": "Afslut"
 }

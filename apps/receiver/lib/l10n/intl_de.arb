@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Maximale QHD (2K) Bildschirmfreigabe, abhängig von der Bildschirmauflösung des Absenders.",
   "v3_lbl_eula_launch": "Starten",
   "v3_eula_launch": "Starten",
-  "v3_authorize_prompt_title_launcher": "Teilnehmer möchten ihren Bildschirm freigeben"
+  "v3_authorize_prompt_title_launcher": "Teilnehmer möchten ihren Bildschirm freigeben",
+  "v3_settings_moderator_mode": "Moderator-Modus",
+  "v3_lbl_settings_moderator_mode": "Moderator-Modus ein/ausschalten",
+  "v3_authorize_prompt_notification_cast": "Deaktivieren Sie „Genehmigung erforderlich“ im Einstellungsmenü, um alle Casting-Anfragen zu akzeptieren.",
+  "v3_authorize_prompt_notification_mirror": "Aktivieren Sie „Automatisch akzeptieren“ im Einstellungsmenü, um alle Spiegelungsanfragen zu akzeptieren.",
+  "v3_permission_title": "Erlaubnis erforderlich",
+  "v3_permission_description": "Bitte gehen Sie zu \"Einstellungen\" des Geräts und dann zum \"App\"-Menü, um die Erlaubnis zu erteilen.",
+  "v3_lbl_permission_exit": "Beenden",
+  "v3_permission_exit": "Beenden"
 }

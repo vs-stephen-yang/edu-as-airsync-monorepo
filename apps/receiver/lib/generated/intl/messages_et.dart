@@ -208,6 +208,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Keeldu",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Tühista märge „Nõua kinnitust” seadete menüüs, et aktsepteerida kõiki edastustaotlusi.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Märgi „Automaatne aktsepteerimine” seadete menüüs, et aktsepteerida kõiki peegeldustaotlusi.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Osalejad soovivad oma ekraani jagada",
     ),
@@ -566,6 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Keela sellele osalejale touchback",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Välju"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Laienda esitlusjuhtimine",
     ),
@@ -676,6 +683,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Lülita nõua pääsukoodi sisse/välja",
         ),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Lülita moderaatori režiim sisse/välja",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Lisainfo ekraanigrupile edastamise kohta",
@@ -833,6 +843,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maksimaalselt kuni 9 osalejat.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Osalejad"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Palun mine seadme „Seaded” ja seejärel „Rakendused” menüüsse, et anda luba.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Välju"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage("Luba vajalik"),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Kiirühendus",
     ),
@@ -1005,6 +1020,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Nõua pääsukoodi"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderaatori režiim",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Edasta IFP lähtekraan ainult siis, kui see saab jagatud ekraani.",
     ),

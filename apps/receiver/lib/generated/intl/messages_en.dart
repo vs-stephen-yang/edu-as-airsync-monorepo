@@ -207,10 +207,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Decline",
     ),
     "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
-      "Turn off “Require approval” in the Settings menu to skip manual confirmation.",
+      "Uncheck “Require approval” in the Settings menu to accept all casting requests.",
     ),
     "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
-      "Turn on “Auto Accept” in the Settings menu to accept all streaming automatically.",
+      "Check “Auto Accept” in the Settings menu to accept all mirror requests.",
     ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Participants would like to share their screen",
@@ -826,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Participants",
     ),
     "v3_permission_description": MessageLookupByLibrary.simpleMessage(
-      "Please go to setting to grant permission",
+      "Please go to device \"Setting\" then \"App\" menu to grant the permission.",
     ),
     "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "v3_permission_title": MessageLookupByLibrary.simpleMessage(

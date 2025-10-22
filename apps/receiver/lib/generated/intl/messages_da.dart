@@ -214,6 +214,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Afvis",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Fjern markeringen af “Kræv godkendelse” i menuen Indstillinger for at acceptere alle casting-anmodninger.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Markér “Auto Accept” i menuen Indstillinger for at acceptere alle spejlingsanmodninger.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Deltagere vil gerne dele deres skærm",
     ),
@@ -572,6 +578,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Deaktivér touchback for denne deltager",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Afslut"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Udvid præsentationskontrol",
     ),
@@ -676,6 +683,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Slå kræv adgangskode til/fra"),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Tænd/sluk for moderator tilstand",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Mere information om udsendelse til displaygruppe",
@@ -827,6 +837,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maksimalt op til 9 deltagere.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Deltagere"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Gå venligst til enhedens \"Indstilling\" og derefter \"App\"-menuen for at give tilladelsen.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Afslut"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Tilladelse påkrævet",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Hurtigforbindelse",
     ),
@@ -995,6 +1012,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Kræv adgangskode"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderator tilstand",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Udsend kun kilde IFP-skærmen, når den modtager en delt skærm.",
     ),

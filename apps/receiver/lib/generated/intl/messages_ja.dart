@@ -187,6 +187,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "すべてを許可",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒否"),
+    "v3_authorize_prompt_notification_cast":
+        MessageLookupByLibrary.simpleMessage(
+          "設定メニューで「承認を要求」をオフにすると、手動での確認をスキップできます。",
+        ),
+    "v3_authorize_prompt_notification_mirror":
+        MessageLookupByLibrary.simpleMessage(
+          "設定メニューで「自動承認」をオンにすると、すべてのストリーミングが自動的に承認されます。",
+        ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "参加者が画面を共有しようとしています",
     ),
@@ -513,6 +521,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_participant_touch_back_disable":
         MessageLookupByLibrary.simpleMessage("この参加者のタッチバックを無効にする"),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("閉じる"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "プレゼンテーション制御を展開",
     ),
@@ -755,6 +764,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "最大 9 名まで参加可能です。",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("参加者"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "デバイスの「設定」→「アプリ」から、AirSync アプリに必要な権限を許可してください。",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("閉じる"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage("権限が必要です。"),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage("クイック接続"),
     "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
       "2 名以上のユーザーが画面を共有する場合、画面分割が自動的に有効になります。",
@@ -818,7 +832,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ローカル接続はプライベートネットワーク内で行われるため、より安全で安定した接続が可能です。",
     ),
     "v3_settings_device_authorize_mode": MessageLookupByLibrary.simpleMessage(
-      "すべての画面共有リクエストに承認を求める。",
+      "すべての画面共有リクエストに承認を要求する。",
     ),
     "v3_settings_device_auto_fill_otp": MessageLookupByLibrary.simpleMessage(
       "ワンタイムパスワード自動入力",
@@ -881,7 +895,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ディスプレイグループ招待の通知",
     ),
     "v3_settings_invite_group_auto_accept":
-        MessageLookupByLibrary.simpleMessage("自動で参加"),
+        MessageLookupByLibrary.simpleMessage("自動承認"),
     "v3_settings_invite_group_ignore": MessageLookupByLibrary.simpleMessage(
       "無視する",
     ),
@@ -896,7 +910,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "ローカル接続のみ",
     ),
     "v3_settings_mirroring_auto_accept": MessageLookupByLibrary.simpleMessage(
-      "自動で参加",
+      "自動承認",
     ),
     "v3_settings_mirroring_auto_accept_desc":
         MessageLookupByLibrary.simpleMessage(

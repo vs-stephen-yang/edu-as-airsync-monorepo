@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Suurin QHD (2K) -näytönjako lähettäjän näytön tarkkuudesta riippuen.",
   "v3_lbl_eula_launch": "Käynnistä",
   "v3_eula_launch": "Käynnistä",
-  "v3_authorize_prompt_title_launcher": "Osallistujat haluaisivat jakaa näyttönsä"
+  "v3_authorize_prompt_title_launcher": "Osallistujat haluaisivat jakaa näyttönsä",
+  "v3_settings_moderator_mode": "Moderaattoritila",
+  "v3_lbl_settings_moderator_mode": "Kytke päälle/pois moderaattoritila",
+  "v3_authorize_prompt_notification_cast": "Poista valinta \"Vaadi hyväksyntä\" Asetukset-valikossa hyväksyäksesi kaikki lähetyspyynnöt.",
+  "v3_authorize_prompt_notification_mirror": "Valitse \"Hyväksy automaattisesti\" Asetukset-valikossa hyväksyäksesi kaikki peilauspyynnöt.",
+  "v3_permission_title": "Lupa vaaditaan",
+  "v3_permission_description": "Siirry laitteen \"Asetukset\"-kohtaan ja sitten \"Sovellus\"-valikkoon myöntääksesi luvan.",
+  "v3_lbl_permission_exit": "Poistu",
+  "v3_permission_exit": "Poistu"
 }

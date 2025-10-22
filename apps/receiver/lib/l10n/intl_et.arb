@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Maksimaalne QHD (2K) ekraani jagamine olenevalt saatja ekraani eraldusvõimest.",
   "v3_lbl_eula_launch": "Käivita",
   "v3_eula_launch": "Käivita",
-  "v3_authorize_prompt_title_launcher": "Osalejad soovivad oma ekraani jagada"
+  "v3_authorize_prompt_title_launcher": "Osalejad soovivad oma ekraani jagada",
+  "v3_settings_moderator_mode": "Moderaatori režiim",
+  "v3_lbl_settings_moderator_mode": "Lülita moderaatori režiim sisse/välja",
+  "v3_authorize_prompt_notification_cast": "Tühista märge „Nõua kinnitust” seadete menüüs, et aktsepteerida kõiki edastustaotlusi.",
+  "v3_authorize_prompt_notification_mirror": "Märgi „Automaatne aktsepteerimine” seadete menüüs, et aktsepteerida kõiki peegeldustaotlusi.",
+  "v3_permission_title": "Luba vajalik",
+  "v3_permission_description": "Palun mine seadme „Seaded” ja seejärel „Rakendused” menüüsse, et anda luba.",
+  "v3_lbl_permission_exit": "Välju",
+  "v3_permission_exit": "Välju"
 }

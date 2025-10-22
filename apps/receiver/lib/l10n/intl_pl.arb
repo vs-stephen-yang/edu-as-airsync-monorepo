@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Maksymalne udostępnianie ekranu QHD (2K), w zależności od rozdzielczości ekranu nadawcy.",
   "v3_lbl_eula_launch": "Uruchom",
   "v3_eula_launch": "Uruchom",
-  "v3_authorize_prompt_title_launcher": "Uczestnicy chcieliby udostępnić swój ekran"
+  "v3_authorize_prompt_title_launcher": "Uczestnicy chcieliby udostępnić swój ekran",
+  "v3_settings_moderator_mode": "Tryb moderatora",
+  "v3_lbl_settings_moderator_mode": "Włącz/wyłącz tryb moderatora",
+  "v3_authorize_prompt_notification_cast": "Odznacz „Wymagaj zatwierdzenia” w menu Ustawienia, aby zaakceptować wszystkie żądania przesyłania.",
+  "v3_authorize_prompt_notification_mirror": "Zaznacz „Automatyczne akceptowanie” w menu Ustawienia, aby zaakceptować wszystkie żądania mirroringu.",
+  "v3_permission_title": "Wymagane uprawnienia",
+  "v3_permission_description": "Przejdź do „Ustawienia” urządzenia, a następnie do menu „Aplikacje”, aby przyznać uprawnienia.",
+  "v3_lbl_permission_exit": "Wyjdź",
+  "v3_permission_exit": "Wyjdź"
 }
