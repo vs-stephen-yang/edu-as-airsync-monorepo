@@ -800,6 +800,7 @@ enum RemoteScreenStatus {
   accepted,
   rejected,
   kicked,
+  fpsZero,
 }
 
 RemoteScreenStatus stringToRemoteScreenStatus(String str) {
