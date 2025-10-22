@@ -218,6 +218,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Noraidīt",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Noņemiet atzīmi no “Nepieciešama apstiprināšana” iestatījumu izvēlnē, lai pieņemtu visus straumēšanas pieprasījumus.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Atzīmējiet “Automātiski pieņemt” iestatījumu izvēlnē, lai pieņemtu visus spoguļošanas pieprasījumus.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Dalībnieki vēlas kopīgot savu ekrānu",
     ),
@@ -584,6 +590,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Izslēgt touchback šim dalībniekam",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Iziet"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Izvērst prezentācijas vadību",
     ),
@@ -694,6 +701,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Ieslēgt/izslēgt pieprasīt piekļuves kodu",
         ),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Ieslēgt/izslēgt moderatoru režīmu",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Vairāk informācijas par apraidi uz displeju grupu",
@@ -849,6 +859,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maksimums līdz 9 dalībniekiem.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Dalībnieki"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Lūdzu, dodieties uz ierīces \"Iestatījumi\", pēc tam uz \"Lietotņu\" izvēlni, lai piešķirtu atļauju.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Iziet"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Nepieciešama atļauja",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Ātrā savienošana",
     ),
@@ -1021,6 +1038,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Pieprasīt piekļuves kodu"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderatoru režīms",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Pārraidīt avota IFP ekrānu tikai tad, kad tas saņem kopīgotu ekrānu.",
     ),

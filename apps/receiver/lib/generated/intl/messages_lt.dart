@@ -218,6 +218,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Atsisakyti",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Panaikinkite žymėjimą „Reikalauti patvirtinimo“ nustatymų meniu, kad priimtumėte visus transliacijos užklausas.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Pažymėkite „Automatiškai priimti“ nustatymų meniu, kad priimtumėte visus veidrodinio atvaizdavimo užklausas.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Dalyviai norėtų pasidalinti savo ekranu",
     ),
@@ -586,6 +592,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Išjungti šio dalyvio prisilietimą",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Išeiti"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Išskleisti pateikties valdiklį",
     ),
@@ -696,6 +703,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Įjungti / išjungti reikalaujamą prieigos kodą",
         ),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Įjungti/išjungti moderatoriaus režimą",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Daugiau informacijos apie transliaciją į Vaizdinės reklamos grupę",
@@ -855,6 +865,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maksimaliai iki 9 dalyvių.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Dalyviai"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Eikite į įrenginio „Nustatymai“, tada „Programos“ meniu, kad suteiktumėte leidimą.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Išeiti"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Reikalingas leidimas",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Greitas prisijungimas",
     ),
@@ -1029,6 +1046,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Reikalauti slaptažodžio"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderatoriaus režimas",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Transliuoti tik tada, kai IFP ekranas gauna bendrinamą ekraną.",
     ),

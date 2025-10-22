@@ -213,6 +213,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Reddet",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Tüm yayın isteklerini kabul etmek için Ayarlar menüsünde “Onay gerektir” seçimini kaldırın.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Tüm yansıtma isteklerini kabul etmek için Ayarlar menüsünde “Otomatik Kabul” seçimini işaretleyin.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Katılımcılar ekranlarını paylaşmak istiyor",
     ),
@@ -579,6 +585,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Bu katılımcı için dokunmatik geri dönüşü devre dışı bırak",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Çıkış"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Sunum kontrolünü genişlet",
     ),
@@ -681,6 +688,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Otomatik kabul etmeyi aç/kapat"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Şifre istemeyi aç/kapat"),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderatör modunu aç/kapat",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Ekran grubuna yayınlama hakkında daha fazla bilgi",
@@ -830,6 +840,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
       "Katılımcılar",
     ),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Lütfen cihaz \"Ayarlar\" ardından \"Uygulama\" menüsüne giderek izni verin.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Çıkış"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage("İzin gerekli"),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Hızlı Bağlantı",
     ),
@@ -1000,6 +1015,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Şifre iste"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderatör modu",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Yalnızca paylaşılan bir ekranı alırken kaynak IFP ekranını yayınla.",
     ),

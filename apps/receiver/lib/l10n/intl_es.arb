@@ -387,5 +387,9 @@
   "v3_settings_device_high_image_quality_off_desc": "Compartir pantalla en QHD máximo (2K) dependiendo de la resolución de pantalla del remitente.",
   "v3_lbl_eula_launch": "Lanzar",
   "v3_eula_launch": "Lanzar",
-  "v3_authorize_prompt_title_launcher": "Los participantes quieren compartir su pantalla"
+  "v3_authorize_prompt_title_launcher": "Los participantes quieren compartir su pantalla",
+  "v3_settings_moderator_mode": "Modo moderador",
+  "v3_permission_title": "Permiso requerido",
+  "v3_lbl_permission_exit": "Salir",
+  "v3_permission_exit": "Salir"
 }

@@ -208,6 +208,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Avslå",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Fjern merket for “Krev godkjenning” i Innstillinger-menyen for å godta alle casting-forespørsler.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Merk av for “Auto Godta” i Innstillinger-menyen for å godta alle speilingsforespørsler.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Deltakere ønsker å dele skjermen sin",
     ),
@@ -564,6 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Deaktiver touchback for denne deltakeren",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Avslutt"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Utvid presentasjonskontroll",
     ),
@@ -664,6 +671,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Slå på/av acceptera automatiskt"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Slå på/av krever passord"),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Slå på/av moderator modus",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Mer informasjon om kringkasting til displaygruppe",
@@ -815,6 +825,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maksimalt opptil 9 deltakere.",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("Deltakere"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Gå til enhetens \"Innstillinger\" og deretter \"App\"-menyen for å gi tillatelsen.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Avslutt"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Tillatelse kreves",
+    ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Hurtigkobling",
     ),
@@ -984,6 +1001,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Krev passord"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Moderator modus",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Send kilde-IFP-skjermen bare når den mottar en delt skjerm.",
     ),

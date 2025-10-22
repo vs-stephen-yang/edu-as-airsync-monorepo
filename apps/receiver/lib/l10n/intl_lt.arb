@@ -387,5 +387,13 @@
   "v3_settings_device_high_image_quality_off_desc": "Didžiausias QHD (2K) ekrano bendrinimas, priklausomai nuo siuntėjo ekrano skiriamosios gebos.",
   "v3_lbl_eula_launch": "Paleisti",
   "v3_eula_launch": "Paleisti",
-  "v3_authorize_prompt_title_launcher": "Dalyviai norėtų pasidalinti savo ekranu"
+  "v3_authorize_prompt_title_launcher": "Dalyviai norėtų pasidalinti savo ekranu",
+  "v3_settings_moderator_mode": "Moderatoriaus režimas",
+  "v3_lbl_settings_moderator_mode": "Įjungti/išjungti moderatoriaus režimą",
+  "v3_authorize_prompt_notification_cast": "Panaikinkite žymėjimą „Reikalauti patvirtinimo“ nustatymų meniu, kad priimtumėte visus transliacijos užklausas.",
+  "v3_authorize_prompt_notification_mirror": "Pažymėkite „Automatiškai priimti“ nustatymų meniu, kad priimtumėte visus veidrodinio atvaizdavimo užklausas.",
+  "v3_permission_title": "Reikalingas leidimas",
+  "v3_permission_description": "Eikite į įrenginio „Nustatymai“, tada „Programos“ meniu, kad suteiktumėte leidimą.",
+  "v3_lbl_permission_exit": "Išeiti",
+  "v3_permission_exit": "Išeiti"
 }

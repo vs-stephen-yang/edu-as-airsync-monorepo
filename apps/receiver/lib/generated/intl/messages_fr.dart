@@ -214,6 +214,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Refuser",
     ),
+    "v3_authorize_prompt_notification_cast": MessageLookupByLibrary.simpleMessage(
+      "Décochez « Exiger une approbation » dans le menu Paramètres pour accepter toutes les demandes de diffusion.",
+    ),
+    "v3_authorize_prompt_notification_mirror": MessageLookupByLibrary.simpleMessage(
+      "Cochez « Accepter automatiquement » dans le menu Paramètres pour accepter toutes les demandes de mise en miroir.",
+    ),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Les participants souhaitent partager leur écran",
     ),
@@ -581,6 +587,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Désactiver le retour tactile pour ce participant",
         ),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("Quitter"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage(
       "Agrandir le contrôle de la présentation",
     ),
@@ -691,6 +698,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Activer/désactiver le mot de passe requis",
         ),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Activer/désactiver le mode modérateur",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Plus d\'informations sur la diffusion au groupe d\'affichage",
@@ -852,6 +862,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
       "Participants",
+    ),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "Veuillez accéder au menu « Paramètres » de l\'appareil, puis au menu « Application » pour autoriser.",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Quitter"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage(
+      "Permission requise",
     ),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
       "Connexion rapide",
@@ -1028,6 +1045,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("Exiger un mot de passe"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "Mode modérateur",
+    ),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "Diffuser l\'écran source IFP uniquement lorsqu\'il reçoit un écran partagé.",
     ),

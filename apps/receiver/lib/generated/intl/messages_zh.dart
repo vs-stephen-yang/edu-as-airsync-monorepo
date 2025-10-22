@@ -168,6 +168,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "一律接受",
     ),
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage("拒絕"),
+    "v3_authorize_prompt_notification_cast":
+        MessageLookupByLibrary.simpleMessage("可在\"設定\"中取消\"允許後才能分享螢幕\""),
+    "v3_authorize_prompt_notification_mirror":
+        MessageLookupByLibrary.simpleMessage("可在\"設定\"中勾選\"自動接受螢幕鏡射\""),
     "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "參與者請求分享螢幕",
     ),
@@ -468,6 +472,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_participant_touch_back_disable":
         MessageLookupByLibrary.simpleMessage("取消"),
+    "v3_lbl_permission_exit": MessageLookupByLibrary.simpleMessage("離開"),
     "v3_lbl_resizable_expand": MessageLookupByLibrary.simpleMessage("展開投影控制列"),
     "v3_lbl_resizable_minimize": MessageLookupByLibrary.simpleMessage(
       "縮小投影控制列",
@@ -681,6 +686,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "最多九位參加人員",
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("參加人員"),
+    "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+      "請至設備端“設定”內的“應用程式”中，開放相關權限",
+    ),
+    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("離開"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage("需要授權"),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage("快速連線"),
     "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
       "多人分享時將自動分割畫面",
