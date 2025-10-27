@@ -33,6 +33,11 @@ class AppConfig extends InheritedWidget {
 
   final String feedbackUrl = 'https://forms.office.com/r/HsuEUMPCU2';
 
+  final String enKnowledgeBaseUrl =
+      'https://www.viewsonic.com/solution/kb/en_US/airsync-overview/airsync';
+  final String zhKnowledgeBaseUrl =
+      'https://www.viewsonic.com/solution/kb/t_CN/airsync-overview/airsync';
+
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }

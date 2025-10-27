@@ -1,10 +1,10 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
-import 'package:display_cast_flutter/widgets/v3_setting_main_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -78,9 +78,6 @@ class V3WebFooter extends StatelessWidget {
                     ),
                     Consumer<PrefLanguageProvider>(
                         builder: (_, languageProvider, __) {
-                      String link = languageProvider.language == '繁體中文'
-                          ? V3SettingMainList.zhKnowledgeBaseUrl
-                          : V3SettingMainList.enKnowledgeBaseUrl;
                       return V3Focus(
                         label: S.current.v3_lbl_main_knowledge_base,
                         identifier: 'v3_qa_main_knowledge_base',
@@ -88,7 +85,14 @@ class V3WebFooter extends StatelessWidget {
                         link: true,
                         child: TextButton(
                           onPressed: () {
-                            launchUrl(Uri.parse(link));
+                            var url = (languageProvider.language == '繁體中文'
+                                    ? AppConfig.of(context)?.zhKnowledgeBaseUrl
+                                    : AppConfig.of(context)
+                                        ?.enKnowledgeBaseUrl) ??
+                                '';
+                            if (url.isNotEmpty) {
+                              launchUrl(Uri.parse(url));
+                            }
                           },
                           isSemanticButton: false,
                           child: V3AutoHyphenatingText(

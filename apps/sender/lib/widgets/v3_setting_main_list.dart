@@ -21,10 +21,6 @@ import 'package:url_launcher/url_launcher.dart';
 class V3SettingMainList extends StatelessWidget {
   const V3SettingMainList({super.key, this.isAppMode = false});
 
-  static const String enKnowledgeBaseUrl =
-      'https://myviewboard.com/kb/en_US/airsync-overview/airsync';
-  static const String zhKnowledgeBaseUrl =
-      'https://myviewboard.com/kb/t_CN/airsync-overview/airsync';
   final bool isAppMode;
 
   @override
@@ -169,11 +165,13 @@ class V3SettingMainList extends StatelessWidget {
           trackEvent('click_news', EventCategory.setting);
           PrefLanguageProvider languageProvider =
               Provider.of<PrefLanguageProvider>(context, listen: false);
-          var url = Uri.parse(enKnowledgeBaseUrl);
-          if (languageProvider.language == '繁體中文') {
-            url = Uri.parse(zhKnowledgeBaseUrl);
+          var url = (languageProvider.language == '繁體中文'
+                  ? AppConfig.of(context)?.zhKnowledgeBaseUrl
+                  : AppConfig.of(context)?.enKnowledgeBaseUrl) ??
+              '';
+          if (url.isNotEmpty) {
+            await launchUrl(Uri.parse(url));
           }
-          await launchUrl(url);
         },
       ),
     );
