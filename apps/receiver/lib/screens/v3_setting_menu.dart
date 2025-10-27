@@ -158,10 +158,6 @@ class _V3SettingMenuSidebar extends StatelessWidget {
   });
 
   final SettingsProvider settingsProvider;
-  final String _enKnowledgeBaseUrl =
-      'https://myviewboard.com/kb/en_US/airsync-overview/airsync';
-  final String _zhKnowledgeBaseUrl =
-      'https://myviewboard.com/kb/t_CN/airsync-overview/airsync';
 
   @override
   Widget build(BuildContext context) {
@@ -287,11 +283,15 @@ class _V3SettingMenuSidebar extends StatelessWidget {
                               PrefLanguageProvider languageProvider =
                                   Provider.of<PrefLanguageProvider>(context,
                                       listen: false);
-                              var url = Uri.parse(_enKnowledgeBaseUrl);
-                              if (languageProvider.language == '繁體中文') {
-                                url = Uri.parse(_zhKnowledgeBaseUrl);
+                              var url = (languageProvider.language == '繁體中文'
+                                      ? AppConfig.of(context)
+                                          ?.zhKnowledgeBaseUrl
+                                      : AppConfig.of(context)
+                                          ?.enKnowledgeBaseUrl) ??
+                                  '';
+                              if (url.isNotEmpty) {
+                                await launchUrl(Uri.parse(url));
                               }
-                              await launchUrl(url);
                             },
                           ),
                         ],
