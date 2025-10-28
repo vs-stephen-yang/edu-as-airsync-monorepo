@@ -210,29 +210,28 @@ class _WarningMessage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       padding: context.tokens.spacing.vsdslSpacingXl,
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            ExcludeSemantics(
-              child: SvgPicture.asset(
-                'assets/images/ic_toast_alert.svg',
-                width: 16,
-                height: 16,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ExcludeSemantics(
+            child: SvgPicture.asset(
+              'assets/images/ic_toast_alert.svg',
+              width: 16,
+              height: 16,
+            ),
+          ),
+          Gap(context.tokens.spacing.vsdslSpacingLg.right),
+          Expanded(
+            child: V3AutoHyphenatingText(
+              message,
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w400,
+                color: context.tokens.color.vsdslColorWarning,
               ),
             ),
-            Gap(context.tokens.spacing.vsdslSpacingLg.right),
-            Expanded(
-              child: V3AutoHyphenatingText(
-                message,
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdslColorWarning,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
