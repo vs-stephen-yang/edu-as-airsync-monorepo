@@ -320,6 +320,10 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
             builder: (context, ReconnectState reconnectState, child) {
               if (widget.rtcConnector.clickButtonWhenReconnect) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  bool hasNameLabel = widget.rtcConnector.presentationState ==
+                          PresentationState.streaming &&
+                      (widget.rtcConnector.senderName ?? '').isNotEmpty;
+
                   if (widget.rtcConnector.reconnectChannelState ==
                       ReconnectState.success) {
                     widget.rtcConnector.clickButtonWhenReconnect = false;
@@ -328,7 +332,8 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                         S.of(context).main_feature_reconnect_success_toast,
                         widget.index,
                         isWebRTC: false,
-                        state: ReconnectState.success);
+                        state: ReconnectState.success,
+                        hasNameLabel: hasNameLabel);
                     widget.rtcConnector.reconnectChannelState =
                         ReconnectState.idle;
                   } else if (widget.rtcConnector.reconnectChannelState ==
@@ -339,7 +344,8 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                         S.of(context).main_feature_reconnect_fail_toast,
                         widget.index,
                         isWebRTC: false,
-                        state: ReconnectState.fail);
+                        state: ReconnectState.fail,
+                        hasNameLabel: hasNameLabel);
                     widget.rtcConnector.reconnectChannelState =
                         ReconnectState.idle;
                   }
@@ -353,21 +359,29 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
             builder: (context, ReconnectState reconnectState, child) {
               String message = S.of(context).main_webrtc_reconnecting_toast;
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                // 檢查是否有顯示 name 標籤（moderator mode 且 streaming 狀態且有 senderName）
+                bool hasNameLabel = widget.rtcConnector.presentationState ==
+                        PresentationState.streaming &&
+                    (widget.rtcConnector.senderName ?? '').isNotEmpty;
+
                 if (widget.rtcConnector.reconnectRtcState ==
                     ReconnectState.reconnecting) {
                   V3Toast().makeSplitScreenReconnectToast(
-                      context, message, widget.index);
+                      context, message, widget.index,
+                      hasNameLabel: hasNameLabel);
                 } else if (widget.rtcConnector.reconnectRtcState ==
                     ReconnectState.success) {
                   message = S.of(context).main_webrtc_reconnect_success_toast;
                   V3Toast().makeSplitScreenReconnectToast(
-                      context, message, widget.index);
+                      context, message, widget.index,
+                      hasNameLabel: hasNameLabel);
                   widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
                 } else if (widget.rtcConnector.reconnectRtcState ==
                     ReconnectState.fail) {
                   message = S.of(context).main_webrtc_reconnect_fail_toast;
                   V3Toast().makeSplitScreenReconnectToast(
-                      context, message, widget.index);
+                      context, message, widget.index,
+                      hasNameLabel: hasNameLabel);
                   widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
                 }
               });

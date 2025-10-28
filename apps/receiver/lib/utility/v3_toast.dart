@@ -16,15 +16,18 @@ class V3Toast {
 
   void makeSplitScreenReconnectToast(
       BuildContext context, String message, int index,
-      {bool isWebRTC = true, ReconnectState state = ReconnectState.idle}) {
+      {bool isWebRTC = true,
+      ReconnectState state = ReconnectState.idle,
+      bool hasNameLabel = false}) {
     if (!isWebRTC) {
       if (!_shouldSplitScreenToast(index, state)) {
         return;
       }
     }
 
-    OverlayEntry toast =
-        _buildSplitScreenReconnectToast(context, message, index);
+    OverlayEntry toast = _buildSplitScreenReconnectToast(
+        context, message, index,
+        hasNameLabel: hasNameLabel);
 
     if (!isWebRTC) {
       _splitScreenLastToastTimes[index][state] = DateTime.now();
@@ -70,93 +73,99 @@ class V3Toast {
     return true;
   }
 
-  OverlayEntry _buildSplitScreenReconnectToast(
-      BuildContext context, String message, int index) {
+  OverlayEntry _buildSplitScreenReconnectToast(BuildContext context,
+      String message, int index,
+      {bool hasNameLabel = false}) {
     Size screenSize = MediaQuery.of(context).size;
     double toastWidth = 300;
-    double toastPadding = 83;
+    double toastPadding = hasNameLabel ? 25 : 5;
     double halfWidth = screenSize.width / 2;
     double halfHeight = screenSize.height / 2;
     double thirdWidth = screenSize.width / 3;
     double thirdHeight = screenSize.height / 3;
     double? top, left;
     if (HybridConnectionList().enlargedScreenIndex.value != null) {
-      top = screenSize.height - toastPadding;
+      top = toastPadding;
       left = (screenSize.width - toastWidth) / 2;
     } else {
       if (HybridConnectionList.hybridSplitScreenCount.value > 6) {
+        // 9 分屏：3x3 佈局
         if (index == 1) {
-          top = thirdHeight - toastPadding;
+          top = 0 + toastPadding;
           left = thirdWidth + (thirdWidth - toastWidth) / 2;
         } else if (index == 2) {
-          top = thirdHeight - toastPadding;
+          top = 0 + toastPadding;
           left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
         } else if (index == 3) {
-          top = thirdHeight * 2 - toastPadding;
+          top = thirdHeight + toastPadding;
           left = (thirdWidth - toastWidth) / 2;
         } else if (index == 4) {
-          top = thirdHeight * 2 - toastPadding;
+          top = thirdHeight + toastPadding;
           left = thirdWidth + (thirdWidth - toastWidth) / 2;
         } else if (index == 5) {
-          top = thirdHeight * 2 - toastPadding;
+          top = thirdHeight + toastPadding;
           left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
         } else if (index == 6) {
-          top = screenSize.height - toastPadding;
+          top = thirdHeight * 2 + toastPadding;
           left = (thirdWidth - toastWidth) / 2;
         } else if (index == 7) {
-          top = screenSize.height - toastPadding;
+          top = thirdHeight * 2 + toastPadding;
           left = thirdWidth + (thirdWidth - toastWidth) / 2;
         } else if (index == 8) {
-          top = screenSize.height - toastPadding;
+          top = thirdHeight * 2 + toastPadding;
           left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
         } else {
-          top = thirdHeight - toastPadding;
+          top = 0 + toastPadding;
           left = (thirdWidth - toastWidth) / 2;
         }
       } else if (HybridConnectionList.hybridSplitScreenCount.value > 4) {
+        // 6 分屏：2x3 佈局
         if (index == 1) {
-          top = halfHeight - toastPadding;
+          top = 0 + toastPadding;
           left = thirdWidth + (thirdWidth - toastWidth) / 2;
         } else if (index == 2) {
-          top = halfHeight - toastPadding;
+          top = 0 + toastPadding;
           left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
         } else if (index == 3) {
-          top = halfHeight * 2 - toastPadding;
+          top = halfHeight + toastPadding;
           left = (thirdWidth - toastWidth) / 2;
         } else if (index == 4) {
-          top = halfHeight * 2 - toastPadding;
+          top = halfHeight + toastPadding;
           left = thirdWidth + (thirdWidth - toastWidth) / 2;
         } else if (index == 5) {
-          top = halfHeight * 2 - toastPadding;
+          top = halfHeight + toastPadding;
           left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
         } else {
-          top = halfHeight - toastPadding;
+          top = 0 + toastPadding;
           left = (thirdWidth - toastWidth) / 2;
         }
       } else if (HybridConnectionList.hybridSplitScreenCount.value > 2) {
+        // 4 分屏：2x2 佈局
         if (index == 1) {
-          top = halfHeight - toastPadding;
+          top = 0 + toastPadding;
           left = halfWidth + (halfWidth - toastWidth) / 2;
         } else if (index == 2) {
-          top = halfHeight * 2 - toastPadding;
+          top = halfHeight + toastPadding;
           left = (halfWidth - toastWidth) / 2;
         } else if (index == 3) {
-          top = halfHeight * 2 - toastPadding;
+          top = halfHeight + toastPadding;
           left = halfWidth + (halfWidth - toastWidth) / 2;
         } else {
-          top = halfHeight - toastPadding;
+          top = 0 + toastPadding;
           left = (halfWidth - toastWidth) / 2;
         }
       } else if (HybridConnectionList.hybridSplitScreenCount.value > 1) {
+        // 2 分屏：橫向分割
         if (index == 1) {
-          top = screenSize.height - toastPadding;
+          top = toastPadding;
           left = halfWidth + (halfWidth - toastWidth) / 2;
         } else {
-          top = screenSize.height - toastPadding;
+          top = toastPadding;
           left = (halfWidth - toastWidth) / 2;
         }
       } else {
-        top = screenSize.height - toastPadding;
+        // 單屏
+        top = toastPadding;
         left = (screenSize.width - toastWidth) / 2;
       }
     }
