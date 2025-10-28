@@ -107,15 +107,8 @@ class RTCConnector {
     return result;
   }
 
-  // the following device should not enable webrtc prerendererSmoothing flag
-  final List<String> _prerendererSmoothingExcludedDevices = [
-    'IFP50_2',
-    'IFP52_K',
-    'IFP50_3',
-    'IFP50_3_9850',
-    'IFP70',
-    'IFP52_1C',
-  ];
+  // the following device should enable webrtc prerendererSmoothing flag
+  final List<String> _prerendererSmoothingDevices = [];
 
   static const List<String> _mtk9950Models = [
     'IFP52_K',
@@ -326,7 +319,9 @@ class RTCConnector {
 
     final configuration = WebRTCUtil.createPcConfiguration(iceServers);
 
-    if (_prerendererSmoothingExcludedDevices.contains(_deviceType)) {
+    if (_prerendererSmoothingDevices.contains(_deviceType)) {
+      configuration['enablePrerendererSmoothing'] = true;
+    } else {
       configuration['enablePrerendererSmoothing'] = false;
     }
     _pc = await createPeerConnection(configuration);
