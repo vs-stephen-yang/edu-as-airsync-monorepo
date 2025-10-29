@@ -63,8 +63,8 @@ class RtpMpegTsPlayerGst final : public VideoDecoder::Callback {
   void RunMainLoop();
   void ReleaseWindowHandle();
   bool EnsureVideoDecoderLocked(const uint8_t* frame, size_t size, bool key_frame);
-  void DispatchFrameToDecoder(const uint8_t* frame, size_t size, GstClockTime pts, bool key_frame);
-  void ResetVideoDecoderLocked();
+  void DispatchFrameToDecoderLocked(const uint8_t* frame, size_t size, GstClockTime pts, bool key_frame);
+  void ResetVideoDecoder();
   GstFlowReturn HandleNewSample(GstSample* sample);
 
   // VideoDecoder::Callback
@@ -72,7 +72,6 @@ class RtpMpegTsPlayerGst final : public VideoDecoder::Callback {
   void OnVideoFrameRate(int fps) override;
 
  private:
-  mutable std::mutex mutex_;
   ANativeWindow* native_window_ = nullptr;
 
   GMainContext* context_ = nullptr;
@@ -106,6 +105,7 @@ class RtpMpegTsPlayerGst final : public VideoDecoder::Callback {
   int overrun_count_ = 0;
   int queue_output_count_ = 0;
 
+  mutable std::mutex decoder_mutex_;
   VideoDecoderPtr video_decoder_;
   std::optional<VideoCsd> video_csd_;
   std::map<std::string, int> video_decoder_params_;
