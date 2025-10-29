@@ -35,13 +35,13 @@ else()
   message(FATAL_ERROR "GSTREAMER_SDK_ANDROID environment variable not set!")
 endif()
 
-if (${ANDROID_ABI} STREQUAL "arm64-v8a")
+if(${ANDROID_ABI} STREQUAL "arm64-v8a")
   set(GSTREAMER_TARGET_ARCH "arm64")
-elseif (${ANDROID_ABI} STREQUAL "armeabi-v7a")
+elseif(${ANDROID_ABI} STREQUAL "armeabi-v7a")
   set(GSTREAMER_TARGET_ARCH "armv7")
-elseif (${ANDROID_ABI} STREQUAL "x86_64")
+elseif(${ANDROID_ABI} STREQUAL "x86_64")
   set(GSTREAMER_TARGET_ARCH "x86_64")
-elseif (${ANDROID_ABI} STREQUAL "x86")
+elseif(${ANDROID_ABI} STREQUAL "x86")
   set(GSTREAMER_TARGET_ARCH "x86")
 else()
   message(FATAL_ERROR "Unsupported ANDROID_ABI: ${ANDROID_ABI}")
@@ -60,62 +60,63 @@ set(GStreamer_EXTRA_DEPS gstreamer-app-1.0 gstreamer-video-1.0)
 set(GStreamer_JAVA_SRC_DIR "java")
 
 find_package(GStreamerMobile REQUIRED COMPONENTS
-        udp
-        coreelements
-        rtp
-        rtpmanager
-        mpegtsdemux
-        libav
-        audioconvert
-        audioresample
-        autodetect
-        audioparsers
-        opensles
-        videoparsersbad
-        videoconvertscale
-        opengl
-        playback
-        volume
-        androidmedia
+  udp
+  coreelements
+  rtp
+  rtpmanager
+  app
+  mpegtsdemux
+  libav
+  audioconvert
+  audioresample
+  autodetect
+  audioparsers
+  opensles
+  videoparsersbad
+  videoconvertscale
+  opengl
+  playback
+  volume
+  androidmedia
 )
 
 target_link_libraries(GStreamerMobile PRIVATE
-        orc-0.4
-        ffi
-        gmodule-2.0
-        gobject-2.0
-        glib-2.0
-        intl
-        pcre2-8
-        iconv
-        z
+  orc-0.4
+  ffi
+  gmodule-2.0
+  gobject-2.0
+  glib-2.0
+  intl
+  pcre2-8
+  iconv
+  z
 )
 
 set(GStreamer_INCLUDE_DIRS
-        ${GStreamer_ROOT_DIR}/include
-        ${GStreamer_ROOT_DIR}/include/gstreamer-1.0
-        ${GStreamer_ROOT_DIR}/include/glib-2.0
-        ${GStreamer_ROOT_DIR}/lib/glib-2.0/include
+  ${GStreamer_ROOT_DIR}/include
+  ${GStreamer_ROOT_DIR}/include/gstreamer-1.0
+  ${GStreamer_ROOT_DIR}/include/glib-2.0
+  ${GStreamer_ROOT_DIR}/lib/glib-2.0/include
 )
 
 include_directories(${GStreamer_INCLUDE_DIRS})
 
 add_library(orc-0.4 STATIC IMPORTED)
 set_target_properties(orc-0.4 PROPERTIES
-        IMPORTED_LOCATION "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/lib/liborc-0.4.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/include/orc-0.4"
+  IMPORTED_LOCATION "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/lib/liborc-0.4.a"
+  INTERFACE_INCLUDE_DIRECTORIES "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/include/orc-0.4"
 )
 
 add_library(ffi STATIC IMPORTED)
 set_target_properties(ffi PROPERTIES
-        IMPORTED_LOCATION "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/lib/libffi.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/include"
+  IMPORTED_LOCATION "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/lib/libffi.a"
+  INTERFACE_INCLUDE_DIRECTORIES "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/include"
 )
 
 add_library(gmodule-2.0 STATIC IMPORTED)
 set_target_properties(gmodule-2.0 PROPERTIES
-        IMPORTED_LOCATION "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/lib/libgmodule-2.0.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/include/glib-2.0"
+  IMPORTED_LOCATION "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/lib/libgmodule-2.0.a"
+  INTERFACE_INCLUDE_DIRECTORIES "${GSTREAMER_ROOT}/${GSTREAMER_TARGET_ARCH}/include/glib-2.0"
 )
 
 add_library(
