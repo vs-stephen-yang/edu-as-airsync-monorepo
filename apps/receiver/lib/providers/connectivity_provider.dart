@@ -82,14 +82,34 @@ class ConnectivityProvider extends ChangeNotifier {
   }
 
   Future<void> _getWifiSSIDName() async {
-    try {
-      final info = NetworkInfo();
-      String? ssid = await info.getWifiName();
-      _ssidName = ssid?.replaceAll('"', '');
-      log.info('Wifi ssidName: $_ssidName');
-    } on PlatformException catch (e) {
-      _ssidName = null;
-      log.severe("Failed to get Wi-Fi SSID name", e);
+    final startTime = DateTime.now();
+    const retryDelay = Duration(milliseconds: 500);
+    const timeout = Duration(seconds: 30);
+
+    // Keep trying while connected to Wi-Fi and within 30 seconds
+    while (_connectionStatus == ConnectivityResult.wifi &&
+        DateTime.now().difference(startTime) < timeout) {
+      try {
+        String? ssid = await NetworkInfo().getWifiName();
+        _ssidName = ssid?.replaceAll('"', '');
+        log.info('Wi-Fi SSID name: $_ssidName');
+      } on PlatformException catch (e) {
+        _ssidName = null;
+        log.severe('Failed to get Wi-Fi SSID name', e);
+      }
+
+      // Stop retrying if SSID was successfully retrieved
+      if (_ssidName != null && _ssidName!.isNotEmpty) {
+        log.info('SSID retrieved successfully: $_ssidName');
+        break;
+      }
+
+      // Wait before next retry
+      await Future.delayed(retryDelay);
+    }
+
+    if (_ssidName == null || _ssidName!.isEmpty) {
+      log.warning('SSID not obtained within 30 seconds or connection lost');
     }
   }
 }
