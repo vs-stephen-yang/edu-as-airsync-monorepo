@@ -789,6 +789,7 @@ bool RtpMpegTsPlayerGst::EnsureVideoDecoderLocked(const uint8_t* frame, size_t s
   for (size_t i = 0; i < attempt_count; ++i) {
     bool use_software = attempts[i];
 
+    ALOGI("Creating video decoder");
     auto decoder = CreateVideoDecoder(
         VideoCodecType::kH264,
         use_software,
@@ -798,6 +799,7 @@ bool RtpMpegTsPlayerGst::EnsureVideoDecoderLocked(const uint8_t* frame, size_t s
         this);
 
     if (!decoder) {
+      ALOGW("Failed to create video decoder");
       continue;
     }
 
@@ -838,6 +840,8 @@ void RtpMpegTsPlayerGst::DispatchFrameToDecoder(const uint8_t* frame, size_t siz
 }
 
 void RtpMpegTsPlayerGst::ResetVideoDecoderLocked() {
+  ALOGI("Reset video decoder");
+
   if (video_decoder_) {
     video_decoder_->Stop();
 
@@ -941,11 +945,11 @@ void RtpMpegTsPlayerGst::Pause() {
     return;
   }
 
-  is_paused_ = true;
+  // is_paused_ = true;
 
-  if (pipeline_) {
-    gst_element_set_state(pipeline_, GST_STATE_PAUSED);
-  }
+  // if (pipeline_) {
+  //   gst_element_set_state(pipeline_, GST_STATE_PAUSED);
+  // }
 
   ResetVideoDecoderLocked();
 

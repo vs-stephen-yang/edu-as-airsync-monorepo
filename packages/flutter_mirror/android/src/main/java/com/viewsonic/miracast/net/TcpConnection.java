@@ -60,6 +60,13 @@ public class TcpConnection
     tcpNoDelay_ = true;
   }
 
+  public boolean isConnected() {
+    if (socket_ == null) {
+      return false;
+    }
+    return socket_.isConnected();
+  }
+
   public void connect(String host, int port) throws IOException {
     host_ = host;
     port_ = port;
