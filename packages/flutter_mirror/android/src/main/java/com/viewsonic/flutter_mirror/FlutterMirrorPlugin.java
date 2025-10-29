@@ -485,6 +485,7 @@ public class FlutterMirrorPlugin implements
       surfaceHandler.setActive(false);
       surfaceHandler.release();
       surfaceHandlers_.remove(textureId);
+      surfaces_.remove(textureId);
 
       Log.d(TAG, "surface texture has been released " + textureId);
       Log.d(TAG, "remaining surface textures " + surfaces_.size());
