@@ -158,7 +158,10 @@ public class MiraSession
   }
 
   public void stop() {
+    Log.i(TAG, "Stopping Miracast session");
+
     if (rtspClient_ != null) {
+      rtspClient_.stopPlayer();
       rtspClient_.requestTeardown();
       rtspClient_ = null;
     }
@@ -169,6 +172,7 @@ public class MiraSession
       } catch (IOException e) {
         e.printStackTrace();
       }
+      rtspConnection_ = null;
     }
 
     if (rtpServer_ != null) {

@@ -3,8 +3,8 @@
 #include <cstring>
 #include <future>
 #include <span>
-#include "log.h"
 #include "media/video_csd_util.h"
+#include "util/log.h"
 
 namespace {
 static std::once_flag g_gst_once;
@@ -19,16 +19,16 @@ RtpMpegTsPlayerGst::RtpMpegTsPlayerGst() {
         gst_init(&argc, &argv);
         gst_debug_set_default_threshold(GST_LEVEL_WARNING);
         gst_debug_remove_log_function(gst_debug_log_default);
-        gst_debug_add_log_function(android_log_function, NULL, NULL);
+        //gst_debug_add_log_function(android_log_function, NULL, NULL);
       });
 }
 
 RtpMpegTsPlayerGst::~RtpMpegTsPlayerGst() {
-  Stop();
 }
 
 bool RtpMpegTsPlayerGst::Start() {
-  std::lock_guard<std::mutex> lock(mutex_);
+  ALOGI("Starting player");
+
   if (playing_) {
     return true;
   }
@@ -43,11 +43,15 @@ bool RtpMpegTsPlayerGst::Start() {
     return false;
   }
   playing_ = true;
+
+  ALOGI("Player started");
+
   return true;
 }
 
 void RtpMpegTsPlayerGst::Stop() {
-  std::lock_guard<std::mutex> lock(mutex_);
+  ALOGI("Stopping player");
+
   if (!playing_) {
     return;
   }
@@ -62,17 +66,16 @@ void RtpMpegTsPlayerGst::Stop() {
   }
   TeardownPipeline();
   playing_ = false;
+
+  ALOGI("Player stopped");
 }
 
 uint16_t RtpMpegTsPlayerGst::GetPort() const {
-  std::lock_guard<std::mutex> lock(mutex_);
   return bound_port_;
 }
 
 void RtpMpegTsPlayerGst::SetSurface(JNIEnv* env, jobject surface) {
-  std::lock_guard<std::mutex> lock(mutex_);
-
-  ResetVideoDecoderLocked();
+  ResetVideoDecoder();
 
   if (native_window_) {
     ANativeWindow_release(native_window_);
@@ -578,7 +581,7 @@ void RtpMpegTsPlayerGst::TeardownPipeline() {
   tsdemux_ = nullptr;
   volume_ = nullptr;
 
-  ResetVideoDecoderLocked();
+  ResetVideoDecoder();
 
   if (socket_) {
     g_object_unref(socket_);
@@ -711,7 +714,7 @@ GstFlowReturn RtpMpegTsPlayerGst::HandleNewSample(GstSample* sample) {
   GstClockTime pts = GST_BUFFER_PTS(buffer);
 
   {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(decoder_mutex_);
 
     if (awaiting_key_frame_ && !key_frame) {
       gst_buffer_unmap(buffer, &map);
@@ -729,7 +732,7 @@ GstFlowReturn RtpMpegTsPlayerGst::HandleNewSample(GstSample* sample) {
 
     awaiting_key_frame_ = false;
 
-    DispatchFrameToDecoder(map.data, map.size, pts, key_frame);
+    DispatchFrameToDecoderLocked(map.data, map.size, pts, key_frame);
   }
 
   gst_buffer_unmap(buffer, &map);
@@ -823,7 +826,7 @@ bool RtpMpegTsPlayerGst::EnsureVideoDecoderLocked(const uint8_t* frame, size_t s
   return false;
 }
 
-void RtpMpegTsPlayerGst::DispatchFrameToDecoder(const uint8_t* frame, size_t size, GstClockTime pts, bool /*key_frame*/) {
+void RtpMpegTsPlayerGst::DispatchFrameToDecoderLocked(const uint8_t* frame, size_t size, GstClockTime pts, bool /*key_frame*/) {
   if (!video_decoder_) {
     return;
   }
@@ -839,7 +842,8 @@ void RtpMpegTsPlayerGst::DispatchFrameToDecoder(const uint8_t* frame, size_t siz
   }
 }
 
-void RtpMpegTsPlayerGst::ResetVideoDecoderLocked() {
+void RtpMpegTsPlayerGst::ResetVideoDecoder() {
+  std::lock_guard<std::mutex> lock(decoder_mutex_);
   ALOGI("Reset video decoder");
 
   if (video_decoder_) {
@@ -938,7 +942,6 @@ void RtpMpegTsPlayerGst::NotifyPacketLost() {
 }
 
 void RtpMpegTsPlayerGst::Pause() {
-  std::lock_guard<std::mutex> lock(mutex_);
   ALOGD("Pausing pipeline to prepare for surface destruction");
 
   if (is_paused_) {
@@ -951,7 +954,7 @@ void RtpMpegTsPlayerGst::Pause() {
   //   gst_element_set_state(pipeline_, GST_STATE_PAUSED);
   // }
 
-  ResetVideoDecoderLocked();
+  ResetVideoDecoder();
 
   ReleaseWindowHandle();
 
@@ -959,11 +962,9 @@ void RtpMpegTsPlayerGst::Pause() {
 }
 
 void RtpMpegTsPlayerGst::Restart(JNIEnv* env, jobject surface) {
-  std::lock_guard<std::mutex> lock(mutex_);
-
   ALOGD("Restart pipeline with new window");
 
-  ResetVideoDecoderLocked();
+  ResetVideoDecoder();
 
   if (native_window_) {
     ANativeWindow_release(native_window_);

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class RtspClient
-  implements OnReceiveRTSPListener, OnPlayerListener {
+    implements OnReceiveRTSPListener, OnPlayerListener {
   private final static String TAG = "MiraRtspClient";
 
   private final static String METHOD_UDP = "udp";
@@ -138,7 +138,6 @@ public class RtspClient
     packetLostListener_ = listener;
   }
 
-
   public void pause() {
     if (isPlaying()) {
       sendRequestPause();
@@ -167,6 +166,18 @@ public class RtspClient
     rtpPlayer_.restart(surface);
   }
 
+  public void stopPlayer() {
+    if (rtpPlayer_ == null) {
+      return;
+    }
+    try {
+      rtpPlayer_.stop();
+    } catch (Exception e) {
+    }
+    rtpPlayer_.release();
+    rtpPlayer_ = null;
+  }
+
   public void mutePlayer(boolean mute) {
     if (rtpPlayer_ == null) {
       return;
@@ -174,7 +185,6 @@ public class RtspClient
 
     rtpPlayer_.setMute(mute);
   }
-
 
   public void setActivate(boolean activate) {
     activate_ = activate;
@@ -223,7 +233,6 @@ public class RtspClient
   public void onPacketLost() {
     packetLostListener_.onPacketLost();
   }
-
 
   public interface AudioFormatListener {
     void onAudioFormatUpdate(String name, int sampleRate, int channelCount);
@@ -440,14 +449,6 @@ public class RtspClient
 
   private void cleanResource() {
     curState_ = STATE_STOPPED;
-    if (rtpPlayer_ != null) {
-      try {
-        rtpPlayer_.stop();
-      } catch (Exception e) {
-      }
-      rtpPlayer_.release();
-      rtpPlayer_ = null;
-    }
   }
 
   private void sendResponseM1() {

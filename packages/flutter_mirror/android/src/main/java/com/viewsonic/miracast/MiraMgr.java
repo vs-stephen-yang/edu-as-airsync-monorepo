@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MiraMgr
-  implements WiFiDirectListener, MiraSessionListener {
+    implements WiFiDirectListener, MiraSessionListener {
   private MiraMgrListener listener_;
   private int mirror_increment_seq_ = 0;
   private static final String kMirrorIdPrefix_ = "miracast-";
@@ -26,33 +26,37 @@ public class MiraMgr
   }
 
   public MiraSession createSession(
-    String peerMacAddress,
-    String peerName,
-    String peerIp,
-    int peerPort,
-    String receiverName) {
+      String peerMacAddress,
+      String peerName,
+      String peerIp,
+      int peerPort,
+      String receiverName) {
     mirror_increment_seq_++;
+    String sessionId = formatMirrorId(mirror_increment_seq_);
+
     MiraSession session = new MiraSession(
-      formatMirrorId(mirror_increment_seq_),
-      peerIp,
-      peerPort,
-      peerMacAddress,
-      peerName,
-      receiverName,
-      eventBase_,
-      this);
-    mirror_sessions_.put(formatMirrorId(mirror_increment_seq_), session);
+        sessionId,
+        peerIp,
+        peerPort,
+        peerMacAddress,
+        peerName,
+        receiverName,
+        eventBase_,
+        this);
+    mirror_sessions_.put(sessionId, session);
     return session;
   }
 
-  public String removeSessionByPeerAddress(String peerMacAddress) {
+  public MiraSession removeSessionByPeerAddress(String peerMacAddress) {
     for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
-      if (entry.getValue().getPeerAddress().equals(peerMacAddress)) {
+      MiraSession session = entry.getValue();
+
+      if (session.getPeerAddress().equals(peerMacAddress)) {
         String sessionId = entry.getKey();
         mirror_sessions_.remove(sessionId);
 
         Log.d(TAG, String.format("Remaining mira sessions = %d", mirror_sessions_.size()));
-        return sessionId;
+        return session;
       }
     }
     return null;
@@ -69,10 +73,9 @@ public class MiraMgr
   }
 
   public void start(
-    MiraMgrListener listener,
-    String receiverName,
-    SurfaceTextureProvider surfaceProvider
-  ) {
+      MiraMgrListener listener,
+      String receiverName,
+      SurfaceTextureProvider surfaceProvider) {
     receiverName_ = receiverName;
     surfaceProvider_ = surfaceProvider;
 
@@ -153,16 +156,21 @@ public class MiraMgr
   @Override
   public void onPeerDisconnected(String peerMacAddress) {
     Log.d(TAG, "onPeerDisconnected:" + peerMacAddress);
-    String removeSessionId = removeSessionByPeerAddress(peerMacAddress);
-    if (removeSessionId != null) {
-      if (listener_ != null) {
-        listener_.onSessionEnd(removeSessionId);
-      }
+    MiraSession session = removeSessionByPeerAddress(peerMacAddress);
 
-      Long textureId = session_textures_.get(removeSessionId);
-      if (textureId != null) {
-        surfaceProvider_.releaseSurfaceTexture(textureId);
-      }
+    if (session == null) {
+      return;
+    }
+    session.stop();
+    String sessionId = session.getId();
+
+    if (listener_ != null) {
+      listener_.onSessionEnd(sessionId);
+    }
+
+    Long textureId = session_textures_.get(sessionId);
+    if (textureId != null) {
+      surfaceProvider_.releaseSurfaceTexture(textureId);
     }
   }
 
