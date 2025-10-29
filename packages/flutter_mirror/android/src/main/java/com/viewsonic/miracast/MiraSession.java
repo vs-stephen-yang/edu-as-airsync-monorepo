@@ -238,6 +238,9 @@ public class MiraSession
       return;
     }
     rtspClient_.restartPlayer(surface);
+
+    lastRequestIdrTime_ = System.currentTimeMillis();
+    rtspClient_.requestIdr();
   }
 
   public void mutePlayer(boolean mute) {
@@ -362,6 +365,11 @@ public class MiraSession
   }
 
   private void sendRtspMessage(RtspMessage message) {
+    if (!rtspConnection_.isConnected()) {
+      Log.w(TAG, "Cannot send RTSP message because connection is not established: " + message);
+      return;
+    }
+
     try {
       byte[] data = message.toByteArray(false);
 
