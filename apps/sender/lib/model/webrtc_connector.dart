@@ -653,52 +653,88 @@ class WebRTCConnector {
     }
   }
 
-  Future<void> _onTouchMessage(EventMessage eventMessage) async {
-    int action = FlutterInputInjection.TOUCH_POINT_START;
+  /// Returns [value] if it is finite, otherwise returns [fallback].
+  double sanitizeDouble(double value, [double fallback = 0.0]) =>
+      value.isFinite ? value : fallback;
 
-    if (eventMessage.touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_START) {
+  /// Converts [value] to an int if it is finite, otherwise returns [fallback].
+  int safeToInt(double value, [int fallback = 0]) =>
+      value.isFinite ? value.toInt() : fallback;
+
+  /// Clamps integer [v] between [min] and [max].
+  int clampInt(int v, int min, int max) => v < min ? min : (v > max ? max : v);
+
+  /// Returns the ceiling of [value] if finite, otherwise returns [fallback].
+  int safeCeil(double value, [int fallback = 1]) =>
+      value.isFinite ? value.ceil() : fallback;
+
+  Future<void> _onTouchMessage(EventMessage eventMessage) async {
+    // Validate touchEvent and ensure touchPoints exist
+    final touchEvent = eventMessage.touchEvent;
+    if (touchEvent.touchPoints.isEmpty) {
+      log.warning('Touch event missing or has no touch points');
+      return;
+    }
+
+    // Determine the touch action type
+    int action = FlutterInputInjection.TOUCH_POINT_START;
+    final type = touchEvent.eventType;
+    if (type == TouchEvent_TouchEventType.TOUCH_POINT_START) {
       action = FlutterInputInjection.TOUCH_POINT_START;
-    } else if (eventMessage.touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+    } else if (type == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
       action = FlutterInputInjection.TOUCH_POINT_MOVE;
-    } else if (eventMessage.touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_END) {
+    } else if (type == TouchEvent_TouchEventType.TOUCH_POINT_END) {
       action = FlutterInputInjection.TOUCH_POINT_END;
     }
-    int id = eventMessage.touchEvent.touchPoints[0].id;
-    double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-    double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+
+    final tp0 = touchEvent.touchPoints.first;
+
+    // Sanitize incoming remote coordinates
+    double remoteX = sanitizeDouble(tp0.x, 0.0);
+    double remoteY = sanitizeDouble(tp0.y, 0.0);
+
+    // Clamp normalized coordinates to [0, 1] range
+    remoteX = (remoteX).clamp(0.0, 1.0);
+    remoteY = (remoteY).clamp(0.0, 1.0);
+
+    final int id = tp0.id;
+
+    // Handle paused state — convert normalized coords to pixel positions
     if (_isPaused) {
-      // TODO: following code does not work
       await _updateScreenSize();
 
-      int injectX = (remoteX * _screenWidth).toInt();
-      if (injectX < 0) {
-        injectX = 0;
-      } else if (injectX > _screenWidth.toInt() - 1) {
-        injectX = _screenWidth.toInt() - 1;
-      }
-      int injectY = (remoteY * _screenHeight).toInt();
-      if (injectY < 0) {
-        injectY = 0;
-      } else if (injectY > _screenHeight.toInt() - 1) {
-        injectY = _screenHeight.toInt() - 1;
-      }
+      // Sanitize screen dimensions
+      final double screenW = sanitizeDouble(_screenWidth, 0.0);
+      final double screenH = sanitizeDouble(_screenHeight, 0.0);
 
-      if (_isPointInPauseButton(
-          Offset(injectX.toDouble(), injectY.toDouble()))) {
+      // Compute raw pixel positions with NaN/Inf safety
+      final int rawX = safeToInt(sanitizeDouble(remoteX * screenW, 0.0), 0);
+      final int rawY = safeToInt(sanitizeDouble(remoteY * screenH, 0.0), 0);
+
+      // Calculate valid range for screen coordinates
+      final int maxX = (safeCeil(screenW, 1) - 1).clamp(0, 1 << 30);
+      final int maxY = (safeCeil(screenH, 1) - 1).clamp(0, 1 << 30);
+
+      // Clamp final pixel coordinates
+      final int injectX = clampInt(rawX, 0, maxX);
+      final int injectY = clampInt(rawY, 0, maxY);
+
+      // Check if touch falls within pause/stop button area
+      final offset = Offset(injectX.toDouble(), injectY.toDouble());
+      if (_isPointInPauseButton(offset)) {
         onTouchEvenWhenPaused(true, false);
         return;
       }
-      if (_isPointInStopButton(
-          Offset(injectX.toDouble(), injectY.toDouble()))) {
+      if (_isPointInStopButton(offset)) {
         onTouchEvenWhenPaused(false, true);
         return;
       }
+
       log.info('Touch event ignored due to paused state');
       return;
     }
+
+    // Normal state: send sanitized and clamped normalized coordinates
     unawaited(_flutterInputInjectionPlugin.sendNormalizedTouch(
       _screenId,
       autoVirtualDisplay,
@@ -950,7 +986,8 @@ class WebRTCConnector {
       _trackWidth = _maxTrackWidth;
       _trackHeight = _maxTrackHeight;
     } else {
-      _trackWidth = constraints.width ?? _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
+      _trackWidth = constraints.width ??
+          _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
       _trackHeight = constraints.height!;
     }
     _decodeHeightLimit = constraints.decodeHeightLimit;
