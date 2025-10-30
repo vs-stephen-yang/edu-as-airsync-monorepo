@@ -152,7 +152,9 @@ public class MiraSession
       eventBase_.setTimer(() -> {
         isRequestIdrQueued_ = false;
         lastRequestIdrTime_ = System.currentTimeMillis();
-        rtspClient_.requestIdr();
+        if (rtspClient_ != null) {
+          rtspClient_.requestIdr();
+        }
       }, delayMs);
     }
   }
