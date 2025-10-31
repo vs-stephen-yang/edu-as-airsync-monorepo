@@ -4,7 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
@@ -117,17 +116,15 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
 
     if (context.splitScreenRatio.widthFraction <
         SplitScreenRatio.floatingDefault.widthFraction) {
-      return Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: ChannelProvider.isModeratorMode ? 25 : 4.66,
-          ),
-          child: Center(child: r),
-        ),
-      );
+      // ═══════════════════════════════════════════════════════════════
+      // 小螢幕模式（launcher/launcherFull）
+      // ═══════════════════════════════════════════════════════════════
+      //
+      // 在小螢幕模式下，倒數計時框會由 V3NotificationCenter 的 Stack
+      // 自動對齊到頂部中央（alignment: Alignment.topCenter）
+      // V3NotificationCenter 已經處理了避開 namelabel 的邏輯
+      //
+      return r; // 直接返回，由 Stack 的 alignment 控制位置
     }
 
     return r;
@@ -167,7 +164,7 @@ class _V3ExtendSharingTimeMenuState extends State<V3ExtendSharingTimeMenu> {
               children: [
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    minHeight: 0,
+                    minHeight: 5,
                     maxHeight: 16,
                   ),
                   child: SizedBox.shrink(), // or any child you want

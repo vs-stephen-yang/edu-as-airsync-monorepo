@@ -70,6 +70,7 @@ library;
 
 import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -304,15 +305,30 @@ class V3NotificationCenter extends StatelessWidget {
         // 根據螢幕尺寸決定佈局方式
         // ═══════════════════════════════════════════════════════════
         // 在小螢幕（launcher, launcherFull, oneThirdFull）時，
-        // 使用 Positioned.fill 讓通知能夠填滿整個空間（特別是 ExtendCasting 需要全高）
+        // 需要避開頂部的 namelabel（用戶名稱標籤）
         final currentRatio = context.splitScreenRatio;
         final isSmallScreen = currentRatio.widthFraction <
             SplitScreenRatio.oneThirdFull.widthFraction;
 
-        // 小螢幕：使用 Positioned.fill
+        // 小螢幕：從 namelabel 下方開始顯示通知
         if (isSmallScreen) {
-          return Positioned.fill(
+          // 動態獲取 namelabel 的高度
+          final nameLabelHeight =
+              V3WebrtcView.nameLabelKey.currentContext?.size?.height;
+          const spacing = 5.0; // 與 namelabel 的間距
+          const defaultTop = 25.0; // 預設值（約 18pt namelabel + 7pt 間距）
+
+          final topPosition =
+              nameLabelHeight != null ? nameLabelHeight + spacing : defaultTop;
+
+          return Positioned(
+            top: topPosition,
+            // 從 namelabel 下方開始
+            left: 0,
+            right: 0,
+            bottom: 0,
             child: Stack(
+              alignment: Alignment.topCenter, // 所有通知對齊到頂部中央
               children: _buildNotificationList(items),
             ),
           );
