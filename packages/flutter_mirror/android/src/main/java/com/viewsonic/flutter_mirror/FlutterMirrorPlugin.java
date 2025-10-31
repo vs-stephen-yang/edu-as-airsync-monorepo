@@ -627,11 +627,11 @@ public class FlutterMirrorPlugin implements
       arguments.put("height", height);
 
       channel_.invokeMethod("onMirrorVideoResize", arguments);
-    });
 
-    if (mirrorId.contains("miracast")) {
-      miracastRefreshMute(mirrorId);
-    }
+      if (mirrorId.contains("miracast")) {
+        miracastRefreshMute(mirrorId);
+      }
+    });
   }
 
   @Override
