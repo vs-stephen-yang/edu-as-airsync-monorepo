@@ -94,6 +94,8 @@ public class FlutterMirrorPlugin implements
   private MiracastReceiver miracastReceiver_;
   private BluetoothTouchBackController bluetoothTouchBackController_;
 
+  final private HashMap<String, Boolean> miracastIsMute_ = new HashMap<>();
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     Log.d(TAG, "FlutterMirrorPlugin::onAttachedToEngine()");
@@ -388,8 +390,18 @@ public class FlutterMirrorPlugin implements
     mirrorReceiver_.enableAudio(mirrorId, enable);
 
     if (mirrorId.contains("miracast")) {
-      miracastReceiver_.mutePlayer(mirrorId, !enable);
+      miracastMute(mirrorId, !enable);
     }
+  }
+
+  private void miracastMute(String mirrorId, boolean mute) {
+    miracastIsMute_.put(mirrorId, mute);
+    miracastReceiver_.mutePlayer(mirrorId, mute);
+  }
+
+  private void miracastRefreshMute(String mirrorId) {
+    boolean isMute = Boolean.TRUE.equals(miracastIsMute_.get(mirrorId));
+    miracastReceiver_.mutePlayer(mirrorId, isMute);
   }
 
   @Override
@@ -616,6 +628,10 @@ public class FlutterMirrorPlugin implements
 
       channel_.invokeMethod("onMirrorVideoResize", arguments);
     });
+
+    if (mirrorId.contains("miracast")) {
+      miracastRefreshMute(mirrorId);
+    }
   }
 
   @Override

@@ -175,6 +175,11 @@ void RtpMpegTsPlayerGst::ConnectAudioPad(GstPad* pad) {
                NULL);
 #endif
 
+  // set default mute
+  g_object_set(volume_,
+               "mute", TRUE,
+               NULL);
+
   gst_bin_add_many(GST_BIN(pipeline_), queue, aacparse, decoder, volume_convert, volume_, convert, resample, sink, NULL);
 
   // 直接連接 tsdemux pad 到 queue sink pad
