@@ -628,6 +628,7 @@ public class FlutterMirrorPlugin implements
 
       channel_.invokeMethod("onMirrorVideoResize", arguments);
 
+      // https://viewsonic-ssi.visualstudio.com/Display%20App/_workitems/edit/97154
       if (mirrorId.contains("miracast")) {
         miracastRefreshMute(mirrorId);
       }
