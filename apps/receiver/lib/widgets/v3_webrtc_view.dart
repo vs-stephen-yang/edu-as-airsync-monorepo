@@ -34,6 +34,8 @@ class V3WebrtcView extends StatefulWidget {
   final double screenHeight;
   final bool displaySmartScalingEnabled;
 
+  static final GlobalKey nameLabelKey = GlobalKey();
+
   @override
   State<StatefulWidget> createState() => _V3WebrtcViewState();
 }
@@ -220,6 +222,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                 child: Wrap(
                   children: [
                     Container(
+                      key: V3WebrtcView.nameLabelKey,
                       padding: const EdgeInsets.only(
                           left: 8, top: 1, right: 8, bottom: 5),
                       decoration: BoxDecoration(
