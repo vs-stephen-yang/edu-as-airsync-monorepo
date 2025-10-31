@@ -355,7 +355,10 @@ class ParticipantStandbyFeature extends TextSizeAwareStateless {
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                onPressed: () {
+                onPressed: () async {
+                  ChannelProvider channelProvider =
+                  Provider.of<ChannelProvider>(context, listen: false);
+                  await channelProvider.startRemoteScreen(fromShare: true);
                   EasyThrottle.throttle(
                       'sendInviteRemoteScreen', const Duration(seconds: 1), () {
                     _sendInviteRemoteScreen(context, rtcConnector);
