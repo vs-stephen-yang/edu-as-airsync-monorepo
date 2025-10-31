@@ -38,6 +38,7 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -220,6 +221,10 @@ class ChannelProvider extends ChangeNotifier {
   Stream<bool> get tunnelActivatedStream =>
       _channelServer.tunnelActivatedController.stream;
 
+  StreamSubscription? _mediaProjectionOnStopSubscription;
+
+  bool _startRemoteScreen = false;
+
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('app_AuthorizeModeEnable', _isAuthorizeMode);
@@ -333,11 +338,59 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _load();
+
+    _mediaProjectionOnStopSubscription =
+        Helper.onScreenCaptureStopped.listen((_) async {
+      if (!_startRemoteScreen &&
+          _remoteScreenProvider.isRemoteScreenPublisherStarted()) {
+        // UI
+        providerContainer?.read(dialogProvider.notifier).showDialog(
+          title: 'Screen recording has stopped',
+          content:'Screen access ended, so recording stopped.',
+          confirmText: S.current.v3_group_dialog_accept,
+          width: 280,
+          height: 200,
+          onConfirm: () {
+          },
+        );
+        //
+        await removeSender(fromSender: true, fromGroup: true);
+
+        unawaited(_stopModeratorRemoteScreen(stopPublisher: true));
+      }
+    });
+  }
+
+  // 關閉Moderator的RemoteScreen但不關閉moderator模式
+  Future<void> _stopModeratorRemoteScreen({bool stopPublisher = false}) async {
+    for (RTCConnector rtcConnector
+        in HybridConnectionList().getRtcConnectorMap().values) {
+      if (rtcConnector.isModeratorShare) {
+        rtcConnector.sendStopRemoteScreen();
+        await Future.delayed(Duration(milliseconds: 200));
+        int index = remoteShareConnectors
+            .indexWhere((item) => item.clientId == rtcConnector.clientId);
+        if (index != -1) {
+          RemoteScreenConnector remoteShareConnector =
+              remoteShareConnectors[index];
+
+          removeSender(
+            fromShare: true,
+            remoteScreenConnector: remoteShareConnector,
+            kick: false,
+          );
+        }
+      }
+    }
+    if (stopPublisher) {
+      await stopRemoteScreenPublisher();
+    }
   }
 
   @override
   void dispose() {
     _channelServer.dispose();
+    _mediaProjectionOnStopSubscription?.cancel();
     super.dispose();
   }
 
@@ -546,12 +599,15 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     log.info('Starting remote screen');
 
+    _startRemoteScreen = true;
+
     if (_remoteScreenProvider.isRemoteScreenPublisherStarted()) {
       _isGroupMode = fromGroup ?? _isGroupMode;
       _isShareMode = fromShare ?? _isShareMode;
       _isSenderMode = fromSender ?? _isSenderMode;
       _save();
       notifyListeners();
+      _startRemoteScreen = false;
       return;
     }
     _isGroupMode = fromGroup ?? _isGroupMode;
@@ -561,6 +617,8 @@ class ChannelProvider extends ChangeNotifier {
     final iceServers = await _getIceServers();
 
     bool result = await _remoteScreenProvider.startPublish(iceServers);
+
+    _startRemoteScreen = false;
     if (!result) {
       removeSender(fromSender: true, fromGroup: true);
       return await stopRemoteScreenPublisher();
@@ -1008,11 +1066,6 @@ class ChannelProvider extends ChangeNotifier {
         _save();
       }
 
-      if (_isGroupMode || _isShareMode || _isSenderMode) {
-        notifyListeners();
-        return;
-      }
-
       if (fromShare != null && fromShare) {
         for (var element in _remoteShareConnectors) {
           element.sendRemoteScreenState(RemoteScreenStatus.kicked);
@@ -1034,6 +1087,11 @@ class ChannelProvider extends ChangeNotifier {
             .setBroadcastToGroup(false);
         _displayGroupHost?.stop();
         _displayGroupHost = null;
+      }
+
+      if (_isGroupMode || _isShareMode || _isSenderMode) {
+        notifyListeners();
+        return;
       }
 
       if (!_isSenderMode && !_isGroupMode && !_isShareMode) {
