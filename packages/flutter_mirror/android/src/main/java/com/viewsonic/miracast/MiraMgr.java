@@ -101,9 +101,11 @@ public class MiraMgr
     Log.d(TAG, String.format("MiraMgr.stopMirror(%s)", mirrorId));
 
     MiraSession session = mirror_sessions_.get(mirrorId);
-    if (session != null) {
-      session.stop();
+    if (session == null) {
+      return;
     }
+
+    stopSession(session);
   }
 
   public void onTouchEvent(String mirrorId_, int touchId, boolean touch, double x, double y) {
