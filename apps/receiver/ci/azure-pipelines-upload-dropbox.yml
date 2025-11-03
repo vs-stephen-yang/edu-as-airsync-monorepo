@@ -1,0 +1,146 @@
+trigger: none
+pr: none
+
+# Automatically triggered when Display_Flutter-Build completes successfully
+resources:
+  pipelines:
+    - pipeline: buildPipeline
+      source: 'Display_Flutter-Build'
+      trigger:
+        branches:
+          include:
+            - '*'  # Trigger on any branch
+
+pool:
+  name: "AirSync macOS Pool"
+
+variables:
+  - group: "dropbox-secrets"
+
+jobs:
+  - job: UploadToDropbox
+    displayName: Upload Build Artifacts to Dropbox
+    steps:
+      - checkout: self
+        fetchDepth: 1
+
+      - task: Bash@3
+        displayName: Display Pipeline Info
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "=================================="
+            echo "📦 Dropbox Upload Pipeline"
+            echo "=================================="
+            echo "Triggered by: $(resources.pipeline.buildPipeline.sourceBranch)"
+            echo "Build Pipeline Run ID: $(resources.pipeline.buildPipeline.runID)"
+            echo "Build Pipeline Run Number: $(resources.pipeline.buildPipeline.runName)"
+            echo "=================================="
+
+      # Download all artifacts from the build pipeline
+      - task: DownloadPipelineArtifact@2
+        displayName: Download Build Artifacts
+        inputs:
+          source: 'specific'
+          project: '$(System.TeamProject)'
+          pipeline: 'Display_Flutter-Build'
+          runVersion: 'specific'
+          runId: $(resources.pipeline.buildPipeline.runID)
+          path: '$(Pipeline.Workspace)/artifacts'
+
+      - task: Bash@3
+        displayName: Organize files for Dropbox
+        inputs:
+          targetType: 'inline'
+          script: |
+            set -euo pipefail
+
+            echo "📁 Organizing files for Dropbox upload..."
+
+            # Create organized directory structure
+            DROPBOX_ROOT="$(Build.ArtifactStagingDirectory)/dropbox_upload"
+            mkdir -p "$DROPBOX_ROOT"
+
+            # Get version from pubspec.yaml
+            VERSION=$(grep "^version: " pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d ' ')
+            echo "Version: $VERSION"
+
+            # Process Build artifacts (target_channel format)
+            BUILDS_DIR="$(Pipeline.Workspace)/artifacts"
+
+            for artifact_dir in "$BUILDS_DIR"/*; do
+              if [ -d "$artifact_dir" ]; then
+                artifact_name=$(basename "$artifact_dir")
+
+                # Skip ReleaseNote artifact (will process separately)
+                if [ "$artifact_name" = "ReleaseNote" ]; then
+                  continue
+                fi
+
+                echo "Processing artifact: $artifact_name"
+
+                # Parse target and channel from artifact name (e.g., "production_edla")
+                target=$(echo "$artifact_name" | cut -d'_' -f1)
+                channel=$(echo "$artifact_name" | cut -d'_' -f2)
+
+                # Create channel directory under target
+                dest_dir="$DROPBOX_ROOT/$target/$channel"
+                mkdir -p "$dest_dir"
+
+                # Copy all APK and AAB files
+                find "$artifact_dir" -type f \( -name "*.apk" -o -name "*.aab" \) -exec cp {} "$dest_dir/" \;
+
+                echo "  ✓ Copied to $target/$channel/"
+              fi
+            done
+
+            # Copy release notes from ReleaseNote artifact
+            RELEASE_NOTE_DIR="$BUILDS_DIR/ReleaseNote"
+            if [ -d "$RELEASE_NOTE_DIR" ]; then
+              echo "Copying release notes..."
+              cp "$RELEASE_NOTE_DIR/RELEASE_NOTE_PUBLIC.md" "$DROPBOX_ROOT/" 2>/dev/null || echo "  ⚠️  RELEASE_NOTE_PUBLIC.md not found"
+              cp "$RELEASE_NOTE_DIR/checksums.md5" "$DROPBOX_ROOT/" 2>/dev/null || echo "  ⚠️  checksums.md5 not found"
+            else
+              echo "  ⚠️  ReleaseNote artifact not found"
+            fi
+
+            echo ""
+            echo "📦 Directory structure:"
+            tree "$DROPBOX_ROOT" 2>/dev/null || find "$DROPBOX_ROOT" -type f | sort
+            echo ""
+            echo "✅ Organization complete!"
+
+            # Set version as pipeline variable for Dropbox upload
+            echo "##vso[task.setvariable variable=APP_VERSION]$VERSION"
+
+      # Upload to Dropbox
+      - template: upload-to-dropbox.yml
+        parameters:
+          platform: Android
+          versionName: $(APP_VERSION)
+          runNumber: $(resources.pipeline.buildPipeline.runName)
+          envName: "all"
+          dir1: "$(Build.ArtifactStagingDirectory)/dropbox_upload"
+          dir1_subfolder: ""
+
+      - task: Bash@3
+        displayName: Summary
+        condition: succeededOrFailed()
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo ""
+            echo "=================================="
+            echo "📊 Upload Summary"
+            echo "=================================="
+            echo "Build Pipeline: $(resources.pipeline.buildPipeline.runName)"
+            echo "Version: $(APP_VERSION)"
+            echo "Status: $AGENT_JOBSTATUS"
+
+            if [ "$AGENT_JOBSTATUS" = "Succeeded" ]; then
+              echo "✅ Dropbox upload completed successfully!"
+            else
+              echo "⚠️  Dropbox upload completed with warnings"
+              echo "Please check the logs for details"
+            fi
+            echo "=================================="
