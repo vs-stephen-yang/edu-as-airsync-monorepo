@@ -306,47 +306,6 @@ jobs:
                   Out-File -FilePath $output -Encoding utf8 -Append
               }
 
-      # Generate CHANGELOG.md from Git log since last tag
-      - task: PowerShell@2
-        displayName: Generate CHANGELOG.md
-        inputs:
-          targetType: 'inline'
-          script: |
-            git fetch --tags
-
-            $LAST_TAG = git describe --tags --abbrev=0 2>$null
-            if (-not $LAST_TAG) {
-              $LAST_TAG = git rev-list --max-parents=0 HEAD
-            }
-
-            $logPath = "CHANGELOG.md"
-
-            "## Changelog since $LAST_TAG" | Out-File -FilePath $logPath -Encoding utf8
-            "" | Out-File -FilePath $logPath -Encoding utf8 -Append
-
-            git log --pretty=format:"- %s" "$LAST_TAG..HEAD" |
-              Out-File -FilePath $logPath -Encoding utf8 -Append
-        env:
-          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-
-      # 4. Combine CHANGELOG and checksum into a unified release note
-      - task: PowerShell@2
-        displayName: Generate RELEASE_NOTE.md
-        inputs:
-          targetType: 'inline'
-          script: |
-            $releaseNote = "RELEASE_NOTE.md"
-            $changelog = "CHANGELOG.md"
-            $checksums = "checksums.md5"
-
-            Get-Content $changelog |
-              Out-File -FilePath $releaseNote -Encoding utf8
-
-            "`n`n" | Out-File -FilePath $releaseNote -Encoding utf8 -Append
-
-            Get-Content $checksums |
-              Out-File -FilePath $releaseNote -Encoding utf8 -Append
-
       # 5. Generate public release note
       - script: ci/scripts/generate-public-release-note.sh -ReleaseType $(Release.Type)
         displayName: Generate RELEASE_NOTE_PUBLIC.md
@@ -358,9 +317,7 @@ jobs:
         inputs:
           sourceFolder: '$(Build.SourcesDirectory)'
           contents: |
-            RELEASE_NOTE.md
             RELEASE_NOTE_PUBLIC.md
-            CHANGELOG.md
             checksums.md5
           targetFolder: "$(Build.ArtifactStagingDirectory)"
 
