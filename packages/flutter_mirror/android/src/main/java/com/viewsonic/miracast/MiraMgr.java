@@ -47,15 +47,11 @@ public class MiraMgr
     return session;
   }
 
-  public MiraSession removeSessionByPeerAddress(String peerMacAddress) {
+  private MiraSession findSessionByPeerAddress(String peerMacAddress) {
     for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
       MiraSession session = entry.getValue();
 
       if (session.getPeerAddress().equals(peerMacAddress)) {
-        String sessionId = entry.getKey();
-        mirror_sessions_.remove(sessionId);
-
-        Log.d(TAG, String.format("Remaining mira sessions = %d", mirror_sessions_.size()));
         return session;
       }
     }
@@ -156,13 +152,23 @@ public class MiraMgr
   @Override
   public void onPeerDisconnected(String peerMacAddress) {
     Log.d(TAG, "onPeerDisconnected:" + peerMacAddress);
-    MiraSession session = removeSessionByPeerAddress(peerMacAddress);
+    MiraSession session = findSessionByPeerAddress(peerMacAddress);
 
     if (session == null) {
       return;
     }
-    session.stop();
+
+    stopSession(session);
+  }
+
+  private void stopSession(MiraSession session) {
+    assert session != null;
+
     String sessionId = session.getId();
+
+    Log.d(TAG, "Stopping miracast session " + sessionId);
+
+    session.stop();
 
     if (listener_ != null) {
       listener_.onSessionEnd(sessionId);
@@ -172,6 +178,10 @@ public class MiraMgr
     if (textureId != null) {
       surfaceProvider_.releaseSurfaceTexture(textureId);
     }
+
+    mirror_sessions_.remove(sessionId);
+
+    Log.d(TAG, String.format("Remaining miracast sessions: %d", mirror_sessions_.size()));
   }
 
   @Override
