@@ -345,14 +345,13 @@ class ChannelProvider extends ChangeNotifier {
           _remoteScreenProvider.isRemoteScreenPublisherStarted()) {
         // UI
         providerContainer?.read(dialogProvider.notifier).showDialog(
-          title: 'Screen recording has stopped',
-          content:'Screen access ended, so recording stopped.',
-          confirmText: S.current.v3_group_dialog_accept,
-          width: 280,
-          height: 200,
-          onConfirm: () {
-          },
-        );
+              title: S.current.v3_recording_stopped_dialog_title,
+              content: S.current.v3_recording_stopped_dialog_msg,
+              confirmText: S.current.v3_group_dialog_accept,
+              width: 280,
+              height: 200,
+              onConfirm: () {},
+            );
         //
         await removeSender(fromSender: true, fromGroup: true);
 

@@ -395,5 +395,7 @@
   "v3_permission_title": "Permission required",
   "v3_permission_description": "Please go to device \"Setting\" then \"App\" menu to grant the permission.",
   "v3_lbl_permission_exit": "Exit",
-  "v3_permission_exit": "Exit"
+  "v3_permission_exit": "Exit",
+  "v3_recording_stopped_dialog_title": "Screen recording has stopped",
+  "v3_recording_stopped_dialog_msg": "Screen access ended, so recording stopped."
 }
