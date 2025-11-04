@@ -186,25 +186,27 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
             valueListenable: rtcConnector.reconnectChannelStateNotifier,
             builder:
                 (BuildContext context, ReconnectState value, Widget? child) {
-              if (rtcConnector.clickButtonWhenReconnect) {
-                if (value == ReconnectState.success) {
-                  rtcConnector.clickButtonWhenReconnect = false;
-                  v3Toast
-                      .makeReconnectToast(value,
-                          S.of(context).main_feature_reconnect_success_toast)
-                      ?.show(context);
-                  rtcConnector.reconnectChannelStateNotifier.value =
-                      ReconnectState.idle;
-                } else if (value == ReconnectState.fail) {
-                  rtcConnector.clickButtonWhenReconnect = false;
-                  v3Toast
-                      .makeReconnectToast(value,
-                          S.of(context).main_feature_reconnect_fail_toast)
-                      ?.show(context);
-                  rtcConnector.reconnectChannelStateNotifier.value =
-                      ReconnectState.idle;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (rtcConnector.clickButtonWhenReconnect) {
+                  if (value == ReconnectState.success) {
+                    rtcConnector.clickButtonWhenReconnect = false;
+                    v3Toast
+                        .makeReconnectToast(value,
+                            S.of(context).main_feature_reconnect_success_toast)
+                        ?.show(context);
+                    rtcConnector.reconnectChannelStateNotifier.value =
+                        ReconnectState.idle;
+                  } else if (value == ReconnectState.fail) {
+                    rtcConnector.clickButtonWhenReconnect = false;
+                    v3Toast
+                        .makeReconnectToast(value,
+                            S.of(context).main_feature_reconnect_fail_toast)
+                        ?.show(context);
+                    rtcConnector.reconnectChannelStateNotifier.value =
+                        ReconnectState.idle;
+                  }
                 }
-              }
+              });
               return Container();
             },
           ),
@@ -214,8 +216,6 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
   }
 
   _sendPresenterRemove(BuildContext context, RTCConnector rtcConnector) async {
-    final v3Toast = context.read<V3Toast>();
-
     if (widget.isForMenuUse) {
       trackEvent(
         'click_exit',
@@ -225,18 +225,6 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
       );
     }
     rtcConnector.trackSessionEvent('click_remove_device');
-
-    if (!rtcConnector.isChannelConnectAvailable()) {
-      rtcConnector.clickButtonWhenReconnect = true;
-      v3Toast
-          .makeReconnectToast(
-              rtcConnector.reconnectChannelState,
-              rtcConnector.reconnectChannelState == ReconnectState.reconnecting
-                  ? S.of(context).main_feature_reconnecting_toast
-                  : S.of(context).main_feature_reconnect_fail_toast)
-          ?.show(context);
-      return;
-    }
 
     await rtcConnector.disconnectPeerConnection();
     await rtcConnector.disconnectChannel(reason: 'User removed the presenter');
@@ -357,7 +345,7 @@ class ParticipantStandbyFeature extends TextSizeAwareStateless {
                 constraints: const BoxConstraints(),
                 onPressed: () async {
                   ChannelProvider channelProvider =
-                  Provider.of<ChannelProvider>(context, listen: false);
+                      Provider.of<ChannelProvider>(context, listen: false);
                   await channelProvider.startRemoteScreen(fromShare: true);
                   EasyThrottle.throttle(
                       'sendInviteRemoteScreen', const Duration(seconds: 1), () {
