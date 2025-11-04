@@ -3980,6 +3980,26 @@ class S {
   String get v3_permission_exit {
     return Intl.message('Exit', name: 'v3_permission_exit', desc: '', args: []);
   }
+
+  /// `Screen recording has stopped`
+  String get v3_recording_stopped_dialog_title {
+    return Intl.message(
+      'Screen recording has stopped',
+      name: 'v3_recording_stopped_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screen access ended, so recording stopped.`
+  String get v3_recording_stopped_dialog_msg {
+    return Intl.message(
+      'Screen access ended, so recording stopped.',
+      name: 'v3_recording_stopped_dialog_msg',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

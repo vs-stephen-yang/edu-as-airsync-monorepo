@@ -844,6 +844,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR Code",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Screen access ended, so recording stopped.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Screen recording has stopped",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Cancel",
     ),
