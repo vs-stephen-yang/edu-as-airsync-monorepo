@@ -71,6 +71,7 @@ jobs:
     steps:
       - checkout: self
         persistCredentials: true
+        clean: true
 
       # 配置 Git credentials for CocoaPods
       - script: |
@@ -125,6 +126,47 @@ jobs:
             fi
 
             echo "=================================="
+
+      # 清理之前的構建產物
+      - task: Bash@3
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning build artifacts..."
+
+            # Clean build outputs
+            if [ -d "build" ]; then
+              rm -rf "build"
+              echo "Removed build/ directory"
+            fi
+
+            # Clean debug info
+            if [ -d "$(Split.Debug.Root)" ]; then
+              rm -rf "$(Split.Debug.Root)"
+              echo "Removed debug_info/ directory"
+            fi
+
+            # Clean dart tool
+            if [ -d ".dart_tool" ]; then
+              rm -rf ".dart_tool"
+              echo "Removed .dart_tool/ directory"
+            fi
+
+            # Clean iOS derived data
+            if [ -d "ios/DerivedData" ]; then
+              rm -rf "ios/DerivedData"
+              echo "Removed ios/DerivedData/ directory"
+            fi
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            echo "Cleanup completed"
 
       # 讀 pubspec 的 version，計算 build number（prod +1）
       - task: Bash@3
@@ -340,3 +382,49 @@ jobs:
           file1_subfolder: "ipa_$(envName)"
           dir1: "$(Build.ArtifactStagingDirectory)/ipa/$(ARCHIVE_FILE_NAME)"
           dir1_subfolder: "archive_$(envName)"
+
+      # Clean up build artifacts after publishing
+      - task: Bash@3
+        displayName: Clean up build artifacts after publishing
+        condition: always()
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning up after build..."
+
+            # Clean build outputs
+            if [ -d "build" ]; then
+              rm -rf "build"
+              echo "Removed build/ directory"
+            fi
+
+            # Clean debug info
+            if [ -d "$(Split.Debug.Root)" ]; then
+              rm -rf "$(Split.Debug.Root)"
+              echo "Removed debug_info/ directory"
+            fi
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            # Clean iOS derived data and archives
+            if [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
+              echo "XCode DerivedData size before cleanup:"
+              du -sh "$HOME/Library/Developer/Xcode/DerivedData" 2>/dev/null || echo "Unable to calculate size"
+
+              # Clean old derived data (keep last day's worth)
+              find "$HOME/Library/Developer/Xcode/DerivedData" -mindepth 1 -maxdepth 1 -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+              echo "Cleaned old XCode DerivedData"
+            fi
+
+            # Clean iOS build cache
+            if [ -d "ios/build" ]; then
+              rm -rf "ios/build"
+              echo "Removed ios/build/ directory"
+            fi
+
+            echo "Post-build cleanup completed"

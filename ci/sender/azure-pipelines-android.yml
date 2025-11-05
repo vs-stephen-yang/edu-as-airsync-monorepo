@@ -64,6 +64,7 @@ jobs:
     steps:
       - checkout: self
         persistCredentials: true
+        clean: true
 
       # 若有 Azure Artifacts 私庫，打開這兩段；沒用也能安全跳過
       - task: MavenAuthenticate@0
@@ -82,6 +83,40 @@ jobs:
               echo "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$USERNAME"
               echo "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$PASSWORD"
             fi
+
+      - task: Bash@3
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning build artifacts..."
+
+            # Clean build outputs
+            if [ -d "build" ]; then
+              rm -rf "build"
+              echo "Removed build/ directory"
+            fi
+
+            # Clean debug info
+            if [ -d "$(Split.Debug.Root)" ]; then
+              rm -rf "$(Split.Debug.Root)"
+              echo "Removed debug_info/ directory"
+            fi
+
+            # Clean dart tool
+            if [ -d ".dart_tool" ]; then
+              rm -rf ".dart_tool"
+              echo "Removed .dart_tool/ directory"
+            fi
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            echo "Cleanup completed"
 
       - script: $(Flutter.Bin) pub get
         displayName: Fetch dependencies
@@ -228,3 +263,45 @@ jobs:
           file1_subfolder: "aab_$(envName)"
           file2: "$(Build.ArtifactStagingDirectory)/apk/$(APK_FILE_NAME)"
           file2_subfolder: "apk_$(envName)"
+
+      # Clean up build artifacts after publishing
+      - task: Bash@3
+        displayName: Clean up build artifacts after publishing
+        condition: always()
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning up after build..."
+
+            # Clean build outputs
+            if [ -d "build" ]; then
+              rm -rf "build"
+              echo "Removed build/ directory"
+            fi
+
+            # Clean debug info
+            if [ -d "$(Split.Debug.Root)" ]; then
+              rm -rf "$(Split.Debug.Root)"
+              echo "Removed debug_info/ directory"
+            fi
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            # Clean Gradle cache (optional, can save more space)
+            if [ -d "$HOME/.gradle/caches" ]; then
+              echo "Gradle cache size before cleanup:"
+              du -sh "$HOME/.gradle/caches" 2>/dev/null || echo "Unable to calculate size"
+
+              # Only clean temporary files, keep downloaded dependencies
+              if [ -d "$HOME/.gradle/caches/build-cache-1" ]; then
+                rm -rf "$HOME/.gradle/caches/build-cache-1"
+                echo "Cleaned Gradle build cache"
+              fi
+            fi
+
+            echo "Post-build cleanup completed"
