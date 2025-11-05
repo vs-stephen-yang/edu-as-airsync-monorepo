@@ -51,6 +51,23 @@ jobs:
         fetchDepth: 0
         fetchTags: true
         persistCredentials: true
+        clean: true
+
+      - task: Bash@3
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning build artifacts..."
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            echo "Cleanup completed"
 
       - task: Bash@3
         displayName: Extract Version and Build Number
@@ -173,3 +190,21 @@ jobs:
           targetPath: '$(Build.ArtifactStagingDirectory)/RELEASE_NOTE.txt'
           artifact: 'ReleaseNote'
           publishLocation: 'pipeline'
+
+      # Clean up build artifacts after publishing
+      - task: Bash@3
+        displayName: Clean up build artifacts after publishing
+        condition: always()
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning up after build..."
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            echo "Post-build cleanup completed"

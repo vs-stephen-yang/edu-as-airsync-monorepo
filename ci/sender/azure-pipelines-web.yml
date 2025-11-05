@@ -33,6 +33,7 @@ jobs:
       - checkout: self
         persistCredentials: "true"
         lfs: "true"
+        clean: true
 
       - task: PowerShell@2
         displayName: Authenticates git repos
@@ -41,6 +42,33 @@ jobs:
           script: |
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: PowerShell@2
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: 'inline'
+          script: |
+            Write-Host "Cleaning build artifacts..."
+
+            # Clean build outputs
+            if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+              Write-Host "Removed build/ directory"
+            }
+
+            # Clean dart tool
+            if (Test-Path ".dart_tool") {
+              Remove-Item -Path ".dart_tool" -Recurse -Force
+              Write-Host "Removed .dart_tool/ directory"
+            }
+
+            # Clean staging directory
+            if (Test-Path "$(Build.ArtifactStagingDirectory)") {
+              Remove-Item -Path "$(Build.ArtifactStagingDirectory)/*" -Recurse -Force
+              Write-Host "Cleaned ArtifactStagingDirectory"
+            }
+
+            Write-Host "Cleanup completed"
 
       - script: $(Flutter.Bin) pub get
         displayName: Download packages
@@ -81,3 +109,26 @@ jobs:
         inputs:
           targetPath: "$(Build.ArtifactStagingDirectory)"
           artifact: $(flavor)
+
+      # Clean up build artifacts after publishing
+      - task: PowerShell@2
+        displayName: Clean up build artifacts after publishing
+        condition: always()
+        inputs:
+          targetType: 'inline'
+          script: |
+            Write-Host "Cleaning up after build..."
+
+            # Clean build outputs
+            if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+              Write-Host "Removed build/ directory"
+            }
+
+            # Clean staging directory
+            if (Test-Path "$(Build.ArtifactStagingDirectory)") {
+              Remove-Item -Path "$(Build.ArtifactStagingDirectory)/*" -Recurse -Force
+              Write-Host "Cleaned ArtifactStagingDirectory"
+            }
+
+            Write-Host "Post-build cleanup completed"
