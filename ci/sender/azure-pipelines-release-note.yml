@@ -1,0 +1,175 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: ReleaseType
+    displayName: Release Type
+    type: string
+    default: Production
+    values:
+      - Production
+      - Stage
+      - HotFix
+      - R.C.
+
+  - name: AndroidDropboxUrl
+    displayName: Android Dropbox URL (leave as NONE to skip)
+    type: string
+    default: 'NONE'
+
+  - name: FromTag
+    displayName: Start from Git Tag (leave as AUTO for latest tag)
+    type: string
+    default: 'AUTO'
+
+pool:
+  name: "AirSync macOS Pool"
+
+variables:
+  # URL templates for each platform
+  - name: Windows.Stage.UrlTemplate
+    value: "https://store2.myviewboard.com/uploads/AirSyncSender-stage/AirSyncSender-{version}.{build}-stage.msi"
+  - name: Windows.Production.UrlTemplate
+    value: "https://store2.myviewboard.com/uploads/AirSyncSender-prod/AirSyncSender-{version}.{build}.msi"
+
+  - name: Mac.Stage.UrlTemplate
+    value: "https://myviewboardstorage.s3.us-west-2.amazonaws.com/uploads/AirSyncSenderOsx_Stage/AirSyncSender-{version}.{build}-s.pkg"
+  - name: Mac.Production.UrlTemplate
+    value: "https://myviewboardstorage.s3.us-west-2.amazonaws.com/uploads/AirSyncSenderOsx/AirSyncSender-{version}.{build}.pkg"
+
+  - name: Web.Stage.Url
+    value: "https://www.stage.airsync.net/"
+  - name: Web.Production.Url
+    value: "https://www.airsync.net/"
+
+jobs:
+  - job: GenerateReleaseNote
+    displayName: Generate Release Note
+
+    steps:
+      - checkout: self
+        fetchDepth: 0
+        fetchTags: true
+        persistCredentials: true
+
+      - task: Bash@3
+        displayName: Extract Version and Build Number
+        name: version_info
+        inputs:
+          targetType: inline
+          script: |
+            # Extract version from pubspec.yaml (e.g., 3.9.1+309003)
+            FULL_VERSION=$(grep "^version: " pubspec.yaml | sed 's/version: //' | tr -d ' ')
+            VERSION=$(echo $FULL_VERSION | cut -d'+' -f1)
+            BUILD=$(echo $FULL_VERSION | cut -d'+' -f2)
+
+            echo "Full Version: $FULL_VERSION"
+            echo "Version: $VERSION"
+            echo "Build: $BUILD"
+
+            # Set pipeline variables
+            echo "##vso[task.setvariable variable=Version;isOutput=true]$VERSION"
+            echo "##vso[task.setvariable variable=Build;isOutput=true]$BUILD"
+            echo "##vso[task.setvariable variable=FullVersion;isOutput=true]$FULL_VERSION"
+
+      - task: Bash@3
+        displayName: Generate Platform URLs
+        name: urls
+        inputs:
+          targetType: inline
+          script: |
+            VERSION="$(version_info.Version)"
+            BUILD="$(version_info.Build)"
+            RELEASE_TYPE="${{ parameters.ReleaseType }}"
+
+            echo "Generating URLs for version $VERSION, build $BUILD, release type $RELEASE_TYPE"
+
+            # Generate Windows URL
+            if [ "$RELEASE_TYPE" = "Stage" ] || [ "$RELEASE_TYPE" = "HotFix" ]; then
+              WINDOWS_TEMPLATE="$(Windows.Stage.UrlTemplate)"
+            else
+              WINDOWS_TEMPLATE="$(Windows.Production.UrlTemplate)"
+            fi
+            WINDOWS_URL=$(echo $WINDOWS_TEMPLATE | sed "s/{version}/$VERSION/g" | sed "s/{build}/$BUILD/g")
+
+            # Generate Mac URL
+            if [ "$RELEASE_TYPE" = "Stage" ] || [ "$RELEASE_TYPE" = "HotFix" ]; then
+              MAC_TEMPLATE="$(Mac.Stage.UrlTemplate)"
+            else
+              MAC_TEMPLATE="$(Mac.Production.UrlTemplate)"
+            fi
+            MAC_URL=$(echo $MAC_TEMPLATE | sed "s/{version}/$VERSION/g" | sed "s/{build}/$BUILD/g")
+
+            # Generate Web URL
+            if [ "$RELEASE_TYPE" = "Stage" ] || [ "$RELEASE_TYPE" = "HotFix" ]; then
+              WEB_URL="$(Web.Stage.Url)"
+            else
+              WEB_URL="$(Web.Production.Url)"
+            fi
+
+            echo "Windows URL: $WINDOWS_URL"
+            echo "Mac URL: $MAC_URL"
+            echo "Web URL: $WEB_URL"
+
+            # Set pipeline variables
+            echo "##vso[task.setvariable variable=WindowsUrl;isOutput=true]$WINDOWS_URL"
+            echo "##vso[task.setvariable variable=MacUrl;isOutput=true]$MAC_URL"
+            echo "##vso[task.setvariable variable=WebUrl;isOutput=true]$WEB_URL"
+
+      - task: Bash@3
+        displayName: Generate Release Note
+        inputs:
+          targetType: inline
+          script: |
+            RELEASE_TYPE="${{ parameters.ReleaseType }}"
+            ANDROID_URL="${{ parameters.AndroidDropboxUrl }}"
+            FROM_TAG="${{ parameters.FromTag }}"
+            WINDOWS_URL="$(urls.WindowsUrl)"
+            MAC_URL="$(urls.MacUrl)"
+            WEB_URL="$(urls.WebUrl)"
+
+            # Build command arguments
+            ARGS="-ReleaseType $RELEASE_TYPE"
+            ARGS="$ARGS -OutputPath $(Build.ArtifactStagingDirectory)/RELEASE_NOTE.txt"
+            ARGS="$ARGS -WindowsUrl \"$WINDOWS_URL\""
+            ARGS="$ARGS -MacUrl \"$MAC_URL\""
+            ARGS="$ARGS -WebUrl \"$WEB_URL\""
+
+            # Add Android URL only if not NONE
+            if [ "$ANDROID_URL" != "NONE" ] && [ -n "$ANDROID_URL" ]; then
+              echo "Adding Android URL: $ANDROID_URL"
+              ARGS="$ARGS -AndroidUrl \"$ANDROID_URL\""
+            else
+              echo "Skipping Android URL (set to NONE or empty)"
+            fi
+
+            # Add FromTag if not AUTO
+            if [ "$FROM_TAG" != "AUTO" ] && [ -n "$FROM_TAG" ]; then
+              echo "Using specified tag: $FROM_TAG"
+              ARGS="$ARGS -FromTag \"$FROM_TAG\""
+            else
+              echo "Using latest tag (AUTO)"
+            fi
+
+            echo "Running: ci/scripts/generate-sender-release-note.sh $ARGS"
+
+            # Execute the script
+            eval "ci/scripts/generate-sender-release-note.sh $ARGS"
+
+      - task: Bash@3
+        displayName: Display Release Note
+        inputs:
+          targetType: inline
+          script: |
+            echo "========================================"
+            echo "Generated Release Note:"
+            echo "========================================"
+            cat $(Build.ArtifactStagingDirectory)/RELEASE_NOTE.txt
+            echo "========================================"
+
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Release Note
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/RELEASE_NOTE.txt'
+          artifact: 'ReleaseNote'
+          publishLocation: 'pipeline'
