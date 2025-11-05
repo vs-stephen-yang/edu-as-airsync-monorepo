@@ -1,226 +1,218 @@
-# Azure Pipelines for Flutter macOS app (Display Cast / AirSync Sender)
-# - Builds Dev / Stage / Production (Store) flavors
-# - Uses a reusable build script: scripts/macos/build_macos_app.sh
-# - Publishes .app (zipped) and .xcarchive as artifacts
-# - Optional manual codesign of Sparkle bits + optional notarization + optional Sentry dSYM upload
-#
-# How to use:
-# 1) Put this file at the repo root as `azure-pipelines.yml` (or keep the name you like).
-# 2) Ensure `scripts/macos/build_macos_app.sh` is committed and executable.
-# 3) Set pipeline variables as needed (see "Variables" below).
-
-# ----------------------------
-# Triggers
-# ----------------------------
+# Azure Pipelines — Flutter macOS app (parity with iOS, with fixed submodule auth)
 trigger:
   tags:
-    include:
-      - '*'
+    include: ['*']
 pr: none
 
-# ----------------------------
-# Parameters
-# ----------------------------
 parameters:
-  - name: poolName
-    displayName: 'Agent pool name'
+  - name: PoolName
     type: string
-    default: 'AirSync macOS Pool'   # change to 'macos-latest' if you use Microsoft-hosted agents
-  - name: buildDev
-    displayName: 'Build Dev'
+    default: 'AirSync macOS Pool'
+  - name: BuildDev
     type: boolean
     default: false
-  - name: buildStage
-    displayName: 'Build Stage'
-    type: boolean
-    default: false
-  - name: buildProduction
-    displayName: 'Build Production (Store)'
+  - name: BuildStage
     type: boolean
     default: true
-  - name: manualCodesignSparkle
-    displayName: 'Manually codesign Sparkle components'
+  - name: BuildProduction
     type: boolean
     default: true
-  - name: notarize
-    displayName: 'Submit notarization (requires Apple creds)'
+  - name: UseDropboxUpload
     type: boolean
     default: false
-  - name: sentryUpload
-    displayName: 'Upload dSYMs to Sentry (requires Sentry creds)'
+  - name: UseSentryUpload
     type: boolean
     default: false
 
-# ----------------------------
-# Global variables (safe defaults). Override in pipeline UI or variable groups.
-# ----------------------------
 variables:
-  # Flutter setup
-  FLUTTER_CHANNEL: 'stable'
-  FLUTTER_VERSION: ''   # leave empty for latest channel
-  # Signing + Notarization
-  MACOS_SIGN_IDENTITY: 'Developer ID Application: ViewSonic International Corp. (AVR9NC3MVW)'
-  MACOS_TEAM_ID: 'AVR9NC3MVW'
-  APPLE_ID: ''                 # e.g. appleid@example.com (required if notarize=true)
-  NOTARY_KEYCHAIN_PROFILE: ''  # name configured via `xcrun notarytool store-credentials`
+  Flutter.Bin: 'fvm flutter'
+  Split.Debug.Root: 'build/debug-info'
+  Flutter.Build.Options: '--obfuscate'
+  Artifact.Root: '$(Build.ArtifactStagingDirectory)'
+  Src.Root: '$(Build.SourcesDirectory)'
   # Sentry
-  SENTRY_AUTH_TOKEN: ''        # required if sentryUpload=true
-  SENTRY_ORG: ''
-  SENTRY_PROJECT: ''
-  # Paths
-  ARTIFACT_DIR: '$(Build.ArtifactStagingDirectory)'
-  SRC_DIR: '$(Build.SourcesDirectory)'
+  Sentry.Org: ''
+  Sentry.Project: ''
+  Sentry.Auth.Token: ''
+  # Dropbox
+  Dropbox.DestPath: ''
 
-# ----------------------------
-# Template for a build job (reused for each environment)
-# ----------------------------
 stages:
-  - stage: Build
-    displayName: 'Build macOS app'
-    jobs:
-      # Dev
-      - job: dev
-        displayName: 'Build • Dev'
-        condition: and(succeeded(), eq(${{ parameters.buildDev }}, true))
-        pool:
-          name: ${{ parameters.poolName }}
-        steps:
-          - checkout: self
-            submodules: true
+- stage: QualityCheck
+  displayName: 'Quality Check (analyze + tests + coverage)'
+  jobs:
+  - job: Quality
+    pool: { name: ${{ parameters.PoolName }} }
+    steps:
+      - checkout: self
+        persistCredentials: true
+        submodules: false
+        clean: true
 
-          - bash: |
-              set -euo pipefail
-              echo "Installing Flutter ($FLUTTER_CHANNEL $FLUTTER_VERSION) ..."
-              TOOL_DIR="$AGENT_TOOLSDIRECTORY/flutter"
-              if [ ! -d "$TOOL_DIR" ]; then
-                mkdir -p "$TOOL_DIR"
-              fi
-              cd "$TOOL_DIR"
-              if [ ! -d "sdk" ]; then
-                git clone https://github.com/flutter/flutter.git sdk
-              fi
-              cd sdk
-              git fetch --all --tags
-              git checkout ${FLUTTER_VERSION:-$FLUTTER_CHANNEL}
-              echo "##vso[task.prependpath]$TOOL_DIR/sdk/bin"
-              flutter --version
-              flutter doctor -v
-              flutter precache --macos
-            displayName: 'Install Flutter SDK'
+      - bash: |
+          set -euo pipefail
+          git config --unset-all http.https://dev.azure.com.extraheader || true
+          git config --unset-all http.https://viewsonic-ssi.visualstudio.com.extraheader || true
+          git config http.https://dev.azure.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+          git config http.https://viewsonic-ssi.visualstudio.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+          git submodule sync --recursive
+          git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" submodule update --init --force --recursive --depth=1
+        displayName: 'Prepare Git auth & submodules'
 
-          - bash: |
-              set -euo pipefail
-              cd "$(SRC_DIR)"
-              flutter pub get
-              cd macos
-              pod install --repo-update
-            workingDirectory: $(Build.SourcesDirectory)
-            displayName: 'Flutter deps & CocoaPods'
+      - bash: |
+          set -euo pipefail
+          if [ -n "${GIT_USER:-}" ] && [ -n "${GIT_PAT:-}" ]; then
+            {
+              echo "machine viewsonic-ssi.visualstudio.com"
+              echo "  login ${GIT_USER}"
+              echo "  password ${GIT_PAT}"
+            } > ~/.netrc
+            chmod 0600 ~/.netrc
+          else
+            echo "##vso[task.logissue type=warning].netrc not configured (GIT_USER/GIT_PAT empty)"
+          fi
+        displayName: 'Configure Git credentials (.netrc)'
+        env:
+          GIT_USER: $(GIT_USER)
+          GIT_PAT: $(GIT_PAT)
 
-          - bash: |
-              set -euo pipefail
-              chmod +x scripts/macos/build_macos_app.sh
-              scripts/macos/build_macos_app.sh dev "" "" "$(ARTIFACT_DIR)/dev"             --manual-codesign-sparkle=${{ parameters.manualCodesignSparkle }}             --notarize=${{ parameters.notarize }}             --sentry-upload=${{ parameters.sentryUpload }}
-            workingDirectory: $(Build.SourcesDirectory)
-            displayName: 'Build Dev'
+      - bash: |
+          set -euo pipefail
+          if ! command -v rustup >/dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "##vso[task.prependpath]$HOME/.cargo/bin"
+          fi
+          rustup toolchain install stable
+          rustup default stable
+          rustup target add aarch64-apple-darwin
+          rustc -V
+          cargo -V
+        displayName: 'Install Rust (stable + aarch64 target)'
 
-          - publish: $(Build.ArtifactStagingDirectory)/dev
-            artifact: macos-dev
+      - bash: |
+          set -euo pipefail
+          ${FLUTTER_BIN} --version
+          ${FLUTTER_BIN} pub get
+          ${FLUTTER_BIN} analyze
+          ${FLUTTER_BIN} test --coverage
+        env: { FLUTTER_BIN: $(Flutter.Bin) }
+        displayName: 'Flutter analyze & test (coverage)'
+        workingDirectory: $(Build.SourcesDirectory)
 
-      # Stage
-      - job: stage
-        displayName: 'Build • Stage'
-        condition: and(succeeded(), eq(${{ parameters.buildStage }}, true))
-        pool:
-          name: ${{ parameters.poolName }}
-        steps:
-          - checkout: self
-            submodules: true
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish coverage artifact'
+        inputs:
+          PathtoPublish: '$(Build.SourcesDirectory)/coverage'
+          ArtifactName: 'coverage'
+          publishLocation: 'Container'
 
-          - bash: |
-              set -euo pipefail
-              echo "Installing Flutter ($FLUTTER_CHANNEL $FLUTTER_VERSION) ..."
-              TOOL_DIR="$AGENT_TOOLSDIRECTORY/flutter"
-              if [ ! -d "$TOOL_DIR" ]; then
-                mkdir -p "$TOOL_DIR"
-              fi
-              cd "$TOOL_DIR"
-              if [ ! -d "sdk" ]; then
-                git clone https://github.com/flutter/flutter.git sdk
-              fi
-              cd sdk
-              git fetch --all --tags
-              git checkout ${FLUTTER_VERSION:-$FLUTTER_CHANNEL}
-              echo "##vso[task.prependpath]$TOOL_DIR/sdk/bin"
-              flutter --version
-              flutter doctor -v
-              flutter precache --macos
-            displayName: 'Install Flutter SDK'
+- stage: Build
+  dependsOn: QualityCheck
+  displayName: 'Build macOS app'
+  jobs:
+  - job: BuildMatrix
+    pool: { name: ${{ parameters.PoolName }} }
+    strategy:
+      maxParallel: 3
+      matrix:
+        ${{ if eq(parameters.BuildDev, true) }}:
+          dev: { BuildEnv: 'dev', BuildConfig: 'Release-Dev', TargetDart: 'lib/main_dev.dart' }
+        ${{ if eq(parameters.BuildStage, true) }}:
+          stage: { BuildEnv: 'stage', BuildConfig: 'Release-Stage', TargetDart: 'lib/main_stage.dart' }
+        ${{ if eq(parameters.BuildProduction, true) }}:
+          production: { BuildEnv: 'production', BuildConfig: 'Release-Store', TargetDart: 'lib/main_production.dart' }
+    steps:
+      - checkout: self
+        persistCredentials: true
+        submodules: false
+        clean: true
 
-          - bash: |
-              set -euo pipefail
-              cd "$(SRC_DIR)"
-              flutter pub get
-              cd macos
-              pod install --repo-update
-            workingDirectory: $(Build.SourcesDirectory)
-            displayName: 'Flutter deps & CocoaPods'
+      - bash: |
+          set -euo pipefail
+          git config --unset-all http.https://dev.azure.com.extraheader || true
+          git config --unset-all http.https://viewsonic-ssi.visualstudio.com.extraheader || true
+          git config http.https://dev.azure.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+          git config http.https://viewsonic-ssi.visualstudio.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+          git submodule sync --recursive
+          git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" submodule update --init --force --recursive --depth=1
+        displayName: 'Prepare Git auth & submodules'
 
-          - bash: |
-              set -euo pipefail
-              chmod +x scripts/macos/build_macos_app.sh
-              scripts/macos/build_macos_app.sh stage "" "" "$(ARTIFACT_DIR)/stage"             --manual-codesign-sparkle=${{ parameters.manualCodesignSparkle }}             --notarize=${{ parameters.notarize }}             --sentry-upload=${{ parameters.sentryUpload }}
-            workingDirectory: $(Build.SourcesDirectory)
-            displayName: 'Build Stage'
+      - bash: |
+          set -euo pipefail
+          cd "$(Build.SourcesDirectory)"
+          raw="$(grep -E '^version:' pubspec.yaml | head -n1 | awk '{print $2}')"
+          name="${raw%%+*}"
+          code="${raw#*+}"
+          if [ "$code" = "$raw" ]; then code="0"; fi
+          if [ "$(BuildEnv)" = "production" ]; then code="$((code + 1))"; fi
+          echo "Resolved version: name=${name} code=${code} (env=$(BuildEnv))"
+          echo "##vso[task.setvariable variable=APP_VERSION_NAME]$name"
+          echo "##vso[task.setvariable variable=APP_VERSION_CODE]$code"
+          echo "##vso[task.setvariable variable=RELEASE_NAME]${name}+${code}"
+        displayName: 'Resolve version from pubspec.yaml'
 
-          - publish: $(Build.ArtifactStagingDirectory)/stage
-            artifact: macos-stage
+      - bash: |
+          set -euo pipefail
+          chmod +x scripts/macos/build_macos_app.sh
+          outdir="$(Artifact.Root)/$(BuildEnv)"
+          mkdir -p "$outdir"
+          scripts/macos/build_macos_app.sh "$(BuildEnv)" "$(APP_VERSION_NAME)" "$(APP_VERSION_CODE)" "$outdir"
+        displayName: 'Build macOS app'
+        env:
+          FLUTTER_BIN: $(Flutter.Bin)
+          SPLIT_DEBUG_ROOT: $(Split.Debug.Root)
+        workingDirectory: $(Build.SourcesDirectory)
 
-      # Production (Store)
-      - job: production
-        displayName: 'Build • Production (Store)'
-        condition: and(succeeded(), eq(${{ parameters.buildProduction }}, true))
-        pool:
-          name: ${{ parameters.poolName }}
-        steps:
-          - checkout: self
-            submodules: true
+      - ${{ if eq(parameters.UseSentryUpload, true) }}:
+        - bash: |
+            set -euo pipefail
+            FLAVOR="$(BuildConfig)"; FLAVOR="${FLAVOR#Release-}"
+            SRC_DIR="$(Build.SourcesDirectory)/$(Split.Debug.Root)/${FLAVOR}"
+            echo "Uploading Dart symbols from: ${SRC_DIR}"
+            if [ -d "${SRC_DIR}" ]; then
+              ${FLUTTER_BIN} pub run sentry_dart_plugin                 --include-sources --upload-sources                 --release "$(RELEASE_NAME)"                 --org "$(SENTRY_ORG)" --project "$(SENTRY_PROJECT)"                 --auth-token "$(SENTRY_AUTH_TOKEN)"                 -p macos "${SRC_DIR}"
+            else
+              echo "##vso[task.logissue type=warning]Split debug info directory not found: ${SRC_DIR}"
+            fi
+          env:
+            FLUTTER_BIN: $(Flutter.Bin)
+            SENTRY_ORG: $(Sentry.Org)
+            SENTRY_PROJECT: $(Sentry.Project)
+            SENTRY_AUTH_TOKEN: $(Sentry.Auth.Token)
+            RELEASE_NAME: $(RELEASE_NAME)
+          displayName: 'Upload Dart debug symbols to Sentry'
 
-          - bash: |
-              set -euo pipefail
-              echo "Installing Flutter ($FLUTTER_CHANNEL $FLUTTER_VERSION) ..."
-              TOOL_DIR="$AGENT_TOOLSDIRECTORY/flutter"
-              if [ ! -d "$TOOL_DIR" ]; then
-                mkdir -p "$TOOL_DIR"
-              fi
-              cd "$TOOL_DIR"
-              if [ ! -d "sdk" ]; then
-                git clone https://github.com/flutter/flutter.git sdk
-              fi
-              cd sdk
-              git fetch --all --tags
-              git checkout ${FLUTTER_VERSION:-$FLUTTER_CHANNEL}
-              echo "##vso[task.prependpath]$TOOL_DIR/sdk/bin"
-              flutter --version
-              flutter doctor -v
-              flutter precache --macos
-            displayName: 'Install Flutter SDK'
+      - bash: |
+          set -euo pipefail
+          ARTIFACT_DIR="$(Artifact.Root)/$(BuildEnv)"
+          echo "Artifacts in: $ARTIFACT_DIR"
+          shopt -s nullglob
+          found=false
+          for z in "$ARTIFACT_DIR"/*.zip; do
+            echo "  - $(basename "$z")"
+            found=true
+          done
+          if compgen -G "$ARTIFACT_DIR"/*.xcarchive > /dev/null; then
+            for d in "$ARTIFACT_DIR"/*.xcarchive; do
+              [ -d "$d" ] && echo "  - $(basename "$d") (xcarchive)"
+              found=true
+            done
+          fi
+          if [ "$found" = false ]; then
+            echo "##vso[task.logissue type=warning]No artifacts found in $ARTIFACT_DIR"
+          fi
+        displayName: 'Display Build Artifacts'
 
-          - bash: |
-              set -euo pipefail
-              cd "$(SRC_DIR)"
-              flutter pub get
-              cd macos
-              pod install --repo-update
-            workingDirectory: $(Build.SourcesDirectory)
-            displayName: 'Flutter deps & CocoaPods'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish artifacts'
+        inputs:
+          PathtoPublish: '$(Artifact.Root)/$(BuildEnv)'
+          ArtifactName: 'macos-$(BuildEnv)'
+          publishLocation: 'Container'
 
-          - bash: |
-              set -euo pipefail
-              chmod +x scripts/macos/build_macos_app.sh
-              scripts/macos/build_macos_app.sh production "" "" "$(ARTIFACT_DIR)/production"             --manual-codesign-sparkle=${{ parameters.manualCodesignSparkle }}             --notarize=${{ parameters.notarize }}             --sentry-upload=${{ parameters.sentryUpload }}
-            workingDirectory: $(Build.SourcesDirectory)
-            displayName: 'Build Production (Store)'
-
-          - publish: $(Build.ArtifactStagingDirectory)/production
-            artifact: macos-production
+      - ${{ if eq(parameters.UseDropboxUpload, true) }}:
+        - template: ci/upload-to-dropbox.yml
+          parameters:
+            file1: '$(Artifact.Root)/$(BuildEnv)/*.zip'
+            dir1: '$(Artifact.Root)/$(BuildEnv)/*.xcarchive'
+            destPath: '$(Dropbox.DestPath)'
