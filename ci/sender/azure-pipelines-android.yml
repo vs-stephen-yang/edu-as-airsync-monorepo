@@ -1,3 +1,10 @@
+# 讓使用者選擇要建置哪些環境
+parameters:
+  - name: buildDev
+    displayName: 'Build Dev Environment'
+    type: boolean
+    default: false
+
 trigger:
   tags:
     include:
@@ -48,10 +55,11 @@ jobs:
     strategy:
       maxParallel: 3
       matrix:
-        dev:
-          envName: "dev"
-          envMark: "D"
-          isProd: "false"
+        ${{ if eq(parameters.buildDev, true) }}:
+          dev:
+            envName: "dev"
+            envMark: "D"
+            isProd: "false"
         stage:
           envName: "stage"
           envMark: "S"
