@@ -1,218 +1,308 @@
-# Azure Pipelines — Flutter macOS app (parity with iOS, with fixed submodule auth)
+# 讓使用者選擇要建置哪些環境
+parameters:
+  - name: buildDev
+    displayName: 'Build Dev Environment'
+    type: boolean
+    default: false
+
+# Tag 觸發，QualityCheck → Build（dev/stage/production × App）
 trigger:
   tags:
-    include: ['*']
+    include:
+      - '*'
 pr: none
 
-parameters:
-  - name: PoolName
-    type: string
-    default: 'AirSync macOS Pool'
-  - name: BuildDev
-    type: boolean
-    default: false
-  - name: BuildStage
-    type: boolean
-    default: true
-  - name: BuildProduction
-    type: boolean
-    default: true
-  - name: UseDropboxUpload
-    type: boolean
-    default: false
-  - name: UseSentryUpload
-    type: boolean
-    default: false
+pool:
+  name: "AirSync macOS Pool"
 
 variables:
-  Flutter.Bin: 'fvm flutter'
-  Split.Debug.Root: 'build/debug-info'
-  Flutter.Build.Options: '--obfuscate'
-  Artifact.Root: '$(Build.ArtifactStagingDirectory)'
-  Src.Root: '$(Build.SourcesDirectory)'
-  # Sentry
-  Sentry.Org: ''
-  Sentry.Project: ''
-  Sentry.Auth.Token: ''
-  # Dropbox
-  Dropbox.DestPath: ''
+  - name: Flutter.Bin
+    value: fvm flutter
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate"
+  - name: Split.Debug.Root
+    value: "$(Build.ArtifactStagingDirectory)/debug_info"
+  - group: "sender-apple-p12"
+  - group: "dropbox-secrets"
+  - group: "sentry-airsync-sender"
 
-stages:
-- stage: QualityCheck
-  displayName: 'Quality Check (analyze + tests + coverage)'
-  jobs:
-  - job: Quality
-    pool: { name: ${{ parameters.PoolName }} }
+jobs:
+  # -------------------------------------------------------------------
+  # 1) 品質檢查
+  # -------------------------------------------------------------------
+  - job: QualityCheck
+    displayName: Quality Check (lint & test)
     steps:
       - checkout: self
-        persistCredentials: true
-        submodules: false
-        clean: true
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Analyze code
+      - script: $(Flutter.Bin) test -j 8 --no-pub --coverage --branch-coverage
+        displayName: Run tests with coverage
 
-      - bash: |
-          set -euo pipefail
-          git config --unset-all http.https://dev.azure.com.extraheader || true
-          git config --unset-all http.https://viewsonic-ssi.visualstudio.com.extraheader || true
-          git config http.https://dev.azure.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
-          git config http.https://viewsonic-ssi.visualstudio.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
-          git submodule sync --recursive
-          git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" submodule update --init --force --recursive --depth=1
-        displayName: 'Prepare Git auth & submodules'
-
-      - bash: |
-          set -euo pipefail
-          if [ -n "${GIT_USER:-}" ] && [ -n "${GIT_PAT:-}" ]; then
-            {
-              echo "machine viewsonic-ssi.visualstudio.com"
-              echo "  login ${GIT_USER}"
-              echo "  password ${GIT_PAT}"
-            } > ~/.netrc
-            chmod 0600 ~/.netrc
-          else
-            echo "##vso[task.logissue type=warning].netrc not configured (GIT_USER/GIT_PAT empty)"
-          fi
-        displayName: 'Configure Git credentials (.netrc)'
-        env:
-          GIT_USER: $(GIT_USER)
-          GIT_PAT: $(GIT_PAT)
-
-      - bash: |
-          set -euo pipefail
-          if ! command -v rustup >/dev/null 2>&1; then
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            echo "##vso[task.prependpath]$HOME/.cargo/bin"
-          fi
-          rustup toolchain install stable
-          rustup default stable
-          rustup target add aarch64-apple-darwin
-          rustc -V
-          cargo -V
-        displayName: 'Install Rust (stable + aarch64 target)'
-
-      - bash: |
-          set -euo pipefail
-          ${FLUTTER_BIN} --version
-          ${FLUTTER_BIN} pub get
-          ${FLUTTER_BIN} analyze
-          ${FLUTTER_BIN} test --coverage
-        env: { FLUTTER_BIN: $(Flutter.Bin) }
-        displayName: 'Flutter analyze & test (coverage)'
-        workingDirectory: $(Build.SourcesDirectory)
-
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish coverage artifact'
-        inputs:
-          PathtoPublish: '$(Build.SourcesDirectory)/coverage'
-          ArtifactName: 'coverage'
-          publishLocation: 'Container'
-
-- stage: Build
-  dependsOn: QualityCheck
-  displayName: 'Build macOS app'
-  jobs:
-  - job: BuildMatrix
-    pool: { name: ${{ parameters.PoolName }} }
+  # -------------------------------------------------------------------
+  # 2) Build（矩陣 dev/stage/production；輸出 App + xcarchive）
+  #    - 命名：MacOS_<env>_v<version>.app
+  #      env: dev=D, stage=S, production=""
+  #    - 版本號：production 的 build-number = pubspec code + 1；其餘使用原 code
+  # -------------------------------------------------------------------
+  - job: Build
+    displayName: Build macOS (App with signing)
+    dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
     strategy:
       maxParallel: 3
       matrix:
-        ${{ if eq(parameters.BuildDev, true) }}:
-          dev: { BuildEnv: 'dev', BuildConfig: 'Release-Dev', TargetDart: 'lib/main_dev.dart' }
-        ${{ if eq(parameters.BuildStage, true) }}:
-          stage: { BuildEnv: 'stage', BuildConfig: 'Release-Stage', TargetDart: 'lib/main_stage.dart' }
-        ${{ if eq(parameters.BuildProduction, true) }}:
-          production: { BuildEnv: 'production', BuildConfig: 'Release-Store', TargetDart: 'lib/main_production.dart' }
+        ${{ if eq(parameters.buildDev, true) }}:
+          dev:
+            envName: "dev"
+            envMark: "D"
+            isProd: "false"
+        stage:
+          envName: "stage"
+          envMark: "S"
+          isProd: "false"
+        production:
+          envName: "production"
+          envMark: ""          # 沒有尾碼
+          isProd: "true"
+
     steps:
       - checkout: self
         persistCredentials: true
-        submodules: false
-        clean: true
 
-      - bash: |
-          set -euo pipefail
-          git config --unset-all http.https://dev.azure.com.extraheader || true
-          git config --unset-all http.https://viewsonic-ssi.visualstudio.com.extraheader || true
-          git config http.https://dev.azure.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
-          git config http.https://viewsonic-ssi.visualstudio.com.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
-          git submodule sync --recursive
-          git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" submodule update --init --force --recursive --depth=1
-        displayName: 'Prepare Git auth & submodules'
+      # 配置 Git credentials for CocoaPods
+      - script: |
+          echo "machine viewsonic-ssi.visualstudio.com login $(GIT_CREDENTIALS)" > ~/.netrc
+          chmod 0600 ~/.netrc
+        displayName: Configure Git credentials
 
-      - bash: |
-          set -euo pipefail
-          cd "$(Build.SourcesDirectory)"
-          raw="$(grep -E '^version:' pubspec.yaml | head -n1 | awk '{print $2}')"
-          name="${raw%%+*}"
-          code="${raw#*+}"
-          if [ "$code" = "$raw" ]; then code="0"; fi
-          if [ "$(BuildEnv)" = "production" ]; then code="$((code + 1))"; fi
-          echo "Resolved version: name=${name} code=${code} (env=$(BuildEnv))"
-          echo "##vso[task.setvariable variable=APP_VERSION_NAME]$name"
-          echo "##vso[task.setvariable variable=APP_VERSION_CODE]$code"
-          echo "##vso[task.setvariable variable=RELEASE_NAME]${name}+${code}"
-        displayName: 'Resolve version from pubspec.yaml'
+      # 安裝 Rust（供某些 native dependencies 使用）
+      - script: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup target add aarch64-apple-darwin
+        displayName: Install Rust for arm64
 
-      - bash: |
-          set -euo pipefail
-          chmod +x scripts/macos/build_macos_app.sh
-          outdir="$(Artifact.Root)/$(BuildEnv)"
-          mkdir -p "$outdir"
-          scripts/macos/build_macos_app.sh "$(BuildEnv)" "$(APP_VERSION_NAME)" "$(APP_VERSION_CODE)" "$outdir"
-        displayName: 'Build macOS app'
-        env:
-          FLUTTER_BIN: $(Flutter.Bin)
-          SPLIT_DEBUG_ROOT: $(Split.Debug.Root)
-        workingDirectory: $(Build.SourcesDirectory)
-
-      - ${{ if eq(parameters.UseSentryUpload, true) }}:
-        - bash: |
-            set -euo pipefail
-            FLAVOR="$(BuildConfig)"; FLAVOR="${FLAVOR#Release-}"
-            SRC_DIR="$(Build.SourcesDirectory)/$(Split.Debug.Root)/${FLAVOR}"
-            echo "Uploading Dart symbols from: ${SRC_DIR}"
-            if [ -d "${SRC_DIR}" ]; then
-              ${FLUTTER_BIN} pub run sentry_dart_plugin                 --include-sources --upload-sources                 --release "$(RELEASE_NAME)"                 --org "$(SENTRY_ORG)" --project "$(SENTRY_PROJECT)"                 --auth-token "$(SENTRY_AUTH_TOKEN)"                 -p macos "${SRC_DIR}"
-            else
-              echo "##vso[task.logissue type=warning]Split debug info directory not found: ${SRC_DIR}"
-            fi
-          env:
-            FLUTTER_BIN: $(Flutter.Bin)
-            SENTRY_ORG: $(Sentry.Org)
-            SENTRY_PROJECT: $(Sentry.Project)
-            SENTRY_AUTH_TOKEN: $(Sentry.Auth.Token)
-            RELEASE_NAME: $(RELEASE_NAME)
-          displayName: 'Upload Dart debug symbols to Sentry'
-
-      - bash: |
-          set -euo pipefail
-          ARTIFACT_DIR="$(Artifact.Root)/$(BuildEnv)"
-          echo "Artifacts in: $ARTIFACT_DIR"
-          shopt -s nullglob
-          found=false
-          for z in "$ARTIFACT_DIR"/*.zip; do
-            echo "  - $(basename "$z")"
-            found=true
-          done
-          if compgen -G "$ARTIFACT_DIR"/*.xcarchive > /dev/null; then
-            for d in "$ARTIFACT_DIR"/*.xcarchive; do
-              [ -d "$d" ] && echo "  - $(basename "$d") (xcarchive)"
-              found=true
-            done
-          fi
-          if [ "$found" = false ]; then
-            echo "##vso[task.logissue type=warning]No artifacts found in $ARTIFACT_DIR"
-          fi
-        displayName: 'Display Build Artifacts'
-
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish artifacts'
+      # 驗證簽章身份
+      - task: Bash@3
+        displayName: Verify Code Signing Setup
         inputs:
-          PathtoPublish: '$(Artifact.Root)/$(BuildEnv)'
-          ArtifactName: 'macos-$(BuildEnv)'
-          publishLocation: 'Container'
+          targetType: inline
+          script: |
+            set -euo pipefail
 
-      - ${{ if eq(parameters.UseDropboxUpload, true) }}:
-        - template: ci/upload-to-dropbox.yml
-          parameters:
-            file1: '$(Artifact.Root)/$(BuildEnv)/*.zip'
-            dir1: '$(Artifact.Root)/$(BuildEnv)/*.xcarchive'
-            destPath: '$(Dropbox.DestPath)'
+            echo "=================================="
+            echo "🔍 Verifying code signing setup..."
+            echo "=================================="
+
+            echo "📜 Available signing identities:"
+            security find-identity -v -p codesigning
+
+            echo ""
+            echo "🔑 Keychains:"
+            security list-keychains
+
+            echo "=================================="
+
+      # 讀 pubspec 的 version，計算 build number（prod +1）
+      - task: Bash@3
+        displayName: Resolve version
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            ver_line=$(grep '^version: ' pubspec.yaml | head -n1 | cut -c 10-)
+            name="${ver_line%%+*}"
+            code_s="${ver_line##*+}"
+            if [ "$(isProd)" = "true" ]; then code=$((code_s+1)); else code=$code_s; fi
+
+            echo "##vso[task.setvariable variable=APP_VERSION_NAME]$name"
+            echo "##vso[task.setvariable variable=APP_VERSION_CODE]$code"
+
+            echo "Version: $name"
+            echo "Build Number: $code"
+
+      # 設定檔案名稱變數（供 Dropbox 上傳使用）
+      - task: Bash@3
+        displayName: Set artifact filenames
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            VERSION_NAME="${APP_VERSION_NAME}"
+            ENV_MARK="$(envMark)"
+
+            # 根據環境設定檔案名稱
+            if [ -n "$ENV_MARK" ]; then
+              APP_NAME="MacOS_${ENV_MARK}_v${VERSION_NAME}.app"
+              ARCHIVE_NAME="MacOS_Store_${ENV_MARK}_v${VERSION_NAME}.xcarchive"
+            else
+              APP_NAME="MacOS_v${VERSION_NAME}.app"
+              ARCHIVE_NAME="MacOS_Store_v${VERSION_NAME}.xcarchive"
+            fi
+
+            echo "##vso[task.setvariable variable=APP_FILE_NAME]$APP_NAME"
+            echo "##vso[task.setvariable variable=ARCHIVE_FILE_NAME]$ARCHIVE_NAME"
+
+            echo "App Filename: $APP_NAME"
+            echo "Archive Filename: $ARCHIVE_NAME"
+
+      # 建置 macOS App - 呼叫獨立腳本
+      - task: Bash@3
+        displayName: Build macOS App
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================================="
+            echo "🚀 Starting macOS App Build Process"
+            echo "=================================================="
+            echo ""
+
+            echo "📦 Build Configuration:"
+            echo "   Environment: $(envName)"
+            echo "   Version: $APP_VERSION_NAME"
+            echo "   Build Number: $APP_VERSION_CODE"
+            echo "   Output: $(Build.ArtifactStagingDirectory)/macos"
+            echo ""
+
+            echo "=================================================="
+            echo "🔨 Executing build script..."
+            echo "=================================================="
+            echo ""
+
+            # 呼叫建置腳本
+            bash scripts/macos/build_airsync_macos.sh \
+              "$(envName)" \
+              "$APP_VERSION_NAME" \
+              "$APP_VERSION_CODE" \
+              "$(Build.ArtifactStagingDirectory)/macos"
+
+            BUILD_EXIT_CODE=$?
+
+            echo ""
+            echo "=================================================="
+            if [ $BUILD_EXIT_CODE -eq 0 ]; then
+              echo "✅ Build completed successfully!"
+            else
+              echo "❌ Build failed with exit code: $BUILD_EXIT_CODE"
+            fi
+            echo "=================================================="
+
+            exit $BUILD_EXIT_CODE
+
+      # Upload debug symbols to Sentry
+      - task: Bash@3
+        displayName: Upload debug symbols to Sentry
+        condition: succeeded()
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================================="
+            echo "📤 Uploading debug symbols to Sentry"
+            echo "=================================================="
+            echo ""
+
+            DEBUG_INFO_PATH="$(Build.ArtifactStagingDirectory)/macos/$(APP_FILE_NAME).debug_info"
+
+            echo "Release: $(APP_VERSION_NAME)+$(APP_VERSION_CODE)"
+            echo "Debug symbols path: $DEBUG_INFO_PATH"
+            echo ""
+
+            # Check if debug info directory exists
+            if [ ! -d "$DEBUG_INFO_PATH" ]; then
+              echo "❌ Debug info directory not found: $DEBUG_INFO_PATH"
+              exit 1
+            fi
+
+            echo "✅ Debug info directory found"
+            echo "📊 Debug symbols files:"
+            ls -lh "$DEBUG_INFO_PATH" | head -10
+            echo ""
+
+            # Upload to Sentry
+            $(Flutter.Bin) packages pub run sentry_dart_plugin \
+              --include-sources \
+              --release $(APP_VERSION_NAME)+$(APP_VERSION_CODE) \
+              --upload-sources \
+              --wait \
+              --debug-symbols "$DEBUG_INFO_PATH"
+
+            echo ""
+            echo "=================================================="
+            echo "✅ Debug symbols uploaded successfully!"
+            echo "=================================================="
+
+      # 顯示產物資訊
+      - task: Bash@3
+        displayName: Display Build Artifacts
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================================="
+            echo "📦 Build Artifacts Summary"
+            echo "=================================================="
+            echo ""
+
+            ARTIFACT_DIR="$(Build.ArtifactStagingDirectory)/macos"
+
+            if [ -d "$ARTIFACT_DIR" ]; then
+              echo "📁 Artifact Directory: $ARTIFACT_DIR"
+              echo ""
+
+              echo "📊 Files and Directories:"
+              ls -lh "$ARTIFACT_DIR"
+              echo ""
+
+              # 計算 .app 大小
+              if [ -d "$ARTIFACT_DIR/$(APP_FILE_NAME)" ]; then
+                APP_SIZE=$(du -sh "$ARTIFACT_DIR/$(APP_FILE_NAME)" | cut -f1)
+                echo "📱 App size: $APP_SIZE"
+              fi
+
+              # 計算 .xcarchive 大小
+              if [ -d "$ARTIFACT_DIR/$(ARCHIVE_FILE_NAME)" ]; then
+                ARCHIVE_SIZE=$(du -sh "$ARTIFACT_DIR/$(ARCHIVE_FILE_NAME)" | cut -f1)
+                echo "📦 Archive size: $ARCHIVE_SIZE"
+              fi
+
+              echo ""
+              echo "=================================================="
+              echo "✅ Artifacts ready for publishing"
+              echo "=================================================="
+            else
+              echo "❌ Artifact directory not found: $ARTIFACT_DIR"
+              echo ""
+              echo "=================================================="
+            fi
+
+      # 發佈產物（每個 env 各一份）
+      - task: PublishPipelineArtifact@1
+        displayName: Publish macOS Artifact
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/macos'
+          artifact: 'macos_$(envName)'
+
+      # Upload to Dropbox
+      - template: ci/upload-to-dropbox.yml
+        parameters:
+          platform: macOS
+          envName: $(envName)
+          versionName: $(APP_VERSION_NAME)
+          runNumber: $(Build.BuildNumber)
+          dir1: "$(Build.ArtifactStagingDirectory)/macos/$(APP_FILE_NAME)"
+          dir1_subfolder: "app_$(envName)"
+          dir2: "$(Build.ArtifactStagingDirectory)/macos/$(ARCHIVE_FILE_NAME)"
+          dir2_subfolder: "archive_$(envName)"
