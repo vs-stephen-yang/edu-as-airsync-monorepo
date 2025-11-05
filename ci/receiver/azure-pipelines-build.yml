@@ -150,7 +150,12 @@ jobs:
             Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$username"
             Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$password"
 
-      - script: $(Flutter.Bin) pub get
+      - script: |
+          # Ensure git config is available in this shell session
+          git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+
+          # Download packages
+          $(Flutter.Bin) pub get
         displayName: Download packages
 
 
