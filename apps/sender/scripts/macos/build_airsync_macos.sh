@@ -147,6 +147,14 @@ echo "✅ .app 已複製"
 echo ""
 
 # ============================================
+# 移除 quarantine 屬性
+# ============================================
+echo "🧹 移除 quarantine 擴展屬性..."
+xattr -dr com.apple.quarantine "$OUTPUT_DIR/$APP_NAME" 2>/dev/null || true
+echo "✅ Quarantine 屬性已移除"
+echo ""
+
+# ============================================
 # Sparkle Framework Codesigning
 # ============================================
 echo "=================================================="
@@ -208,6 +216,14 @@ xcodebuild archive \
 
 echo ""
 echo "✅ xcarchive 建立完成"
+echo ""
+
+# ============================================
+# 移除 xcarchive 內的 quarantine 屬性
+# ============================================
+echo "🧹 移除 xcarchive 內的 quarantine 擴展屬性..."
+xattr -dr com.apple.quarantine "$OUTPUT_DIR/$ARCHIVE_NAME" 2>/dev/null || true
+echo "✅ Quarantine 屬性已移除"
 echo ""
 
 # ============================================
