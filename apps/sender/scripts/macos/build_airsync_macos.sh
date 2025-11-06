@@ -139,11 +139,37 @@ echo "✅ Flutter build 完成"
 echo ""
 
 # ============================================
-# 複製 .app 產物
+# 複製 .app 產物（透過 tar.gz 保留完整結構）
 # ============================================
-echo "📦 複製 .app 檔案..."
-cp -R "./build/macos/Build/Products/Release-Store/AirSync Sender.app" "$OUTPUT_DIR/$APP_NAME"
-echo "✅ .app 已複製"
+echo "📦 複製 .app 檔案（打包→複製→解壓）..."
+
+BUILD_APP_PATH="./build/macos/Build/Products/Release-Store/AirSync Sender.app"
+TEMP_TAR="/tmp/airsync_temp_app_$$.tar.gz"
+
+# 先在原地打包（保留符號連結和所有屬性）
+echo "  🗜️  打包原始 .app..."
+tar -czf "$TEMP_TAR" -C "./build/macos/Build/Products/Release-Store" "AirSync Sender.app"
+
+# 複製 tar.gz 到目的地
+echo "  📤 複製到目的地..."
+cp "$TEMP_TAR" "$OUTPUT_DIR/"
+
+# 在目的地解壓
+echo "  📦 解壓縮..."
+cd "$OUTPUT_DIR"
+tar -xzf "$(basename "$TEMP_TAR")"
+
+# 重新命名為目標名稱
+if [ "AirSync Sender.app" != "$APP_NAME" ]; then
+  mv "AirSync Sender.app" "$APP_NAME"
+fi
+
+# 清理臨時檔案
+rm -f "$(basename "$TEMP_TAR")" "$TEMP_TAR"
+
+cd - > /dev/null
+
+echo "✅ .app 已複製（透過 tar.gz）"
 echo ""
 
 # ============================================
