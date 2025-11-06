@@ -307,13 +307,13 @@ jobs:
           artifact: 'macos_$(envName)'
 
       # Upload to Dropbox
-#      - template: ci/upload-to-dropbox.yml
-#        parameters:
-#          platform: macOS
-#          envName: $(envName)
-#          versionName: $(APP_VERSION_NAME)
-#          runNumber: $(Build.BuildNumber)
-#          dir1: "$(Build.ArtifactStagingDirectory)/macos/$(APP_FILE_NAME)"
-#          dir1_subfolder: "app_$(envName)"
-#          file1: "$(Build.ArtifactStagingDirectory)/macos/$(ARCHIVE_TAR_NAME)"
-#          file1_subfolder: "archive_$(envName)"
+      - template: ci/upload-to-dropbox.yml
+        parameters:
+          platform: macOS
+          envName: $(envName)
+          versionName: $(APP_VERSION_NAME)
+          runNumber: $(Build.BuildNumber)
+          dir1: "$(Build.ArtifactStagingDirectory)/macos/$(APP_FILE_NAME)"
+          dir1_subfolder: "app_$(envName)"
+          file1: "$(Build.ArtifactStagingDirectory)/macos/$(ARCHIVE_TAR_NAME)"
+          file1_subfolder: "archive_$(envName)"
