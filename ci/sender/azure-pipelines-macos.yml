@@ -144,11 +144,16 @@ jobs:
               ARCHIVE_NAME="MacOS_Store_v${VERSION_NAME}.xcarchive"
             fi
 
+            # xcarchive 會打包成 tar.gz
+            ARCHIVE_TAR_NAME="${ARCHIVE_NAME}.tar.gz"
+
             echo "##vso[task.setvariable variable=APP_FILE_NAME]$APP_NAME"
             echo "##vso[task.setvariable variable=ARCHIVE_FILE_NAME]$ARCHIVE_NAME"
+            echo "##vso[task.setvariable variable=ARCHIVE_TAR_NAME]$ARCHIVE_TAR_NAME"
 
             echo "App Filename: $APP_NAME"
             echo "Archive Filename: $ARCHIVE_NAME"
+            echo "Archive Tar Filename: $ARCHIVE_TAR_NAME"
 
       # 建置 macOS App - 呼叫獨立腳本
       - task: Bash@3
@@ -272,10 +277,16 @@ jobs:
                 echo "📱 App size: $APP_SIZE"
               fi
 
-              # 計算 .xcarchive 大小
-              if [ -d "$ARTIFACT_DIR/$(ARCHIVE_FILE_NAME)" ]; then
-                ARCHIVE_SIZE=$(du -sh "$ARTIFACT_DIR/$(ARCHIVE_FILE_NAME)" | cut -f1)
-                echo "📦 Archive size: $ARCHIVE_SIZE"
+              # 計算 .xcarchive.tar.gz 大小
+              if [ -f "$ARTIFACT_DIR/$(ARCHIVE_TAR_NAME)" ]; then
+                ARCHIVE_SIZE=$(du -sh "$ARTIFACT_DIR/$(ARCHIVE_TAR_NAME)" | cut -f1)
+                echo "📦 Archive (tar.gz) size: $ARCHIVE_SIZE"
+              fi
+
+              # 計算 debug_info 大小
+              if [ -d "$ARTIFACT_DIR/$(APP_FILE_NAME).debug_info" ]; then
+                DEBUG_SIZE=$(du -sh "$ARTIFACT_DIR/$(APP_FILE_NAME).debug_info" | cut -f1)
+                echo "🐛 Debug Info size: $DEBUG_SIZE"
               fi
 
               echo ""
@@ -296,13 +307,13 @@ jobs:
           artifact: 'macos_$(envName)'
 
       # Upload to Dropbox
-      - template: ci/upload-to-dropbox.yml
-        parameters:
-          platform: macOS
-          envName: $(envName)
-          versionName: $(APP_VERSION_NAME)
-          runNumber: $(Build.BuildNumber)
-          dir1: "$(Build.ArtifactStagingDirectory)/macos/$(APP_FILE_NAME)"
-          dir1_subfolder: "app_$(envName)"
-          dir2: "$(Build.ArtifactStagingDirectory)/macos/$(ARCHIVE_FILE_NAME)"
-          dir2_subfolder: "archive_$(envName)"
+#      - template: ci/upload-to-dropbox.yml
+#        parameters:
+#          platform: macOS
+#          envName: $(envName)
+#          versionName: $(APP_VERSION_NAME)
+#          runNumber: $(Build.BuildNumber)
+#          dir1: "$(Build.ArtifactStagingDirectory)/macos/$(APP_FILE_NAME)"
+#          dir1_subfolder: "app_$(envName)"
+#          file1: "$(Build.ArtifactStagingDirectory)/macos/$(ARCHIVE_TAR_NAME)"
+#          file1_subfolder: "archive_$(envName)"

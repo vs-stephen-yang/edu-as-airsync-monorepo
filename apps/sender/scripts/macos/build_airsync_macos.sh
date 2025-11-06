@@ -211,6 +211,39 @@ echo "✅ xcarchive 建立完成"
 echo ""
 
 # ============================================
+# 打包 xcarchive 為 tar.gz（保留符號連結）
+# ============================================
+echo "=================================================="
+echo "📦 打包 xcarchive（保留符號連結）"
+echo "=================================================="
+echo ""
+
+# Azure Pipeline 的 PublishPipelineArtifact 會破壞符號連結
+# 所以我們需要先打包成 tar.gz 來保留符號連結結構
+
+ARCHIVE_TAR_NAME="${ARCHIVE_NAME}.tar.gz"
+
+cd "$OUTPUT_DIR"
+
+if [ -d "$ARCHIVE_NAME" ]; then
+  echo "🗜️  打包: $ARCHIVE_NAME -> $ARCHIVE_TAR_NAME"
+  tar -czf "$ARCHIVE_TAR_NAME" "$ARCHIVE_NAME"
+
+  ARCHIVE_TAR_SIZE=$(du -sh "$ARCHIVE_TAR_NAME" | cut -f1)
+  echo "✅ 打包完成，大小: $ARCHIVE_TAR_SIZE"
+
+  # 移除原始目錄以節省空間
+  echo "🗑️  移除原始 xcarchive 目錄"
+  rm -rf "$ARCHIVE_NAME"
+  echo ""
+else
+  echo "⚠️  找不到 xcarchive: $ARCHIVE_NAME"
+  echo ""
+fi
+
+cd - > /dev/null
+
+# ============================================
 # 顯示建置資訊
 # ============================================
 echo "=================================================="
@@ -220,18 +253,23 @@ echo ""
 
 echo "檔案清單："
 echo "  - $OUTPUT_DIR/$APP_NAME"
-echo "  - $OUTPUT_DIR/$ARCHIVE_NAME"
+echo "  - $OUTPUT_DIR/$ARCHIVE_TAR_NAME"
 echo "  - $OUTPUT_DIR/$DEBUG_INFO_DIR/"
 echo ""
 
 if [ -d "$OUTPUT_DIR/$APP_NAME" ]; then
   APP_SIZE=$(du -sh "$OUTPUT_DIR/$APP_NAME" | cut -f1)
-  echo "App 大小: $APP_SIZE"
+  echo "📱 App 大小: $APP_SIZE"
 fi
 
-if [ -d "$OUTPUT_DIR/$ARCHIVE_NAME" ]; then
-  ARCHIVE_SIZE=$(du -sh "$OUTPUT_DIR/$ARCHIVE_NAME" | cut -f1)
-  echo "Archive 大小: $ARCHIVE_SIZE"
+if [ -f "$OUTPUT_DIR/$ARCHIVE_TAR_NAME" ]; then
+  ARCHIVE_SIZE=$(du -sh "$OUTPUT_DIR/$ARCHIVE_TAR_NAME" | cut -f1)
+  echo "📦 Archive (tar.gz) 大小: $ARCHIVE_SIZE"
+fi
+
+if [ -d "$OUTPUT_DIR/$DEBUG_INFO_DIR" ]; then
+  DEBUG_SIZE=$(du -sh "$OUTPUT_DIR/$DEBUG_INFO_DIR" | cut -f1)
+  echo "🐛 Debug Info 大小: $DEBUG_SIZE"
 fi
 
 echo ""
