@@ -139,9 +139,11 @@ jobs:
             if [ -n "$ENV_MARK" ]; then
               APP_NAME="MacOS_${ENV_MARK}_v${VERSION_NAME}.app"
               ARCHIVE_NAME="MacOS_Store_${ENV_MARK}_v${VERSION_NAME}.xcarchive"
+              PKG_NAME="MacOS_Store_${ENV_MARK}_v${VERSION_NAME}.pkg"
             else
               APP_NAME="MacOS_v${VERSION_NAME}.app"
               ARCHIVE_NAME="MacOS_Store_v${VERSION_NAME}.xcarchive"
+              PKG_NAME="MacOS_Store_v${VERSION_NAME}.pkg"
             fi
 
             # xcarchive 會打包成 tar.gz
@@ -150,10 +152,12 @@ jobs:
             echo "##vso[task.setvariable variable=APP_FILE_NAME]$APP_NAME"
             echo "##vso[task.setvariable variable=ARCHIVE_FILE_NAME]$ARCHIVE_NAME"
             echo "##vso[task.setvariable variable=ARCHIVE_TAR_NAME]$ARCHIVE_TAR_NAME"
+            echo "##vso[task.setvariable variable=PKG_FILE_NAME]$PKG_NAME"
 
             echo "App Filename: $APP_NAME"
             echo "Archive Filename: $ARCHIVE_NAME"
             echo "Archive Tar Filename: $ARCHIVE_TAR_NAME"
+            echo "PKG Filename: $PKG_NAME"
 
       # 建置 macOS App - 呼叫獨立腳本
       - task: Bash@3
@@ -277,6 +281,12 @@ jobs:
                 echo "📱 App size: $APP_SIZE"
               fi
 
+              # 計算 .pkg 大小
+              if [ -f "$ARTIFACT_DIR/$(PKG_FILE_NAME)" ]; then
+                PKG_SIZE=$(du -sh "$ARTIFACT_DIR/$(PKG_FILE_NAME)" | cut -f1)
+                echo "📦 PKG size: $PKG_SIZE"
+              fi
+
               # 計算 .xcarchive.tar.gz 大小
               if [ -f "$ARTIFACT_DIR/$(ARCHIVE_TAR_NAME)" ]; then
                 ARCHIVE_SIZE=$(du -sh "$ARTIFACT_DIR/$(ARCHIVE_TAR_NAME)" | cut -f1)
@@ -317,3 +327,5 @@ jobs:
           dir1_subfolder: "app_$(envName)"
           file1: "$(Build.ArtifactStagingDirectory)/macos/$(ARCHIVE_TAR_NAME)"
           file1_subfolder: "archive_$(envName)"
+          file2: "$(Build.ArtifactStagingDirectory)/macos/$(PKG_FILE_NAME)"
+          file2_subfolder: "pkg_$(envName)"
