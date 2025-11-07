@@ -206,43 +206,6 @@ steps:
         echo "✅ Upload to Dropbox completed!"
         echo "=================================="
         echo "📁 Dropbox path: $DROPBOX_BASE"
-        echo ""
-
-        # Create shared link for the folder
-        echo "🔗 Creating shared link..."
-        SHARED_LINK_RESPONSE=$(curl -s -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings \
-          --header "Authorization: Bearer $ACCESS_TOKEN" \
-          --header "Content-Type: application/json" \
-          --data "{\"path\": \"$DROPBOX_BASE\", \"settings\": {\"requested_visibility\": \"public\"}}")
-
-        # Extract the shared link URL
-        SHARED_LINK=$(echo "$SHARED_LINK_RESPONSE" | tr ',' '\n' | grep '"url"' | head -1 | cut -d '"' -f4)
-
-        # If link already exists, try to get existing link
-        if [ -z "$SHARED_LINK" ] || [ "$SHARED_LINK" = "null" ]; then
-          echo "ℹ️  Shared link may already exist, trying to retrieve existing links..."
-          EXISTING_LINKS_RESPONSE=$(curl -s -X POST https://api.dropboxapi.com/2/sharing/list_shared_links \
-            --header "Authorization: Bearer $ACCESS_TOKEN" \
-            --header "Content-Type: application/json" \
-            --data "{\"path\": \"$DROPBOX_BASE\"}")
-
-          SHARED_LINK=$(echo "$EXISTING_LINKS_RESPONSE" | tr ',' '\n' | grep '"url"' | head -1 | cut -d '"' -f4)
-        fi
-
-        echo ""
-        echo "=================================="
-        echo "📦 Dropbox Download Information"
-        echo "=================================="
-        if [ -n "$SHARED_LINK" ] && [ "$SHARED_LINK" != "null" ]; then
-          # Convert www.dropbox.com to dl.dropboxusercontent.com for direct download
-          DOWNLOAD_LINK="${SHARED_LINK/www.dropbox.com/dl.dropboxusercontent.com}"
-          DOWNLOAD_LINK="${DOWNLOAD_LINK/?dl=0/?dl=1}"
-          echo "🔗 Shared Link: $SHARED_LINK"
-          echo "📥 Direct Download: $DOWNLOAD_LINK"
-        else
-          echo "⚠️  Could not create/retrieve shared link"
-          echo "📁 Dropbox Path: $DROPBOX_BASE"
-        fi
         echo "=================================="
         echo ""
 

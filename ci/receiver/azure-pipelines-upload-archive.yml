@@ -16,10 +16,13 @@ pool:
 
 variables:
   - group: "dropbox-secrets"
+  - group: "sentry-airsync-receiver"
+  - name: Flutter.Bin
+    value: fvm flutter
 
 jobs:
   - job: UploadToDropbox
-    displayName: Upload Build Artifacts to Dropbox
+    displayName: Upload Build Artifacts to Archive
     steps:
       - checkout: self
         fetchDepth: 1
@@ -47,6 +50,46 @@ jobs:
           runVersion: 'specific'
           runId: $(resources.pipeline.buildPipeline.runID)
           path: '$(Pipeline.Workspace)/artifacts'
+
+      # Prepare debug symbols for Sentry upload
+      - task: Bash@3
+        displayName: Prepare debug symbols
+        inputs:
+          targetType: 'inline'
+          script: |
+            set -euo pipefail
+
+            echo "🔍 Preparing debug symbols for Sentry upload..."
+
+            # Create debug_info directory in source root
+            DEBUG_INFO_DIR="$(Build.SourcesDirectory)/debug_info"
+            mkdir -p "$DEBUG_INFO_DIR"
+
+            # Merge debug symbols from all artifacts
+            ARTIFACTS_DIR="$(Pipeline.Workspace)/artifacts"
+            for artifact_dir in "$ARTIFACTS_DIR"/*; do
+              if [ -d "$artifact_dir/debug_symbols/debug_info" ]; then
+                artifact_name=$(basename "$artifact_dir")
+                echo "  Copying debug symbols from $artifact_name..."
+                cp -r "$artifact_dir/debug_symbols/debug_info"/* "$DEBUG_INFO_DIR/" 2>/dev/null || true
+              fi
+            done
+
+            # Check if we have debug symbols
+            if [ -d "$DEBUG_INFO_DIR" ] && [ "$(ls -A $DEBUG_INFO_DIR)" ]; then
+              echo "✅ Debug symbols prepared successfully"
+              ls -lh "$DEBUG_INFO_DIR" | head -20
+            else
+              echo "⚠️  No debug symbols found"
+            fi
+
+      # Upload debug symbols to Sentry
+      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
+        displayName: Upload debug symbols to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
 
       - task: Bash@3
         displayName: Organize files for Dropbox
