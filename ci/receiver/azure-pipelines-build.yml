@@ -196,14 +196,14 @@ jobs:
         condition: eq(variables['appbundle'], true)
 
 
-      # Uploading debug symbols
-      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
-        displayName: Uploading debug symbols
-        enabled: "true"
-        env:
-          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
-          SENTRY_ORG: $(SENTRY_ORG)
-          SENTRY_PROJECT: $(SENTRY_PROJECT)
+      # Uploading debug symbols - MOVED TO upload-dropbox.yml
+      # - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
+      #   displayName: Uploading debug symbols
+      #   enabled: "true"
+      #   env:
+      #     SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+      #     SENTRY_ORG: $(SENTRY_ORG)
+      #     SENTRY_PROJECT: $(SENTRY_PROJECT)
 
       - task: AndroidSigning@3
         displayName: Sign App - ifp
@@ -237,6 +237,15 @@ jobs:
             build/app/outputs/bundle/**/*.aab
 
           targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      # Copy debug symbols for Sentry upload (will be uploaded in upload pipeline)
+      - task: CopyFiles@2
+        displayName: Copy debug symbols
+        inputs:
+          flattenFolders: false
+          contents: |
+            debug_info/**
+          targetFolder: "$(Build.ArtifactStagingDirectory)/debug_symbols"
 
       # Rename single APK
       - task: PowerShell@2
