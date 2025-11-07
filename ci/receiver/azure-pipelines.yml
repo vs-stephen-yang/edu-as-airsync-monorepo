@@ -47,7 +47,12 @@ jobs:
             Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
             Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
 
-      - script: $(Flutter.Bin) pub get
+      - script: |
+          # Ensure git config is available in this shell session
+          git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+
+          # Download packages
+          $(Flutter.Bin) pub get
         displayName: Download packages
         workingDirectory: "$(Build.SourcesDirectory)"
 
