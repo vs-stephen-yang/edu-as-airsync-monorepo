@@ -88,15 +88,18 @@ esac
 if [ -n "$ENV_MARK" ]; then
   APP_NAME="MacOS_${ENV_MARK}_v${VERSION_NAME}.app"
   ARCHIVE_NAME="MacOS_Store_${ENV_MARK}_v${VERSION_NAME}.xcarchive"
+  PKG_NAME="MacOS_Store_${ENV_MARK}_v${VERSION_NAME}.pkg"
 else
   APP_NAME="MacOS_v${VERSION_NAME}.app"
   ARCHIVE_NAME="MacOS_Store_v${VERSION_NAME}.xcarchive"
+  PKG_NAME="MacOS_Store_v${VERSION_NAME}.pkg"
 fi
 
 DEBUG_INFO_DIR="${APP_NAME}.debug_info"
 
 echo "App 名稱      : $APP_NAME"
 echo "Archive 名稱  : $ARCHIVE_NAME"
+echo "PKG 名稱      : $PKG_NAME"
 echo "Debug Info    : $DEBUG_INFO_DIR"
 echo "Entry Point   : $MAIN_ENTRY"
 echo "Entitlements  : $ENTITLEMENTS"
@@ -253,6 +256,64 @@ echo "✅ Quarantine 屬性已移除"
 echo ""
 
 # ============================================
+# 從 xcarchive 匯出 pkg（用於上傳至 TestFlight）
+# ============================================
+echo "=================================================="
+echo "📦 從 xcarchive 匯出 pkg 檔案"
+echo "=================================================="
+echo ""
+
+EXPORT_OPTIONS_PLIST="scripts/macos/ExportOptions.plist"
+EXPORT_TEMP_DIR="$OUTPUT_DIR/export_temp"
+
+# 檢查 ExportOptions.plist 是否存在
+if [ ! -f "$EXPORT_OPTIONS_PLIST" ]; then
+  echo "❌ ExportOptions.plist 不存在: $EXPORT_OPTIONS_PLIST"
+  exit 1
+fi
+
+echo "Export Options: $EXPORT_OPTIONS_PLIST"
+echo "Export Temp Dir: $EXPORT_TEMP_DIR"
+echo ""
+
+# 使用 xcodebuild -exportArchive 匯出 pkg
+xcodebuild -exportArchive \
+  -archivePath "$OUTPUT_DIR/$ARCHIVE_NAME" \
+  -exportPath "$EXPORT_TEMP_DIR" \
+  -exportOptionsPlist "$EXPORT_OPTIONS_PLIST"
+
+echo ""
+
+# 尋找匯出的 pkg 檔案並移動到輸出目錄
+if [ -d "$EXPORT_TEMP_DIR" ]; then
+  # 找到 pkg 檔案（xcodebuild 會自動命名）
+  EXPORTED_PKG=$(find "$EXPORT_TEMP_DIR" -name "*.pkg" -type f | head -n 1)
+
+  if [ -n "$EXPORTED_PKG" ] && [ -f "$EXPORTED_PKG" ]; then
+    echo "✅ 找到匯出的 pkg: $(basename "$EXPORTED_PKG")"
+
+    # 重新命名並移動到輸出目錄
+    mv "$EXPORTED_PKG" "$OUTPUT_DIR/$PKG_NAME"
+    echo "✅ PKG 已重新命名為: $PKG_NAME"
+
+    PKG_SIZE=$(du -sh "$OUTPUT_DIR/$PKG_NAME" | cut -f1)
+    echo "📦 PKG 大小: $PKG_SIZE"
+  else
+    echo "⚠️  找不到匯出的 pkg 檔案"
+  fi
+
+  # 清理暫存目錄
+  rm -rf "$EXPORT_TEMP_DIR"
+  echo "🗑️  已清理暫存目錄"
+else
+  echo "❌ 匯出目錄不存在: $EXPORT_TEMP_DIR"
+fi
+
+echo ""
+echo "✅ PKG 匯出完成"
+echo ""
+
+# ============================================
 # 打包 xcarchive 為 tar.gz（保留符號連結）
 # ============================================
 echo "=================================================="
@@ -295,6 +356,7 @@ echo ""
 
 echo "檔案清單："
 echo "  - $OUTPUT_DIR/$APP_NAME"
+echo "  - $OUTPUT_DIR/$PKG_NAME"
 echo "  - $OUTPUT_DIR/$ARCHIVE_TAR_NAME"
 echo "  - $OUTPUT_DIR/$DEBUG_INFO_DIR/"
 echo ""
@@ -302,6 +364,11 @@ echo ""
 if [ -d "$OUTPUT_DIR/$APP_NAME" ]; then
   APP_SIZE=$(du -sh "$OUTPUT_DIR/$APP_NAME" | cut -f1)
   echo "📱 App 大小: $APP_SIZE"
+fi
+
+if [ -f "$OUTPUT_DIR/$PKG_NAME" ]; then
+  PKG_SIZE=$(du -sh "$OUTPUT_DIR/$PKG_NAME" | cut -f1)
+  echo "📦 PKG 大小: $PKG_SIZE"
 fi
 
 if [ -f "$OUTPUT_DIR/$ARCHIVE_TAR_NAME" ]; then
