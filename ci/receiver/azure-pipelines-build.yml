@@ -245,6 +245,7 @@ jobs:
           flattenFolders: false
           contents: |
             debug_info/**
+            build/app/intermediates/stripped_native_libs/**
           targetFolder: "$(Build.ArtifactStagingDirectory)/debug_symbols"
 
       # Rename single APK

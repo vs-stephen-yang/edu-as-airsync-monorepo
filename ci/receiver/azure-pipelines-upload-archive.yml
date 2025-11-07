@@ -1,7 +1,20 @@
 trigger: none
 pr: none
 
-# Automatically triggered when Display_Flutter-Build completes successfully
+# This pipeline can be triggered in two ways:
+# 1. Automatically when Display_Flutter-Build completes successfully
+# 2. Manually via Azure DevOps UI (can specify custom build run ID)
+
+parameters:
+  - name: manualTrigger
+    displayName: 'Manual Trigger Mode'
+    type: boolean
+    default: false
+  - name: buildRunId
+    displayName: 'Build Pipeline Run ID (for manual trigger)'
+    type: string
+    default: 'latest'
+
 resources:
   pipelines:
     - pipeline: buildPipeline
@@ -19,6 +32,12 @@ variables:
   - group: "sentry-airsync-receiver"
   - name: Flutter.Bin
     value: fvm flutter
+  # Determine which run ID to use based on trigger type
+  - name: effectiveRunId
+    ${{ if eq(parameters.manualTrigger, true) }}:
+      value: ${{ parameters.buildRunId }}
+    ${{ else }}:
+      value: $(resources.pipeline.buildPipeline.runID)
 
 jobs:
   - job: UploadToDropbox
@@ -35,9 +54,17 @@ jobs:
             echo "=================================="
             echo "📦 Dropbox Upload Pipeline"
             echo "=================================="
-            echo "Triggered by: $(resources.pipeline.buildPipeline.sourceBranch)"
-            echo "Build Pipeline Run ID: $(resources.pipeline.buildPipeline.runID)"
-            echo "Build Pipeline Run Number: $(resources.pipeline.buildPipeline.runName)"
+            echo "Manual Trigger Mode: ${{ parameters.manualTrigger }}"
+            if [ "${{ parameters.manualTrigger }}" = "True" ]; then
+              echo "📝 Manual Trigger"
+              echo "Build Run ID Parameter: ${{ parameters.buildRunId }}"
+              echo "Effective Run ID: $(effectiveRunId)"
+            else
+              echo "⚡ Auto Trigger"
+              echo "Triggered by: $(resources.pipeline.buildPipeline.sourceBranch)"
+              echo "Build Pipeline Run ID: $(resources.pipeline.buildPipeline.runID)"
+              echo "Build Pipeline Run Number: $(resources.pipeline.buildPipeline.runName)"
+            fi
             echo "=================================="
 
       # Download all artifacts from the build pipeline
@@ -47,45 +74,127 @@ jobs:
           source: 'specific'
           project: '$(System.TeamProject)'
           pipeline: 'Display_Flutter-Build'
-          runVersion: 'specific'
-          runId: $(resources.pipeline.buildPipeline.runID)
+          ${{ if eq(parameters.manualTrigger, true) }}:
+            ${{ if eq(parameters.buildRunId, 'latest') }}:
+              runVersion: 'latestFromBranch'
+              branchName: 'refs/heads/master'
+            ${{ else }}:
+              runVersion: 'specific'
+              runId: $(effectiveRunId)
+          ${{ else }}:
+            runVersion: 'specific'
+            runId: $(effectiveRunId)
           path: '$(Pipeline.Workspace)/artifacts'
 
-      # Prepare debug symbols for Sentry upload
+      # Upload debug symbols to Sentry (upload each variant separately)
+      # COMMENTED OUT FOR TESTING DROPBOX UPLOAD ONLY
       - task: Bash@3
-        displayName: Prepare debug symbols
+        displayName: Upload debug symbols to Sentry
         inputs:
           targetType: 'inline'
           script: |
             set -euo pipefail
-
-            echo "🔍 Preparing debug symbols for Sentry upload..."
-
-            # Create debug_info directory in source root
-            DEBUG_INFO_DIR="$(Build.SourcesDirectory)/debug_info"
-            mkdir -p "$DEBUG_INFO_DIR"
-
-            # Merge debug symbols from all artifacts
+            
+            echo "🔍 Uploading debug symbols for each variant to Sentry..."
+            
             ARTIFACTS_DIR="$(Pipeline.Workspace)/artifacts"
+            DEBUG_INFO_DIR="$(Build.SourcesDirectory)/debug_info"
+            UPLOAD_COUNT=0
+            SUCCESS_COUNT=0
+            FAIL_COUNT=0
+            
+            # Loop through each artifact and upload its debug symbols separately
             for artifact_dir in "$ARTIFACTS_DIR"/*; do
               if [ -d "$artifact_dir/debug_symbols/debug_info" ]; then
                 artifact_name=$(basename "$artifact_dir")
-                echo "  Copying debug symbols from $artifact_name..."
-                cp -r "$artifact_dir/debug_symbols/debug_info"/* "$DEBUG_INFO_DIR/" 2>/dev/null || true
+            
+                # Skip ReleaseNote artifact
+                if [ "$artifact_name" = "ReleaseNote" ]; then
+                  continue
+                fi
+            
+                echo ""
+                echo "================================================"
+                echo "📤 Uploading variant: $artifact_name"
+                echo "================================================"
+            
+                # Clean and prepare debug_info directory
+                rm -rf "$DEBUG_INFO_DIR"
+                mkdir -p "$DEBUG_INFO_DIR"
+
+                # Copy this variant's debug symbols (.symbols files)
+                cp -r "$artifact_dir/debug_symbols/debug_info"/* "$DEBUG_INFO_DIR/"
+
+                # Copy and restore build directory structure for stripped_native_libs
+                if [ -d "$artifact_dir/debug_symbols/build/app/intermediates/stripped_native_libs" ]; then
+                  BUILD_DIR="$(Build.SourcesDirectory)/build/app/intermediates"
+                  mkdir -p "$BUILD_DIR"
+                  cp -r "$artifact_dir/debug_symbols/build/app/intermediates/stripped_native_libs" "$BUILD_DIR/"
+                  echo "✓ Restored build/app/intermediates/stripped_native_libs"
+                fi
+
+                # Display what we're uploading
+                echo "Debug symbols to upload:"
+                ls -lhR "$DEBUG_INFO_DIR"
+            
+                # Calculate checksums for logging
+                echo "Checksums:"
+                cd "$DEBUG_INFO_DIR"
+                find . -type f -name "*.symbols" | sort | while read file; do
+                  # Use md5 on macOS, md5sum on Linux
+                  if command -v md5sum > /dev/null 2>&1; then
+                    md5sum "$file"
+                  elif command -v md5 > /dev/null 2>&1; then
+                    md5 -r "$file"
+                  else
+                    echo "WARNING: No MD5 utility found - skipping checksum"
+                  fi
+                done
+                cd - > /dev/null
+            
+                # Upload to Sentry (using default release from pubspec.yaml)
+                # sentry_dart_plugin will automatically scan:
+                # 1. debug_info/*.symbols
+                # 2. build/app/intermediates/stripped_native_libs/**/*.so
+                echo "Uploading to Sentry..."
+                if $(Flutter.Bin) packages pub run sentry_dart_plugin; then
+                  echo "✅ Successfully uploaded debug symbols for $artifact_name"
+                  SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+                else
+                  echo "❌ Failed to upload debug symbols for $artifact_name"
+                  FAIL_COUNT=$((FAIL_COUNT + 1))
+                fi
+
+                # Clean up build directory after upload
+                if [ -d "$(Build.SourcesDirectory)/build" ]; then
+                  rm -rf "$(Build.SourcesDirectory)/build"
+                  echo "✓ Cleaned up build directory"
+                fi
+            
+                UPLOAD_COUNT=$((UPLOAD_COUNT + 1))
               fi
             done
-
-            # Check if we have debug symbols
-            if [ -d "$DEBUG_INFO_DIR" ] && [ "$(ls -A $DEBUG_INFO_DIR)" ]; then
-              echo "✅ Debug symbols prepared successfully"
-              ls -lh "$DEBUG_INFO_DIR" | head -20
+            
+            # Clean up debug_info directory
+            echo ""
+            echo "🧹 Cleaning up debug symbols..."
+            rm -rf "$DEBUG_INFO_DIR"
+            echo "✅ Cleaned up debug_info directory"
+            
+            echo ""
+            echo "================================================"
+            echo "📊 Upload Summary"
+            echo "================================================"
+            echo "Total variants processed: $UPLOAD_COUNT"
+            echo "Successful uploads: $SUCCESS_COUNT"
+            echo "Failed uploads: $FAIL_COUNT"
+            
+            if [ $FAIL_COUNT -gt 0 ]; then
+              echo "⚠️  Some uploads failed - please check the logs above"
+              exit 1
             else
-              echo "⚠️  No debug symbols found"
+              echo "✅ All debug symbols uploaded successfully"
             fi
-
-      # Upload debug symbols to Sentry
-      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
-        displayName: Upload debug symbols to Sentry
         env:
           SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
           SENTRY_ORG: $(SENTRY_ORG)
@@ -156,12 +265,40 @@ jobs:
             # Set version as pipeline variable for Dropbox upload
             echo "##vso[task.setvariable variable=APP_VERSION]$VERSION"
 
+      # Extract build number from commit message
+      - task: Bash@3
+        displayName: Extract Build Number from Commit
+        inputs:
+          targetType: 'inline'
+          script: |
+            # Get the latest commit message
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            echo "Latest commit message: $COMMIT_MSG"
+
+            # Extract build number from format: #20251110.3 • message
+            BUILD_NUM=$(echo "$COMMIT_MSG" | sed -n 's/^#\([0-9]\{8\}\.[0-9]\+\).*/\1/p')
+
+            if [ -z "$BUILD_NUM" ]; then
+              echo "⚠️  No build number found in commit message, generating fallback..."
+              BUILD_DATE=$(date +%Y%m%d)
+              if [ "${{ parameters.manualTrigger }}" = "True" ]; then
+                BUILD_NUM="manual-$BUILD_DATE.$(Build.BuildId)"
+              else
+                BUILD_NUM="auto-$BUILD_DATE.$(Build.BuildId)"
+              fi
+              echo "Fallback build number: $BUILD_NUM"
+            else
+              echo "✓ Extracted build number from commit: $BUILD_NUM"
+            fi
+
+            echo "##vso[task.setvariable variable=BUILD_NUMBER]$BUILD_NUM"
+
       # Upload to Dropbox
       - template: upload-to-dropbox.yml
         parameters:
           platform: Android
           versionName: $(APP_VERSION)
-          runNumber: $(resources.pipeline.buildPipeline.runName)
+          runNumber: $(Build.BuildNumber)
           envName: "all"
           dir1: "$(Build.ArtifactStagingDirectory)/dropbox_upload"
           dir1_subfolder: ""
@@ -176,14 +313,57 @@ jobs:
             echo "=================================="
             echo "📊 Upload Summary"
             echo "=================================="
-            echo "Build Pipeline: $(resources.pipeline.buildPipeline.runName)"
+            if [ "${{ parameters.manualTrigger }}" = "True" ]; then
+              echo "Trigger: Manual"
+              echo "Build Run ID: $(effectiveRunId)"
+            else
+              echo "Trigger: Automatic"
+              echo "Build Pipeline: $(resources.pipeline.buildPipeline.runName)"
+            fi
             echo "Version: $(APP_VERSION)"
+            echo "Build Number: $(BUILD_NUMBER)"
+            echo "Dropbox Path: v$(APP_VERSION)-build-$(BUILD_NUMBER)"
             echo "Status: $AGENT_JOBSTATUS"
 
             if [ "$AGENT_JOBSTATUS" = "Succeeded" ]; then
-              echo "✅ Dropbox upload completed successfully!"
+              echo "✅ Upload completed successfully!"
+              echo "   - Debug symbols uploaded to Sentry"
+              echo "   - Build artifacts uploaded to Dropbox"
             else
-              echo "⚠️  Dropbox upload completed with warnings"
+              echo "⚠️  Upload completed with warnings"
               echo "Please check the logs for details"
             fi
             echo "=================================="
+
+      # Clean up temporary files
+      - task: Bash@3
+        displayName: Clean up temporary files
+        condition: always()
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo ""
+            echo "🧹 Cleaning up temporary files..."
+
+            # Clean up downloaded artifacts
+            if [ -d "$(Pipeline.Workspace)/artifacts" ]; then
+              echo "Removing downloaded artifacts..."
+              rm -rf "$(Pipeline.Workspace)/artifacts"
+              echo "✅ Cleaned up $(Pipeline.Workspace)/artifacts"
+            fi
+
+            # Clean up staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              echo "Removing staging directory..."
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "✅ Cleaned up $(Build.ArtifactStagingDirectory)"
+            fi
+
+            # Clean up debug_info if exists
+            if [ -d "$(Build.SourcesDirectory)/debug_info" ]; then
+              echo "Removing debug_info directory..."
+              rm -rf "$(Build.SourcesDirectory)/debug_info"
+              echo "✅ Cleaned up debug_info directory"
+            fi
+
+            echo "✅ Cleanup completed successfully"

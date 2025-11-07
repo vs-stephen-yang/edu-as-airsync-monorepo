@@ -101,18 +101,102 @@ steps:
         upload_file() {
           local file_path="$1"
           local relative_path="$2"
+          # Remove leading slash to avoid double slashes
+          relative_path="${relative_path#/}"
           local dropbox_path="${DROPBOX_BASE}/${relative_path}"
+          local file_size=$(stat -f%z "$file_path" 2>/dev/null || stat -c%s "$file_path" 2>/dev/null)
+
           echo "📤 Uploading: $file_path → $dropbox_path"
-          curl -s -X POST https://content.dropboxapi.com/2/files/upload \
-            --header "Authorization: Bearer $ACCESS_TOKEN" \
-            --header "Dropbox-API-Arg: {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}" \
-            --header "Content-Type: application/octet-stream" \
-            --data-binary @"$file_path"
+
+          # For files larger than 150MB, use upload session API
+          if [ "$file_size" -gt 157286400 ]; then
+            file_size_mb=$((file_size / 1048576))
+            echo "   📦 Large file detected (${file_size_mb}MB), using chunked upload..."
+
+            # Create temp directory for chunks
+            chunk_dir=$(mktemp -d)
+            chunk_size=100  # 100MB chunks (safe margin under 150MB limit)
+
+            # Split file into chunks
+            echo "   → Splitting file into chunks..."
+            split -b ${chunk_size}m "$file_path" "${chunk_dir}/chunk_"
+
+            # Start session with first chunk
+            first_chunk=$(ls "${chunk_dir}"/chunk_* | head -n 1)
+            echo "   → Starting upload session..."
+            session_response=$(curl -s -X POST https://content.dropboxapi.com/2/files/upload_session/start \
+              --header "Authorization: Bearer $ACCESS_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$first_chunk")
+
+            session_id=$(echo "$session_response" | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+
+            if [ -z "$session_id" ]; then
+              echo "   ❌ Failed to start session: $session_response"
+              rm -rf "$chunk_dir"
+              return 1
+            fi
+
+            # Upload remaining chunks
+            offset=$(stat -f%z "$first_chunk" 2>/dev/null || stat -c%s "$first_chunk" 2>/dev/null)
+            chunk_num=1
+            total_chunks=$(ls "${chunk_dir}"/chunk_* | wc -l | tr -d ' ')
+
+            for chunk_file in $(ls "${chunk_dir}"/chunk_* | tail -n +2); do
+              chunk_num=$((chunk_num + 1))
+              chunk_file_size=$(stat -f%z "$chunk_file" 2>/dev/null || stat -c%s "$chunk_file" 2>/dev/null)
+              echo "   → Uploading chunk $chunk_num/$total_chunks..."
+
+              curl -s -X POST https://content.dropboxapi.com/2/files/upload_session/append_v2 \
+                --header "Authorization: Bearer $ACCESS_TOKEN" \
+                --header "Dropbox-API-Arg: {\"cursor\": {\"session_id\": \"$session_id\", \"offset\": $offset}}" \
+                --header "Content-Type: application/octet-stream" \
+                --data-binary @"$chunk_file" > /dev/null
+
+              offset=$((offset + chunk_file_size))
+            done
+
+            # Finish session
+            echo "   → Finalizing upload..."
+            finish_response=$(curl -s -X POST https://content.dropboxapi.com/2/files/upload_session/finish \
+              --header "Authorization: Bearer $ACCESS_TOKEN" \
+              --header "Dropbox-API-Arg: {\"cursor\": {\"session_id\": \"$session_id\", \"offset\": $offset}, \"commit\": {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}}" \
+              --header "Content-Type: application/octet-stream")
+
+            # Clean up
+            rm -rf "$chunk_dir"
+
+            case "$finish_response" in
+              *'"error"'*)
+                echo "   ❌ Upload failed: $finish_response"
+                return 1
+                ;;
+            esac
+            echo "   ✅ Large file uploaded successfully"
+          else
+            # Regular upload for files <= 150MB
+            response=$(curl -s -X POST https://content.dropboxapi.com/2/files/upload \
+              --header "Authorization: Bearer $ACCESS_TOKEN" \
+              --header "Dropbox-API-Arg: {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$file_path")
+
+            # Check for errors using string matching
+            case "$response" in
+              *'"error"'*)
+                echo "   ❌ Upload failed: $response"
+                return 1
+                ;;
+            esac
+            echo "   ✅ Uploaded successfully"
+          fi
         }
 
         upload_dir() {
           local dir_path="$1"
           local relative_base="$2"
+          # Remove leading slash to avoid double slashes
+          relative_base="${relative_base#/}"
           echo "📂 Uploading directory: $dir_path → ${DROPBOX_BASE}/${relative_base}"
           find "$dir_path" -type f | while read -r file; do
             rel_path="${relative_base}/${file#$dir_path/}"
@@ -180,9 +264,8 @@ steps:
         DIR1_SUBFOLDER="${{ parameters.dir1_subfolder }}"
         DIR1_UPLOADED=""
         if [ -n "$DIR1" ] && [ -d "$DIR1" ]; then
-          dirname=$(basename "$DIR1")
-          rel_path="${DIR1_SUBFOLDER}/${dirname}"
-          upload_dir "$DIR1" "$rel_path"
+          # Upload directory contents to the specified subfolder
+          upload_dir "$DIR1" "$DIR1_SUBFOLDER"
           DIR1_UPLOADED="true"
         elif [ -n "$DIR1" ]; then
           echo "⚠️  Skipping dir1: directory not found at $DIR1"
@@ -193,9 +276,8 @@ steps:
         DIR2_SUBFOLDER="${{ parameters.dir2_subfolder }}"
         DIR2_UPLOADED=""
         if [ -n "$DIR2" ] && [ -d "$DIR2" ]; then
-          dirname=$(basename "$DIR2")
-          rel_path="${DIR2_SUBFOLDER}/${dirname}"
-          upload_dir "$DIR2" "$rel_path"
+          # Upload directory contents to the specified subfolder
+          upload_dir "$DIR2" "$DIR2_SUBFOLDER"
           DIR2_UPLOADED="true"
         elif [ -n "$DIR2" ]; then
           echo "⚠️  Skipping dir2: directory not found at $DIR2"
