@@ -68,6 +68,7 @@ class WebRTCConnector {
   RTCDataChannel? _controlDataChannel;
 
   RTCDataChannelState? _rtcControlDataChannelState;
+  RTCPeerConnectionState? _peerConnectionState;
 
   MediaStream? _localStream;
   final Completer _descriptionSetCompleter = Completer();
@@ -571,8 +572,9 @@ class WebRTCConnector {
   // send a control message over the data channel
   void _sendControlMessage(ChannelMessage message) {
     final text = jsonEncode(message.toJson());
-
-    if (_rtcControlDataChannelState == RTCDataChannelState.RTCDataChannelOpen) {
+    if (_rtcControlDataChannelState == RTCDataChannelState.RTCDataChannelOpen &&
+        _peerConnectionState ==
+            RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       _controlDataChannel?.send(RTCDataChannelMessage(text));
     }
   }
@@ -763,6 +765,7 @@ class WebRTCConnector {
 
   void _onPeerConnectionState(RTCPeerConnectionState state) async {
     log.info('Peer connection state: ${state.name}');
+    _peerConnectionState = state;
     trackTrace('pc_state', properties: {
       'target': state.name,
     });
