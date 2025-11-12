@@ -132,9 +132,12 @@ class V3ParticipantList extends StatelessWidget {
                         return V3ParticipantMirrorItem(
                             index: index, isForMenuUse: isForMenuUse);
                       } else {
-                        return V3ParticipantItem(
-                          index: index,
-                          isForMenuUse: isForMenuUse,
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 5.0),
+                          child: V3ParticipantItem(
+                            index: index,
+                            isForMenuUse: isForMenuUse,
+                          ),
                         );
                       }
                     },
