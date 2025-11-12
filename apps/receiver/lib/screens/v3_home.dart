@@ -160,7 +160,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                                       Container(
                                         color: const Color(0xFFEAEBF1),
                                       ),
-                                      const V3HeaderBar(),
+                                      Positioned(child: const V3HeaderBar()),
                                       const V3FooterBar(),
                                     ],
                                   )

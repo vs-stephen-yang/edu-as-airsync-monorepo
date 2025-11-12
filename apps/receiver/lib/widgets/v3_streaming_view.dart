@@ -290,7 +290,7 @@ class _V3StreamingViewState extends State {
                       (HybridConnectionList().getConnection(0) as RTCConnector)
                               .presentationState ==
                           PresentationState.waitForStream)
-                    const V3HeaderBar(isWaitForStream: true),
+                    Positioned(child: const V3HeaderBar(isWaitForStream: true)),
                 ],
               );
             },
