@@ -63,14 +63,7 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
       ),
     );
 
-    return !isCompact
-        ? Positioned(
-            left: padding.horizontal,
-            top: padding.vertical,
-            right: padding.horizontal,
-            child: content,
-          )
-        : content;
+    return content;
   }
 
   void _handleDebugTap() {

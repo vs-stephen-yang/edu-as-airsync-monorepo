@@ -113,7 +113,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
               ),
             ),
             if (_shouldShowHeader(count))
-              const V3HeaderBar(isWaitForStream: true),
+              Positioned(child: const V3HeaderBar(isWaitForStream: true)),
           ],
         );
       },
