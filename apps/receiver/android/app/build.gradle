@@ -205,10 +205,6 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
-    // region vbsOTA
-    implementation 'com.github.tonyofrancis:fetch:3.0.3'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    // endregion
 
     // region FireBase for "store"
     storeImplementation 'com.google.firebase:firebase-core:21.1.1'

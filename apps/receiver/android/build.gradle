@@ -2,9 +2,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        //noinspection JcenterRepositoryObsolete
-        // Use jitpack for fetch2. This will effect VBS100 F/W OTA
-        maven { setUrl("https://jitpack.io") }
     }
 }
 

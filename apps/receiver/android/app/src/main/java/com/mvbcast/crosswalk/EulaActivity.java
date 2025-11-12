@@ -40,7 +40,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.mvbcast.crosswalk.helper.WifiHelper;
-import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,7 +57,6 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class EulaActivity extends FlutterActivity {
     private static final String TAG = EulaActivity.class.getSimpleName();
-    private MethodChannel mVbsOTA;
     private static MethodChannel mAlarmOTA;
     private MethodChannel multiWindowChannel;
 
@@ -76,9 +74,6 @@ public class EulaActivity extends FlutterActivity {
                 moveTaskToBack(true);
             }
         });
-
-        mVbsOTA = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/vbs_ota");
-        SystemImageOTAHelper.getInstance().registerBroadcastReceiver(EulaActivity.this);
 
         MethodChannel otaMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast" +
                 ".crosswalk/app_update");
@@ -466,7 +461,6 @@ public class EulaActivity extends FlutterActivity {
 
     @Override
     protected void onDestroy() {
-        SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
         WifiHelper.getInstance().unregisterUsbReceiver(EulaActivity.this);
         if (multicastLock != null) {
             multicastLock.release();
@@ -482,14 +476,6 @@ public class EulaActivity extends FlutterActivity {
             return;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    public void setSystemOTAEnableUI(boolean enableUI) {
-        mVbsOTA.invokeMethod("setSystemOTAEnableUI", enableUI);
-    }
-
-    public void setDownloadProgress(int progress) {
-        mVbsOTA.invokeMethod("setDownloadProgress", progress);
     }
 
     // region App Alarm OTA
