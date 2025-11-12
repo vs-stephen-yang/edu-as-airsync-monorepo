@@ -287,36 +287,69 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
       Offset.zero & overlay.size,
     );
 
-    // Show the menu below the button
-    String? newValue = await showMenu<String>(
+    // Show the menu below the button with always-visible scrollbar
+    String? newValue;
+    await showDialog<void>(
       context: context,
-      position: position,
-      constraints: const BoxConstraints(maxHeight: 120),
-      color: context.tokens.color.vsdswColorSurface100,
-      items: prefLanguageProvider.localeMap.entries.map((entry) {
-        return V3PopupMenuItem<String>(
-          value: entry.key,
-          label: sprintf(S.current.v3_lbl_select_language, [entry.key]),
-          identifier: 'v3_qa_${entry.key}',
-          selected: (entry.key == prefLanguageProvider.language),
-          excludeSemantics: true,
-          child: Text(
-            entry.key,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: (entry.key == prefLanguageProvider.language)
-                  ? context.tokens.color.vsdswColorOnSurfaceInverse
-                  : context.tokens.color.vsdswColorOnSurface,
+      barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return ScrollbarTheme(
+          data: ScrollbarThemeData(
+            thumbVisibility: WidgetStateProperty.all(true),
+            thickness: WidgetStateProperty.all(5.0),
+            radius: const Radius.circular(4),
+            thumbColor: WidgetStateProperty.all(
+              context.tokens.color.vsdswColorOnSurface.withValues(alpha: 0.5),
             ),
           ),
+          child: Builder(
+            builder: (themedContext) {
+              // Immediately show the menu and close the dialog wrapper
+              Future.microtask(() async {
+                if (themedContext.mounted == false) return;
+                final result = await showMenu<String>(
+                  context: themedContext,
+                  position: position,
+                  constraints: const BoxConstraints(maxHeight: 120),
+                  color: context.tokens.color.vsdswColorSurface100,
+                  items: prefLanguageProvider.localeMap.entries.map((entry) {
+                    return V3PopupMenuItem<String>(
+                      value: entry.key,
+                      label: sprintf(
+                          S.current.v3_lbl_select_language, [entry.key]),
+                      identifier: 'v3_qa_${entry.key}',
+                      selected: (entry.key == prefLanguageProvider.language),
+                      excludeSemantics: true,
+                      child: Text(
+                        entry.key,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: (entry.key == prefLanguageProvider.language)
+                              ? context.tokens.color.vsdswColorOnSurfaceInverse
+                              : context.tokens.color.vsdswColorOnSurface,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+                newValue = result;
+                if (!themedContext.mounted) return;
+                if (Navigator.canPop(dialogContext)) {
+                  Navigator.pop(dialogContext);
+                }
+              });
+              return const SizedBox.shrink();
+            },
+          ),
         );
-      }).toList(),
+      },
     );
 
     // If a new language was selected, update the state
     if (newValue != null) {
-      prefLanguageProvider.setLanguage(newValue);
+      prefLanguageProvider.setLanguage(newValue!);
     }
     if (!mounted) return;
     setState(() {
