@@ -17,6 +17,7 @@ import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
+import 'package:display_cast_flutter/widgets/v3_scroll_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_svg/svg.dart';
@@ -413,13 +414,14 @@ class SelectScreenDialog extends Dialog {
                         child: Builder(builder: (context) {
                           TabController tabController =
                               DefaultTabController.of(context);
-                          double bottomHeight = 48;
+                          double bottomHeight = 55;
                           if (platformIsDesktop && enableAudioCheckbox) {
                             bottomHeight += 48;
                             if (isVirtualAudioMissing) {
                               bottomHeight += 48;
                             }
                           }
+                          final sc = ScrollController();
                           return Column(
                             children: <Widget>[
                               Container(
@@ -427,83 +429,87 @@ class SelectScreenDialog extends Dialog {
                                     const EdgeInsets.symmetric(horizontal: 33),
                                 constraints:
                                     const BoxConstraints(maxHeight: 48),
-                                child: SingleChildScrollView(
-                                  child: TabBar(
-                                    onTap: (index) async {
-                                      _selectedSource = null;
-                                      if (index == 2) {
-                                        if (isExtensionEnable) {
-                                          _isExtensionSelected = true;
+                                child: V3Scrollbar(
+                                  controller: sc,
+                                  child: SingleChildScrollView(
+                                    controller: sc,
+                                    child: TabBar(
+                                      onTap: (index) async {
+                                        _selectedSource = null;
+                                        if (index == 2) {
+                                          if (isExtensionEnable) {
+                                            _isExtensionSelected = true;
+                                          } else {
+                                            tabController.animateTo(
+                                                tabController.previousIndex);
+                                          }
                                         } else {
-                                          tabController.animateTo(
-                                              tabController.previousIndex);
+                                          _isExtensionSelected = false;
+                                          Future.delayed(
+                                              const Duration(milliseconds: 300),
+                                              () {
+                                            _getSources(index == 0
+                                                ? SourceType.Screen
+                                                : SourceType.Window);
+                                          });
                                         }
-                                      } else {
-                                        _isExtensionSelected = false;
-                                        Future.delayed(
-                                            const Duration(milliseconds: 300),
-                                            () {
-                                          _getSources(index == 0
-                                              ? SourceType.Screen
-                                              : SourceType.Window);
+                                        switch (index) {
+                                          case 0:
+                                            annotationModel.presentSourceType =
+                                                SourceType.Screen;
+                                            break;
+                                          case 1:
+                                            annotationModel.presentSourceType =
+                                                SourceType.Window;
+                                            break;
+                                          case 2:
+                                            annotationModel.presentSourceType =
+                                                null;
+                                            break;
+                                        }
+                                        if (!context.mounted) return;
+                                        setState(() {
+                                          if (index == 1) {
+                                            enableAudioCheckbox = false;
+                                          } else {
+                                            enableAudioCheckbox = true;
+                                          }
                                         });
-                                      }
-                                      switch (index) {
-                                        case 0:
-                                          annotationModel.presentSourceType =
-                                              SourceType.Screen;
-                                          break;
-                                        case 1:
-                                          annotationModel.presentSourceType =
-                                              SourceType.Window;
-                                          break;
-                                        case 2:
-                                          annotationModel.presentSourceType =
-                                              null;
-                                          break;
-                                      }
-                                      if (!context.mounted) return;
-                                      setState(() {
-                                        if (index == 1) {
-                                          enableAudioCheckbox = false;
-                                        } else {
-                                          enableAudioCheckbox = true;
-                                        }
-                                      });
-                                    },
-                                    tabs: [
-                                      V3Focus(
-                                        identifier:
-                                            'v3_qa_select_screen_entire',
-                                        child: buildTabWidget(
-                                            context,
-                                            S.current
-                                                .present_select_screen_entire),
-                                      ),
-                                      V3Focus(
-                                        identifier:
-                                            'v3_qa_select_screen_window',
-                                        child: buildTabWidget(
-                                            context,
-                                            S.current
-                                                .present_select_screen_window),
-                                      ),
-                                      V3Focus(
-                                        identifier:
-                                            'v3_qa_select_screen_extension',
-                                        child: buildTabWidget(
-                                            context,
-                                            S.current
-                                                .v3_present_select_screen_extension,
-                                            enable: isExtensionEnable),
-                                      ),
-                                    ],
-                                    labelColor: context
-                                        .tokens.color.vsdswColorSecondary,
-                                    unselectedLabelColor: context
-                                        .tokens.color.vsdswColorOnSurface,
-                                    indicatorColor:
-                                        context.tokens.color.vsdswColorPrimary,
+                                      },
+                                      tabs: [
+                                        V3Focus(
+                                          identifier:
+                                              'v3_qa_select_screen_entire',
+                                          child: buildTabWidget(
+                                              context,
+                                              S.current
+                                                  .present_select_screen_entire),
+                                        ),
+                                        V3Focus(
+                                          identifier:
+                                              'v3_qa_select_screen_window',
+                                          child: buildTabWidget(
+                                              context,
+                                              S.current
+                                                  .present_select_screen_window),
+                                        ),
+                                        V3Focus(
+                                          identifier:
+                                              'v3_qa_select_screen_extension',
+                                          child: buildTabWidget(
+                                              context,
+                                              S.current
+                                                  .v3_present_select_screen_extension,
+                                              enable: isExtensionEnable),
+                                        ),
+                                      ],
+                                      labelColor: context
+                                          .tokens.color.vsdswColorSecondary,
+                                      unselectedLabelColor: context
+                                          .tokens.color.vsdswColorOnSurface,
+                                      indicatorColor: context
+                                          .tokens.color.vsdswColorPrimary,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -628,6 +634,7 @@ class SelectScreenDialog extends Dialog {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
+                                          // TODO
                                           createButton(
                                             label: S
                                                 .of(context)
@@ -753,41 +760,44 @@ class SelectScreenDialog extends Dialog {
       required Color backgroundColor,
       required GestureTapCallback onPressed,
       Color? borderColor}) {
-    return V3Focus(
-      identifier: identifier,
-      label: label,
-      child: InkWell(
-        onTap: onPressed,
-        child: Container(
-          alignment: Alignment.center,
-          width: 240,
-          height: 48,
-          clipBehavior: Clip.antiAlias,
-          decoration: borderColor == null
-              ? ShapeDecoration(
-                  color: backgroundColor,
-                  shape: RoundedRectangleBorder(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: V3Focus(
+        identifier: identifier,
+        label: label,
+        child: InkWell(
+          onTap: onPressed,
+          child: Container(
+            alignment: Alignment.center,
+            width: 240,
+            height: 38,
+            clipBehavior: Clip.antiAlias,
+            decoration: borderColor == null
+                ? ShapeDecoration(
+                    color: backgroundColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
+                    shadows: backgroundColor != Colors.transparent
+                        ? [
+                            BoxShadow(
+                              color: backgroundColor.withOpacity(0.31),
+                              blurRadius: 24,
+                              offset: const Offset(0, 16),
+                              spreadRadius: 0,
+                            )
+                          ]
+                        : null,
+                  )
+                : BoxDecoration(
+                    border: Border.all(color: borderColor, width: 1.0),
+                    color: backgroundColor,
                     borderRadius: BorderRadius.circular(9999),
                   ),
-                  shadows: backgroundColor != Colors.transparent
-                      ? [
-                          BoxShadow(
-                            color: backgroundColor.withOpacity(0.31),
-                            blurRadius: 24,
-                            offset: const Offset(0, 16),
-                            spreadRadius: 0,
-                          )
-                        ]
-                      : null,
-                )
-              : BoxDecoration(
-                  border: Border.all(color: borderColor, width: 1.0),
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(9999),
-                ),
-          child: V3AutoHyphenatingText(
-            text,
-            style: TextStyle(color: textColor),
+            child: V3AutoHyphenatingText(
+              text,
+              style: TextStyle(color: textColor),
+            ),
           ),
         ),
       ),
@@ -846,10 +856,11 @@ class SelectScreenDialog extends Dialog {
     log.info('Starting virtual display');
     final display = await ScreenRetriever.instance.getPrimaryDisplay();
     final scale = (display.scaleFactor ?? 1).toDouble();
-    final pixelWidth  = (display.size.width  * scale).round();
+    final pixelWidth = (display.size.width * scale).round();
     final pixelHeight = (display.size.height * scale).round();
 
-    final startResult = await FlutterVirtualDisplay.instance.startVirtualDisplay(pixelWidth, pixelHeight);
+    final startResult = await FlutterVirtualDisplay.instance
+        .startVirtualDisplay(pixelWidth, pixelHeight);
 
     if (!startResult!) {
       log.warning('Failed to start virtual display');
@@ -889,19 +900,24 @@ class SelectScreenDialog extends Dialog {
           return;
         }
       } catch (error, stackTrace) {
-        log.warning('Failed to query screen sources while waiting for virtual display', error, stackTrace);
+        log.warning(
+            'Failed to query screen sources while waiting for virtual display',
+            error,
+            stackTrace);
         break;
       }
       await Future.delayed(pollingInterval);
     }
 
-    log.warning('Virtual display not detected within timeout; attempting display switch anyway.');
+    log.warning(
+        'Virtual display not detected within timeout; attempting display switch anyway.');
   }
 
   Future<void> _switchToExtendedDisplayMode() async {
     final systemRoot = Platform.environment['SystemRoot'];
     if (systemRoot == null) {
-      log.warning('SystemRoot environment variable missing; skipping display mode switch.');
+      log.warning(
+          'SystemRoot environment variable missing; skipping display mode switch.');
       return;
     }
 
@@ -920,7 +936,8 @@ class SelectScreenDialog extends Dialog {
     }
 
     if (displaySwitchPath == null) {
-      log.warning('DisplaySwitch.exe not found in candidate locations; skipping display mode switch.');
+      log.warning(
+          'DisplaySwitch.exe not found in candidate locations; skipping display mode switch.');
       return;
     }
 
@@ -930,14 +947,17 @@ class SelectScreenDialog extends Dialog {
     await Future.delayed(const Duration(seconds: 1));
 
     try {
-      final result = await Process.run(displaySwitchPath, ['/extend'], runInShell: true);
+      final result =
+          await Process.run(displaySwitchPath, ['/extend'], runInShell: true);
       if (result.exitCode != 0) {
-        log.warning('DisplaySwitch.exe failed (exit ${result.exitCode}): ${result.stderr}');
+        log.warning(
+            'DisplaySwitch.exe failed (exit ${result.exitCode}): ${result.stderr}');
       } else {
         log.info('DisplaySwitch.exe succeeded: ${result.stdout}');
       }
     } catch (error, stackTrace) {
-      log.severe('Error while switching display mode to extend', error, stackTrace);
+      log.severe(
+          'Error while switching display mode to extend', error, stackTrace);
     }
   }
 
@@ -991,24 +1011,30 @@ class SelectScreenDialog extends Dialog {
   }
 
   Widget _buildGridView(SourceType type) {
+    final sc = ScrollController();
     return Align(
       alignment: Alignment.topCenter,
-      child: GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: 1.39,
-        children:
-            _sources.entries.where((element) => element.value.type == type).map(
-          (map) {
-            return ThumbnailWidget(
-              onTap: (source) {
-                _selectedSource = source;
-                _stateSetter?.call(() {});
-              },
-              source: map.value,
-              selected: _selectedSource?.id == map.value.id,
-            );
-          },
-        ).toList(),
+      child: V3Scrollbar(
+        controller: sc,
+        child: GridView.count(
+          controller: sc,
+          crossAxisCount: 3,
+          childAspectRatio: 1.39,
+          children: _sources.entries
+              .where((element) => element.value.type == type)
+              .map(
+            (map) {
+              return ThumbnailWidget(
+                onTap: (source) {
+                  _selectedSource = source;
+                  _stateSetter?.call(() {});
+                },
+                source: map.value,
+                selected: _selectedSource?.id == map.value.id,
+              );
+            },
+          ).toList(),
+        ),
       ),
     );
   }
