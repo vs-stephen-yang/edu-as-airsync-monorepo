@@ -100,9 +100,8 @@ class AndroidWindow(
       )
     val orientation = service.resources.configuration.orientation
     if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-      val navBarVisible = getNavigationBarHeight(service)
-      flutterView.layoutParams.height =
-        metrics.heightPixels - getStatusBarHeight(service) - getNavigationBarHeight(service)
+      flutterView.layoutParams.height = metrics.heightPixels - getStatusBarHeight(service) - getNavigationBarHeight(service);
+      flutterView.layoutParams.width = metrics.widthPixels;
       flutterView.requestLayout()
     }
   }
@@ -121,7 +120,7 @@ class AndroidWindow(
   }
 
   fun updateLayout() {
-    @Suppress("Deprecation") windowManager.defaultDisplay.getMetrics(metrics)
+    @Suppress("Deprecation") windowManager.defaultDisplay.getRealMetrics(metrics)
     setPosition(layoutParams.x, layoutParams.y)
   }
 
@@ -160,10 +159,6 @@ class AndroidWindow(
   }
 
   fun onOrientationChange(newConfig: Configuration) {
-    flutterView.layoutParams = LinearLayout.LayoutParams(
-      ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-    )
-    flutterView.requestLayout()
     var newWidth = 0
     var newHeight = 0
     if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -174,6 +169,14 @@ class AndroidWindow(
       newHeight = max(layoutParams.width, layoutParams.height)
     }
     setLayout(newWidth, newHeight)
+
+    flutterView.layoutParams = LinearLayout.LayoutParams(
+      ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+    )
+    flutterView.layoutParams.height =
+      metrics.heightPixels - getStatusBarHeight(service) - getNavigationBarHeight(service);
+    flutterView.layoutParams.width = metrics.widthPixels;
+    flutterView.requestLayout()
   }
 
   fun getStatusBarHeight(context: Context): Int {

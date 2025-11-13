@@ -21,15 +21,11 @@ class CanvasWidgetAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size physicalSize =
-        WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
     return MaterialApp(
       title: 'Annotation App',
       debugShowCheckedModeBanner: false,
       home: _CanvasPage(
         windowController: windowController,
-        initPhysicalSize: physicalSize,
-        sizeList: [physicalSize.width, physicalSize.height],
       ),
     );
   }
@@ -37,13 +33,9 @@ class CanvasWidgetAndroid extends StatelessWidget {
 
 class _CanvasPage extends StatefulWidget {
   final WindowController? windowController;
-  final Size initPhysicalSize;
-  final List<double> sizeList;
 
   const _CanvasPage(
-      {this.windowController,
-      required this.initPhysicalSize,
-      required this.sizeList});
+      {this.windowController});
 
   @override
   State<_CanvasPage> createState() => _CanvasPageState();
