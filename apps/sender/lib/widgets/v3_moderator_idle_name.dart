@@ -50,7 +50,7 @@ class V3ModeratorIdleName extends StatelessWidget {
                     ? 359
                     : 475,
             height: kIsWeb
-                ? 320
+                ? 350
                 : isMobile
                     ? 495
                     : 504,
@@ -114,8 +114,13 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
         child: SingleChildScrollView(
           controller: sc,
           padding: kIsWeb
-              ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+              ? const EdgeInsets.only(right: 12)
+              : const EdgeInsets.only(
+                  left: 24,
+                  right: 36,
+                  top: 5,
+                  bottom: 5,
+                ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
