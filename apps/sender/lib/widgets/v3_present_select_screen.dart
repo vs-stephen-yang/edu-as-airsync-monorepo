@@ -547,6 +547,7 @@ class SelectScreenDialog extends Dialog {
                                           enableAudioCheckbox) ...[
                                         Row(
                                           children: [
+                                            Gap(5),
                                             V3Focus(
                                               identifier:
                                                   'v3_qa_select_screen_audio',
