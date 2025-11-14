@@ -460,7 +460,6 @@ class StoreLinkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final outlineColor = context.tokens.color.vsdslColorOutline;
     return Container(
-      height: 63,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
