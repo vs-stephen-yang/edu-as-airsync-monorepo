@@ -150,10 +150,11 @@ class LandscapeWidget extends StatelessWidget {
   final String storeUrl;
   final String storeMobileUrl;
 
-  const LandscapeWidget({super.key,
-    required this.primaryFocusNode,
-    required this.storeUrl,
-    required this.storeMobileUrl});
+  const LandscapeWidget(
+      {super.key,
+      required this.primaryFocusNode,
+      required this.storeUrl,
+      required this.storeMobileUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -319,102 +320,105 @@ class DownloadDesktop extends StatelessWidget {
   Widget build(BuildContext context) {
     final scrollCtrl = ScrollController();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.only(left: 30, right: 20, top: 10, bottom: 10),
       child: V3Scrollbar(
         controller: scrollCtrl,
         child: SingleChildScrollView(
           controller: scrollCtrl,
-          child: Column(
-            children: [
-              V3AutoHyphenatingText(
-                S.of(context).v3_download_app_desktop_title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorNeutral,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Gap(11),
-              V3AutoHyphenatingText(
-                S.of(context).v3_download_app_for_desktop_desc,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Gap(30),
-              StoreIconRow(
-                assetPaths: [
-                  'assets/images/ic_store_windows.png',
-                  'assets/images/ic_store_mac.png',
-                ],
-              ),
-              const Gap(33),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/ic_download_thumbs.svg',
-                    excludeFromSemantics: true,
-                    width: 27,
-                    height: 27,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Column(
+              children: [
+                V3AutoHyphenatingText(
+                  S.of(context).v3_download_app_desktop_title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorNeutral,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
                   ),
-                  const Gap(5),
-                  Expanded(
-                    child: V3AutoHyphenatingText(
-                      S.of(context).v3_download_app_desktop,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdslColorPrimary,
-                        fontSize: 21,
-                        fontWeight: FontWeight.w600,
+                ),
+                const Gap(11),
+                V3AutoHyphenatingText(
+                  S.of(context).v3_download_app_for_desktop_desc,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Gap(30),
+                StoreIconRow(
+                  assetPaths: [
+                    'assets/images/ic_store_windows.png',
+                    'assets/images/ic_store_mac.png',
+                  ],
+                ),
+                const Gap(33),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/ic_download_thumbs.svg',
+                      excludeFromSemantics: true,
+                      width: 27,
+                      height: 27,
+                    ),
+                    const Gap(5),
+                    Expanded(
+                      child: V3AutoHyphenatingText(
+                        S.of(context).v3_download_app_desktop,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdslColorPrimary,
+                          fontSize: 21,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
+                  ],
+                ),
+                const Gap(8),
+                StoreLinkCard(url: storeUrl, fontSize: 17),
+                const Gap(3),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: V3AutoHyphenatingText(
+                    S.of(context).v3_download_app_desktop_hint,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                      fontSize: 12,
+                    ),
                   ),
-                ],
-              ),
-              const Gap(8),
-              StoreLinkCard(url: storeUrl, fontSize: 17),
-              const Gap(3),
-              Align(
-                alignment: Alignment.centerRight,
-                child: V3AutoHyphenatingText(
-                  S.of(context).v3_download_app_desktop_hint,
-                  textAlign: TextAlign.right,
+                ),
+                const Gap(25),
+                V3AutoHyphenatingText(
+                  S.of(context).v3_download_app_desktop_store,
+                  textAlign: TextAlign.left,
                   style: TextStyle(
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                    fontSize: 12,
+                    color: context.tokens.color.vsdslColorSurface800,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              const Gap(25),
-              V3AutoHyphenatingText(
-                S.of(context).v3_download_app_desktop_store,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorSurface800,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Gap(8),
-              StoreLinkCard(url: '$storeUrl?r', fontSize: 17),
-              const Gap(3),
-              Align(
-                alignment: Alignment.centerRight,
-                child: V3AutoHyphenatingText(
-                  S.of(context).v3_download_app_desktop_store_hint,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                    fontSize: 12,
+                const Gap(8),
+                StoreLinkCard(url: '$storeUrl?r', fontSize: 17),
+                const Gap(3),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: V3AutoHyphenatingText(
+                    S.of(context).v3_download_app_desktop_store_hint,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-              ),
-              const Gap(32),
-            ],
+                const Gap(32),
+              ],
+            ),
           ),
         ),
       ),
