@@ -17,10 +17,12 @@ class V3Toast {
 
   void makeSharingTimeToast(
       BuildContext context, String fullText, String sharingTime) {
+    final textScaleFactor = MediaQuery.of(context).textScaler.scale(1);
     MotionToast(
       position: MotionToastPosition.bottom,
       animationType: AnimationType.fromBottom,
-      constraints: BoxConstraints(minHeight: 78, minWidth: 320, maxHeight: 150),
+      constraints: BoxConstraints(
+          minHeight: 78, minWidth: 320.0 * textScaleFactor, maxHeight: 150),
       primaryColor: context.tokens.color.vsdswColorNeutral,
       secondaryColor: context.tokens.color.vsdswColorNeutralInverse,
       contentPadding: EdgeInsets.symmetric(
@@ -38,7 +40,7 @@ class V3Toast {
           ),
           SizedBox(width: context.tokens.spacing.vsdswSpacingXs.left),
           SizedBox(
-            width: 246,
+            width: 246 * textScaleFactor,
             child: Text.rich(
               _buildSharingTimeTextSpan(
                 fullText: fullText,
