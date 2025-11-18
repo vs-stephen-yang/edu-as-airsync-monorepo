@@ -20,4 +20,8 @@ class BoundedList<T> {
   String toString() {
     return _list.toString();
   }
+
+  void clear() {
+    _list.clear();
+  }
 }

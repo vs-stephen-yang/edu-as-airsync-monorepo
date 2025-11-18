@@ -9,6 +9,7 @@ import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
+import 'package:display_flutter/model/zero_fps_detector.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
@@ -68,6 +69,7 @@ class RemoteControlChannel {
 class RemoteScreenServer extends FlutterIonSfuListener {
   SfuPublisher? _sfuPublisher;
   final _lock = Lock();
+  ZeroFpsDetector? _zeroFpsDetector;
 
   final FlutterIonSfu _sfuServer = FlutterIonSfu();
   bool _sfuServerStarted = false;
@@ -83,6 +85,11 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   TouchEventManager? _touchEventManager;
 
   final _connectorChannels = <int, RtcScreenConnector>{};
+
+  // UI callback（需要從外部設定）
+  void Function()? onShowZeroFpsPrompt;
+  void Function()? onRecreatePublisherSuccess;
+  void Function()? onRecreatePublisherFailure;
 
   RemoteScreenServer() {
     initTouchEventManager();
@@ -133,17 +140,30 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       roomId = _generateRoomId();
       log.info('Start remote screen publisher for room $roomId');
 
+      _zeroFpsDetector = ZeroFpsDetector(
+        onZeroFpsNotify: _handleShowZeroFpsUiPrompt,
+        onAutoRecreate: _recreateSfuPublisher,
+        onRecreateSuccess: _handleRecreateSuccess,
+        onRecreateFailure: _handleRecreateFailure,
+        maxAutoRecreateAttempts: 3,
+        zeroFpsDetectLength: 2,
+      );
+
       // Create and start publisher
       _sfuPublisher = await SfuPublisher.create(
         _ionSignal!,
         roomId,
         _touchEventManager,
+        (fps) => _zeroFpsDetector?.onFpsStatsReceived(fps),
       );
 
       bool success = await _sfuPublisher!.start();
       if (!success) {
         log.warning('Failed to start publisher');
+        await _sfuPublisher!.stop();
         _sfuPublisher = null;
+        _zeroFpsDetector?.dispose();
+        _zeroFpsDetector = null;
         return false;
       }
 
@@ -158,6 +178,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
         await _sfuPublisher!.stop();
         _sfuPublisher = null;
       }
+      _zeroFpsDetector?.dispose();
+      _zeroFpsDetector = null;
     });
   }
 
@@ -167,6 +189,60 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   void enableRemoteControlBySessionId(String sessionId, bool enable) {
     _sfuPublisher?.enableRemoteControlBySessionId(sessionId, enable);
+  }
+
+  Future<bool> _recreateSfuPublisher() async {
+    return await _lock.synchronized(() async {
+      if (_zeroFpsDetector == null) {
+        log.info('Server is shutting down, skip recreate');
+        return false;
+      }
+
+      log.info('Recreating entire SfuPublisher');
+
+      if (_sfuPublisher != null) {
+        await _sfuPublisher!.stop();
+      }
+
+      _sfuPublisher = await SfuPublisher.create(
+        _ionSignal!,
+        roomId,
+        _touchEventManager,
+        (fps) => _zeroFpsDetector?.onFpsStatsReceived(fps),
+      );
+
+      bool success = await _sfuPublisher!.start();
+
+      if (!success) {
+        log.severe('Failed to recreate publisher');
+        await _sfuPublisher!.stop();
+        _sfuPublisher = null;
+      } else {
+        log.info('SfuPublisher recreated successfully');
+      }
+
+      return success;
+    });
+  }
+
+  void _handleShowZeroFpsUiPrompt() {
+    log.info('Notifying UI to show zero FPS prompt');
+    onShowZeroFpsPrompt?.call();
+  }
+
+  void _handleRecreateSuccess() {
+    log.info('Notifying UI that recreate succeeded');
+    onRecreatePublisherSuccess?.call();
+  }
+
+  void _handleRecreateFailure() {
+    log.info('Notifying UI that recreate failed, shutting down server');
+    onRecreatePublisherFailure?.call();
+    unawaited(stopRemoteScreenPublisher());
+  }
+
+  void userConfirmRecreate() async {
+    _zeroFpsDetector?.onUserConfirmRecreate();
   }
 
   void addConnector(RtcScreenConnector connector) async {
@@ -271,22 +347,26 @@ class SfuPublisher {
   final _statsTimerInterval = const Duration(seconds: 1);
 
   final _videoOutboundStatsHistory = BoundedList<RtcVideoOutboundStats>(5);
+  final Function(int) _onFpsStatsReceived;
 
   SfuPublisher._(
     this._ionSignal,
     this._roomId,
     this._touchEventManager,
+    this._onFpsStatsReceived,
   );
 
   static Future<SfuPublisher> create(
     JsonRPCSignal ionSignal,
     String roomId,
     TouchEventManager? touchEventManager,
+    Function(int) onFpsStatsReceived,
   ) async {
     final publisher = SfuPublisher._(
       ionSignal,
       roomId,
       touchEventManager,
+      onFpsStatsReceived,
     );
 
     return publisher;
@@ -509,6 +589,8 @@ class SfuPublisher {
 
   void _handleVideoStatsReport(RtcVideoOutboundStats stats) {
     _videoOutboundStatsHistory.add(stats);
+    final fps = stats.framesSentPerSecond ?? 0;
+    _onFpsStatsReceived(fps);
   }
 
   List<RtcVideoOutboundStats> getVideoOutboundStatsHistory() {
@@ -529,8 +611,7 @@ class SfuPublisher {
 
       _stopStatsTimer();
 
-      // TODO: dispose localStream
-      // await _localStream?.dispose();
+      _localStream?.stop();
       _localStream = null;
 
       _ionSfuClient?.close();
