@@ -66,8 +66,7 @@ class RemoteControlChannel {
 }
 
 class RemoteScreenServer extends FlutterIonSfuListener {
-  Client? _ionSfuClient;
-  LocalStream? _localStream;
+  SfuPublisher? _sfuPublisher;
   final _lock = Lock();
 
   final FlutterIonSfu _sfuServer = FlutterIonSfu();
@@ -79,23 +78,11 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   // roomId will be updated when starting the publisher
   String roomId = "default-room-id";
 
-  final _channels = <String, RemoteControlChannel>{};
-  int _nextChannelId = 0;
-
   bool get supportTouchEvent => _supportTouchEvent;
   bool _supportTouchEvent = false;
-  double _screenWidth = defaultScreenWidth;
-  double _screenHeight = defaultScreenHeight;
   TouchEventManager? _touchEventManager;
 
   final _connectorChannels = <int, RtcScreenConnector>{};
-
-  RtcStatsParser? _rtcStatsParser;
-
-  Timer? _statsTimer;
-  final _statsTimerInterval = const Duration(seconds: 1);
-
-  final _videoOutboundStatsHistory = BoundedList<RtcVideoOutboundStats>(5);
 
   RemoteScreenServer() {
     initTouchEventManager();
@@ -123,22 +110,6 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     _sfuServerStarted = true;
   }
 
-  void _onControlChannelClosed(RemoteControlChannel channel) {
-    _touchEventManager?.releaseEventSlotsByChannelId(channel.id);
-    _channels.removeWhere((key, item) => item.id == channel.id);
-  }
-
-  RemoteControlChannel _createRemoteControlChannel(RTCDataChannel dataChannel) {
-    _nextChannelId += 1;
-
-    return RemoteControlChannel(
-      _nextChannelId,
-      dataChannel,
-      _onControlChannelClosed,
-      _onControlMessage,
-    );
-  }
-
   static String _generateRoomId() {
     const chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -153,7 +124,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   Future<bool> startRemoteScreenPublisher() async {
     return _lock.synchronized(() async {
-      if (_ionSfuClient != null) {
+      if (_sfuPublisher != null && _sfuPublisher!.isStarted()) {
+        log.info('Publisher already started');
         return true;
       }
 
@@ -161,158 +133,40 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       roomId = _generateRoomId();
       log.info('Start remote screen publisher for room $roomId');
 
-      _ionSfuClient = await _createIonSfuClient();
-
-      final (width, height) = await getScreenSize();
-      _screenWidth = width;
-      _screenHeight = height;
-
-      String? deviceType = await DeviceInfoVs.deviceType;
-
-      final captureResolution = getCaptureVideoResolution(
-        deviceType,
-        _screenWidth,
-        _screenHeight,
+      // Create and start publisher
+      _sfuPublisher = await SfuPublisher.create(
+        _ionSignal!,
+        roomId,
+        _touchEventManager,
       );
-      log.info(
-          'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
 
-      var constraints = Constraints.defaults;
-      // Note: ion-sdk-flutter currently hard-code H264, so the settings here
-      // are ineffective.
-      constraints.codec = "h264";
-      constraints.simulcast = false;
-      constraints.audio = false;
-      constraints.resolution = captureResolution.name;
-
-      bool capturePermission = await Helper.requestCapturePermission();
-      if (!capturePermission) {
-        return false;
-      }
-      bool backgroundPermission = await requestBackgroundPermission();
-      if (!backgroundPermission) {
+      bool success = await _sfuPublisher!.start();
+      if (!success) {
+        log.warning('Failed to start publisher');
+        _sfuPublisher = null;
         return false;
       }
 
-      _localStream =
-          await LocalStream.getDisplayMedia(constraints: constraints);
-      await _ionSfuClient?.publish(_localStream!);
-      _startStatsTimer();
       return true;
     });
   }
 
-  Future<Client?> _createIonSfuClient() async {
-    if (_ionSignal == null) {
-      return null;
-    }
-
-    final uuid = const Uuid().v4();
-    log.info('create ionSfuClient, uuid: $uuid');
-    final client = await Client.create(
-      sid: roomId,
-      uid: uuid,
-      signal: _ionSignal!,
-    );
-
-    client.ondatachannel = (RTCDataChannel dc) {
-      if (dc.label == API_CHANNEL) {
-        return;
-      }
-      log.info("New data channel: ${dc.label} ${dc.id}");
-
-      if (dc.label == null) {
-        log.warning('Data channel has no label');
-        return;
-      }
-
-      _channels[dc.label!] = _createRemoteControlChannel(dc);
-    };
-
-    client.onConnectionState = (RTCPeerConnectionState state) async {
-      log.info('ionSfuClient $uuid Connection state: ${state.name}');
-      if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
-        await recreateIonSfuClient();
-      }
-    };
-
-    return client;
-  }
-
-  Future<void> recreateIonSfuClient() async {
+  Future<void> stopRemoteScreenPublisher() async {
     await _lock.synchronized(() async {
-      if (_ionSfuClient == null) {
-        return;
-      }
-
-      log.info('ionSfuClient recreate');
-      final client = await _createIonSfuClient();
-      if (client == null) {
-        return;
-      }
-
-      if (_localStream != null) {
-        await client.publish(_localStream!);
-        // ensure an uninterrupted transition between the old and new client
-        final oldClient = _ionSfuClient;
-        _ionSfuClient = client;
-        oldClient?.close();
-      } else {
-        client.close();
+      if (_sfuPublisher != null) {
+        log.info('Stop remote screen publisher for room $roomId');
+        await _sfuPublisher!.stop();
+        _sfuPublisher = null;
       }
     });
-  }
-
-  Future<bool> requestBackgroundPermission() async {
-    if (Platform.isAndroid) {
-      try {
-        var hasPermissions = await FlutterBackground.hasPermissions;
-        const androidConfig = FlutterBackgroundAndroidConfig(
-          notificationTitle: 'Screen Sharing',
-          notificationText: 'AirSync is sharing the screen.',
-          notificationImportance: AndroidNotificationImportance.normal,
-          notificationIcon: AndroidResource(
-            name: 'ic_launcher',
-            defType: 'mipmap',
-          ),
-          // Above Android 12 will has some issue if set below option true.
-          shouldRequestBatteryOptimizationsOff: false,
-        );
-
-        hasPermissions = await FlutterBackground.initialize(
-          androidConfig: androidConfig,
-        );
-        if (hasPermissions && !FlutterBackground.isBackgroundExecutionEnabled) {
-          bool result = await FlutterBackground.enableBackgroundExecution();
-          return result;
-        }
-        return hasPermissions;
-      } catch (e, stackTrace) {
-        log.severe('requestBackgroundPermission', e, stackTrace);
-      }
-    }
-    return false;
   }
 
   bool isRemoteScreenPublisherStarted() {
-    return _ionSfuClient != null;
+    return _sfuPublisher != null && _sfuPublisher!.isStarted();
   }
 
-  Future<void> stopRemoteScreenPublisher() async {
-    await _lock.synchronized(() async {
-      if (FlutterBackground.isBackgroundExecutionEnabled) {
-        await FlutterBackground.disableBackgroundExecution();
-      }
-      if (_ionSfuClient != null) {
-        log.info('Stop remote screen publisher for room $roomId');
-        final client = _ionSfuClient;
-        _ionSfuClient = null;
-        client?.close();
-      }
-      if (_statsTimer != null) {
-        _stopStatsTimer();
-      }
-    });
+  void enableRemoteControlBySessionId(String sessionId, bool enable) {
+    _sfuPublisher?.enableRemoteControlBySessionId(sessionId, enable);
   }
 
   void addConnector(RtcScreenConnector connector) async {
@@ -330,11 +184,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
         _sendSignalToSfu(channelId, message);
       });
 
-      final remoteScreenStats =
-          formatVideoOutboundStatsList(_videoOutboundStatsHistory.elements);
-      final chunkLogger = ChunkedLogger(log);
-      chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
-      // TODO: upload remoteScreenStats to appInsight
+      _sfuPublisher?.logOutboundStats();
     } catch (e) {
       log.warning(e);
     }
@@ -361,60 +211,6 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   void onTextMessage(RTCDataChannelMessage data) async {
     log.fine('Received message: ${data.text}');
-  }
-
-  void _onControlMessage(RTCDataChannelMessage data, int channelId) async {
-    EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
-
-    if (eventMessage.hasTouchEvent()) {
-      _touchEventManager?.setScreenSize(_screenWidth, _screenHeight);
-      _touchEventManager?.handleTouchEvent(eventMessage.touchEvent, channelId);
-    }
-
-    if (eventMessage.hasKeyEvent()) {
-      _touchEventManager?.handleKeyEvent(eventMessage.keyEvent, channelId);
-    }
-  }
-
-  void enableRemoteControlBySessionId(String sessionId, bool enable) {
-    log.info('Enable remote control for $sessionId $enable');
-
-    final channel = _channels[sessionId];
-    if (channel == null) {
-      return;
-    }
-    channel.setControlAllowed(enable);
-  }
-
-  void _startStatsTimer() {
-    _rtcStatsParser = RtcStatsParser();
-    final rtcStatsReporter = RtcStatsReporter(
-      (RtcVideoInboundStats stats) {},
-      _handleVideoStatsReport,
-      (String localCandidateType, String remoteCandidateType) {},
-      (RtcIceCandidatePairStats stats) {},
-    );
-    _rtcStatsParser!.addSubscriber(rtcStatsReporter);
-
-    _statsTimer?.cancel();
-    _statsTimer = Timer.periodic(
-      _statsTimerInterval,
-      (timer) async {
-        final reports = await _ionSfuClient?.getPubStats(null);
-        if (reports != null) {
-          _rtcStatsParser?.onStatsReports(reports);
-        }
-      },
-    );
-  }
-
-  void _stopStatsTimer() {
-    _statsTimer?.cancel();
-    _statsTimer = null;
-  }
-
-  void _handleVideoStatsReport(RtcVideoOutboundStats stats) {
-    _videoOutboundStatsHistory.add(stats);
   }
 
   // onError callback from FlutterIonSfu
@@ -451,5 +247,316 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     } catch (e) {
       log.warning(e);
     }
+  }
+}
+
+class SfuPublisher {
+  Client? _ionSfuClient;
+  LocalStream? _localStream;
+  final TouchEventManager? _touchEventManager;
+
+  final JsonRPCSignal _ionSignal;
+  final String _roomId;
+  final _lock = Lock();
+
+  final _channels = <String, RemoteControlChannel>{};
+  int _nextChannelId = 0;
+
+  double _screenWidth = defaultScreenWidth;
+  double _screenHeight = defaultScreenHeight;
+
+  RtcStatsParser? _rtcStatsParser;
+
+  Timer? _statsTimer;
+  final _statsTimerInterval = const Duration(seconds: 1);
+
+  final _videoOutboundStatsHistory = BoundedList<RtcVideoOutboundStats>(5);
+
+  SfuPublisher._(
+    this._ionSignal,
+    this._roomId,
+    this._touchEventManager,
+  );
+
+  static Future<SfuPublisher> create(
+    JsonRPCSignal ionSignal,
+    String roomId,
+    TouchEventManager? touchEventManager,
+  ) async {
+    final publisher = SfuPublisher._(
+      ionSignal,
+      roomId,
+      touchEventManager,
+    );
+
+    return publisher;
+  }
+
+  Future<bool> start() async {
+    return _lock.synchronized(() async {
+      if (_ionSfuClient != null) {
+        log.warning('Publisher already started');
+        return true;
+      }
+
+      log.info('Starting SfuPublisher for room $_roomId');
+
+      // Create ion sfu client
+      _ionSfuClient = await _createIonSfuClient();
+
+      // Get constraints
+      Constraints constraints = await _getConstraints();
+
+      // Request permissions
+      bool capturePermission = await Helper.requestCapturePermission();
+      if (!capturePermission) {
+        log.warning('Capture permission denied');
+        return false;
+      }
+
+      bool backgroundPermission = await _requestBackgroundPermission();
+      if (!backgroundPermission) {
+        log.warning('Background permission denied');
+        return false;
+      }
+
+      // Create local stream
+      _localStream =
+          await LocalStream.getDisplayMedia(constraints: constraints);
+
+      // Publish stream
+      await _ionSfuClient?.publish(_localStream!);
+
+      // Start stats monitoring
+      _startStatsTimer();
+
+      log.info('SfuPublisher started successfully');
+      return true;
+    });
+  }
+
+  // Recreate only the client, reuse existing stream
+  Future<void> recreateClient() async {
+    await _lock.synchronized(() async {
+      if (_ionSfuClient == null) {
+        log.warning('No client to recreate');
+        return;
+      }
+
+      log.info('Recreating ionSfuClient');
+
+      final newClient = await _createIonSfuClient();
+
+      if (_localStream != null) {
+        await newClient.publish(_localStream!);
+        // ensure an uninterrupted transition between the old and new client
+        final oldClient = _ionSfuClient;
+        _ionSfuClient = newClient;
+        oldClient?.close();
+
+        log.info('ionSfuClient recreated successfully');
+      } else {
+        log.warning('No local stream available, closing new client');
+        newClient.close();
+      }
+    });
+  }
+
+  Future<Client> _createIonSfuClient() async {
+    final uuid = const Uuid().v4();
+    log.info('create ionSfuClient, uuid: $uuid');
+    final client = await Client.create(
+      sid: _roomId,
+      uid: uuid,
+      signal: _ionSignal,
+    );
+
+    client.ondatachannel = (RTCDataChannel dc) {
+      if (dc.label == API_CHANNEL) {
+        return;
+      }
+      log.info("New data channel: ${dc.label} ${dc.id}");
+
+      if (dc.label == null) {
+        log.warning('Data channel has no label');
+        return;
+      }
+
+      _channels[dc.label!] = _createRemoteControlChannel(dc);
+    };
+
+    client.onConnectionState = (RTCPeerConnectionState state) async {
+      log.info('ionSfuClient $uuid Connection state: ${state.name}');
+      if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+        await recreateClient();
+      }
+    };
+
+    return client;
+  }
+
+  RemoteControlChannel _createRemoteControlChannel(RTCDataChannel dataChannel) {
+    _nextChannelId += 1;
+
+    return RemoteControlChannel(
+      _nextChannelId,
+      dataChannel,
+      _onControlChannelClosed,
+      _onControlMessage,
+    );
+  }
+
+  void _onControlChannelClosed(RemoteControlChannel channel) {
+    _touchEventManager?.releaseEventSlotsByChannelId(channel.id);
+    _channels.removeWhere((key, item) => item.id == channel.id);
+  }
+
+  void _onControlMessage(RTCDataChannelMessage data, int channelId) async {
+    EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+
+    if (eventMessage.hasTouchEvent()) {
+      _touchEventManager?.setScreenSize(_screenWidth, _screenHeight);
+      _touchEventManager?.handleTouchEvent(eventMessage.touchEvent, channelId);
+    }
+
+    if (eventMessage.hasKeyEvent()) {
+      _touchEventManager?.handleKeyEvent(eventMessage.keyEvent, channelId);
+    }
+  }
+
+  Future<Constraints> _getConstraints() async {
+    final (width, height) = await getScreenSize();
+    _screenWidth = width;
+    _screenHeight = height;
+
+    String? deviceType = await DeviceInfoVs.deviceType;
+
+    final captureResolution = getCaptureVideoResolution(
+      deviceType,
+      _screenWidth,
+      _screenHeight,
+    );
+    log.info(
+        'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+
+    var constraints = Constraints.defaults;
+    // Note: ion-sdk-flutter currently hard-code H264, so the settings here
+    // are ineffective.
+    constraints.codec = "h264";
+    constraints.simulcast = false;
+    constraints.audio = false;
+    constraints.resolution = captureResolution.name;
+    return constraints;
+  }
+
+  Future<bool> _requestBackgroundPermission() async {
+    if (Platform.isAndroid) {
+      try {
+        var hasPermissions = await FlutterBackground.hasPermissions;
+        const androidConfig = FlutterBackgroundAndroidConfig(
+          notificationTitle: 'Screen Sharing',
+          notificationText: 'AirSync is sharing the screen.',
+          notificationImportance: AndroidNotificationImportance.normal,
+          notificationIcon: AndroidResource(
+            name: 'ic_launcher',
+            defType: 'mipmap',
+          ),
+          // Above Android 12 will has some issue if set below option true.
+          shouldRequestBatteryOptimizationsOff: false,
+        );
+
+        hasPermissions = await FlutterBackground.initialize(
+          androidConfig: androidConfig,
+        );
+        if (hasPermissions && !FlutterBackground.isBackgroundExecutionEnabled) {
+          bool result = await FlutterBackground.enableBackgroundExecution();
+          return result;
+        }
+        return hasPermissions;
+      } catch (e, stackTrace) {
+        log.severe('requestBackgroundPermission', e, stackTrace);
+      }
+    }
+    return false;
+  }
+
+  void _startStatsTimer() {
+    _rtcStatsParser = RtcStatsParser();
+    final rtcStatsReporter = RtcStatsReporter(
+      (RtcVideoInboundStats stats) {},
+      _handleVideoStatsReport,
+      (String localCandidateType, String remoteCandidateType) {},
+      (RtcIceCandidatePairStats stats) {},
+    );
+    _rtcStatsParser!.addSubscriber(rtcStatsReporter);
+
+    _statsTimer?.cancel();
+    _statsTimer = Timer.periodic(
+      _statsTimerInterval,
+      (timer) async {
+        final reports = await _ionSfuClient?.getPubStats(null);
+        if (reports != null) {
+          _rtcStatsParser?.onStatsReports(reports);
+        }
+      },
+    );
+  }
+
+  void _stopStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
+  void _handleVideoStatsReport(RtcVideoOutboundStats stats) {
+    _videoOutboundStatsHistory.add(stats);
+  }
+
+  List<RtcVideoOutboundStats> getVideoOutboundStatsHistory() {
+    return _videoOutboundStatsHistory.elements;
+  }
+
+  bool isStarted() {
+    return _ionSfuClient != null;
+  }
+
+  Future<void> stop() async {
+    await _lock.synchronized(() async {
+      log.info('Stopping SfuPublisher');
+
+      if (FlutterBackground.isBackgroundExecutionEnabled) {
+        await FlutterBackground.disableBackgroundExecution();
+      }
+
+      _stopStatsTimer();
+
+      // TODO: dispose localStream
+      // await _localStream?.dispose();
+      _localStream = null;
+
+      _ionSfuClient?.close();
+      _ionSfuClient = null;
+
+      _channels.clear();
+
+      log.info('SfuPublisher stopped');
+    });
+  }
+
+  void enableRemoteControlBySessionId(String sessionId, bool enable) {
+    log.info('Enable remote control for $sessionId $enable');
+
+    final channel = _channels[sessionId];
+    if (channel == null) {
+      return;
+    }
+    channel.setControlAllowed(enable);
+  }
+
+  void logOutboundStats() {
+    final remoteScreenStats =
+        formatVideoOutboundStatsList(_videoOutboundStatsHistory.elements);
+    final chunkLogger = ChunkedLogger(log);
+    chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
+    // TODO: upload remoteScreenStats to appInsight
   }
 }
