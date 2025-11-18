@@ -123,4 +123,13 @@ class RemoteScreenProvider {
         return await _multicastPresenter.start();
     }
   }
+
+  void recreatePublisher() {
+    switch (remoteScreenType) {
+      case RemoteScreenType.rtc:
+        return _server.userConfirmRecreate();
+      case RemoteScreenType.multicast:
+        return;
+    }
+  }
 }
