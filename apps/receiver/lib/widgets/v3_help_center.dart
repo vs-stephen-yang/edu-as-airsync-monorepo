@@ -196,6 +196,7 @@ class _V3HelpCenterWidgetState extends State<V3HelpCenterWidget> {
             child: Container(
               alignment: Alignment.center,
               constraints: BoxConstraints(maxWidth: 150),
+              color: context.tokens.color.vsdslColorSurface100,
               height: 25,
               child: Text(
                 S.of(context).v3_help_center_close,
@@ -247,9 +248,12 @@ class _V3HelpCenterWidgetState extends State<V3HelpCenterWidget> {
             ),
           ),
           const Gap(5),
-          Text(
-            S.of(context).v3_help_center_title,
-            style: TextStyle(fontSize: 9, color: tokens.vsdslColorInfo),
+          Container(
+            color: context.tokens.color.vsdslColorSurface100,
+            child: Text(
+              S.of(context).v3_help_center_title,
+              style: TextStyle(fontSize: 9, color: tokens.vsdslColorInfo),
+            ),
           ),
         ],
       ),
