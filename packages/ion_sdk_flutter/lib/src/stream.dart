@@ -325,6 +325,10 @@ class LocalStream {
     var track = await getNewTrack(kind);
     await updateTrack(next: track, prev: prev);
   }
+
+  void stop() {
+    _stream.getTracks().forEach((track) async => track.stop());
+  }
 }
 
 class RemoteStream {
