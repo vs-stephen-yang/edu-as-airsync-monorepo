@@ -82,7 +82,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
             ),
             color: context.tokens.color.vsdswColorOutlineVariant,
           ),
-          SizedBox(
+          Container(
+            alignment: Alignment.center,
             width: 376,
             height: 40 * textScale,
             child: Padding(
@@ -99,7 +100,13 @@ class V3SettingsLegalPolicy extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          Container(
+            height: 1,
+            margin: EdgeInsets.only(
+              top: context.tokens.spacing.vsdswSpacingSm.top,
+            ),
+            color: context.tokens.color.vsdswColorOutlineVariant,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 24),
