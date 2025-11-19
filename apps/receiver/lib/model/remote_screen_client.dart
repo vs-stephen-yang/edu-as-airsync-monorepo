@@ -6,6 +6,7 @@ import 'package:display_flutter/model/remote_screen_channel_signal.dart';
 import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
+import 'package:display_flutter/model/video_track_manager.dart';
 import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
@@ -90,6 +91,9 @@ class RtcScreenClient extends RemoteScreenClient {
   // Keep recent stats history for debugging (last 20 seconds)
   final _videoInboundStatsHistory = BoundedList<RtcVideoInboundStats>(20);
 
+  // Multi-track management
+  VideoTrackManager? _trackManager;
+
   @override
   bool get isAudioEnable {
     return remoteScreenRenderer.srcObject != null &&
@@ -157,7 +161,54 @@ class RtcScreenClient extends RemoteScreenClient {
     _fpsZeroDetector = null;
     _rtcStatsParser = null;
 
+    // Clean up multi-track resources
+    _trackManager?.dispose();
+    _trackManager = null;
+
     log.info('Remote screen: Stats monitoring stopped');
+  }
+
+  /// Start track monitoring (handles both single and multi-track)
+  void _startTrackMonitoring() {
+    log.info('Remote screen: Starting track monitoring');
+
+    // Cancel existing timer if any
+    _statsTimer?.cancel();
+
+    // Start periodic stats collection for all tracks
+    _statsTimer = Timer.periodic(_statsTimerInterval, (timer) async {
+      if (_trackManager != null && _client != null) {
+        await _trackManager!.collectStats(_client!);
+      }
+    });
+
+    // Initialize FPS zero detector for global monitoring
+    _fpsZeroDetector ??= RtcFpsZeroDetector(
+      checkDelay: const Duration(seconds: 10),
+      minSamples: 3,
+      onFpsZeroDetected: _onFpsZero,
+    );
+    _fpsZeroDetector?.startCollecting();
+
+    log.info('Remote screen: Track monitoring started');
+  }
+
+  /// Handle active track changed callback from VideoTrackManager
+  void _handleActiveTrackChanged(
+    String? oldTrackId,
+    String newTrackId,
+    RemoteStream stream,
+  ) {
+    log.info(
+        'Remote screen: Switching active track from $oldTrackId to $newTrackId');
+    _remoteScreenRenderer.srcObject = stream.stream;
+  }
+
+  /// Handle track removed callback from VideoTrackManager
+  void _handleTrackRemoved(String trackId, String reason) {
+    log.info('Remote screen: Track $trackId removed: $reason');
+    // VideoTrackManager and monitoring continue running
+    // Cleanup will happen in stopStatsMonitoring() or remove()
   }
 
   /// Check FPS before closing (called when sender initiates stop)
@@ -223,10 +274,40 @@ class RtcScreenClient extends RemoteScreenClient {
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
-      log.info('Remote screen: Track added ${track.label}');
+      if (track.kind == 'video') {
+        // Initialize track manager if not exists
+        _trackManager ??= VideoTrackManager(
+          onActiveTrackChanged: _handleActiveTrackChanged,
+          onTrackRemoved: _handleTrackRemoved,
+          onActiveTrackStatsCollected: (stats) {
+            // Feed active track stats to FPS zero detector
+            _fpsZeroDetector?.onVideoInboundStats(stats);
+            // Save active track stats to history for debugging
+            _videoInboundStatsHistory.add(stats);
+          },
+        );
 
-      await _remoteScreenRenderer.initialize();
-      _remoteScreenRenderer.srcObject = remoteStream.stream;
+        // Add track to manager
+        _trackManager!.addTrack(track, remoteStream);
+
+        final trackCount = _trackManager!.getTrackCount();
+        log.info('Remote screen: Video track added, total tracks: $trackCount');
+
+        if (trackCount == 1) {
+          // Single track mode: render immediately and start monitoring
+          log.info('Remote screen: Single track mode - rendering immediately');
+          await _remoteScreenRenderer.initialize();
+          _remoteScreenRenderer.srcObject = remoteStream.stream;
+
+          // Start track monitoring
+          _startTrackMonitoring();
+        } else if (trackCount == 2) {
+          // Just switched to multi-track mode
+          log.info('Remote screen: Now in multi-track mode');
+          // Monitoring is already running, no need to restart
+        }
+        // For trackCount > 2, monitoring is already running
+      }
     };
     _client!.onConnectionState = (RTCPeerConnectionState state) {
       log.info('Remote screen: Connection state ${state.name}');
@@ -242,16 +323,8 @@ class RtcScreenClient extends RemoteScreenClient {
           _fpsZeroDetector?.checkOnDisconnect();
           break;
         case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
-          // Start stats monitoring when connected
-          if (_statsTimer == null) {
-            log.info('Remote screen: Starting stats monitoring');
-            startStatsMonitoring(
-              const Duration(seconds: 10),
-              3,
-              _onFpsZero,
-            );
-          }
-
+          // Stats monitoring is now handled in ontrack callback
+          // No need to start it here anymore
           if (_isFirstConnected) {
             onTrack();
             _isFirstConnected = false;
