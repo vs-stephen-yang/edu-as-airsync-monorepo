@@ -20,7 +20,7 @@ final RoleSub = 1;
 typedef OnNegotiateCallback = Function(RTCSessionDescription jsep);
 typedef OnReadyCallback = Function();
 typedef OnTrickleCallback = Function(Trickle trickle);
-typedef OnCloseCallback = Function(int code, String reason);
+typedef OnCloseCallback = Function(int code, String? reason);
 
 abstract class Signal {
   OnNegotiateCallback? onnegotiate;
