@@ -16,7 +16,7 @@ class JsonRPCSignal extends Signal {
 
     _socket.onOpen = () => onready?.call();
 
-    _socket.onClose = (int code, String reason) => onclose?.call(code, reason);
+    _socket.onClose = (int code, String? reason) => onclose?.call(code, reason);
 
     _socket.onMessage = (msg) => _onmessage(msg);
   }

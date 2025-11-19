@@ -93,7 +93,7 @@ class Client {
       }
     };
 
-    client.signal.onclose = (int code, String reason) {
+    client.signal.onclose = (int code, String? reason) {
       log.error('signal closed: code => $code, reason => $reason');
       client.onSignalClose?.call(code, reason);
     };
@@ -108,7 +108,7 @@ class Client {
   Function(RTCPeerConnectionState state)? onConnectionState;
   Function(RTCDataChannel channel)? ondatachannel;
   Function(Map<String, dynamic> speakers)? onspeaker;
-  Function(int code, String reason)? onSignalClose;
+  Function(int code, String? reason)? onSignalClose;
 
   static final defaultConfig = {
     'iceServers': [
