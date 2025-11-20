@@ -3,7 +3,7 @@
 # Ref by POEditor API https://poeditor.com/docs/api#projects_export
 
 # shellcheck disable=SC1010
-langArr=(zh-TW da en-us et fi fr de ja lv lt no pl ru es sv tr)
+langArr=(zh-TW da en-us et fi fr de ja lv lt no pl pt ru es sv tr)
 
 for i in "${langArr[@]}"
 do
