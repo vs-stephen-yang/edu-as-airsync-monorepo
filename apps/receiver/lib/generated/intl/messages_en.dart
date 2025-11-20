@@ -826,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Participants",
     ),
     "v3_permission_description": MessageLookupByLibrary.simpleMessage(
-      "Please go to device \"Setting\" then \"App\" menu to grant the permission.",
+      "Please go to \"Settings\" then \"Apps\" and select \"AirSync\" to grant the \"Location\" and \"Nearby devices\" permission.",
     ),
     "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "v3_permission_title": MessageLookupByLibrary.simpleMessage(
@@ -845,10 +845,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "QR Code",
     ),
     "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
-      "Screen access ended, so recording stopped.",
+      "Please restart the broadcast session if needed.",
     ),
     "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
-      "Screen recording has stopped",
+      "Screen recording is stopped",
     ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Cancel",

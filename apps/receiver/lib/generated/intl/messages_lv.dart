@@ -878,6 +878,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR kods",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Piekļuve ekrānam tika pārtraukta, tāpēc ierakstīšana tika pārtraukta.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Piekļuve ekrānam tika pārtraukta, tāpēc ierakstīšana tika pārtraukta.",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Atcelt",
     ),

@@ -389,8 +389,10 @@
   "v3_authorize_prompt_title_launcher": "參與者請求分享螢幕",
   "v3_authorize_prompt_notification_cast": "可在\"設定\"中取消\"允許後才能分享螢幕\"",
   "v3_authorize_prompt_notification_mirror": "可在\"設定\"中勾選\"自動接受螢幕鏡射\"",
-  "v3_permission_title": "需要授權",
-  "v3_permission_description": "請至設備端“設定”內的“應用程式”中，開放相關權限",
+  "v3_permission_title": "需要權限",
+  "v3_permission_description": "請至“設定”內的“應用程式”中，選擇\"AirSync\"，點選\"權限\"後，允許“位置”以及“鄰近裝置”的權限",
   "v3_lbl_permission_exit": "離開",
-  "v3_permission_exit": "離開"
+  "v3_permission_exit": "離開",
+  "v3_recording_stopped_dialog_title": "螢幕錄製已結束",
+  "v3_recording_stopped_dialog_msg": "若有需要，請重新分享大屏畫面"
 }

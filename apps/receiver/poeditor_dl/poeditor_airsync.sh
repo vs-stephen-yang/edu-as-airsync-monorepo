@@ -2,7 +2,7 @@
 
 # Ref by POEditor API https://poeditor.com/docs/api#projects_export
 
-langArr=(zh-TW da en et fi fr de ja lv lt no pl es sv tr)
+langArr=(zh-TW da en et fi fr de ja lv lt no pl pt es sv tr)
 
 for i in "${langArr[@]}"
 do

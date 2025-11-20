@@ -860,6 +860,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-kod",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Skärmåtkomsten avslutades, så inspelningen stoppades.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Skärminspelningen har stoppats",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Avbryt",
     ),

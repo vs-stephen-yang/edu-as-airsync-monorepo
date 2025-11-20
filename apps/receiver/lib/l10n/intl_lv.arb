@@ -395,5 +395,7 @@
   "v3_permission_title": "Nepieciešama atļauja",
   "v3_permission_description": "Lūdzu, dodieties uz ierīces \"Iestatījumi\", pēc tam uz \"Lietotņu\" izvēlni, lai piešķirtu atļauju.",
   "v3_lbl_permission_exit": "Iziet",
-  "v3_permission_exit": "Iziet"
+  "v3_permission_exit": "Iziet",
+  "v3_recording_stopped_dialog_title": "Piekļuve ekrānam tika pārtraukta, tāpēc ierakstīšana tika pārtraukta.",
+  "v3_recording_stopped_dialog_msg": "Piekļuve ekrānam tika pārtraukta, tāpēc ierakstīšana tika pārtraukta."
 }

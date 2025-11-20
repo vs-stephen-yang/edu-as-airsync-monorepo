@@ -3956,10 +3956,10 @@ class S {
     );
   }
 
-  /// `Please go to device "Setting" then "App" menu to grant the permission.`
+  /// `Please go to "Settings" then "Apps" and select "AirSync" to grant the "Location" and "Nearby devices" permission.`
   String get v3_permission_description {
     return Intl.message(
-      'Please go to device "Setting" then "App" menu to grant the permission.',
+      'Please go to "Settings" then "Apps" and select "AirSync" to grant the "Location" and "Nearby devices" permission.',
       name: 'v3_permission_description',
       desc: '',
       args: [],
@@ -3981,20 +3981,20 @@ class S {
     return Intl.message('Exit', name: 'v3_permission_exit', desc: '', args: []);
   }
 
-  /// `Screen recording has stopped`
+  /// `Screen recording is stopped`
   String get v3_recording_stopped_dialog_title {
     return Intl.message(
-      'Screen recording has stopped',
+      'Screen recording is stopped',
       name: 'v3_recording_stopped_dialog_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Screen access ended, so recording stopped.`
+  /// `Please restart the broadcast session if needed.`
   String get v3_recording_stopped_dialog_msg {
     return Intl.message(
-      'Screen access ended, so recording stopped.',
+      'Please restart the broadcast session if needed.',
       name: 'v3_recording_stopped_dialog_msg',
       desc: '',
       args: [],
@@ -4019,6 +4019,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'lv'),
       Locale.fromSubtags(languageCode: 'no'),
       Locale.fromSubtags(languageCode: 'pl'),
+      Locale.fromSubtags(languageCode: 'pt'),
       Locale.fromSubtags(languageCode: 'sv'),
       Locale.fromSubtags(languageCode: 'tr'),
       Locale.fromSubtags(languageCode: 'zh'),
