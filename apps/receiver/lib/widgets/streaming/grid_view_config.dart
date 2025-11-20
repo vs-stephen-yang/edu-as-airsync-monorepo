@@ -1,3 +1,4 @@
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/widgets/v3_streaming_expandable.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,10 @@ import 'streaming_view_config.dart';
 final gridViewConfig = StreamingViewConfig(
   mode: StreamingLayoutMode.grid,
   adjustSplitCount: (count) {
+    // 不能大於裝置的分割max
+    if (count >= HybridConnectionList.maxHybridSplitScreen) {
+      return HybridConnectionList.maxHybridSplitScreen;
+    }
     if (count == 7) return count + 2;
     if ([3, 5, 8].contains(count)) return count + 1;
     return count;
