@@ -395,5 +395,7 @@
   "v3_permission_title": "Behörighet krävs",
   "v3_permission_description": "Gå till enhetens \"Inställningar\" och sedan \"App\"-menyn för att ge behörigheten.",
   "v3_lbl_permission_exit": "Avsluta",
-  "v3_permission_exit": "Avsluta"
+  "v3_permission_exit": "Avsluta",
+  "v3_recording_stopped_dialog_title": "Skärminspelningen har stoppats",
+  "v3_recording_stopped_dialog_msg": "Skärmåtkomsten avslutades, så inspelningen stoppades."
 }

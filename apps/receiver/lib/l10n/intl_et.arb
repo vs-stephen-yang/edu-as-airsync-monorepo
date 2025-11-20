@@ -395,5 +395,7 @@
   "v3_permission_title": "Luba vajalik",
   "v3_permission_description": "Palun mine seadme „Seaded” ja seejärel „Rakendused” menüüsse, et anda luba.",
   "v3_lbl_permission_exit": "Välju",
-  "v3_permission_exit": "Välju"
+  "v3_permission_exit": "Välju",
+  "v3_recording_stopped_dialog_title": "Ekraani salvestamine on peatunud",
+  "v3_recording_stopped_dialog_msg": "Juurdepääs ekraanile lõppes, nii et salvestamine peatus."
 }

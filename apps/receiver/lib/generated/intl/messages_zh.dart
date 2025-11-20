@@ -687,10 +687,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_participants_title": MessageLookupByLibrary.simpleMessage("參加人員"),
     "v3_permission_description": MessageLookupByLibrary.simpleMessage(
-      "請至設備端“設定”內的“應用程式”中，開放相關權限",
+      "請至“設定”內的“應用程式”中，選擇\"AirSync\"，點選\"權限\"後，允許“位置”以及“鄰近裝置”的權限",
     ),
     "v3_permission_exit": MessageLookupByLibrary.simpleMessage("離開"),
-    "v3_permission_title": MessageLookupByLibrary.simpleMessage("需要授權"),
+    "v3_permission_title": MessageLookupByLibrary.simpleMessage("需要權限"),
     "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage("快速連線"),
     "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
       "多人分享時將自動分割畫面",
@@ -700,6 +700,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR code",
+    ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "若有需要，請重新分享大屏畫面",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "螢幕錄製已結束",
     ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage("取消"),
     "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage("清除"),

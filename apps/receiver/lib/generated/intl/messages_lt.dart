@@ -884,6 +884,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR kodas",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Prieiga prie ekrano baigėsi, todėl įrašymas sustabdytas.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Prieiga prie ekrano baigėsi, todėl įrašymas sustabdytas.",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Atšaukti",
     ),

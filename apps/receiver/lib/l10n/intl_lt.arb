@@ -395,5 +395,7 @@
   "v3_permission_title": "Reikalingas leidimas",
   "v3_permission_description": "Eikite į įrenginio „Nustatymai“, tada „Programos“ meniu, kad suteiktumėte leidimą.",
   "v3_lbl_permission_exit": "Išeiti",
-  "v3_permission_exit": "Išeiti"
+  "v3_permission_exit": "Išeiti",
+  "v3_recording_stopped_dialog_title": "Prieiga prie ekrano baigėsi, todėl įrašymas sustabdytas.",
+  "v3_recording_stopped_dialog_msg": "Prieiga prie ekrano baigėsi, todėl įrašymas sustabdytas."
 }

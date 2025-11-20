@@ -393,9 +393,9 @@
   "v3_authorize_prompt_notification_cast": "Uncheck “Require approval” in the Settings menu to accept all casting requests.",
   "v3_authorize_prompt_notification_mirror": "Check “Auto Accept” in the Settings menu to accept all mirror requests.",
   "v3_permission_title": "Permission required",
-  "v3_permission_description": "Please go to device \"Setting\" then \"App\" menu to grant the permission.",
+  "v3_permission_description": "Please go to \"Settings\" then \"Apps\" and select \"AirSync\" to grant the \"Location\" and \"Nearby devices\" permission.",
   "v3_lbl_permission_exit": "Exit",
   "v3_permission_exit": "Exit",
-  "v3_recording_stopped_dialog_title": "Screen recording has stopped",
-  "v3_recording_stopped_dialog_msg": "Screen access ended, so recording stopped."
+  "v3_recording_stopped_dialog_title": "Screen recording is stopped",
+  "v3_recording_stopped_dialog_msg": "Please restart the broadcast session if needed."
 }
