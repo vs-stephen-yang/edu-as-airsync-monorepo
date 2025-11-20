@@ -10,7 +10,7 @@ final listViewConfig = StreamingViewConfig(
   adjustSplitCount: (count) {
     // 不能大於裝置的分割max
     if (count >= HybridConnectionList.maxHybridSplitScreen) {
-      return count;
+      return HybridConnectionList.maxHybridSplitScreen;
     }
     if ([1, 4, 7].contains(count)) return count + 2;
     if ([2, 5, 8].contains(count)) return count + 1;
