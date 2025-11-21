@@ -70,25 +70,67 @@ echo ""
 
 # Determine the commit range to compare from
 if [ -z "$FROM_TAG" ]; then
-    # Find the most recent "chore: Change version and TAG" commit on master branch
-    LATEST_VERSION_COMMIT=$(git log master --grep="^chore: Change version and TAG$" --format="%H" | head -1)
-
-    # Find the second most recent "chore: Change version and TAG" commit on master branch
-    PREV_VERSION_COMMIT=$(git log master --grep="^chore: Change version and TAG$" --format="%H" | sed -n '2p')
-
-    if [ -z "$PREV_VERSION_COMMIT" ]; then
-        echo "Warning: No previous 'chore: Change version and TAG' commit found. Showing all commits from latest."
-        if [ -z "$LATEST_VERSION_COMMIT" ]; then
-            COMMIT_RANGE="HEAD"
+    # Resolve which branch/ref to search for version bump commits
+    SEARCH_REF=$(git branch --show-current 2>/dev/null || echo "")
+    if [ -z "$SEARCH_REF" ] || [ "$SEARCH_REF" = "HEAD" ]; then
+        # Detached HEAD in CI – fall back to the remote default branch if present
+        ORIGIN_DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')
+        if [ -n "$ORIGIN_DEFAULT" ]; then
+            SEARCH_REF="$ORIGIN_DEFAULT"
         else
-            COMMIT_RANGE="$LATEST_VERSION_COMMIT"
+            # Try common branch names
+            for cand in main master develop; do
+              if git show-ref --verify --quiet "refs/heads/$cand"; then SEARCH_REF="$cand"; break; fi
+              if [ -z "$SEARCH_REF" ] && git show-ref --verify --quiet "refs/remotes/origin/$cand"; then SEARCH_REF="origin/$cand"; break; fi
+            done
         fi
-    else
-        # Use commits from previous version commit to latest version commit
+    fi
+    if [ -z "$SEARCH_REF" ]; then
+        # As a last resort, search across all refs
+        SEARCH_REF="--all"
+    fi
+
+    # Strategy A: Detect the last two commits that modified the version line in pubspec.yaml
+    LATEST_VERSION_COMMIT=$(git log $SEARCH_REF --pretty=format:"%H" -G '^[[:space:]]*version:[[:space:]]*[0-9]' -- pubspec.yaml | head -1)
+    PREV_VERSION_COMMIT=$(git log $SEARCH_REF --pretty=format:"%H" -G '^[[:space:]]*version:[[:space:]]*[0-9]' -- pubspec.yaml | sed -n '2p')
+
+    if [ -n "$LATEST_VERSION_COMMIT" ] && [ -n "$PREV_VERSION_COMMIT" ]; then
         COMMIT_RANGE="$PREV_VERSION_COMMIT..$LATEST_VERSION_COMMIT"
-        echo "Using commits between version changes:"
+        echo "Using commits between pubspec.yaml version changes on $SEARCH_REF:"
         echo "  From: $(git log -1 --oneline $PREV_VERSION_COMMIT)"
         echo "  To:   $(git log -1 --oneline $LATEST_VERSION_COMMIT)"
+    else
+        # Strategy B: Fall back to commit subject anchor
+        LATEST_VERSION_COMMIT=$(git log $SEARCH_REF --grep="^chore: Change version and TAG$" --format="%H" | head -1)
+        PREV_VERSION_COMMIT=$(git log $SEARCH_REF --grep="^chore: Change version and TAG$" --format="%H" | sed -n '2p')
+
+        if [ -n "$LATEST_VERSION_COMMIT" ] && [ -n "$PREV_VERSION_COMMIT" ]; then
+            COMMIT_RANGE="$PREV_VERSION_COMMIT..$LATEST_VERSION_COMMIT"
+            echo "Using commits between version-change subjects on $SEARCH_REF:"
+            echo "  From: $(git log -1 --oneline $PREV_VERSION_COMMIT)"
+            echo "  To:   $(git log -1 --oneline $LATEST_VERSION_COMMIT)"
+        else
+            # Strategy C: Use the two most recent tags
+            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
+            PREV_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+
+            if [ -n "$LATEST_TAG" ] && [ -n "$PREV_TAG" ]; then
+                COMMIT_RANGE="$PREV_TAG..$LATEST_TAG"
+                echo "Using commits between tags:"
+                echo "  From: $PREV_TAG"
+                echo "  To:   $LATEST_TAG"
+            else
+                # Final fallback: last 100 commits on the chosen ref instead of every reachable commit
+                echo "Warning: Could not locate version bump commits or tags; using the last 100 commits on $SEARCH_REF."
+                LAST100_OLDEST=$(git rev-list --max-count=100 $SEARCH_REF | tail -1)
+                if [ -n "$LAST100_OLDEST" ]; then
+                  COMMIT_RANGE="$LAST100_OLDEST..$SEARCH_REF"
+                else
+                  # If even that fails, fall back to HEAD as a worst case
+                  COMMIT_RANGE="HEAD"
+                fi
+            fi
+        fi
     fi
 else
     COMMIT_RANGE="$FROM_TAG..HEAD"
