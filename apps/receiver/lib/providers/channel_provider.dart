@@ -216,6 +216,36 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 接受授權請求
+  /// [index] - authorizeRequestList 中的索引
+  void acceptAuthorizeRequest(int index) {
+    if (index < 0 || index >= authorizeRequestList.length) {
+      log.warning('無效的索引 for acceptAuthorizeRequest: $index');
+      return;
+    }
+
+    final request = authorizeRequestList[index];
+    request.entries.first.value.sendAllowPresent();
+    authorizeRequestList.removeAt(index);
+    notifyListeners();
+  }
+
+  /// 拒絕授權請求
+  /// [index] - authorizeRequestList 中的索引
+  /// [reasonCode] - 拒絕原因代碼
+  /// [reason] - 拒絕原因描述
+  void declineAuthorizeRequest(int index, int reasonCode, String reason) {
+    if (index < 0 || index >= authorizeRequestList.length) {
+      log.warning('無效的索引 for declineAuthorizeRequest: $index');
+      return;
+    }
+
+    final request = authorizeRequestList[index];
+    request.entries.first.value.sendRejectPresent(reasonCode, reason);
+    authorizeRequestList.removeAt(index);
+    notifyListeners();
+  }
+
   bool get tunnelActivated => _channelServer.isTunnelAvailable;
 
   Stream<bool> get tunnelActivatedStream =>
