@@ -15,6 +15,9 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private let screenStateQueue = DispatchQueue(label: "flutter_input_injection.screenStateQueue", attributes: .concurrent)
   private var isScreenConfigChanged: Bool = false
 
+  // 新增：目前正在處理的 touch id（只處理這個 id 的 move / up）
+  private var activeTouchId: Int? = nil
+
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(
       name: "flutter_input_injection", binaryMessenger: registrar.messenger)
@@ -101,15 +104,30 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private func processTouchEvent(_ event: (action: Int, id: Int, x: Int, y: Int)) {
     switch event.action {
     case 0:  // touch down
-      handleMouseDown(event)  // convert touch down to mouse down
+      // 如果目前沒有正在追蹤的 id，就從這個 id 開始
+      if activeTouchId == nil {
+        activeTouchId = event.id
+        handleMouseDown(event)  // convert touch down to mouse down
+      }
+      // 如果 activeTouchId 已經有值，就忽略其它 finger 的 down
       break
 
     case 1:  // touch move
+      // 只處理跟 activeTouchId 相同的 id
+      guard let activeId = activeTouchId, activeId == event.id else {
+        return
+      }
       handleMouseMove(event)  // convert touch move to mouse move
       break
 
     case 2:  // touch up
+      // 只處理跟 activeTouchId 相同的 id
+      guard let activeId = activeTouchId, activeId == event.id else {
+        return
+      }
       handleMouseUp(event)  // convert touch up to mouse up
+      // 對應的 finger 抬起後，把 activeTouchId 清掉，下一個 down 才能接手
+      activeTouchId = nil
       break
 
     default:
