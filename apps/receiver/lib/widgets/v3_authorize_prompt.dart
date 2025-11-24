@@ -613,12 +613,11 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   trackEvent('click_decline_device',
                                       EventCategory.session,
                                       mode: 'webrtc');
-                                  request.entries.first.value.sendRejectPresent(
+                                  channelProvider.declineAuthorizeRequest(
+                                      index,
                                       PresentRejectedReasonCode
                                           .authorizeDecline.code,
                                       'authorize decline');
-                                  channelProvider.authorizeRequestList
-                                      .removeAt(index);
                                 },
                                 onAccept: () {
                                   _resetTimerForUser('webrtc_$deviceName');
@@ -627,10 +626,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       EventCategory.session,
                                       mode: 'webrtc');
 
-                                  request.entries.first.value
-                                      .sendAllowPresent();
-                                  channelProvider.authorizeRequestList
-                                      .removeAt(index);
+                                  channelProvider.acceptAuthorizeRequest(index);
                                 },
                               ),
                               containerHeight: requestContainerHeight,
