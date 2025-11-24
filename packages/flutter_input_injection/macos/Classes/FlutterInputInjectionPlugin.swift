@@ -6,17 +6,49 @@ let VIEWSONIC_VID: UInt16 = 0x0543
 let VIEWSONIC_PID: UInt16 = 0x1234
 
 public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
-  private var lastMouseDownEvent: (action: Int, id: Int, x: Int, y: Int, timestamp: TimeInterval)? =
-    nil
-  private var skipEventsUntilMouseUp: Bool = false
-  private var mouseDown: Bool = false
-  private let distanceThreshold: CGFloat = 25
   private var targetScreen: NSScreen? = nil
   private let screenStateQueue = DispatchQueue(label: "flutter_input_injection.screenStateQueue", attributes: .concurrent)
   private var isScreenConfigChanged: Bool = false
 
   // 新增：目前正在處理的 touch id（只處理這個 id 的 move / up）
   private var activeTouchId: Int? = nil
+
+  // ===== 手勢模式判斷 =====
+  private var mouseDown: Bool = false
+
+  /// down 之後停多久才算「長按」→ 用來分辨 drag（長按）vs scroll（立即移動）
+  private let longPressDelay: TimeInterval = 0.1      // 100ms
+
+  /// 單指點一下（tap）最大時間（down → up）
+  private let tapMaxDuration: TimeInterval = 0.25     // 250ms
+
+  /// 單指點一下（tap）允許的最大移動距離
+  private let tapMoveThreshold: CGFloat = 5.0
+
+  /// 用於 double-click 的距離閾值（沿用你原本的 distanceThreshold）
+  private let distanceThreshold: CGFloat = 25.0
+
+  /// 本次手勢（down→up）的起始時間
+  private var gestureStartTime: TimeInterval? = nil
+
+  /// 本次手勢模式是否已決定（scroll 或 drag）
+  private var gestureModeDecided: Bool = false
+
+  /// 本次手勢是否為拖曳模式（true = drag, false = scroll）
+  private var isDragMode: Bool = false
+
+  /// 本次手勢的 down 位置（用來決定 click / drag 起點）
+  private var gestureDownPoint: CGPoint? = nil
+
+  /// 拖曳模式下，有沒有送過 leftMouseDown（避免重複送）
+  private var didSendMouseDownForDrag: Bool = false
+
+  /// 上一次 move 的座標（用來算 scroll delta & 移動距離）
+  private var lastMovePoint: CGPoint? = nil
+
+  // ===== 雙擊判斷用 =====
+  private var lastClickTime: TimeInterval? = nil
+  private var lastClickPoint: CGPoint? = nil
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(
@@ -225,49 +257,65 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   }
 
   private func handleMouseDown(_ event: (action: Int, id: Int, x: Int, y: Int)) {
-    // If events are being skipped until a mouse-up event, ignore this event.
-    if skipEventsUntilMouseUp {
-      return
-    }
-
-    // Check for a potential double-click by comparing the time and distance between
-    // this mouse down event and the last one.
-    if lastMouseDownEvent != nil {
-      if isWithinSystemDoubleClickTimeInterval(lastMouseDownEvent!.timestamp) {
-        if isWithinDistanceThreshold(
-          CGPoint(x: lastMouseDownEvent!.x, y: lastMouseDownEvent!.y), toCGPoint(event))
-        {
-          // If the event qualifies as a double-click, reset tracking variables,
-          // skip further events until a mouse-up occurs, and simulate a double-click.
-          lastMouseDownEvent = nil
-          skipEventsUntilMouseUp = true
-          mouseDown = true
-
-          simulateMouseLeftDoubleClickEvent(CGPoint(x: event.x, y: event.y))
-          return
-        }
-      }
-    }
-
-    // Otherwise, update the last mouse down event timestamp and simulate a mouse down.
-    let now = Date().timeIntervalSince1970
-    lastMouseDownEvent = (
-      action: event.action, id: event.id, x: event.x, y: event.y,
-      timestamp: now
-    )
     mouseDown = true
 
-    simulateMouseEvent(.leftMouseDown, at: CGPoint(x: event.x, y: event.y))
+    let now = Date().timeIntervalSince1970
+    gestureStartTime = now
+    gestureModeDecided = false
+    isDragMode = false
+
+    gestureDownPoint = CGPoint(x: event.x, y: event.y)
+    didSendMouseDownForDrag = false
+    lastMovePoint = nil
+
+    // 這裡不送任何滑鼠事件，真正的 click / drag / scroll 之後再決定
   }
 
   private func handleMouseMove(_ event: (action: Int, id: Int, x: Int, y: Int)) {
     // Ignore move events if the mouse is not currently presse or if events are being
     // skipped until a mouse-up occurs.
-    if !mouseDown || skipEventsUntilMouseUp {
+    if !mouseDown {
       return
     }
 
-    simulateMouseEvent(.mouseMoved, at: CGPoint(x: event.x, y: event.y))
+    let now = Date().timeIntervalSince1970
+    let currentPoint = CGPoint(x: event.x, y: event.y)
+
+    // 第一次 move（或模式尚未決定）時：根據距離 down 的時間決定本次手勢模式
+    if !gestureModeDecided {
+      let startTime = gestureStartTime ?? now
+      let elapsedFromDown = now - startTime
+
+      if elapsedFromDown >= longPressDelay {
+        // down 後先停 ≥ 100ms 才開始動 → 長按 → 本次手勢用拖曳模式
+        isDragMode = true
+      } else {
+        // down 完馬上開始動 → 本次手勢用滾動模式
+        isDragMode = false
+      }
+      gestureModeDecided = true
+    }
+
+    // scroll 用的 delta（沒前一點就當 0）
+    let previousPoint = lastMovePoint ?? currentPoint
+    let deltaY = Int32(currentPoint.y - previousPoint.y)
+
+    if isDragMode {
+      // 拖曳模式：第一次需要補送 leftMouseDown，之後送 leftMouseDragged
+      if !didSendMouseDownForDrag, let downPoint = gestureDownPoint {
+        simulateMouseEvent(.leftMouseDown, at: downPoint)
+        didSendMouseDownForDrag = true
+      }
+      simulateMouseEvent(.leftMouseDragged, at: currentPoint)
+    } else {
+      // 滾動模式：完全沒有 down/up，只送 mouseMoved + scrollWheel
+      simulateMouseEvent(.mouseMoved, at: currentPoint)
+      if deltaY != 0 {
+        simulateScrollEvent(.scrollWheel, deltaY: deltaY)
+      }
+    }
+
+    lastMovePoint = currentPoint
   }
 
   private func handleMouseUp(_ event: (action: Int, id: Int, x: Int, y: Int)) {
@@ -276,20 +324,78 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
       return
     }
 
-    // Reset skipping events until mouse-up if it was a previous yet.
-    if skipEventsUntilMouseUp {
-      skipEventsUntilMouseUp = false
+    let now = Date().timeIntervalSince1970
+    let upPoint = CGPoint(x: event.x, y: event.y)
+    let downPoint = gestureDownPoint ?? upPoint
+
+    if !gestureModeDecided {
+      // 沒有 move → 這是一個 tap 手勢（可能是單擊或雙擊）
+      let startTime = gestureStartTime ?? now
+      let duration = now - startTime
+
+      // 移動距離
+      let movedDistance: CGFloat
+      if let lastMove = lastMovePoint {
+        movedDistance = distanceBetweenPoints(downPoint, lastMove)
+      } else {
+        movedDistance = 0
+      }
+
+      if duration <= tapMaxDuration && movedDistance <= tapMoveThreshold {
+        // 一次有效 tap，判斷是單擊還是雙擊
+        if let lastTime = lastClickTime,
+           let lastPoint = lastClickPoint,
+           isWithinSystemDoubleClickTimeInterval(lastTime, now: now),
+           isWithinDistanceThreshold(lastPoint, downPoint) {
+
+          // 雙擊：送 double-click event
+          simulateMouseLeftDoubleClickEvent(downPoint)
+
+          // 重置「上一個 click」記錄
+          lastClickTime = nil
+          lastClickPoint = nil
+        } else {
+          // 單擊：送 leftMouseDown + leftMouseUp
+          simulateMouseEvent(.leftMouseDown, at: downPoint)
+          simulateMouseEvent(.leftMouseUp, at: downPoint)
+
+          // 記錄這次 click，供之後判斷 double-click 用
+          lastClickTime = now
+          lastClickPoint = downPoint
+        }
+      }
+      // 若 duration 太長或移動太遠，就當作「長按但沒移動」，目前不做任何事
     } else {
-      simulateMouseEvent(.leftMouseUp, at: CGPoint(x: event.x, y: event.y))
+      // 已經是 scroll 或 drag 模式
+      if isDragMode {
+        // 拖曳模式：收尾送 leftMouseUp（如果有送過 down）
+        if didSendMouseDownForDrag {
+          simulateMouseEvent(.leftMouseUp, at: upPoint)
+        }
+      } else {
+        // scroll 模式：完全不送 up → 不會觸發 click / 不會拖圖片捷徑
+      }
     }
 
-    // Reset the mouse down state.
+    // Reset 手勢狀態
     mouseDown = false
+    gestureStartTime = nil
+    gestureModeDecided = false
+    isDragMode = false
+    gestureDownPoint = nil
+    didSendMouseDownForDrag = false
+    lastMovePoint = nil
   }
 
   private func simulateMouseEvent(_ type: CGEventType, at location: CGPoint) {
     CGEvent(
       mouseEventSource: nil, mouseType: type, mouseCursorPosition: location, mouseButton: .left)?
+      .post(tap: .cghidEventTap)
+  }
+
+  private func simulateScrollEvent(_ type: CGEventType, deltaY: Int32) {
+    CGEvent(
+      scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 1, wheel1: deltaY, wheel2: 0, wheel3: 0)?
       .post(tap: .cghidEventTap)
   }
 
@@ -313,7 +419,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     return CGPoint(x: event.x, y: event.y)
   }
 
-  private func getSystemDoubleClickInterval() -> Double {
+  private func getSystemDoubleClickInterval() -> TimeInterval {
     // Retrieves the system-defined double-click interval, which is the maximum
     // time allowed between two consecutive mouse down events for them to be
     // recognized as a double-click.
@@ -323,10 +429,9 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     return NSEvent.doubleClickInterval
   }
 
-  private func isWithinSystemDoubleClickTimeInterval(_ time: TimeInterval) -> Bool {
-    let now = Date().timeIntervalSince1970
-    let systemDoubleClickInterval = getSystemDoubleClickInterval()
-    return (now - time) < systemDoubleClickInterval
+  private func isWithinSystemDoubleClickTimeInterval(_ previousTime: TimeInterval, now: TimeInterval) -> Bool {
+    let interval = getSystemDoubleClickInterval()
+    return (now - previousTime) < interval
   }
 
   private func isWithinDistanceThreshold(_ point1: CGPoint, _ point2: CGPoint) -> Bool {
