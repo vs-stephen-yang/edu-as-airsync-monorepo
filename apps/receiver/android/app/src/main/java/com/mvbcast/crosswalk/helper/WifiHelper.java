@@ -199,10 +199,11 @@ public class WifiHelper {
     }
 
     public void startWifiMonitorLoop(Activity activity) {
-        if (!mIsSpecifiedWirelessModuleFound) return;
-        if (monitorHandler != null) return;
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return;
+        sendPermissionStatusToFlutter("permission_granted");
+        if (!mIsSpecifiedWirelessModuleFound) return;
+        if (monitorHandler != null) return;
 
         monitorHandler = new Handler(Looper.getMainLooper());
         monitorRunnable = new Runnable() {
