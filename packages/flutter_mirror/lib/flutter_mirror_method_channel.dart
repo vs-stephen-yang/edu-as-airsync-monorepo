@@ -4,15 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/bluetooth_touchback_status.dart';
+import 'package:flutter_mirror/credential_store.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 
 import 'bluetooth_touchback_listener.dart';
-import 'flutter_mirror_platform_interface.dart';
-import 'flutter_mirror_listener.dart';
-import 'package:flutter_mirror/credential_store.dart';
 import 'credentials.dart';
+import 'flutter_mirror_listener.dart';
+import 'flutter_mirror_platform_interface.dart';
 
 /// An implementation of [FlutterMirrorPlatform] that uses method channels.
 class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
@@ -42,7 +42,6 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
 
   @override
   Future<void> initialize(FlutterMirrorConfig config) async {
-    await CredentialsStore.init();
     await methodChannel.invokeMethod('initialize', {
       "additionalCodecParams": config.additionalCodecParams,
     });
