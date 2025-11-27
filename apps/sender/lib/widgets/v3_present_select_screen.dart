@@ -320,6 +320,7 @@ class SelectScreenDialog extends Dialog {
   String hostName;
   final bool isVirtualAudioMissing;
   bool enableAudioCheckbox = true;
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -673,9 +674,11 @@ class SelectScreenDialog extends Dialog {
                                                 : context.tokens.color
                                                     .vsdswColorDisabled,
                                             onPressed: () {
-                                              if (!sourceSelected) {
+                                              if (!sourceSelected ||
+                                                  _isSubmitting) {
                                                 return;
                                               }
+                                              _isSubmitting = true;
                                               ChannelProvider channelProvider =
                                                   Provider.of<ChannelProvider>(
                                                       context,
@@ -687,6 +690,7 @@ class SelectScreenDialog extends Dialog {
                                                     _systemAudio,
                                                     _isExtensionSelected);
                                               } else {
+                                                _isSubmitting = false;
                                                 Toast.makeFeatureReconnectToast(
                                                     channelProvider
                                                         .reconnectState,
