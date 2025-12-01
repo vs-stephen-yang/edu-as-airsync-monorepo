@@ -801,6 +801,10 @@ enum RemoteScreenStatus {
   rejected,
   kicked,
   fpsZero,
+  hostFpsZero,
+  hostRecreating,
+  hostRecreateFailure,
+  hostRecreateSuccess,
 }
 
 RemoteScreenStatus stringToRemoteScreenStatus(String str) {
