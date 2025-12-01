@@ -856,8 +856,6 @@ class SelectScreenDialog extends Dialog {
     });
 
     // Start the virtual display
-    final baseScreenNumber =
-        (await desktopCapturer.getSources(types: [SourceType.Screen])).length;
     log.info('Starting virtual display');
     final display = await ScreenRetriever.instance.getPrimaryDisplay();
     final scale = (display.scaleFactor ?? 1).toDouble();
@@ -880,6 +878,9 @@ class SelectScreenDialog extends Dialog {
     try {
       final result = await completer.future.timeout(const Duration(seconds: 5));
       if (result && Platform.isWindows) {
+        final baseScreenNumber =
+            (await desktopCapturer.getSources(types: [SourceType.Screen]))
+                .length;
         await _waitForVirtualDisplayRegistration(baseScreenNumber);
         await _switchToExtendedDisplayMode();
       }
