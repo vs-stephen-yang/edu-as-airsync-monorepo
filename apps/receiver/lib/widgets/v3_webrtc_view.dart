@@ -100,7 +100,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
           bytesPerSecond != null ? bytesPerSecond * 8 / 1024 : null;
 
       final decodeTimeSec = stats.decodeTime?.toStringAsFixed(3);
-      final jitterSec = stats.jitterBufferDelay?.toStringAsFixed(3);
+      final jitterSec = stats.jitterBufferDelayAvg?.toStringAsFixed(3);
 
       videoInfo = 'Res ${stats.frameWidth}x${stats.frameHeight} '
           'Bitrate: ${bitrateKbps?.toStringAsFixed(0)} Kbps\n'
