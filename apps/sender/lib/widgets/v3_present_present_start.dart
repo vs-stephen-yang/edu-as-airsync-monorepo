@@ -445,6 +445,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           'ContentType: ${stats.contentType}\n'
           'QualityLimitationReason: ${stats.qualityLimitationReason}\n'
           'pliCount: ${stats.pliCount}\n'
+          'PacketSendDelay: ${stats.packetSendDelayAvgMs?.toStringAsFixed(2)} ms\n'
           'Encoder: ${stats.encoderImplementation}\n'
           'EncodeTime: ${stats.encodeTimeAvgMs?.toStringAsFixed(2)}\n';
 
