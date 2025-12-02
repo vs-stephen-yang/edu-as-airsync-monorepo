@@ -16,20 +16,31 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class V3ShortcutsMenu extends StatelessWidget {
-  const V3ShortcutsMenu({super.key, required this.primaryFocusNode});
+  const V3ShortcutsMenu({
+    super.key,
+    required this.primaryFocusNode,
+    this.position,
+  });
 
   static int _debugCounter = 0;
   final FocusNode primaryFocusNode;
+  final Offset? position;
 
   @override
   Widget build(BuildContext context) {
+    // 使用傳入的 position，若無則使用預設值
+    final screenHeight = MediaQuery.of(context).size.height;
+    final left = position?.dx ?? 70.0;
+    final bottom =
+        position != null ? (screenHeight - position!.dy - 358.0) : 70.0;
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: context.tokens.radii.vsdslRadiusXl,
       ),
       alignment: Alignment.bottomLeft,
       backgroundColor: const Color(0xFF151C32),
-      insetPadding: const EdgeInsets.only(left: 70, bottom: 70),
+      insetPadding: EdgeInsets.only(left: left, bottom: bottom),
       elevation: 16.0,
       shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
       child: SizedBox(

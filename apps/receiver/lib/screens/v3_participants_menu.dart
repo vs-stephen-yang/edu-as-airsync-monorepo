@@ -10,17 +10,23 @@ class V3ParticipantsMenu extends StatelessWidget {
   const V3ParticipantsMenu({
     super.key,
     required this.primaryFocusNode,
+    this.position,
   });
 
   final FocusNode primaryFocusNode;
+  final Offset? position;
 
   @override
   Widget build(BuildContext context) {
+    // 使用傳入的 position，若無則使用預設值
+    final left = position?.dx ?? 60;
+    final top = position?.dy ?? (MediaQuery.of(context).size.height - 442 - 80);
+
     return Stack(
       children: [
         Positioned(
-          left: 60,
-          bottom: 80,
+          left: left,
+          top: top,
           child: Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
