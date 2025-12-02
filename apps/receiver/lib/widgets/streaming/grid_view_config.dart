@@ -1,5 +1,4 @@
 import 'package:display_flutter/model/hybrid_connection_list.dart';
-import 'package:display_flutter/widgets/v3_streaming_expandable.dart';
 import 'package:flutter/material.dart';
 
 import 'streaming_view_config.dart';
@@ -15,13 +14,9 @@ final gridViewConfig = StreamingViewConfig(
     if ([3, 5, 8].contains(count)) return count + 1;
     return count;
   },
-  buildPageHeaderFooter: (_, __, ___) {
-    return const Positioned(
-      left: 13,
-      bottom: 8,
-      child: ExpandableWidget(),
-    );
-  },
+  // ExpandableWidget 的功能已整合到 StreamingFeaturesContainer
+  // 在 streaming 時不需要再顯示 ExpandableWidget
+  buildPageHeaderFooter: null,
   positionCalculator: ({
     required int index,
     required int count,

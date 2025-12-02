@@ -724,7 +724,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast toggle"),
-    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+          "Move streaming features",
+        ),
+        "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Expand streaming view",
     ),
     "v3_lbl_streaming_view_function_expand":

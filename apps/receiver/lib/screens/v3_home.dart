@@ -11,11 +11,11 @@ import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/wifi_status_util.dart';
+import 'package:display_flutter/widgets/streaming/streaming_feature_wrapper.dart';
 import 'package:display_flutter/widgets/streaming/streaming_view_container.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_debug_device_info_overlay.dart';
-import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_group_host_view.dart';
 import 'package:display_flutter/widgets/v3_group_reject_prompt.dart';
@@ -176,7 +176,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                           return value ? const V3MainInfo() : const SizedBox();
                         },
                       ),
-                      const V3FeatureSet(),
+                      const StreamingFeatureWrapper(),
                       const V3AuthorizePrompt(),
                       const V3GroupRejectPrompt(),
                       const V3GroupHostView(),

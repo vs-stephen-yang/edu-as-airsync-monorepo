@@ -11,6 +11,7 @@ class V3Focus extends StatelessWidget {
     this.identifier,
     this.button = true,
     this.excludeSemantics = true,
+    this.trimBorder = false,
   });
 
   final Widget child;
@@ -20,6 +21,7 @@ class V3Focus extends StatelessWidget {
   final String? identifier;
   final bool button;
   final bool excludeSemantics;
+  final bool trimBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class V3Focus extends StatelessWidget {
               color: Colors.transparent,
               borderRadius: borderRadius,
               border: Border.all(
-                width: 2,
+                width: hasFocus && !trimBorder ? 2 : 0,
                 color: hasFocus
                     ? context.tokens.color.vsdslColorSecondary
                     : Colors.transparent,
