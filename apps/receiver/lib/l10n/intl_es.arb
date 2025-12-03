@@ -389,7 +389,13 @@
   "v3_eula_launch": "Lanzar",
   "v3_authorize_prompt_title_launcher": "Los participantes quieren compartir su pantalla",
   "v3_settings_moderator_mode": "Modo moderador",
+  "v3_lbl_settings_moderator_mode": "Ativar/desativar o modo moderador",
+  "v3_authorize_prompt_notification_cast": "Desmarque \"Requerir aprobación\" en el menú de Configuración para aceptar todas las solicitudes de transmisión.",
+  "v3_authorize_prompt_notification_mirror": "Verifique \"Auto Accept\" en el menú de Configuración para aceptar automáticamente todas las solicitudes de espejo.",
   "v3_permission_title": "Permiso requerido",
+  "v3_permission_description": "Por favor, ve a \"Configuración\", luego a \"Aplicaciones\" y selecciona \"AirSync\" para otorgar los permisos de \"Ubicación\" y \"Dispositivos cercanos\".",
   "v3_lbl_permission_exit": "Salir",
-  "v3_permission_exit": "Salir"
+  "v3_permission_exit": "Salir",
+  "v3_recording_stopped_dialog_title": "La grabación de pantalla se ha detenido",
+  "v3_recording_stopped_dialog_msg": "Por favor, reinicie la sesión de transmisión si es necesario."
 }

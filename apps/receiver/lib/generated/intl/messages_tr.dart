@@ -857,7 +857,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR Kodu",
     ),
-    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage("İptal"),
+        "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+          "Gerekirse yayın oturumunu yeniden başlatın.",
+        ),
+        "v3_recording_stopped_dialog_title":
+            MessageLookupByLibrary.simpleMessage(
+          "Ekran kaydı durduruldu",
+        ),
+        "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage("İptal"),
     "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
       "Temizle",
     ),
