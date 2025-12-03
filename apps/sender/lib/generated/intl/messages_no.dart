@@ -395,7 +395,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Aktiver touchback",
     ),
-    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Lukk"),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Tilgjengelighet",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -546,8 +547,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Skjermdeling er stoppet. Total delingstid %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Last ned"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Installer"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderator er på"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
@@ -595,7 +596,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Kan ikke dele lyd. Vennligst last ned og installer lyddriver.",
+          "Kan ikke dele lyd. Installer lyddriver.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Del datamaskinlyd."),

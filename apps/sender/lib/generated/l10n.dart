@@ -1836,20 +1836,20 @@ class S {
     );
   }
 
-  /// `Download`
+  /// `Install`
   String get v3_present_idle_download_virtual_audio_device {
     return Intl.message(
-      'Download',
+      'Install',
       name: 'v3_present_idle_download_virtual_audio_device',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unable to share audio. Please download and install audio driver.`
+  /// `Unable to share audio. Please install audio driver.`
   String get v3_present_select_screen_mac_audio_driver {
     return Intl.message(
-      'Unable to share audio. Please download and install audio driver.',
+      'Unable to share audio. Please install audio driver.',
       name: 'v3_present_select_screen_mac_audio_driver',
       desc: '',
       args: [],

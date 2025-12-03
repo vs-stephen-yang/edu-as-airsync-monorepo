@@ -181,8 +181,8 @@
   "v3_receiver_remote_screen_busy_title": "Näyttö on lähetyksessä.",
   "v3_receiver_remote_screen_busy_description": "Näyttö on lähetyksessä muille näytöille. Yritä myöhemmin uudelleen.",
   "v3_receiver_remote_screen_busy_action": "OK",
-  "v3_present_idle_download_virtual_audio_device": "Lataa",
-  "v3_present_select_screen_mac_audio_driver": "Ääntä ei voi jakaa. Lataa ja asenna ääniajuri.",
+  "v3_present_idle_download_virtual_audio_device": "Asenna",
+  "v3_present_select_screen_mac_audio_driver": "Ääntä ei voi jakaa. Asenna ääniajuri.",
   "v3_main_download_mac_pkg_label": "Parhaan käyttökokemuksen saavuttamiseksi!",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Tai asenna kautta",
@@ -266,5 +266,6 @@
   "v3_device_list_next": "Seuraava",
   "v3_present_joined_before_moderator_on": "Moderaattori on käytössä",
   "v3_present_joined_before_moderator_on_description": "Moderaattori on käytössä, ole hyvä ja yhdistä uudelleen.",
-  "v3_present_joined_before_moderator_on_action": "OK"
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "Sulje"
 }

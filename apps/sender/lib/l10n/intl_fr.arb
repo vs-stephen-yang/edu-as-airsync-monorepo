@@ -181,8 +181,8 @@
   "v3_receiver_remote_screen_busy_title": "L'appareil est en cours de diffusion",
   "v3_receiver_remote_screen_busy_description": "L'appareil est en train de diffuser vers d'autres appareils. Veuillez réessayer plus tard.",
   "v3_receiver_remote_screen_busy_action": "OK",
-  "v3_present_idle_download_virtual_audio_device": "Télécharger",
-  "v3_present_select_screen_mac_audio_driver": "Impossible de partager l’audio. Veuillez télécharger et installer le pilote audio.",
+  "v3_present_idle_download_virtual_audio_device": "Installer",
+  "v3_present_select_screen_mac_audio_driver": "Impossible de partager l’audio. Veuillez installer le pilote audio.",
   "v3_main_download_mac_pkg_label": "Pour une meilleure expérience !",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Ou installer via",
@@ -266,5 +266,6 @@
   "v3_device_list_next": "Suivant",
   "v3_present_joined_before_moderator_on": "Le mode modérateur est activé",
   "v3_present_joined_before_moderator_on_description": "Le mode modérateur est activé. Veuillez vous reconnecter.",
-  "v3_present_joined_before_moderator_on_action": "OK"
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "Fermer"
 }

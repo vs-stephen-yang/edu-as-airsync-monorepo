@@ -29,6 +29,7 @@ class PrefLanguageProvider extends ChangeNotifier {
     'Latvian': const Locale('lv', ''),
     'Lithuanian': const Locale('lt', ''),
     'Norwegian': const Locale('no', ''),
+    'Português': const Locale('pt', ''),
     'Swedish': const Locale('sv', ''),
     '繁體中文': const Locale.fromSubtags(
         languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),

@@ -470,8 +470,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "画面共有が停止しました。\n合計共有時間は %s です。",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("ダウンロード"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("インストール"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("モデレーターモードが有効です"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
@@ -515,7 +515,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "オーディオを共有できません。オーディオドライバをダウンロードしてインストールしてください。",
+          "オーディオを共有できません。オーディオ ドライバーをインストールしてください。",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("PC のオーディオを共有する。"),

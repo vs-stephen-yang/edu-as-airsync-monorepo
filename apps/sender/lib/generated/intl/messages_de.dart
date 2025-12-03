@@ -409,7 +409,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Touchback aktivieren",
     ),
-    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_v3_exit_close":
+            MessageLookupByLibrary.simpleMessage("Schließen"),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Barrierefreiheit",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -568,8 +570,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bildschirmfreigabe wurde beendet.\nGesamte Freigabezeit %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Download"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Installieren"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage(
           "Der Moderatormodus ist aktiviert",
         ),
@@ -621,7 +623,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Audio kann nicht freigegeben werden. Bitte laden Sie den Audiotreiber herunter und installieren Sie ihn.",
+          "Audio kann nicht freigegeben werden. Bitte installieren Sie den Audiotreiber.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Computeraudio teilen."),
