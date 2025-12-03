@@ -407,7 +407,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Ota Touchback käyttöön",
     ),
-    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Sulje"),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Saavutettavuus",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -560,8 +561,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Näytön jakaminen on pysäytetty.\nKokonaisaika jaettu %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Lataa"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Asenna"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderaattori on käytössä"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
@@ -609,7 +610,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Ääntä ei voi jakaa. Lataa ja asenna ääniajuri.",
+          "Ääntä ei voi jakaa. Asenna ääniajuri.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Jaa tietokoneen ääni."),

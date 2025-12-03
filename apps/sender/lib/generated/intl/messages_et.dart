@@ -563,8 +563,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekraani jagamine on peatatud.  \nKogu jagamisaeg %s.  ",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Laadi alla saatjarakendus"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Installi"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderaator on sisse lülitatud"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
@@ -612,7 +612,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Heli ei saa jagada. Laadige alla ja installige helidraiver.",
+          "Heli ei saa jagada. Palun installi helidraiver.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Jagage arvuti heli."),

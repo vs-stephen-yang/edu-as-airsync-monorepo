@@ -583,8 +583,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekrano bendrinimas sustabdytas %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Atsisiųsti siuntėjo programėlę"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Diegti"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatorius įjungtas"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("Gerai"),
@@ -634,7 +634,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Nepavyksta bendrinti garso. Atsisiųskite ir įdiekite garso tvarkyklę.",
+          "Nepavyksta bendrinti garso. Prašome įdiegti garso tvarkyklę.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Bendrinti kompiuterio garsą."),

@@ -575,8 +575,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekrāna kopīgošana ir apturēta.  \nKopējais kopīgošanas laiks: %s.  ",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Lejupielādēt"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Instalēt"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatora režīms ir ieslēgts"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("Labi"),
@@ -626,7 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Nevar koplietot audio. Lūdzu, lejupielādējiet un instalējiet audio draiveri.",
+          "Nevar koplietot audio. Lūdzu, instalējiet audio draiveri.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Kopīgot datora audio."),

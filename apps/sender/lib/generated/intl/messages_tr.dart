@@ -557,8 +557,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekran paylaşımı durduruldu.\nToplam paylaşım süresi %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("İndir"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Yükle"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatör açık"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("TAMAM"),
@@ -608,7 +608,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Ses paylaşılamıyor. Lütfen ses sürücüsünü indirin ve yükleyin.",
+          "Ses paylaşılamıyor. Lütfen ses sürücüsünü yükleyin.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Bilgisayar sesini paylaş."),

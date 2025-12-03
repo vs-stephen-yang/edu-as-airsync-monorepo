@@ -581,8 +581,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Compartilhamento de tela foi interrompido.\nTempo total de compartilhamento %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Baixar"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Instalar"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Modo Moderador está Ativado"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
@@ -630,7 +630,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Não é possível compartilhar áudio. Por favor, baixe e instale o driver de áudio.",
+          "Não é possível compartilhar áudio. Por favor, instale o driver de áudio.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage(

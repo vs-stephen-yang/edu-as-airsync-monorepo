@@ -181,8 +181,8 @@
   "v3_receiver_remote_screen_busy_title": "Denne skærm broadcastes",
   "v3_receiver_remote_screen_busy_description": "Denne skærm broadcastes til andre skærme. Prøv igen senere.",
   "v3_receiver_remote_screen_busy_action": "OK",
-  "v3_present_idle_download_virtual_audio_device": "Download",
-  "v3_present_select_screen_mac_audio_driver": "Kan ikke dele lyd. Download og installer lyddriver.",
+  "v3_present_idle_download_virtual_audio_device": "Installer",
+  "v3_present_select_screen_mac_audio_driver": "Kan ikke dele lyd. Installer lyddriver.",
   "v3_main_download_mac_pkg_label": "For bedste brugeroplevelse!",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Eller installer via",
@@ -266,5 +266,6 @@
   "v3_device_list_next": "Næste",
   "v3_present_joined_before_moderator_on": "Moderator-tilstand er aktiveret",
   "v3_present_joined_before_moderator_on_description": "Moderator-tilstand er aktiveret. Opret venligst forbindelse igen.",
-  "v3_present_joined_before_moderator_on_action": "OK"
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "Luk"
 }

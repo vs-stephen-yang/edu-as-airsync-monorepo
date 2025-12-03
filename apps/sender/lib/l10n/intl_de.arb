@@ -181,8 +181,8 @@
   "v3_receiver_remote_screen_busy_title": "Der Bildschirm wird übertragen",
   "v3_receiver_remote_screen_busy_description": "Der Bildschirm wird auf andere Bildschirme übertragen. Bitte versuchen Sie es später erneut.",
   "v3_receiver_remote_screen_busy_action": "OK",
-  "v3_present_idle_download_virtual_audio_device": "Download",
-  "v3_present_select_screen_mac_audio_driver": "Audio kann nicht freigegeben werden. Bitte laden Sie den Audiotreiber herunter und installieren Sie ihn.",
+  "v3_present_idle_download_virtual_audio_device": "Installieren",
+  "v3_present_select_screen_mac_audio_driver": "Audio kann nicht freigegeben werden. Bitte installieren Sie den Audiotreiber.",
   "v3_main_download_mac_pkg_label": "Für die beste Benutzererfahrung!",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Oder installieren über",
@@ -266,5 +266,6 @@
   "v3_device_list_next": "Weiter",
   "v3_present_joined_before_moderator_on": "Der Moderatormodus ist aktiviert",
   "v3_present_joined_before_moderator_on_description": "Moderator ist aktiviert. Bitte verbinden Sie sich erneut.",
-  "v3_present_joined_before_moderator_on_action": "OK"
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "Schließen"
 }

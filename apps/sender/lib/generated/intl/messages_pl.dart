@@ -409,7 +409,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Włącz sterowanie dotykiem",
     ),
-    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Zamknąć"),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Ułatwienia dostępu",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -574,8 +575,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Udostępnianie ekranu zostało zatrzymane.\nCałkowity czas udostępniania: %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("Pobierz"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("Zainstaluj"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Tryb moderatora jest włączony"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
@@ -625,7 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "Nie można udostępnić dźwięku. Pobierz i zainstaluj sterownik audio.",
+          "Nie można udostępnić dźwięku. Zainstaluj sterownik audio.",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("Udostępnij dźwięk z komputera."),

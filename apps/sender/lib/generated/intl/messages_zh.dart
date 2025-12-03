@@ -424,8 +424,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "已停止分享，共計使用 %s 分鐘",
     ),
     "v3_present_idle_download_virtual_audio_device":
-        MessageLookupByLibrary.simpleMessage("去下載"),
-    "v3_present_joined_before_moderator_on":
+            MessageLookupByLibrary.simpleMessage("安裝"),
+        "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("已開啟主持人模式"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("確定"),
@@ -465,7 +465,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("將要分享的應用程式從電腦顯示器拖拉至外部顯示器"),
     "v3_present_select_screen_mac_audio_driver":
         MessageLookupByLibrary.simpleMessage(
-          "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請下載並安裝。",
+          "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請點擊安裝。",
         ),
     "v3_present_select_screen_share_audio":
         MessageLookupByLibrary.simpleMessage("勾選以分享音訊"),

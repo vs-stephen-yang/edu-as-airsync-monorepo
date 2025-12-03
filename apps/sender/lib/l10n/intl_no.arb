@@ -181,8 +181,8 @@
   "v3_receiver_remote_screen_busy_title": "Denne skjermen speiles",
   "v3_receiver_remote_screen_busy_description": "Skjermen speiles til andre skjermer. Vennligst prøv igjen senere.",
   "v3_receiver_remote_screen_busy_action": "OK",
-  "v3_present_idle_download_virtual_audio_device": "Last ned",
-  "v3_present_select_screen_mac_audio_driver": "Kan ikke dele lyd. Vennligst last ned og installer lyddriver.",
+  "v3_present_idle_download_virtual_audio_device": "Installer",
+  "v3_present_select_screen_mac_audio_driver": "Kan ikke dele lyd. Installer lyddriver.",
   "v3_main_download_mac_pkg_label": "For best brukeropplevelse!",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Eller installer via",
@@ -266,5 +266,6 @@
   "v3_device_list_next": "Neste",
   "v3_present_joined_before_moderator_on": "Moderator er på",
   "v3_present_joined_before_moderator_on_description": "Moderator er på. Vennligst koble til igjen.",
-  "v3_present_joined_before_moderator_on_action": "OK"
+  "v3_present_joined_before_moderator_on_action": "OK",
+  "v3_lbl_v3_exit_close": "Lukk"
 }
