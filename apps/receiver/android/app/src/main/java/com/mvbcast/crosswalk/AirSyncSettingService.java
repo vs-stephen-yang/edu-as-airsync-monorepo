@@ -93,6 +93,9 @@ public class AirSyncSettingService extends Service {
                         case VAL_LANGUAGE_NORWEGIAN:
                             flutterEditor.putString("flutter.app_language", "Norwegian").commit();
                             break;
+                        case VAL_LANGUAGE_PORTUGUESE:
+                            flutterEditor.putString("flutter.app_language", "Português").commit();
+                            break;
                         case VAL_LANGUAGE_SWEDISH:
                             flutterEditor.putString("flutter.app_language", "Swedish").commit();
                             break;
@@ -281,6 +284,9 @@ public class AirSyncSettingService extends Service {
                             break;
                         case "Norwegian":
                             value = String.format("%s (%s)", VAL_LANGUAGE_NORWEGIAN, language);
+                            break;
+                        case "Português":
+                            value = String.format("%s (%s)", VAL_LANGUAGE_PORTUGUESE, language);
                             break;
                         case "Swedish":
                             value = String.format("%s (%s)", VAL_LANGUAGE_SWEDISH, language);
