@@ -220,7 +220,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_authorize_prompt_decline": MessageLookupByLibrary.simpleMessage(
       "Rechazar",
     ),
-    "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
+        "v3_authorize_prompt_notification_cast":
+            MessageLookupByLibrary.simpleMessage(
+          "Desmarque \"Requerir aprobación\" en el menú de Configuración para aceptar todas las solicitudes de transmisión.",
+        ),
+        "v3_authorize_prompt_notification_mirror":
+            MessageLookupByLibrary.simpleMessage(
+          "Verifique \"Auto Accept\" en el menú de Configuración para aceptar automáticamente todas las solicitudes de espejo.",
+        ),
+        "v3_authorize_prompt_title_launcher": MessageLookupByLibrary.simpleMessage(
       "Los participantes quieren compartir su pantalla",
     ),
     "v3_broadcast_cast_board_on": MessageLookupByLibrary.simpleMessage(
@@ -700,7 +708,10 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Activar/desactivar requerir código de acceso",
         ),
-    "v3_lbl_settings_only_when_casting_info":
+        "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+          "Ativar/desativar o modo moderador",
+        ),
+        "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage(
           "Más información sobre transmisión a grupo de pantallas",
         ),
@@ -856,7 +867,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_participants_title": MessageLookupByLibrary.simpleMessage(
       "Participantes",
     ),
-    "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Salir"),
+        "v3_permission_description": MessageLookupByLibrary.simpleMessage(
+          "Por favor, ve a \"Configuración\", luego a \"Aplicaciones\" y selecciona \"AirSync\" para otorgar los permisos de \"Ubicación\" y \"Dispositivos cercanos\".",
+        ),
+        "v3_permission_exit": MessageLookupByLibrary.simpleMessage("Salir"),
     "v3_permission_title": MessageLookupByLibrary.simpleMessage(
       "Permiso requerido",
     ),
@@ -872,7 +886,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "Código QR",
     ),
-    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+          "Por favor, reinicie la sesión de transmisión si es necesario.",
+        ),
+        "v3_recording_stopped_dialog_title":
+            MessageLookupByLibrary.simpleMessage(
+          "La grabación de pantalla se ha detenido",
+        ),
+        "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Cancelar",
     ),
     "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage("Borrar"),

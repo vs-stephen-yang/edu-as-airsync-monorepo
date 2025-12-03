@@ -395,5 +395,7 @@
   "v3_permission_title": "Permission requise",
   "v3_permission_description": "Veuillez accéder au menu « Paramètres » de l'appareil, puis au menu « Application » pour autoriser.",
   "v3_lbl_permission_exit": "Quitter",
-  "v3_permission_exit": "Quitter"
+  "v3_permission_exit": "Quitter",
+  "v3_recording_stopped_dialog_title": "L'enregistrement d'écran s'est arrêté",
+  "v3_recording_stopped_dialog_msg": "Veuillez redémarrer la diffusion si nécessaire."
 }

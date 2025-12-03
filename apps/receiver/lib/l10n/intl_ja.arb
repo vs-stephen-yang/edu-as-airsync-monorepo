@@ -395,5 +395,7 @@
   "v3_permission_title": "権限が必要です。",
   "v3_permission_description": "デバイスの「設定」→「アプリ」から、AirSync アプリに必要な権限を許可してください。",
   "v3_lbl_permission_exit": "閉じる",
-  "v3_permission_exit": "閉じる"
+  "v3_permission_exit": "閉じる",
+  "v3_recording_stopped_dialog_title": "画面録画が停止しました。",
+  "v3_recording_stopped_dialog_msg": "必要に応じて配信セッションを再開してください。"
 }

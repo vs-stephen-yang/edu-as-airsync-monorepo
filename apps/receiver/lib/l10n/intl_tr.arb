@@ -395,5 +395,7 @@
   "v3_permission_title": "İzin gerekli",
   "v3_permission_description": "Lütfen cihaz \"Ayarlar\" ardından \"Uygulama\" menüsüne giderek izni verin.",
   "v3_lbl_permission_exit": "Çıkış",
-  "v3_permission_exit": "Çıkış"
+  "v3_permission_exit": "Çıkış",
+  "v3_recording_stopped_dialog_title": "Ekran kaydı durduruldu",
+  "v3_recording_stopped_dialog_msg": "Gerekirse yayın oturumunu yeniden başlatın."
 }

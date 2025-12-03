@@ -779,7 +779,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR コード",
     ),
-    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage("キャンセル"),
+        "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+          "必要に応じて配信セッションを再開してください。",
+        ),
+        "v3_recording_stopped_dialog_title":
+            MessageLookupByLibrary.simpleMessage(
+          "画面録画が停止しました。",
+        ),
+        "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage("キャンセル"),
     "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage("クリア"),
     "v3_setting_passcode_confirm": MessageLookupByLibrary.simpleMessage("確認"),
     "v3_setting_passcode_error_description":

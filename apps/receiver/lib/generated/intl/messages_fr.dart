@@ -882,7 +882,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "Code QR",
     ),
-    "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
+        "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+          "Veuillez redémarrer la diffusion si nécessaire.",
+        ),
+        "v3_recording_stopped_dialog_title":
+            MessageLookupByLibrary.simpleMessage(
+          "L\'enregistrement d\'écran s\'est arrêté",
+        ),
+        "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Annuler",
     ),
     "v3_setting_passcode_clear": MessageLookupByLibrary.simpleMessage(
