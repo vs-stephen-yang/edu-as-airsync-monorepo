@@ -200,17 +200,19 @@ class _V3StreamingViewState extends State {
                             smartScalingDecision = true;
                           }
 
+                          final viewportWidth = _getWidthHeight(
+                              index: index,
+                              splitScreenCount: splitScreenCount,
+                              enlargedScreenIndex: enlargedIndex,
+                              isWidth: true);
+
                           return Positioned(
                             left: left,
                             top: top,
                             right: right,
                             bottom: bottom,
                             child: SizedBox(
-                              width: _getWidthHeight(
-                                  index: index,
-                                  splitScreenCount: splitScreenCount,
-                                  enlargedScreenIndex: enlargedIndex,
-                                  isWidth: true),
+                              width: viewportWidth,
                               height: _getWidthHeight(
                                   index: index,
                                   splitScreenCount: splitScreenCount,
@@ -246,8 +248,10 @@ class _V3StreamingViewState extends State {
                                           .isPresenting(index: index)) {
                                         return Positioned(
                                           bottom: 0,
-                                          child:
-                                              V3StreamingFunction(index: index),
+                                          child: V3StreamingFunction(
+                                            index: index,
+                                            availableWidth: viewportWidth,
+                                          ),
                                         );
                                       }
                                       return const SizedBox.shrink();

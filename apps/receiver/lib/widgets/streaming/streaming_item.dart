@@ -70,7 +70,12 @@ class StreamingItem extends StatelessWidget {
               builder: (_, __, ___) {
                 return HybridConnectionList().isPresenting(index: index)
                     ? Positioned(
-                        bottom: 0, child: V3StreamingFunction(index: index))
+                        bottom: 0,
+                        child: V3StreamingFunction(
+                          index: index,
+                          availableWidth: pos.width,
+                        ),
+                      )
                     : const SizedBox.shrink();
               },
             ),
