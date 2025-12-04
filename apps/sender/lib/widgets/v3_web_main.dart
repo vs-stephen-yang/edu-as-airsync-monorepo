@@ -292,7 +292,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
     await showDialog<void>(
       context: context,
       barrierColor: Colors.transparent,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (dialogContext) {
         return ScrollbarTheme(
           data: ScrollbarThemeData(
