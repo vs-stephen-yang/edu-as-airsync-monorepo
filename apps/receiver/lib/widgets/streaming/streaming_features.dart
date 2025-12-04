@@ -188,8 +188,7 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       final widgetHeight = _calculateCurrentHeight();
       _currentY = screenHeight -
           widgetHeight -
-          StreamingFeaturesConstants.verticalSafeMargin -
-          50;
+          StreamingFeaturesConstants.verticalSafeMargin;
       _isPositionInitialized = true;
     }
 
@@ -311,6 +310,11 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
     final remoteScreenConnectionFull =
         channelProvider.remoteScreenConnectionFull;
 
+    // 判斷第一個按鈕是誰（決定誰需要右上角圓角）
+    bool moderatorIsFirst = showModerator;
+    bool castDeviceIsFirst = !showModerator && showCastDevice;
+    bool shortcutsIsFirst = !showModerator && !showCastDevice;
+
     // 計算有多少功能要顯示
     final features = <Widget>[];
     int index = 0;
@@ -318,7 +322,11 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
     // 1. Moderator Mode
     if (showModerator) {
       if (index > 0) features.add(_buildDivider());
-      features.add(_buildModeratorButton(connectionCount, countPadding));
+      features.add(_buildModeratorButton(
+        connectionCount,
+        countPadding,
+        isFirstButton: moderatorIsFirst,
+      ));
       index++;
     }
 
@@ -329,13 +337,17 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
         remoteScreenConnectors,
         remoteScreenConnectionFull,
         countPadding,
+        isFirstButton: castDeviceIsFirst,
       ));
       index++;
     }
 
     // 3. Shortcuts Menu
     if (index > 0) features.add(_buildDivider());
-    features.add(_buildShortcutsButton(countPadding));
+    features.add(_buildShortcutsButton(
+      countPadding,
+      isFirstButton: shortcutsIsFirst,
+    ));
     index++;
 
     // 4. Quick Connect Menu
@@ -400,16 +412,22 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
   }
 
   /// Moderator 按鈕（V3FeatureSet 風格）
-  Widget _buildModeratorButton(int connectionCount, double countPadding) {
+  Widget _buildModeratorButton(
+    int connectionCount,
+    double countPadding, {
+    required bool isFirstButton,
+  }) {
     return SizedBox(
       height: StreamingFeaturesConstants.expandedButtonHeight,
       child: V3Focus(
         trimBorder: true,
         label: S.of(context).v3_lbl_open_feature_set_moderator,
         identifier: 'v3_qa_open_feature_set_moderator',
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(10),
-        ),
+        borderRadius: isFirstButton
+            ? const BorderRadius.only(
+                topRight: Radius.circular(10),
+              )
+            : BorderRadius.zero,
         child: Stack(
           children: [
             if (_isModeratorOnScreen)
@@ -420,10 +438,12 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
                   height: StreamingFeaturesConstants.expandedButtonHeight,
                   decoration: BoxDecoration(
                     color: context.tokens.color.vsdslColorSurface300,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(
-                          StreamingFeaturesConstants.borderRadius),
-                    ),
+                    borderRadius: isFirstButton
+                        ? const BorderRadius.only(
+                            topRight: Radius.circular(
+                                StreamingFeaturesConstants.borderRadius),
+                          )
+                        : null,
                   ),
                 ),
               ),
@@ -470,13 +490,19 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
   Widget _buildCastDeviceButton(
     int remoteScreenConnectors,
     bool remoteScreenConnectionFull,
-    double countPadding,
-  ) {
+    double countPadding, {
+    required bool isFirstButton,
+  }) {
     return SizedBox(
       height: StreamingFeaturesConstants.expandedButtonHeight,
       child: V3Focus(
         label: S.of(context).v3_lbl_open_feature_set_cast_device,
         identifier: 'v3_qa_open_feature_set_cast_device',
+        borderRadius: isFirstButton
+            ? const BorderRadius.only(
+                topRight: Radius.circular(10),
+              )
+            : BorderRadius.zero,
         child: Stack(
           children: [
             if (_isCastDeviceOnScreen)
@@ -487,6 +513,12 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
                   height: StreamingFeaturesConstants.expandedButtonHeight,
                   decoration: BoxDecoration(
                     color: context.tokens.color.vsdslColorSurface300,
+                    borderRadius: isFirstButton
+                        ? const BorderRadius.only(
+                            topRight: Radius.circular(
+                                StreamingFeaturesConstants.borderRadius),
+                          )
+                        : null,
                   ),
                 ),
               ),
@@ -528,7 +560,10 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
   }
 
   /// Shortcuts 按鈕
-  Widget _buildShortcutsButton(double countPadding) {
+  Widget _buildShortcutsButton(
+    double countPadding, {
+    required bool isFirstButton,
+  }) {
     return Consumer<SettingsProvider>(
       builder: (context, settingsProvider, _) {
         final lock = settingsProvider.isSettingsLock;
@@ -541,9 +576,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
             identifier: lock
                 ? 'v3_qa_streaming_shortcut_menu_locked'
                 : 'v3_qa_open_streaming_shortcut_menu',
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(10),
-              bottomRight: Radius.circular(10),
+            borderRadius: BorderRadius.only(
+              topRight: isFirstButton ? const Radius.circular(10) : Radius.zero,
+              bottomRight: const Radius.circular(10),
             ),
             child: Stack(
               children: [
@@ -555,6 +590,12 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
                       height: StreamingFeaturesConstants.expandedButtonHeight,
                       decoration: BoxDecoration(
                         color: context.tokens.color.vsdslColorSurface300,
+                        borderRadius: isFirstButton
+                            ? const BorderRadius.only(
+                                topRight: Radius.circular(
+                                    StreamingFeaturesConstants.borderRadius),
+                              )
+                            : null,
                       ),
                     ),
                   ),
