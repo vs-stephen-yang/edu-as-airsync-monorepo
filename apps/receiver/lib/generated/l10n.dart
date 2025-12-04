@@ -4000,6 +4000,131 @@ class S {
       args: [],
     );
   }
+
+  /// `Restarting`
+  String get v3_zero_fps_restarting_title {
+    return Intl.message(
+      'Restarting',
+      name: 'v3_zero_fps_restarting_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait.`
+  String get v3_zero_fps_restarting_content {
+    return Intl.message(
+      'Please wait.',
+      name: 'v3_zero_fps_restarting_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screenshot Capture Failed`
+  String get v3_zero_fps_capture_failed_title {
+    return Intl.message(
+      'Screenshot Capture Failed',
+      name: 'v3_zero_fps_capture_failed_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currently unable to retrieve a screenshot from the source app. A capture error may have occurred. Please return to the source app to take a new screenshot and try again.`
+  String get v3_zero_fps_capture_failed_message {
+    return Intl.message(
+      'Currently unable to retrieve a screenshot from the source app. A capture error may have occurred. Please return to the source app to take a new screenshot and try again.',
+      name: 'v3_zero_fps_capture_failed_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Repairing Screenshot Feature`
+  String get v3_zero_fps_repairing_title {
+    return Intl.message(
+      'Repairing Screenshot Feature',
+      name: 'v3_zero_fps_repairing_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restarting the screenshot mechanism in the source app. This may take a few seconds. Please wait.`
+  String get v3_zero_fps_repairing_message {
+    return Intl.message(
+      'Restarting the screenshot mechanism in the source app. This may take a few seconds. Please wait.',
+      name: 'v3_zero_fps_repairing_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to Repair Screenshot Feature`
+  String get v3_zero_fps_failed_to_repair_title {
+    return Intl.message(
+      'Failed to Repair Screenshot Feature',
+      name: 'v3_zero_fps_failed_to_repair_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to restart the screenshot mechanism in the source app.`
+  String get v3_zero_fps_failed_to_repair_message {
+    return Intl.message(
+      'Unable to restart the screenshot mechanism in the source app.',
+      name: 'v3_zero_fps_failed_to_repair_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get v3_zero_fps_close {
+    return Intl.message('Close', name: 'v3_zero_fps_close', desc: '', args: []);
+  }
+
+  /// `Restart failed`
+  String get v3_zero_fps_restart_failed {
+    return Intl.message(
+      'Restart failed',
+      name: 'v3_zero_fps_restart_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restarted successfully`
+  String get v3_zero_fps_restarted_Successfully {
+    return Intl.message(
+      'Restarted successfully',
+      name: 'v3_zero_fps_restarted_Successfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restarted successfully`
+  String get v3_zero_fps_prompt_title {
+    return Intl.message(
+      'Restarted successfully',
+      name: 'v3_zero_fps_prompt_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to capture the screen and send it to the projection app. Would you like to restart the screenshot feature and try again, or stop the projection?`
+  String get v3_zero_fps_prompt_message {
+    return Intl.message(
+      'Unable to capture the screen and send it to the projection app. Would you like to restart the screenshot feature and try again, or stop the projection?',
+      name: 'v3_zero_fps_prompt_message',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

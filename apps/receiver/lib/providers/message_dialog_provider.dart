@@ -28,6 +28,8 @@ class DialogState {
   final double? width;
   final double? height;
   final bool? showIcon;
+  final bool isProgressDialog;
+  final bool blockInteraction;
 
   DialogState({
     this.title,
@@ -41,9 +43,11 @@ class DialogState {
     this.width,
     this.height,
     this.showIcon,
+    this.isProgressDialog = false,
+    this.blockInteraction = false,
   });
 
-  bool get isVisible => title != null || content != null;
+  bool get isVisible => isProgressDialog || title != null || content != null;
 }
 
 class MessageDialogProvider extends StateNotifier<DialogState> {
@@ -61,6 +65,8 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
     bool? showIcon,
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
+    bool isProgressDialog = false,
+    bool blockInteraction = false,
   }) {
     if (navService.canPop()) {
       navService.goBack();
@@ -77,6 +83,30 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
       width: width,
       height: height,
       showIcon: showIcon,
+      isProgressDialog: isProgressDialog,
+      blockInteraction: blockInteraction,
+    );
+  }
+
+  void showProgress({
+    String? title,
+    TextStyle? titleStyle,
+    String? content,
+    TextStyle? contentStyle,
+    double? width,
+    double? height,
+  }) {
+    showDialog(
+      title: title,
+      titleStyle: titleStyle,
+      content: content,
+      contentStyle: contentStyle,
+      width: width,
+      height: height,
+      isProgressDialog: true,
+      blockInteraction: true,
+      confirmText: null,
+      cancelText: null,
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/screens/v3_overlay_tab.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
@@ -444,7 +445,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   Widget _buildShowDisplayCode(
       BuildContext context, SettingsProvider settingsProvider) {
     return FutureBuilder(
-      future: AppOverlayTab().getVisibility(),
+      future: displayCodeState(),
       builder: (context, snapshot) {
         bool isRunning = false;
         if (snapshot.hasData) {
@@ -457,11 +458,16 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           isLocked: settingsProvider.isDeviceSettingLock,
           title: S.of(context).v3_settings_device_show_display_code,
           onTap: () async {
-            _setVisibility(!isRunning);
+            _setVisibility(context, !isRunning);
           },
         );
       },
     );
+  }
+
+  Future<bool> displayCodeState() async {
+    return await AppOverlayTab().getVisibility() &&
+        await AppOverlayTab().getOverlayType() == OverlayType.tab;
   }
 
   Widget _buildSmartScaling(
@@ -515,14 +521,26 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           trialling: AppPreferences().instanceName,
           disable: settingsProvider.isDeviceSettingLock);
 
-  _setVisibility(bool visible) async {
+  _setVisibility(BuildContext context, bool visible) async {
     trackEvent(
       'click_show_code',
       EventCategory.setting,
       target: visible ? 'on' : 'off',
     );
-
-    await AppOverlayTab().setVisibility(visible);
+    if (visible) {
+      if (await AppOverlayTab().getVisibility()) {
+        await AppOverlayTab().showOverlayTab();
+      } else {
+        await AppOverlayTab().setVisibility(true);
+      }
+    } else {
+      final channelProvider = context.read<ChannelProvider>();
+      if (channelProvider.remoteScreenServe.isRemoteScreenPublisherStarted()) {
+        await AppOverlayTab().showFpsKeeper();
+      } else {
+        await AppOverlayTab().setVisibility(false);
+      }
+    }
     if (!mounted) return;
     setState(() {});
   }

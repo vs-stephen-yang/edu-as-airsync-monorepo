@@ -171,4 +171,36 @@ class DisplayGroupMember {
       });
     }
   }
+
+  void sendRemoteScreenState(RemoteScreenStatus status) {
+    _connector?.sendRemoteScreenState(status);
+  }
+
+  get version {
+    return _info.version;
+  }
+
+  static bool isVersionGreater(String ver, String target) {
+    // 先去掉 - 後面的部分
+    String cleanVer = ver.split('-').first;        // e.g. "3.9.3-d" -> "3.9.3"
+    String cleanTarget = target.split('-').first;  // 保險一點，target 也處理
+
+    List<int> vParts =
+    cleanVer.split('.').map((e) => int.parse(e)).toList();
+    List<int> tParts =
+    cleanTarget.split('.').map((e) => int.parse(e)).toList();
+
+    int maxLen = vParts.length > tParts.length ? vParts.length : tParts.length;
+
+    for (int i = 0; i < maxLen; i++) {
+      int v = i < vParts.length ? vParts[i] : 0;
+      int t = i < tParts.length ? tParts[i] : 0;
+
+      if (v > t) return true;   // ver 比較大
+      if (v < t) return false;  // ver 比較小
+    }
+
+    // 跑完都一樣 = 版本相等，不算大於
+    return false;
+  }
 }
