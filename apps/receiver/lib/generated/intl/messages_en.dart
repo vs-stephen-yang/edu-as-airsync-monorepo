@@ -1110,6 +1110,44 @@ class MessageLookup extends MessageLookupByLibrary {
       "Waiting for others to join",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Up next"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Currently unable to retrieve a screenshot from the source app. A capture error may have occurred. Please return to the source app to take a new screenshot and try again.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Screenshot Capture Failed",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Close"),
+    "v3_zero_fps_failed_to_repair_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Unable to restart the screenshot mechanism in the source app.",
+        ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Failed to Repair Screenshot Feature",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Unable to capture the screen and send it to the projection app. Would you like to restart the screenshot feature and try again, or stop the projection?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Restarted successfully",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Restarting the screenshot mechanism in the source app. This may take a few seconds. Please wait.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Repairing Screenshot Feature",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Restart failed",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Restarted successfully",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Please wait.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Restarting",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Downloading system updates",
     ),

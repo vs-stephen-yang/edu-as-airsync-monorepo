@@ -12,6 +12,8 @@ abstract class GroupListItem {
   String serviceName();
 
   bool unsupportedMulticast();
+
+  String ver();
 }
 
 class GroupBean extends GroupListItem {
@@ -76,6 +78,11 @@ class GroupBean extends GroupListItem {
   @override
   bool unsupportedMulticast() {
     return _attributes?.mc != '1';
+  }
+
+  @override
+  String ver() {
+    return _attributes?.ver ?? '';
   }
 }
 

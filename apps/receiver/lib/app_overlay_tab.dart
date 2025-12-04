@@ -5,6 +5,7 @@ import 'package:android_window/main.dart' as android_window;
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/screens/v3_overlay_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,18 @@ class OverlayTabHandler {
 
   static const String resultEmptyString = '';
   static const String resultNullString = 'null';
+
+  static const String actionRecreatePublisher = 'recreate_publisher';
+  static const String actionStopPublisher = 'stop_publisher';
+  static const String actionShowZeroDialog = 'show_zero_dialog';
+  static const String actionShowOverlayTab = 'show_overlay_tab';
+  static const String actionShowFpsKeeper = 'show_fps_keeper';
+
+  static const String nameGetOverlayType = 'get_overlay_Type';
+  static const String keyOverlayType = 'overlay_type';
+  static const String valueTab = 'tab';
+  static const String valueFpsKeeper = 'fps_keeper';
+  static const String valueRetryDialog = 'retry_dialog';
 }
 
 class AppOverlayTab {
@@ -100,6 +113,16 @@ class AppOverlayTab {
           });
 
           return OverlayTabHandler.resultEmptyString;
+        case OverlayTabHandler.actionRecreatePublisher:
+          ChannelProvider channelProvider =
+              Provider.of<ChannelProvider>(buildContext, listen: false);
+          await channelProvider.remoteScreenRecreatePublish();
+          return OverlayTabHandler.resultEmptyString;
+        case OverlayTabHandler.actionStopPublisher:
+          ChannelProvider channelProvider =
+              Provider.of<ChannelProvider>(buildContext, listen: false);
+          await channelProvider.stopRemoteScreenFromFail();
+          return OverlayTabHandler.resultEmptyString;
       }
       return OverlayTabHandler.resultNullString;
     });
@@ -141,6 +164,37 @@ class AppOverlayTab {
 
   Future<void> updateTextSize() async {
     await _postMessageToAndroidWindow(OverlayTabHandler.nameUpdateTextSize, {});
+  }
+
+  Future<void> showZeroDialog() async {
+    await _postMessageToAndroidWindow(
+        OverlayTabHandler.actionShowZeroDialog, {});
+  }
+
+  Future<void> showOverlayTab() async {
+    await _postMessageToAndroidWindow(
+        OverlayTabHandler.actionShowOverlayTab, {});
+  }
+
+  Future<void> showFpsKeeper() async {
+    await _postMessageToAndroidWindow(
+        OverlayTabHandler.actionShowFpsKeeper, {});
+  }
+
+  Future<OverlayType> getOverlayType() async {
+    final response = await _postMessageToAndroidWindow(
+        OverlayTabHandler.nameGetOverlayType, null);
+    final type = response[OverlayTabHandler.keyOverlayType];
+    switch (type) {
+      case OverlayTabHandler.valueTab:
+        return OverlayType.tab;
+      case OverlayTabHandler.valueRetryDialog:
+        return OverlayType.retryDialog;
+      case OverlayTabHandler.valueFpsKeeper:
+        return OverlayType.fpsKeeper;
+      default:
+        return OverlayType.tab;
+    }
   }
 
   Future<Map<Object?, Object?>> _postMessageToAndroidWindow(

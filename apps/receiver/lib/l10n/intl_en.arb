@@ -397,5 +397,18 @@
   "v3_lbl_permission_exit": "Exit",
   "v3_permission_exit": "Exit",
   "v3_recording_stopped_dialog_title": "Screen recording is stopped",
-  "v3_recording_stopped_dialog_msg": "Please restart the broadcast session if needed."
+  "v3_recording_stopped_dialog_msg": "Please restart the broadcast session if needed.",
+  "v3_zero_fps_restarting_title": "Restarting",
+  "v3_zero_fps_restarting_content": "Please wait.",
+  "v3_zero_fps_capture_failed_title": "Screenshot Capture Failed",
+  "v3_zero_fps_capture_failed_message": "Currently unable to retrieve a screenshot from the source app. A capture error may have occurred. Please return to the source app to take a new screenshot and try again.",
+  "v3_zero_fps_repairing_title": "Repairing Screenshot Feature",
+  "v3_zero_fps_repairing_message": "Restarting the screenshot mechanism in the source app. This may take a few seconds. Please wait.",
+  "v3_zero_fps_failed_to_repair_title": "Failed to Repair Screenshot Feature",
+  "v3_zero_fps_failed_to_repair_message": "Unable to restart the screenshot mechanism in the source app.",
+  "v3_zero_fps_close": "Close",
+  "v3_zero_fps_restart_failed": "Restart failed",
+  "v3_zero_fps_restarted_Successfully": "Restarted successfully",
+  "v3_zero_fps_prompt_title": "Restarted successfully",
+  "v3_zero_fps_prompt_message": "Unable to capture the screen and send it to the projection app. Would you like to restart the screenshot feature and try again, or stop the projection?"
 }

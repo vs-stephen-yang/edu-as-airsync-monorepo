@@ -87,11 +87,9 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   final _connectorChannels = <int, RtcScreenConnector>{};
 
   // UI callback（需要從外部設定）
-  void Function()? onShowZeroFpsPrompt;
-  void Function()? onRecreatePublisherSuccess;
-  void Function()? onRecreatePublisherFailure;
+  final RemoteScreenServerDelegate? callback;
 
-  RemoteScreenServer() {
+  RemoteScreenServer(this.callback) {
     initTouchEventManager();
   }
 
@@ -227,17 +225,17 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   void _handleShowZeroFpsUiPrompt() {
     log.info('Notifying UI to show zero FPS prompt');
-    onShowZeroFpsPrompt?.call();
+    callback?.onShowZeroFpsPrompt.call();
   }
 
   void _handleRecreateSuccess() {
     log.info('Notifying UI that recreate succeeded');
-    onRecreatePublisherSuccess?.call();
+    callback?.onRecreatePublisherSuccess.call();
   }
 
   void _handleRecreateFailure() {
     log.info('Notifying UI that recreate failed, shutting down server');
-    onRecreatePublisherFailure?.call();
+    callback?.onRecreatePublisherFailure.call();
     unawaited(stopRemoteScreenPublisher());
   }
 
@@ -640,4 +638,12 @@ class SfuPublisher {
     chunkLogger.info('Remote Screen Stats: $remoteScreenStats');
     // TODO: upload remoteScreenStats to appInsight
   }
+}
+
+abstract class RemoteScreenServerDelegate {
+  void onShowZeroFpsPrompt();
+
+  void onRecreatePublisherSuccess();
+
+  void onRecreatePublisherFailure();
 }

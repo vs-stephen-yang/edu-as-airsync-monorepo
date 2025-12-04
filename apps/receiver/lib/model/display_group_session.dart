@@ -17,6 +17,7 @@ class DisplayGroupSession {
   void Function(ChannelState? state)? onChannelStateChange;
   void Function(String hostName, String displayCode)? onInvitation;
   void Function()? onWebRtcClose;
+  void Function(RemoteScreenStatus? state)? onRemoteScreenStatusChange;
 
   final Channel _channel;
   final LogUploaderWithCooldown _memberFpsZeroLogUploader;
@@ -31,6 +32,7 @@ class DisplayGroupSession {
     this.onInvitation,
     this.onChannelStateChange,
     this.onWebRtcClose,
+    this.onRemoteScreenStatusChange,
   }) {
     _channel.messageStream.listen(_onChannelMessage);
     _channel.stateStream.listen((ChannelState state) {
@@ -75,7 +77,9 @@ class DisplayGroupSession {
         break;
 
       case ChannelMessageType.remoteScreenStatus:
-        // TODO:
+        final statusMessage = message as RemoteScreenStatusMessage;
+        final status = statusMessage.status;
+        onRemoteScreenStatusChange?.call(status);
         break;
       case ChannelMessageType.remoteScreenInfo:
         await _onRemoteScreenInfo(message as RemoteScreenInfoMessage);

@@ -27,6 +27,7 @@ import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/remote_screen_provider.dart';
+import 'package:display_flutter/screens/v3_overlay_tab.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_info.dart';
@@ -38,7 +39,6 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -58,7 +58,8 @@ enum ChannelMode {
   direct,
 }
 
-class ChannelProvider extends ChangeNotifier {
+class ChannelProvider extends ChangeNotifier
+    implements RemoteScreenServerDelegate {
   // Add these variables to store previous states
   bool? _previousModeratorMode;
   bool? _previousSenderMode;
@@ -253,7 +254,7 @@ class ChannelProvider extends ChangeNotifier {
 
   StreamSubscription? _mediaProjectionOnStopSubscription;
 
-  bool _startRemoteScreen = false;
+  bool showOverlayTab = false;
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -321,7 +322,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void _reconfigureNetworking() {
     _remoteScreenProvider = RemoteScreenProvider(
-      RemoteScreenServer(),
+      RemoteScreenServer(this),
       _instanceInfo.ipAddress,
       removeSender,
       MulticastPresenter(),
@@ -360,7 +361,7 @@ class ChannelProvider extends ChangeNotifier {
 
     // Use P2P connection for WebRTC in the Display group by returning an empty ICE server list.
     _remoteScreenProvider = RemoteScreenProvider(
-      RemoteScreenServer(),
+      RemoteScreenServer(this),
       _instanceInfo.ipAddress,
       removeSender,
       MulticastPresenter(),
@@ -368,26 +369,26 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _load();
+  }
 
-    _mediaProjectionOnStopSubscription =
-        Helper.onScreenCaptureStopped.listen((_) async {
-      if (!_startRemoteScreen &&
-          _remoteScreenProvider.isRemoteScreenPublisherStarted()) {
-        // UI
-        providerContainer?.read(dialogProvider.notifier).showDialog(
-              title: S.current.v3_recording_stopped_dialog_title,
-              content: S.current.v3_recording_stopped_dialog_msg,
-              confirmText: S.current.v3_group_dialog_accept,
-              width: 280,
-              height: 200,
-              onConfirm: () {},
-            );
-        //
-        await removeSender(fromSender: true, fromGroup: true);
+  // 重啟Publisher
+  Future<void> remoteScreenRecreatePublish() async {
+    providerContainer?.read(dialogProvider.notifier).showProgress(
+        title: S.current.v3_zero_fps_restarting_title,
+        content: S.current.v3_zero_fps_restarting_content);
+    _remoteScreenProvider.recreatePublisher();
+    await AppOverlayTab().setVisibility(true);
+    if (!showOverlayTab) {
+      await AppOverlayTab().showFpsKeeper();
+    }
+    sendRemoteScreenStatusToMembers(RemoteScreenStatus.hostRecreating);
+  }
 
-        unawaited(_stopModeratorRemoteScreen(stopPublisher: true));
-      }
-    });
+  // 關閉大傳大與大傳小功能
+  Future<void> stopRemoteScreenFromFail() async {
+    await removeSender(fromSender: true, fromGroup: true);
+    await _stopModeratorRemoteScreen(stopPublisher: true);
+    await AppOverlayTab().setVisibility(showOverlayTab);
   }
 
   // 關閉Moderator的RemoteScreen但不關閉moderator模式
@@ -618,6 +619,39 @@ class ChannelProvider extends ChangeNotifier {
       onWebRtcClose: () {
         stopReceivedFromHost(closeReason: 'webrtc close');
       },
+      onRemoteScreenStatusChange: (RemoteScreenStatus? state) {
+        String title = '';
+        String message = '';
+        switch (state) {
+          case RemoteScreenStatus.hostFpsZero:
+            title = S.current.v3_zero_fps_capture_failed_title;
+            message = S.current.v3_zero_fps_capture_failed_message;
+            break;
+          case RemoteScreenStatus.hostRecreating:
+            title = S.current.v3_zero_fps_repairing_title;
+            message = S.current.v3_zero_fps_repairing_message;
+            break;
+          case RemoteScreenStatus.hostRecreateFailure:
+            title = S.current.v3_zero_fps_failed_to_repair_title;
+            message = S.current.v3_zero_fps_failed_to_repair_message;
+            break;
+          case RemoteScreenStatus.hostRecreateSuccess:
+            providerContainer?.read(dialogProvider.notifier).hideDialog();
+            break;
+          default:
+            break;
+        }
+        if (title.isEmpty && message.isEmpty) return;
+        providerContainer?.read(dialogProvider.notifier).hideDialog();
+        providerContainer?.read(dialogProvider.notifier).showDialog(
+              title: title,
+              content: message,
+              cancelText: S.current.v3_zero_fps_close,
+              width: 280,
+              height: 200,
+              onCancel: () {},
+            );
+      },
     );
   }
 
@@ -628,15 +662,12 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     log.info('Starting remote screen');
 
-    _startRemoteScreen = true;
-
     if (_remoteScreenProvider.isRemoteScreenPublisherStarted()) {
       _isGroupMode = fromGroup ?? _isGroupMode;
       _isShareMode = fromShare ?? _isShareMode;
       _isSenderMode = fromSender ?? _isSenderMode;
       _save();
       notifyListeners();
-      _startRemoteScreen = false;
       return;
     }
     _isGroupMode = fromGroup ?? _isGroupMode;
@@ -647,10 +678,14 @@ class ChannelProvider extends ChangeNotifier {
 
     bool result = await _remoteScreenProvider.startPublish(iceServers);
 
-    _startRemoteScreen = false;
     if (!result) {
       removeSender(fromSender: true, fromGroup: true);
       return await stopRemoteScreenPublisher();
+    }
+
+    if (!await AppOverlayTab().getVisibility()) {
+      await AppOverlayTab().setVisibility(true);
+      await AppOverlayTab().showFpsKeeper();
     }
 
     ConnectionTimer.getInstance().startShareSenderTimer(() {
@@ -1126,6 +1161,10 @@ class ChannelProvider extends ChangeNotifier {
       if (!_isSenderMode && !_isGroupMode && !_isShareMode) {
         await stopRemoteScreenPublisher();
         ConnectionTimer.getInstance().stopShareSenderTimer();
+        if (await AppOverlayTab().getVisibility() &&
+            await AppOverlayTab().getOverlayType() == OverlayType.fpsKeeper) {
+          await AppOverlayTab().setVisibility(false);
+        }
       }
     }
     notifyListeners();
@@ -1218,6 +1257,7 @@ class ChannelProvider extends ChangeNotifier {
         final memberInfo = DisplayGroupMemberInfo(
           host: member.ip(),
           displayCode: member.displayCode(),
+          version: member.ver(),
         );
         _displayGroupHost!.addMember(member, memberInfo, providerContainer);
       }
@@ -1361,6 +1401,67 @@ class ChannelProvider extends ChangeNotifier {
       providerContainer
           ?.read(groupProvider.notifier)
           .setBroadcastToGroup(tempGroupMode);
+    }
+  }
+
+  @override
+  void onRecreatePublisherFailure() {
+    providerContainer?.read(dialogProvider.notifier).hideDialog();
+    providerContainer?.read(dialogProvider.notifier).showDialog(
+          title: "",
+          content: S.current.v3_zero_fps_restart_failed,
+          cancelText: S.current.v3_zero_fps_close,
+          width: 280,
+          height: 200,
+          onCancel: () {
+            stopRemoteScreenFromFail();
+          },
+        );
+    sendRemoteScreenStatusToMembers(RemoteScreenStatus.hostRecreateFailure);
+  }
+
+  @override
+  void onRecreatePublisherSuccess() {
+    providerContainer?.read(dialogProvider.notifier).hideDialog();
+    providerContainer?.read(dialogProvider.notifier).showDialog(
+          title: "",
+          content: S.current.v3_zero_fps_restarted_Successfully,
+          cancelText: S.current.v3_zero_fps_close,
+          width: 280,
+          height: 200,
+          onCancel: () {},
+        );
+    sendRemoteScreenStatusToMembers(RemoteScreenStatus.hostRecreateSuccess);
+  }
+
+  @override
+  Future<void> onShowZeroFpsPrompt() async {
+    // UI
+    if (await AppOverlayTab().getVisibility() &&
+        await AppOverlayTab().getOverlayType() == OverlayType.tab) {
+      showOverlayTab = true;
+    } else {
+      showOverlayTab = false;
+      await AppOverlayTab().setVisibility(true);
+    }
+    await AppOverlayTab().showZeroDialog();
+    sendRemoteScreenStatusToMembers(RemoteScreenStatus.hostFpsZero);
+  }
+
+  void sendRemoteScreenStatusToMembers(RemoteScreenStatus status) {
+    // 大傳小
+    // for (var connector in _remoteScreenConnectors) {
+    //   connector.sendRemoteScreenState(RemoteScreenStatus.fpsZero);
+    // }
+    // 大傳大
+    final members = _displayGroupHost?.members;
+    if (members is Map<String, DisplayGroupMember>) {
+      for (final member in members.values) {
+        // 3.9.4以後才支援訊息
+        if (DisplayGroupMember.isVersionGreater(member.version, "3.9.3")) {
+          member.sendRemoteScreenState(status);
+        }
+      }
     }
   }
 }
