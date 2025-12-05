@@ -2411,16 +2411,6 @@ class S {
     );
   }
 
-  /// `Move streaming features`
-  String get v3_lbl_streaming_shortcut_move {
-    return Intl.message(
-      'Move streaming features',
-      name: 'v3_lbl_streaming_shortcut_move',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Streaming Shortcut Menu is locked`
   String get v3_lbl_streaming_shortcut_menu_locked {
     return Intl.message(

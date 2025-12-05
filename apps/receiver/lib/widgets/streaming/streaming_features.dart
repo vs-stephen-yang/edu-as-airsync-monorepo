@@ -261,19 +261,23 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
 
   /// 縮小模式 UI
   Widget _buildCollapsedMode() {
-    return GestureDetector(
-      onVerticalDragUpdate: (details) {
-        _updateVerticalPosition((_currentY ?? 0) + details.delta.dy);
-      },
-      onTap: _toggleExpanded,
-      child: SizedBox(
-        width: StreamingFeaturesConstants.collapsedSize,
-        height: StreamingFeaturesConstants.collapsedSize,
-        child: Center(
-          child: SvgPicture.asset(
-            'assets/images/ic_streaming_menu_dots_vertical.svg',
-            width: 24,
-            height: 24,
+    return V3Focus(
+      label: S.of(context).v3_lbl_streaming_shortcut_expand,
+      identifier: 'v3_qa_streaming_shortcut_collapsed',
+      child: GestureDetector(
+        onVerticalDragUpdate: (details) {
+          _updateVerticalPosition((_currentY ?? 0) + details.delta.dy);
+        },
+        onTap: _toggleExpanded,
+        child: SizedBox(
+          width: StreamingFeaturesConstants.collapsedSize,
+          height: StreamingFeaturesConstants.collapsedSize,
+          child: Center(
+            child: SvgPicture.asset(
+              'assets/images/ic_streaming_menu_dots_vertical.svg',
+              width: 24,
+              height: 24,
+            ),
           ),
         ),
       ),
@@ -672,8 +676,6 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
     return SizedBox(
       height: StreamingFeaturesConstants.expandedButtonHeight / 2,
       child: V3Focus(
-        // TODO
-        // label: S.of(context).v3_lbl_streaming_shortcut_move,
         identifier: 'v3_qa_streaming_shortcut_move',
         borderRadius: const BorderRadius.only(
           topRight: Radius.circular(10),
@@ -683,6 +685,7 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
           onVerticalDragUpdate: (details) {
             _updateVerticalPosition((_currentY ?? 0) + details.delta.dy);
           },
+          excludeFromSemantics: true,
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.only(left: 3, right: 21.0 + countPadding),
