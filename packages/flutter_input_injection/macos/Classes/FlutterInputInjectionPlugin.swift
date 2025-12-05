@@ -17,13 +17,17 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private var mouseDown: Bool = false
 
   /// down 之後停多久才算「長按」→ 用來分辨 drag（長按）vs scroll（立即移動）
-  private let longPressDelay: TimeInterval = 0.1      // 100ms
+  /// 由上層透過 setLongPressDelay 設定，單位：秒（預設 80ms）
+  private var longPressDelay: TimeInterval = 0.08    // 80ms
 
   /// 單指點一下（tap）最大時間（down → up）
   private let tapMaxDuration: TimeInterval = 0.25     // 250ms
 
   /// 單指點一下（tap）允許的最大移動距離
   private let tapMoveThreshold: CGFloat = 5.0
+
+  /// 在判斷 scroll / drag 之前，允許的「小抖動」距離
+  private let jitterThreshold: CGFloat = 5.0
 
   /// 用於 double-click 的距離閾值（沿用你原本的 distanceThreshold）
   private let distanceThreshold: CGFloat = 25.0
@@ -124,7 +128,18 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
          autoVirtualDisplay: autoVirtualDisplay))
       
       result(true)
-      
+
+    case "setLongPressDelay":
+      // 由上層決定 longPressDelay（單位：毫秒）
+      guard let arguments = call.arguments as? [String: Any],
+            let delayMs = arguments["delayMs"] as? Int else {
+        result(false)
+        return
+      }
+      // 轉成秒
+      longPressDelay = TimeInterval(delayMs) / 1000.0
+      result(true)
+
     case "getPlatformVersion":
       result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
 
@@ -280,14 +295,25 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
 
     let now = Date().timeIntervalSince1970
     let currentPoint = CGPoint(x: event.x, y: event.y)
+    let downPoint = gestureDownPoint ?? currentPoint
 
-    // 第一次 move（或模式尚未決定）時：根據距離 down 的時間決定本次手勢模式
+    let elapsedFromDown = now - (gestureStartTime ?? now)
+    let distanceFromDown = distanceBetweenPoints(downPoint, currentPoint)
+
+    // 第一次 move（或模式尚未決定）時，先處理「抖動」與模式判斷
     if !gestureModeDecided {
-      let startTime = gestureStartTime ?? now
-      let elapsedFromDown = now - startTime
+      // 情況 1：時間 < longPressDelay 且 距離 < jitterThreshold → 視為抖動，不決定模式、不送 scroll/drag
+      if elapsedFromDown < longPressDelay && distanceFromDown < jitterThreshold {
+        // 目前選擇：不送任何滑鼠事件，只更新 lastMovePoint。
+        lastMovePoint = currentPoint
+        return
+      }
 
+      // 情況 2：需要決定模式
+      // - 如果已經超過 longPressDelay（不管距離） → 視為長按 → drag
+      // - 如果還沒超過 longPressDelay 但移動距離已經 > jitterThreshold → 視為快速滑動 → scroll
       if elapsedFromDown >= longPressDelay {
-        // down 後先停 ≥ 100ms 才開始動 → 長按 → 本次手勢用拖曳模式
+        // down 後先停 ≥ longPressDelay 才開始動 → 長按 → 本次手勢用拖曳模式
         isDragMode = true
       } else {
         // down 完馬上開始動 → 本次手勢用滾動模式

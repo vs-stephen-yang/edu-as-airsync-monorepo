@@ -64,6 +64,13 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
   }
 
   @override
+  Future<void> setLongPressDelay(int delayMs) async {
+    await methodChannel.invokeMethod<void>('setLongPressDelay', {
+      'delayMs': delayMs,
+    });
+  }
+
+  @override
   Future<void> sendKey(int usbKeyCode, bool pressed) async {
     await methodChannel.invokeMethod<void>('sendKey', {
       'usbKeyCode': usbKeyCode,
