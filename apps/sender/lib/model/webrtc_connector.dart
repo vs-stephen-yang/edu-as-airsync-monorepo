@@ -27,6 +27,7 @@ import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_input_injection/flutter_input_injection_platform_interface.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
@@ -141,6 +142,25 @@ class WebRTCConnector {
   }
 
   ChannelReconnectState get reconnectState => reconnectStateNotifier.value;
+
+  /// EventChannel (來自 macOS 原生端)
+  static const EventChannel _ecForegroundApp =
+      EventChannel('com.viewsonic.display.cast/foreground_app_events');
+
+  /// 你要判斷的 bundle id list
+  static final List<String> _targetBundleId = [
+    'com.viewsonic.droid',
+    'com.microsoft.Powerpoint',
+  ];
+
+  /// StreamSubscription
+  StreamSubscription? _subForegroundApp;
+
+  static const EventChannel _ecSlideShow =
+      EventChannel('com.viewsonic.display.cast/ppt_slideshow_events');
+
+  bool isRunning = false;
+  StreamSubscription? _subSlideShow;
 
   //region connect and communication
 
@@ -452,6 +472,7 @@ class WebRTCConnector {
       sendSignalMessage(message);
 
       startStatsTimer();
+      startAppBundleIdMonitor();
       await WakelockManager().manageWakelock(AppScene.rtcPublishing);
 
       return true;
@@ -1043,6 +1064,7 @@ class WebRTCConnector {
   Future<void> hangUp() async {
     _isPaused = false; // Reset pause state
     stopStatsTimer();
+    stopAppBundleIdMonitor();
 
     trackOutboundStats(filterEverySecond(_videoOutboundStatsHistory.elements));
 
@@ -1180,5 +1202,32 @@ class WebRTCConnector {
     );
 
     return result;
+  }
+
+  void stopAppBundleIdMonitor() {
+    _subForegroundApp?.cancel();
+    _subForegroundApp = null;
+    _subSlideShow?.cancel();
+    _subSlideShow = null;
+  }
+
+  void startAppBundleIdMonitor() {
+    if (Platform.isMacOS) {
+      _subForegroundApp = _ecForegroundApp
+          .receiveBroadcastStream()
+          .map((event) => event as String?)
+          .listen((bundleId) {
+        _flutterInputInjectionPlugin
+            .setLongPressDelay(_targetBundleId.contains(bundleId) ? 10 : 80);
+      });
+
+      _subSlideShow = _ecSlideShow
+          .receiveBroadcastStream()
+          .map((event) => event as bool)
+          .listen((isInSlideShow) {
+        _flutterInputInjectionPlugin.setScrollEnabled(!isInSlideShow);
+      });
+
+    }
   }
 }
