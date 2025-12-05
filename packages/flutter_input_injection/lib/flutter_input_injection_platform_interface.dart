@@ -57,6 +57,10 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
     throw UnimplementedError('sendNormalizedTouch() has not been implemented.');
   }
 
+  Future<void> setLongPressDelay(int delayMs) {
+    throw UnimplementedError('sendKey() has not been implemented.');
+  }
+
   Future<void> sendKey(int usbKeyCode, bool pressed) {
     throw UnimplementedError('sendKey() has not been implemented.');
   }

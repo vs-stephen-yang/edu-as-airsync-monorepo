@@ -41,6 +41,11 @@ class FlutterInputInjection {
   }
 
   // Injects a keyboard event to the system
+  Future<void> setLongPressDelay(int delayMs) {
+    return FlutterInputInjectionPlatform.instance.setLongPressDelay(delayMs);
+  }
+
+  // Injects a keyboard event to the system
   Future<void> sendKey(int usbKeyCode, bool pressed) {
     return FlutterInputInjectionPlatform.instance.sendKey(usbKeyCode, pressed);
   }
