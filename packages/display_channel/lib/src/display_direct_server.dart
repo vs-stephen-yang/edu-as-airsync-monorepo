@@ -5,6 +5,7 @@ import 'package:display_channel/src/rate_limit/rate_limiter.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/direct/direct_connection_server.dart';
+import 'package:display_channel/src/util/log.dart';
 
 class DisplayDirectServer {
   final ChannelStore _store;
@@ -81,11 +82,23 @@ class DisplayDirectServer {
       );
     }
 
-    _httpServer!.listen((request) async {
-      if (WebSocketTransformer.isUpgradeRequest(request)) {
-        await _directServer!.onHttpRequest(request);
-      }
-    });
+    _httpServer!.listen(
+      (request) async {
+        if (WebSocketTransformer.isUpgradeRequest(request)) {
+          await _directServer!.onHttpRequest(request);
+        }
+      },
+      onError: (error, stackTrace) {
+        if (error is SocketException && isExpectedSocketError(error)) {
+          return; // Ignore expected network reset errors
+        }
+
+        // Handle unexpected errors only
+        log().severe('Unexpected HttpServer error', error, stackTrace);
+      },
+      // Do not stop the HttpServer on stream errors; keep accepting new connections
+      cancelOnError: false,
+    );
 
     // rate limiter
     _rateLimiter.start();
@@ -95,5 +108,16 @@ class DisplayDirectServer {
     _rateLimiter.stop();
 
     _httpServer?.close();
+  }
+
+  bool isExpectedSocketError(SocketException e) {
+    final code = e.osError?.errorCode;
+
+    // Expected and ignorable socket errors:
+    // - ECONNRESET (Linux/Android = 104, Windows = 10054)
+    // - EPIPE (Broken pipe = 32)
+    return code == 104 || // Linux / Android: ECONNRESET
+        code == 10054 || // Windows: ECONNRESET
+        code == 32; // EPIPE (Broken pipe)
   }
 }
