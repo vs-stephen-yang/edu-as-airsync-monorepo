@@ -74,7 +74,10 @@
     <ROW Component="auto_updater_windows_plugin.dll" ComponentId="{D2240D48-049B-4B2C-992F-634B377570CD}" Directory_="APPDIR" Attributes="256" KeyPath="auto_updater_windows_plugin.dll"/>
     <ROW Component="bonsoir_windows_plugin.dll" ComponentId="{A8F31CDE-2EAA-4157-94BA-93BD80AA25F9}" Directory_="APPDIR" Attributes="256" KeyPath="bonsoir_windows_plugin.dll"/>
     <ROW Component="connectivity_plus_plugin.dll" ComponentId="{CC521518-7BE0-4389-BCFC-B225BC864ABE}" Directory_="APPDIR" Attributes="256" KeyPath="connectivity_plus_plugin.dll"/>
+    <ROW Component="crashpad_handler.exe" ComponentId="{DEDF74AF-014C-4736-BDB7-78015E0CB55B}" Directory_="APPDIR" Attributes="256" KeyPath="crashpad_handler.exe"/>
+    <ROW Component="crashpad_wer.dll" ComponentId="{5F82167C-A20E-44F4-84C6-4244802E8BB2}" Directory_="APPDIR" Attributes="256" KeyPath="crashpad_wer.dll"/>
     <ROW Component="custom_actions.dll" ComponentId="{6EE266AD-8F87-46C4-BEBC-9F2FE9F6F7E7}" Directory_="APPDIR" Attributes="256" KeyPath="custom_actions.dll"/>
+    <ROW Component="dartjni.dll" ComponentId="{DA9C52D9-C996-43BF-B252-265868755899}" Directory_="APPDIR" Attributes="256" KeyPath="dartjni.dll"/>
     <ROW Component="desktop_multi_window_plugin.dll" ComponentId="{CE2D6A2F-8D2F-444C-8A9F-52D96F894399}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_multi_window_plugin.dll"/>
     <ROW Component="desktop_screenstate_plugin.dll" ComponentId="{50E79E90-D696-4EEC-8859-CB173AA1A513}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_screenstate_plugin.dll"/>
     <ROW Component="desktop_window_plugin.dll" ComponentId="{6A555317-900D-443B-BD0A-1A6C415674E8}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
@@ -530,6 +533,9 @@
     <ROW File="indirect_display_1_2.dll" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.DLL|indirect_display_1_2.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display\indirect_display_1_2.dll" SelfReg="false"/>
     <ROW File="indirect_display_1_2.inf" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display\indirect_display_1_2.inf" SelfReg="false"/>
     <ROW File="airsyncaudio.inf" Component_="airsyncaudio.cat" FileName="AIRSYN~1.INF|airsyncaudio.inf" Attributes="0" SourcePath="prebuilt\virtual-audio-cable-binaries\prebuilt\airsyncaudio.inf" SelfReg="false"/>
+    <ROW File="crashpad_handler.exe" Component_="crashpad_handler.exe" FileName="CRASHP~1.EXE|crashpad_handler.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\crashpad_handler.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="crashpad_wer.dll" Component_="crashpad_wer.dll" FileName="CRASHP~1.DLL|crashpad_wer.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\crashpad_wer.dll" SelfReg="false"/>
+    <ROW File="dartjni.dll" Component_="dartjni.dll" FileName="dartjni.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\dartjni.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.custcomp.MsiEmbeddedUIComponent">
     <ROW MsiEmbeddedUI="embeddeduiproxy" FileName="embeddeduiproxy.dll" Attributes="3" MessageFilter="201359327" Data="&lt;AI_HOME&gt;bin\x86\embeddeduiproxy.dll"/>
@@ -708,6 +714,9 @@
     <ROW Feature_="MainFeature" Component_="custom_actions.dll"/>
     <ROW Feature_="MainFeature" Component_="airsyncaudio.cat"/>
     <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.inf"/>
+    <ROW Feature_="MainFeature" Component_="crashpad_handler.exe"/>
+    <ROW Feature_="MainFeature" Component_="crashpad_wer.dll"/>
+    <ROW Feature_="MainFeature" Component_="dartjni.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
@@ -803,7 +812,7 @@
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
-    <ROW Directory_="APPDIR" SourcePath="..\build\windows\x64\runner\Release" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>
+    <ROW Directory_="APPDIR" SourcePath="..\build\windows\x64\runner\Release" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store|/*.pdb" ExcludeFlags="6" FileAddOptions="4"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
     <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" Description="[|UpdaterName] [|ProductVersion][|EnvSuffix]"/>
