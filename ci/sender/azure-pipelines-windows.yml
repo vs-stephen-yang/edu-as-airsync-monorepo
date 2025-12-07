@@ -59,6 +59,7 @@ jobs:
         fetchDepth: 1
         fetchTags: false
         persistCredentials: true
+        lfs: true
 
       - task: PowerShell@2
         displayName: Authenticate Git Repos
@@ -80,6 +81,17 @@ jobs:
       - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
         displayName: Uploading debug symbols
         enabled: "true"
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
+
+      # Uploading native debug symbols
+      - task: PowerShell@2
+        displayName: Uploading native debug symbols
+        inputs:
+          filePath: "windows/scripts/upload_symbols.ps1"
+          arguments: "Release"
         env:
           SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
           SENTRY_ORG: $(SENTRY_ORG)
