@@ -78,143 +78,152 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20),
             ),
-            child: Row(
+            child: Stack(
               children: [
-                Container(
-                  color: context.tokens.color.vsdslColorOpacityNeutralXl,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 11),
-                  child: _isExpandedMode
-                      ? Semantics(
-                          label: S.of(context).v3_lbl_overlay_bring_app_to_top,
-                          identifier: 'v3_qa_overlay_bring_app_to_top',
-                          button: true,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              AndroidWindow.launchApp();
-                            },
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/ic_overlay_tab_dots.svg',
-                                  width: 7,
-                                  height: 14,
-                                  colorFilter: ColorFilter.mode(
-                                    context
-                                        .tokens.color.vsdslColorNeutralInverse,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(width: 13),
-                                Semantics(
-                                  label: S
-                                      .of(context)
-                                      .v3_lbl_overlay_menu_minimize,
-                                  identifier: 'v3_qa_overlay_menu_minimize',
-                                  button: true,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    onTap: () {
-                                      if (!mounted) return;
-                                      setState(() {
-                                        _isExpandedMode = false;
-                                      });
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/images/ic_overlay_tab_opened.svg',
-                                      width: 26,
-                                      height: 26,
+                Row(
+                  children: [
+                    Container(
+                      color: context.tokens.color.vsdslColorOpacityNeutralXl,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 11),
+                      child: _isExpandedMode
+                          ? Semantics(
+                              label:
+                                  S.of(context).v3_lbl_overlay_bring_app_to_top,
+                              identifier: 'v3_qa_overlay_bring_app_to_top',
+                              button: true,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  AndroidWindow.launchApp();
+                                },
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/images/ic_overlay_tab_dots.svg',
+                                      width: 7,
+                                      height: 14,
+                                      colorFilter: ColorFilter.mode(
+                                        context.tokens.color
+                                            .vsdslColorNeutralInverse,
+                                        BlendMode.srcIn,
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 13),
+                                    Semantics(
+                                      label: S
+                                          .of(context)
+                                          .v3_lbl_overlay_menu_minimize,
+                                      identifier: 'v3_qa_overlay_menu_minimize',
+                                      button: true,
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () {
+                                          if (!mounted) return;
+                                          setState(() {
+                                            _isExpandedMode = false;
+                                          });
+                                        },
+                                        child: SvgPicture.asset(
+                                          'assets/images/ic_overlay_tab_opened.svg',
+                                          width: 26,
+                                          height: 26,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    SvgPicture.asset(
+                                      'assets/images/ic_screen.svg',
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: ColorFilter.mode(
+                                        context.tokens.color
+                                            .vsdslColorOnSurfaceVariant,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    // Trailing is device name, should not use - to confuse user
+                                    Text(
+                                      _deviceName,
+                                      style: textStyle,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    SvgPicture.asset(
+                                      'assets/images/ic_qrcode.svg',
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: ColorFilter.mode(
+                                        context.tokens.color
+                                            .vsdslColorOnSurfaceVariant,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    // Trailing is display code, should not use - to confuse user
+                                    Text(
+                                      getDisplayCodeVisualIdentity(
+                                          _displayCode),
+                                      style: textStyle,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    SvgPicture.asset(
+                                      'assets/images/ic_otp.svg',
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: ColorFilter.mode(
+                                        context.tokens.color
+                                            .vsdslColorOnSurfaceVariant,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    // Trailing is otp code, should not use - to confuse user
+                                    Text(
+                                      _otp,
+                                      style: textStyle,
+                                    ),
+                                    const SizedBox(width: 13),
+                                    SvgPicture.asset(
+                                      'assets/images/ic_overlay_tab_dots.svg',
+                                      width: 7,
+                                      height: 14,
+                                      colorFilter: ColorFilter.mode(
+                                        context.tokens.color
+                                            .vsdslColorNeutralInverse,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 8),
-                                SvgPicture.asset(
-                                  'assets/images/ic_screen.svg',
-                                  width: 16,
-                                  height: 16,
-                                  colorFilter: ColorFilter.mode(
-                                    context.tokens.color
-                                        .vsdslColorOnSurfaceVariant,
-                                    BlendMode.srcIn,
-                                  ),
+                              ),
+                            )
+                          : Semantics(
+                              label: S.of(context).v3_lbl_overlay_menu_expand,
+                              identifier: 'v3_qa_overlay_menu_expand',
+                              button: true,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  if (!mounted) return;
+                                  setState(() {
+                                    _isExpandedMode = true;
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  'assets/images/ic_overlay_tab_closed.svg',
+                                  width: 26,
+                                  height: 26,
                                 ),
-                                const SizedBox(width: 3),
-                                // Trailing is device name, should not use - to confuse user
-                                Text(
-                                  _deviceName,
-                                  style: textStyle,
-                                ),
-                                const SizedBox(width: 8),
-                                SvgPicture.asset(
-                                  'assets/images/ic_qrcode.svg',
-                                  width: 16,
-                                  height: 16,
-                                  colorFilter: ColorFilter.mode(
-                                    context.tokens.color
-                                        .vsdslColorOnSurfaceVariant,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(width: 3),
-                                // Trailing is display code, should not use - to confuse user
-                                Text(
-                                  getDisplayCodeVisualIdentity(_displayCode),
-                                  style: textStyle,
-                                ),
-                                const SizedBox(width: 8),
-                                SvgPicture.asset(
-                                  'assets/images/ic_otp.svg',
-                                  width: 16,
-                                  height: 16,
-                                  colorFilter: ColorFilter.mode(
-                                    context.tokens.color
-                                        .vsdslColorOnSurfaceVariant,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(width: 3),
-                                // Trailing is otp code, should not use - to confuse user
-                                Text(
-                                  _otp,
-                                  style: textStyle,
-                                ),
-                                const SizedBox(width: 13),
-                                SvgPicture.asset(
-                                  'assets/images/ic_overlay_tab_dots.svg',
-                                  width: 7,
-                                  height: 14,
-                                  colorFilter: ColorFilter.mode(
-                                    context
-                                        .tokens.color.vsdslColorNeutralInverse,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        )
-                      : Semantics(
-                          label: S.of(context).v3_lbl_overlay_menu_expand,
-                          identifier: 'v3_qa_overlay_menu_expand',
-                          button: true,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              if (!mounted) return;
-                              setState(() {
-                                _isExpandedMode = true;
-                              });
-                            },
-                            child: SvgPicture.asset(
-                              'assets/images/ic_overlay_tab_closed.svg',
-                              width: 26,
-                              height: 26,
-                            ),
-                          ),
-                        ),
+                    ),
+                  ],
                 ),
-                StealthFpsKeeper(fps: 10),
+                const Align(
+                  alignment: Alignment.bottomRight,
+                  child: StealthFpsKeeper(fps: 10),
+                ),
               ],
             ),
           ),
@@ -598,10 +607,10 @@ class StealthFpsKeeper extends StatefulWidget {
     EdgeInsets padding = const EdgeInsets.all(1),
   }) {
     final entry = OverlayEntry(
-      builder: (_) => const IgnorePointer(
+      builder: (_) => IgnorePointer(
         ignoring: true,
         child: SizedBox.expand(
-          child: _OverlayHost(), // 只為了占滿，真正的 widget 放在裡面
+          child: _OverlayHost(key: _OverlayHost.stateKey), // 承載 keeper 的容器
         ),
       ),
     );
@@ -708,7 +717,7 @@ class _StealthDotPainter extends CustomPainter {
     // 在 1 與 2（/255）之間切換 alpha：幾乎不可見，但每幀像素確實不同。
     final int alpha = 1 + (tick & 0x01);
     final paint = Paint()..color = baseColor.withAlpha(alpha);
-    canvas.drawRect(Offset.zero & const Size(1, 1), paint);
+    canvas.drawRect(Offset.zero & size, paint);
   }
 
   @override
@@ -718,9 +727,10 @@ class _StealthDotPainter extends CustomPainter {
 
 /// 內部用：給 attachToOverlay 占滿畫面並承載 StealthFpsKeeper。
 class _OverlayHost extends StatefulWidget {
-  const _OverlayHost();
+  const _OverlayHost({super.key});
 
-  static final stateKey = GlobalKey<_OverlayHostState>();
+  static final GlobalKey<_OverlayHostState> stateKey =
+      GlobalKey<_OverlayHostState>();
 
   @override
   State<_OverlayHost> createState() => _OverlayHostState();
@@ -732,8 +742,5 @@ class _OverlayHostState extends State<_OverlayHost> {
   void setChild(Widget child) => setState(() => _child = child);
 
   @override
-  Widget build(BuildContext context) => KeyedSubtree(
-        key: _OverlayHost.stateKey,
-        child: _child,
-      );
+  Widget build(BuildContext context) => _child;
 }
