@@ -54,6 +54,9 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private var lastClickTime: TimeInterval? = nil
   private var lastClickPoint: CGPoint? = nil
 
+  // ===== scroll 開關（給 slide show 用）=====
+  private var isScrollEnabled: Bool = true
+
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(
       name: "flutter_input_injection", binaryMessenger: registrar.messenger)
@@ -138,6 +141,16 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
       }
       // 轉成秒
       longPressDelay = TimeInterval(delayMs) / 1000.0
+      result(true)
+
+    case "setScrollEnabled":
+      // 由上層決定是否啟用 scroll（slide show 時可以關掉）
+      guard let arguments = call.arguments as? [String: Any],
+            let enabled = arguments["enabled"] as? Bool else {
+        result(false)
+        return
+      }
+      isScrollEnabled = enabled
       result(true)
 
     case "getPlatformVersion":
@@ -334,9 +347,10 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
       }
       simulateMouseEvent(.leftMouseDragged, at: currentPoint)
     } else {
-      // 滾動模式：完全沒有 down/up，只送 mouseMoved + scrollWheel
+      // 滾動模式：完全沒有 down/up，只送 mouseMoved，
+      // scrollWheel 則依 isScrollEnabled 決定是否送出（Slide Show 時可以關掉）
       simulateMouseEvent(.mouseMoved, at: currentPoint)
-      if deltaY != 0 {
+      if isScrollEnabled && deltaY != 0 {
         simulateScrollEvent(.scrollWheel, deltaY: deltaY)
       }
     }

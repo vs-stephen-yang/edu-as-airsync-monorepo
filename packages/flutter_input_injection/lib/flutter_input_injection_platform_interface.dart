@@ -58,7 +58,11 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
   }
 
   Future<void> setLongPressDelay(int delayMs) {
-    throw UnimplementedError('sendKey() has not been implemented.');
+    throw UnimplementedError('setLongPressDelay() has not been implemented.');
+  }
+
+  Future<void> setScrollEnabled(bool enabled) {
+    throw UnimplementedError('setScrollEnabled() has not been implemented.');
   }
 
   Future<void> sendKey(int usbKeyCode, bool pressed) {

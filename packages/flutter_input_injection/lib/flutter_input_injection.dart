@@ -46,6 +46,11 @@ class FlutterInputInjection {
   }
 
   // Injects a keyboard event to the system
+  Future<void> setScrollEnabled(bool enabled) {
+    return FlutterInputInjectionPlatform.instance.setScrollEnabled(enabled);
+  }
+
+  // Injects a keyboard event to the system
   Future<void> sendKey(int usbKeyCode, bool pressed) {
     return FlutterInputInjectionPlatform.instance.sendKey(usbKeyCode, pressed);
   }
