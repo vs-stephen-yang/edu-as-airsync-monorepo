@@ -71,6 +71,13 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
   }
 
   @override
+  Future<void> setScrollEnabled(bool enabled) async {
+    await methodChannel.invokeMethod<void>('setScrollEnabled', {
+      'enabled': enabled,
+    });
+  }
+
+  @override
   Future<void> sendKey(int usbKeyCode, bool pressed) async {
     await methodChannel.invokeMethod<void>('sendKey', {
       'usbKeyCode': usbKeyCode,
