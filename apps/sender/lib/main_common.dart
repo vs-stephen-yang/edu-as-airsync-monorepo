@@ -22,6 +22,7 @@ import 'package:display_cast_flutter/screens/v3_eula.dart';
 import 'package:display_cast_flutter/screens/v3_home.dart';
 import 'package:display_cast_flutter/screens/v3_splash_screen.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
@@ -88,6 +89,14 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {
       await FlutterVirtualDisplay.instance.initialize();
     }
+
+    await AppAmplitude().ensureInitialized(
+      apiKey: settings.appAmplitudeKey,
+      instanceName: settings.envName,
+      deviceId: AppInstanceCreate().instanceId,
+      appVersion: packageInfo.version,
+      clientDeviceInfo: await ClientDeviceInfo.fetch(),
+    );
 
     AppAnalytics.initializeApp(
       instrumentationKey: settings.appInsightsInstrumentationKey,

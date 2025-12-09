@@ -68,6 +68,9 @@ abstract class ConfigSettings {
 
   late String appInsightsIngestionEndpoint;
 
+  // Amplitude
+  late String appAmplitudeKey;
+
   late String appUpdateVersionEndpoint;
   late String appStoreUrl;
   late String appUpdateMacAppcastUrl;

@@ -1,8 +1,9 @@
 import 'package:azure_application_insights/azure_application_insights.dart';
+import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/caching_http_client.dart';
-import 'package:display_cast_flutter/utilities/offline_http_client.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/offline_http_client.dart';
 import 'package:http/http.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
@@ -27,6 +28,7 @@ class AppAnalytics {
   TelemetryClient? _client;
   final _globalProperties = <String, String>{};
   EventMode? _mode;
+
   // Private constructor
   AppAnalytics._();
 
@@ -94,6 +96,7 @@ class AppAnalytics {
 
   void setMode(EventMode? mode) {
     _mode = mode;
+    AppAmplitude().setMode(mode);
   }
 
   // Log business events
@@ -149,6 +152,13 @@ void trackEvent(
   Map<String, Object> properties = const <String, Object>{},
 }) {
   AppAnalytics.instance.trackEvent(
+    name,
+    category,
+    target: target,
+    properties: properties,
+  );
+
+  AppAmplitude().trackEvent(
     name,
     category,
     target: target,
