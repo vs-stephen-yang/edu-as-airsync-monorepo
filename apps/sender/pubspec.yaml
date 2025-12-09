@@ -97,6 +97,8 @@ dependencies:
   clock: ^1.1.1
   convert: ^3.1.1
   open_file: ^3.5.10
+  auto_hyphenating_text: ^0.3.0
+  amplitude_flutter: ^4.3.9
 
   # ViewSonic plug-in
   flutter_webrtc:
@@ -132,8 +134,6 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin
       ref: release-3.8.5
-
-  auto_hyphenating_text: ^0.3.0
   # ViewSonic plug-in
 
 dependency_overrides:
