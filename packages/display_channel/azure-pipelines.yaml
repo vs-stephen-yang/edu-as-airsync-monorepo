@@ -22,7 +22,7 @@ variables:
 jobs:
   - job: unittest
     pool:
-      vmImage: "macOS-13"
+      vmImage: "macOS-15"
     steps:
       - checkout: self
 
