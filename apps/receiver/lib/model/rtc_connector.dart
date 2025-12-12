@@ -13,6 +13,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/channel_config.dart';
+import 'package:display_flutter/utility/app_amplitude.dart';
 import 'package:display_flutter/utility/app_analytics_util.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
@@ -47,6 +48,7 @@ enum MaxVideoResolution {
   r960x600_16x10(960, 600);
 
   const MaxVideoResolution(this.width, this.height);
+
   final int width;
   final int height;
 }
@@ -135,6 +137,12 @@ class RTCConnector {
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
   RtcStatsPresenter? _rtcStatsPresenter;
+
+  DateTime _lastUploadAt = DateTime.fromMillisecondsSinceEpoch(0);
+  bool _uploading = false;
+
+  // 存最新一份要上傳的 payload（已序列化）
+  Map<String, dynamic>? _latestReportsPayload;
 
   RtcStatsParser? get rtcStatsPresenter => _rtcStatsParser;
 
@@ -257,9 +265,65 @@ class RTCConnector {
         final reports = await _pc?.getStats(null);
         if (reports != null) {
           _rtcStatsParser?.onStatsReports(reports);
+
+          // 先把 reports 轉成可上傳的 Map
+          _latestReportsPayload = _serializeReports(reports);
+
+          // 每 5 秒上傳一次
+          final now = DateTime.now();
+          final shouldUpload =
+              now.difference(_lastUploadAt) >= const Duration(seconds: 5);
+
+          if (shouldUpload && !_uploading && _latestReportsPayload != null) {
+            _uploading = true;
+            _lastUploadAt = now; // 先更新避免重入
+
+            try {
+              await AppAmplitude().trackEvent('stats', properties: {
+                'category': 'system',
+                ..._latestReportsPayload!
+              });
+            } finally {
+              _uploading = false;
+            }
+          }
         }
       },
     );
+  }
+
+  Map<String, dynamic> _serializeReports(List<StatsReport> reports) {
+    return {
+      "stats": _extractInboundRtpVideo(reports),
+    };
+  }
+
+  /// 只取 type=inbound-rtp 且 kind=video，並整理成可上傳的 Map
+  List<Map<String, dynamic>> _extractInboundRtpVideo(
+      List<StatsReport> reports) {
+    return reports
+        .where((r) => r.type == 'inbound-rtp' && r.values['kind'] == 'video')
+        .map((r) => simplifyInboundRtp(r))
+        .toList();
+  }
+
+  /// 精簡你要的欄位（你可自行增減）
+  Map<String, dynamic> simplifyInboundRtp(StatsReport r) {
+    final v = r.values;
+    return {
+      "id": r.id,
+      "timestamp": r.timestamp,
+      "kind": v['kind'], // video
+      "bytesReceived": v['bytesReceived'],
+      "packetsReceived": v['packetsReceived'],
+      "packetsLost": v['packetsLost'],
+      "jitter": v['jitter'],
+      "framesDecoded": v['framesDecoded'],
+      "framesPerSecond": v['framesPerSecond'],
+      "framesDropped": v['framesDropped'],
+      "freezeCount": v['freezeCount'],
+      "totalDecodeTime": v['totalDecodeTime'],
+    };
   }
 
   // The channel failed to reconnect within the specified timeout period
@@ -521,6 +585,7 @@ class RTCConnector {
   }
 
   int getFullResolutionHeight() => maxVideoResolution.height;
+
   int getFullResolutionWidth() => maxVideoResolution.width;
 
   int getFullHeight(bool isFullResolution, int attenderCount) {

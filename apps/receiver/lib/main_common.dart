@@ -26,6 +26,7 @@ import 'package:display_flutter/screens/v3_request_permission.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/theme_config.dart';
+import 'package:display_flutter/utility/app_amplitude.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -105,6 +106,14 @@ Future<void> commonEntry(ConfigSettings settings) async {
         tokens: DefaultTokens(),
         child: const riverpod.ProviderScope(child: MyApp()),
       ),
+    );
+
+    await AppAmplitude().ensureInitialized(
+      apiKey: settings.appAmplitudeKey,
+      instanceName: settings.isDevelopEnvironment ? 'dev' : 'production',
+      deviceId: AppInstanceCreate().instanceID,
+      appVersion: packageInfo.version,
+      clientDeviceInfo: await ClientDeviceInfo.fetch(),
     );
 
     await AppAnalytics.initializeApp(
