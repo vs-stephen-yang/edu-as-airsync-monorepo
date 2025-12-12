@@ -1212,7 +1212,7 @@ class WebRTCConnector {
   }
 
   void startAppBundleIdMonitor() {
-    if (Platform.isMacOS) {
+    if (!kIsWeb && Platform.isMacOS) {
       _subForegroundApp = _ecForegroundApp
           .receiveBroadcastStream()
           .map((event) => event as String?)
@@ -1227,7 +1227,6 @@ class WebRTCConnector {
           .listen((isInSlideShow) {
         _flutterInputInjectionPlugin.setScrollEnabled(!isInSlideShow);
       });
-
     }
   }
 }
