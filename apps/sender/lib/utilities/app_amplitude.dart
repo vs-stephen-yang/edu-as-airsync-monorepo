@@ -51,6 +51,10 @@ class AppAmplitude {
     );
   }
 
+  void setGlobalProperty(String name, String value) {
+    _resolveImplement().setGlobalProperty(name, value);
+  }
+
   void setMode(EventMode? mode) {
     _resolveImplement().setMode(mode);
   }
@@ -80,6 +84,8 @@ abstract class AppAmplitudeImplement {
     String? appVersion,
     ClientDeviceInfo? clientDeviceInfo,
   });
+
+  void setGlobalProperty(String name, String value);
 
   void setMode(EventMode? mode);
 

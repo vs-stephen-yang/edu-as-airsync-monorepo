@@ -92,6 +92,7 @@ class AppAnalytics {
 
   void setGlobalProperty(String name, String value) {
     _globalProperties[name] = value;
+    AppAmplitude().setGlobalProperty(name, value);
   }
 
   void setMode(EventMode? mode) {

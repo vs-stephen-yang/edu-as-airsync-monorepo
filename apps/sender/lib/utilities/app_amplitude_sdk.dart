@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/utilities/client_device_info.dart';
 
 class AppAmplitudeSdk implements AppAmplitudeImplement {
   Amplitude? _amplitude;
+  final _globalProperties = <String, String>{};
   EventMode? _mode;
 
   @override
@@ -47,6 +48,11 @@ class AppAmplitudeSdk implements AppAmplitudeImplement {
   }
 
   @override
+  void setGlobalProperty(String name, String value) {
+    _globalProperties[name] = value;
+  }
+
+  @override
   void setMode(EventMode? mode) {
     _mode = mode;
   }
@@ -64,6 +70,7 @@ class AppAmplitudeSdk implements AppAmplitudeImplement {
         name,
         eventProperties: {
           ...properties,
+          ..._globalProperties,
           'category': category.name,
           if (target != null) 'target': target,
           if (_mode != null &&

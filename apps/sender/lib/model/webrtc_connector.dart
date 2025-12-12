@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
+import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
@@ -129,6 +130,12 @@ class WebRTCConnector {
   final _statsTimerInterval = const Duration(seconds: 1);
   RtcStatsParser? _rtcStatsParser;
   RtcStatsPresenter? _rtcStatsPresenter;
+
+  DateTime _lastUploadAt = DateTime.fromMillisecondsSinceEpoch(0);
+  bool _uploading = false;
+
+  // 存最新一份要上傳的 payload（已序列化）
+  Map<String, dynamic>? _latestReportsPayload;
 
   // keep last 20 RtcVideoOutboundStats
   final _videoOutboundStatsHistory = BoundedList<RtcVideoOutboundStats>(20);
@@ -1158,9 +1165,67 @@ class WebRTCConnector {
           // feed the stats to the log manager
           WebRTCLogManager().onStatsReport(reports);
           _rtcStatsParser?.onStatsReports(reports);
+
+          // 先把 reports 轉成可上傳的 Map
+          _latestReportsPayload = _serializeReports(reports);
+
+          // 每 5 秒上傳一次
+          final now = DateTime.now();
+          final shouldUpload =
+              now.difference(_lastUploadAt) >= const Duration(seconds: 5);
+
+          if (shouldUpload && !_uploading && _latestReportsPayload != null) {
+            _uploading = true;
+            _lastUploadAt = now; // 先更新避免重入
+
+            try {
+              await AppAmplitude().trackEvent('stats', EventCategory.system,
+                  properties: _latestReportsPayload!);
+            } finally {
+              _uploading = false;
+            }
+          }
         }
       },
     );
+  }
+
+  Map<String, dynamic> _serializeReports(List<StatsReport> reports) {
+    return {
+      "stats": _extractOutboundRtpVideo(reports),
+    };
+  }
+
+  /// 只取 type=outbound-rtp 且 kind=video，並整理成可上傳的 Map
+  List<Map<String, dynamic>> _extractOutboundRtpVideo(
+      List<StatsReport> reports) {
+    return reports
+        .where((r) => r.type == 'outbound-rtp' && r.values['kind'] == 'video')
+        .map((r) => _simplifyOutboundRtp(r))
+        .toList();
+  }
+
+  /// 精簡你要的欄位（你可自行增減）
+  Map<String, dynamic> _simplifyOutboundRtp(StatsReport r) {
+    final v = r.values;
+    return {
+      "id": r.id,
+      "type": r.type,
+      "timestamp": r.timestamp,
+      "kind": v['kind'],
+      "ssrc": v['ssrc'],
+      "rid": v['rid'],
+      "mid": v['mid'],
+      "bytesSent": v['bytesSent'],
+      "packetsSent": v['packetsSent'],
+      "retransmittedPacketsSent": v['retransmittedPacketsSent'],
+      "framesEncoded": v['framesEncoded'],
+      "framesPerSecond": v['framesPerSecond'],
+      "keyFramesEncoded": v['keyFramesEncoded'],
+      "qpSum": v['qpSum'],
+      "totalEncodeTime": v['totalEncodeTime'],
+      "qualityLimitationReason": v['qualityLimitationReason'],
+    };
   }
 
   void _handleVideoStatsReport(RtcVideoOutboundStats stats) {

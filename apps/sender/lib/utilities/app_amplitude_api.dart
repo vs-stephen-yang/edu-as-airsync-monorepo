@@ -13,6 +13,7 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   String _userId = '';
   String _appVersion = '';
   ClientDeviceInfo? _clientDeviceInfo;
+  final _globalProperties = <String, String>{};
   EventMode? _mode;
 
   @override
@@ -33,6 +34,11 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   }
 
   @override
+  void setGlobalProperty(String name, String value) {
+    _globalProperties[name] = value;
+  }
+
+  @override
   void setMode(EventMode? mode) {
     _mode = mode;
   }
@@ -49,6 +55,7 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
       eventType: name,
       eventProperties: {
         ...properties,
+        ..._globalProperties,
         'category': category.name,
         if (target != null) 'target': target,
         if (_mode != null &&
