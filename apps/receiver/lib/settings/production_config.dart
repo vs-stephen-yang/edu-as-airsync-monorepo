@@ -26,6 +26,9 @@ class ProductionConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
+  String appAmplitudeKey = '594b44808b184ee9dc7a4b91ad8520e3';
+
+  @override
   String airSyncUrl = 'airsync.net';
 
   @override

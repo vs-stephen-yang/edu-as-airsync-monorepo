@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:azure_application_insights/azure_application_insights.dart';
+import 'package:display_flutter/utility/app_amplitude.dart';
 import 'package:display_flutter/utility/caching_http_client.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
@@ -145,6 +146,18 @@ void trackEvent(
   Map<String, Object> properties = const <String, Object>{},
 }) {
   AppAnalytics.instance.trackEvent(name, properties: {
+    ...properties,
+    ...{
+      'category': category.name,
+      if (target != null) 'target': target,
+      if (participatorId != null) 'participator_id': participatorId,
+      if (mode != null) 'mode': mode,
+      if (DeviceFeatureAdapter.roomNumber.isNotEmpty)
+        'room_number': DeviceFeatureAdapter.roomNumber,
+    },
+  });
+
+  AppAmplitude().trackEvent(name, properties: {
     ...properties,
     ...{
       'category': category.name,

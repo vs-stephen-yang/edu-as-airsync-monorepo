@@ -51,6 +51,9 @@ abstract class ConfigSettings {
   late String instrumentationKey;
   late String ingestionEndpoint;
 
+  // Amplitude
+  late String appAmplitudeKey;
+
   // Backdoor OTP. For development only.
   late String? defaultOtp;
 
