@@ -23,8 +23,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times. ";
 
-  static String m2(ipAddress) => "Retrying connection to ${ipAddress}...";
-
   static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -597,8 +595,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Open broadcast boards menu",
     ),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("favorite"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("remove device"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Open broadcast devices menu",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Find Boards via IP",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -893,20 +898,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Find Boards via IP",
     ),
-    "v3_settings_broadcast_ip_already_exists_selected":
-        MessageLookupByLibrary.simpleMessage(
-          "Device already exists, selected successfully",
-        ),
-    "v3_settings_broadcast_ip_already_in_list":
-        MessageLookupByLibrary.simpleMessage(
-          "Device is already in the selected list",
-        ),
-    "v3_settings_broadcast_ip_exists_tooltip":
-        MessageLookupByLibrary.simpleMessage("Device already exists"),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Enter IP Address",
     ),
-    "v3_settings_broadcast_ip_retry": m2,
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "not find",
+    ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
           "Please turn off energy saving to avoid unexpected interruption during broadcasting.",
