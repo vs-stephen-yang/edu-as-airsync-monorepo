@@ -546,36 +546,34 @@ class MirrorStateProvider extends ChangeNotifier
     _miracastSupport =
         (flavor == 'ifp' && _deviceType != 'dvLED') || (flavor == 'edla');
 
-    if (_miracastSupport) {
-      await channel.invokeMethod("startSpecifiedModuleDFSChannelMonitor");
-      const EventChannel(
-              'com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel')
-          .receiveBroadcastStream()
-          .listen((event) async {
-        if (event is bool) {
-          _isSpecifiedModuleAndDFSChannel = event;
-          notifyListeners();
-          if (_miracastEnabled) {
-            if (_isSpecifiedModuleAndDFSChannel) {
-              log.info('stop miracast feature (Specified Module DFS Channel)');
-              await stopMiracast(updatePreference: false);
-            } else {
-              log.info('start miracast feature (Specified Module DFS Channel)');
-              await startMiracast(updatePreference: false);
-            }
-          }
-        } else if (event is String) {
-          if (event == 'permission_granted') {
-            _isPermissionGranted = true;
+    await channel.invokeMethod("startSpecifiedModuleDFSChannelMonitor");
+    const EventChannel(
+            'com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel')
+        .receiveBroadcastStream()
+        .listen((event) async {
+      if (event is bool) {
+        _isSpecifiedModuleAndDFSChannel = event;
+        notifyListeners();
+        if (_miracastEnabled) {
+          if (_isSpecifiedModuleAndDFSChannel) {
+            log.info('stop miracast feature (Specified Module DFS Channel)');
+            await stopMiracast(updatePreference: false);
           } else {
-            _isPermissionGranted = false;
+            log.info('start miracast feature (Specified Module DFS Channel)');
+            await startMiracast(updatePreference: false);
           }
-          notifyListeners();
         }
-      }, onError: (error) {
-        print('error: $error');
-      });
-    }
+      } else if (event is String) {
+        if (event == 'permission_granted') {
+          _isPermissionGranted = true;
+        } else {
+          _isPermissionGranted = false;
+        }
+        notifyListeners();
+      }
+    }, onError: (error) {
+      print('error: $error');
+    });
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
