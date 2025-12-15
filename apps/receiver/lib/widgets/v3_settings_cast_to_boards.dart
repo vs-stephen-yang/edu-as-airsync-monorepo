@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
@@ -12,11 +13,11 @@ import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_global_toast.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
-import 'package:display_flutter/widgets/v3_scrollbar.dart';
-import 'package:display_flutter/widgets/v3_setting_menu_item_toggle_tile.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
@@ -24,10 +25,12 @@ import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sprintf/sprintf.dart';
+import 'package:uuid/uuid.dart';
 
 class V3SettingsCastToBoards extends ConsumerStatefulWidget {
   const V3SettingsCastToBoards({super.key});
@@ -46,6 +49,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(groupProvider.notifier).organizeGroupList();
+      ref.read(groupProvider.notifier).loadFavoriteDevices();
     });
   }
 
@@ -81,27 +85,22 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     } else {
       discoveryModel.stop();
     }
-    return Stack(
-      children: [
-        Positioned(
-            left: 0, top: 0, child: _buildTittle(settingsProvider, context)),
-        Positioned(
-          left: 13,
-          top: 57,
-          right: 13,
-          bottom: 13,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildContent(context, groupNotifier, isBroadcastingToGroup,
-                  channelProvider),
-              if (isBroadcastingToGroup)
-                _buildHintAndActionButton(context, broadcastType,
-                    settingsProvider, channelProvider, groupNotifier)
-            ],
-          ),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 13,
+        right: 13,
+        bottom: 13,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildContent(context, groupNotifier, isBroadcastingToGroup,
+              channelProvider, settingsProvider),
+          if (isBroadcastingToGroup)
+            _buildHintAndActionButton(context, broadcastType, settingsProvider,
+                channelProvider, groupNotifier)
+        ],
+      ),
     );
   }
 
@@ -148,7 +147,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       children: [
         _buildDivider(context),
         ConstrainedBox(
-          constraints: BoxConstraints(minHeight: 30),
+          constraints: const BoxConstraints(minHeight: 30),
           child: IntrinsicHeight(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -362,124 +361,97 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     });
   }
 
-  Widget _buildContent(BuildContext context, GroupProvider groupNotifier,
-      bool isBroadcastingToGroup, ChannelProvider channelProvider) {
+  Widget _buildContent(
+      BuildContext context,
+      GroupProvider groupNotifier,
+      bool isBroadcastingToGroup,
+      ChannelProvider channelProvider,
+      SettingsProvider settingsProvider) {
     List<V3SettingsRadioGroupItem> radioItems = [
       V3SettingsRadioGroupItem(
         value: BroadcastGroupLaunchType.onlyWhenCasting.name,
         title: S.of(context).v3_settings_display_group_only_casting,
         divider: false,
+        disabled: !isBroadcastingToGroup,
       ),
       V3SettingsRadioGroupItem(
         value: BroadcastGroupLaunchType.allTheTime.name,
         title: S.of(context).v3_settings_display_group_all_the_time,
         divider: false,
+        disabled: !isBroadcastingToGroup,
       ),
     ];
 
     final clientList = ref.watch(groupProvider
         .select((state) => [...state.selectedList, ...state.clients]));
 
-    // 提取共同的內容部分為一個方法，返回 Widget 列表而不是單個 Widget
-    List<Widget> buildContentWidgets() {
-      return [
-        _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
-        if (isBroadcastingToGroup)
-          V3SettingsRadioGroup(
-            label:
-                S.of(context).v3_lbl_settings_broadcast_to_display_group_type,
-            identifier: "v3_qa_settings_broadcast_to_display_group_type",
-            hasSubFocusItem: false,
-            focusOnInit: false,
-            initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
-            radioList: radioItems,
-            onChanged: (value) {
-              int index = radioItems.indexWhere((item) => item.value == value);
-              if (index != -1) {
-                BroadcastGroupLaunchType type =
-                    BroadcastGroupLaunchType.values[index];
-                trackEvent(
-                  'click_cast_to_board_setting',
-                  EventCategory.setting,
-                  target: type.name,
-                );
-
-                groupNotifier.setBroadcastGroupLaunchType(type);
-              } else {
-                log('BroadcastGroupLaunchType not found');
-              }
-            },
-          ),
-        _buildDivider(context,
-            margin: EdgeInsets.only(
-                top: isBroadcastingToGroup ? 0 : 8,
-                bottom: context.tokens.spacing.vsdslSpacingMd.bottom)),
-        _buildListHeader(context, groupNotifier, isBroadcastingToGroup),
-      ];
-    }
-
-    final isNormal =
-        AppPreferences().textSizeOption == ResizeTextSizeOption.normal;
-    if (isNormal) {
-      return SizedBox(
-        height: 293,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...buildContentWidgets(),
-            _buildListContent(
-                groupNotifier, isBroadcastingToGroup, channelProvider),
-          ],
-        ),
-      );
-    } else {
-      return Expanded(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...buildContentWidgets(),
-              if (isBroadcastingToGroup)
-                Column(
-                  children: clientList
-                      .map((client) => Opacity(
-                            opacity: isBroadcastingToGroup ? 1.0 : 0.3,
-                            child: _buildListTIle(client, context,
-                                groupNotifier, channelProvider),
-                          ))
-                      .toList(),
-                )
-            ],
-          ),
-        ),
-      );
-    }
-  }
-
-  Expanded _buildListContent(GroupProvider groupNotifier,
-      bool isBroadcastingToGroup, ChannelProvider channelProvider) {
-    final clientList = ref.watch(groupProvider
-        .select((state) => [...state.selectedList, ...state.clients]));
-    final sc = ScrollController();
     return Expanded(
-      child: V3Scrollbar(
-        controller: sc,
-        child: ListView.separated(
-          controller: sc,
-          shrinkWrap: true,
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: isBroadcastingToGroup ? clientList.length : 0,
-          itemBuilder: (context, index) {
-            final client = clientList[index];
-            return Opacity(
-              opacity: isBroadcastingToGroup ? 1.0 : 0.3,
-              child: _buildListTIle(
-                  client, context, groupNotifier, channelProvider),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) =>
-              Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
-        ),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: _buildTitle(settingsProvider, context),
+          ),
+          SliverToBoxAdapter(
+            child: V3SettingsRadioGroup(
+              label:
+                  S.of(context).v3_lbl_settings_broadcast_to_display_group_type,
+              identifier: "v3_qa_settings_broadcast_to_display_group_type",
+              hasSubFocusItem: false,
+              focusOnInit: false,
+              initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
+              radioList: radioItems,
+              onChanged: (value) {
+                int index =
+                    radioItems.indexWhere((item) => item.value == value);
+                if (index != -1) {
+                  BroadcastGroupLaunchType type =
+                      BroadcastGroupLaunchType.values[index];
+                  trackEvent(
+                    'click_cast_to_board_setting',
+                    EventCategory.setting,
+                    target: type.name,
+                  );
+
+                  groupNotifier.setBroadcastGroupLaunchType(type);
+                } else {
+                  log('BroadcastGroupLaunchType not found');
+                }
+              },
+            ),
+          ),
+          // Divider
+          SliverToBoxAdapter(
+            child: _buildDivider(context,
+                margin: EdgeInsets.only(
+                    top: isBroadcastingToGroup ? 0 : 8,
+                    bottom: context.tokens.spacing.vsdslSpacingMd.bottom)),
+          ),
+          SliverStickyHeader(
+            // 會黏在頂端的 Header
+            header: Container(
+              alignment: Alignment.centerLeft,
+              color: context.tokens.color.vsdslColorSurface1000,
+              child: _buildListHeader(
+                  context, groupNotifier, isBroadcastingToGroup),
+            ),
+            // Sticky Header 下方的 List
+            sliver: isBroadcastingToGroup
+                ? SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final client = clientList[index];
+                        return Opacity(
+                          opacity: isBroadcastingToGroup ? 1.0 : 0.3,
+                          child: _buildListTIle(
+                              client, context, groupNotifier, channelProvider),
+                        );
+                      },
+                      childCount: clientList.length,
+                    ),
+                  )
+                : null,
+          ),
+        ],
       ),
     );
   }
@@ -503,7 +475,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         groupNotifier.removeFromSelectedList(client);
       }
       // 斷線裝置不用按下方按鈕生效，連線還是需要按。
-      if (!isChecked == false && channelProvider.groupActivated()) {
+      if (isChecked && channelProvider.groupActivated()) {
         startDisplayGroup(groupNotifier, channelProvider);
       }
       if (!fromTouch) {
@@ -513,7 +485,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     }
 
     return Container(
-      margin: const EdgeInsets.only(right: 8, left: 8),
+      margin: const EdgeInsets.only(left: 8),
       child: V3SettingMenuListItemFocus(
         label: sprintf(
             S.of(context).v3_lbl_settings_broadcast_to_display_group_item,
@@ -577,8 +549,43 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                     color: context.tokens.color.vsdslColorOnSurfaceInverse),
               ),
             ),
-            displayCodeWidget(client, context)
+            if (client.ipNotFind()) notFindWidget(client, context),
+            if (!client.ipNotFind()) displayCodeWidget(client, context),
+            if (!client.ipNotFind()) _buildFavoriteButton(client, context),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFavoriteButton(GroupListItem client, BuildContext context) {
+    final groupNotifier = ref.read(groupProvider.notifier);
+    final isFav = groupNotifier.isFavorite(client.id());
+    final isDisabled = client.ipNotFind();
+
+    return InkWell(
+      excludeFromSemantics: true,
+      onTap: isDisabled
+          ? null
+          : () {
+              if (!mounted) return;
+              setState(() {
+                groupNotifier.toggleFavorite(client);
+              });
+            },
+      child: SizedBox(
+        width: 20,
+        height: 20,
+        child: SvgPicture.asset(
+          isFav
+              ? 'assets/images/ic_device_favorite.svg'
+              : 'assets/images/ic_device_favorite_off.svg',
+          colorFilter: isDisabled
+              ? ColorFilter.mode(
+                  context.tokens.color.vsdslColorOutline,
+                  BlendMode.srcIn,
+                )
+              : null,
         ),
       ),
     );
@@ -592,6 +599,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     return Flexible(
       flex: isNormal ? 7 : 4,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           if (unavailable)
             SizedBox(
@@ -615,6 +623,44 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
               ),
             ),
           ),
+          const Gap(3),
+        ],
+      ),
+    );
+  }
+
+  Widget notFindWidget(GroupListItem client, BuildContext context) {
+    final isNormal =
+        AppPreferences().textSizeOption == ResizeTextSizeOption.normal;
+    return Flexible(
+      flex: isNormal ? 7 : 4,
+      child: Row(
+        children: [
+          Flexible(
+            // Trialling is display code, should not use - to confuse user
+            child: V3AutoHyphenatingText(
+              'not find',
+              style: TextStyle(
+                fontSize: 12,
+                color: context.tokens.color.vsdslColorError,
+              ),
+            ),
+          ),
+          const Gap(3),
+          InkWell(
+            excludeFromSemantics: true,
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: SvgPicture.asset(
+                'assets/images/ic_ip_not_find.svg',
+              ),
+            ),
+            onTap: () {
+              final groupNotifier = ref.read(groupProvider.notifier);
+              groupNotifier.removeClient(client);
+            },
+          ),
         ],
       ),
     );
@@ -624,7 +670,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     final useMulticast = context.read<AppSettings>().useMulticast;
     final bool unavailable =
         client.invitedState() == InvitedToGroupOption.ignore.value.toString() ||
-            client.unsupportedMulticast() && useMulticast;
+            client.unsupportedMulticast() && useMulticast ||
+            client.ipNotFind();
     return unavailable;
   }
 
@@ -632,22 +679,105 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       bool isBroadcastingToGroup) {
     return Opacity(
       opacity: isBroadcastingToGroup ? 1.0 : 0.3,
-      child: Container(
-        padding: const EdgeInsets.only(left: 8),
-        child: V3AutoHyphenatingText(
-          '${S.of(context).v3_settings_display_group} (${groupNotifier.selectedList.length}/10)',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: context.tokens.color.vsdslColorOnSurfaceInverse,
-            fontSize: 12,
-            // fontWeight: FontWeight.w400,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 8, top: 10),
+            child: V3AutoHyphenatingText(
+              '${S.of(context).v3_settings_display_group} (${groupNotifier.selectedList.length}/10)',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                fontSize: 12,
+                // fontWeight: FontWeight.w400,
+              ),
+            ),
           ),
-        ),
+          const Gap(3),
+          if (isBroadcastingToGroup)
+            V3FindBoardsViaIP(
+              onIPAdded: _onIPAddedCallback,
+              groupNotifier: groupNotifier,
+            ),
+          _buildDivider(
+            context,
+            margin: EdgeInsets.only(
+                top: isBroadcastingToGroup ? 0 : 8,
+                bottom: context.tokens.spacing.vsdslSpacingMd.bottom),
+          ),
+        ],
       ),
     );
   }
 
-  Container _buildDivider(BuildContext context, {EdgeInsetsGeometry? margin}) {
+  Future<void> _onIPAddedCallback(String ipAddress) async {
+    final groupNotifier = ref.read(groupProvider.notifier);
+
+    // 檢查是否已存在此 IP
+    final allClients = groupNotifier.getClientList();
+
+    // 查找匹配的設備
+    GroupListItem? existingClient;
+    for (var client in allClients) {
+      // 情況 1: 該設備的 IP 屬性匹配（mDNS 發現的設備）
+      if (client.ip() == ipAddress) {
+        existingClient = client;
+        break;
+      }
+      // 情況 2: 手動添加的設備，deviceName 就是 IP
+      if (client.viaIp() && client.deviceName() == ipAddress) {
+        existingClient = client;
+        break;
+      }
+    }
+
+    // 處理已存在的設備
+    if (existingClient != null) {
+      if (existingClient.ipNotFind()) {
+        // 是 "not find" 狀態，允許重試
+        groupNotifier.removeClient(existingClient);
+        await GlobalToast.show(
+            S.current.v3_settings_broadcast_ip_retry(ipAddress));
+        // 繼續執行後續添加邏輯
+      } else {
+        // 設備已存在且可用
+        if (!groupNotifier.selectedList.contains(existingClient)) {
+          // 未選中，直接選中它
+          groupNotifier.addToSelectedList(existingClient);
+          unawaited(GlobalToast.show(
+              S.current.v3_settings_broadcast_ip_already_exists_selected));
+        } else {
+          // 已經選中
+          unawaited(GlobalToast.show(
+              S.current.v3_settings_broadcast_ip_already_in_list));
+        }
+        return;
+      }
+    }
+
+    // 執行 UDP 查詢和添加邏輯
+    try {
+      final bean = GroupBean.fromJson(
+        await UdpResponder.askPeerViaUdp(ipAddress),
+        viaIp: true,
+      );
+      groupNotifier.addClient(bean);
+      groupNotifier.addToSelectedList(bean);
+    } catch (a) {
+      // UDP timeout
+      final att = Attributes(ip: ipAddress, id: const Uuid().v4());
+      groupNotifier.addClient(
+        GroupBean(
+          viaIp: true,
+          notFind: true,
+          attributes: att,
+        ),
+      );
+    }
+  }
+
+  Widget _buildDivider(BuildContext context, {EdgeInsetsGeometry? margin}) {
     return Container(
       height: 1,
       margin: margin,
@@ -655,44 +785,13 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     );
   }
 
-  Widget _buildBroadcastGroupToggle(
-    BuildContext context,
-    GroupProvider groupNotifier,
-    ChannelProvider channelProvider,
-  ) {
-    return V3SettingMenuItemToggleTile(
-      label: S.of(context).v3_lbl_settings_broadcast_to_display_group,
-      identifier: "v3_qa_settings_broadcast_to_display_group",
-      title: S.of(context).v3_settings_broadcast_to_display_group,
-      focusNode: provider.Provider.of<SettingsProvider>(context).subFocusNode,
-      switchOn: groupNotifier.broadcastToGroup,
-      onTap: () async {
-        bool state = !groupNotifier.broadcastToGroup;
-
-        trackEvent(
-          'click_cast_to_board',
-          EventCategory.setting,
-          target: state ? 'on' : 'off',
-        );
-
-        if (state) {
-          await channelProvider.startRemoteScreen(fromGroup: true);
-        } else {
-          GroupListModel discoveryModel = ref.read(discoveryModelProvider);
-          await discoveryModel.stop();
-          channelProvider.stopDisplayGroup();
-        }
-        groupNotifier.setBroadcastToGroup(channelProvider.isGroupMode);
-      },
-    );
-  }
-
-  Widget _buildTittle(SettingsProvider settingsProvider, BuildContext context) {
+  Widget _buildTitle(SettingsProvider settingsProvider, BuildContext context) {
     return V3MenuBackIconButton(
       onPressed: () {
         settingsProvider.setPage(SettingPageState.broadcast);
       },
       title: S.of(context).v3_settings_broadcast_cast_boards,
+      padding: const EdgeInsets.only(top: 13),
     );
   }
 
@@ -751,6 +850,250 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                 ),
                 maxLines: 1,
               ),
+      ),
+    );
+  }
+}
+
+/// Widget for finding boards via IP address input
+class V3FindBoardsViaIP extends StatefulWidget {
+  final Future<void> Function(String) onIPAdded;
+  final GroupProvider groupNotifier;
+
+  const V3FindBoardsViaIP({
+    super.key,
+    required this.onIPAdded,
+    required this.groupNotifier,
+  });
+
+  @override
+  State<V3FindBoardsViaIP> createState() => _V3FindBoardsViaIPState();
+}
+
+class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
+  final TextEditingController _ipController = TextEditingController();
+  bool _isValidIP = false;
+  bool _hasIPInput = false;
+  bool _ipAlreadyExists = false;
+  final List<String> _loadingIPs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _ipController.addListener(_validateIP);
+  }
+
+  @override
+  void dispose() {
+    _ipController.dispose();
+    super.dispose();
+  }
+
+  void _validateIP() {
+    final ipText = _ipController.text.trim();
+    final isValid = _isValidIPAddress(ipText);
+    final hasInput = _ipController.text.isNotEmpty;
+
+    // 檢查 IP 是否已存在
+    bool ipExists = false;
+    if (isValid) {
+      final allClients = widget.groupNotifier.getClientList();
+      for (var client in allClients) {
+        if (client.ip() == ipText ||
+            (client.viaIp() && client.deviceName() == ipText)) {
+          // 找到匹配的設備，但如果是 "not find" 狀態，視為可以重試
+          if (!client.ipNotFind()) {
+            ipExists = true;
+          }
+          break;
+        }
+      }
+    }
+
+    if (_isValidIP != isValid ||
+        _hasIPInput != hasInput ||
+        _ipAlreadyExists != ipExists) {
+      if (!mounted) return;
+      setState(() {
+        _isValidIP = isValid;
+        _hasIPInput = hasInput;
+        _ipAlreadyExists = ipExists;
+      });
+    }
+  }
+
+  bool _isValidIPAddress(String ip) {
+    if (ip.isEmpty) return false;
+
+    // 排除無效的特殊 IP 地址
+    if (ip == '0.0.0.0' || ip == '127.0.0.1') return false;
+
+    // IPv4 正則
+    final ipv4Pattern = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$');
+
+    if (ipv4Pattern.hasMatch(ip)) {
+      final parts = ip.split('.');
+      if (parts.length != 4) return false;
+
+      for (var part in parts) {
+        final num = int.tryParse(part);
+        if (num == null || num < 0 || num > 255) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<void> _handleAddIP() async {
+    final ipAddress = _ipController.text.trim();
+
+    if (!mounted) return;
+    // 添加到載入列表
+    setState(() {
+      _loadingIPs.add(ipAddress);
+    });
+
+    // 清空輸入框
+    _ipController.clear();
+
+    try {
+      // 執行耗時動作
+      await widget.onIPAdded(ipAddress);
+    } finally {
+      // 完成後從載入列表移除
+      if (mounted) {
+        setState(() {
+          _loadingIPs.remove(ipAddress);
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.only(left: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  S.of(context).v3_settings_broadcast_ip,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              const Gap(8),
+              Expanded(
+                child: TextField(
+                  textAlign: TextAlign.end,
+                  controller: _ipController,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    fontSize: 14,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: S.of(context).v3_settings_broadcast_ip_hint,
+                    hintStyle: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse
+                          .withValues(alpha: 0.5),
+                      fontSize: 14,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 3),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              if (_hasIPInput)
+                V3Focus(
+                  label: S.of(context).v3_lbl_settings_ip_clear,
+                  identifier: "v3_qa_settings_ip_clear",
+                  child: SizedBox(
+                    width: 21,
+                    height: 21,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      focusNode: FocusNode(),
+                      icon: SvgPicture.asset(
+                        'assets/images/ic_ip_clear.svg',
+                      ),
+                      onPressed: () {
+                        _ipController.clear();
+                      },
+                    ),
+                  ),
+                ),
+              const Gap(5),
+              V3Focus(
+                label: S.of(context).v3_lbl_settings_ip_add,
+                identifier: "v3_qa_settings_ip_add",
+                child: SizedBox(
+                  width: 21,
+                  height: 21,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    focusNode: FocusNode(),
+                    icon: SvgPicture.asset(
+                      'assets/images/ic_ip_add.svg',
+                      colorFilter: _isValidIP
+                          ? null
+                          : ColorFilter.mode(
+                              context.tokens.color.vsdslColorOnSurfaceVariant,
+                              BlendMode.srcIn,
+                            ),
+                    ),
+                    onPressed: _isValidIP ? _handleAddIP : null,
+                  ),
+                ),
+              ),
+              const Gap(5),
+            ],
+          ),
+        ),
+        // 顯示正在載入的 IP 列表
+        if (_loadingIPs.isNotEmpty) ...[
+          ..._loadingIPs.map((ip) => _buildLoadingIPItem(context, ip)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildLoadingIPItem(BuildContext context, String ip) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.tokens.color.vsdslColorOnSurfaceInverse
+                    .withValues(alpha: 0.6),
+              ),
+            ),
+          ),
+          const Gap(12),
+          Text(
+            ip,
+            style: TextStyle(
+              color: context.tokens.color.vsdslColorOnSurfaceInverse
+                  .withValues(alpha: 0.6),
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }

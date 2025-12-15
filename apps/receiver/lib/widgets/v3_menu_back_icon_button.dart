@@ -11,6 +11,7 @@ class V3MenuBackIconButton extends StatelessWidget {
   final FocusNode? focusNode;
   final String? label;
   final String? identifier;
+  final EdgeInsetsGeometry? padding;
 
   const V3MenuBackIconButton({
     super.key,
@@ -19,12 +20,13 @@ class V3MenuBackIconButton extends StatelessWidget {
     this.focusNode,
     this.label,
     this.identifier,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 13, top: 13),
+      padding: padding ?? const EdgeInsets.only(left: 13, top: 13),
       child: V3Focus(
         label: S.of(context).v3_lbl_settings_back_icon,
         identifier: "v3_qa_settings_back_icon",

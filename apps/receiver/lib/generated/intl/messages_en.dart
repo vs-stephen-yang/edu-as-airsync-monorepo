@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times. ";
 
+  static String m2(ipAddress) => "Retrying connection to ${ipAddress}...";
+
   static String m1(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -656,6 +658,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Select %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("add ip"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("clear"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Knowledge Base",
     ),
@@ -724,8 +728,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast toggle"),
-        "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
-          "Expand streaming view",
+    "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
+      "Expand streaming view",
     ),
     "v3_lbl_streaming_view_function_expand":
         MessageLookupByLibrary.simpleMessage("Expand streaming function"),
@@ -886,6 +890,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Sender devices",
     ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Find Boards via IP",
+    ),
+    "v3_settings_broadcast_ip_already_exists_selected":
+        MessageLookupByLibrary.simpleMessage(
+          "Device already exists, selected successfully",
+        ),
+    "v3_settings_broadcast_ip_already_in_list":
+        MessageLookupByLibrary.simpleMessage(
+          "Device is already in the selected list",
+        ),
+    "v3_settings_broadcast_ip_exists_tooltip":
+        MessageLookupByLibrary.simpleMessage("Device already exists"),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Enter IP Address",
+    ),
+    "v3_settings_broadcast_ip_retry": m2,
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
           "Please turn off energy saving to avoid unexpected interruption during broadcasting.",

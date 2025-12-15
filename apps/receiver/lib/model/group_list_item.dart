@@ -14,6 +14,16 @@ abstract class GroupListItem {
   bool unsupportedMulticast();
 
   String ver();
+
+  bool favorite();
+
+  bool viaIp();
+
+  bool ipNotFind();
+
+  int timestamp();
+
+  Map<String, dynamic> toJson();
 }
 
 class GroupBean extends GroupListItem {
@@ -22,37 +32,65 @@ class GroupBean extends GroupListItem {
   int? _port;
   String? _host;
   Attributes? _attributes;
+  bool? _viaIp;
+  bool? _favorite;
+  bool? _notFind;
+  int? _timestamp;
 
   GroupBean(
       {String? name,
       String? type,
       int? port,
       String? host,
-      Attributes? attributes})
+      Attributes? attributes,
+      bool viaIp = false,
+      bool favorite = false,
+      bool notFind = false,
+      int? timestamp})
       : _attributes = attributes,
         _host = host,
         _port = port,
         _type = type,
-        _name = name;
+        _name = name,
+        _viaIp = viaIp,
+        _favorite = favorite,
+        _notFind = notFind,
+        _timestamp = timestamp ?? DateTime.now().millisecondsSinceEpoch;
 
-  GroupBean.fromJson(Map<String, dynamic> json) {
+  GroupBean.fromJson(Map<String, dynamic> json, {bool? viaIp, bool? favorite}) {
     _name = json['service.name'];
     _type = json['service.type'];
     _port = json['service.port'];
     _host = json['service.host'];
+    // 如果 JSON 中的值為 null，使用預設值 false
+    _viaIp = json['service.viaIp'] ?? false;
+    _favorite = json['service.favorite'] ?? false;
+    _notFind = json['service.notFind'] ?? false;
+    _timestamp =
+        json['service.timestamp'] ?? DateTime.now().millisecondsSinceEpoch;
+    if (viaIp != null) {
+      _viaIp = viaIp;
+    }
+    if (favorite != null) {
+      _favorite = favorite;
+    }
     _attributes = json['service.attributes'] != null
         ? Attributes.fromJson(json['service.attributes'])
         : null;
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = _name;
-    data['type'] = _type;
-    data['port'] = _port;
-    data['host'] = _host;
+    data['service.name'] = _name;
+    data['service.type'] = _type;
+    data['service.port'] = _port;
+    data['service.host'] = _host;
+    data['service.viaIp'] = _viaIp;
+    data['service.favorite'] = _favorite;
+    // _timestamp不存
     if (_attributes != null) {
-      data['attributes'] = _attributes!.toJson();
+      data['service.attributes'] = _attributes!.toJson();
     }
     return data;
   }
@@ -67,7 +105,7 @@ class GroupBean extends GroupListItem {
   String invitedState() => _attributes?.igo ?? '0';
 
   @override
-  String deviceName() => _attributes?.fn ?? '';
+  String deviceName() => _viaIp == true ? ip() : _attributes?.fn ?? '';
 
   @override
   String ip() => _attributes?.ip ?? '';
@@ -83,6 +121,26 @@ class GroupBean extends GroupListItem {
   @override
   String ver() {
     return _attributes?.ver ?? '';
+  }
+
+  @override
+  bool favorite() {
+    return _favorite ?? false;
+  }
+
+  @override
+  bool viaIp() {
+    return _viaIp ?? false;
+  }
+
+  @override
+  bool ipNotFind() {
+    return _notFind ?? false;
+  }
+
+  @override
+  int timestamp() {
+    return _timestamp ?? DateTime.now().millisecondsSinceEpoch;
   }
 }
 

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/app_instance_create.dart';
@@ -47,6 +49,8 @@ class DisplayServiceBroadcast {
   bool _starting = false;
   bool _restartQueued = false;
 
+  UdpResponder? udpResponder;
+
   DisplayServiceBroadcast._internal(
     this._serviceType,
     this._directChannelPort,
@@ -55,6 +59,7 @@ class DisplayServiceBroadcast {
     this._invitedToGroupOption,
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
+    udpResponder ??= UdpResponder();
     _queue(() async => _start());
   }
 
@@ -104,25 +109,27 @@ class DisplayServiceBroadcast {
 
     _starting = true;
     try {
+      final att = {
+        'fn': _instanceInfo.deviceName,
+        'ver': _version,
+        'dc': _instanceInfo.displayCode,
+        'ip': _instanceInfo.ipAddress,
+        'igo': _invitedToGroupOption,
+        'id': AppInstanceCreate().groupID,
+        'mc': '1', // multicast
+      };
       final service = BonsoirService(
         name: const Uuid().v4(),
         type: _serviceType,
         port: _directChannelPort,
-        attributes: {
-          'fn': _instanceInfo.deviceName,
-          'ver': _version,
-          'dc': _instanceInfo.displayCode,
-          'ip': _instanceInfo.ipAddress,
-          'igo': _invitedToGroupOption,
-          'id': AppInstanceCreate().groupID,
-          'mc': '1', // multicast
-        },
+        attributes: att,
       );
 
       _broadcast = BonsoirBroadcast(service: service);
       await _broadcast!.ready;
       await _broadcast!.start();
       _isBroadcasting = true;
+      unawaited(udpResponder?.start(service.toJson()));
     } catch (e) {
       log.warning('Bonsoir start failed: $e');
       _broadcast = null;
@@ -137,6 +144,7 @@ class DisplayServiceBroadcast {
       if (_broadcast != null) {
         await _broadcast!.stop();
       }
+      udpResponder?.stop();
     } catch (e) {
       log.warning('Bonsoir stop failed: $e');
     } finally {
@@ -165,6 +173,111 @@ class DisplayServiceBroadcast {
         _restartQueued = false;
         await _restart(true);
       }
+    });
+  }
+}
+
+class UdpResponder {
+  static String udpMessage = 'airsync';
+  static const int defaultPort = 44444;
+  static const int portRangeSize = 10; // Try ports 44444-44453
+
+  RawDatagramSocket? _sock;
+  int? _activePort; // Track which port is actually being used
+
+  int? get activePort => _activePort;
+
+  Future<void> start(Map<String, dynamic> att, {int port = defaultPort}) async {
+    // Close existing socket before creating a new one to prevent resource leak
+    stop();
+
+    // Try binding to ports in the range [port, port + portRangeSize)
+    bool bound = false;
+    for (int tryPort = port; tryPort < port + portRangeSize; tryPort++) {
+      try {
+        _sock = await RawDatagramSocket.bind(InternetAddress.anyIPv4, tryPort);
+        _activePort = tryPort;
+        bound = true;
+
+        _sock!.listen((event) {
+          if (event == RawSocketEvent.read) {
+            final dg = _sock!.receive();
+            if (dg == null) return;
+            final msg = utf8.decode(dg.data);
+            if (msg == udpMessage) {
+              final payload = jsonEncode(att);
+              _sock!.send(utf8.encode(payload), dg.address, dg.port);
+            }
+          }
+        });
+
+        log.info('UDP responder started on port $tryPort');
+        break; // Successfully bound, exit loop
+      } catch (e) {
+        // This port is occupied, try next one
+        log.info('Port $tryPort is occupied, trying next port...');
+        continue;
+      }
+    }
+
+    if (!bound) {
+      log.warning(
+          'Failed to start UDP responder: all ports in range $port-${port + portRangeSize - 1} are occupied');
+      _sock = null;
+      _activePort = null;
+    }
+  }
+
+  void stop() {
+    _sock?.close();
+    _sock = null;
+    _activePort = null;
+  }
+
+  static Future<Map<String, dynamic>> askPeerViaUdp(String ip,
+      {int startPort = defaultPort}) async {
+    // Try ports in the range to find the active responder
+    Exception? lastException;
+
+    for (int tryPort = startPort;
+        tryPort < startPort + portRangeSize;
+        tryPort++) {
+      try {
+        final result = await _tryAskPeerOnPort(ip, tryPort);
+        return result; // Success! Return immediately
+      } catch (e) {
+        lastException = e as Exception;
+        // This port didn't respond, try next one
+        continue;
+      }
+    }
+
+    // All ports failed
+    throw lastException ?? Exception('UDP query failed on all ports');
+  }
+
+  static Future<Map<String, dynamic>> _tryAskPeerOnPort(
+      String ip, int port) async {
+    final sock = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+    sock.send(utf8.encode(udpMessage), InternetAddress(ip), port);
+
+    final c = Completer<Map<String, dynamic>>();
+    late StreamSubscription sub;
+    sub = sock.listen((event) {
+      if (event == RawSocketEvent.read) {
+        final dg = sock.receive();
+        if (dg == null) return;
+        final resp = jsonDecode(utf8.decode(dg.data)) as Map<String, dynamic>;
+        c.complete(resp);
+        sub.cancel();
+        sock.close();
+      }
+    });
+
+    return c.future.timeout(const Duration(milliseconds: 500), onTimeout: () {
+      sub.cancel();
+      sock.close();
+      throw Exception('UDP timeout on port $port');
     });
   }
 }

@@ -14,7 +14,7 @@ class GroupState {
   final List<GroupListItem> clients;
   final List<GroupListItem> selectedList;
   final List<GroupListItem> rejectedList;
-  final List<Map<String, String>> historySelectedList;
+  final List<Map<String, dynamic>> historySelectedList;
   final bool broadcastToGroup;
   final BroadcastGroupLaunchType broadcastGroupLaunchType;
 
@@ -31,7 +31,7 @@ class GroupState {
     List<GroupListItem>? clients,
     List<GroupListItem>? selectedList,
     List<GroupListItem>? rejectedList,
-    List<Map<String, String>>? historySelectedList,
+    List<Map<String, dynamic>>? historySelectedList,
     bool? broadcastToGroup,
     BroadcastGroupLaunchType? broadcastGroupLaunchType,
   }) {
@@ -70,7 +70,8 @@ class GroupProvider extends StateNotifier<GroupState> {
     } else {
       state.clients
           .removeWhere((foundService) => foundService.id() == client.id());
-      state = state.copyWith(clients: [...state.clients, client]);
+      final updatedClients = _sortClientsByPriority([...state.clients, client]);
+      state = state.copyWith(clients: updatedClients);
     }
   }
 
@@ -113,8 +114,9 @@ class GroupProvider extends StateNotifier<GroupState> {
         client.add(element);
       }
     }
+    final sortedClients = _sortClientsByPriority(client);
     state = state.copyWith(
-        clients: client,
+        clients: sortedClients,
         selectedList: selectedList,
         historySelectedList: historyList);
   }
@@ -138,13 +140,14 @@ class GroupProvider extends StateNotifier<GroupState> {
         .removeWhere((foundService) => foundService.id() == client.id());
     final newSelectedList = state.selectedList.toList();
     _removeFromHistorySelectedList(client.id());
+    final updatedClients = _sortClientsByPriority([...state.clients, client]);
     state = state.copyWith(
       selectedList: newSelectedList,
-      clients: [...state.clients, client],
+      clients: updatedClients,
     );
   }
 
-  List<Map<String, String>> get historySelectedList =>
+  List<Map<String, dynamic>> get historySelectedList =>
       state.historySelectedList;
 
   void _addToHistorySelectedList(GroupListItem client) {
@@ -152,12 +155,19 @@ class GroupProvider extends StateNotifier<GroupState> {
       if (state.historySelectedList.length >= 10) {
         state.historySelectedList.removeAt(0);
       }
-      state.historySelectedList.add({client.id(): client.deviceName()});
+      state.historySelectedList.add({client.id(): client.toJson()});
     }
   }
 
   void _removeFromHistorySelectedList(String clientId) {
     state.historySelectedList.removeWhere((map) => map.containsKey(clientId));
+  }
+
+  // 對客戶端列表進行排序：手動添加的設備（viaIp）優先顯示在前面
+  List<GroupListItem> _sortClientsByPriority(List<GroupListItem> clients) {
+    final viaIpClients = clients.where((c) => c.viaIp()).toList();
+    final discoveredClients = clients.where((c) => !c.viaIp()).toList();
+    return [...viaIpClients, ...discoveredClients];
   }
 
   void clearSelectedList() {
@@ -196,6 +206,76 @@ class GroupProvider extends StateNotifier<GroupState> {
 
   BroadcastGroupLaunchType get broadcastGroupLaunchType =>
       state.broadcastGroupLaunchType;
+
+  void toggleFavorite(GroupListItem client) {
+    final List<Map<String, dynamic>> favoriteList =
+        AppPreferences().favoriteList.toList();
+
+    // 檢查是否已經在 favorite 列表中
+    final index = favoriteList.indexWhere((map) => map.containsKey(client.id()));
+
+    if (index != -1) {
+      // 已存在，移除
+      favoriteList.removeAt(index);
+    } else {
+      // 不存在，新增
+      // 建立新的 GroupBean 並設定 favorite = true
+      final favoriteClient = GroupBean.fromJson(
+        client.toJson(),
+        favorite: true,
+      );
+      favoriteList.add({client.id(): favoriteClient.toJson()});
+    }
+
+    AppPreferences().setFavoriteList(favoriteList);
+
+    // 更新當前的 client 列表中的 favorite 狀態
+    _updateClientFavoriteState();
+  }
+
+  bool isFavorite(String clientId) {
+    final favoriteList = AppPreferences().favoriteList;
+    return favoriteList.any((map) => map.containsKey(clientId));
+  }
+
+  void _updateClientFavoriteState() {
+    // 這個方法會觸發 UI 更新
+    state = state.copyWith(
+      clients: state.clients.toList(),
+      selectedList: state.selectedList.toList(),
+    );
+  }
+
+  void loadFavoriteDevices() {
+    final favoriteList = AppPreferences().favoriteList;
+    final List<GroupListItem> favoriteClients = [];
+
+    for (var map in favoriteList) {
+      map.forEach((key, value) {
+        try {
+          final client = GroupBean.fromJson(value, favorite: true);
+          // 排除自己和已經存在的設備
+          if (client.id() != AppInstanceCreate().groupID &&
+              !state.selectedList.any((item) => item.id() == client.id()) &&
+              !state.clients.any((item) => item.id() == client.id())) {
+            favoriteClients.add(client);
+          }
+        } catch (e) {
+          // 處理解析錯誤
+          print('Error loading favorite device: $e');
+        }
+      });
+    }
+
+    // 將 favorite 設備加入到 clients 列表
+    if (favoriteClients.isNotEmpty) {
+      final updatedClients = _sortClientsByPriority([
+        ...favoriteClients,
+        ...state.clients,
+      ]);
+      state = state.copyWith(clients: updatedClients);
+    }
+  }
 
   Future<void> loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

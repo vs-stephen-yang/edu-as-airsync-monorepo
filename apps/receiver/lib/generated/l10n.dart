@@ -4125,6 +4125,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Find Boards via IP`
+  String get v3_settings_broadcast_ip {
+    return Intl.message(
+      'Find Boards via IP',
+      name: 'v3_settings_broadcast_ip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter IP Address`
+  String get v3_settings_broadcast_ip_hint {
+    return Intl.message(
+      'Enter IP Address',
+      name: 'v3_settings_broadcast_ip_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `clear`
+  String get v3_lbl_settings_ip_clear {
+    return Intl.message(
+      'clear',
+      name: 'v3_lbl_settings_ip_clear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `add ip`
+  String get v3_lbl_settings_ip_add {
+    return Intl.message(
+      'add ip',
+      name: 'v3_lbl_settings_ip_add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retrying connection to {ipAddress}...`
+  String v3_settings_broadcast_ip_retry(Object ipAddress) {
+    return Intl.message(
+      'Retrying connection to $ipAddress...',
+      name: 'v3_settings_broadcast_ip_retry',
+      desc: '',
+      args: [ipAddress],
+    );
+  }
+
+  /// `Device already exists, selected successfully`
+  String get v3_settings_broadcast_ip_already_exists_selected {
+    return Intl.message(
+      'Device already exists, selected successfully',
+      name: 'v3_settings_broadcast_ip_already_exists_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device is already in the selected list`
+  String get v3_settings_broadcast_ip_already_in_list {
+    return Intl.message(
+      'Device is already in the selected list',
+      name: 'v3_settings_broadcast_ip_already_in_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device already exists`
+  String get v3_settings_broadcast_ip_exists_tooltip {
+    return Intl.message(
+      'Device already exists',
+      name: 'v3_settings_broadcast_ip_exists_tooltip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

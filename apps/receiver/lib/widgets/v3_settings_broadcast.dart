@@ -1,17 +1,24 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/appSettings.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/group_list_provider.dart';
+import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_global_toast.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -328,13 +335,21 @@ class CastToDevices extends StatelessWidget {
   }
 }
 
-class CastToBoards extends StatelessWidget {
+class CastToBoards extends StatefulWidget {
   const CastToBoards({super.key, required this.settingsProvider});
 
   final SettingsProvider settingsProvider;
 
   @override
+  State<CastToBoards> createState() => _CastToBoardsState();
+}
+
+class _CastToBoardsState extends State<CastToBoards> {
+  bool _isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    final settingsProvider = widget.settingsProvider;
     return Container(
       width: 325,
       constraints: const BoxConstraints(minHeight: 88),
@@ -370,43 +385,145 @@ class CastToBoards extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        child: Semantics(
-                          label: S.of(context).v3_lbl_settings_broadcast_boards,
-                          identifier: 'v3_qa_settings_broadcast_boards',
-                          child: InkWell(
-                            onTap: settingsProvider.isBroadcastLock
-                                ? null
-                                : () {
-                                    settingsProvider.setPage(
-                                        SettingPageState.broadcastBoards);
-                                  },
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                  top: 13, bottom: 13, left: 26),
-                              child: SvgPicture.asset(
-                                settingsProvider.isBroadcastLock
-                                    ? 'assets/images/ic_arrow_right_lock.svg'
-                                    : 'assets/images/ic_arrow_right.svg',
-                                width: 22,
-                                height: 22,
+                      Consumer<ChannelProvider>(
+                        builder: (_, channelProvider, __) {
+                          return SizedBox(
+                            width: 41,
+                            height: 25,
+                            child: V3Focus(
+                              label: S
+                                  .of(context)
+                                  .v3_lbl_settings_broadcast_to_display_group,
+                              identifier:
+                                  "v3_qa_settings_broadcast_to_display_group",
+                              child: IconButton(
+                                focusNode:
+                                    Provider.of<SettingsProvider>(context)
+                                        .subFocusNode,
+                                icon: SvgPicture.asset(
+                                  channelProvider.isGroupMode
+                                      ? 'assets/images/ic_switch_on.svg'
+                                      : 'assets/images/ic_switch_off.svg',
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: (settingsProvider.isBroadcastLock ||
+                                        _isLoading)
+                                    ? null
+                                    : () async {
+                                        // Prevent repeated clicks
+                                        if (_isLoading) return;
+
+                                        setState(() => _isLoading = true);
+
+                                        try {
+                                          final ref = riverpod.ProviderScope
+                                              .containerOf(context);
+                                          final groupNotifier =
+                                              ref.read(groupProvider.notifier);
+                                          bool state =
+                                              !groupNotifier.broadcastToGroup;
+
+                                          trackEvent(
+                                            'click_cast_to_board',
+                                            EventCategory.setting,
+                                            target: state ? 'on' : 'off',
+                                          );
+
+                                          if (state) {
+                                            // Try to start remote screen
+                                            final success =
+                                                await channelProvider
+                                                    .startRemoteScreen(
+                                                        fromGroup: true);
+
+                                            // Sync state based on actual result
+                                            groupNotifier
+                                                .setBroadcastToGroup(success);
+
+                                            if (!success) {
+                                              // Show error feedback to user
+                                              unawaited(GlobalToast.show(
+                                                  'Failed to start broadcast'));
+                                            }
+                                          } else {
+                                            GroupListModel discoveryModel = ref
+                                                .read(discoveryModelProvider);
+                                            await discoveryModel.stop();
+                                            channelProvider.stopDisplayGroup();
+                                            groupNotifier
+                                                .setBroadcastToGroup(false);
+                                          }
+                                        } catch (e) {
+                                          // Handle unexpected errors
+                                          log.warning(
+                                              'Failed to toggle broadcast: $e');
+                                          // Ensure state is consistent
+                                          final ref = riverpod.ProviderScope
+                                              .containerOf(context);
+                                          final groupNotifier =
+                                              ref.read(groupProvider.notifier);
+                                          groupNotifier.setBroadcastToGroup(
+                                              channelProvider.isGroupMode);
+
+                                          unawaited(GlobalToast.show(
+                                              'Operation failed, please try again'));
+                                        } finally {
+                                          // Always reset loading state
+                                          if (mounted) {
+                                            setState(() => _isLoading = false);
+                                          }
+                                        }
+                                      },
                               ),
                             ),
-                          ),
-                        ),
-                      ),
+                          );
+                        },
+                      )
                     ],
                   ),
                 ),
                 Gap(context.tokens.spacing.vsdslSpacingSm.top),
-                AutoSizeText(
-                  S.of(context).v3_settings_broadcast_cast_boards_desc,
-                  minFontSize: 8,
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w400,
-                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AutoSizeText(
+                        S.of(context).v3_settings_broadcast_cast_boards_desc,
+                        minFontSize: 8,
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w400,
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      child: Semantics(
+                        label: S.of(context).v3_lbl_settings_broadcast_boards,
+                        identifier: 'v3_qa_settings_broadcast_boards',
+                        child: InkWell(
+                          onTap: settingsProvider.isBroadcastLock
+                              ? null
+                              : () {
+                                  settingsProvider.setPage(
+                                      SettingPageState.broadcastBoards);
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                top: 13, bottom: 13, left: 26),
+                            child: SvgPicture.asset(
+                              settingsProvider.isBroadcastLock
+                                  ? 'assets/images/ic_arrow_right_lock.svg'
+                                  : 'assets/images/ic_arrow_right.svg',
+                              width: 22,
+                              height: 22,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 Gap(context.tokens.spacing.vsdslSpacingMd.top),
                 Selector<ChannelProvider, bool>(
