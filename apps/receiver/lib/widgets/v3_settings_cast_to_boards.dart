@@ -14,9 +14,9 @@ import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
+import 'package:display_flutter/utility/V3TextFieldShortcutsHandler.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
-import 'package:display_flutter/widgets/v3_global_toast.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
@@ -563,29 +563,33 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     final isFav = groupNotifier.isFavorite(client.id());
     final isDisabled = client.ipNotFind();
 
-    return InkWell(
-      excludeFromSemantics: true,
-      onTap: isDisabled
-          ? null
-          : () {
-              if (!mounted) return;
-              setState(() {
-                groupNotifier.toggleFavorite(client);
-              });
-            },
-      child: SizedBox(
-        width: 20,
-        height: 20,
-        child: SvgPicture.asset(
-          isFav
-              ? 'assets/images/ic_device_favorite.svg'
-              : 'assets/images/ic_device_favorite_off.svg',
-          colorFilter: isDisabled
-              ? ColorFilter.mode(
-                  context.tokens.color.vsdslColorOutline,
-                  BlendMode.srcIn,
-                )
-              : null,
+    return V3Focus(
+      label: S.of(context).v3_lbl_settings_broadcast_device_favorite,
+      identifier: 'v3_qa_settings_broadcast_device_favorite',
+      child: InkWell(
+        excludeFromSemantics: true,
+        onTap: isDisabled
+            ? null
+            : () {
+                if (!mounted) return;
+                setState(() {
+                  groupNotifier.toggleFavorite(client);
+                });
+              },
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: SvgPicture.asset(
+            isFav
+                ? 'assets/images/ic_device_favorite.svg'
+                : 'assets/images/ic_device_favorite_off.svg',
+            colorFilter: isDisabled
+                ? ColorFilter.mode(
+                    context.tokens.color.vsdslColorOutline,
+                    BlendMode.srcIn,
+                  )
+                : null,
+          ),
         ),
       ),
     );
@@ -635,11 +639,12 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     return Flexible(
       flex: isNormal ? 7 : 4,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Flexible(
             // Trialling is display code, should not use - to confuse user
             child: V3AutoHyphenatingText(
-              'not find',
+              S.of(context).v3_settings_broadcast_not_find,
               style: TextStyle(
                 fontSize: 12,
                 color: context.tokens.color.vsdslColorError,
@@ -647,19 +652,23 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             ),
           ),
           const Gap(3),
-          InkWell(
-            excludeFromSemantics: true,
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: SvgPicture.asset(
-                'assets/images/ic_ip_not_find.svg',
+          V3Focus(
+            label: S.of(context).v3_lbl_settings_broadcast_device_remove,
+            identifier: 'v3_qa_settings_broadcast_device_remove',
+            child: InkWell(
+              excludeFromSemantics: true,
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: SvgPicture.asset(
+                  'assets/images/ic_ip_not_find.svg',
+                ),
               ),
+              onTap: () {
+                final groupNotifier = ref.read(groupProvider.notifier);
+                groupNotifier.removeClient(client);
+              },
             ),
-            onTap: () {
-              final groupNotifier = ref.read(groupProvider.notifier);
-              groupNotifier.removeClient(client);
-            },
           ),
         ],
       ),
@@ -737,20 +746,11 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       if (existingClient.ipNotFind()) {
         // 是 "not find" 狀態，允許重試
         groupNotifier.removeClient(existingClient);
-        await GlobalToast.show(
-            S.current.v3_settings_broadcast_ip_retry(ipAddress));
-        // 繼續執行後續添加邏輯
       } else {
         // 設備已存在且可用
         if (!groupNotifier.selectedList.contains(existingClient)) {
           // 未選中，直接選中它
           groupNotifier.addToSelectedList(existingClient);
-          unawaited(GlobalToast.show(
-              S.current.v3_settings_broadcast_ip_already_exists_selected));
-        } else {
-          // 已經選中
-          unawaited(GlobalToast.show(
-              S.current.v3_settings_broadcast_ip_already_in_list));
         }
         return;
       }
@@ -974,6 +974,8 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
 
   @override
   Widget build(BuildContext context) {
+    final SettingsProvider settingsProvider =
+        provider.Provider.of<SettingsProvider>(context, listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -992,24 +994,40 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
               ),
               const Gap(8),
               Expanded(
-                child: TextField(
-                  textAlign: TextAlign.end,
-                  controller: _ipController,
-                  style: TextStyle(
-                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                    fontSize: 14,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: S.of(context).v3_settings_broadcast_ip_hint,
-                    hintStyle: TextStyle(
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse
-                          .withValues(alpha: 0.5),
-                      fontSize: 14,
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 3),
-                  ),
-                  keyboardType: TextInputType.number,
+                child: V3Focus(
+                  label: S.of(context).v3_lbl_settings_broadcast_ip_hint,
+                  identifier: "v3_qa_settings_broadcast_ip_hint",
+                  child: () {
+                    return V3TextFieldShortcutsHandler(
+                      focusNode: settingsProvider.subFocusNode ?? FocusNode(),
+                      child: TextField(
+                        textAlign: TextAlign.end,
+                        controller: _ipController,
+                        style: TextStyle(
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: S.of(context).v3_settings_broadcast_ip_hint,
+                          hintStyle: TextStyle(
+                            color: context
+                                .tokens.color.vsdslColorOnSurfaceInverse
+                                .withValues(alpha: 0.5),
+                            fontSize: 14,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 3),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                        ],
+                        autocorrect: false,
+                      ),
+                    );
+                  }(),
                 ),
               ),
               if (_hasIPInput)

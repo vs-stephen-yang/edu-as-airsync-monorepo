@@ -4166,41 +4166,41 @@ class S {
     );
   }
 
-  /// `Retrying connection to {ipAddress}...`
-  String v3_settings_broadcast_ip_retry(Object ipAddress) {
+  /// `not find`
+  String get v3_settings_broadcast_not_find {
     return Intl.message(
-      'Retrying connection to $ipAddress...',
-      name: 'v3_settings_broadcast_ip_retry',
-      desc: '',
-      args: [ipAddress],
-    );
-  }
-
-  /// `Device already exists, selected successfully`
-  String get v3_settings_broadcast_ip_already_exists_selected {
-    return Intl.message(
-      'Device already exists, selected successfully',
-      name: 'v3_settings_broadcast_ip_already_exists_selected',
+      'not find',
+      name: 'v3_settings_broadcast_not_find',
       desc: '',
       args: [],
     );
   }
 
-  /// `Device is already in the selected list`
-  String get v3_settings_broadcast_ip_already_in_list {
+  /// `Find Boards via IP`
+  String get v3_lbl_settings_broadcast_ip_hint {
     return Intl.message(
-      'Device is already in the selected list',
-      name: 'v3_settings_broadcast_ip_already_in_list',
+      'Find Boards via IP',
+      name: 'v3_lbl_settings_broadcast_ip_hint',
       desc: '',
       args: [],
     );
   }
 
-  /// `Device already exists`
-  String get v3_settings_broadcast_ip_exists_tooltip {
+  /// `favorite`
+  String get v3_lbl_settings_broadcast_device_favorite {
     return Intl.message(
-      'Device already exists',
-      name: 'v3_settings_broadcast_ip_exists_tooltip',
+      'favorite',
+      name: 'v3_lbl_settings_broadcast_device_favorite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `remove device`
+  String get v3_lbl_settings_broadcast_device_remove {
+    return Intl.message(
+      'remove device',
+      name: 'v3_lbl_settings_broadcast_device_remove',
       desc: '',
       args: [],
     );

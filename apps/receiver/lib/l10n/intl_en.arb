@@ -415,8 +415,8 @@
   "v3_settings_broadcast_ip_hint": "Enter IP Address",
   "v3_lbl_settings_ip_clear": "clear",
   "v3_lbl_settings_ip_add": "add ip",
-  "v3_settings_broadcast_ip_retry": "Retrying connection to {ipAddress}...",
-  "v3_settings_broadcast_ip_already_exists_selected": "Device already exists, selected successfully",
-  "v3_settings_broadcast_ip_already_in_list": "Device is already in the selected list",
-  "v3_settings_broadcast_ip_exists_tooltip": "Device already exists"
+  "v3_settings_broadcast_not_find": "not find",
+  "v3_lbl_settings_broadcast_ip_hint": "Find Boards via IP",
+  "v3_lbl_settings_broadcast_device_favorite": "favorite",
+  "v3_lbl_settings_broadcast_device_remove": "remove device"
 }
