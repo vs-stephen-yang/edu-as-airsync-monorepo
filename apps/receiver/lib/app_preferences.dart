@@ -20,6 +20,7 @@ class AppPreferences {
     await _instance.loadInvitedToGroupSelectedItem();
     await _instance.loadSelectedConnectivityType();
     await _instance._loadGroupSelectedList();
+    await _instance._loadFavoriteList();
     await _instance.loadTextSizeOption();
   }
 
@@ -133,11 +134,11 @@ class AppPreferences {
         prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
   }
 
-  List<Map<String, String>> _groupSelectedList = [];
+  List<Map<String, dynamic>> _groupSelectedList = [];
 
-  List<Map<String, String>> get groupSelectedList => _groupSelectedList;
+  List<Map<String, dynamic>> get groupSelectedList => _groupSelectedList;
 
-  void setGroupSelectedList(List<Map<String, String>> selectedList) async {
+  void setGroupSelectedList(List<Map<String, dynamic>> selectedList) async {
     _groupSelectedList = selectedList;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jsonString = jsonEncode(selectedList);
@@ -150,7 +151,28 @@ class AppPreferences {
     if (jsonString != null) {
       List<dynamic> jsonList = jsonDecode(jsonString);
       _groupSelectedList =
-          jsonList.map((item) => Map<String, String>.from(item)).toList();
+          jsonList.map((item) => Map<String, dynamic>.from(item)).toList();
+    }
+  }
+
+  List<Map<String, dynamic>> _favoriteList = [];
+
+  List<Map<String, dynamic>> get favoriteList => _favoriteList;
+
+  void setFavoriteList(List<Map<String, dynamic>> favoriteList) async {
+    _favoriteList = favoriteList;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = jsonEncode(favoriteList);
+    await prefs.setString('app_setting_favorite_list', jsonString);
+  }
+
+  _loadFavoriteList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('app_setting_favorite_list');
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      _favoriteList =
+          jsonList.map((item) => Map<String, dynamic>.from(item)).toList();
     }
   }
 

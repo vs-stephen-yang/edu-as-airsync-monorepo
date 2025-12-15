@@ -88,6 +88,7 @@ dependencies:
   url_launcher: ^6.3.2
   flutter_native_splash: ^2.4.1
   amplitude_flutter: ^4.3.9
+  flutter_sticky_header: ^0.7.0
 
   # ViewSonic plug-in
   app_ota_flutter:

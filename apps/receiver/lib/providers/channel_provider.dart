@@ -655,7 +655,7 @@ class ChannelProvider extends ChangeNotifier
     );
   }
 
-  Future startRemoteScreen({
+  Future<bool> startRemoteScreen({
     bool? fromGroup,
     bool? fromShare,
     bool? fromSender,
@@ -668,7 +668,7 @@ class ChannelProvider extends ChangeNotifier
       _isSenderMode = fromSender ?? _isSenderMode;
       _save();
       notifyListeners();
-      return;
+      return true; // Already started, consider it success
     }
     _isGroupMode = fromGroup ?? _isGroupMode;
     _isShareMode = fromShare ?? _isShareMode;
@@ -680,7 +680,8 @@ class ChannelProvider extends ChangeNotifier
 
     if (!result) {
       removeSender(fromSender: true, fromGroup: true);
-      return await stopRemoteScreenPublisher();
+      await stopRemoteScreenPublisher();
+      return false; // Return failure status
     }
 
     if (!await AppOverlayTab().getVisibility()) {
@@ -696,6 +697,7 @@ class ChannelProvider extends ChangeNotifier
       );
     });
     notifyListeners();
+    return true; // Successfully started
   }
 
   Future<void> stopRemoteScreenPublisher() async {

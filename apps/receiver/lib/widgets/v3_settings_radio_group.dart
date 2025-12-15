@@ -16,6 +16,7 @@ class V3SettingsRadioGroupItem {
     this.subtitle,
     this.subtitleIcon,
     required this.divider,
+    this.disabled = false,
   });
 
   final String value;
@@ -23,6 +24,7 @@ class V3SettingsRadioGroupItem {
   final String? subtitle;
   final Widget? subtitleIcon;
   final bool divider;
+  final bool disabled;
 }
 
 class V3SettingsRadioGroup extends StatefulWidget {
@@ -65,6 +67,26 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
     }
   }
 
+  String _getRadioIcon({
+    required bool isSelected,
+    required bool isLocked,
+    required bool isDisabled,
+  }) {
+    if (isDisabled) {
+      return 'assets/images/ic_settings_radio_disabled.svg';
+    }
+
+    if (isLocked) {
+      return isSelected
+          ? 'assets/images/ic_settings_radio_selected_lock.svg'
+          : 'assets/images/ic_settings_radio_unselect_lock.svg';
+    }
+
+    return isSelected
+        ? 'assets/images/ic_settings_radio_selected.svg'
+        : 'assets/images/ic_settings_radio_unselect.svg';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
@@ -80,7 +102,7 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                     (key == widget.radioList.first) && widget.hasSubFocusItem
                         ? settingsProvider.subFocusNode
                         : null,
-                onTap: settingsProvider.isConnectivityLock
+                onTap: settingsProvider.isConnectivityLock || key.disabled
                     ? null
                     : () {
                         if (!mounted) return;
@@ -102,13 +124,11 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                         children: [
                           SvgPicture.asset(
                             excludeFromSemantics: true,
-                            _selectedRadio == key.value
-                                ? settingsProvider.isConnectivityLock
-                                    ? 'assets/images/ic_settings_radio_selected_lock.svg'
-                                    : 'assets/images/ic_settings_radio_selected.svg'
-                                : settingsProvider.isConnectivityLock
-                                    ? 'assets/images/ic_settings_radio_unselect_lock.svg'
-                                    : 'assets/images/ic_settings_radio_unselect.svg',
+                            _getRadioIcon(
+                              isSelected: _selectedRadio == key.value,
+                              isLocked: settingsProvider.isConnectivityLock,
+                              isDisabled: key.disabled,
+                            ),
                             width: 20,
                             height: 20,
                           ),
