@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -51,6 +53,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
   bool _isShortcutOnScreen = false;
   bool _isQuickConnectOnScreen = false;
 
+  /// 自動縮小倒數計時器
+  Timer? _autoCollapseTimer;
+
   @override
   void initState() {
     super.initState();
@@ -68,15 +73,48 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
 
   @override
   void dispose() {
+    _autoCollapseTimer?.cancel();
     _animationController.dispose();
     super.dispose();
+  }
+
+  /// 檢查是否有任何對話框開啟
+  bool get _hasAnyDialogOpen {
+    return _isModeratorOnScreen ||
+        _isCastDeviceOnScreen ||
+        _isShortcutOnScreen ||
+        _isQuickConnectOnScreen;
+  }
+
+  /// 啟動自動縮小倒數計時器
+  void _startAutoCollapseTimer() {
+    // 取消現有計時器
+    _autoCollapseTimer?.cancel();
+
+    // 只有在展開模式且沒有對話框開啟時才啟動計時器
+    if (_isExpanded && !_hasAnyDialogOpen) {
+      _autoCollapseTimer = Timer(const Duration(seconds: 5), () {
+        if (mounted && _isExpanded && !_hasAnyDialogOpen) {
+          _toggleExpanded();
+        }
+      });
+    }
+  }
+
+  /// 取消自動縮小倒數計時器
+  void _cancelAutoCollapseTimer() {
+    _autoCollapseTimer?.cancel();
+    _autoCollapseTimer = null;
   }
 
   /// 切換展開/收合
   void _toggleExpanded() {
     setState(() {
       if (_isExpanded) {
-        // 收合時：讓縮小模式的中心點對齊展開模式的中心點
+        // 收合時：取消自動縮小計時器
+        _cancelAutoCollapseTimer();
+
+        // 讓縮小模式的中心點對齊展開模式的中心點
         // 必須在 _isExpanded 改變之前計算展開的高度
         final expandedHeight = _calculateCurrentHeight();
         final collapsedHeight = StreamingFeaturesConstants.collapsedSize;
@@ -123,6 +161,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
         _currentY = newTopY.clamp(minY, maxY);
 
         _animationController.forward();
+
+        // 展開時：啟動自動縮小計時器
+        _startAutoCollapseTimer();
       }
     });
   }
@@ -758,6 +799,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       _isModeratorOnScreen = true;
     });
 
+    // 取消自動縮小計時器（因為對話框已開啟）
+    _cancelAutoCollapseTimer();
+
     // 計算對話框位置（垂直中心對齊展開模式的中心）
     final screenSize = MediaQuery.of(context).size;
     final widgetHeight = _calculateCurrentHeight();
@@ -787,6 +831,8 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       setState(() {
         _isModeratorOnScreen = false;
       });
+      // 對話框關閉後，如果沒有其他對話框開啟且處於展開模式，則重新啟動計時器
+      _startAutoCollapseTimer();
     });
   }
 
@@ -796,6 +842,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
     setState(() {
       _isCastDeviceOnScreen = true;
     });
+
+    // 取消自動縮小計時器（因為對話框已開啟）
+    _cancelAutoCollapseTimer();
 
     trackEvent('click_cast_to_device_icon', EventCategory.setting);
 
@@ -811,6 +860,8 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       setState(() {
         _isCastDeviceOnScreen = false;
       });
+      // 對話框關閉後，如果沒有其他對話框開啟且處於展開模式，則重新啟動計時器
+      _startAutoCollapseTimer();
     });
   }
 
@@ -820,6 +871,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
 
     // 檢查密碼鎖
     if (settingsProvider.isSettingsLock) {
+      // 取消自動縮小計時器（因為密碼對話框已開啟）
+      _cancelAutoCollapseTimer();
+
       await showDialog(
         context: context,
         barrierDismissible: false,
@@ -829,11 +883,18 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       });
     }
 
-    if (!(isShortcutsMenuUnLocked && mounted)) return;
+    if (!(isShortcutsMenuUnLocked && mounted)) {
+      // 如果密碼驗證失敗，重新啟動計時器
+      _startAutoCollapseTimer();
+      return;
+    }
 
     setState(() {
       _isShortcutOnScreen = true;
     });
+
+    // 取消自動縮小計時器（因為對話框已開啟）
+    _cancelAutoCollapseTimer();
 
     // 計算對話框位置（垂直中心對齊展開模式的中心）
     final screenSize = MediaQuery.of(context).size;
@@ -864,6 +925,8 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       setState(() {
         _isShortcutOnScreen = false;
       });
+      // 對話框關閉後，如果沒有其他對話框開啟且處於展開模式，則重新啟動計時器
+      _startAutoCollapseTimer();
     });
   }
 
@@ -873,6 +936,9 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
     setState(() {
       _isQuickConnectOnScreen = true;
     });
+
+    // 取消自動縮小計時器（因為對話框已開啟）
+    _cancelAutoCollapseTimer();
 
     // Quick Connect 不需要動態定位，使用原本的方式
     await showDialog(
@@ -887,6 +953,8 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
       setState(() {
         _isQuickConnectOnScreen = false;
       });
+      // 對話框關閉後，如果沒有其他對話框開啟且處於展開模式，則重新啟動計時器
+      _startAutoCollapseTimer();
     });
   }
 }
