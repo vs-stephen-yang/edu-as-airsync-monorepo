@@ -39,7 +39,7 @@ class V3PresentPresentStart extends StatefulWidget {
 }
 
 class _V3PresentPresentStartState extends State<V3PresentPresentStart>
-    with WidgetsBindingObserver, WindowListener {
+    with WindowListener {
   static const MethodChannel _channel =
       MethodChannel('com.viewsonic.display.cast/system_ui_insets');
   final GlobalKey pauseButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
@@ -51,6 +51,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
   StreamSubscription? _broadcastUploadExtensionResumedSubscription;
   StreamSubscription? _broadcastUploadExtensionClosedSubscription;
+  Timer? _annotationCheckTimer;
 
   String debugOverlayText = '';
 
@@ -73,7 +74,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     ]);
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       // 用來判斷視窗被縮小或放大
-      WidgetsBinding.instance.addObserver(this);
+      // 啟動定時器，每秒檢查註釋窗口狀態
+      _startAnnotationCheckTimer();
     }
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
@@ -101,20 +103,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     });
   }
 
-  @override
-  didChangeAppLifecycleState(AppLifecycleState state) {
-    DesktopMultiWindow.getAllSubWindowIds().then((list) {
-      if (annotationOn != list.isNotEmpty) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+  void _startAnnotationCheckTimer() {
+    _annotationCheckTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      DesktopMultiWindow.getAllSubWindowIds().then((list) {
+        if (annotationOn != list.isNotEmpty) {
           if (mounted) {
             setState(() {
               annotationOn = list.isNotEmpty;
             });
           }
-        });
-      }
+        }
+      });
     });
-    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -126,9 +126,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     AnnotationModel.closeAnnotation();
     _broadcastUploadExtensionResumedSubscription?.cancel();
     _broadcastUploadExtensionClosedSubscription?.cancel();
-    if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
-      WidgetsBinding.instance.removeObserver(this);
-    }
+    _annotationCheckTimer?.cancel();
     if (!kIsWeb && !Platform.isMacOS) {
       windowManager.removeListener(this);
     }
