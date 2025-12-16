@@ -224,31 +224,29 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
             return Positioned(
               left: StreamingFeaturesConstants.screenEdgePadding,
               top: _currentY!,
-              child: ClipRect(
-                child: SizedBox(
-                  width: currentWidth,
-                  child: Stack(
-                    alignment: Alignment.centerLeft,
-                    children: [
-                      // 展開模式（永遠在底層）
-                      if (_expandAnimation.value > 0.0)
-                        Opacity(
-                          opacity: _expandAnimation.value,
-                          child: _buildExpandedMode(
-                            channelProvider,
-                            mirrorProvider,
-                            countPadding,
-                            expandedTotalWidth,
-                          ),
+              child: SizedBox(
+                width: currentWidth,
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    // 展開模式（永遠在底層）
+                    if (_expandAnimation.value > 0.0)
+                      Opacity(
+                        opacity: _expandAnimation.value,
+                        child: _buildExpandedMode(
+                          channelProvider,
+                          mirrorProvider,
+                          countPadding,
+                          expandedTotalWidth,
                         ),
-                      // 縮小模式（在頂層，動畫時淡出）
-                      if (_expandAnimation.value < 1.0)
-                        Opacity(
-                          opacity: 1.0 - _expandAnimation.value,
-                          child: _buildCollapsedMode(),
-                        ),
-                    ],
-                  ),
+                      ),
+                    // 縮小模式（在頂層，動畫時淡出）
+                    if (_expandAnimation.value < 1.0)
+                      Opacity(
+                        opacity: 1.0 - _expandAnimation.value,
+                        child: _buildCollapsedMode(),
+                      ),
+                  ],
                 ),
               ),
             );
@@ -263,19 +261,25 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
     return V3Focus(
       label: S.of(context).v3_lbl_streaming_shortcut_expand,
       identifier: 'v3_qa_streaming_shortcut_collapsed',
-      child: GestureDetector(
-        onVerticalDragUpdate: (details) {
-          _updateVerticalPosition((_currentY ?? 0) + details.delta.dy);
-        },
+      // 使用 InkWell 處理點擊，支援 focus 系統
+      child: InkWell(
+        // 點擊時切換展開/收合狀態
         onTap: _toggleExpanded,
-        child: SizedBox(
-          width: StreamingFeaturesConstants.collapsedSize,
-          height: StreamingFeaturesConstants.collapsedSize,
-          child: Center(
-            child: SvgPicture.asset(
-              'assets/images/ic_streaming_menu_dots_vertical.svg',
-              width: 24,
-              height: 24,
+        // 使用 Listener 處理拖拉
+        child: Listener(
+          // 監聽指標移動事件，更新垂直位置
+          onPointerMove: (details) {
+            _updateVerticalPosition((_currentY ?? 0) + details.delta.dy);
+          },
+          child: SizedBox(
+            width: StreamingFeaturesConstants.collapsedSize,
+            height: StreamingFeaturesConstants.collapsedSize,
+            child: Center(
+              // 使用 CustomPaint 繪製三個點圖示（帶陰影）
+              child: CustomPaint(
+                size: const Size(36, 36),
+                painter: _ThreeDotsMenuPainter(),
+              ),
             ),
           ),
         ),
@@ -678,34 +682,29 @@ class _StreamingFeaturesContainerState extends State<StreamingFeaturesContainer>
 
   /// 縮小按鈕
   Widget _buildCollapseButton(double countPadding) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: SizedBox(
-        height: StreamingFeaturesConstants.expandedButtonHeight / 2,
-        child: V3Focus(
-          label: S.of(context).v3_lbl_streaming_shortcut_minimize,
-          identifier: 'v3_qa_streaming_shortcut_minimize',
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(10),
-            bottomRight: Radius.circular(10),
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(left: 3, right: 21.0 + countPadding),
-            child: SizedBox(
-              width: 27,
-              height: 27,
-              child: IconButton(
-                icon: SvgPicture.asset(
-                  'assets/images/ic_streaming_menu_minimize.svg',
-                ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () {
-                  Future.microtask(() => _toggleExpanded());
-                },
-              ),
+    return V3Focus(
+      label: S.of(context).v3_lbl_streaming_shortcut_minimize,
+      identifier: 'v3_qa_streaming_shortcut_minimize',
+      borderRadius: const BorderRadius.only(
+        topRight: Radius.circular(10),
+        bottomRight: Radius.circular(10),
+      ),
+      child: Container(
+        alignment: Alignment.center,
+        height: StreamingFeaturesConstants.expandedButtonHeight / 2 + 8,
+        padding: EdgeInsets.only(left: 3, right: 21.0 + countPadding, top: 8),
+        child: SizedBox(
+          width: 27,
+          height: 27,
+          child: IconButton(
+            icon: SvgPicture.asset(
+              'assets/images/ic_streaming_menu_minimize.svg',
             ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: () {
+              Future.microtask(() => _toggleExpanded());
+            },
           ),
         ),
       ),
@@ -967,4 +966,54 @@ class _AlignedDialogState extends State<_AlignedDialog> {
       ),
     );
   }
+}
+
+/// 自訂繪製三個點的選單圖示（帶陰影）
+///
+/// 由於 flutter_svg 對 SVG filter 的支援有限，改用 CustomPaint 手動繪製
+/// 確保陰影效果能正確顯示在每個圓點下方
+class _ThreeDotsMenuPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 陰影畫筆設定
+    final shadowPaint = Paint()
+      ..color = Colors.black.withOpacity(0.25) // 黑色 25% 透明度
+      ..style = PaintingStyle.fill
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0); // 模糊半徑 2.0
+
+    // 白色圓點畫筆設定
+    final dotPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    const double radius = 3.33; // 圓點半徑
+    final double centerX = size.width / 2; // 水平中心點
+
+    // 三個點的垂直位置（Y 座標）
+    final List<double> dotYPositions = [
+      size.height * 0.25, // 頂部點 (10/40)
+      size.height * 0.5, // 中間點 (20/40)
+      size.height * 0.75, // 底部點 (30/40)
+    ];
+
+    // 逐一繪製每個點
+    for (final y in dotYPositions) {
+      // 先繪製陰影（向下偏移 1px）
+      canvas.drawCircle(
+        Offset(centerX, y + 1),
+        radius,
+        shadowPaint,
+      );
+
+      // 再繪製白色圓點（覆蓋在陰影上方）
+      canvas.drawCircle(
+        Offset(centerX, y),
+        radius,
+        dotPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
