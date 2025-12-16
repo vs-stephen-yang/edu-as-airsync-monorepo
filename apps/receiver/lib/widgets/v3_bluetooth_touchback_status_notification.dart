@@ -92,7 +92,7 @@ class _V3BluetoothStatusNotificationState
   }
 }
 
-class RestartBluetoothWidget extends StatelessWidget {
+class RestartBluetoothWidget extends StatefulWidget {
   final FocusNode primaryFocusNode;
   final VoidCallback? onConfirm;
 
@@ -103,9 +103,43 @@ class RestartBluetoothWidget extends StatelessWidget {
   });
 
   @override
+  State<RestartBluetoothWidget> createState() => _RestartBluetoothWidgetState();
+}
+
+class _RestartBluetoothWidgetState extends State<RestartBluetoothWidget> {
+  final GlobalKey _cancelButtonKey = GlobalKey();
+  final GlobalKey _restartButtonKey = GlobalKey();
+  double? _buttonHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measureButtons();
+    });
+  }
+
+  void _measureButtons() {
+    final cancelContext = _cancelButtonKey.currentContext;
+    final restartContext = _restartButtonKey.currentContext;
+
+    if (cancelContext != null && restartContext != null) {
+      final cancelHeight = cancelContext.size?.height ?? 0;
+      final restartHeight = restartContext.size?.height ?? 0;
+      final maxHeight =
+          cancelHeight > restartHeight ? cancelHeight : restartHeight;
+
+      if (maxHeight > 0 && _buttonHeight != maxHeight) {
+        setState(() {
+          _buttonHeight = maxHeight;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ScrollController mainController = ScrollController();
-    final ScrollController buttonController = ScrollController();
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -173,8 +207,9 @@ class RestartBluetoothWidget extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            constraints: BoxConstraints(maxHeight: 35),
+                          child: SizedBox(
+                            key: _cancelButtonKey,
+                            height: _buttonHeight,
                             child: V3Focus(
                               label: S
                                   .of(context)
@@ -182,7 +217,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                               identifier:
                                   'v3_qa_touchback_restart_bluetooth_btn_cancel',
                               child: ElevatedButton(
-                                focusNode: primaryFocusNode,
+                                focusNode: widget.primaryFocusNode,
                                 style: ElevatedButton.styleFrom(
                                   side: BorderSide(
                                     width: 1.0,
@@ -193,7 +228,8 @@ class RestartBluetoothWidget extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                   // remove onFocused color, this is also ripple color
                                   overlayColor: Colors.transparent,
-                                  padding: EdgeInsets.zero,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 4),
                                 ),
                                 onPressed: () {
                                   if (navService.canPop()) {
@@ -203,6 +239,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                                 child: V3AutoHyphenatingText(
                                   S.current
                                       .v3_touchback_restart_bluetooth_btn_cancel,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: context
                                         .tokens.color.vsdslColorSecondary,
@@ -216,8 +253,9 @@ class RestartBluetoothWidget extends StatelessWidget {
                         ),
                         Gap(8),
                         Expanded(
-                          child: Container(
-                            constraints: BoxConstraints(maxHeight: 35),
+                          child: SizedBox(
+                            key: _restartButtonKey,
+                            height: _buttonHeight,
                             child: V3Focus(
                               label: S
                                   .of(context)
@@ -225,7 +263,7 @@ class RestartBluetoothWidget extends StatelessWidget {
                               identifier:
                                   'v3_qa_touchback_restart_bluetooth_btn_restart',
                               child: ElevatedButton(
-                                focusNode: primaryFocusNode,
+                                focusNode: widget.primaryFocusNode,
                                 style: ElevatedButton.styleFrom(
                                   elevation: 5.0,
                                   shadowColor:
@@ -236,26 +274,22 @@ class RestartBluetoothWidget extends StatelessWidget {
                                       context.tokens.color.vsdslColorPrimary,
                                   // remove onFocused color, this is also ripple color
                                   overlayColor: Colors.transparent,
-                                  padding: EdgeInsets.zero,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 4),
                                 ),
                                 onPressed: () {
-                                  onConfirm?.call();
+                                  widget.onConfirm?.call();
                                   if (navService.canPop()) {
                                     navService.goBack();
                                   }
                                 },
-                                child: V3Scrollbar(
-                                  controller: buttonController,
-                                  child: SingleChildScrollView(
-                                    controller: buttonController,
-                                    child: V3AutoHyphenatingText(
-                                      S.current
-                                          .v3_touchback_restart_bluetooth_btn_restart,
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                child: V3AutoHyphenatingText(
+                                  S.current
+                                      .v3_touchback_restart_bluetooth_btn_restart,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),

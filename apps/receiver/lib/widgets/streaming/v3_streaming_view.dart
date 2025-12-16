@@ -1,8 +1,10 @@
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/multi_window_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/utility/navigation_service_util.dart';
+import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_casting_view_focus_traversal_policy.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_mini_notify_icon.dart';
@@ -44,6 +46,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
         children: [
           ConstrainedBox(constraints: const BoxConstraints.expand()),
           _buildStreamStack(size),
+          BottomOverlayMenus(),
 
           // PageHeaderFooter 與 MiniNotifyIcon
           //    - 小螢幕時：MiniNotifyIcon 顯示在 VerticalPageIndicator 上方
@@ -203,3 +206,32 @@ class _V3StreamingViewState extends State<V3StreamingView> {
   }
 }
 
+class BottomOverlayMenus extends StatelessWidget {
+
+  const BottomOverlayMenus({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (context.splitScreenRatio.widthFraction <
+        SplitScreenRatio.oneThirdFull.widthFraction) {
+      return Positioned.fill(
+        child: Stack(
+          children: [
+            V3BluetoothStatusNotification(),
+          ],
+        ),
+      );
+    }
+
+    return Positioned(
+      bottom: 54,
+      right: 53,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          V3BluetoothStatusNotification(),
+        ],
+      ),
+    );
+  }
+}
