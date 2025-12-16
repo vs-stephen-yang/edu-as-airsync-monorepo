@@ -21,7 +21,7 @@ abstract class GroupListItem {
 
   bool ipNotFind();
 
-  int timestamp();
+  int favoriteTimestamp();
 
   Map<String, dynamic> toJson();
 }
@@ -35,7 +35,7 @@ class GroupBean extends GroupListItem {
   bool? _viaIp;
   bool? _favorite;
   bool? _notFind;
-  int? _timestamp;
+  int? _favoriteTimestamp;
 
   GroupBean(
       {String? name,
@@ -46,7 +46,7 @@ class GroupBean extends GroupListItem {
       bool viaIp = false,
       bool favorite = false,
       bool notFind = false,
-      int? timestamp})
+      int? favoriteTimestamp})
       : _attributes = attributes,
         _host = host,
         _port = port,
@@ -55,7 +55,8 @@ class GroupBean extends GroupListItem {
         _viaIp = viaIp,
         _favorite = favorite,
         _notFind = notFind,
-        _timestamp = timestamp ?? DateTime.now().millisecondsSinceEpoch;
+        _favoriteTimestamp =
+            favoriteTimestamp ?? DateTime.now().millisecondsSinceEpoch;
 
   GroupBean.fromJson(Map<String, dynamic> json, {bool? viaIp, bool? favorite}) {
     _name = json['service.name'];
@@ -66,8 +67,8 @@ class GroupBean extends GroupListItem {
     _viaIp = json['service.viaIp'] ?? false;
     _favorite = json['service.favorite'] ?? false;
     _notFind = json['service.notFind'] ?? false;
-    _timestamp =
-        json['service.timestamp'] ?? DateTime.now().millisecondsSinceEpoch;
+    _favoriteTimestamp = json['service.favoriteTimestamp'] ??
+        DateTime.now().millisecondsSinceEpoch;
     if (viaIp != null) {
       _viaIp = viaIp;
     }
@@ -88,7 +89,7 @@ class GroupBean extends GroupListItem {
     data['service.host'] = _host;
     data['service.viaIp'] = _viaIp;
     data['service.favorite'] = _favorite;
-    // _timestamp不存
+    data['service.favoriteTimestamp'] = _favoriteTimestamp;
     if (_attributes != null) {
       data['service.attributes'] = _attributes!.toJson();
     }
@@ -139,8 +140,8 @@ class GroupBean extends GroupListItem {
   }
 
   @override
-  int timestamp() {
-    return _timestamp ?? DateTime.now().millisecondsSinceEpoch;
+  int favoriteTimestamp() {
+    return _favoriteTimestamp ?? DateTime.now().millisecondsSinceEpoch;
   }
 }
 

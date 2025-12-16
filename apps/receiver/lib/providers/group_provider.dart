@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -95,7 +96,37 @@ class GroupProvider extends StateNotifier<GroupState> {
   }
 
   List<GroupListItem> getClientList() {
-    return [...state.selectedList, ...state.clients];
+    // 合併所有設備
+    final allDevices = [
+      ...state.selectedList,
+      ...state.clients,
+    ];
+
+    // 優先級 0: 找不到的設備（最優先，無論是否已勾選）
+    final notFoundDevices =
+        allDevices.where((c) => c.ipNotFind()).toList()
+        .reversed; // 最新添加的在上面
+
+    // 優先級 1: 已勾選且不是 not found
+    final selectedDevices = state.selectedList
+        .where((c) => !c.ipNotFind())
+        .toList()
+        .reversed; // 最新勾選的在上
+
+    // 優先級 2-5: clients 中不是 not found 的
+    final otherClients = state.clients.where((c) => !c.ipNotFind()).toList();
+
+    final result = [
+      ...notFoundDevices, // 優先級 0: 手動輸入找不到（最優先）
+      ...selectedDevices, // 優先級 1: 已勾選（不含 not found）
+      ...otherClients, // 優先級 2-5（已在 _sortClientsByPriority 中排序）
+    ];
+
+    log.info(
+        '📋 [GroupProvider] getClientList() returned ${result.length} devices');
+    log.info(
+        '   - notFound: ${notFoundDevices.length}, selected: ${selectedDevices.length}, others: ${otherClients.length}');
+    return result;
   }
 
   void organizeGroupList() {
@@ -163,11 +194,60 @@ class GroupProvider extends StateNotifier<GroupState> {
     state.historySelectedList.removeWhere((map) => map.containsKey(clientId));
   }
 
-  // 對客戶端列表進行排序：手動添加的設備（viaIp）優先顯示在前面
+  // 對客戶端列表進行排序：實現完整的 6 級排序邏輯
+  // ⚠️ 注意：此函數只對未勾選的設備（state.clients）進行排序
+  // 手動輸入找不到的設備（優先級 0）和已勾選的設備（優先級 1）在 getClientList() 中處理
   List<GroupListItem> _sortClientsByPriority(List<GroupListItem> clients) {
-    final viaIpClients = clients.where((c) => c.viaIp()).toList();
-    final discoveredClients = clients.where((c) => !c.viaIp()).toList();
-    return [...viaIpClients, ...discoveredClients];
+    // 優先級 0: 手動輸入後找不到（最優先）
+    final notFoundDevices = clients
+        .where((c) => c.viaIp() && c.ipNotFind())
+        .toList()
+        .reversed; // 最新添加的在上面
+
+    // 優先級 2: 收藏且顯示上線（未勾選）
+    final favoriteOnline = clients
+        .where((c) => c.favorite() && !_isUnavailable(c) && !c.ipNotFind())
+        .toList()
+      ..sort((a, b) => b.favoriteTimestamp().compareTo(a.favoriteTimestamp()));
+
+    // 優先級 3: 收藏但顯示未上線（未勾選）
+    final favoriteOffline = clients
+        .where((c) => c.favorite() && _isUnavailable(c) && !c.ipNotFind())
+        .toList()
+      ..sort((a, b) => b.favoriteTimestamp().compareTo(a.favoriteTimestamp()));
+
+    // 優先級 4: 手動輸入 + 未收藏 + 已上線（未勾選）
+    final manualNotFavorite = clients
+        .where((c) =>
+            c.viaIp() && !c.favorite() && !_isUnavailable(c) && !c.ipNotFind())
+        .toList()
+        .reversed; // 最新添加的在上面
+
+    // 優先級 5: 自動發現（未勾選）
+    final autoDiscovered = clients
+        .where((c) => !c.viaIp() && !c.favorite())
+        .toList()
+        .reversed; // 最新發現的在上面
+
+    return [
+      ...notFoundDevices, // 優先級 0: 手動輸入找不到
+      ...favoriteOnline, // 優先級 2: 收藏且上線
+      ...favoriteOffline, // 優先級 3: 收藏但未上線
+      ...manualNotFavorite, // 優先級 4: 手動輸入未收藏
+      ...autoDiscovered, // 優先級 5: 自動發現
+    ];
+  }
+
+  // 判斷設備是否不可用（unavailable）
+  // 根據文檔：unavailable = invitedState==2 || (unsupportedMulticast && useMulticast) || ipNotFind
+  bool _isUnavailable(GroupListItem client) {
+    // 注意：這裡無法存取 AppSettings context
+    // 目前簡化判斷邏輯，只檢查 invitedState 和 ipNotFind
+    // unsupportedMulticast && useMulticast 的判斷在 UI 層處理
+    // 這不會影響大部分情況的排序，因為：
+    // 1. 場景 5, 7: 舊設備 + MC 關閉 -> unavailable=false -> 正確歸類到優先級 2
+    // 2. 場景 6, 8: 舊設備 + MC 開啟 -> 需要 UI 層協助判斷，但會被歸類到優先級 5（自動發現未收藏）
+    return client.invitedState() == '2' || client.ipNotFind();
   }
 
   void clearSelectedList() {
@@ -224,7 +304,13 @@ class GroupProvider extends StateNotifier<GroupState> {
         client.toJson(),
         favorite: true,
       );
-      favoriteList.add({client.id(): favoriteClient.toJson()});
+
+      // 🔑 設定收藏時間戳（會持久化保存）
+      final clientData = favoriteClient.toJson();
+      clientData['service.favoriteTimestamp'] =
+          DateTime.now().millisecondsSinceEpoch;
+
+      favoriteList.add({client.id(): clientData});
     }
 
     AppPreferences().setFavoriteList(favoriteList);
@@ -239,10 +325,66 @@ class GroupProvider extends StateNotifier<GroupState> {
   }
 
   void _updateClientFavoriteState() {
-    // 這個方法會觸發 UI 更新
+    // 從 favoriteList 讀取最新的收藏狀態
+    final favoriteList = AppPreferences().favoriteList;
+
+    // 更新 clients 和 selectedList 中的設備狀態
+    final updatedClients = state.clients.map((client) {
+      final favoriteData = favoriteList.firstWhere(
+        (map) => map.containsKey(client.id()),
+        orElse: () => {},
+      );
+
+      if (favoriteData.isNotEmpty) {
+        // 設備已被收藏，需要更新其狀態
+        final data = favoriteData[client.id()];
+        return GroupBean.fromJson(
+          {...client.toJson(), ...data},
+          favorite: true,
+        );
+      } else {
+        // 設備未被收藏或已取消收藏
+        if (client.favorite()) {
+          // 之前是收藏的，現在需要取消
+          return GroupBean.fromJson(
+            client.toJson(),
+            favorite: false,
+          );
+        }
+        return client;
+      }
+    }).toList();
+
+    final updatedSelectedList = state.selectedList.map((client) {
+      final favoriteData = favoriteList.firstWhere(
+        (map) => map.containsKey(client.id()),
+        orElse: () => {},
+      );
+
+      if (favoriteData.isNotEmpty) {
+        final data = favoriteData[client.id()];
+        return GroupBean.fromJson(
+          {...client.toJson(), ...data},
+          favorite: true,
+        );
+      } else {
+        if (client.favorite()) {
+          return GroupBean.fromJson(
+            client.toJson(),
+            favorite: false,
+          );
+        }
+        return client;
+      }
+    }).toList();
+
+    // 重新排序 clients 列表
+    final sortedClients = _sortClientsByPriority(updatedClients);
+
+    // 更新狀態
     state = state.copyWith(
-      clients: state.clients.toList(),
-      selectedList: state.selectedList.toList(),
+      clients: sortedClients,
+      selectedList: updatedSelectedList,
     );
   }
 

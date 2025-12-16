@@ -382,8 +382,9 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
       ),
     ];
 
-    final clientList = ref.watch(groupProvider
-        .select((state) => [...state.selectedList, ...state.clients]));
+    // 監聽 state 變化，然後使用 getClientList() 獲取正確排序的列表
+    ref.watch(groupProvider);
+    final clientList = groupNotifier.getClientList();
 
     return Expanded(
       child: CustomScrollView(
