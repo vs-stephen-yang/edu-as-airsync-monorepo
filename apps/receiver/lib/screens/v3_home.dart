@@ -89,6 +89,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
   @override
   void dispose() {
     _wifiStatusSubscription?.cancel();
+    _wifiStatusSubscription = null;
     WifiStatusUtil().dispose();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);

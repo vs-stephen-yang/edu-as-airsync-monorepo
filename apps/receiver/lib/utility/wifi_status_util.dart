@@ -53,6 +53,7 @@ class WifiStatusUtil {
   // 釋放資源
   void dispose() {
     _eventSubscription?.cancel();
+    _eventSubscription = null;
     _wifiStatusController.close();
   }
 }
