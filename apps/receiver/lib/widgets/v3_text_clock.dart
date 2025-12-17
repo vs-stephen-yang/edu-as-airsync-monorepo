@@ -36,7 +36,9 @@ class _V3TextClockState extends State<V3TextClock> {
   @override
   void dispose() {
     _timer?.cancel();
+    _timer = null;
     _sub?.cancel();
+    _sub = null;
     _is24h.dispose();
     super.dispose();
   }
