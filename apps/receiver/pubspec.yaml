@@ -126,7 +126,7 @@ dependencies:
   android_window:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window
-      ref: v0.4.0-13
+      ref: v0.4.0-14
   flutter_multicast_plugin:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin
