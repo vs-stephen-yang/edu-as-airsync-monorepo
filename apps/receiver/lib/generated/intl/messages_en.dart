@@ -595,6 +595,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Open broadcast boards menu",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Connect",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Connecting"),
     "v3_lbl_settings_broadcast_device_favorite":
         MessageLookupByLibrary.simpleMessage("favorite"),
     "v3_lbl_settings_broadcast_device_remove":

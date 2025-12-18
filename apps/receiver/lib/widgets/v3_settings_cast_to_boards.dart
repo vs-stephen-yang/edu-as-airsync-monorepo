@@ -43,13 +43,20 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     with WidgetsBindingObserver {
   OverlayEntry? _overlayEntry;
 
+  // 追蹤正在連接的設備 ID
+  final Set<String> _connectingDevices = {};
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(groupProvider.notifier).organizeGroupList();
-      ref.read(groupProvider.notifier).loadFavoriteDevices();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final isBroadcastingToGroup =
+          ref.read(groupProvider.select((state) => state.broadcastToGroup));
+      if (isBroadcastingToGroup) {
+        ref.read(groupProvider.notifier).organizeGroupList();
+        await ref.read(groupProvider.notifier).loadFavoriteDevices();
+      }
     });
   }
 
@@ -550,9 +557,24 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                     color: context.tokens.color.vsdslColorOnSurfaceInverse),
               ),
             ),
-            if (client.ipNotFind()) notFindWidget(client, context),
-            if (!client.ipNotFind()) displayCodeWidget(client, context),
-            if (!client.ipNotFind()) _buildFavoriteButton(client, context),
+            // connecting 狀態：顯示 Connecting + 收藏按鈕
+            if (_connectingDevices.contains(client.id())) ...[
+              _buildConnectingWidget(client, context),
+              _buildFavoriteButton(client, context),
+            ]
+            // offline 狀態：顯示 Connect 按鈕 + 收藏按鈕
+            else if (client.offline()) ...[
+              _buildConnectButton(client, context),
+              _buildFavoriteButton(client, context),
+            ]
+            // notFind 狀態：顯示錯誤文本 + 刪除按鈕
+            else if (client.ipNotFind())
+              notFindStatusWidget(client, context)
+            // 正常狀態：顯示 Display Code + 收藏按鈕
+            else ...[
+              displayCodeWidget(client, context),
+              _buildFavoriteButton(client, context),
+            ],
           ],
         ),
       ),
@@ -562,6 +584,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
   Widget _buildFavoriteButton(GroupListItem client, BuildContext context) {
     final groupNotifier = ref.read(groupProvider.notifier);
     final isFav = groupNotifier.isFavorite(client.id());
+    // 只有 notFind 狀態禁用收藏，offline 狀態可以收藏
     final isDisabled = client.ipNotFind();
 
     return V3Focus(
@@ -634,16 +657,131 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     );
   }
 
-  Widget notFindWidget(GroupListItem client, BuildContext context) {
+  // Connecting 狀態顯示 - 載入動畫 + "Connecting" 文本
+  Widget _buildConnectingWidget(GroupListItem client, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: context.tokens.color.vsdslColorOnSurfaceInverse
+                .withValues(alpha: 0.5),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 12,
+              height: 12,
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  context.tokens.color.vsdslColorOnSurfaceInverse
+                      .withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+            const Gap(6),
+            Text(
+              "Connecting", // 暫時硬編碼，等待 intl 生成
+              style: TextStyle(
+                fontSize: 12,
+                color: context.tokens.color.vsdslColorOnSurfaceInverse
+                    .withValues(alpha: 0.5),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Connect 按鈕 - 用於 offline 狀態
+  Widget _buildConnectButton(GroupListItem client, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: V3Focus(
+        label: S.of(context).v3_lbl_settings_broadcast_connect,
+        identifier: 'v3_qa_settings_broadcast_connect',
+        child: InkWell(
+          onTap: () async {
+            final groupNotifier = ref.read(groupProvider.notifier);
+            final ip = client.ip();
+
+            if (ip.isEmpty) return;
+
+            // 加入到連接中狀態
+            setState(() {
+              _connectingDevices.add(client.id());
+            });
+
+            // 重新嘗試連接
+            try {
+              final bean = GroupBean.fromJson(
+                await UdpResponder.askPeerViaUdp(ip),
+                viaIp: client.viaIp(),
+                favorite: client.favorite(),
+              );
+
+              if (!mounted) return;
+
+              // 移除連接中狀態
+              setState(() {
+                _connectingDevices.remove(client.id());
+              });
+
+              // 移除舊的 offline 設備，添加新的線上設備
+              groupNotifier.removeClient(client);
+              groupNotifier.addClient(bean);
+              groupNotifier.addToSelectedList(bean);
+            } catch (e) {
+              if (!mounted) return;
+
+              // 移除連接中狀態
+              setState(() {
+                _connectingDevices.remove(client.id());
+              });
+
+              // 連接失敗，保持 offline 狀態（不需要操作，因為設備還在列表中）
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              S.of(context).v3_lbl_settings_broadcast_connect,
+              style: TextStyle(
+                fontSize: 12,
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // notFind 狀態顯示
+  Widget notFindStatusWidget(GroupListItem client, BuildContext context) {
     final isNormal =
         AppPreferences().textSizeOption == ResizeTextSizeOption.normal;
+
     return Flexible(
       flex: isNormal ? 7 : 4,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Flexible(
-            // Trialling is display code, should not use - to confuse user
             child: V3AutoHyphenatingText(
               S.of(context).v3_settings_broadcast_not_find,
               style: TextStyle(
@@ -681,7 +819,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     final bool unavailable =
         client.invitedState() == InvitedToGroupOption.ignore.value.toString() ||
             client.unsupportedMulticast() && useMulticast ||
-            client.ipNotFind();
+            client.ipNotFind() ||
+            client.offline();
     return unavailable;
   }
 
@@ -744,8 +883,8 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
 
     // 處理已存在的設備
     if (existingClient != null) {
-      if (existingClient.ipNotFind()) {
-        // 是 "not find" 狀態，允許重試
+      if (existingClient.ipNotFind() || existingClient.offline()) {
+        // 是 "not find" 或 "offline" 狀態，允許重試
         groupNotifier.removeClient(existingClient);
       } else {
         // 設備已存在且可用
@@ -1021,7 +1160,8 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 3),
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
                         ],

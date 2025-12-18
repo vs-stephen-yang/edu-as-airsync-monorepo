@@ -4205,6 +4205,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Connect`
+  String get v3_lbl_settings_broadcast_connect {
+    return Intl.message(
+      'Connect',
+      name: 'v3_lbl_settings_broadcast_connect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting`
+  String get v3_lbl_settings_broadcast_connecting {
+    return Intl.message(
+      'Connecting',
+      name: 'v3_lbl_settings_broadcast_connecting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
