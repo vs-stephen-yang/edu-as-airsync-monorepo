@@ -565,6 +565,7 @@ class ChannelProvider extends ChangeNotifier
         final invitedToGroup = AppPreferences().invitedToGroup;
         switch (invitedToGroup) {
           case '0': // notifyMe
+            AppOverlayTab().launchApp();
             providerContainer?.read(dialogProvider.notifier).showDialog(
                   title: sprintf(S.current.v3_group_dialog_title, [hostName]),
                   content:
@@ -589,6 +590,7 @@ class ChannelProvider extends ChangeNotifier
                 );
             break;
           case '1': // autoAccept
+            AppOverlayTab().launchApp();
             // Store current states before auto accepting
             _previousModeratorMode = isModeratorMode;
             _previousSenderMode = _isSenderMode;
