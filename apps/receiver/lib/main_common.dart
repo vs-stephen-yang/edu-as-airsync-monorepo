@@ -263,10 +263,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 // for "navService.popUntil('/v3Home')"
                 '/v3Home': (context) => const AppOTADialog(child: V3Home()),
                 '/v3RequestPermission': (context) => AppOTADialog(
-                      child: FocusAwareBuilder(
-                        builder: (primaryFocusNode) => V3RequestPermission(
-                            primaryFocusNode: primaryFocusNode),
-                      ),
+                      child: Consumer<MirrorStateProvider>(
+                          builder: (_, mirrorStateProvider, __) {
+                        if (mirrorStateProvider.isPermissionGranted) {
+                          navService.pushNamedAndRemoveUntil(
+                              AppPreferences().showEULA &&
+                                      !AppInstanceCreate().isInstalledInVBS100
+                                  ? '/v3Eula'
+                                  : '/v3Home');
+                        }
+                        return FocusAwareBuilder(
+                          builder: (primaryFocusNode) => V3RequestPermission(
+                              primaryFocusNode: primaryFocusNode),
+                        );
+                      }),
                     ),
                 '/v3Eula': (context) => AppOTADialog(
                       child: FocusAwareBuilder(
