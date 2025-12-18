@@ -418,5 +418,7 @@
   "v3_settings_broadcast_not_find": "not find",
   "v3_lbl_settings_broadcast_ip_hint": "Find Boards via IP",
   "v3_lbl_settings_broadcast_device_favorite": "favorite",
-  "v3_lbl_settings_broadcast_device_remove": "remove device"
+  "v3_lbl_settings_broadcast_device_remove": "remove device",
+  "v3_lbl_settings_broadcast_connect": "Connect",
+  "v3_lbl_settings_broadcast_connecting": "Connecting"
 }

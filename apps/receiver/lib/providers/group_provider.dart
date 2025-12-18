@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,8 +105,7 @@ class GroupProvider extends StateNotifier<GroupState> {
 
     // 優先級 0: 找不到的設備（最優先，無論是否已勾選）
     final notFoundDevices =
-        allDevices.where((c) => c.ipNotFind()).toList()
-        .reversed; // 最新添加的在上面
+        allDevices.where((c) => c.ipNotFind()).toList().reversed; // 最新添加的在上面
 
     // 優先級 1: 已勾選且不是 not found
     final selectedDevices = state.selectedList
@@ -292,7 +292,8 @@ class GroupProvider extends StateNotifier<GroupState> {
         AppPreferences().favoriteList.toList();
 
     // 檢查是否已經在 favorite 列表中
-    final index = favoriteList.indexWhere((map) => map.containsKey(client.id()));
+    final index =
+        favoriteList.indexWhere((map) => map.containsKey(client.id()));
 
     if (index != -1) {
       // 已存在，移除
@@ -388,35 +389,57 @@ class GroupProvider extends StateNotifier<GroupState> {
     );
   }
 
-  void loadFavoriteDevices() {
+  Future<void> loadFavoriteDevices() async {
     final favoriteList = AppPreferences().favoriteList;
     final List<GroupListItem> favoriteClients = [];
 
     for (var map in favoriteList) {
-      map.forEach((key, value) {
+      for (var value in map.values) {
         try {
-          final client = GroupBean.fromJson(value, favorite: true);
+          GroupListItem client = GroupBean.fromJson(value, favorite: true);
+          // 執行 UDP 查詢和添加邏輯
+          try {
+            client = GroupBean.fromJson(
+              await UdpResponder.askPeerViaUdp(client.ip()),
+              favorite: true,
+              offline: false,
+              viaIp: client.viaIp(),
+            );
+          } catch (a) {
+            // UDP timeout，device offline
+            client = GroupBean.fromJson(value, favorite: true, offline: true);
+          }
+
           // 排除自己和已經存在的設備
           if (client.id() != AppInstanceCreate().groupID &&
               !state.selectedList.any((item) => item.id() == client.id()) &&
               !state.clients.any((item) => item.id() == client.id())) {
             favoriteClients.add(client);
+          } else {
+            final selectedIndex = state.selectedList
+                .indexWhere((item) => item.id() == client.id());
+            if (selectedIndex != -1) {
+              state.selectedList[selectedIndex] = client;
+            }
+            final clientsIndex =
+                state.clients.indexWhere((item) => item.id() == client.id());
+            if (clientsIndex != -1) {
+              state.clients[clientsIndex] = client;
+            }
           }
         } catch (e) {
           // 處理解析錯誤
-          print('Error loading favorite device: $e');
+          log.warning('Error loading favorite device: $e');
         }
-      });
+      }
     }
 
     // 將 favorite 設備加入到 clients 列表
-    if (favoriteClients.isNotEmpty) {
-      final updatedClients = _sortClientsByPriority([
-        ...favoriteClients,
-        ...state.clients,
-      ]);
-      state = state.copyWith(clients: updatedClients);
-    }
+    final updatedClients = _sortClientsByPriority([
+      ...favoriteClients,
+      ...state.clients,
+    ]);
+    state = state.copyWith(clients: updatedClients);
   }
 
   Future<void> loadSettings() async {

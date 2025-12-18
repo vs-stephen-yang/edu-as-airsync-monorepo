@@ -23,6 +23,8 @@ abstract class GroupListItem {
 
   int favoriteTimestamp();
 
+  bool offline();
+
   Map<String, dynamic> toJson();
 }
 
@@ -36,6 +38,7 @@ class GroupBean extends GroupListItem {
   bool? _favorite;
   bool? _notFind;
   int? _favoriteTimestamp;
+  bool? _offline;
 
   GroupBean(
       {String? name,
@@ -46,7 +49,8 @@ class GroupBean extends GroupListItem {
       bool viaIp = false,
       bool favorite = false,
       bool notFind = false,
-      int? favoriteTimestamp})
+      int? favoriteTimestamp,
+      bool offline = false})
       : _attributes = attributes,
         _host = host,
         _port = port,
@@ -55,10 +59,12 @@ class GroupBean extends GroupListItem {
         _viaIp = viaIp,
         _favorite = favorite,
         _notFind = notFind,
+        _offline = offline,
         _favoriteTimestamp =
             favoriteTimestamp ?? DateTime.now().millisecondsSinceEpoch;
 
-  GroupBean.fromJson(Map<String, dynamic> json, {bool? viaIp, bool? favorite}) {
+  GroupBean.fromJson(Map<String, dynamic> json,
+      {bool? viaIp, bool? favorite, bool? offline}) {
     _name = json['service.name'];
     _type = json['service.type'];
     _port = json['service.port'];
@@ -67,6 +73,7 @@ class GroupBean extends GroupListItem {
     _viaIp = json['service.viaIp'] ?? false;
     _favorite = json['service.favorite'] ?? false;
     _notFind = json['service.notFind'] ?? false;
+    _offline = json['service.offline'] ?? false;
     _favoriteTimestamp = json['service.favoriteTimestamp'] ??
         DateTime.now().millisecondsSinceEpoch;
     if (viaIp != null) {
@@ -74,6 +81,9 @@ class GroupBean extends GroupListItem {
     }
     if (favorite != null) {
       _favorite = favorite;
+    }
+    if (offline != null) {
+      _offline = offline;
     }
     _attributes = json['service.attributes'] != null
         ? Attributes.fromJson(json['service.attributes'])
@@ -90,6 +100,9 @@ class GroupBean extends GroupListItem {
     data['service.viaIp'] = _viaIp;
     data['service.favorite'] = _favorite;
     data['service.favoriteTimestamp'] = _favoriteTimestamp;
+    data['service.notFind'] = _notFind;
+    data['service.offline'] = _offline;
+    // _timestamp不存
     if (_attributes != null) {
       data['service.attributes'] = _attributes!.toJson();
     }
@@ -137,6 +150,11 @@ class GroupBean extends GroupListItem {
   @override
   bool ipNotFind() {
     return _notFind ?? false;
+  }
+
+  @override
+  bool offline() {
+    return _offline ?? false;
   }
 
   @override
