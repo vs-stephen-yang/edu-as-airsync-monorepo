@@ -164,10 +164,12 @@ class ChannelProvider extends ChangeNotifier {
     required PresentStateProvider presentStateProvider,
     QRcodeConnectResult? qrCallback,
   }) async {
-    if (formattedDisplayCode.contains(RegExp(r'[^0-9]'))) {
+    if (formattedDisplayCode.isEmpty ||
+        !RegExp(r'^[0-9]+$').hasMatch(formattedDisplayCode)) {
       // Ensure that the 'display code' is numeric to prevent a parse
       // exception when decoding the display code in decodeDisplayCode().
       log.warning('Display Code must be entirely numeric');
+      _onChannelOpenFailed(ChannelConnectorError.invalidDisplayCode);
       return;
     }
     trackTrace('connect');
@@ -176,7 +178,13 @@ class ChannelProvider extends ChangeNotifier {
     AppAnalytics.instance.setGlobalProperty('participator_id', _clientId!);
 
     _presentStateProvider = presentStateProvider;
-    displayCode = decodeDisplayCode(formattedDisplayCode);
+    try {
+      displayCode = decodeDisplayCode(formattedDisplayCode);
+    } catch (e) {
+      log.warning('Unexpected error in decodeDisplayCode: $e');
+      _onChannelOpenFailed(ChannelConnectorError.invalidDisplayCode);
+      return;
+    }
     this.otp = otp;
 
     // Retrieve the local IP addresses
@@ -277,10 +285,12 @@ class ChannelProvider extends ChangeNotifier {
     required AirSyncBonsoirService service,
     required PresentStateProvider presentStateProvider,
   }) {
-    if (service.displayCode.contains(RegExp(r'[^0-9]'))) {
+    if (service.displayCode.isEmpty ||
+        !RegExp(r'^[0-9]+$').hasMatch(service.displayCode)) {
       // Ensure that the 'display code' is numeric to prevent a parse
       // exception when decoding the display code in decodeDisplayCode().
       log.warning('Display Code must be entirely numeric');
+      _onChannelOpenFailed(ChannelConnectorError.invalidDisplayCode);
       return;
     }
     trackTrace('quick_connect');
@@ -289,7 +299,13 @@ class ChannelProvider extends ChangeNotifier {
     _clientId = const Uuid().v4();
     AppAnalytics.instance.setGlobalProperty('participator_id', _clientId!);
     _presentStateProvider = presentStateProvider;
-    displayCode = decodeDisplayCode(service.displayCode);
+    try {
+      displayCode = decodeDisplayCode(service.displayCode);
+    } catch (e) {
+      log.warning('Unexpected error in decodeDisplayCode: $e');
+      _onChannelOpenFailed(ChannelConnectorError.invalidDisplayCode);
+      return;
+    }
     this.otp = otp;
     DirectConnector connector = DirectConnector(
       clientId: _clientId!,
