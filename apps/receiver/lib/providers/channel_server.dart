@@ -276,7 +276,7 @@ class ChannelServer {
       }
     }
     // Retry fails
-    log.severe('All retry attempts for tunnel setup have failed');
+    log.warning('All retry attempts for tunnel setup have failed');
     _handleRegisterResult(null, instanceGroupId);
   }
 
