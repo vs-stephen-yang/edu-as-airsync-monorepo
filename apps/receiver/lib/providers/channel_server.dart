@@ -237,9 +237,26 @@ class ChannelServer {
     _tunnelSetupTask?.run();
   }
 
+  void _logTunnelSetupFailure(
+      String reason, HttpRequestException? lastApiError) {
+    const message = 'Tunnel setup failed';
+    log.warning('$message $reason');
+
+    final failureTime = DateTime.now().toUtc().toIso8601String();
+    trackTrace(
+      message,
+      target: reason,
+      properties: {
+        'last_api_error': lastApiError?.toString() ?? 'unknown',
+        'timestamp': failureTime,
+      },
+    );
+  }
+
   _runTunnelSetupTask(CancelableTask task, String ipAddress) async {
     // Get the instance group Id from IP address
     final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
+    HttpRequestException? lastApiError;
 
     for (var retry = 0; retry < tunnelMaxRetry; retry += 1) {
       try {
@@ -262,9 +279,10 @@ class ChannelServer {
         // API call fails
         log.warning('Failed to register instance. Attempt ${retry + 1}');
         _handleRegisterResult(null, instanceGroupId);
+        lastApiError = e;
 
         if (!_shouldRetrySetupTunnel(e)) {
-          log.warning('Abandoning further retry attempts');
+          _logTunnelSetupFailure('unrecoverable', lastApiError);
           return; // Cannot recover from error. Should not retry.
         }
       }
@@ -276,7 +294,7 @@ class ChannelServer {
       }
     }
     // Retry fails
-    log.warning('All retry attempts for tunnel setup have failed');
+    _logTunnelSetupFailure('all retries failed', lastApiError);
     _handleRegisterResult(null, instanceGroupId);
   }
 
