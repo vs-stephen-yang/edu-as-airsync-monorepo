@@ -18,12 +18,18 @@ class HttpRequestException implements Exception {
 
   int? statusCode;
   String? message;
+  String? responseBody;
 
-  HttpRequestException(this.error, this.message, {this.statusCode});
+  HttpRequestException(
+    this.error,
+    this.message, {
+    this.statusCode,
+    this.responseBody,
+  });
 
   @override
   String toString() {
-    return 'HttpRequestException: Error: $error, $message, StatusCode: $statusCode}';
+    return 'HttpRequestException: Error: $error, $message, StatusCode: $statusCode, Body: $responseBody';
   }
 }
 
@@ -118,6 +124,7 @@ class HttpRequest<T> {
         HttpRequestError.httpError,
         response.reasonPhrase,
         statusCode: response.statusCode,
+        responseBody: response.body,
       );
     }
 
