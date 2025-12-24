@@ -1,6 +1,7 @@
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/widgets/v3_stealth_fps_keeper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -31,22 +32,30 @@ class CanvasWidgetAndroid extends StatelessWidget {
   }
 }
 
+enum _CanvasMode {
+  annotation,
+  stealth,
+}
+
 class _CanvasPage extends StatefulWidget {
   final WindowController? windowController;
 
-  const _CanvasPage(
-      {this.windowController});
+  const _CanvasPage({this.windowController});
 
   @override
   State<_CanvasPage> createState() => _CanvasPageState();
 }
 
 class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
+  static const Color _defaultPenColor = Colors.red;
+  static const double _defaultStrokeWidth = 2.0;
+
   final List<DrawingPoint?> _points = [];
   bool _isEraser = false;
   bool _isCollapsed = false;
-  Color _penColor = Colors.red;
-  double _strokeWidth = 2.0;
+  _CanvasMode _mode = _CanvasMode.stealth;
+  Color _penColor = _defaultPenColor;
+  double _strokeWidth = _defaultStrokeWidth;
   OverlayEntry? _overlayEntry;
   GlobalKey colorKey = GlobalKey();
   GlobalKey strokeKey = GlobalKey();
@@ -108,6 +117,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
+    AndroidWindow.setHandler(_handleWindowMessage);
   }
 
   @override
@@ -134,60 +144,97 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
         height: double.infinity,
         child: Stack(
           children: [
-            if (!_isCollapsed) ...[
-              GestureDetector(
-                onPanUpdate: (details) {
-                  _addPoint(details.localPosition);
-                },
-                onPanEnd: (details) {
-                  _endDrawing();
-                },
-                child: CustomPaint(
-                  painter: DrawingPainter(_points),
-                  size: Size.infinite,
+            if (_mode == _CanvasMode.annotation) ...[
+              if (!_isCollapsed) ...[
+                GestureDetector(
+                  onPanUpdate: (details) {
+                    _addPoint(details.localPosition);
+                  },
+                  onPanEnd: (details) {
+                    _endDrawing();
+                  },
+                  child: CustomPaint(
+                    painter: DrawingPainter(_points),
+                    size: Size.infinite,
+                  ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _buildAndroidPanel(),
-              )
-            ] else ...[
-              Container(
-                width: 76,
-                height: 76,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFD3D6E1), width: 2),
-                  color: const Color(0xFF20273E),
-                  borderRadius: const BorderRadius.all(Radius.circular(40)),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildAndroidPanel(),
+                )
+              ] else ...[
+                Container(
+                  width: 76,
+                  height: 76,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFD3D6E1), width: 2),
+                    color: const Color(0xFF20273E),
+                    borderRadius: const BorderRadius.all(Radius.circular(40)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnnotationIconButton(
+                          selected: false,
+                          size: 32,
+                          icon: 'assets/images/v3_ic_annotation_pen_disable.svg',
+                          onPressed: () async {
+                            _removeOverlay();
+                            await Future.delayed(
+                                const Duration(milliseconds: 150));
+                            if (!mounted) return;
+                            setState(() {
+                              _isCollapsed = false;
+                            });
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              AndroidWindow.resize(5000, 3000);
+                            });
+                          }),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnnotationIconButton(
-                        selected: false,
-                        size: 32,
-                        icon: 'assets/images/v3_ic_annotation_pen_disable.svg',
-                        onPressed: () async {
-                          _removeOverlay();
-                          await Future.delayed(
-                              const Duration(milliseconds: 150));
-                          if (!mounted) return;
-                          setState(() {
-                            _isCollapsed = false;
-                          });
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            AndroidWindow.resize(5000, 3000);
-                          });
-                        }),
-                  ],
-                ),
-              ),
+              ],
             ],
+            const IgnorePointer(
+              child: StealthFpsKeeper(),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<Object?> _handleWindowMessage(String name, Object? data) async {
+    if (name != 'setMode') {
+      return null;
+    }
+
+    final String? modeValue = data is String
+        ? data
+        : data is Map
+            ? data['mode']?.toString()
+            : null;
+    final nextMode =
+        modeValue == 'annotation' ? _CanvasMode.annotation : _CanvasMode.stealth;
+    if (!mounted || _mode == nextMode) return null;
+
+    setState(() {
+      _mode = nextMode;
+      if (_mode == _CanvasMode.stealth) {
+        _resetAnnotationState();
+      }
+    });
+    return null;
+  }
+
+  void _resetAnnotationState() {
+    _removeOverlay();
+    _points.clear();
+    _isEraser = false;
+    _isCollapsed = false;
+    _penColor = _defaultPenColor;
+    _strokeWidth = _defaultStrokeWidth;
   }
 
   Widget _buildAndroidPanel() {

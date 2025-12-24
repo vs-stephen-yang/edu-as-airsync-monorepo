@@ -79,6 +79,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     }
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
+    if (!kIsWeb && Platform.isAndroid) {
+      unawaited(_ensureAndroidStealthWindow());
+    }
 
     if (!kIsWeb && !Platform.isMacOS) {
       windowManager.addListener(this); // 監聽視窗事件
@@ -463,6 +466,38 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     }
   }
 
+  Future<void> _ensureAndroidStealthWindow() async {
+    if (!Platform.isAndroid || kIsWeb || annotationOn) return;
+    if (!await Permission.systemAlertWindow.isGranted) return;
+    if (annotationOn) return;
+    await _setAndroidWindowMode(annotation: false);
+  }
+
+  Future<void> _setAndroidWindowMode({required bool annotation}) async {
+    if (!Platform.isAndroid || kIsWeb) return;
+
+    final isRunning = await android_window.isRunning();
+    final Size targetSize = annotation
+        ? WidgetsBinding.instance.platformDispatcher.views.first.physicalSize
+        : const Size(1, 1);
+
+    if (!isRunning) {
+      android_window.open(
+        size: Size(targetSize.width, targetSize.height),
+        position: const Offset(0, 0),
+      );
+      await Future.delayed(const Duration(milliseconds: 100));
+    } else {
+      await android_window.resize(
+        targetSize.width.toInt(),
+        targetSize.height.toInt(),
+      );
+      await android_window.setPosition(0, 0);
+    }
+
+    await android_window.post('setMode', annotation ? 'annotation' : 'stealth');
+  }
+
   Future<void> _startAnnotation(AnnotationModel annotationModel) async {
     if (Platform.isWindows || Platform.isMacOS) {
       final list = await DesktopMultiWindow.getAllSubWindowIds();
@@ -479,24 +514,19 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         await WindowController.fromWindowId(list.first).show();
       }
     } else if (Platform.isAndroid) {
-      if (!await android_window.isRunning()) {
-        if (await Permission.systemAlertWindow.isGranted) {
-          final Size physicalSize = WidgetsBinding
-              .instance.platformDispatcher.views.first.physicalSize;
-          android_window.open(
-            size: Size(physicalSize.width, physicalSize.height),
-            position: const Offset(0, 0),
-          );
-          await Future.delayed(const Duration(milliseconds: 100));
-          await WindowUtility.minimizeWindow();
-        } else {
-          annotationOn = false;
-          await Permission.systemAlertWindow.request();
-          return;
-        }
-      } else {
-        AnnotationModel.closeAnnotation();
+      if (!annotationOn) {
+        await _ensureAndroidStealthWindow();
+        return;
       }
+
+      if (!await Permission.systemAlertWindow.isGranted) {
+        annotationOn = false;
+        await Permission.systemAlertWindow.request();
+        return;
+      }
+
+      await _setAndroidWindowMode(annotation: true);
+      await WindowUtility.minimizeWindow();
     }
   }
 }
