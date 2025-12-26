@@ -6,6 +6,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -202,7 +203,14 @@ class MirrorStateProvider extends ChangeNotifier
       onMiracastStart(mirrorId);
     }
 
-    if (HybridConnectionList().connectionListFull()) {
+    final isModerator = ChannelProvider.isModeratorMode;
+    final splitCount = HybridConnectionList.hybridSplitScreenCount.value;
+    // This list includes both active and idle connections.
+    final connectionFull = HybridConnectionList().connectionListFull();
+    final splitFull = splitCount >= HybridConnectionList.maxHybridSplitScreen;
+    // Moderator limits by connection capacity; general mode limits by split windows.
+    final isFull = isModerator ? connectionFull : splitFull;
+    if (isFull) {
       stopAcceptedMirror(mirrorId);
     } else {
       final mirrorRequest = MirrorRequest(_flutterMirrorPlugin, mirrorId,
