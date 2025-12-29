@@ -814,6 +814,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       " joined the session",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage("End"),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Retry",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Stop Broadcast"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Casting interrupted. Please reacquire casting permission.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Casting",
     ),
@@ -1138,6 +1147,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Screenshot Capture Failed",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Keep Waiting",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Close"),
     "v3_zero_fps_failed_to_repair_message":

@@ -396,7 +396,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
   }
 }
 
-class RetryDialog extends StatelessWidget {
+class RetryDialog extends StatefulWidget {
   const RetryDialog(
       {super.key,
       required this.screenSize,
@@ -408,21 +408,80 @@ class RetryDialog extends StatelessWidget {
   final VoidCallback onStop;
 
   @override
+  State<RetryDialog> createState() => _RetryDialogState();
+}
+
+class _RetryDialogState extends State<RetryDialog> {
+  static const int _countdownSeconds = 30;
+
+  final ScrollController _scrollController = ScrollController();
+  Timer? _countdownTimer;
+  int _remainingSeconds = _countdownSeconds;
+  bool _actionTaken = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startCountdown();
+  }
+
+  void _startCountdown() {
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted || _actionTaken) return;
+      if (_remainingSeconds <= 1) {
+        _handleStop();
+        return;
+      }
+      setState(() {
+        _remainingSeconds -= 1;
+      });
+    });
+  }
+
+  void _stopCountdown() {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+  }
+
+  void _handleStop() {
+    if (_actionTaken) return;
+    _actionTaken = true;
+    _stopCountdown();
+    widget.onStop();
+  }
+
+  void _handleRetry() {
+    if (_actionTaken) return;
+    _actionTaken = true;
+    _stopCountdown();
+    widget.onRetry();
+  }
+
+  @override
+  void dispose() {
+    _stopCountdown();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  String _stopButtonText(BuildContext context) =>
+      '${S.of(context).v3_overlay_retry_dialog_stop_broadcast}(${_remainingSeconds}s)';
+
+  @override
   Widget build(BuildContext context) {
-    final sc = ScrollController();
     return AndroidWindow(
       child: Material(
         color: Colors.transparent,
         child: SizedBox(
-          width: screenSize.width,
-          height: screenSize.height,
+          width: widget.screenSize.width,
+          height: widget.screenSize.height,
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: [
               ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 193),
                 child: Container(
-                  width: 320,
+                  width: 400,
                   height: 200,
                   padding: const EdgeInsets.all(15),
                   decoration: ShapeDecoration(
@@ -430,6 +489,14 @@ class RetryDialog extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: context.tokens.radii.vsdslRadiusLg,
                     ),
+                    shadows: [
+                      BoxShadow(
+                        color: context.tokens.color.vsdslColorOpacityNeutralSm,
+                        offset: Offset(0, 8),
+                        blurRadius: 5,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -437,7 +504,7 @@ class RetryDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Screenshot Error",
+                        S.of(context).v3_overlay_retry_dialog_title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: context.tokens.color
@@ -449,9 +516,9 @@ class RetryDialog extends StatelessWidget {
                       const Gap(13),
                       Expanded(
                         child: V3Scrollbar(
-                          controller: sc,
+                          controller: _scrollController,
                           child: SingleChildScrollView(
-                            controller: sc,
+                            controller: _scrollController,
                             child: SizedBox(
                               width: 300,
                               child: Column(
@@ -460,7 +527,7 @@ class RetryDialog extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Unable to capture the screen and send it to the projection app. Would you like to restart the screenshot feature and try again, or stop the projection?",
+                                    S.of(context).v3_zero_fps_prompt_message,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: context.tokens.color
@@ -483,11 +550,13 @@ class RetryDialog extends StatelessWidget {
                             Expanded(
                               child: _buildButton(
                                 V3ButtonInfo(
-                                  text: "Stop",
-                                  label: "Stop",
+                                  text: _stopButtonText(context),
+                                  label: S
+                                      .of(context)
+                                      .v3_overlay_retry_dialog_stop_broadcast,
                                   identifier:
                                       'v3_qa_touchback_one_device_confirm',
-                                  onTap: onStop,
+                                  onTap: _handleStop,
                                   backgroundColor: Colors.transparent,
                                   borderColor:
                                       context.tokens.color.vsdslColorSecondary,
@@ -496,14 +565,19 @@ class RetryDialog extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            const Gap(10),
                             Expanded(
                               child: _buildButton(
                                 V3ButtonInfo(
-                                  text: "Restart",
-                                  label: "Restart",
+                                  text: S
+                                      .of(context)
+                                      .v3_overlay_retry_dialog_retry,
+                                  label: S
+                                      .of(context)
+                                      .v3_overlay_retry_dialog_retry,
                                   identifier:
                                       'v3_qa_touchback_one_device_cancel',
-                                  onTap: onRetry,
+                                  onTap: _handleRetry,
                                   backgroundColor:
                                       context.tokens.color.vsdslColorPrimary,
                                   textColor: Colors.white,

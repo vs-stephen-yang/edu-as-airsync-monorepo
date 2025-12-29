@@ -4225,6 +4225,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Casting interrupted. Please reacquire casting permission.`
+  String get v3_overlay_retry_dialog_title {
+    return Intl.message(
+      'Casting interrupted. Please reacquire casting permission.',
+      name: 'v3_overlay_retry_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop Broadcast`
+  String get v3_overlay_retry_dialog_stop_broadcast {
+    return Intl.message(
+      'Stop Broadcast',
+      name: 'v3_overlay_retry_dialog_stop_broadcast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get v3_overlay_retry_dialog_retry {
+    return Intl.message(
+      'Retry',
+      name: 'v3_overlay_retry_dialog_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End`
+  String get v3_overlay_retry_dialog_end {
+    return Intl.message(
+      'End',
+      name: 'v3_overlay_retry_dialog_end',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Waiting`
+  String get v3_zero_fps_capture_failed_wait {
+    return Intl.message(
+      'Keep Waiting',
+      name: 'v3_zero_fps_capture_failed_wait',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
