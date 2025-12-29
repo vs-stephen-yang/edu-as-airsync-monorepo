@@ -374,8 +374,11 @@ class ChannelProvider extends ChangeNotifier
   // 重啟Publisher
   Future<void> remoteScreenRecreatePublish() async {
     providerContainer?.read(dialogProvider.notifier).showProgress(
-        title: S.current.v3_zero_fps_restarting_title,
-        content: S.current.v3_zero_fps_restarting_content);
+          title: S.current.v3_zero_fps_restarting_title,
+          content: S.current.v3_zero_fps_restarting_content,
+          cancelText: S.current.v3_overlay_retry_dialog_end,
+          onCancel: stopRemoteScreenFromFail,
+        );
     _remoteScreenProvider.recreatePublisher();
     await AppOverlayTab().setVisibility(true);
     if (!showOverlayTab) {
@@ -386,6 +389,9 @@ class ChannelProvider extends ChangeNotifier
 
   // 關閉大傳大與大傳小功能
   Future<void> stopRemoteScreenFromFail() async {
+    // 關閉dialog
+    sendRemoteScreenStatusToMembers(RemoteScreenStatus.hostRecreateSuccess);
+    // 關閉功能
     await removeSender(fromSender: true, fromGroup: true);
     await _stopModeratorRemoteScreen(stopPublisher: true);
     await AppOverlayTab().setVisibility(showOverlayTab);
@@ -622,20 +628,51 @@ class ChannelProvider extends ChangeNotifier
         stopReceivedFromHost(closeReason: 'webrtc close');
       },
       onRemoteScreenStatusChange: (RemoteScreenStatus? state) {
-        String title = '';
-        String message = '';
         switch (state) {
           case RemoteScreenStatus.hostFpsZero:
-            title = S.current.v3_zero_fps_capture_failed_title;
-            message = S.current.v3_zero_fps_capture_failed_message;
-            break;
+            providerContainer?.read(dialogProvider.notifier).showDialog(
+                  title: S.current.v3_zero_fps_capture_failed_title,
+                  content: S.current.v3_zero_fps_capture_failed_message,
+                  cancelText: S.current.v3_overlay_retry_dialog_stop_broadcast,
+                  confirmText: S.current.v3_zero_fps_capture_failed_wait,
+                  countdownSeconds: 30,
+                  width: 400,
+                  height: 200,
+                  countdownAction: DialogCountdownAction.cancel,
+                  dismissOnConfirm: false,
+                  onCancel: () {
+                    stopReceivedFromHost(closeReason: 'member click stop');
+                  },
+                  onConfirm: () {
+                    providerContainer
+                        ?.read(dialogProvider.notifier)
+                        .stopCountdownOnly();
+                  },
+                );
+            return;
           case RemoteScreenStatus.hostRecreating:
-            title = S.current.v3_zero_fps_repairing_title;
-            message = S.current.v3_zero_fps_repairing_message;
+            providerContainer?.read(dialogProvider.notifier).hideDialog();
+            providerContainer?.read(dialogProvider.notifier).showProgress(
+                  title: S.current.v3_zero_fps_repairing_title,
+                  content: S.current.v3_zero_fps_repairing_message,
+                  cancelText: S.current.v3_overlay_retry_dialog_end,
+                  onCancel: () {
+                    stopReceivedFromHost(closeReason: 'member click stop');
+                  },
+                );
             break;
           case RemoteScreenStatus.hostRecreateFailure:
-            title = S.current.v3_zero_fps_failed_to_repair_title;
-            message = S.current.v3_zero_fps_failed_to_repair_message;
+            providerContainer?.read(dialogProvider.notifier).hideDialog();
+            providerContainer?.read(dialogProvider.notifier).showDialog(
+                  title: S.current.v3_zero_fps_failed_to_repair_title,
+                  content: S.current.v3_zero_fps_failed_to_repair_message,
+                  confirmText: S.current.v3_zero_fps_close,
+                  width: 280,
+                  height: 200,
+                  onConfirm: () {
+                    stopReceivedFromHost(closeReason: 'member click stop');
+                  },
+                );
             break;
           case RemoteScreenStatus.hostRecreateSuccess:
             providerContainer?.read(dialogProvider.notifier).hideDialog();
@@ -643,16 +680,6 @@ class ChannelProvider extends ChangeNotifier
           default:
             break;
         }
-        if (title.isEmpty && message.isEmpty) return;
-        providerContainer?.read(dialogProvider.notifier).hideDialog();
-        providerContainer?.read(dialogProvider.notifier).showDialog(
-              title: title,
-              content: message,
-              cancelText: S.current.v3_zero_fps_close,
-              width: 280,
-              height: 200,
-              onCancel: () {},
-            );
       },
     );
   }

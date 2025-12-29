@@ -420,5 +420,10 @@
   "v3_lbl_settings_broadcast_device_favorite": "favorite",
   "v3_lbl_settings_broadcast_device_remove": "remove device",
   "v3_lbl_settings_broadcast_connect": "Connect",
-  "v3_lbl_settings_broadcast_connecting": "Connecting"
+  "v3_lbl_settings_broadcast_connecting": "Connecting",
+  "v3_overlay_retry_dialog_title": "Casting interrupted. Please reacquire casting permission.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Stop Broadcast",
+  "v3_overlay_retry_dialog_retry": "Retry",
+  "v3_overlay_retry_dialog_end": "End",
+  "v3_zero_fps_capture_failed_wait": "Keep Waiting"
 }

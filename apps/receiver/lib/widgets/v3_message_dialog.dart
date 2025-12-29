@@ -12,6 +12,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 class V3MessageDialog extends ConsumerWidget {
   const V3MessageDialog({super.key});
 
+  String _withCountdown(
+    DialogState dialogState,
+    DialogCountdownAction action,
+    String text,
+  ) {
+    if (dialogState.countdownAction != action) return text;
+    final remaining = dialogState.countdownRemaining;
+    if (remaining == null) return text;
+    return '$text (${remaining}s)';
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dialogState = ref.watch(dialogProvider);
@@ -58,7 +69,7 @@ class V3MessageDialog extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                 ],
-                if (dialogState.title != null)
+                if (!isProgressDialog && dialogState.title != null)
                   V3AutoHyphenatingText(
                     dialogState.title!,
                     style: dialogState.titleStyle ??
@@ -67,17 +78,43 @@ class V3MessageDialog extends ConsumerWidget {
                           fontSize: 16,
                         ),
                   ),
-                if (dialogState.title != null && dialogState.content != null)
+                if (!isProgressDialog &&
+                    dialogState.title != null &&
+                    dialogState.content != null)
                   const SizedBox(height: 12),
                 if (isProgressDialog)
                   Expanded(
-                    child: Center(
+                    child: Align(
+                      alignment: Alignment.topCenter,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          const SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                            ),
+                          ),
+                          if (dialogState.title != null) ...[
+                            const SizedBox(height: 16),
+                            V3AutoHyphenatingText(
+                              dialogState.title!,
+                              textAlign: TextAlign.center,
+                              style: dialogState.titleStyle ??
+                                  TextStyle(
+                                    color:
+                                        context.tokens.color.vsdslColorNeutral,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
                           if (dialogState.content != null) ...[
+                            const SizedBox(height: 8),
                             V3AutoHyphenatingText(
                               dialogState.content!,
+                              textAlign: TextAlign.center,
                               style: dialogState.contentStyle ??
                                   TextStyle(
                                     color:
@@ -85,13 +122,7 @@ class V3MessageDialog extends ConsumerWidget {
                                     fontSize: 12,
                                   ),
                             ),
-                            const SizedBox(height: 16),
                           ],
-                          const SizedBox(
-                            width: 48,
-                            height: 48,
-                            child: CircularProgressIndicator(strokeWidth: 3),
-                          ),
                         ],
                       ),
                     ),
@@ -113,7 +144,9 @@ class V3MessageDialog extends ConsumerWidget {
                       ),
                     ),
                   ),
-                if (!isProgressDialog) ...[
+                if (!isProgressDialog &&
+                    (dialogState.cancelText != null ||
+                        dialogState.confirmText != null)) ...[
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -159,8 +192,13 @@ class V3MessageDialog extends ConsumerWidget {
                               ref.read(dialogProvider.notifier).hideDialog();
                               dialogState.onCancel?.call();
                             },
-                            child:
-                                V3AutoHyphenatingText(dialogState.cancelText!),
+                            child: V3AutoHyphenatingText(
+                              _withCountdown(
+                                dialogState,
+                                DialogCountdownAction.cancel,
+                                dialogState.cancelText!,
+                              ),
+                            ),
                           ),
                         ),
                       if (dialogState.cancelText != null &&
@@ -203,15 +241,194 @@ class V3MessageDialog extends ConsumerWidget {
                               elevation: WidgetStateProperty.all(4.0),
                             ),
                             onPressed: () {
-                              ref.read(dialogProvider.notifier).hideDialog();
+                              if (dialogState.dismissOnConfirm) {
+                                ref.read(dialogProvider.notifier).hideDialog();
+                              }
                               dialogState.onConfirm?.call();
                             },
-                            child:
-                                V3AutoHyphenatingText(dialogState.confirmText!),
+                            child: V3AutoHyphenatingText(
+                              _withCountdown(
+                                dialogState,
+                                DialogCountdownAction.confirm,
+                                dialogState.confirmText!,
+                              ),
+                            ),
                           ),
                         ),
                     ],
                   ),
+                ],
+                if (isProgressDialog &&
+                    (dialogState.cancelText != null ||
+                        dialogState.confirmText != null)) ...[
+                  const SizedBox(height: 24),
+                  if (dialogState.confirmText == null &&
+                      dialogState.cancelText != null)
+                    SizedBox(
+                      width: double.infinity,
+                      child: V3Focus(
+                        label: S.of(context).v3_lbl_message_dialog_cancel,
+                        identifier: 'v3_qa_message_dialog_cancel',
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            foregroundColor:
+                                WidgetStateProperty.resolveWith<Color>(
+                              (Set<WidgetState> states) {
+                                return context
+                                    .tokens.color.vsdslColorPrimaryVariant;
+                              },
+                            ),
+                            backgroundColor:
+                                WidgetStateProperty.resolveWith<Color>(
+                              (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.pressed)) {
+                                  return context
+                                      .tokens.color.vsdslColorSurface200;
+                                }
+                                return context
+                                    .tokens.color.vsdslColorOnSurfaceInverse;
+                              },
+                            ),
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(9999),
+                                side: BorderSide(
+                                    color: context
+                                        .tokens.color.vsdslColorPrimaryVariant,
+                                    width: 1.0),
+                              ),
+                            ),
+                            elevation: WidgetStateProperty.all(4.0),
+                          ),
+                          onPressed: () {
+                            ref.read(dialogProvider.notifier).hideDialog();
+                            dialogState.onCancel?.call();
+                          },
+                          child: V3AutoHyphenatingText(
+                            _withCountdown(
+                              dialogState,
+                              DialogCountdownAction.cancel,
+                              dialogState.cancelText!,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (dialogState.cancelText != null)
+                          V3Focus(
+                            label: S.of(context).v3_lbl_message_dialog_cancel,
+                            identifier: 'v3_qa_message_dialog_cancel',
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                    return context
+                                        .tokens.color.vsdslColorPrimaryVariant;
+                                  },
+                                ),
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                    if (states.contains(WidgetState.pressed)) {
+                                      return context
+                                          .tokens.color.vsdslColorSurface200;
+                                    }
+                                    return context.tokens.color
+                                        .vsdslColorOnSurfaceInverse;
+                                  },
+                                ),
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(9999),
+                                    side: BorderSide(
+                                        color: context.tokens.color
+                                            .vsdslColorPrimaryVariant,
+                                        width: 1.0),
+                                  ),
+                                ),
+                                elevation: WidgetStateProperty.all(4.0),
+                              ),
+                              onPressed: () {
+                                ref.read(dialogProvider.notifier).hideDialog();
+                                dialogState.onCancel?.call();
+                              },
+                              child: V3AutoHyphenatingText(
+                                _withCountdown(
+                                  dialogState,
+                                  DialogCountdownAction.cancel,
+                                  dialogState.cancelText!,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (dialogState.cancelText != null &&
+                            dialogState.confirmText != null)
+                          const SizedBox(width: 8),
+                        if (dialogState.confirmText != null)
+                          V3Focus(
+                            label: S.of(context).v3_lbl_message_dialog_confirm,
+                            identifier: 'v3_qa_message_dialog_confirm',
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                    if (states.contains(WidgetState.pressed)) {
+                                      return context
+                                          .tokens.color.vsdslColorSurface300;
+                                    }
+                                    return context.tokens.color
+                                        .vsdslColorOnSurfaceInverse;
+                                  },
+                                ),
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                    if (states.contains(WidgetState.pressed)) {
+                                      return context.tokens.color
+                                          .vsdslColorPrimaryVariant;
+                                    }
+                                    return context
+                                        .tokens.color.vsdslColorPrimary;
+                                  },
+                                ),
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(9999),
+                                  ),
+                                ),
+                                elevation: WidgetStateProperty.all(4.0),
+                              ),
+                              onPressed: () {
+                                if (dialogState.dismissOnConfirm) {
+                                  ref
+                                      .read(dialogProvider.notifier)
+                                      .hideDialog();
+                                }
+                                dialogState.onConfirm?.call();
+                              },
+                              child: V3AutoHyphenatingText(
+                                _withCountdown(
+                                  dialogState,
+                                  DialogCountdownAction.confirm,
+                                  dialogState.confirmText!,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                 ],
               ],
             ),
