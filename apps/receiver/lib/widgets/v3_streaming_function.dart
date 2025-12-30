@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
@@ -15,7 +16,10 @@ import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_touchback_one_device_alert.dart';
+import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_mirror/bluetooth_touchback_status.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -546,41 +550,75 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
     );
   }
 
-  Future<void> onTouchBackPressed(MirrorStateProvider mirrorStateProvider,
-      bool isMirrorRequest, BuildContext context) async {
-    mirrorStateProvider.bluetoothTouchbackIndex = widget.index;
-    final hasNameLabel = _hasNameLabel();
+  Future<bool> ensureBluetoothOn(BuildContext context) async {
+    final current = await FlutterBluePlus.adapterState.first;
+    if (current == BluetoothAdapterState.on) return true;
 
-    if (isMirrorRequest) {
-      var connection =
-          HybridConnectionList().getConnection<MirrorRequest>(widget.index);
-      if (connection.mirrorState == MirrorState.mirroring) {
-        if (connection.touchBackState()) {
-          await _disableAllTouchback();
-          if (context.mounted) {
-            if (!mounted) return;
-
-            setState(() {
-              V3Toast().makeBluetoothStateToast(
-                  context, S.current.v3_touchback_disable_message, widget.index,
-                  hasNameLabel: hasNameLabel);
-            });
-          }
-        } else {
-          final success = await connection.enableTouchback();
-          // 更新尺寸
-          mirrorStateProvider.onWidgetSizeChanged();
-          log.info('enable bluetooth touchback $success');
-          // 更新按鈕狀態
-          if (!mounted) return;
-          setState(() {
-            if (!success) {
-              _showTouchbackAlertDialog(context, mirrorStateProvider);
-            }
-          });
-        }
+    // ANDROID：可直接呼叫系統對話框開啟藍牙
+    if (!kIsWeb && Platform.isAndroid) {
+      await FlutterBluePlus.turnOn(); // 觸發系統啟用藍牙對話框（ACTION_REQUEST_ENABLE）
+      try {
+        // 等待狀態變為 on（最多 8 秒）
+        await FlutterBluePlus.adapterState
+            .where((s) => s == BluetoothAdapterState.on)
+            .first
+            .timeout(const Duration(seconds: 10));
+        return true;
+      } catch (_) {
+        // 若使用者拒絕或逾時，退而求其次導到設定頁
+        // await AppSettings.openBluetoothSettings();
+        return false;
       }
     }
+    return false;
+  }
+
+  Future<void> onTouchBackPressed(MirrorStateProvider mirrorStateProvider,
+      bool isMirrorRequest, BuildContext context) async {
+    EasyThrottle.throttle(
+      'onTouchBackPressed',
+      const Duration(seconds: 5),
+      () async {
+        final ok = await ensureBluetoothOn(context);
+        if (!ok) {
+          return;
+        }
+
+        mirrorStateProvider.bluetoothTouchbackIndex = widget.index;
+        final hasNameLabel = _hasNameLabel();
+
+        if (isMirrorRequest) {
+          var connection =
+              HybridConnectionList().getConnection<MirrorRequest>(widget.index);
+          if (connection.mirrorState == MirrorState.mirroring) {
+            if (connection.touchBackState()) {
+              await _disableAllTouchback();
+              if (context.mounted) {
+                if (!mounted) return;
+
+                setState(() {
+                  V3Toast().makeBluetoothStateToast(context,
+                      S.current.v3_touchback_disable_message, widget.index,
+                      hasNameLabel: hasNameLabel);
+                });
+              }
+            } else {
+              final success = await connection.enableTouchback();
+              // 更新尺寸
+              mirrorStateProvider.onWidgetSizeChanged();
+              log.info('enable bluetooth touchback $success');
+              // 更新按鈕狀態
+              if (!mounted) return;
+              setState(() {
+                if (!success) {
+                  _showTouchbackAlertDialog(context, mirrorStateProvider);
+                }
+              });
+            }
+          }
+        }
+      },
+    );
   }
 
   bool _hasNameLabel() {

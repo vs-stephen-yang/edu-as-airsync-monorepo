@@ -685,7 +685,7 @@ class MirrorStateProvider extends ChangeNotifier
     if (status == BluetoothTouchbackStatus.closedByUser ||
         status == BluetoothTouchbackStatus.adapterEnabledFailed ||
         status == BluetoothTouchbackStatus.devicePairedFailed ||
-        // status == BluetoothTouchbackStatus.hidProfileServiceStartedFailed ||
+        status == BluetoothTouchbackStatus.hidProfileServiceStartedFailed ||
         status == BluetoothTouchbackStatus.hidDisconnected ||
         status == BluetoothTouchbackStatus.deviceFoundFailed) {
       for (MirrorRequest request
