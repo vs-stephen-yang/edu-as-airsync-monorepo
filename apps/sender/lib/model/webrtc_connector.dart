@@ -35,6 +35,19 @@ import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
 
+class _EmaState {
+  double emaX;
+  double emaY;
+
+  double lastSentX;
+  double lastSentY;
+
+  int lastSentUs; // microsecondsSinceEpoch
+
+  _EmaState(
+      this.emaX, this.emaY, this.lastSentX, this.lastSentY, this.lastSentUs);
+}
+
 class WebRTCConnector {
   WebRTCConnector({
     required this.preset,
@@ -168,6 +181,14 @@ class WebRTCConnector {
 
   bool isRunning = false;
   StreamSubscription? _subSlideShow;
+
+  final Map<int, _EmaState> _emaById = {};
+
+  // EMA（指數移動平均）：alpha 越小越平滑但延遲越大
+  final double _emaAlpha = 0.35;
+
+  // 降採樣：小於這個像素距離就不送 MOVE（抑制抖動 + 減點）
+  final double _minMovePx = 10.0;
 
   //region connect and communication
 
@@ -765,14 +786,86 @@ class WebRTCConnector {
     }
 
     // Normal state: send sanitized and clamped normalized coordinates
-    unawaited(_flutterInputInjectionPlugin.sendNormalizedTouch(
-      _screenId,
-      autoVirtualDisplay,
-      action,
+    final curX = remoteX;
+    final curY = remoteY;
+    final nowUs = DateTime.now().microsecondsSinceEpoch;
+
+    // START：初始化 EMA 與 lastSent，直接送
+    if (action == FlutterInputInjection.TOUCH_POINT_START) {
+      _emaById[id] = _EmaState(curX, curY, curX, curY, nowUs);
+
+      unawaited(_flutterInputInjectionPlugin.sendNormalizedTouch(
+        _screenId,
+        autoVirtualDisplay,
+        FlutterInputInjection.TOUCH_POINT_START,
+        id,
+        curX,
+        curY,
+      ));
+      return;
+    }
+
+    // 確保狀態存在（容錯）
+    final st = _emaById.putIfAbsent(
       id,
-      remoteX,
-      remoteY,
-    ));
+      () => _EmaState(curX, curY, curX, curY, nowUs),
+    );
+
+    // EMA 濾波（normalized）
+    final fx = (_emaAlpha * curX) + ((1.0 - _emaAlpha) * st.emaX);
+    final fy = (_emaAlpha * curY) + ((1.0 - _emaAlpha) * st.emaY);
+    st.emaX = fx;
+    st.emaY = fy;
+
+    // END：送 END，清狀態
+    if (action == FlutterInputInjection.TOUCH_POINT_END) {
+      unawaited(_flutterInputInjectionPlugin.sendNormalizedTouch(
+        _screenId,
+        autoVirtualDisplay,
+        FlutterInputInjection.TOUCH_POINT_END,
+        id,
+        fx.clamp(0.0, 1.0),
+        fy.clamp(0.0, 1.0),
+      ));
+      _emaById.remove(id);
+      return;
+    }
+
+    // MOVE：先做距離閾值 +（可選）時間節流
+    if (action == FlutterInputInjection.TOUCH_POINT_MOVE) {
+      // 如果你 normal state 不會更新 screen size，至少確保這裡拿到合理值
+      final screenW = sanitizeDouble(_screenWidth, 0.0);
+      final screenH = sanitizeDouble(_screenHeight, 0.0);
+
+      // 用「上次送出的點」計算像素距離
+      final dxPx = (fx - st.lastSentX).abs() * screenW;
+      final dyPx = (fy - st.lastSentY).abs() * screenH;
+      final distPx = sqrt(dxPx * dxPx + dyPx * dyPx);
+
+      // 距離太小：不送（抑制抖動 + 減點）
+      if (distPx < _minMovePx) {
+        return;
+      }
+
+      final sx = fx.clamp(0.0, 1.0);
+      final sy = fy.clamp(0.0, 1.0);
+
+      unawaited(_flutterInputInjectionPlugin.sendNormalizedTouch(
+        _screenId,
+        autoVirtualDisplay,
+        FlutterInputInjection.TOUCH_POINT_MOVE,
+        id,
+        sx,
+        sy,
+      ));
+
+      // 更新 lastSent
+      st.lastSentX = sx;
+      st.lastSentY = sy;
+      st.lastSentUs = nowUs;
+
+      return;
+    }
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
