@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bonsoir/bonsoir.dart';
+import 'package:dart_ping/dart_ping.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -40,15 +41,14 @@ class DisplayServiceBroadcast {
   int get directChannelPort => _directChannelPort;
 
   BonsoirBroadcast? _broadcast;
-  DateTime previousRestartTime = DateTime.fromMillisecondsSinceEpoch(0);
 
   // ---- 序列化所有 start/stop，避免併發 ----
   Future<void> _ops = Future.value();
 
-  bool _isBroadcasting = false;
-  bool _starting = false;
-  bool _restartQueued = false;
+  Timer? _restartTimer;
+  static const Duration _restartDebounce = Duration(seconds: 5);
 
+  //
   UdpResponder? udpResponder;
 
   DisplayServiceBroadcast._internal(
@@ -59,12 +59,13 @@ class DisplayServiceBroadcast {
     this._invitedToGroupOption,
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
-    udpResponder ??= UdpResponder();
-    _queue(() async => _start());
   }
 
   void dispose() {
+    log.info('Broadcast dispose called');
     _instanceInfo.removeListener(_onInstanceInfoUpdated);
+    _restartTimer?.cancel();
+    _restartTimer = null;
     _queue(() async => _stop());
     _singleton = null;
   }
@@ -75,8 +76,8 @@ class DisplayServiceBroadcast {
       return Future.value();
     }
     _invitedToGroupOption = option;
-    // Force a restart so TXT attributes reflect the new value.
-    return _restart(true);
+    // Use debounce to avoid burst restarts from rapid changes.
+    return _restart();
   }
 
   void onBroadcastRestart() {
@@ -89,7 +90,10 @@ class DisplayServiceBroadcast {
   }
 
   void _onInstanceInfoUpdated() {
-    if (!_isInstanceInfoComplete()) {
+    final isComplete = _isInstanceInfoComplete();
+    log.info(
+        'Broadcast instance info updated: complete=$isComplete deviceName=${_instanceInfo.deviceName} displayCode=${_instanceInfo.displayCode} ip=${_instanceInfo.ipAddress}');
+    if (!isComplete) {
       _queue(() async => _stop());
       return;
     }
@@ -104,11 +108,11 @@ class DisplayServiceBroadcast {
   }
 
   Future<void> _start() async {
-    if (_starting || _isBroadcasting) return;
     if (!_isInstanceInfoComplete()) return;
 
-    _starting = true;
     try {
+      log.info(
+          'Broadcast start begin: type=$_serviceType port=$_directChannelPort');
       final att = {
         'fn': _instanceInfo.deviceName,
         'ver': _version,
@@ -125,55 +129,78 @@ class DisplayServiceBroadcast {
         attributes: att,
       );
 
-      _broadcast = BonsoirBroadcast(service: service);
-      await _broadcast!.ready;
-      await _broadcast!.start();
-      _isBroadcasting = true;
-      unawaited(udpResponder?.start(service.toJson()));
+      // udp
+      udpResponder ??= UdpResponder();
+      final udpStarted = await udpResponder?.start(service.toJson());
+      log.info('UDP responder start result: $udpStarted');
+
+      _broadcast ??= BonsoirBroadcast(service: service);
+      await _broadcast?.ready;
+      await _broadcast?.start();
+      log.info('Broadcast start completed');
     } catch (e) {
       log.warning('Bonsoir start failed: $e');
+      try {
+        await _broadcast?.stop();
+      } catch (stopError) {
+        log.warning('Bonsoir cleanup failed: $stopError');
+      }
       _broadcast = null;
-      _isBroadcasting = false;
-    } finally {
-      _starting = false;
+      udpResponder?.stop();
+      udpResponder = null;
     }
   }
 
   Future<void> _stop() async {
     try {
-      if (_broadcast != null) {
-        await _broadcast!.stop();
-      }
-      udpResponder?.stop();
+      log.info('Broadcast stop begin');
+      await _broadcast?.stop();
     } catch (e) {
       log.warning('Bonsoir stop failed: $e');
     } finally {
-      _isBroadcasting = false;
+      udpResponder?.stop();
       _broadcast = null;
+      udpResponder = null;
+      log.info('Broadcast stop completed');
     }
   }
 
   Future<void> _restart([bool force = false]) {
-    final now = DateTime.now();
-    // Throttle restarts within 5s unless explicitly forced
-    if (!force && now.difference(previousRestartTime).inSeconds < 5) {
-      _restartQueued = true;
-      return Future.value();
+    if (force) {
+      if (_restartTimer != null) {
+        _restartTimer?.cancel();
+        _restartTimer = null;
+        log.info('Broadcast restart debounce canceled (force)');
+      }
+      log.info('Broadcast restart forced');
+      return _queue(() async => _performRestart());
     }
-    previousRestartTime = now;
 
-    return _queue(() async {
-      await _stop();
-      // Small buffer for Android NSD to fully release its listener
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (_isInstanceInfoComplete()) {
-        await _start();
-      }
-      if (_restartQueued) {
-        _restartQueued = false;
-        await _restart(true);
-      }
+    final hadPending = _restartTimer != null;
+    _restartTimer?.cancel();
+    log.info('Broadcast restart debounce scheduling (delay=$_restartDebounce)');
+    _restartTimer = Timer(_restartDebounce, () {
+      _restartTimer = null;
+      log.info('Broadcast restart debounce elapsed');
+      _queue(() async => _performRestart());
     });
+    log.info(hadPending
+        ? 'Broadcast restart debounce reset'
+        : 'Broadcast restart debounce scheduled');
+    return Future.value();
+  }
+
+  Future<void> _performRestart() async {
+    log.info(
+        'Broadcast restart performing (complete=${_isInstanceInfoComplete()})');
+    await _stop();
+    // Small buffer for Android NSD to fully release its listener
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (_isInstanceInfoComplete()) {
+      await _start();
+    } else {
+      log.info('Broadcast restart skipped: instance info incomplete');
+    }
   }
 }
 
@@ -187,7 +214,7 @@ class UdpResponder {
 
   int? get activePort => _activePort;
 
-  Future<void> start(Map<String, dynamic> att, {int port = defaultPort}) async {
+  Future<bool> start(Map<String, dynamic> att, {int port = defaultPort}) async {
     // Close existing socket before creating a new one to prevent resource leak
     stop();
 
@@ -226,6 +253,7 @@ class UdpResponder {
       _sock = null;
       _activePort = null;
     }
+    return bound;
   }
 
   void stop() {
@@ -254,6 +282,21 @@ class UdpResponder {
 
     // All ports failed
     throw lastException ?? Exception('UDP query failed on all ports');
+  }
+
+  static Future<bool> checkConnection(String ip) async {
+    try {
+      final ping = Ping(ip, count: 1);
+      // 監聽 stream 取得結果
+      final data = await ping.stream.first;
+      if (data.response != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 
   static Future<Map<String, dynamic>> _tryAskPeerOnPort(

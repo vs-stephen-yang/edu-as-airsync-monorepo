@@ -90,6 +90,7 @@ dependencies:
   amplitude_flutter: ^4.3.9
   flutter_sticky_header: ^0.7.0
   flutter_blue_plus: ^2.0.1
+  dart_ping: ^9.0.1
 
   # ViewSonic plug-in
   app_ota_flutter:
