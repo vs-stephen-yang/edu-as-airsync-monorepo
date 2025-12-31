@@ -406,8 +406,9 @@ class GroupProvider extends StateNotifier<GroupState> {
               viaIp: client.viaIp(),
             );
           } catch (a) {
-            // UDP timeout，device offline
-            client = GroupBean.fromJson(value, favorite: true, offline: true);
+            // 舊版本沒有udp，會使用ping的方式確認
+            final offline = await UdpResponder.checkConnection(client.ip());
+            client = GroupBean.fromJson(value, favorite: true, offline: offline);
           }
 
           // 排除自己和已經存在的設備

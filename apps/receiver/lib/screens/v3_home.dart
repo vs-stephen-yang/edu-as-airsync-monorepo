@@ -8,7 +8,6 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/multi_window_provider.dart';
-import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/wifi_status_util.dart';
 import 'package:display_flutter/widgets/streaming/streaming_feature_wrapper.dart';
@@ -94,7 +93,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     AppManagerConfig().stopHandleManagerUpdateRequest();
-    DisplayServiceBroadcast.instance?.dispose();
   }
 
   @override
