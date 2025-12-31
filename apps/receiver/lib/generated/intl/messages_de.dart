@@ -616,8 +616,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Broadcast-Boards-Menü öffnen",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Verbinden",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Verbinden wird hergestellt"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("Favorit"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("Gerät entfernen"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Broadcast-Geräte-Menü öffnen",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Boards über IP finden",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -685,6 +697,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "%s auswählen",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage(
+      "IP hinzufügen",
+    ),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("löschen"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Wissensdatenbank",
     ),
@@ -759,6 +775,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast-Umschaltung"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Bewegen",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Streaming-Ansicht erweitern",
     ),
@@ -878,6 +897,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-Code",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Bitte starten Sie die Übertragungssitzung bei Bedarf neu.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Bildschirmaufnahme wurde gestoppt",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Abbrechen",
     ),
@@ -917,6 +942,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Absendergeräte",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Boards über IP finden",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "IP-Adresse eingeben",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "nicht gefunden",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1144,6 +1178,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "Warten, bis andere beitreten",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Als nächstes"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Derzeit kann kein Screenshot von der Quell-App abgerufen werden. Ein Erfassungsfehler könnte aufgetreten sein. Bitte kehren Sie zur Quell-App zurück, um einen neuen Screenshot zu erstellen und versuchen Sie es erneut.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Screenshot-Erfassung fehlgeschlagen",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Schließen"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Der Screenshot-Mechanismus in der Quell-App konnte nicht neu gestartet werden.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Screenshot-Funktion konnte nicht repariert werden",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Der Bildschirm konnte nicht erfasst und an die Projektions-App gesendet werden. Möchten Sie die Screenshot-Funktion neu starten und es erneut versuchen oder die Projektion beenden?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Erfolgreich neu gestartet",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Der Screenshot-Mechanismus in der Quell-App wird neu gestartet. Dies kann einige Sekunden dauern. Bitte warten.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Screenshot-Funktion wird repariert",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Neustart fehlgeschlagen",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Erfolgreich neu gestartet",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Bitte warten.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Neustart",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Systemupdates werden heruntergeladen",
     ),

@@ -615,8 +615,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Atvērt apraides tāfeļu izvēlni",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Savienot",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Savienojas"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("izlase"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("noņemt ierīci"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Atvērt apraides ierīču izvēlni",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "atrast dēļus pēc ip",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -684,6 +696,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Izvēlēties %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage(
+      "pievienot ip",
+    ),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("notīrīt"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Zināšanu bāze",
     ),
@@ -756,6 +772,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast pārslēgs"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Pārvietot",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Izvērst straumēšanas skatu",
     ),
@@ -921,6 +940,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Sūtītāja ierīcēm",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Atrast dēļus pēc IP",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Ievadiet IP adresi",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "neatrast",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1145,6 +1173,44 @@ class MessageLookup extends MessageLookupByLibrary {
       "Gaida, kamēr citi pievienosies",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Tālāk"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Pašlaik nav iespējams iegūt ekrānuzņēmumu no avota lietotnes. Iespējams, radās kļūda uzņemšanas laikā. Lūdzu, atgriezieties avota lietotnē, lai uzņemtu jaunu ekrānuzņēmumu, un mēģiniet vēlreiz.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Neizdevās uzņemt ekrānuzņēmumu",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Aizvērt"),
+    "v3_zero_fps_failed_to_repair_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Nav iespējams restartēt ekrānuzņēmuma mehānismu avota lietotnē.",
+        ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Neizdevās salabot ekrānuzņēmuma funkciju",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Nav iespējams uzņemt ekrānu un nosūtīt to projekcijas lietotnei. Vai vēlaties restartēt ekrānuzņēmuma funkciju un mēģināt vēlreiz, vai pārtraukt projekciju?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Restartēts veiksmīgi",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Restartē ekrānuzņēmuma mehānismu avota lietotnē. Tas var aizņemt dažas sekundes. Lūdzu, uzgaidiet.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Ekrānuzņēmuma funkcijas labošana",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Restartēšana neizdevās",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Restartēts veiksmīgi",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Lūdzu, uzgaidiet.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Restartēšana",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Lejupielādē sistēmas atjauninājumus",
     ),

@@ -610,8 +610,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Yayın panoları menüsünü aç",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Bağlan",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Bağlanıyor"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("favori"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("cihazı kaldır"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Yayın cihazları menüsünü aç",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "ip ile panoları bul",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -675,6 +687,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "%s seç",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("ip ekle"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("temizle"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Bilgi Tabanı",
     ),
@@ -741,6 +755,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast düğmesi"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Taşı",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Akış görünümünü genişlet",
     ),
@@ -899,6 +916,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Gönderici cihazlar",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "IP ile Panoları Bul",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "IP Adresi Girin",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "bulunamadı",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1122,6 +1148,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "Diğerlerinin katılmasını bekliyor",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Sırada"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Kaynak uygulamadan ekran görüntüsü alınamıyor. Bir alma hatası meydana gelmiş olabilir. Lütfen yeni bir ekran görüntüsü almak için kaynak uygulamaya geri dönün ve tekrar deneyin.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Ekran Görüntüsü Alma Başarısız",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Kapat"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Kaynak uygulamada ekran görüntüsü mekanizması yeniden başlatılamıyor.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Ekran Görüntüsü Özelliği Onarılamadı",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Ekranı yakalayıp projeksiyon uygulamasına gönderilemiyor. Ekran görüntüsü özelliğini yeniden başlatıp tekrar denemek mi yoksa projeksiyonu durdurmak mı istersiniz?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Başarıyla yeniden başlatıldı",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Kaynak uygulamada ekran görüntüsü mekanizması yeniden başlatılıyor. Bu birkaç saniye sürebilir. Lütfen bekleyin.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Ekran Görüntüsü Özelliği Onarılıyor",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Yeniden başlatma başarısız",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Başarıyla yeniden başlatıldı",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Lütfen bekleyin.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Yeniden Başlatılıyor",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Sistem güncellemeleri indiriliyor",
     ),

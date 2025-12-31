@@ -612,8 +612,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Abrir menu de quadros de transmissão",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Conectar",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Conectando"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("favorito"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("remover dispositivo"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Abrir menu de dispositivos de transmissão",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "encontrar placas via ip",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -681,6 +693,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Selecionar %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage(
+      "adicionar ip",
+    ),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("limpar"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Base de Conhecimento",
     ),
@@ -755,6 +771,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Alternar Miracast"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Mover",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Expandir visualização de transmissão",
     ),
@@ -919,6 +938,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Dispositivos transmissores",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Encontrar Placas via IP",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Digite o Endereço IP",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "não encontrado",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1151,6 +1179,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aguardando outros participantes",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Próximo"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Atualmente não é possível obter uma captura de tela do aplicativo de origem. Um erro de captura pode ter ocorrido. Por favor, volte ao aplicativo de origem para tirar uma nova captura de tela e tente novamente.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Falha na Captura de Tela",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Fechar"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Não foi possível reiniciar o mecanismo de captura de tela no aplicativo de origem.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Falha ao Reparar o Recurso de Captura de Tela",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Não foi possível capturar a tela e enviá-la para o aplicativo de projeção. Gostaria de reiniciar o recurso de captura de tela e tentar novamente ou parar a projeção?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Reiniciado com sucesso",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Reiniciando o mecanismo de captura de tela no aplicativo de origem. Isso pode levar alguns segundos. Por favor, aguarde.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Reparando o Recurso de Captura de Tela",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Falha na reinicialização",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Reiniciado com sucesso",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Por favor, aguarde.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Reiniciando",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Baixando atualizações do sistema",
     ),

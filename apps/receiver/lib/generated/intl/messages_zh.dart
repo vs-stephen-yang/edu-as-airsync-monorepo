@@ -559,6 +559,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("開啟或關閉自動接受螢幕鏡射"),
     "v3_lbl_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("開啟或關閉AirPlay驗證碼"),
+    "v3_lbl_settings_moderator_mode": MessageLookupByLibrary.simpleMessage(
+      "開啟或關閉主持人模式",
+    ),
     "v3_lbl_settings_only_when_casting_info":
         MessageLookupByLibrary.simpleMessage("更多螢幕廣播資訊"),
     "v3_lbl_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
@@ -767,7 +770,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("依據裝置端可支援的解析度，支援最高QHD解析度"),
     "v3_settings_device_high_image_quality_on_desc":
         MessageLookupByLibrary.simpleMessage(
-          "依據裝置端可支援的解析度，支援最高UHD 4K(web sender)或QHD以上解析度(Windows及macOS sender)，需良好的網路環境．",
+          "依據裝置端可支援的解析度，支援最高UHD (4K) 或QHD (2K) 以上解析度，需良好的網路環境．",
         ),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("開機後自動執行 AirSync"),
@@ -831,6 +834,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_mirroring_require_passcode":
         MessageLookupByLibrary.simpleMessage("需輸入AirPlay密碼"),
+    "v3_settings_moderator_mode": MessageLookupByLibrary.simpleMessage("主持人模式"),
     "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
       "只有在分享螢幕時，才會接收廣播。",
     ),
@@ -911,6 +915,42 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_waiting_desc": MessageLookupByLibrary.simpleMessage("等待螢幕分享中"),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage("等待其他人加入"),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "目前無法取得影像，請在發送端重新傳輸影像",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "影像擷取失敗",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("關閉"),
+    "v3_zero_fps_failed_to_repair_message":
+        MessageLookupByLibrary.simpleMessage("無法重新傳輸影像"),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "重新傳輸影像失敗",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "無法成功截取螢幕畫面，是否重試或停止截取螢幕畫面？",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "重新傳輸影像成功",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "重新傳輸影像中，請稍後",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "重建影像中",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "重新傳輸影像失敗",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "重新傳輸影像成功",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "請稍候",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "重新傳輸影像中",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage("更新下載中"),
   };
 }

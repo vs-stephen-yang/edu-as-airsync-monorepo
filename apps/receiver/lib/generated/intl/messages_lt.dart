@@ -617,8 +617,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Atidaryti transliavimo lentų meniu",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Prisijungti",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Jungiamasi"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("mėgstamiausias"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("pašalinti įrenginį"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Atidarykite transliavimo įrenginių meniu",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "rasti lentas pagal ip",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -685,6 +697,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Pasirinkite %s",
+    ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage(
+      "pridėti ip",
+    ),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage(
+      "išvalyti",
     ),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Žinių bazė",
@@ -758,6 +776,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("\"Miracast\" perjungimas"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Perkelti",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Išplėskite srautinio perdavimo rodinį",
     ),
@@ -930,6 +951,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Siuntėjo įrenginius",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Rasti lentas pagal IP",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Įveskite IP adresą",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "nerasta",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1155,6 +1185,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "Laukiama, kol prisijungs kiti",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Toliau"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Šiuo metu nepavyksta gauti ekrano kopijos iš šaltinio programos. Gali būti įvykusi klaida. Grįžkite į šaltinio programą, kad padarytumėte naują ekrano kopiją, ir bandykite dar kartą.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Nepavyko padaryti ekrano kopijos",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Uždaryti"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Nepavyksta paleisti iš naujo ekrano kopijos mechanizmo šaltinio programoje.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Nepavyko pataisyti ekrano kopijos funkcijos",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Nepavyksta užfiksuoti ekrano ir nusiųsti į projekcijos programą. Ar norėtumėte paleisti iš naujo ekrano kopijos funkciją ir bandyti dar kartą, ar sustabdyti projekciją?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Sėkmingai paleista iš naujo",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Paleidžiama iš naujo ekrano kopijos mechanizmas šaltinio programoje. Tai gali užtrukti kelias sekundes. Prašome palaukti.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Taisoma ekrano kopijos funkcija",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Paleidimas iš naujo nepavyko",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Sėkmingai paleista iš naujo",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Prašome palaukti.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Paleidžiama iš naujo",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Atsisiunčiami sistemos atnaujinimai",
     ),
