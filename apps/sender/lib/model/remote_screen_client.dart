@@ -177,7 +177,7 @@ class RtcScreenClient extends RemoteScreenClient {
       }
     };
 
-    _client!.onSignalClose = (int code, String reason) {
+    _client!.onSignalClose = (int code, String? reason) {
       log.info('Remote screen: signal closed');
       onClose();
     };
