@@ -546,8 +546,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "ブロードキャストボードメニューを開く",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "接続",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("接続中"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("お気に入り"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("デバイスを削除"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "ブロードキャストデバイスメニューを開く",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "IP アドレスでボードを検索",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage("ディスプレイグループへブロードキャストメニューを開く"),
@@ -603,6 +615,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "%s を選択",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("IP を追加"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("クリア"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "知識ベース",
     ),
@@ -667,6 +681,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("ミラーキャストの切り替え"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "移動",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "ストリーミング表示を拡大",
     ),
@@ -740,6 +757,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_moderator_mode": MessageLookupByLibrary.simpleMessage("モデレーターモード"),
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       " セッションに参加した",
+    ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage("終了"),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "リトライ",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("ブロードキャストを停止"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "画面共有が中断されました。再度、許可を行ってください。",
     ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "キャスティング",
@@ -815,6 +841,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "デバイス",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "IP アドレスでボードを検索",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "IP アドレスを入力",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "見つかりません",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1022,6 +1057,45 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_waiting_join": MessageLookupByLibrary.simpleMessage("他の参加者を待っています。"),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("次の番"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "ソースアプリからスクリーンショットを取得できません。キャプチャエラーが発生した可能性があります。ソースアプリに戻ってスクリーンショットを撮り直し、再度お試しください。",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "スクリーンショットの取得に失敗しました。",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "待機を継続",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("閉じる"),
+    "v3_zero_fps_failed_to_repair_message":
+        MessageLookupByLibrary.simpleMessage("ソースアプリのスクリーンショット機能を再起動できませんでした。"),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "スクリーンショット機能の修復に失敗しました。",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "画面をキャプチャして投影アプリに送信できません。スクリーンショット機能を再起動してもう一度試しますか？それとも投影を停止しますか？",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "スクリーンショットエラー",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "ソースアプリのスクリーンショット機能を再起動しています。これには数秒かかる場合があります。お待ちください。",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "スクリーンショット機能を修復中",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "再起動に失敗しました。",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "再起動に成功しました。",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "お待ちください。",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "再起動中",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "システム更新をダウンロードしています。",
     ),

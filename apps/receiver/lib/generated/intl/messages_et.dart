@@ -597,8 +597,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Ava edastustahvlite menüü",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Ühenda",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Ühendamine"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("lemmik"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("eemalda seade"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Ava edastatavate seadmete menüü",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "leia tahvlid IP kaudu",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -666,6 +678,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Vali %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("lisa ip"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("kustuta"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Teadmistepagas",
     ),
@@ -740,6 +754,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast lüliti"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Liiguta",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Laienda voogedastuse vaade",
     ),
@@ -903,6 +920,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Saatjaseadmetele",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Leia tahvlid IP kaudu",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Sisestage IP-aadress",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "ei leia",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1127,6 +1153,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ootab teiste liitumist",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Järgmine"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Praegu ei ole võimalik hankida ekraanipilti allikarakendusest. Võib-olla tekkis jäädvustamisviga. Palun pöörduge tagasi allikarakendusse, et teha uus ekraanipilt ja proovige uuesti.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Ekraanipildi jäädvustamine ebaõnnestus",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Sulge"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Ekraanipildi mehhanismi ei õnnestunud allikarakenduses taaskäivitada.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Ekraanipildi funktsiooni parandamine ebaõnnestus",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Ekraani ei õnnestu jäädvustada ja saata projektsioonirakendusse. Kas soovite ekraanipildi funktsiooni taaskäivitada ja uuesti proovida või projektsiooni peatada?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Taaskäivitamine õnnestus",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Ekraanipildi mehhanismi taaskäivitamine allikarakenduses. See võib võtta paar sekundit. Palun oodake.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Ekraanipildi funktsiooni parandamine",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Taaskäivitamine ebaõnnestus",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Taaskäivitamine õnnestus",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Palun oodake.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Taaskäivitamine",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Süsteemivärskenduste allalaadimine",
     ),

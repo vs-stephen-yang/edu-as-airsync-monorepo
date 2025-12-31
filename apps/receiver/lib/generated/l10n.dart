@@ -3861,10 +3861,10 @@ class S {
     );
   }
 
-  /// `Maximum UHD (4K) screen sharing from web sender and 3K+ from Windows and macOS sender depending on the sender screen resolution. Requires a high quality network.`
+  /// `Maximum UHD (4K) screen sharing or QHD (2K) depending on the sender screen resolution. Requires a high quality network.`
   String get v3_settings_device_high_image_quality_on_desc {
     return Intl.message(
-      'Maximum UHD (4K) screen sharing from web sender and 3K+ from Windows and macOS sender depending on the sender screen resolution. Requires a high quality network.',
+      'Maximum UHD (4K) screen sharing or QHD (2K) depending on the sender screen resolution. Requires a high quality network.',
       name: 'v3_settings_device_high_image_quality_on_desc',
       desc: '',
       args: [],
@@ -4126,6 +4126,16 @@ class S {
     );
   }
 
+  /// `Move`
+  String get v3_lbl_streaming_shortcut_move {
+    return Intl.message(
+      'Move',
+      name: 'v3_lbl_streaming_shortcut_move',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Find Boards via IP`
   String get v3_settings_broadcast_ip {
     return Intl.message(
@@ -4176,10 +4186,10 @@ class S {
     );
   }
 
-  /// `Find Boards via IP`
+  /// `find boards via ip`
   String get v3_lbl_settings_broadcast_ip_hint {
     return Intl.message(
-      'Find Boards via IP',
+      'find boards via ip',
       name: 'v3_lbl_settings_broadcast_ip_hint',
       desc: '',
       args: [],

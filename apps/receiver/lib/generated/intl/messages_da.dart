@@ -603,8 +603,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Åbn udsendelsestavle-menu",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Forbind",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Forbinder"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("favorit"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("fjern enhed"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Åbn udsendelsesenheds-menu",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "find boards via ip",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -668,6 +680,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Vælg %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("tilføj ip"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("ryd"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Vidensbase",
     ),
@@ -736,6 +750,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast skift"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Flyt",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Udvid streamingvisning",
     ),
@@ -856,6 +873,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-kode",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Genstart venligst udsendelsessessionen, hvis det er nødvendigt.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Skærmoptagelse er stoppet",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Annuller",
     ),
@@ -892,6 +915,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Afsenderenheder",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Find boards via IP",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Indtast IP-adresse",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "ikke fundet",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1113,6 +1145,44 @@ class MessageLookup extends MessageLookupByLibrary {
       "Venter på, at andre deltager",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Næste"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Kan i øjeblikket ikke hente et skærmbillede fra kildeappen. En fejl ved optagelse kan være opstået. Vend tilbage til kildeappen for at tage et nyt skærmbillede og prøv igen.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Skærmbillede mislykkedes",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Luk"),
+    "v3_zero_fps_failed_to_repair_message":
+        MessageLookupByLibrary.simpleMessage(
+          "Kunne ikke genstarte skærmbillede mekanismen i kildeappen.",
+        ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Kunne ikke reparere skærmbilledefunktion",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Kan ikke fange skærmen og sende den til projektionsappen. Vil du genstarte skærmbilledefunktionen og prøve igen, eller stoppe projektionen?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Genstartet med succes",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Genstarter skærmbillede mekanismen i kildeappen. Dette kan tage et par sekunder. Vent venligst.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Reparerer skærmbilledefunktion",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Genstart mislykkedes",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Genstartet med succes",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Vent venligst.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Genstarter",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Downloader systemopdateringer",
     ),

@@ -615,8 +615,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Otwórz menu tablic transmisji",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Połącz",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Łączenie"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("ulubione"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("usuń urządzenie"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Otwórz menu urządzeń transmisji",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "znajdź tablice przez ip",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -682,6 +694,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Wybierz %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("dodaj ip"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("wyczyść"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Baza wiedzy",
     ),
@@ -754,6 +768,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Przełącznik Miracast"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Przenieś",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Rozwiń widok strumieniowania",
     ),
@@ -874,6 +891,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "Szybkie menu połączenia kod QR",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Proszę ponownie uruchomić sesję transmisji, jeśli to konieczne.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Nagrywanie ekranu zostało zatrzymane",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Anuluj",
     ),
@@ -911,6 +934,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Urządzenia nadawcy",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Znajdź tablice przez IP",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Wprowadź adres IP",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "nie znaleziono",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1139,6 +1171,43 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage(
       "Oczekiwanie na kolejny",
+    ),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Obecnie nie można pobrać zrzutu ekranu z aplikacji źródłowej. Mogło wystąpić błędne przechwycenie. Proszę wrócić do aplikacji źródłowej, aby wykonać nowy zrzut ekranu i spróbować ponownie.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Nie udało się wykonać zrzutu ekranu",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Zamknij"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Nie można ponownie uruchomić mechanizmu zrzutu ekranu w aplikacji źródłowej.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Nie udało się naprawić funkcji zrzutu ekranu",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Nie można przechwycić ekranu i przesłać go do aplikacji projekcyjnej. Czy chcesz ponownie uruchomić funkcję zrzutu ekranu i spróbować ponownie, czy zatrzymać projekcję?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Ponownie uruchomiono pomyślnie",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Ponowne uruchamianie mechanizmu zrzutu ekranu w aplikacji źródłowej. Może to potrwać kilka sekund. Proszę czekać.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Naprawianie funkcji zrzutu ekranu",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Ponowne uruchomienie nie powiodło się",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Ponownie uruchomiono pomyślnie",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Proszę czekać.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Ponowne uruchamianie",
     ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Pobieranie aktualizacji systemu",

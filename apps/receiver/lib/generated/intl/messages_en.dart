@@ -608,7 +608,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Open broadcast devices menu",
     ),
     "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
-      "Find Boards via IP",
+      "find boards via ip",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -738,6 +738,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast toggle"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Move",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Expand streaming view",
     ),
@@ -960,7 +963,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "v3_settings_device_high_image_quality_on_desc":
         MessageLookupByLibrary.simpleMessage(
-          "Maximum UHD (4K) screen sharing from web sender and 3K+ from Windows and macOS sender depending on the sender screen resolution. Requires a high quality network.",
+          "Maximum UHD (4K) screen sharing or QHD (2K) depending on the sender screen resolution. Requires a high quality network.",
         ),
     "v3_settings_device_launch_on_startup":
         MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),

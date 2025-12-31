@@ -599,8 +599,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Avaa lähetyslevyt-valikko",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Yhdistä",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Yhdistetään"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("suosikki"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("poista laite"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Avaa lähetettävät laitteet -valikko",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "etsi taulut IP:n avulla",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -667,6 +679,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Valitse %s",
+    ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("lisää ip"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage(
+      "tyhjennä",
     ),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Tietokanta",
@@ -740,6 +756,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast-kytkin"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Siirrä",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Laajenna suoratoistonäkymä",
     ),
@@ -862,6 +881,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
       "QR-koodi",
     ),
+    "v3_recording_stopped_dialog_msg": MessageLookupByLibrary.simpleMessage(
+      "Käynnistä lähetyssessio uudelleen tarvittaessa.",
+    ),
+    "v3_recording_stopped_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Näytön tallennus on pysäytetty",
+    ),
     "v3_setting_passcode_cancel": MessageLookupByLibrary.simpleMessage(
       "Peruuta",
     ),
@@ -900,6 +925,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Lähetyslaitteet",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Etsi taulut IP:n avulla",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Anna IP-osoite",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "ei löydy",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1125,6 +1159,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "Odotetaan muiden liittymistä",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Seuraavaksi"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Näyttökuvaa ei tällä hetkellä voida hakea lähdesovelluksesta. Näyttökuvan ottamisessa on saattanut tapahtua virhe. Palaa lähdesovellukseen ottamaan uusi näyttökuva ja yritä uudelleen.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Näyttökuvan ottaminen epäonnistui",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Sulje"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Näyttökuvamekanismia ei voitu käynnistää uudelleen lähdesovelluksessa.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Näyttökuvatoiminnon korjaaminen epäonnistui",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Näyttöä ei voitu kaapata ja lähettää projektiosovellukseen. Haluatko käynnistää näyttökuvatoiminnon uudelleen ja yrittää uudelleen vai lopettaa projektio?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Käynnistetty uudelleen onnistuneesti",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Näyttökuvamekanismia käynnistetään uudelleen lähdesovelluksessa. Tämä voi kestää muutaman sekunnin. Odota, ole hyvä.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Näyttökuvatoiminnon korjaaminen",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Uudelleenkäynnistys epäonnistui",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Käynnistetty uudelleen onnistuneesti",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Odota, ole hyvä.",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Käynnistetään uudelleen",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Järjestelmäpäivityksiä ladataan",
     ),
