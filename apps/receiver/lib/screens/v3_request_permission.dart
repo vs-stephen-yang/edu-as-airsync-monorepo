@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_hyphenating_text/auto_hyphenating_text.dart';
@@ -26,11 +27,62 @@ class V3RequestPermission extends StatefulWidget {
 
 class V3RequestPermissionState extends State<V3RequestPermission> {
   late final Future<void> _hyphenationInit;
+  MirrorStateProvider? _mirror;
+  bool _navigated = false;
 
   @override
   void initState() {
     super.initState();
     _hyphenationInit = initHyphenation();
+
+    // 等第一個 frame 後再綁 listener，避免 context/provider 尚未 ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      _mirror = context.read<MirrorStateProvider>();
+      _mirror!.addListener(_onMirrorChanged);
+
+      // 補跑一次：避免已經是 true 但沒觸發通知
+      _onMirrorChanged();
+    });
+  }
+
+  void _onMirrorChanged() {
+    if (!mounted) return;
+    if (_navigated) return;
+
+    final granted = _mirror?.isPermissionGranted ?? false;
+    if (!granted) return;
+
+    // 先鎖住，避免 rebuild/notify 連發導頁
+    _navigated = true;
+
+    final navReady = NavigationService.navigationKey.currentState != null;
+    if (!navReady) {
+      _navigated = false; // 沒 ready 就解鎖讓下次再試
+      return;
+    }
+
+    try {
+      final target = (AppPreferences().showEULA &&
+              !AppInstanceCreate().isInstalledInVBS100)
+          ? '/v3Eula'
+          : '/v3Home';
+      unawaited(
+        navService.pushNamedAndRemoveUntil(target).catchError((e, s) {
+          _navigated = false;
+          return null; // 避免 catchError 型別警告
+        }),
+      );
+    } catch (e) {
+      _navigated = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _mirror?.removeListener(_onMirrorChanged);
+    super.dispose();
   }
 
   @override
@@ -42,153 +94,142 @@ class V3RequestPermissionState extends State<V3RequestPermission> {
           if (snapshot.connectionState != ConnectionState.done) {
             return Container();
           }
-          return Consumer<MirrorStateProvider>(
-              builder: (_, mirrorStateProvider, __) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mirrorStateProvider.isPermissionGranted) {
-                navService.pushNamedAndRemoveUntil(AppPreferences().showEULA &&
-                        !AppInstanceCreate().isInstalledInVBS100
-                    ? '/v3Eula'
-                    : '/v3Home');
-              }
-            });
-            return ConstrainedBox(
-              constraints: const BoxConstraints.expand(),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(color: const Color(0xFFEAEBF1)),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Image.asset(
-                      'assets/images/ic_wallpaper.png',
-                      excludeFromSemantics: true,
-                      width: 1280,
-                      height: 360,
-                      fit: BoxFit.cover,
-                    ),
+          return ConstrainedBox(
+            constraints: const BoxConstraints.expand(),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(color: const Color(0xFFEAEBF1)),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/images/ic_wallpaper.png',
+                    excludeFromSemantics: true,
+                    width: 1280,
+                    height: 360,
+                    fit: BoxFit.cover,
                   ),
-                  Positioned(
-                    left: 25,
-                    top: 25,
-                    right: 25,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/ic_logo_airsync_icon.svg',
-                          excludeFromSemantics: true,
-                          width: 36,
-                          height: 36,
-                        ),
-                        const Gap(7),
-                        SvgPicture.asset(
-                          'assets/images/ic_logo_airsync_text.svg',
-                          excludeFromSemantics: true,
-                          width: 140,
-                          height: 31,
-                          colorFilter: const ColorFilter.mode(
-                              Colors.black, BlendMode.srcIn),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    right: 13,
-                    bottom: 13,
-                    child: Image.asset(
-                      'assets/images/ic_logo_viewsonic.png',
-                      excludeFromSemantics: true,
-                      width: 513 / 3,
-                      height: 160 / 3,
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Positioned(
+                  left: 25,
+                  top: 25,
+                  right: 25,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        constraints: BoxConstraints(
-                          maxWidth: 512,
-                          minHeight: 150,
-                        ),
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: context.tokens.radii.vsdslRadiusXl,
-                          ),
-                          color: context.tokens.color.vsdslColorSurface100,
-                          shadows: context.tokens.shadow.vsdslShadowNeutralXl,
-                        ),
-                        padding: const EdgeInsets.fromLTRB(20, 27, 20, 20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            V3AutoHyphenatingText(
-                              S.of(context).v3_permission_title,
-                              style: TextStyle(
-                                color: context.tokens.color.vsdslColorOnSurface,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 21,
-                              ),
-                            ),
-                            const Gap(20),
-                            V3AutoHyphenatingText(
-                              S.of(context).v3_permission_description,
-                              style: TextStyle(
-                                color: context.tokens.color.vsdslColorOnSurface,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 21,
-                              ),
-                            ),
-                            const Gap(40),
-                            SizedBox(
-                              width: 108,
-                              height: 40,
-                              child: V3Focus(
-                                label: S.of(context).v3_lbl_permission_exit,
-                                identifier: 'v3_qa_permission_exit',
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: context
-                                        .tokens.color.vsdslColorSecondary,
-                                    backgroundColor: Colors.white,
-                                    overlayColor: Colors.transparent,
-                                    // remove onFocused color, this is also ripple color
-                                    side: BorderSide(
-                                      color: context
-                                          .tokens.color.vsdslColorSecondary,
-                                      width: 1.5,
-                                    ),
-                                    textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600),
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  onPressed: () {
-                                    if (Platform.isAndroid) {
-                                      SystemNavigator.pop();
-                                    } else if (Platform.isIOS) {
-                                      exit(0);
-                                    } else {
-                                      // todo: support other platform.
-                                    }
-                                  },
-                                  child: V3AutoHyphenatingText(
-                                      S.of(context).v3_permission_exit),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      SvgPicture.asset(
+                        'assets/images/ic_logo_airsync_icon.svg',
+                        excludeFromSemantics: true,
+                        width: 36,
+                        height: 36,
+                      ),
+                      const Gap(7),
+                      SvgPicture.asset(
+                        'assets/images/ic_logo_airsync_text.svg',
+                        excludeFromSemantics: true,
+                        width: 140,
+                        height: 31,
+                        colorFilter: const ColorFilter.mode(
+                            Colors.black, BlendMode.srcIn),
                       ),
                     ],
                   ),
-                ],
-              ),
-            );
-          });
+                ),
+                Positioned(
+                  right: 13,
+                  bottom: 13,
+                  child: Image.asset(
+                    'assets/images/ic_logo_viewsonic.png',
+                    excludeFromSemantics: true,
+                    width: 513 / 3,
+                    height: 160 / 3,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(
+                        maxWidth: 512,
+                        minHeight: 150,
+                      ),
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: context.tokens.radii.vsdslRadiusXl,
+                        ),
+                        color: context.tokens.color.vsdslColorSurface100,
+                        shadows: context.tokens.shadow.vsdslShadowNeutralXl,
+                      ),
+                      padding: const EdgeInsets.fromLTRB(20, 27, 20, 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          V3AutoHyphenatingText(
+                            S.of(context).v3_permission_title,
+                            style: TextStyle(
+                              color: context.tokens.color.vsdslColorOnSurface,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 21,
+                            ),
+                          ),
+                          const Gap(20),
+                          V3AutoHyphenatingText(
+                            S.of(context).v3_permission_description,
+                            style: TextStyle(
+                              color: context.tokens.color.vsdslColorOnSurface,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 21,
+                            ),
+                          ),
+                          const Gap(40),
+                          SizedBox(
+                            width: 108,
+                            height: 40,
+                            child: V3Focus(
+                              label: S.of(context).v3_lbl_permission_exit,
+                              identifier: 'v3_qa_permission_exit',
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor:
+                                      context.tokens.color.vsdslColorSecondary,
+                                  backgroundColor: Colors.white,
+                                  overlayColor: Colors.transparent,
+                                  // remove onFocused color, this is also ripple color
+                                  side: BorderSide(
+                                    color: context
+                                        .tokens.color.vsdslColorSecondary,
+                                    width: 1.5,
+                                  ),
+                                  textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                onPressed: () {
+                                  if (Platform.isAndroid) {
+                                    SystemNavigator.pop();
+                                  } else if (Platform.isIOS) {
+                                    exit(0);
+                                  } else {
+                                    // todo: support other platform.
+                                  }
+                                },
+                                child: V3AutoHyphenatingText(
+                                    S.of(context).v3_permission_exit),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
