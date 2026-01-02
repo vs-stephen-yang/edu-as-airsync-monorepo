@@ -33,6 +33,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="LocalAppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="LOCALA~1|LocalAppDataFolder" IsPseudoRoot="1"/>
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="airsyncaudio_Dir" Directory_Parent="drivers_Dir" DefaultDir="AIRSYN~1|airsyncaudio"/>
@@ -801,8 +802,8 @@
     <ROW ServiceInstall="virtualdisplayservice.exe" Name="Viewsonic AirSync Virtual Display Service" DisplayName="Viewsonic AirSync Virtual Display Service" ServiceType="16" StartType="2" ErrorControl="1" Component_="virtualdisplayservice.exe" Description="Viewsonic AirSync Virtual Display Service"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="AirSyncSender" Directory_="SHORTCUTDIR" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR" Advertised="true"/>
-    <ROW Shortcut="AirSyncSender_1" Directory_="DesktopFolder" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR" Advertised="true"/>
+    <ROW Shortcut="AirSyncSender" Directory_="SHORTCUTDIR" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="LocalAppDataFolder" Advertised="true"/>
+    <ROW Shortcut="AirSyncSender_1" Directory_="DesktopFolder" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="LocalAppDataFolder" Advertised="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
