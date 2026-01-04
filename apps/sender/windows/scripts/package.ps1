@@ -5,7 +5,7 @@ $windows_kit_bin_dir = Get-ChildItem ${windows_kit_bin_base} | where{$_.Name -li
 $ai_bin = "C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com"
 $mt_bin = "${windows_kit_bin_dir}\x86\mt.exe"
 
-$manifest_path = "${pwd}\windows\runner\runner.exe-uipi.manifest"
+$manifest_path = "${pwd}\windows\runner\runner.exe.manifest"
 $edit_update_cmd = "${pwd}\windows\scripts\patch-update.ps1"
 
 $build_dir = "build\windows\x64\runner\Release"
