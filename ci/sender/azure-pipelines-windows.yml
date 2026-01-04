@@ -69,6 +69,13 @@ jobs:
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
+      - powershell: |
+          git lfs env
+          git lfs ls-files
+          git lfs pull origin HEAD
+          git lfs status
+        displayName: Pull Git LFS objects
+
       - script: $(Flutter.Bin) pub get
         displayName: Fetch dependencies
 
