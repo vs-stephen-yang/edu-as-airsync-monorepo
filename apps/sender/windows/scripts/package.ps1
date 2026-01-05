@@ -1,6 +1,6 @@
 $windows_kit_bin_base = "C:\Program Files (x86)\Windows Kits\10\bin\"
 
-$windows_kit_bin_dir = Get-ChildItem ${windows_kit_bin_base} | where{$_.Name -like "10.0.*"} | Select-Object -last 1
+$windows_kit_bin_dir = Get-ChildItem ${windows_kit_bin_base} | where { $_.Name -like "10.0.*" } | Select-Object -last 1
 
 $ai_bin = "C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com"
 $mt_bin = "${windows_kit_bin_dir}\x86\mt.exe"
@@ -20,11 +20,11 @@ function Run {
     Write-Host "Running $FilePath $Arguments`n"
 
     $options = @{
-        FilePath = "$FilePath"
+        FilePath     = "$FilePath"
         ArgumentList = "$Arguments"
-        Wait = $true
-        NoNewWindow = $true
-        PassThru = $true
+        Wait         = $true
+        NoNewWindow  = $true
+        PassThru     = $true
     }
     $proc = Start-Process @options
 
@@ -34,9 +34,9 @@ function Run {
 }
 
 
-if( $args.count -lt 1) {
-	"Usage: <env>"
-	exit 1
+if ( $args.count -lt 1) {
+    "Usage: <env>"
+    exit 1
 }
 # environment: dev, stage, prod
 $env = $args[0]
