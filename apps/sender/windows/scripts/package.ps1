@@ -5,11 +5,12 @@ $windows_kit_bin_dir = Get-ChildItem ${windows_kit_bin_base} | where { $_.Name -
 $ai_bin = "C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com"
 $mt_bin = "${windows_kit_bin_dir}\x86\mt.exe"
 
-$manifest_path = "${pwd}\windows\runner\runner.exe.manifest"
+$uipi_manifest_path = "${pwd}\windows\runner\runner.exe-uipi.manifest"
 $edit_update_cmd = "${pwd}\windows\scripts\patch-update.ps1"
 
 $build_dir = "build\windows\x64\runner\Release"
 $executable_path = "${build_dir}\AirSync_Sender.exe"
+$executable_uipi_path = "${build_dir}\AirSync_Sender_uipi.exe"
 $installer_out_dir = "windows\package"
 
 function Run {
@@ -41,10 +42,12 @@ if ( $args.count -lt 1) {
 # environment: dev, stage, prod
 $env = $args[0]
 
-# overwrite the application manifest to bypass uipi
-Write-Host "1. Overwrite the application manifest`n"
+# create uipi-enabled copy
+Write-Host "1. Create UIPI-enabled executable`n"
 
-Run -FilePath "${mt_bin}" -Arguments "-manifest ""${manifest_path}"" -outputresource:""${executable_path}"";#1"
+Copy-Item -LiteralPath "${executable_path}" -Destination "${executable_uipi_path}" -Force -ErrorAction Stop
+
+Run -FilePath "${mt_bin}" -Arguments "-manifest ""${uipi_manifest_path}"" -outputresource:""${executable_uipi_path}"";#1"
 
 # clean the package
 if (Test-Path -Path $installer_out_dir) {
