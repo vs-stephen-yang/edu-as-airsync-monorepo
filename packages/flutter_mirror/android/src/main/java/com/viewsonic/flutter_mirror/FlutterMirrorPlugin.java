@@ -418,6 +418,11 @@ public class FlutterMirrorPlugin implements
       mirrorReceiver_ = null;
     }
 
+    if (miracastReceiver_ != null) {
+      miracastReceiver_.stop();
+      miracastReceiver_ = null;
+    }
+
     // Note: set channel_ to null after mirrorReceiver_.stop() and
     // mirrorReceiver_.dispose()
     // Reason: stop() may trigger a callback to the Flutter side
@@ -495,7 +500,11 @@ public class FlutterMirrorPlugin implements
       }
 
       surfaceHandler.setActive(false);
-      surfaceHandler.release();
+      try {
+        surfaceHandler.release();
+      } catch (Exception e) {
+        Log.d(TAG, "surface texture release failed: " + e);
+      }
       surfaceHandlers_.remove(textureId);
       surfaces_.remove(textureId);
 
@@ -571,7 +580,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("pin", pin);
       arguments.put("timeoutSec", timeoutSec);
 
-      channel_.invokeMethod("onMirrorAuth", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorAuth", arguments);
+      }
     });
   }
 
@@ -596,7 +607,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("mirrorType", mirrorType);
       arguments.put("deviceModel", deviceModel);
 
-      channel_.invokeMethod("onMirrorStart", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorStart", arguments);
+      }
     });
   }
 
@@ -612,7 +625,9 @@ public class FlutterMirrorPlugin implements
       Map<String, Object> arguments = new HashMap<>();
       arguments.put("mirrorId", mirrorId);
 
-      channel_.invokeMethod("onMirrorStop", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorStop", arguments);
+      }
     });
   }
 
@@ -626,7 +641,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("width", width);
       arguments.put("height", height);
 
-      channel_.invokeMethod("onMirrorVideoResize", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorVideoResize", arguments);
+      }
 
       // https://viewsonic-ssi.visualstudio.com/Display%20App/_workitems/edit/97154
       if (mirrorId.contains("miracast")) {
@@ -644,7 +661,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("mirrorType", mirrorType);
       arguments.put("errorMessage", errorMessage);
 
-      channel_.invokeMethod("onMirrorError", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorError", arguments);
+      }
     });
   }
 
@@ -659,7 +678,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("mirrorId", mirrorId);
       arguments.put("isUibcSupported", isUibcSupported);
 
-      channel_.invokeMethod("onMirrorCapabilities", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorCapabilities", arguments);
+      }
     });
   }
 
@@ -672,7 +693,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("mirrorId", mirrorId);
       arguments.put("fps", fps);
 
-      channel_.invokeMethod("onMirrorVideoFrameRate", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onMirrorVideoFrameRate", arguments);
+      }
     });
   }
 
@@ -691,7 +714,9 @@ public class FlutterMirrorPlugin implements
       arguments.put("month", month);
       arguments.put("day", day);
 
-      channel_.invokeMethod("onCredentialsRequest", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onCredentialsRequest", arguments);
+      }
     });
   }
 
@@ -700,7 +725,9 @@ public class FlutterMirrorPlugin implements
     post(() -> {
       Map<String, Object> arguments = new HashMap<>();
       arguments.put("status", status.ordinal());
-      channel_.invokeMethod("onBluetoothTouchbackStatusChanged", arguments);
+      if (channel_ != null) {
+        channel_.invokeMethod("onBluetoothTouchbackStatusChanged", arguments);
+      }
     });
   }
 
