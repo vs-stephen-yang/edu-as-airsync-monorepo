@@ -19,6 +19,7 @@ import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/rtc_metrics_window_aggregator.dart';
 import 'package:display_flutter/utility/rtc_stats_monitor.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -137,6 +138,10 @@ class RTCConnector {
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
   RtcStatsPresenter? _rtcStatsPresenter;
+  final _inboundPerSecondCollector = RtcMetricsWindowAggregator.inbound();
+
+  RtcMetricsWindowSummary get inboundPerSecondSummary =>
+      _inboundPerSecondCollector.buildSummary();
 
   DateTime _lastUploadAt = DateTime.fromMillisecondsSinceEpoch(0);
   bool _uploading = false;
@@ -230,6 +235,7 @@ class RTCConnector {
   void stopStatsTimer() {
     _statsTimer?.cancel();
     _statsTimer = null;
+    _inboundPerSecondCollector.clear();
   }
 
   void startRtcStatsReport() {
@@ -370,6 +376,8 @@ class RTCConnector {
     _videoBitrateHistory.add(stats.bytesPerSecond);
 
     _videoInboundStatsHistory.add(stats);
+
+    _inboundPerSecondCollector.add(stats);
 
     onVideoStatsReport?.call(stats);
   }
@@ -818,6 +826,17 @@ class RTCConnector {
 
     trackInboundStats(
         clientId, filterEverySecond(_videoInboundStatsHistory.elements));
+
+    final flattenedPercentiles =
+        _inboundPerSecondCollector.buildSummary().flattenPercentiles();
+    if (flattenedPercentiles.isNotEmpty) {
+      _trackTrace(
+        'rtc_stats_summary',
+        properties: {
+          ...flattenedPercentiles,
+        },
+      );
+    }
   }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
