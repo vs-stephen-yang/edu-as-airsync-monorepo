@@ -4285,6 +4285,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Please enter a valid IP address.`
+  String get v3_settings_broadcast_ip_error {
+    return Intl.message(
+      'Please enter a valid IP address.',
+      name: 'v3_settings_broadcast_ip_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

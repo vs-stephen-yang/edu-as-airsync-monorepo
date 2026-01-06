@@ -426,5 +426,6 @@
   "v3_overlay_retry_dialog_stop_broadcast": "Stop Broadcast",
   "v3_overlay_retry_dialog_retry": "Retry",
   "v3_overlay_retry_dialog_end": "End",
-  "v3_zero_fps_capture_failed_wait": "Keep Waiting"
+  "v3_zero_fps_capture_failed_wait": "Keep Waiting",
+  "v3_settings_broadcast_ip_error": "Please enter a valid IP address."
 }
