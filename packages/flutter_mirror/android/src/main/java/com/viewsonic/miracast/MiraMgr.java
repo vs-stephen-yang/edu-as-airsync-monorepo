@@ -87,6 +87,11 @@ public class MiraMgr
       if (listener_ != null) {
         listener_.onSessionEnd(entry.getKey());
       }
+
+      Long textureId = session_textures_.get(entry.getKey());
+      if (textureId != null) {
+        surfaceProvider_.releaseSurfaceTexture(textureId);
+      }
     }
   }
 
