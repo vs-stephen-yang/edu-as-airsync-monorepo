@@ -9,6 +9,22 @@ dynamic _diff(dynamic a, dynamic b) {
   return a - b;
 }
 
+int? _diffInt(dynamic a, dynamic b) {
+  final result = _diff(a, b);
+  if (result is num) {
+    return result.toInt();
+  }
+  return null;
+}
+
+double? _diffDouble(dynamic a, dynamic b) {
+  final result = _diff(a, b);
+  if (result is num) {
+    return result.toDouble();
+  }
+  return null;
+}
+
 dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
   if (a == null || b == null || c == null || d == null) {
     return null;
@@ -147,50 +163,128 @@ class RtcStatsParser {
     }
 
     final videoInboundRtp = reports.first;
+    final values = videoInboundRtp.values;
 
-    final jitterBufferEmittedCount =
-        videoInboundRtp.values['jitterBufferEmittedCount'];
-    final jitterBufferDelay = videoInboundRtp.values['jitterBufferDelay'];
-    final framesReceived = videoInboundRtp.values['framesReceived'];
-    final framesDecoded = videoInboundRtp.values['framesDecoded'];
-    final framesDropped = videoInboundRtp.values['framesDropped'];
-    final totalDecodeTime = videoInboundRtp.values['totalDecodeTime'];
-    final bytesReceived = videoInboundRtp.values['bytesReceived'];
-    final headerBytesReceived = videoInboundRtp.values['headerBytesReceived'];
-    final keyFramesDecoded = videoInboundRtp.values['keyFramesDecoded'];
-    final packetsReceived = videoInboundRtp.values['packetsReceived'];
-    final decoderName = videoInboundRtp.values['decoderImplementation'];
-    final frameWidth = videoInboundRtp.values['frameWidth'];
-    final frameHeight = videoInboundRtp.values['frameHeight'];
-    final framesPerSecond = videoInboundRtp.values['framesPerSecond'];
-    final packetsLost = videoInboundRtp.values['packetsLost'];
-    final jitter = videoInboundRtp.values['jitter'];
-    final pauseCount = videoInboundRtp.values['pauseCount'];
-    final powerEfficientDecoder =
-        videoInboundRtp.values['powerEfficientDecoder'];
-    final nackCount = videoInboundRtp.values['nackCount'];
-    final firCount = videoInboundRtp.values['firCount'];
-    final pliCount = videoInboundRtp.values['pliCount'];
-    final freezeCount = videoInboundRtp.values['freezeCount'];
-    final totalFreezesDuration = videoInboundRtp.values['totalFreezesDuration'];
-    final totalPausesDuration = videoInboundRtp.values['totalPausesDuration'];
-    final totalProcessingDelay = videoInboundRtp.values['totalProcessingDelay'];
-    final totalAssemblyTime = videoInboundRtp.values['totalAssemblyTime'];
+    final decoderName = values['decoderImplementation'];
+    final frameWidth = values['frameWidth'];
+    final frameHeight = values['frameHeight'];
+    final framesPerSecond = (values['framesPerSecond'] as num?)?.toDouble();
+
+    // Packet and byte counters
+    final bytesReceived = values['bytesReceived'];
+    final headerBytesReceived = values['headerBytesReceived'];
+    final packetsReceived = values['packetsReceived'];
+    final packetsLost = values['packetsLost'];
+    final packetsDiscarded = values['packetsDiscarded'];
+    final fecBytesReceived = values['fecBytesReceived'];
+    final fecPacketsReceived = values['fecPacketsReceived'];
+    final fecPacketsDiscarded = values['fecPacketsDiscarded'];
+    final retransmittedPacketsReceived = values['retransmittedPacketsReceived'];
+    final retransmittedBytesReceived = values['retransmittedBytesReceived'];
+
+    // Frame counters
+    final framesDecoded = values['framesDecoded'];
+    final framesRendered = values['framesRendered'];
+    final framesDropped = values['framesDropped'];
+    final framesReceived = values['framesReceived'];
     final framesAssembledFromMultiplePackets =
-        videoInboundRtp.values['framesAssembledFromMultiplePackets'];
-    final totalInterFrameDelay = videoInboundRtp.values['totalInterFrameDelay'];
-    final totalSquaredInterFrameDelay =
-        videoInboundRtp.values['totalSquaredInterFrameDelay'];
-    final qpSum = videoInboundRtp.values['qpSum'];
+        values['framesAssembledFromMultiplePackets'];
+    final keyFramesDecoded = values['keyFramesDecoded'];
 
+    // Quality/jitter
+    final jitter = (values['jitter'] as num?)?.toDouble();
+    final pauseCount = values['pauseCount'];
+    final totalPausesDuration = values['totalPausesDuration'];
+    final freezeCount = values['freezeCount'];
+    final totalFreezesDuration = values['totalFreezesDuration'];
+
+    // Timing/processing
+    final jitterBufferDelay = values['jitterBufferDelay'];
+    final jitterBufferTargetDelay = values['jitterBufferTargetDelay'];
+    final jitterBufferMinimumDelay = values['jitterBufferMinimumDelay'];
+    final jitterBufferEmittedCount = values['jitterBufferEmittedCount'];
+    final totalProcessingDelay = values['totalProcessingDelay'];
+    final totalDecodeTime = values['totalDecodeTime'];
+    final totalInterFrameDelay = values['totalInterFrameDelay'];
+    final totalSquaredInterFrameDelay = values['totalSquaredInterFrameDelay'];
+    final totalAssemblyTime = values['totalAssemblyTime'];
+
+    // Codec and control counters
+    final qpSum = values['qpSum'];
+    final nackCount = values['nackCount'];
+    final firCount = values['firCount'];
+    final pliCount = values['pliCount'];
+
+    // Audio-related metrics
+    final totalSamplesReceived = values['totalSamplesReceived'];
+    final concealedSamples = values['concealedSamples'];
+    final silentConcealedSamples = values['silentConcealedSamples'];
+    final concealmentEvents = values['concealmentEvents'];
+    final insertedSamplesForDeceleration =
+        values['insertedSamplesForDeceleration'];
+    final removedSamplesForAcceleration =
+        values['removedSamplesForAcceleration'];
+    final audioLevel = (values['audioLevel'] as num?)?.toDouble();
+    final totalAudioEnergy = values['totalAudioEnergy'];
+    final totalSamplesDuration = values['totalSamplesDuration'];
+
+    // Corruption probabilities
+    final totalCorruptionProbability = values['totalCorruptionProbability'];
+    final totalSquaredCorruptionProbability =
+        values['totalSquaredCorruptionProbability'];
+    final corruptionMeasurements = values['corruptionMeasurements'];
+
+    final powerEfficientDecoder = values['powerEfficientDecoder'];
+
+    // Per-second metrics
+    int? packetsReceivedPerSecond;
+    int? packetsLostPerSecond;
+    int? packetsDiscardedPerSecond;
+    int? fecBytesReceivedPerSecond;
+    int? fecPacketsReceivedPerSecond;
+    int? fecPacketsDiscardedPerSecond;
+    int? retransmittedPacketsReceivedPerSecond;
+    int? retransmittedBytesReceivedPerSecond;
     int? framesReceivedPerSecond;
     int? framesDecodedPerSecond;
     int? framesDroppedPerSecond;
+    int? framesRenderedPerSecond;
+    int? framesAssembledFromMultiplePacketsPerSecond;
+    int? keyFramesDecodedPerSecond;
+    int? nackCountPerSecond;
+    int? firCountPerSecond;
+    int? pliCountPerSecond;
+    int? bytesReceivedPerSecond;
     int? bytesPerSecond;
-    double? interFrameDelayPerSecond;
-    double? keyFramesDecodedPerSecond;
+    int? headerBytesReceivedPerSecond;
     double? headerBytesPerSecond;
-    double? packetsReceivedPerSecond;
+    double? qpSumPerSecond;
+    double? totalDecodeTimePerSecond;
+    double? totalInterFrameDelayPerSecond;
+    double? totalSquaredInterFrameDelayPerSecond;
+    int? pauseCountPerSecond;
+    double? totalPausesDurationPerSecond;
+    int? freezeCountPerSecond;
+    double? totalFreezesDurationPerSecond;
+    double? totalProcessingDelayPerSecond;
+    double? jitterBufferDelayPerSecond;
+    double? jitterBufferTargetDelayPerSecond;
+    double? jitterBufferMinimumDelayPerSecond;
+    int? jitterBufferEmittedCountPerSecond;
+    double? totalAssemblyTimePerSecond;
+    double? totalAudioEnergyPerSecond;
+    double? totalSamplesDurationPerSecond;
+    int? totalSamplesReceivedPerSecond;
+    int? concealedSamplesPerSecond;
+    int? silentConcealedSamplesPerSecond;
+    int? concealmentEventsPerSecond;
+    int? insertedSamplesForDecelerationPerSecond;
+    int? removedSamplesForAccelerationPerSecond;
+    double? totalCorruptionProbabilityPerSecond;
+    double? totalSquaredCorruptionProbabilityPerSecond;
+    int? corruptionMeasurementsPerSecond;
+
+    // Averages
     double? qpSumAvg;
     double? totalAssemblyTimeAvg;
     double? totalInterFrameDelayAvg;
@@ -198,56 +292,131 @@ class RtcStatsParser {
     double? decodeTimeAvg;
 
     if (_previousVideoInboundStats != null) {
+      final previous = _previousVideoInboundStats!;
+
+      packetsReceivedPerSecond =
+          _diffInt(packetsReceived, previous.packetsReceived);
+      packetsLostPerSecond = _diffInt(packetsLost, previous.packetsLost);
+      packetsDiscardedPerSecond =
+          _diffInt(packetsDiscarded, previous.packetsDiscarded);
+      fecBytesReceivedPerSecond =
+          _diffInt(fecBytesReceived, previous.fecBytesReceived);
+      fecPacketsReceivedPerSecond =
+          _diffInt(fecPacketsReceived, previous.fecPacketsReceived);
+      fecPacketsDiscardedPerSecond =
+          _diffInt(fecPacketsDiscarded, previous.fecPacketsDiscarded);
+      retransmittedPacketsReceivedPerSecond = _diffInt(
+          retransmittedPacketsReceived, previous.retransmittedPacketsReceived);
+      retransmittedBytesReceivedPerSecond = _diffInt(
+          retransmittedBytesReceived, previous.retransmittedBytesReceived);
+
       framesReceivedPerSecond =
-          _diff(framesReceived, _previousVideoInboundStats!.framesReceived);
-      framesDecodedPerSecond =
-          _diff(framesDecoded, _previousVideoInboundStats!.framesDecoded);
-      framesDroppedPerSecond =
-          _diff(framesDropped, _previousVideoInboundStats!.framesDropped);
-      bytesPerSecond =
-          _diff(bytesReceived, _previousVideoInboundStats!.bytesReceived);
-      interFrameDelayPerSecond = _diff(totalSquaredInterFrameDelay?.toDouble(),
-          _previousVideoInboundStats!.totalSquaredInterFrameDelay?.toDouble());
-      keyFramesDecodedPerSecond = _diff(keyFramesDecoded?.toDouble(),
-          _previousVideoInboundStats!.keyFramesDecoded?.toDouble());
-      headerBytesPerSecond = _diff(headerBytesReceived?.toDouble(),
-          _previousVideoInboundStats!.headerBytesReceived?.toDouble());
-      packetsReceivedPerSecond = _diff(packetsReceived?.toDouble(),
-          _previousVideoInboundStats!.packetsReceived?.toDouble());
+          _diffInt(framesReceived, previous.framesReceived);
+      framesDecodedPerSecond = _diffInt(framesDecoded, previous.framesDecoded);
+      framesDroppedPerSecond = _diffInt(framesDropped, previous.framesDropped);
+      framesRenderedPerSecond =
+          _diffInt(framesRendered, previous.framesRendered);
+      framesAssembledFromMultiplePacketsPerSecond = _diffInt(
+          framesAssembledFromMultiplePackets,
+          previous.framesAssembledFromMultiplePackets);
+      keyFramesDecodedPerSecond =
+          _diffInt(keyFramesDecoded, previous.keyFramesDecoded);
+
+      nackCountPerSecond = _diffInt(nackCount, previous.nackCount);
+      firCountPerSecond = _diffInt(firCount, previous.firCount);
+      pliCountPerSecond = _diffInt(pliCount, previous.pliCount);
+      bytesReceivedPerSecond = _diffInt(bytesReceived, previous.bytesReceived);
+      bytesPerSecond = bytesReceivedPerSecond;
+      headerBytesReceivedPerSecond =
+          _diffInt(headerBytesReceived, previous.headerBytesReceived);
+      headerBytesPerSecond =
+          _diffDouble(headerBytesReceived, previous.headerBytesReceived);
+
+      qpSumPerSecond = _diffDouble(qpSum, previous.qpSum);
+      totalDecodeTimePerSecond =
+          _diffDouble(totalDecodeTime, previous.totalDecodeTime);
+      totalInterFrameDelayPerSecond =
+          _diffDouble(totalInterFrameDelay, previous.totalInterFrameDelay);
+      totalSquaredInterFrameDelayPerSecond = _diffDouble(
+          totalSquaredInterFrameDelay, previous.totalSquaredInterFrameDelay);
+      pauseCountPerSecond = _diffInt(pauseCount, previous.pauseCount);
+      totalPausesDurationPerSecond =
+          _diffDouble(totalPausesDuration, previous.totalPausesDuration);
+      freezeCountPerSecond = _diffInt(freezeCount, previous.freezeCount);
+      totalFreezesDurationPerSecond =
+          _diffDouble(totalFreezesDuration, previous.totalFreezesDuration);
+      totalProcessingDelayPerSecond =
+          _diffDouble(totalProcessingDelay, previous.totalProcessingDelay);
+      jitterBufferDelayPerSecond =
+          _diffDouble(jitterBufferDelay, previous.jitterBufferDelay);
+      jitterBufferTargetDelayPerSecond = _diffDouble(
+          jitterBufferTargetDelay, previous.jitterBufferTargetDelay);
+      jitterBufferMinimumDelayPerSecond = _diffDouble(
+          jitterBufferMinimumDelay, previous.jitterBufferMinimumDelay);
+      jitterBufferEmittedCountPerSecond =
+          _diffInt(jitterBufferEmittedCount, previous.jitterBufferEmittedCount);
+      totalAssemblyTimePerSecond =
+          _diffDouble(totalAssemblyTime, previous.totalAssemblyTime);
+
+      totalSamplesReceivedPerSecond =
+          _diffInt(totalSamplesReceived, previous.totalSamplesReceived);
+      concealedSamplesPerSecond =
+          _diffInt(concealedSamples, previous.concealedSamples);
+      silentConcealedSamplesPerSecond =
+          _diffInt(silentConcealedSamples, previous.silentConcealedSamples);
+      concealmentEventsPerSecond =
+          _diffInt(concealmentEvents, previous.concealmentEvents);
+      insertedSamplesForDecelerationPerSecond = _diffInt(
+          insertedSamplesForDeceleration,
+          previous.insertedSamplesForDeceleration);
+      removedSamplesForAccelerationPerSecond = _diffInt(
+          removedSamplesForAcceleration,
+          previous.removedSamplesForAcceleration);
+      totalAudioEnergyPerSecond =
+          _diffDouble(totalAudioEnergy, previous.totalAudioEnergy);
+      totalSamplesDurationPerSecond =
+          _diffDouble(totalSamplesDuration, previous.totalSamplesDuration);
+      totalCorruptionProbabilityPerSecond = _diffDouble(
+          totalCorruptionProbability, previous.totalCorruptionProbability);
+      totalSquaredCorruptionProbabilityPerSecond = _diffDouble(
+          totalSquaredCorruptionProbability,
+          previous.totalSquaredCorruptionProbability);
+      corruptionMeasurementsPerSecond =
+          _diffInt(corruptionMeasurements, previous.corruptionMeasurements);
 
       qpSumAvg = _avg(
         qpSum,
-        _previousVideoInboundStats!.qpSum,
+        previous.qpSum,
         framesDecoded,
-        _previousVideoInboundStats!.framesDecoded,
+        previous.framesDecoded,
       );
 
       totalAssemblyTimeAvg = _avg(
         totalAssemblyTime,
-        _previousVideoInboundStats!.totalAssemblyTime,
+        previous.totalAssemblyTime,
         framesAssembledFromMultiplePackets,
-        _previousVideoInboundStats!.framesAssembledFromMultiplePackets,
+        previous.framesAssembledFromMultiplePackets,
       );
 
       totalInterFrameDelayAvg = _avg(
         totalInterFrameDelay,
-        _previousVideoInboundStats!.totalInterFrameDelay,
+        previous.totalInterFrameDelay,
         framesDecoded,
-        _previousVideoInboundStats!.framesDecoded,
+        previous.framesDecoded,
       );
 
       jitterBufferDelayAvg = _avg(
         jitterBufferDelay,
-        _previousVideoInboundStats!.jitterBufferDelay,
+        previous.jitterBufferDelay,
         jitterBufferEmittedCount,
-        _previousVideoInboundStats!.jitterBufferEmittedCount,
+        previous.jitterBufferEmittedCount,
       );
 
       decodeTimeAvg = _avg(
         totalDecodeTime,
-        _previousVideoInboundStats!.totalDecodeTime,
+        previous.totalDecodeTime,
         framesDecoded,
-        _previousVideoInboundStats!.framesDecoded,
+        previous.framesDecoded,
       );
     }
 
@@ -256,46 +425,111 @@ class RtcStatsParser {
       frameWidth: frameWidth,
       frameHeight: frameHeight,
       framesPerSecond: framesPerSecond,
+      timestamp: videoInboundRtp.timestamp,
       bytesReceived: bytesReceived,
+      headerBytesReceived: headerBytesReceived,
       packetsReceived: packetsReceived,
-      qpSum: qpSum,
-      qpSumAvg: qpSumAvg,
-      keyFramesDecoded: keyFramesDecoded,
       packetsLost: packetsLost,
+      packetsDiscarded: packetsDiscarded,
+      fecBytesReceived: fecBytesReceived,
+      fecPacketsReceived: fecPacketsReceived,
+      fecPacketsDiscarded: fecPacketsDiscarded,
+      retransmittedPacketsReceived: retransmittedPacketsReceived,
+      retransmittedBytesReceived: retransmittedBytesReceived,
+      framesDecoded: framesDecoded,
+      framesRendered: framesRendered,
+      framesDropped: framesDropped,
+      framesReceived: framesReceived,
+      framesAssembledFromMultiplePackets: framesAssembledFromMultiplePackets,
+      keyFramesDecoded: keyFramesDecoded,
       jitter: jitter,
       pauseCount: pauseCount,
-      powerEfficientDecoder: powerEfficientDecoder,
+      totalPausesDuration: totalPausesDuration,
+      freezeCount: freezeCount,
+      totalFreezesDuration: totalFreezesDuration,
+      jitterBufferDelay: jitterBufferDelay,
+      jitterBufferTargetDelay: jitterBufferTargetDelay,
+      jitterBufferMinimumDelay: jitterBufferMinimumDelay,
+      jitterBufferEmittedCount: jitterBufferEmittedCount,
+      totalProcessingDelay: totalProcessingDelay,
+      totalDecodeTime: totalDecodeTime,
+      totalInterFrameDelay: totalInterFrameDelay,
+      totalSquaredInterFrameDelay: totalSquaredInterFrameDelay,
+      totalAssemblyTime: totalAssemblyTime,
+      qpSum: qpSum,
       nackCount: nackCount,
       firCount: firCount,
       pliCount: pliCount,
-      freezeCount: freezeCount,
-      totalFreezesDuration: totalFreezesDuration,
-      totalPausesDuration: totalPausesDuration,
-      headerBytesReceived: headerBytesReceived,
-      totalProcessingDelay: totalProcessingDelay,
-      totalInterFrameDelay: totalInterFrameDelay,
-      totalInterFrameDelayAvg: totalInterFrameDelayAvg,
-      totalSquaredInterFrameDelay: totalSquaredInterFrameDelay,
-      totalAssemblyTime: totalAssemblyTime,
-      framesAssembledFromMultiplePackets: framesAssembledFromMultiplePackets,
-      totalAssemblyTimeAvg: totalAssemblyTimeAvg,
-      framesDropped: framesDropped,
-      framesReceived: framesReceived,
-      framesDecoded: framesDecoded,
-      jitterBufferEmittedCount: jitterBufferEmittedCount,
-      jitterBufferDelay: jitterBufferDelay,
-      jitterBufferDelayAvg: jitterBufferDelayAvg,
-      decodeTime: decodeTimeAvg,
-      totalDecodeTime: totalDecodeTime,
-      framesReceivedPerSecond: framesReceivedPerSecond,
-      framesDecodedPerSecond: framesDecodedPerSecond,
-      framesDroppedPerSecond: framesDroppedPerSecond,
-      bytesPerSecond: bytesPerSecond,
-      interFrameDelayPerSecond: interFrameDelayPerSecond,
-      keyFramesDecodedPerSecond: keyFramesDecodedPerSecond,
-      headerBytesPerSecond: headerBytesPerSecond,
+      totalSamplesReceived: totalSamplesReceived,
+      concealedSamples: concealedSamples,
+      silentConcealedSamples: silentConcealedSamples,
+      concealmentEvents: concealmentEvents,
+      insertedSamplesForDeceleration: insertedSamplesForDeceleration,
+      removedSamplesForAcceleration: removedSamplesForAcceleration,
+      audioLevel: audioLevel,
+      totalAudioEnergy: totalAudioEnergy,
+      totalSamplesDuration: totalSamplesDuration,
+      totalCorruptionProbability: totalCorruptionProbability,
+      totalSquaredCorruptionProbability: totalSquaredCorruptionProbability,
+      corruptionMeasurements: corruptionMeasurements,
+      powerEfficientDecoder: powerEfficientDecoder,
       packetsReceivedPerSecond: packetsReceivedPerSecond,
-      timestamp: videoInboundRtp.timestamp,
+      packetsLostPerSecond: packetsLostPerSecond,
+      packetsDiscardedPerSecond: packetsDiscardedPerSecond,
+      fecBytesReceivedPerSecond: fecBytesReceivedPerSecond,
+      fecPacketsReceivedPerSecond: fecPacketsReceivedPerSecond,
+      fecPacketsDiscardedPerSecond: fecPacketsDiscardedPerSecond,
+      retransmittedPacketsReceivedPerSecond:
+          retransmittedPacketsReceivedPerSecond,
+      retransmittedBytesReceivedPerSecond: retransmittedBytesReceivedPerSecond,
+      framesDecodedPerSecond: framesDecodedPerSecond,
+      framesRenderedPerSecond: framesRenderedPerSecond,
+      framesDroppedPerSecond: framesDroppedPerSecond,
+      framesReceivedPerSecond: framesReceivedPerSecond,
+      framesAssembledFromMultiplePacketsPerSecond:
+          framesAssembledFromMultiplePacketsPerSecond,
+      keyFramesDecodedPerSecond: keyFramesDecodedPerSecond,
+      nackCountPerSecond: nackCountPerSecond,
+      firCountPerSecond: firCountPerSecond,
+      pliCountPerSecond: pliCountPerSecond,
+      bytesReceivedPerSecond: bytesReceivedPerSecond,
+      bytesPerSecond: bytesPerSecond,
+      headerBytesReceivedPerSecond: headerBytesReceivedPerSecond,
+      headerBytesPerSecond: headerBytesPerSecond,
+      qpSumPerSecond: qpSumPerSecond,
+      totalDecodeTimePerSecond: totalDecodeTimePerSecond,
+      totalInterFrameDelayPerSecond: totalInterFrameDelayPerSecond,
+      totalSquaredInterFrameDelayPerSecond:
+          totalSquaredInterFrameDelayPerSecond,
+      pauseCountPerSecond: pauseCountPerSecond,
+      totalPausesDurationPerSecond: totalPausesDurationPerSecond,
+      freezeCountPerSecond: freezeCountPerSecond,
+      totalFreezesDurationPerSecond: totalFreezesDurationPerSecond,
+      totalProcessingDelayPerSecond: totalProcessingDelayPerSecond,
+      jitterBufferDelayPerSecond: jitterBufferDelayPerSecond,
+      jitterBufferTargetDelayPerSecond: jitterBufferTargetDelayPerSecond,
+      jitterBufferMinimumDelayPerSecond: jitterBufferMinimumDelayPerSecond,
+      jitterBufferEmittedCountPerSecond: jitterBufferEmittedCountPerSecond,
+      totalAssemblyTimePerSecond: totalAssemblyTimePerSecond,
+      totalAudioEnergyPerSecond: totalAudioEnergyPerSecond,
+      totalSamplesDurationPerSecond: totalSamplesDurationPerSecond,
+      totalSamplesReceivedPerSecond: totalSamplesReceivedPerSecond,
+      concealedSamplesPerSecond: concealedSamplesPerSecond,
+      silentConcealedSamplesPerSecond: silentConcealedSamplesPerSecond,
+      concealmentEventsPerSecond: concealmentEventsPerSecond,
+      insertedSamplesForDecelerationPerSecond:
+          insertedSamplesForDecelerationPerSecond,
+      removedSamplesForAccelerationPerSecond:
+          removedSamplesForAccelerationPerSecond,
+      totalCorruptionProbabilityPerSecond: totalCorruptionProbabilityPerSecond,
+      totalSquaredCorruptionProbabilityPerSecond:
+          totalSquaredCorruptionProbabilityPerSecond,
+      corruptionMeasurementsPerSecond: corruptionMeasurementsPerSecond,
+      decodeTime: decodeTimeAvg,
+      totalInterFrameDelayAvg: totalInterFrameDelayAvg,
+      totalAssemblyTimeAvg: totalAssemblyTimeAvg,
+      jitterBufferDelayAvg: jitterBufferDelayAvg,
+      qpSumAvg: qpSumAvg,
     );
 
     publishRtcVideoInboundStats(stats);

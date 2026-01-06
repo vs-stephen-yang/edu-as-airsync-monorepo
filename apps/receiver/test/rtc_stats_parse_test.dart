@@ -96,10 +96,18 @@ void main() {
         'bytesReceived': 500000,
         'packetsLost': 5,
         'packetsReceived': 1000,
+        'packetsDiscarded': 2,
+        'fecBytesReceived': 12345,
+        'fecPacketsReceived': 7,
+        'fecPacketsDiscarded': 1,
+        'retransmittedPacketsReceived': 9,
+        'retransmittedBytesReceived': 5678,
         'jitter': 5.2,
         'pauseCount': 0,
         'jitterBufferEmittedCount': 980,
         'jitterBufferDelay': 2.5,
+        'jitterBufferTargetDelay': 3.5,
+        'jitterBufferMinimumDelay': 0.6,
         'totalDecodeTime': 15.0,
         'powerEfficientDecoder': true,
         'qpSum': 1000,
@@ -109,6 +117,7 @@ void main() {
         'freezeCount': 5,
         'totalFreezesDuration': 3.537,
         'keyFramesDecoded': 1,
+        'framesRendered': 975,
         'totalInterFrameDelay': 110.464,
         'totalSquaredInterFrameDelay': 28.5005,
         'totalPausesDuration': 0.0,
@@ -116,6 +125,18 @@ void main() {
         'framesAssembledFromMultiplePackets': 588,
         'headerBytesReceived': 140480,
         'totalProcessingDelay': 346.802,
+        'totalSamplesReceived': 2000,
+        'concealedSamples': 11,
+        'silentConcealedSamples': 12,
+        'concealmentEvents': 13,
+        'insertedSamplesForDeceleration': 14,
+        'removedSamplesForAcceleration': 15,
+        'audioLevel': 0.05,
+        'totalAudioEnergy': 1.2,
+        'totalSamplesDuration': 3.4,
+        'totalCorruptionProbability': 0.7,
+        'totalSquaredCorruptionProbability': 0.49,
+        'corruptionMeasurements': 8,
       });
 
       final reports = [videoReport];
@@ -128,12 +149,17 @@ void main() {
               isA<RtcVideoInboundStats>()
                   .having((s) => s.decoderName, 'decoderName', 'vp8')
                   .having((s) => s.frameWidth, 'frameWidth', 1280)
-                  .having((s) => s.frameHeight, 'frameHeight', 720)
-                  .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
-                  .having((s) => s.bytesReceived, 'bytesReceived', 500000)
-                  .having((s) => s.packetsLost, 'packetsLost', 5)
-                  .having((s) => s.packetsReceived, 'packetsReceived', 1000)
-                  .having((s) => s.jitter, 'jitter', 5.2))))
+              .having((s) => s.frameHeight, 'frameHeight', 720)
+              .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
+              .having((s) => s.bytesReceived, 'bytesReceived', 500000)
+              .having((s) => s.packetsLost, 'packetsLost', 5)
+              .having((s) => s.packetsReceived, 'packetsReceived', 1000)
+              .having((s) => s.packetsDiscarded, 'packetsDiscarded', 2)
+              .having(
+                  (s) => s.fecBytesReceived, 'fecBytesReceived', 12345)
+              .having((s) => s.framesRendered, 'framesRendered', 975)
+              .having((s) => s.audioLevel, 'audioLevel', 0.05)
+              .having((s) => s.jitter, 'jitter', 5.2))))
           .called(1);
 
       verify(mockPresenter.updateVideoInboundStats(argThat(isA<
@@ -155,6 +181,16 @@ void main() {
               .having(
                   (s) => s.totalFreezesDuration, 'totalFreezesDuration', 3.537)
               .having((s) => s.keyFramesDecoded, 'keyFramesDecoded', 1)
+              .having((s) => s.framesRendered, 'framesRendered', 975)
+              .having((s) => s.jitterBufferTargetDelay,
+                  'jitterBufferTargetDelay', 3.5)
+              .having((s) => s.jitterBufferMinimumDelay,
+                  'jitterBufferMinimumDelay', 0.6)
+              .having((s) => s.totalSamplesReceived, 'totalSamplesReceived', 2000)
+              .having(
+                  (s) => s.totalAudioEnergy, 'totalAudioEnergy', 1.2)
+              .having((s) => s.totalCorruptionProbability,
+                  'totalCorruptionProbability', 0.7)
               .having((s) => s.totalInterFrameDelay, 'totalInterFrameDelay',
                   110.464)
               .having((s) => s.totalSquaredInterFrameDelay,
@@ -192,10 +228,18 @@ void main() {
         'bytesReceived': 500000,
         'packetsLost': 5,
         'packetsReceived': 1000,
+        'packetsDiscarded': 3,
+        'fecBytesReceived': 1000,
+        'fecPacketsReceived': 4,
+        'fecPacketsDiscarded': 5,
+        'retransmittedPacketsReceived': 6,
+        'retransmittedBytesReceived': 6000,
         'jitter': 5.2,
         'pauseCount': 0,
         'jitterBufferEmittedCount': 1000,
         'jitterBufferDelay': 2000.0, // Makes avg calculation clean (2.0)
+        'jitterBufferTargetDelay': 1500.0,
+        'jitterBufferMinimumDelay': 100.0,
         'totalDecodeTime': 5000.0, // Makes avg calculation clean (5.0)
         'powerEfficientDecoder': true,
         'qpSum': 10000, // Makes avg calculation clean (10.0)
@@ -205,6 +249,7 @@ void main() {
         'freezeCount': 5,
         'totalFreezesDuration': 3.0,
         'keyFramesDecoded': 10,
+        'framesRendered': 1000,
         'totalInterFrameDelay': 5000.0, // Makes avg calculation clean (5.0)
         'totalSquaredInterFrameDelay': 20000.0,
         'totalPausesDuration': 0.0,
@@ -212,6 +257,18 @@ void main() {
         'framesAssembledFromMultiplePackets': 1000,
         'headerBytesReceived': 100000,
         'totalProcessingDelay': 300.0,
+        'totalSamplesReceived': 10000,
+        'concealedSamples': 200,
+        'silentConcealedSamples': 100,
+        'concealmentEvents': 20,
+        'insertedSamplesForDeceleration': 30,
+        'removedSamplesForAcceleration': 40,
+        'audioLevel': 0.1,
+        'totalAudioEnergy': 5.0,
+        'totalSamplesDuration': 9.0,
+        'totalCorruptionProbability': 0.2,
+        'totalSquaredCorruptionProbability': 0.05,
+        'corruptionMeasurements': 10,
       });
 
       // Second report - 1 second later with increments that produce clean per-second rates
@@ -227,10 +284,18 @@ void main() {
         'bytesReceived': 550000, // +50000 per second
         'packetsLost': 6,
         'packetsReceived': 1050, // +50 per second
+        'packetsDiscarded': 6, // +3
+        'fecBytesReceived': 1200, // +200
+        'fecPacketsReceived': 7, // +3
+        'fecPacketsDiscarded': 8, // +3
+        'retransmittedPacketsReceived': 9, // +3
+        'retransmittedBytesReceived': 6600, // +600
         'jitter': 5.3,
         'pauseCount': 0,
         'jitterBufferEmittedCount': 1025,
         'jitterBufferDelay': 2050.0, // Makes avg calculation clean
+        'jitterBufferTargetDelay': 1550.0, // Makes avg calculation clean
+        'jitterBufferMinimumDelay': 120.0,
         'totalDecodeTime': 5125.0, // Makes avg calculation clean
         'powerEfficientDecoder': true,
         'qpSum': 10250, // Makes avg calculation clean
@@ -240,6 +305,7 @@ void main() {
         'freezeCount': 6,
         'totalFreezesDuration': 3.5,
         'keyFramesDecoded': 12, // +2 per second
+        'framesRendered': 1030, // +30 per second
         'totalInterFrameDelay': 5125.0, // Makes avg calculation clean
         'totalSquaredInterFrameDelay': 21000.0, // +1000 per second
         'totalPausesDuration': 0.0,
@@ -247,6 +313,18 @@ void main() {
         'framesAssembledFromMultiplePackets': 1025,
         'headerBytesReceived': 105000, // +5000 per second
         'totalProcessingDelay': 350.0,
+        'totalSamplesReceived': 10100, // +100 per second
+        'concealedSamples': 205, // +5
+        'silentConcealedSamples': 102, // +2
+        'concealmentEvents': 25, // +5
+        'insertedSamplesForDeceleration': 34, // +4
+        'removedSamplesForAcceleration': 44, // +4
+        'audioLevel': 0.2,
+        'totalAudioEnergy': 7.0, // +2
+        'totalSamplesDuration': 10.5, // +1.5
+        'totalCorruptionProbability': 0.5, // +0.3
+        'totalSquaredCorruptionProbability': 0.11, // +0.06
+        'corruptionMeasurements': 12, // +2
       });
 
       // Act
@@ -262,6 +340,8 @@ void main() {
                       'framesDecodedPerSecond', 25)
                   .having((s) => s.framesDroppedPerSecond,
                       'framesDroppedPerSecond', 5)
+                  .having(
+                      (s) => s.framesRenderedPerSecond, 'framesRenderedPerSecond', 30)
                   .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
                   .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
           .called(1);
@@ -270,12 +350,32 @@ void main() {
               // Per-second differentials
               .having((s) => s.packetsReceivedPerSecond,
                   'packetsReceivedPerSecond', 50)
+              .having(
+                  (s) => s.packetsLostPerSecond, 'packetsLostPerSecond', 1)
               .having((s) => s.keyFramesDecodedPerSecond,
                   'keyFramesDecodedPerSecond', 2)
+              .having((s) => s.headerBytesReceivedPerSecond,
+                  'headerBytesReceivedPerSecond', 5000)
               .having(
-                  (s) => s.headerBytesPerSecond, 'headerBytesPerSecond', 5000)
-              .having((s) => s.interFrameDelayPerSecond,
-                  'interFrameDelayPerSecond', 1000.0)
+                  (s) => s.totalSquaredInterFrameDelayPerSecond,
+                  'totalSquaredInterFrameDelayPerSecond',
+                  1000.0)
+              .having((s) => s.totalDecodeTimePerSecond,
+                  'totalDecodeTimePerSecond', 125.0)
+              .having((s) => s.totalAssemblyTimePerSecond,
+                  'totalAssemblyTimePerSecond', 50.0)
+              .having((s) => s.fecBytesReceivedPerSecond,
+                  'fecBytesReceivedPerSecond', 200)
+              .having((s) => s.retransmittedBytesReceivedPerSecond,
+                  'retransmittedBytesReceivedPerSecond', 600)
+              .having((s) => s.jitterBufferTargetDelayPerSecond,
+                  'jitterBufferTargetDelayPerSecond', 50.0)
+              .having((s) => s.jitterBufferMinimumDelayPerSecond,
+                  'jitterBufferMinimumDelayPerSecond', 20.0)
+              .having((s) => s.totalSamplesDurationPerSecond,
+                  'totalSamplesDurationPerSecond', 1.5)
+              .having((s) => s.totalCorruptionProbabilityPerSecond,
+                  'totalCorruptionProbabilityPerSecond', 0.3)
               // Averages
               .having(
                   (s) => s.jitterBufferDelayAvg, 'jitterBufferDelayAvg', 2.0)
