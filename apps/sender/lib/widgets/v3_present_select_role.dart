@@ -31,62 +31,61 @@ class V3PresentSelectRole extends StatelessWidget {
     bool useColumn =
         Platform.isIOS || (Platform.isAndroid && mediaQuery.size.width < 768);
     final sc = ScrollController();
-    return V3Scrollbar(
-      controller: sc,
-      child: SingleChildScrollView(
+    return Align(
+      alignment: Alignment.center,
+      child: V3Scrollbar(
         controller: sc,
-        child: LayoutBuilder(builder: (context, constraints) {
-          final screenHeight = MediaQuery.of(context).size.height;
-          return ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: screenHeight,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                V3AutoHyphenatingText(
-                  S.of(context).v3_main_select_role_title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: context.tokens.color.vsdswColorOnSurface,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.24,
+        child: SingleChildScrollView(
+          controller: sc,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  V3AutoHyphenatingText(
+                    S.of(context).v3_main_select_role_title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnSurface,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.24,
+                    ),
                   ),
-                ),
-                Gap(isMobile ? 32 : 60),
-                isMobile
-                    ? useColumn
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: _buildButtons(
-                                context,
-                                presentStateProvider,
-                                channelProvider,
-                                const Size(343, 194),
-                                const Size(108, 94)),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: _buildButtons(
-                                context,
-                                presentStateProvider,
-                                channelProvider,
-                                const Size(343, 194),
-                                const Size(108, 94)),
-                          )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _buildButtons(
-                            context,
-                            presentStateProvider,
-                            channelProvider,
-                            const Size(300, 300),
-                            const Size(138, 120))),
-              ],
-            ),
-          );
-        }),
+                  Gap(isMobile ? 32 : 60),
+                  isMobile
+                      ? useColumn
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: _buildButtons(
+                                  context,
+                                  presentStateProvider,
+                                  channelProvider,
+                                  const Size(343, 194),
+                                  const Size(108, 94)),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: _buildButtons(
+                                  context,
+                                  presentStateProvider,
+                                  channelProvider,
+                                  const Size(343, 194),
+                                  const Size(108, 94)),
+                            )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _buildButtons(
+                              context,
+                              presentStateProvider,
+                              channelProvider,
+                              const Size(300, 300),
+                              const Size(138, 120))),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }
