@@ -17,6 +17,7 @@ import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/V3TextFieldShortcutsHandler.dart';
 import 'package:display_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_help_center.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
@@ -687,7 +688,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
             ),
             const Gap(6),
             Text(
-              "Connecting", // 暫時硬編碼，等待 intl 生成
+              S.of(context).v3_lbl_settings_broadcast_connecting,
               style: TextStyle(
                 fontSize: 12,
                 color: context.tokens.color.vsdslColorOnSurfaceInverse
@@ -824,7 +825,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
     return unavailable;
   }
 
-  Opacity _buildListHeader(BuildContext context, GroupProvider groupNotifier,
+  Widget _buildListHeader(BuildContext context, GroupProvider groupNotifier,
       bool isBroadcastingToGroup) {
     return Opacity(
       opacity: isBroadcastingToGroup ? 1.0 : 0.3,
@@ -1012,10 +1013,13 @@ class V3FindBoardsViaIP extends StatefulWidget {
 
 class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
   final TextEditingController _ipController = TextEditingController();
+  final List<String> _loadingIPs = [];
+  final LayerLink _ipFieldLink = LayerLink();
+  final GlobalKey _textFieldKey = GlobalKey();
+  OverlayEntry? _overlayEntry;
   bool _isValidIP = false;
   bool _hasIPInput = false;
   bool _ipAlreadyExists = false;
-  final List<String> _loadingIPs = [];
 
   @override
   void initState() {
@@ -1025,6 +1029,7 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
 
   @override
   void dispose() {
+    _removeOverlay();
     _ipController.dispose();
     super.dispose();
   }
@@ -1060,6 +1065,13 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
         _ipAlreadyExists = ipExists;
       });
     }
+
+    if (hasInput && !isValid) {
+      _showMessageOverlay(
+          message: S.of(context).v3_settings_broadcast_ip_error);
+    } else {
+      _removeOverlay();
+    }
   }
 
   bool _isValidIPAddress(String ip) {
@@ -1087,7 +1099,84 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
     return false;
   }
 
+  void _showMessageOverlay({required String message, Duration? autoDismiss}) {
+    if (!mounted || _overlayEntry != null) return;
+    final renderBox =
+        _textFieldKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+    final size = renderBox.size;
+    _overlayEntry = OverlayEntry(
+      builder: (BuildContext context) {
+        return Positioned(
+          left: 0,
+          top: 0,
+          child: CompositedTransformFollower(
+            link: _ipFieldLink,
+            showWhenUnlinked: false,
+            offset: Offset(0, -size.height + 20),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: context.tokens.color.vsdslColorSurface100,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        const BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorError,
+                      ),
+                    ),
+                  ),
+                  CustomPaint(
+                    painter: TrianglePainter(
+                      color: context.tokens.color.vsdslColorSurface100,
+                    ),
+                    child: const SizedBox(width: 10, height: 7),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    Overlay.of(context, debugRequiredFor: widget).insert(_overlayEntry!);
+
+    if (autoDismiss != null) {
+      final currentEntry = _overlayEntry;
+      Future.delayed(autoDismiss, () {
+        if (!mounted) return;
+        if (_overlayEntry == currentEntry) {
+          _removeOverlay();
+        }
+      });
+    }
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+    _overlayEntry = null;
+  }
+
   Future<void> _handleAddIP() async {
+    FocusScope.of(context).unfocus();
     final ipAddress = _ipController.text.trim();
 
     if (!mounted) return;
@@ -1135,37 +1224,43 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
               const Gap(8),
               Expanded(
                 child: V3Focus(
+                  key: _textFieldKey,
                   label: S.of(context).v3_lbl_settings_broadcast_ip_hint,
                   identifier: "v3_qa_settings_broadcast_ip_hint",
                   child: () {
                     return V3TextFieldShortcutsHandler(
                       focusNode: settingsProvider.subFocusNode ?? FocusNode(),
-                      child: TextField(
-                        textAlign: TextAlign.end,
-                        controller: _ipController,
-                        style: TextStyle(
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
-                          fontSize: 14,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: S.of(context).v3_settings_broadcast_ip_hint,
-                          hintStyle: TextStyle(
-                            color: context
-                                .tokens.color.vsdslColorOnSurfaceInverse
-                                .withValues(alpha: 0.5),
+                      child: CompositedTransformTarget(
+                        link: _ipFieldLink,
+                        child: TextField(
+                          textAlign: TextAlign.end,
+                          controller: _ipController,
+                          style: TextStyle(
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
                             fontSize: 14,
                           ),
-                          border: InputBorder.none,
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 3),
+                          decoration: InputDecoration(
+                            hintText:
+                                S.of(context).v3_settings_broadcast_ip_hint,
+                            hintStyle: TextStyle(
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse
+                                  .withValues(alpha: 0.5),
+                              fontSize: 14,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 3),
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9.]')),
+                          ],
+                          autocorrect: false,
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                        ],
-                        autocorrect: false,
                       ),
                     );
                   }(),
@@ -1211,7 +1306,20 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
                               BlendMode.srcIn,
                             ),
                     ),
-                    onPressed: _isValidIP ? _handleAddIP : null,
+                    onPressed: !_isValidIP
+                        ? null
+                        : () {
+                            if (widget.groupNotifier.selectedList.length >=
+                                GroupProvider.groupMaximum) {
+                              _showMessageOverlay(
+                                message:
+                                    S.of(context).v3_cast_to_device_list_msg,
+                                autoDismiss: const Duration(seconds: 2),
+                              );
+                            } else {
+                              _handleAddIP.call();
+                            }
+                          },
                   ),
                 ),
               ),

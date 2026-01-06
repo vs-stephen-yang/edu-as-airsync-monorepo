@@ -50,6 +50,7 @@ class GroupState {
 }
 
 class GroupProvider extends StateNotifier<GroupState> {
+  static int groupMaximum = 10;
   GroupProvider()
       : super(GroupState(
           clients: [],
@@ -154,7 +155,7 @@ class GroupProvider extends StateNotifier<GroupState> {
 
   void addToSelectedList(GroupListItem client) {
     if (!state.selectedList.contains(client)) {
-      if (state.selectedList.length >= 10) {
+      if (state.selectedList.length >= groupMaximum) {
         state.selectedList.removeAt(0);
       }
       state.clients
@@ -183,7 +184,7 @@ class GroupProvider extends StateNotifier<GroupState> {
 
   void _addToHistorySelectedList(GroupListItem client) {
     if (!state.historySelectedList.any((map) => map.containsKey(client.id()))) {
-      if (state.historySelectedList.length >= 10) {
+      if (state.historySelectedList.length >= groupMaximum) {
         state.historySelectedList.removeAt(0);
       }
       state.historySelectedList.add({client.id(): client.toJson()});

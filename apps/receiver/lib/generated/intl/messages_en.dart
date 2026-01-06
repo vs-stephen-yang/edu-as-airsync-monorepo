@@ -915,6 +915,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Find Boards via IP",
     ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Please enter a valid IP address.",
+    ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Enter IP Address",
     ),
