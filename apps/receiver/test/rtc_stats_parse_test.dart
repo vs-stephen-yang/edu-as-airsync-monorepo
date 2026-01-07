@@ -149,17 +149,16 @@ void main() {
               isA<RtcVideoInboundStats>()
                   .having((s) => s.decoderName, 'decoderName', 'vp8')
                   .having((s) => s.frameWidth, 'frameWidth', 1280)
-              .having((s) => s.frameHeight, 'frameHeight', 720)
-              .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
-              .having((s) => s.bytesReceived, 'bytesReceived', 500000)
-              .having((s) => s.packetsLost, 'packetsLost', 5)
-              .having((s) => s.packetsReceived, 'packetsReceived', 1000)
-              .having((s) => s.packetsDiscarded, 'packetsDiscarded', 2)
-              .having(
-                  (s) => s.fecBytesReceived, 'fecBytesReceived', 12345)
-              .having((s) => s.framesRendered, 'framesRendered', 975)
-              .having((s) => s.audioLevel, 'audioLevel', 0.05)
-              .having((s) => s.jitter, 'jitter', 5.2))))
+                  .having((s) => s.frameHeight, 'frameHeight', 720)
+                  .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
+                  .having((s) => s.bytesReceived, 'bytesReceived', 500000)
+                  .having((s) => s.packetsLost, 'packetsLost', 5)
+                  .having((s) => s.packetsReceived, 'packetsReceived', 1000)
+                  .having((s) => s.packetsDiscarded, 'packetsDiscarded', 2)
+                  .having((s) => s.fecBytesReceived, 'fecBytesReceived', 12345)
+                  .having((s) => s.framesRendered, 'framesRendered', 975)
+                  .having((s) => s.audioLevel, 'audioLevel', 0.05)
+                  .having((s) => s.jitter, 'jitter', 5.2))))
           .called(1);
 
       verify(mockPresenter.updateVideoInboundStats(argThat(isA<
@@ -186,9 +185,9 @@ void main() {
                   'jitterBufferTargetDelay', 3.5)
               .having((s) => s.jitterBufferMinimumDelay,
                   'jitterBufferMinimumDelay', 0.6)
-              .having((s) => s.totalSamplesReceived, 'totalSamplesReceived', 2000)
               .having(
-                  (s) => s.totalAudioEnergy, 'totalAudioEnergy', 1.2)
+                  (s) => s.totalSamplesReceived, 'totalSamplesReceived', 2000)
+              .having((s) => s.totalAudioEnergy, 'totalAudioEnergy', 1.2)
               .having((s) => s.totalCorruptionProbability,
                   'totalCorruptionProbability', 0.7)
               .having((s) => s.totalInterFrameDelay, 'totalInterFrameDelay',
@@ -340,8 +339,8 @@ void main() {
                       'framesDecodedPerSecond', 25)
                   .having((s) => s.framesDroppedPerSecond,
                       'framesDroppedPerSecond', 5)
-                  .having(
-                      (s) => s.framesRenderedPerSecond, 'framesRenderedPerSecond', 30)
+                  .having((s) => s.framesRenderedPerSecond,
+                      'framesRenderedPerSecond', 30)
                   .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
                   .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
           .called(1);
@@ -350,16 +349,13 @@ void main() {
               // Per-second differentials
               .having((s) => s.packetsReceivedPerSecond,
                   'packetsReceivedPerSecond', 50)
-              .having(
-                  (s) => s.packetsLostPerSecond, 'packetsLostPerSecond', 1)
+              .having((s) => s.packetsLostPerSecond, 'packetsLostPerSecond', 1)
               .having((s) => s.keyFramesDecodedPerSecond,
                   'keyFramesDecodedPerSecond', 2)
               .having((s) => s.headerBytesReceivedPerSecond,
                   'headerBytesReceivedPerSecond', 5000)
-              .having(
-                  (s) => s.totalSquaredInterFrameDelayPerSecond,
-                  'totalSquaredInterFrameDelayPerSecond',
-                  1000.0)
+              .having((s) => s.totalSquaredInterFrameDelayPerSecond,
+                  'totalSquaredInterFrameDelayPerSecond', 1000.0)
               .having((s) => s.totalDecodeTimePerSecond,
                   'totalDecodeTimePerSecond', 125.0)
               .having((s) => s.totalAssemblyTimePerSecond,
