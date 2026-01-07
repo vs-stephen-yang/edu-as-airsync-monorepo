@@ -101,6 +101,7 @@ class RtcVideoInboundStats {
   final double? totalDecodeTimePerSecond;
   final double? totalInterFrameDelayPerSecond;
   final double? totalSquaredInterFrameDelayPerSecond;
+  final double? totalInterFrameDelayVariancePerSecond;
   final int? pauseCountPerSecond;
   final double? totalPausesDurationPerSecond;
   final int? freezeCountPerSecond;
@@ -208,6 +209,7 @@ class RtcVideoInboundStats {
     this.totalDecodeTimePerSecond,
     this.totalInterFrameDelayPerSecond,
     this.totalSquaredInterFrameDelayPerSecond,
+    this.totalInterFrameDelayVariancePerSecond,
     this.pauseCountPerSecond,
     this.totalPausesDurationPerSecond,
     this.freezeCountPerSecond,
@@ -602,6 +604,8 @@ String formatVideoInboundStatsList(List<RtcVideoInboundStats> list) {
             "totalInterFrameDelayPerSecond": stat.totalInterFrameDelayPerSecond,
             "totalSquaredInterFrameDelayPerSecond":
                 stat.totalSquaredInterFrameDelayPerSecond,
+            "totalInterFrameDelayVariancePerSecond":
+                stat.totalInterFrameDelayVariancePerSecond,
             "pauseCountPerSecond": stat.pauseCountPerSecond,
             "totalPausesDurationPerSecond": stat.totalPausesDurationPerSecond,
             "freezeCountPerSecond": stat.freezeCountPerSecond,

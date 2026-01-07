@@ -35,6 +35,22 @@ dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
   return (a - b) / (c - d);
 }
 
+double? _varianceFromTotals(
+  double? sum,
+  double? squaredSum,
+  int? count,
+) {
+  if (sum == null || squaredSum == null || count == null || count <= 0) {
+    return null;
+  }
+  final countDouble = count.toDouble();
+  final variance = (squaredSum - (sum * sum) / countDouble) / countDouble;
+  if (variance.isNaN || variance.isInfinite) {
+    return null;
+  }
+  return variance < 0 ? 0 : variance;
+}
+
 abstract class RtcStatsSubscriber {
   void updateVideoInboundStats(RtcVideoInboundStats stats);
 
@@ -262,6 +278,7 @@ class RtcStatsParser {
     double? totalDecodeTimePerSecond;
     double? totalInterFrameDelayPerSecond;
     double? totalSquaredInterFrameDelayPerSecond;
+    double? totalInterFrameDelayVariancePerSecond;
     int? pauseCountPerSecond;
     double? totalPausesDurationPerSecond;
     int? freezeCountPerSecond;
@@ -337,8 +354,16 @@ class RtcStatsParser {
           _diffDouble(totalDecodeTime, previous.totalDecodeTime);
       totalInterFrameDelayPerSecond =
           _diffDouble(totalInterFrameDelay, previous.totalInterFrameDelay);
-      totalSquaredInterFrameDelayPerSecond = _diffDouble(
+
+      final totalSquaredInterFrameDelayPerSecond = _diffDouble(
           totalSquaredInterFrameDelay, previous.totalSquaredInterFrameDelay);
+
+      totalInterFrameDelayVariancePerSecond = _varianceFromTotals(
+        totalInterFrameDelayPerSecond,
+        totalSquaredInterFrameDelayPerSecond,
+        framesRenderedPerSecond,
+      );
+
       pauseCountPerSecond = _diffInt(pauseCount, previous.pauseCount);
       totalPausesDurationPerSecond =
           _diffDouble(totalPausesDuration, previous.totalPausesDuration);
@@ -501,6 +526,8 @@ class RtcStatsParser {
       totalInterFrameDelayPerSecond: totalInterFrameDelayPerSecond,
       totalSquaredInterFrameDelayPerSecond:
           totalSquaredInterFrameDelayPerSecond,
+      totalInterFrameDelayVariancePerSecond:
+          totalInterFrameDelayVariancePerSecond,
       pauseCountPerSecond: pauseCountPerSecond,
       totalPausesDurationPerSecond: totalPausesDurationPerSecond,
       freezeCountPerSecond: freezeCountPerSecond,
