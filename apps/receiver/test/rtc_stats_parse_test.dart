@@ -342,6 +342,10 @@ void main() {
                   .having((s) => s.framesRenderedPerSecond,
                       'framesRenderedPerSecond', 30)
                   .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
+                  .having(
+                      (s) => s.totalInterFrameDelayVariancePerSecond,
+                      'totalInterFrameDelayVariancePerSecond',
+                      closeTo(15.9722, 0.0001))
                   .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
           .called(1);
       verify(mockPresenter.updateVideoInboundStats(argThat(isA<
@@ -356,6 +360,9 @@ void main() {
                   'headerBytesReceivedPerSecond', 5000)
               .having((s) => s.totalSquaredInterFrameDelayPerSecond,
                   'totalSquaredInterFrameDelayPerSecond', 1000.0)
+              .having((s) => s.totalInterFrameDelayVariancePerSecond,
+                  'totalInterFrameDelayVariancePerSecond',
+                  closeTo(15.9722, 0.0001))
               .having((s) => s.totalDecodeTimePerSecond,
                   'totalDecodeTimePerSecond', 125.0)
               .having((s) => s.totalAssemblyTimePerSecond,
