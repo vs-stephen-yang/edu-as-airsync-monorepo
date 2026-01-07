@@ -122,8 +122,8 @@ class RtcStatsParser {
     final framesPerSecond = values['framesPerSecond'];
     final contentType = values['contentType'];
     final qualityLimitationReason = values['qualityLimitationReason'];
-    final parsedQualityLimitationDurations = parseQualityLimitationDurations(
-        values['qualityLimitationDurations']);
+    final parsedQualityLimitationDurations =
+        parseQualityLimitationDurations(values['qualityLimitationDurations']);
     final qualityLimitationResolutionChanges =
         values['qualityLimitationResolutionChanges'];
     final pliCount = values['pliCount'];
@@ -267,8 +267,7 @@ class RtcStatsParser {
         qualityLimitationReason: qualityLimitationReason,
         qualityLimitationDurationsNone:
             parsedQualityLimitationDurations['none'],
-        qualityLimitationDurationsCpu:
-            parsedQualityLimitationDurations['cpu'],
+        qualityLimitationDurationsCpu: parsedQualityLimitationDurations['cpu'],
         qualityLimitationDurationsBandwith:
             parsedQualityLimitationDurations['bandwidth'],
         qualityLimitationDurationsOther:
@@ -317,8 +316,21 @@ class RtcStatsParser {
         pliCountPerSecond: pliCountPerSecond);
 
     // get extend field
-    stats.availableOutgoingBitrate =
-        _getAvailableOutgoingBitrate(stats, transports, candidatePairs);
+    if (transportId != null) {
+      final candidatePair = _findSelectedCandidatePair(
+        transportId,
+        transports,
+        candidatePairs,
+      );
+
+      if (candidatePair != null) {
+        stats.availableOutgoingBitrate =
+            candidatePair['availableOutgoingBitrate'];
+
+        stats.currentRoundTripTime = candidatePair['currentRoundTripTime'];
+      }
+    }
+
     stats.mediaSourceFramesPerSecond =
         _getMediaSourceFramesPerSecond(stats, videoMediaSources);
 
@@ -338,14 +350,15 @@ class RtcStatsParser {
     _previousVideoOutboundStats = stats;
   }
 
-  double? _getAvailableOutgoingBitrate(
-    RtcVideoOutboundStats videoOutboundStat,
+  Map<dynamic, dynamic>? _findSelectedCandidatePair(
+    String transportId,
     List<StatsReport> transports,
     List<StatsReport> candidatePairs,
   ) {
     final targetTransports = transports
         .where(
-            (StatsReport report) => report.id == videoOutboundStat.transportId)
+          (StatsReport report) => report.id == transportId,
+        )
         .toList();
     if (targetTransports.isEmpty) {
       return null;
@@ -368,7 +381,7 @@ class RtcStatsParser {
     final selectCandidatePair = selectCandidatePairs.first;
     final selectCandidatePairValue = selectCandidatePair.values;
 
-    return selectCandidatePairValue['availableOutgoingBitrate'];
+    return selectCandidatePairValue;
   }
 
   double? _getMediaSourceFramesPerSecond(

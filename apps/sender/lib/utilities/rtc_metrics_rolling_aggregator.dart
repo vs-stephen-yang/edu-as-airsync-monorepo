@@ -112,7 +112,7 @@ final Map<String, num? Function(RtcVideoOutboundStats)>
   'mediaSourceFramesPerSecond': (s) => s.mediaSourceFramesPerSecond,
   'targetBitrate': (s) => s.targetBitrate,
   'availableOutgoingBitrate': (s) => s.availableOutgoingBitrate,
-
+  'currentRoundTripTime': (s) => s.currentRoundTripTime,
   // Per-second counters
   'packetsSentPerSecond': (s) => s.packetsSentPerSecond,
   'bytesSentPerSecond': (s) => s.bytesSentPerSecond,
