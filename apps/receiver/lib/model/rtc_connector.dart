@@ -19,7 +19,7 @@ import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/rtc_metrics_window_aggregator.dart';
+import 'package:display_flutter/utility/rtc_metrics_rolling_aggregator.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
@@ -136,9 +136,9 @@ class RTCConnector {
 
   RtcStatsParser? _rtcStatsParser;
   RtcStatsPresenter? _rtcStatsPresenter;
-  final _inboundPerSecondCollector = RtcMetricsWindowAggregator.inbound();
+  final _inboundPerSecondCollector = RtcMetricsRollingAggregator.inbound();
 
-  RtcMetricsWindowSummary get inboundPerSecondSummary =>
+  RtcMetricsSummary get inboundPerSecondSummary =>
       _inboundPerSecondCollector.buildSummary();
 
   DateTime _lastUploadAt = DateTime.fromMillisecondsSinceEpoch(0);

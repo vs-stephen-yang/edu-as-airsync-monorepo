@@ -1,4 +1,4 @@
-import 'package:display_flutter/utility/rtc_metrics_window_aggregator.dart';
+import 'package:display_flutter/utility/rtc_metrics_rolling_aggregator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeStats {
@@ -9,7 +9,7 @@ class _FakeStats {
 
 void main() {
   test('flattenPercentiles flattens metric percentile keys', () {
-    final aggregator = RtcMetricsWindowAggregator<_FakeStats>(
+    final aggregator = RtcMetricsRollingAggregator<_FakeStats>(
       extractors: {
         'a': (s) => s.a,
         'b': (s) => s.b,

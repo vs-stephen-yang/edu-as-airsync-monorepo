@@ -4,11 +4,11 @@ import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/utility/math_util.dart';
 
 /// Summary of per-second RTC metrics.
-class RtcMetricsWindowSummary {
+class RtcMetricsSummary {
   /// Percentiles for each metric keyed by percentile name (e.g. p1, p50).
   final Map<String, Map<String, double>> percentiles;
 
-  RtcMetricsWindowSummary({
+  RtcMetricsSummary({
     required this.percentiles,
   });
 
@@ -30,7 +30,7 @@ class RtcMetricsWindowSummary {
 }
 
 /// Generic collector for per-second RTC metrics with percentile summaries.
-class RtcMetricsWindowAggregator<T> {
+class RtcMetricsRollingAggregator<T> {
   static const _percentileKeys = [
     'p1',
     'p10',
@@ -46,14 +46,14 @@ class RtcMetricsWindowAggregator<T> {
   final Map<String, ListQueue<double>> _series = {};
   final Map<String, num? Function(T)> _extractors;
 
-  RtcMetricsWindowAggregator({
+  RtcMetricsRollingAggregator({
     required Map<String, num? Function(T)> extractors,
     this.maxSamples = 3 * 60 * 60,
   }) : _extractors = extractors;
 
   /// Collector configured for inbound per-second metrics.
-  static RtcMetricsWindowAggregator<RtcVideoInboundStats> inbound() {
-    return RtcMetricsWindowAggregator<RtcVideoInboundStats>(
+  static RtcMetricsRollingAggregator<RtcVideoInboundStats> inbound() {
+    return RtcMetricsRollingAggregator<RtcVideoInboundStats>(
       extractors: _inboundMetricExtractors,
     );
   }
@@ -74,7 +74,7 @@ class RtcMetricsWindowAggregator<T> {
   }
 
   /// Create a summary containing last values and percentiles for each metric.
-  RtcMetricsWindowSummary buildSummary() {
+  RtcMetricsSummary buildSummary() {
     final percentileValues = <String, Map<String, double>>{};
 
     for (final entry in _extractors.entries) {
@@ -92,7 +92,7 @@ class RtcMetricsWindowAggregator<T> {
       }
     }
 
-    return RtcMetricsWindowSummary(
+    return RtcMetricsSummary(
       percentiles: percentileValues,
     );
   }
