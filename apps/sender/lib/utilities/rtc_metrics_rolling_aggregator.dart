@@ -4,11 +4,11 @@ import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/utilities/math_util.dart';
 
 /// Summary of per-second RTC metrics.
-class RtcMetricsWindowSummary {
+class RtcMetricsSummary {
   /// Percentiles for each metric keyed by percentile name (e.g. p1, p50).
   final Map<String, Map<String, double>> percentiles;
 
-  RtcMetricsWindowSummary({
+  RtcMetricsSummary({
     required this.percentiles,
   });
 
@@ -74,7 +74,7 @@ class RtcMetricsWindowAggregator<T> {
   }
 
   /// Create a summary containing last values and percentiles for each metric.
-  RtcMetricsWindowSummary buildSummary() {
+  RtcMetricsSummary buildSummary() {
     final percentileValues = <String, Map<String, double>>{};
 
     for (final entry in _extractors.entries) {
@@ -92,7 +92,7 @@ class RtcMetricsWindowAggregator<T> {
       }
     }
 
-    return RtcMetricsWindowSummary(
+    return RtcMetricsSummary(
       percentiles: percentileValues,
     );
   }

@@ -17,7 +17,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/bounded_list.dart';
-import 'package:display_cast_flutter/utilities/rtc_metrics_window_aggregator.dart';
+import 'package:display_cast_flutter/utilities/rtc_metrics_rolling_aggregator.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/list_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
