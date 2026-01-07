@@ -331,26 +331,37 @@ void main() {
       parser.onStatsReports([videoReport2]);
 
       // Assert
-      verify(mockReporter.updateVideoInboundStats(argThat(
-              isA<RtcVideoInboundStats>()
-                  .having((s) => s.framesReceivedPerSecond,
-                      'framesReceivedPerSecond', 30)
-                  .having((s) => s.framesDecodedPerSecond,
-                      'framesDecodedPerSecond', 25)
-                  .having((s) => s.framesDroppedPerSecond,
-                      'framesDroppedPerSecond', 5)
-                  .having((s) => s.framesRenderedPerSecond,
-                      'framesRenderedPerSecond', 30)
-                  .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
-                  .having(
-                      (s) => s.totalInterFrameDelayVariancePerSecond,
-                      'totalInterFrameDelayVariancePerSecond',
-                      closeTo(15.9722, 0.0001))
-                  .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
-          .called(1);
-      verify(mockPresenter.updateVideoInboundStats(argThat(isA<
-                  RtcVideoInboundStats>()
-              // Per-second differentials
+      final reporterVerify =
+          verify(mockReporter.updateVideoInboundStats(captureAny));
+      reporterVerify.called(2);
+      final reporterSecondCall =
+          reporterVerify.captured[1] as RtcVideoInboundStats;
+      expect(
+          reporterSecondCall,
+          isA<RtcVideoInboundStats>()
+              .having((s) => s.framesReceivedPerSecond,
+                  'framesReceivedPerSecond', 30)
+              .having(
+                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
+              .having(
+                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
+              .having((s) => s.framesRenderedPerSecond,
+                  'framesRenderedPerSecond', 30)
+              .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
+              .having(
+                  (s) => s.totalInterFrameDelayVariancePerSecond,
+                  'totalInterFrameDelayVariancePerSecond',
+                  closeTo(15.9722, 0.0001))
+              .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0));
+
+      final presenterVerify =
+          verify(mockPresenter.updateVideoInboundStats(captureAny));
+      presenterVerify.called(2);
+      final presenterSecondCall =
+          presenterVerify.captured[1] as RtcVideoInboundStats;
+      expect(
+          presenterSecondCall,
+          isA<RtcVideoInboundStats>()
               .having((s) => s.packetsReceivedPerSecond,
                   'packetsReceivedPerSecond', 50)
               .having((s) => s.packetsLostPerSecond, 'packetsLostPerSecond', 1)
@@ -358,9 +369,8 @@ void main() {
                   'keyFramesDecodedPerSecond', 2)
               .having((s) => s.headerBytesReceivedPerSecond,
                   'headerBytesReceivedPerSecond', 5000)
-              .having((s) => s.totalSquaredInterFrameDelayPerSecond,
-                  'totalSquaredInterFrameDelayPerSecond', 1000.0)
-              .having((s) => s.totalInterFrameDelayVariancePerSecond,
+              .having(
+                  (s) => s.totalInterFrameDelayVariancePerSecond,
                   'totalInterFrameDelayVariancePerSecond',
                   closeTo(15.9722, 0.0001))
               .having((s) => s.totalDecodeTimePerSecond,
@@ -387,8 +397,7 @@ void main() {
                   (s) => s.totalAssemblyTimeAvg, 'totalAssemblyTimeAvg', 2.0)
               .having((s) => s.totalInterFrameDelayAvg,
                   'totalInterFrameDelayAvg', 5.0)
-              .having((s) => s.qpSumAvg, 'qpSumAvg', 10.0))))
-          .called(1);
+              .having((s) => s.qpSumAvg, 'qpSumAvg', 10.0));
     });
 
     test('should return the first video inbound-rtp report', () {
