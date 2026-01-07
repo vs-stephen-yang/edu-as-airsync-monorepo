@@ -377,7 +377,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
       "Close update dialog",
     ),
-    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
+          "Start annotation",
+        ),
+        "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
+          "Stop annotation",
+        ),
+        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
       "Pause off",
     ),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("Pause on"),

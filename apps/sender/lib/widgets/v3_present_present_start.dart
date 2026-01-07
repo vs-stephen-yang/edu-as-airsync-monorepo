@@ -550,7 +550,9 @@ class AnnotationButton extends StatelessWidget {
         ? 'assets/images/${Platform.isAndroid ? 'v3_ic_annotation_on' : 'v3_ic_annotation_expand'}.svg'
         : 'assets/images/v3_ic_sharing_pen.svg';
     return V3Focus(
-      label: S.current.v3_lbl_sharing_stop,
+      label: isOn
+          ? S.current.v3_lbl_sharing_annotation_start
+          : S.current.v3_lbl_sharing_annotation_stop,
       identifier: 'v3_qa_enable_sharing_annotation',
       button: true,
       child: CircleAvatar(

@@ -202,6 +202,8 @@
   "v3_lbl_main_download_windows": "Get the Windows version",
   "v3_lbl_main_download_mobile": "Get the Mobile version",
   "v3_lbl_main_privacy": "Privacy Policy",
+  "v3_lbl_sharing_annotation_start": "Start annotation",
+  "v3_lbl_sharing_annotation_stop": "Stop annotation",
   "v3_lbl_sharing_pause_on": "Pause on",
   "v3_lbl_sharing_pause_off": "Pause off",
   "v3_lbl_sharing_stop": "Sharing stop",
