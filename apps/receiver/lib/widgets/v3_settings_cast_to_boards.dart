@@ -89,6 +89,9 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
         .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
     final GroupListModel discoveryModel = ref.read(discoveryModelProvider);
     discoveryModel.groupProvider = groupNotifier;
+    // Provide instance info so UDP discovery responses include name/ip/display code.
+    discoveryModel.instanceInfoProvider =
+        provider.Provider.of<InstanceInfoProvider>(context, listen: false);
     if (isBroadcastingToGroup) {
       discoveryModel.start(context: context);
     } else {

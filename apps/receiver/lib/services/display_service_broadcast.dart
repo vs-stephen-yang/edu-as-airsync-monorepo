@@ -39,6 +39,8 @@ class DisplayServiceBroadcast {
   String _invitedToGroupOption;
 
   int get directChannelPort => _directChannelPort;
+  // Expose app version for UDP discovery responses.
+  String get appVersion => _version;
 
   BonsoirBroadcast? _broadcast;
 

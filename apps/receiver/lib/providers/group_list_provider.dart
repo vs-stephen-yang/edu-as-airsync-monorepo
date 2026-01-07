@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bonsoir/bonsoir.dart';
+import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/services/airsync_udp_discovery.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
@@ -22,12 +27,15 @@ class GroupListModel with ChangeNotifier {
   BonsoirDiscovery? _discovery;
   StreamSubscription<BonsoirDiscoveryEvent>? _discoverySub;
   GroupProvider? _groupProvider;
+  InstanceInfoProvider? _instanceInfo;
+  AirSyncUdpDiscovery? _udpDiscovery;
 
   final Map<String, DateTime> _serviceFoundTime = {};
   final Map<String, DateTime> _resolveRecent = {};
   final Set<String> _resolvePending = {};
   final List<BonsoirService> _resolveQueue = [];
   bool _resolving = false;
+  bool _udpLogEnabled = false;
 
   static const Duration _resolveTimeout = Duration(seconds: 5);
   static const Duration _resolveCooldown = Duration(seconds: 3);
@@ -38,6 +46,16 @@ class GroupListModel with ChangeNotifier {
   Future<T> _queue<T>(Future<T> Function() run) {
     _ops = _ops.then((_) => run(), onError: (_) => run());
     return _ops as Future<T>;
+  }
+
+  void setUdpLogEnabled(bool enabled) {
+    // Enable verbose UDP discovery logs for troubleshooting.
+    _udpLogEnabled = enabled;
+    _udpDiscovery?.setLogEnabled(enabled);
+  }
+
+  set instanceInfoProvider(InstanceInfoProvider value) {
+    _instanceInfo = value;
   }
 
   Future<void> start({required BuildContext context}) => _queue(() async {
@@ -117,6 +135,8 @@ class GroupListModel with ChangeNotifier {
         try {
           await discovery.start();
           _discovery = discovery;
+          _ensureUdpDiscovery().setLogEnabled(_udpLogEnabled);
+          _ensureUdpDiscovery().start();
         } on PlatformException catch (e) {
           final msg = (e.message ?? '').toLowerCase();
           if (msg.contains('listener already in use')) {
@@ -182,6 +202,7 @@ class GroupListModel with ChangeNotifier {
 
     final d = _discovery;
     _discovery = null;
+    _udpDiscovery?.stop();
     _resolveQueue.clear();
     _resolvePending.clear();
     _resolveRecent.clear();
@@ -200,5 +221,51 @@ class GroupListModel with ChangeNotifier {
 
   set groupProvider(GroupProvider value) {
     _groupProvider = value;
+  }
+
+  String _buildAirSyncResponse() {
+    final info = _instanceInfo;
+    final name = info?.deviceName ?? AppPreferences().instanceName;
+    final ip = info?.ipAddress ?? '';
+    final dc = info?.displayCode ?? '';
+    final version = DisplayServiceBroadcast.instance?.appVersion ?? '';
+    final response = {
+      'fn': name,
+      'ver': version,
+      'dc': dc,
+      'ip': ip,
+      'igo': AppPreferences().invitedToGroup,
+      'id': AppInstanceCreate().groupID,
+      'mc': '1',
+    };
+    return jsonEncode(response);
+  }
+
+  AirSyncUdpDiscovery _ensureUdpDiscovery() {
+    return _udpDiscovery ??= AirSyncUdpDiscovery(
+      serviceType: DisplayServiceBroadcast.serviceType,
+      directChannelPort: DisplayServiceBroadcast.channelPort,
+      buildResponse: _buildAirSyncResponse,
+      onDevice: _handleUdpDevice,
+      onRemove: _handleUdpRemove,
+    );
+  }
+
+  void _handleUdpDevice(GroupBean bean) {
+    final alreadyInList = _groupProvider
+            ?.getClientList()
+            .any((item) => item.id() == bean.id()) ??
+        false;
+    if (!alreadyInList) {
+      _groupProvider?.addClient(bean);
+      _serviceFoundTime[bean.id()] = DateTime.now();
+      if (_udpLogEnabled) {
+        log.info('group list add client (airsync): ${bean.deviceName()}');
+      }
+    }
+  }
+
+  void _handleUdpRemove(GroupBean bean) {
+    _groupProvider?.removeClient(bean);
   }
 }
