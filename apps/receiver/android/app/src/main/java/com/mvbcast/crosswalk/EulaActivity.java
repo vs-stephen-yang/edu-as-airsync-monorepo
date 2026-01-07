@@ -60,8 +60,6 @@ public class EulaActivity extends FlutterActivity {
     private static MethodChannel mAlarmOTA;
     private MethodChannel multiWindowChannel;
 
-    private WifiManager.MulticastLock multicastLock;
-
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
@@ -427,14 +425,8 @@ public class EulaActivity extends FlutterActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         WifiHelper.getInstance().registerUsbReceiver(EulaActivity.this);
 
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        // 建立並 acquire MulticastLock
-        if (wifiManager != null) {
-            multicastLock = wifiManager.createMulticastLock("multicast_lock");
-            multicastLock.setReferenceCounted(false);
-            multicastLock.acquire();
-        }
+        // Keep multicast lock via service to support discovery in background.
+        startService(new Intent(getApplicationContext(), AirSyncSettingService.class));
     }
 
     @Override
@@ -462,9 +454,6 @@ public class EulaActivity extends FlutterActivity {
     @Override
     protected void onDestroy() {
         WifiHelper.getInstance().unregisterUsbReceiver(EulaActivity.this);
-        if (multicastLock != null) {
-            multicastLock.release();
-        }
         mAlarmOTA = null;
         super.onDestroy();
 //        System.exit(0);
