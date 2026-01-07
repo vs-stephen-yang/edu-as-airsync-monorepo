@@ -2046,6 +2046,26 @@ class S {
     );
   }
 
+  /// `Start annotation`
+  String get v3_lbl_sharing_annotation_start {
+    return Intl.message(
+      'Start annotation',
+      name: 'v3_lbl_sharing_annotation_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop annotation`
+  String get v3_lbl_sharing_annotation_stop {
+    return Intl.message(
+      'Stop annotation',
+      name: 'v3_lbl_sharing_annotation_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pause on`
   String get v3_lbl_sharing_pause_on {
     return Intl.message(
