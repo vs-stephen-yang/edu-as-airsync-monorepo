@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/utilities/math_util.dart';
 
@@ -41,7 +43,7 @@ class RtcMetricsWindowAggregator<T> {
   /// Maximum samples to retain per metric to bound memory.
   final int maxSamples;
 
-  final Map<String, List<double>> _series = {};
+  final Map<String, ListQueue<double>> _series = {};
   final Map<String, num? Function(T)> _extractors;
 
   RtcMetricsWindowAggregator({
@@ -63,10 +65,10 @@ class RtcMetricsWindowAggregator<T> {
       if (value == null) {
         return;
       }
-      final list = _series.putIfAbsent(name, () => []);
-      list.add(value.toDouble());
-      if (list.length > maxSamples) {
-        list.removeAt(0);
+      final queue = _series.putIfAbsent(name, () => ListQueue<double>());
+      queue.addLast(value.toDouble());
+      if (queue.length > maxSamples) {
+        queue.removeFirst();
       }
     });
   }
@@ -77,7 +79,7 @@ class RtcMetricsWindowAggregator<T> {
 
     for (final entry in _extractors.entries) {
       final metricName = entry.key;
-      final data = _series[metricName];
+      final data = _series[metricName]?.toList();
       if (data != null && data.isNotEmpty) {
         final percentiles = calculatePercentiles<double>(
             List<double>.from(data), _percentileTargets);
