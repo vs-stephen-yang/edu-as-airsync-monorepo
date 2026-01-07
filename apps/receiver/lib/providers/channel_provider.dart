@@ -502,6 +502,7 @@ class ChannelProvider extends ChangeNotifier
   void _handleNoConnectivity() {
     isNetworkConnected = false;
     _instanceInfo.displayCode = '';
+    unawaited(_saveDisplayCode(''));
   }
 
   Future<void> _handleNetworkConnected() async {
@@ -538,6 +539,14 @@ class ChannelProvider extends ChangeNotifier
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
 
     setSentryTag('display.code', displayCode);
+    log.info('display code updated: $displayCode');
+    // Persist display code for Android service replies.
+    unawaited(_saveDisplayCode(displayCode));
+  }
+
+  Future<void> _saveDisplayCode(String displayCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('app_displayCode', displayCode);
   }
 
   // Is the channel from the host?
