@@ -563,8 +563,7 @@ String formatVideoInboundStatsList(List<RtcVideoInboundStats> list) {
             "concealmentEvents": stat.concealmentEvents,
             "insertedSamplesForDeceleration":
                 stat.insertedSamplesForDeceleration,
-            "removedSamplesForAcceleration":
-                stat.removedSamplesForAcceleration,
+            "removedSamplesForAcceleration": stat.removedSamplesForAcceleration,
             "audioLevel": stat.audioLevel,
             "totalAudioEnergy": stat.totalAudioEnergy,
             "totalSamplesDuration": stat.totalSamplesDuration,
@@ -587,9 +586,8 @@ String formatVideoInboundStatsList(List<RtcVideoInboundStats> list) {
             "framesDecodedPerSecond": stat.framesDecodedPerSecond?.toDouble(),
             "framesDroppedPerSecond": stat.framesDroppedPerSecond?.toDouble(),
             "framesRenderedPerSecond": stat.framesRenderedPerSecond?.toDouble(),
-            "framesAssembledFromMultiplePacketsPerSecond": stat
-                .framesAssembledFromMultiplePacketsPerSecond
-                ?.toDouble(),
+            "framesAssembledFromMultiplePacketsPerSecond":
+                stat.framesAssembledFromMultiplePacketsPerSecond?.toDouble(),
             "keyFramesDecodedPerSecond": stat.keyFramesDecodedPerSecond,
             "nackCountPerSecond": stat.nackCountPerSecond,
             "firCountPerSecond": stat.firCountPerSecond,
@@ -601,18 +599,14 @@ String formatVideoInboundStatsList(List<RtcVideoInboundStats> list) {
             "headerBytesPerSecond": stat.headerBytesPerSecond,
             "qpSumPerSecond": stat.qpSumPerSecond,
             "totalDecodeTimePerSecond": stat.totalDecodeTimePerSecond,
-            "totalInterFrameDelayPerSecond":
-                stat.totalInterFrameDelayPerSecond,
+            "totalInterFrameDelayPerSecond": stat.totalInterFrameDelayPerSecond,
             "totalSquaredInterFrameDelayPerSecond":
                 stat.totalSquaredInterFrameDelayPerSecond,
             "pauseCountPerSecond": stat.pauseCountPerSecond,
-            "totalPausesDurationPerSecond":
-                stat.totalPausesDurationPerSecond,
+            "totalPausesDurationPerSecond": stat.totalPausesDurationPerSecond,
             "freezeCountPerSecond": stat.freezeCountPerSecond,
-            "totalFreezesDurationPerSecond":
-                stat.totalFreezesDurationPerSecond,
-            "totalProcessingDelayPerSecond":
-                stat.totalProcessingDelayPerSecond,
+            "totalFreezesDurationPerSecond": stat.totalFreezesDurationPerSecond,
+            "totalProcessingDelayPerSecond": stat.totalProcessingDelayPerSecond,
             "jitterBufferDelayPerSecond": stat.jitterBufferDelayPerSecond,
             "jitterBufferTargetDelayPerSecond":
                 stat.jitterBufferTargetDelayPerSecond,
@@ -622,8 +616,7 @@ String formatVideoInboundStatsList(List<RtcVideoInboundStats> list) {
                 stat.jitterBufferEmittedCountPerSecond,
             "totalAssemblyTimePerSecond": stat.totalAssemblyTimePerSecond,
             "totalAudioEnergyPerSecond": stat.totalAudioEnergyPerSecond,
-            "totalSamplesDurationPerSecond":
-                stat.totalSamplesDurationPerSecond,
+            "totalSamplesDurationPerSecond": stat.totalSamplesDurationPerSecond,
             "totalSamplesReceivedPerSecond":
                 stat.totalSamplesReceivedPerSecond?.toDouble(),
             "concealedSamplesPerSecond": stat.concealedSamplesPerSecond,
