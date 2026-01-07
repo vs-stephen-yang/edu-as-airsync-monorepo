@@ -17,6 +17,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/bounded_list.dart';
+import 'package:display_cast_flutter/utilities/rtc_metrics_window_aggregator.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/list_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -143,6 +144,7 @@ class WebRTCConnector {
   final _statsTimerInterval = const Duration(seconds: 1);
   RtcStatsParser? _rtcStatsParser;
   RtcStatsPresenter? _rtcStatsPresenter;
+  RtcMetricsWindowAggregator<RtcVideoOutboundStats>? _rtcMetricsAggregator;
 
   DateTime _lastUploadAt = DateTime.fromMillisecondsSinceEpoch(0);
   bool _uploading = false;
@@ -1167,6 +1169,7 @@ class WebRTCConnector {
     stopAppBundleIdMonitor();
 
     trackOutboundStats(filterEverySecond(_videoOutboundStatsHistory.elements));
+    _trackOutboundPercentiles();
 
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
 
@@ -1249,6 +1252,7 @@ class WebRTCConnector {
 
     _rtcStatsPresenter = RtcStatsPresenter();
     _rtcStatsParser?.addSubscriber(_rtcStatsPresenter!);
+    _rtcMetricsAggregator = RtcMetricsWindowAggregator.outbound();
 
     _statsTimer = Timer.periodic(
       _statsTimerInterval,
@@ -1323,6 +1327,7 @@ class WebRTCConnector {
 
   void _handleVideoStatsReport(RtcVideoOutboundStats stats) {
     _videoOutboundStatsHistory.add(stats);
+    _rtcMetricsAggregator?.add(stats);
 
     onVideoStatsReport?.call(stats);
 
@@ -1336,6 +1341,20 @@ class WebRTCConnector {
       _actualHeight = stats.frameHeight!;
       _updateEncodingParameters();
     }
+  }
+
+  void _trackOutboundPercentiles() {
+    final aggregator = _rtcMetricsAggregator;
+    if (aggregator == null) {
+      return;
+    }
+    final summary = aggregator.buildSummary();
+    final flattened = summary.flattenPercentiles();
+    if (flattened.isEmpty) {
+      return;
+    }
+    trackTrace('rtc_stats_summary',
+        properties: Map<String, Object>.from(flattened));
   }
 
   Map<String, String> getIceInfo() {
