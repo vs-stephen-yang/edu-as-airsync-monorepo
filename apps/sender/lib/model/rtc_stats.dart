@@ -60,6 +60,7 @@ class RtcVideoOutboundStats {
 
   // extend field from other dictionary
   double? availableOutgoingBitrate;
+  double? currentRoundTripTime;
   double? mediaSourceFramesPerSecond;
 
   RtcVideoOutboundStats({
