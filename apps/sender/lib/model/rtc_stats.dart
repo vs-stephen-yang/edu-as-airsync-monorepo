@@ -7,14 +7,21 @@ class RtcVideoOutboundStats {
   double? framesPerSecond;
   String? contentType;
   String? qualityLimitationReason;
+  double? qualityLimitationDurationsNone;
+  double? qualityLimitationDurationsCpu;
+  double? qualityLimitationDurationsBandwith;
+  double? qualityLimitationDurationsOther;
+  int? qualityLimitationResolutionChanges;
   int? pliCount;
   double? targetBitrate;
   bool? powerEfficientEncoder;
+  String? scalabilityMode;
 
   double? timestamp;
 
   int? bytesSent;
   int? packetsSent;
+  int? packetsSentWithEct1;
   bool? active;
   int? firCount;
   int? framesEncoded;
@@ -44,6 +51,12 @@ class RtcVideoOutboundStats {
   double? totalEncodedBytesTargetPerSecond;
   double? packetSendDelayAvgMs;
   double? qpSumAvg;
+  double? totalEncodeTimePerSecond;
+  double? totalPacketSendDelayPerSecond;
+  double? qpSumPerSecond;
+  int? nackCountPerSecond;
+  int? firCountPerSecond;
+  int? pliCountPerSecond;
 
   // extend field from other dictionary
   double? availableOutgoingBitrate;
@@ -58,12 +71,19 @@ class RtcVideoOutboundStats {
     this.framesPerSecond,
     this.contentType,
     this.qualityLimitationReason,
+    this.qualityLimitationDurationsNone,
+    this.qualityLimitationDurationsCpu,
+    this.qualityLimitationDurationsBandwith,
+    this.qualityLimitationDurationsOther,
+    this.qualityLimitationResolutionChanges,
     this.pliCount,
     this.targetBitrate,
     this.powerEfficientEncoder,
+    this.scalabilityMode,
     this.timestamp,
     this.bytesSent,
     this.packetsSent,
+    this.packetsSentWithEct1,
     this.active,
     this.firCount,
     this.framesEncoded,
@@ -91,6 +111,12 @@ class RtcVideoOutboundStats {
     this.framesSentPerSecond,
     this.packetSendDelayAvgMs,
     this.qpSumAvg,
+    this.totalEncodeTimePerSecond,
+    this.totalPacketSendDelayPerSecond,
+    this.qpSumPerSecond,
+    this.nackCountPerSecond,
+    this.firCountPerSecond,
+    this.pliCountPerSecond,
     this.availableOutgoingBitrate,
     this.mediaSourceFramesPerSecond,
   });

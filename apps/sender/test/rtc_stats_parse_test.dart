@@ -34,14 +34,17 @@ void main() {
         'framesPerSecond': 30.0,
         'contentType': 'realtime',
         'qualityLimitationReason': 'bandwidth',
+        'qualityLimitationDurations': '{bandwidth:0,cpu:0,none:0.72,other:0}',
         'totalEncodeTime': 25.5,
         'pliCount': 3,
         'targetBitrate': 1200000.0,
         'powerEfficientEncoder': true,
+        'scalabilityMode': 'L1T3',
         'framesSent': 1200,
         'framesEncoded': 1180,
         'bytesSent': 600000,
         'packetsSent': 950,
+        'packetsSentWithEct1': 12,
         'qpSum': 1500,
         'nackCount': 18,
         'firCount': 1,
@@ -73,12 +76,24 @@ void main() {
               .having((s) => s.contentType, 'contentType', 'realtime')
               .having((s) => s.qualityLimitationReason,
                   'qualityLimitationReason', 'bandwidth')
+              .having((s) => s.qualityLimitationDurationsNone,
+                  'qualityLimitationDurationsNone', 0.72)
+              .having((s) => s.qualityLimitationDurationsCpu,
+                  'qualityLimitationDurationsCpu', 0.0)
+              .having((s) => s.qualityLimitationDurationsBandwith,
+                  'qualityLimitationDurationsBandwith', 0.0)
+              .having((s) => s.qualityLimitationDurationsOther,
+                  'qualityLimitationDurationsOther', 0.0)
+              .having((s) => s.qualityLimitationResolutionChanges,
+                  'qualityLimitationResolutionChanges', 2)
               .having((s) => s.pliCount, 'pliCount', 3)
               .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
+              .having((s) => s.scalabilityMode, 'scalabilityMode', 'L1T3')
               .having(
                   (s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
               .having((s) => s.bytesSent, 'bytesSent', 600000)
               .having((s) => s.packetsSent, 'packetsSent', 950)
+              .having((s) => s.packetsSentWithEct1, 'packetsSentWithEct1', 12)
               .having((s) => s.active, 'active', true)
               .having((s) => s.firCount, 'firCount', 1)
               .having((s) => s.framesEncoded, 'framesEncoded', 1180)
@@ -108,12 +123,24 @@ void main() {
               .having((s) => s.contentType, 'contentType', 'realtime')
               .having((s) => s.qualityLimitationReason,
                   'qualityLimitationReason', 'bandwidth')
+              .having((s) => s.qualityLimitationDurationsNone,
+                  'qualityLimitationDurationsNone', 0.72)
+              .having((s) => s.qualityLimitationDurationsCpu,
+                  'qualityLimitationDurationsCpu', 0.0)
+              .having((s) => s.qualityLimitationDurationsBandwith,
+                  'qualityLimitationDurationsBandwith', 0.0)
+              .having((s) => s.qualityLimitationDurationsOther,
+                  'qualityLimitationDurationsOther', 0.0)
+              .having((s) => s.qualityLimitationResolutionChanges,
+                  'qualityLimitationResolutionChanges', 2)
               .having((s) => s.pliCount, 'pliCount', 3)
               .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
+              .having((s) => s.scalabilityMode, 'scalabilityMode', 'L1T3')
               .having(
                   (s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
               .having((s) => s.bytesSent, 'bytesSent', 600000)
               .having((s) => s.packetsSent, 'packetsSent', 950)
+              .having((s) => s.packetsSentWithEct1, 'packetsSentWithEct1', 12)
               .having((s) => s.active, 'active', true)
               .having((s) => s.firCount, 'firCount', 1)
               .having((s) => s.framesEncoded, 'framesEncoded', 1180)
@@ -225,6 +252,14 @@ void main() {
                   200) // 1200-1000 = 200
               .having((s) => s.framesSentPerSecond, 'framesSentPerSecond',
                   200) // 1200-1000 = 200
+              .having((s) => s.totalEncodeTimePerSecond,
+                  'totalEncodeTimePerSecond', 23.0)
+              .having((s) => s.totalPacketSendDelayPerSecond,
+                  'totalPacketSendDelayPerSecond', 40.0)
+              .having((s) => s.qpSumPerSecond, 'qpSumPerSecond', 1000.0)
+              .having((s) => s.nackCountPerSecond, 'nackCountPerSecond', 5)
+              .having((s) => s.firCountPerSecond, 'firCountPerSecond', 1)
+              .having((s) => s.pliCountPerSecond, 'pliCountPerSecond', 1)
               // Calculated averages (properly divisible for clean results)
               .having((s) => s.encodeTimeAvgMs, 'encodeTimeAvg', 115.0)
               .having((s) => s.qpSumAvg, 'qpSumAvg', 5.0)

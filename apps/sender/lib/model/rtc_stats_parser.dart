@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/rtc_stats_util.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 dynamic _diff(dynamic a, dynamic b) {
@@ -121,14 +122,20 @@ class RtcStatsParser {
     final framesPerSecond = values['framesPerSecond'];
     final contentType = values['contentType'];
     final qualityLimitationReason = values['qualityLimitationReason'];
+    final parsedQualityLimitationDurations = parseQualityLimitationDurations(
+        values['qualityLimitationDurations']);
+    final qualityLimitationResolutionChanges =
+        values['qualityLimitationResolutionChanges'];
     final pliCount = values['pliCount'];
     final targetBitrate = values['targetBitrate'];
     final powerEfficientEncoder = values['powerEfficientEncoder'];
+    final scalabilityMode = values['scalabilityMode'];
     final timestamp = videoOutboundRtp.timestamp;
 
     // Extract additional fields
     final bytesSent = values['bytesSent'];
     final packetsSent = values['packetsSent'];
+    final packetsSentWithEct1 = values['packetsSentWithEct1'];
     final active = values['active'];
     final firCount = values['firCount'];
     final framesEncoded = values['framesEncoded'];
@@ -158,6 +165,12 @@ class RtcStatsParser {
     double? totalEncodedBytesTargetPerSecond;
     double? packetSendDelayAvgMs;
     double? qpSumAvg;
+    double? totalEncodeTimePerSecond;
+    double? totalPacketSendDelayPerSecond;
+    double? qpSumPerSecond;
+    int? nackCountPerSecond;
+    int? firCountPerSecond;
+    int? pliCountPerSecond;
 
     // Calculate differences if we have previous stats
     if (_previousVideoOutboundStats != null) {
@@ -222,6 +235,24 @@ class RtcStatsParser {
         framesEncoded,
         _previousVideoOutboundStats!.framesEncoded,
       );
+
+      totalEncodeTimePerSecond = _diff(totalEncodeTime?.toDouble(),
+          _previousVideoOutboundStats!.totalEncodeTime?.toDouble());
+
+      totalPacketSendDelayPerSecond = _diff(totalPacketSendDelay?.toDouble(),
+          _previousVideoOutboundStats!.totalPacketSendDelay?.toDouble());
+
+      qpSumPerSecond = _diff(
+          qpSum?.toDouble(), _previousVideoOutboundStats!.qpSum?.toDouble());
+
+      nackCountPerSecond =
+          _diff(nackCount, _previousVideoOutboundStats!.nackCount);
+
+      firCountPerSecond =
+          _diff(firCount, _previousVideoOutboundStats!.firCount);
+
+      pliCountPerSecond =
+          _diff(pliCount, _previousVideoOutboundStats!.pliCount);
     }
 
     // Create the stats object with all fields
@@ -234,12 +265,23 @@ class RtcStatsParser {
         framesPerSecond: framesPerSecond,
         contentType: contentType,
         qualityLimitationReason: qualityLimitationReason,
+        qualityLimitationDurationsNone:
+            parsedQualityLimitationDurations['none'],
+        qualityLimitationDurationsCpu:
+            parsedQualityLimitationDurations['cpu'],
+        qualityLimitationDurationsBandwith:
+            parsedQualityLimitationDurations['bandwidth'],
+        qualityLimitationDurationsOther:
+            parsedQualityLimitationDurations['other'],
+        qualityLimitationResolutionChanges: qualityLimitationResolutionChanges,
         pliCount: pliCount,
         targetBitrate: targetBitrate,
         powerEfficientEncoder: powerEfficientEncoder,
+        scalabilityMode: scalabilityMode,
         timestamp: timestamp,
         bytesSent: bytesSent,
         packetsSent: packetsSent,
+        packetsSentWithEct1: packetsSentWithEct1,
         active: active,
         firCount: firCount,
         framesEncoded: framesEncoded,
@@ -266,7 +308,13 @@ class RtcStatsParser {
         totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
         framesSentPerSecond: framesSentPerSecond,
         packetSendDelayAvgMs: packetSendDelayAvgMs,
-        qpSumAvg: qpSumAvg);
+        qpSumAvg: qpSumAvg,
+        totalEncodeTimePerSecond: totalEncodeTimePerSecond,
+        totalPacketSendDelayPerSecond: totalPacketSendDelayPerSecond,
+        qpSumPerSecond: qpSumPerSecond,
+        nackCountPerSecond: nackCountPerSecond,
+        firCountPerSecond: firCountPerSecond,
+        pliCountPerSecond: pliCountPerSecond);
 
     // get extend field
     stats.availableOutgoingBitrate =

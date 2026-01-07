@@ -12,6 +12,17 @@ class RtcVideoOutboundStatsLists {
   List<int?> hugeFramesSentPerSecond;
   List<int?> bytesSentPerSecond;
   List<int?> keyFramesEncodedPerSecond;
+  List<int?> packetsSentPerSecond;
+  List<double?> headerBytesSentPerSecond;
+  List<double?> retransmittedPacketsSentPerSecond;
+  List<double?> retransmittedBytesSentPerSecond;
+  List<double?> totalEncodedBytesTargetPerSecond;
+  List<double?> totalEncodeTimePerSecond;
+  List<double?> totalPacketSendDelayPerSecond;
+  List<double?> qpSumPerSecond;
+  List<int?> nackCountPerSecond;
+  List<int?> firCountPerSecond;
+  List<int?> pliCountPerSecond;
 
   List<double?> packetSendDelayAvgMs;
   List<double?> encodeTimeAvgMs;
@@ -28,6 +39,17 @@ class RtcVideoOutboundStatsLists {
     required this.framesEncodedPerSecond,
     required this.bytesSentPerSecond,
     required this.keyFramesEncodedPerSecond,
+    required this.packetsSentPerSecond,
+    required this.headerBytesSentPerSecond,
+    required this.retransmittedPacketsSentPerSecond,
+    required this.retransmittedBytesSentPerSecond,
+    required this.totalEncodedBytesTargetPerSecond,
+    required this.totalEncodeTimePerSecond,
+    required this.totalPacketSendDelayPerSecond,
+    required this.qpSumPerSecond,
+    required this.nackCountPerSecond,
+    required this.firCountPerSecond,
+    required this.pliCountPerSecond,
     required this.packetSendDelayAvgMs,
     required this.encodeTimeAvgMs,
     required this.qpSumAvg,
@@ -47,6 +69,17 @@ class RtcVideoOutboundStatsLists {
     List<int?> bytesSentPerSecond = [];
     List<int?> hugeFramesSentPerSecond = [];
     List<int?> keyFramesEncodedPerSecond = [];
+    List<int?> packetsSentPerSecond = [];
+    List<double?> headerBytesSentPerSecond = [];
+    List<double?> retransmittedPacketsSentPerSecond = [];
+    List<double?> retransmittedBytesSentPerSecond = [];
+    List<double?> totalEncodedBytesTargetPerSecond = [];
+    List<double?> totalEncodeTimePerSecond = [];
+    List<double?> totalPacketSendDelayPerSecond = [];
+    List<double?> qpSumPerSecond = [];
+    List<int?> nackCountPerSecond = [];
+    List<int?> firCountPerSecond = [];
+    List<int?> pliCountPerSecond = [];
     List<double?> packetSendDelayAvgMs = [];
     List<double?> encodeTimeAvgMs = [];
     List<double?> qpSumAvg = [];
@@ -61,6 +94,20 @@ class RtcVideoOutboundStatsLists {
       bytesSentPerSecond.add(stats.bytesSentPerSecond);
       hugeFramesSentPerSecond.add(stats.hugeFramesSentPerSecond);
       keyFramesEncodedPerSecond.add(stats.keyFramesEncodedPerSecond);
+      packetsSentPerSecond.add(stats.packetsSentPerSecond);
+      headerBytesSentPerSecond.add(stats.headerBytesSentPerSecond);
+      retransmittedPacketsSentPerSecond
+          .add(stats.retransmittedPacketsSentPerSecond);
+      retransmittedBytesSentPerSecond
+          .add(stats.retransmittedBytesSentPerSecond);
+      totalEncodedBytesTargetPerSecond
+          .add(stats.totalEncodedBytesTargetPerSecond);
+      totalEncodeTimePerSecond.add(stats.totalEncodeTimePerSecond);
+      totalPacketSendDelayPerSecond.add(stats.totalPacketSendDelayPerSecond);
+      qpSumPerSecond.add(stats.qpSumPerSecond);
+      nackCountPerSecond.add(stats.nackCountPerSecond);
+      firCountPerSecond.add(stats.firCountPerSecond);
+      pliCountPerSecond.add(stats.pliCountPerSecond);
       mediaSourceFramesPerSecond.add(stats.mediaSourceFramesPerSecond);
       packetSendDelayAvgMs.add(stats.packetSendDelayAvgMs);
       encodeTimeAvgMs.add(stats.encodeTimeAvgMs);
@@ -77,6 +124,17 @@ class RtcVideoOutboundStatsLists {
       bytesSentPerSecond: bytesSentPerSecond,
       hugeFramesSentPerSecond: hugeFramesSentPerSecond,
       keyFramesEncodedPerSecond: keyFramesEncodedPerSecond,
+      packetsSentPerSecond: packetsSentPerSecond,
+      headerBytesSentPerSecond: headerBytesSentPerSecond,
+      retransmittedPacketsSentPerSecond: retransmittedPacketsSentPerSecond,
+      retransmittedBytesSentPerSecond: retransmittedBytesSentPerSecond,
+      totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
+      totalEncodeTimePerSecond: totalEncodeTimePerSecond,
+      totalPacketSendDelayPerSecond: totalPacketSendDelayPerSecond,
+      qpSumPerSecond: qpSumPerSecond,
+      nackCountPerSecond: nackCountPerSecond,
+      firCountPerSecond: firCountPerSecond,
+      pliCountPerSecond: pliCountPerSecond,
       mediaSourceFramesPerSecond: mediaSourceFramesPerSecond,
       packetSendDelayAvgMs: packetSendDelayAvgMs,
       encodeTimeAvgMs: encodeTimeAvgMs,
@@ -98,14 +156,42 @@ void trackOutboundStats(
       formatDoubleList(statsLists.packetSendDelayAvgMs, precision);
   final encodeTimeAvgMs =
       formatDoubleList(statsLists.encodeTimeAvgMs, precision);
+  final headerBytesSentPerSecond =
+      formatDoubleList(statsLists.headerBytesSentPerSecond, precision);
+  final retransmittedPacketsSentPerSecond = formatDoubleList(
+      statsLists.retransmittedPacketsSentPerSecond, precision);
+  final retransmittedBytesSentPerSecond = formatDoubleList(
+      statsLists.retransmittedBytesSentPerSecond, precision);
+  final totalEncodedBytesTargetPerSecond = formatDoubleList(
+      statsLists.totalEncodedBytesTargetPerSecond, precision);
+  final totalEncodeTimePerSecond =
+      formatDoubleList(statsLists.totalEncodeTimePerSecond, precision);
+  final totalPacketSendDelayPerSecond = formatDoubleList(
+      statsLists.totalPacketSendDelayPerSecond, precision);
+  final qpSumPerSecond =
+      formatDoubleList(statsLists.qpSumPerSecond, precision);
 
   trackTrace('video_outbound_stats', properties: {
     'framesPerSecond': statsLists.framesPerSecond.join(','),
     'framesSentPerSecond': statsLists.framesSentPerSecond.join(','),
     'framesEncodedPerSecond': statsLists.framesEncodedPerSecond.join(','),
+    'packetsSentPerSecond': statsLists.packetsSentPerSecond.join(','),
     'bytesSentPerSecond': statsLists.bytesSentPerSecond.join(','),
     'hugeFramesSentPerSecond': statsLists.hugeFramesSentPerSecond.join(','),
     'keyFramesEncodedPerSecond': statsLists.keyFramesEncodedPerSecond.join(','),
+    'headerBytesSentPerSecond': headerBytesSentPerSecond.join(','),
+    'retransmittedPacketsSentPerSecond':
+        retransmittedPacketsSentPerSecond.join(','),
+    'retransmittedBytesSentPerSecond':
+        retransmittedBytesSentPerSecond.join(','),
+    'totalEncodedBytesTargetPerSecond':
+        totalEncodedBytesTargetPerSecond.join(','),
+    'totalEncodeTimePerSecond': totalEncodeTimePerSecond.join(','),
+    'totalPacketSendDelayPerSecond': totalPacketSendDelayPerSecond.join(','),
+    'qpSumPerSecond': qpSumPerSecond.join(','),
+    'nackCountPerSecond': statsLists.nackCountPerSecond.join(','),
+    'firCountPerSecond': statsLists.firCountPerSecond.join(','),
+    'pliCountPerSecond': statsLists.pliCountPerSecond.join(','),
     'mediaSourceFramesPerSecond':
         statsLists.mediaSourceFramesPerSecond.join(','),
     'packetSendDelayAvgMs': packetSendDelayAvgMs.join(','),
