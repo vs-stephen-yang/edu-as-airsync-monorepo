@@ -24,6 +24,13 @@ class GroupListModel with ChangeNotifier {
   GroupProvider? _groupProvider;
 
   final Map<String, DateTime> _serviceFoundTime = {};
+  final Map<String, DateTime> _resolveRecent = {};
+  final Set<String> _resolvePending = {};
+  final List<BonsoirService> _resolveQueue = [];
+  bool _resolving = false;
+
+  static const Duration _resolveTimeout = Duration(seconds: 5);
+  static const Duration _resolveCooldown = Duration(seconds: 3);
 
   // ---- 序列化所有 start/stop，避免併發 ----
   Future<void> _ops = Future.value();
@@ -57,12 +64,7 @@ class GroupListModel with ChangeNotifier {
                       .any((item) => item.serviceName() == service.name) ??
                   false;
               if (!alreadyInList) {
-                // 僅在尚未解析過時解析
-                try {
-                  await service.resolve(discovery.serviceResolver);
-                } catch (e) {
-                  log.warning('Resolve service failed: ${service.name}', e);
-                }
+                _enqueueResolve(service, discovery);
               }
               break;
 
@@ -136,6 +138,42 @@ class GroupListModel with ChangeNotifier {
 
   Future<void> stop() => _queue(_safeStop);
 
+  void _enqueueResolve(BonsoirService service, BonsoirDiscovery discovery) {
+    final last = _resolveRecent[service.name];
+    if (last != null &&
+        DateTime.now().difference(last) < _resolveCooldown) {
+      return;
+    }
+    if (_resolvePending.contains(service.name)) return;
+    _resolvePending.add(service.name);
+    _resolveRecent[service.name] = DateTime.now();
+    _resolveQueue.add(service);
+    _drainResolveQueue(discovery);
+  }
+
+  void _drainResolveQueue(BonsoirDiscovery discovery) {
+    if (_resolving) return;
+    _resolving = true;
+
+    () async {
+      while (_resolveQueue.isNotEmpty) {
+        if (_discovery != discovery) break;
+
+        final service = _resolveQueue.removeAt(0);
+        try {
+          await service
+              .resolve(discovery.serviceResolver)
+              .timeout(_resolveTimeout);
+        } catch (e) {
+          log.warning('Resolve service failed: ${service.name}', e);
+        } finally {
+          _resolvePending.remove(service.name);
+        }
+      }
+      _resolving = false;
+    }();
+  }
+
   Future<void> _safeStop() async {
     // 先停用訂閱（避免新事件在 stop 途中進來）
     final sub = _discoverySub;
@@ -144,6 +182,10 @@ class GroupListModel with ChangeNotifier {
 
     final d = _discovery;
     _discovery = null;
+    _resolveQueue.clear();
+    _resolvePending.clear();
+    _resolveRecent.clear();
+    _resolving = false;
 
     if (d != null) {
       try {
