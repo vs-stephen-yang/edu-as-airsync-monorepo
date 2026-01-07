@@ -20,7 +20,6 @@ import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_metrics_window_aggregator.dart';
-import 'package:display_flutter/utility/rtc_stats_monitor.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
@@ -136,7 +135,6 @@ class RTCConnector {
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
 
   RtcStatsParser? _rtcStatsParser;
-  RtcStatsMonitor? _rtcStatsMonitor;
   RtcStatsPresenter? _rtcStatsPresenter;
   final _inboundPerSecondCollector = RtcMetricsWindowAggregator.inbound();
 
@@ -239,7 +237,6 @@ class RTCConnector {
   }
 
   void startRtcStatsReport() {
-    _rtcStatsMonitor = RtcStatsMonitor();
     final rtcStatsReporter = RtcStatsReporter(
       _handleVideoStatsReport,
       (RtcVideoOutboundStats stats) {},
@@ -366,13 +363,9 @@ class RTCConnector {
     return _isRtcFirstConnected;
   }
 
-  void _handleIceCandidatePairStatsReport(RtcIceCandidatePairStats stats) {
-    _rtcStatsMonitor?.onIceCandidatePairStats(stats);
-  }
+  void _handleIceCandidatePairStatsReport(RtcIceCandidatePairStats stats) {}
 
   void _handleVideoStatsReport(RtcVideoInboundStats stats) {
-    _rtcStatsMonitor?.onVideoInboundStats(stats);
-
     _videoBitrateHistory.add(stats.bytesPerSecond);
 
     _videoInboundStatsHistory.add(stats);
@@ -819,10 +812,6 @@ class RTCConnector {
 
   _trackMetrics() {
     // Track stats summary
-    if (_rtcStatsMonitor != null) {
-      final summary = _rtcStatsMonitor!.createSummary();
-      trackRtcSummary(summary);
-    }
 
     trackInboundStats(
         clientId, filterEverySecond(_videoInboundStatsHistory.elements));
