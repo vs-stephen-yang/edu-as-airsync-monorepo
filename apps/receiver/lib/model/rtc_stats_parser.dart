@@ -153,7 +153,7 @@ class RtcStatsParser {
         .where((StatsReport report) => report.values['kind'] == 'video')
         .toList();
 
-    _onVideoInboundStatsReports(videoInboundRtps);
+    _onVideoInboundStatsReports(videoInboundRtps, selectedCandidatePair);
 
     final mediaSources = reportsByType['media-source'] ?? [];
     final videoMediaSources = mediaSources
@@ -181,7 +181,10 @@ class RtcStatsParser {
     return null;
   }
 
-  void _onVideoInboundStatsReports(List<StatsReport> reports) {
+  void _onVideoInboundStatsReports(
+    List<StatsReport> reports,
+    StatsReport? selectCandidatePair,
+  ) {
     if (reports.isEmpty) {
       return;
     }
@@ -259,6 +262,13 @@ class RtcStatsParser {
     final corruptionMeasurements = values['corruptionMeasurements'];
 
     final powerEfficientDecoder = values['powerEfficientDecoder'];
+
+    double? currentRoundTripTime;
+    if (selectCandidatePair != null) {
+      final values = selectCandidatePair.values;
+
+      currentRoundTripTime = values['currentRoundTripTime'];
+    }
 
     // Per-second metrics
     int? packetsReceivedPerSecond;
@@ -572,6 +582,7 @@ class RtcStatsParser {
       totalAssemblyTimeAvg: totalAssemblyTimeAvg,
       jitterBufferDelayAvg: jitterBufferDelayAvg,
       qpSumAvg: qpSumAvg,
+      currentRoundTripTime: currentRoundTripTime,
     );
 
     publishRtcVideoInboundStats(stats);

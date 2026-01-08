@@ -176,4 +176,6 @@ final Map<String, num? Function(RtcVideoInboundStats)>
   'totalAssemblyTimeAvg': (s) => s.totalAssemblyTimeAvg,
   'jitterBufferDelayAvg': (s) => s.jitterBufferDelayAvg,
   'qpSumAvg': (s) => s.qpSumAvg,
+
+  'currentRoundTripTime': (s) => s.currentRoundTripTime,
 };
