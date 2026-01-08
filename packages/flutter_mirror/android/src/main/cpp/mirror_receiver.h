@@ -60,12 +60,6 @@ class MirrorReceiver
   void UpdateGooglecastCredentials(
       const openscreen::cast::CastReceiver::Credentials& credetials);
 
-  // Check if AirPlay service is running (for Watchdog health check)
-  bool IsAirplayServiceRunning() const;
-
-  // Check if Google Cast service is running (for Watchdog health check)
-  bool IsGooglecastServiceRunning() const;
-
   // MirrorListener
   virtual bool OnServiceRegister(
       const ServiceInfo& info) override;
