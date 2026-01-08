@@ -191,6 +191,18 @@ void MirrorReceiver::UpdateGooglecastCredentials(
   googlecast_receiver_->UpdateCredentials(credetials);
 }
 
+bool MirrorReceiver::IsAirplayServiceRunning() const {
+  // AirPlay service running status check
+  // If ap_receiver_ pointer is not null, the service is running
+  return ap_receiver_ != nullptr;
+}
+
+bool MirrorReceiver::IsGooglecastServiceRunning() const {
+  // Google Cast service running status check
+  // If googlecast_receiver_ pointer is not null, the service is running
+  return googlecast_receiver_ != nullptr;
+}
+
 // MirrorListener
 bool MirrorReceiver::OnServiceRegister(
     const ServiceInfo& info) {

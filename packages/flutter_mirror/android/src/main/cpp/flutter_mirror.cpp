@@ -274,6 +274,34 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_destroyInstanceNative(
   delete receiver;
 }
 
+JNIEXPORT jboolean JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_isAirplayServiceRunningNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance) {
+  assert(instance != 0);
+  ALOGV("MirrorReceiver_isAirplayServiceRunningNative()");
+
+  MirrorReceiver* receiver = MIRROR(instance);
+  bool is_running = receiver->IsAirplayServiceRunning();
+
+  return is_running ? JNI_TRUE : JNI_FALSE;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_isGooglecastServiceRunningNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance) {
+  assert(instance != 0);
+  ALOGV("MirrorReceiver_isGooglecastServiceRunningNative()");
+
+  MirrorReceiver* receiver = MIRROR(instance);
+  bool is_running = receiver->IsGooglecastServiceRunning();
+
+  return is_running ? JNI_TRUE : JNI_FALSE;
+}
+
 // MiracastReceiver
 JNIEXPORT jlong JNICALL
 Java_com_viewsonic_flutter_1mirror_MiracastReceiver_createInstanceNative(
