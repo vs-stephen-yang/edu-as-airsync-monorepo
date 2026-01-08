@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
+import 'package:display_cast_flutter/model/airsync_udp_discovery.dart';
 import 'package:display_cast_flutter/model/discover_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class DeviceListProvider with ChangeNotifier {
   DiscoverServices discoverServices = DiscoverServices();
+  AirSyncUdpDiscovery? _udpDiscovery;
 
   void startDiscovery(String versionPostfix) {
     discoverServices.startDiscovery((BonsoirDiscoveryEvent event) {
@@ -64,6 +66,18 @@ class DeviceListProvider with ChangeNotifier {
         }
       }
     });
+
+    _udpDiscovery ??= AirSyncUdpDiscovery(
+      serviceType: discoverServices.type,
+      directChannelPort: 5100,
+      buildResponse: () => '',
+      onDevice: (service) {
+        if (!_isDisplayCodeValid(service.displayCode)) return;
+        addDevice(service);
+      },
+      onRemove: (service) => removeDevice(service.uuid),
+    );
+    unawaited(_udpDiscovery!.start());
   }
 
   bool checkDisplayCode(BonsoirDiscoveryEvent event) =>
@@ -88,6 +102,8 @@ class DeviceListProvider with ChangeNotifier {
 
   Future<void> stopDiscovery() async {
     await discoverServices.stopDiscovery();
+    _udpDiscovery?.stop();
+    _udpDiscovery = null;
   }
 
   final List<AirSyncBonsoirService> _devices = [];
@@ -113,7 +129,10 @@ class DeviceListProvider with ChangeNotifier {
   }
 
   void removeDevice(String? uuid) {
-    _devices.remove(_devices.firstWhere((element) => element.uuid == uuid));
+    if (uuid == null) return;
+    final index = _devices.indexWhere((element) => element.uuid == uuid);
+    if (index == -1) return;
+    _devices.removeAt(index);
     notifyListeners();
   }
 
@@ -129,4 +148,7 @@ class DeviceListProvider with ChangeNotifier {
       return "";
     }
   }
+
+  bool _isDisplayCodeValid(String displayCode) =>
+      displayCode.isNotEmpty && !displayCode.contains(RegExp(r'[^0-9]'));
 }
