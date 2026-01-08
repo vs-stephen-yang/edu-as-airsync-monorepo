@@ -208,8 +208,8 @@ class DisplayServiceBroadcast {
 
 class UdpResponder {
   static String udpMessage = 'airsync';
-  static const int defaultPort = 44444;
-  static const int portRangeSize = 10; // Try ports 44444-44453
+  static const int defaultPort = 48469;
+  static const int portRangeSize = 1; // Try port 48469 only
 
   RawDatagramSocket? _sock;
   int? _activePort; // Track which port is actually being used
