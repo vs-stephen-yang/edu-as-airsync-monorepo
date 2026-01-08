@@ -51,6 +51,14 @@ double? _varianceFromTotals(
   return variance < 0 ? 0 : variance;
 }
 
+double? _packetLossRate(int? lost, int? received) {
+  if (lost == null || received == null) {
+    return null;
+  }
+  final total = lost + received;
+  return lost / total;
+}
+
 abstract class RtcStatsSubscriber {
   void updateVideoInboundStats(RtcVideoInboundStats stats);
 
@@ -279,6 +287,7 @@ class RtcStatsParser {
     double? totalInterFrameDelayPerSecond;
     double? totalSquaredInterFrameDelayPerSecond;
     double? totalInterFrameDelayVariancePerSecond;
+    double? packetLossRate;
     int? pauseCountPerSecond;
     double? totalPausesDurationPerSecond;
     int? freezeCountPerSecond;
@@ -314,6 +323,11 @@ class RtcStatsParser {
       packetsReceivedPerSecond =
           _diffInt(packetsReceived, previous.packetsReceived);
       packetsLostPerSecond = _diffInt(packetsLost, previous.packetsLost);
+      if (packetsLostPerSecond != null && packetsLostPerSecond < 0) {
+        packetsLostPerSecond = 0;
+      }
+      packetLossRate =
+          _packetLossRate(packetsLostPerSecond, packetsReceivedPerSecond);
       packetsDiscardedPerSecond =
           _diffInt(packetsDiscarded, previous.packetsDiscarded);
       fecBytesReceivedPerSecond =
@@ -528,6 +542,7 @@ class RtcStatsParser {
           totalSquaredInterFrameDelayPerSecond,
       totalInterFrameDelayVariancePerSecond:
           totalInterFrameDelayVariancePerSecond,
+      packetLossRate: packetLossRate,
       pauseCountPerSecond: pauseCountPerSecond,
       totalPausesDurationPerSecond: totalPausesDurationPerSecond,
       freezeCountPerSecond: freezeCountPerSecond,
