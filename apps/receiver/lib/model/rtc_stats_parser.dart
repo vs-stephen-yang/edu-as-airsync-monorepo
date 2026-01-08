@@ -385,7 +385,8 @@ class RtcStatsParser {
       totalInterFrameDelayVariancePerSecond = _varianceFromTotals(
         totalInterFrameDelayPerSecond,
         totalSquaredInterFrameDelayPerSecond,
-        framesRenderedPerSecond,
+        // framesRendered is unavailable; use framesDecoded as a fallback
+        framesRenderedPerSecond ?? framesDecodedPerSecond,
       );
 
       pauseCountPerSecond = _diffInt(pauseCount, previous.pauseCount);

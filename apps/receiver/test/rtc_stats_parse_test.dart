@@ -248,7 +248,6 @@ void main() {
         'freezeCount': 5,
         'totalFreezesDuration': 3.0,
         'keyFramesDecoded': 10,
-        'framesRendered': 1000,
         'totalInterFrameDelay': 5000.0, // Makes avg calculation clean (5.0)
         'totalSquaredInterFrameDelay': 20000.0,
         'totalPausesDuration': 0.0,
@@ -304,7 +303,6 @@ void main() {
         'freezeCount': 6,
         'totalFreezesDuration': 3.5,
         'keyFramesDecoded': 12, // +2 per second
-        'framesRendered': 1030, // +30 per second
         'totalInterFrameDelay': 5125.0, // Makes avg calculation clean
         'totalSquaredInterFrameDelay': 21000.0, // +1000 per second
         'totalPausesDuration': 0.0,
@@ -345,15 +343,13 @@ void main() {
                   (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
               .having(
                   (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
-              .having((s) => s.framesRenderedPerSecond,
-                  'framesRenderedPerSecond', 30)
               .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
               .having((s) => s.packetLossRate, 'packetLossRate',
                   closeTo(0.0196, 0.0001))
               .having(
                   (s) => s.totalInterFrameDelayVariancePerSecond,
                   'totalInterFrameDelayVariancePerSecond',
-                  closeTo(15.9722, 0.0001))
+                  closeTo(15.0, 0.0001))
               .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0));
 
       final presenterVerify =
@@ -376,7 +372,7 @@ void main() {
               .having(
                   (s) => s.totalInterFrameDelayVariancePerSecond,
                   'totalInterFrameDelayVariancePerSecond',
-                  closeTo(15.9722, 0.0001))
+                  closeTo(15.0, 0.0001))
               .having((s) => s.totalDecodeTimePerSecond,
                   'totalDecodeTimePerSecond', 125.0)
               .having((s) => s.totalAssemblyTimePerSecond,
