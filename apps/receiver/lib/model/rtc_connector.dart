@@ -252,7 +252,7 @@ class RTCConnector {
           _remoteCandidateType = remoteCandidateType;
         }
       },
-      _handleIceCandidatePairStatsReport,
+      (_) => {},
     );
 
     _rtcStatsParser?.addSubscriber(rtcStatsReporter);
@@ -362,8 +362,6 @@ class RTCConnector {
   bool _isStreaming() {
     return _isRtcFirstConnected;
   }
-
-  void _handleIceCandidatePairStatsReport(RtcIceCandidatePairStats stats) {}
 
   void _handleVideoStatsReport(RtcVideoInboundStats stats) {
     _videoBitrateHistory.add(stats.bytesPerSecond);
