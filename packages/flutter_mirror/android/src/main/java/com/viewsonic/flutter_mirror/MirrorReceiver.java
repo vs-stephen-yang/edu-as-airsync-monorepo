@@ -41,16 +41,6 @@ public class MirrorReceiver implements
   private MirrorListener mirrorListener_;
   private Context context_;
 
-  // Save AirPlay service parameters for automatic restart
-  private String airplayName_;
-  private String airplaySecurity_;
-  private Map<String, Map<String, Integer>> airplayResolutionMap_;
-
-  // Save Google Cast service parameters for automatic restart
-  private String googlecastName_;
-  private String googlecastUniqueId_;
-  private GooglecastCredentials googlecastCredentials_;
-
   // dns-sd services
   NsdManager nsdManager_;
   Map<String, NsdManager.RegistrationListener> services_ = new HashMap<>();
@@ -194,8 +184,8 @@ public class MirrorReceiver implements
   }
 
   /**
-   * Health check and automatic service restart (similar to vCast's periodic check mechanism)
-   * Check if AirPlay and Google Cast services are running, and automatically restart if not
+   * Periodic service maintenance (similar to vCast's periodic check mechanism)
+   * Refresh MDNS registration and retry pending services.
    */
   private void checkAndRestartService() {
     if (instance_ == 0) {
@@ -205,32 +195,6 @@ public class MirrorReceiver implements
     }
 
     Log.i(TAG, "checkAndRestartService: Performing service health check.");
-
-    // Check AirPlay service
-    if (airplayName_ != null) {
-      if (!isAirplayServiceRunningNative(instance_)) {
-        Log.w(TAG, "Airplay service not running, attempting to restart.");
-        // Stop first to ensure native resources are cleaned up
-        stopAirplay();
-        // Restart using saved parameters
-        startAirplay(airplayName_, airplaySecurity_, airplayResolutionMap_);
-      } else {
-        Log.i(TAG, "Airplay service is running.");
-      }
-    }
-
-    // Check Google Cast service
-    if (googlecastName_ != null) {
-      if (!isGooglecastServiceRunningNative(instance_)) {
-        Log.w(TAG, "Googlecast service not running, attempting to restart.");
-        // Stop first to ensure native resources are cleaned up
-        stopGooglecast();
-        // Restart using saved parameters
-        startGooglecast(googlecastName_, googlecastUniqueId_, googlecastCredentials_);
-      } else {
-        Log.i(TAG, "Googlecast service is running.");
-      }
-    }
 
     // Periodic MDNS service refresh (similar to vCast's periodic re-registration)
     // This ensures service visibility even when services are running normally
@@ -272,10 +236,6 @@ public class MirrorReceiver implements
         security,
         airPlayResolutionMap);
 
-    // Save parameters for restart
-    airplayName_ = name;
-    airplaySecurity_ = security;
-    airplayResolutionMap_ = airPlayResolutionMap;
   }
 
   // stop airplay
@@ -285,10 +245,6 @@ public class MirrorReceiver implements
     stopAirplayNative(
         instance_);
 
-    // Clear saved parameters
-    airplayName_ = null;
-    airplaySecurity_ = null;
-    airplayResolutionMap_ = null;
   }
 
   // start googlecast
@@ -304,10 +260,6 @@ public class MirrorReceiver implements
         uniqueId,
         credentials);
 
-    // Save parameters for restart
-    googlecastName_ = name;
-    googlecastUniqueId_ = uniqueId;
-    googlecastCredentials_ = credentials;
   }
 
   // stop googlecast
@@ -317,10 +269,6 @@ public class MirrorReceiver implements
     stopGooglecastNative(
         instance_);
 
-    // Clear saved parameters
-    googlecastName_ = null;
-    googlecastUniqueId_ = null;
-    googlecastCredentials_ = null;
   }
 
   public void stop() {
@@ -842,15 +790,4 @@ public class MirrorReceiver implements
       long instance,
       GooglecastCredentials credentials);
 
-  /**
-   * Check if AirPlay service is running
-   * Used for Watchdog health check
-   */
-  private native boolean isAirplayServiceRunningNative(long instance);
-
-  /**
-   * Check if Google Cast service is running
-   * Used for Watchdog health check
-   */
-  private native boolean isGooglecastServiceRunningNative(long instance);
 }
