@@ -814,7 +814,9 @@ class SelectScreenDialog extends Dialog {
     for (var element in _subscriptions) {
       await element.cancel();
     }
-    Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
+    if (ctx.mounted) {
+      Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
+    }
   }
 
   String _getShareName(
@@ -983,6 +985,9 @@ class SelectScreenDialog extends Dialog {
       await _startAndWaitForVirtualDisplay();
       _selectedSource =
           (await desktopCapturer.getSources(types: [SourceType.Screen])).last;
+      if (ctx.mounted == false) {
+        return;
+      }
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx,
           CustomDesktopCaptureSource(
@@ -991,6 +996,9 @@ class SelectScreenDialog extends Dialog {
     } else {
       annotationModel.selectedSource = selectedSource;
       annotationModel.setScreenIndex(selectedSource?.name ?? '');
+      if (ctx.mounted == false) {
+        return;
+      }
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx,
           CustomDesktopCaptureSource(
