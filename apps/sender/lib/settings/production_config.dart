@@ -26,7 +26,7 @@ class ProductionConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String appAmplitudeKey = '594b44808b184ee9dc7a4b91ad8520e3';
+  String appAmplitudeKey = '15c62f16ca3e98a62a1ad8f8d1012552';
 
   @override
   String appUpdateVersionEndpoint =
