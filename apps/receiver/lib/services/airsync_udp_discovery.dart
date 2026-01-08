@@ -18,10 +18,10 @@ class AirSyncUdpDiscovery {
   static const Duration _deviceTimeout = Duration(seconds: 5);
   static const Duration _broadcastCacheTtl = Duration(seconds: 30);
 
-  // AirSync UDP discovery: broadcast "airsync" to 44444–44453 to get JSON replies.
+  // AirSync UDP discovery: broadcast "airsync" to 48469 to get JSON replies.
   static const String _airSyncMessage = 'airsync';
-  static const int _airSyncPortStart = 44444;
-  static const int _airSyncPortRange = 10;
+  static const int _airSyncPortStart = 48469;
+  static const int _airSyncPortRange = 1;
 
   final String serviceType;
   final int directChannelPort;
