@@ -22,9 +22,6 @@ class AirSyncUdpDiscovery {
   static const String _airSyncMessage = 'airsync';
   static const int _airSyncPortStart = 44444;
   static const int _airSyncPortRange = 10;
-  // Legacy vCast probe: send/receive FindECloudBox on 48689 to trigger JSON replies.
-  static const String _findECloudBoxMessage = 'FindECloudBox';
-  static const int _findECloudBoxPort = 48689;
 
   final String serviceType;
   final int directChannelPort;
@@ -35,8 +32,6 @@ class AirSyncUdpDiscovery {
   RawDatagramSocket? _scanSocket;
   StreamSubscription<RawSocketEvent>? _scanSub;
   Timer? _scanTimer;
-  RawDatagramSocket? _findListenSocket;
-  StreamSubscription<RawSocketEvent>? _findListenSub;
 
   final Map<String, GroupBean> _devices = {};
   final Map<String, DateTime> _lastSeen = {};
@@ -68,18 +63,13 @@ class AirSyncUdpDiscovery {
       // Resolve broadcast targets (subnet broadcast, 255.255.255.255, multicast).
       await _refreshBroadcastTargets();
       _sendAirSyncPacket();
-      _sendFindECloudBoxPacket();
       _pruneDevices();
       _scanTimer?.cancel();
       _scanTimer = Timer.periodic(_interval, (_) async {
         await _refreshBroadcastTargets();
         _sendAirSyncPacket();
-        _sendFindECloudBoxPacket();
         _pruneDevices();
       });
-
-      // Reply to FindECloudBox probes with AirSync JSON.
-      await _startFindECloudBoxListener();
     } catch (e) {
       log.warning('AirSync UDP discovery start failed', e);
       stop();
@@ -94,40 +84,12 @@ class AirSyncUdpDiscovery {
     _scanSocket?.close();
     _scanSocket = null;
 
-    _findListenSub?.cancel();
-    _findListenSub = null;
-    _findListenSocket?.close();
-    _findListenSocket = null;
-
     _devices.clear();
     _lastSeen.clear();
     _scores.clear();
     _broadcastTargets = [];
     _broadcastCacheTime = null;
     _localIps = {};
-  }
-
-  Future<void> _startFindECloudBoxListener() async {
-    if (_findListenSocket != null) return;
-    try {
-      final socket = await RawDatagramSocket.bind(
-        InternetAddress.anyIPv4,
-        _findECloudBoxPort,
-      );
-      _findListenSocket = socket;
-      _findListenSub = socket.listen((event) {
-        if (event == RawSocketEvent.read) {
-          final dg = socket.receive();
-          if (dg == null) return;
-          if (_matchesFindECloudBox(dg.data)) {
-            final response = buildResponse();
-            socket.send(utf8.encode(response), dg.address, dg.port);
-          }
-        }
-      });
-    } catch (e) {
-      log.warning('FindECloudBox listener start failed', e);
-    }
   }
 
   void _sendAirSyncPacket() {
@@ -138,22 +100,6 @@ class AirSyncUdpDiscovery {
       for (int i = 0; i < _airSyncPortRange; i++) {
         socket.send(payload, target, _airSyncPortStart + i);
       }
-    }
-  }
-
-  void _sendFindECloudBoxPacket() {
-    final socket = _scanSocket;
-    if (socket == null) return;
-
-    final payload = List<int>.filled(50, 0);
-    final msgBytes = utf8.encode(_findECloudBoxMessage);
-    _intToBytes(payload, 12, msgBytes.length);
-    for (int i = 0; i < msgBytes.length && 20 + i < payload.length; i++) {
-      payload[20 + i] = msgBytes[i];
-    }
-
-    for (final target in _broadcastTargets) {
-      socket.send(payload, target, _findECloudBoxPort);
     }
   }
 
@@ -297,29 +243,5 @@ class AirSyncUdpDiscovery {
         onRemove(bean);
       }
     }
-  }
-
-  bool _matchesFindECloudBox(List<int> data) {
-    final target = utf8.encode(_findECloudBoxMessage);
-    if (data.length < target.length) return false;
-    for (int i = 0; i <= data.length - target.length; i++) {
-      bool match = true;
-      for (int j = 0; j < target.length; j++) {
-        if (data[i + j] != target[j]) {
-          match = false;
-          break;
-        }
-      }
-      if (match) return true;
-    }
-    return false;
-  }
-
-  void _intToBytes(List<int> buffer, int offset, int value) {
-    if (offset + 3 >= buffer.length) return;
-    buffer[offset] = (value >> 24) & 0xff;
-    buffer[offset + 1] = (value >> 16) & 0xff;
-    buffer[offset + 2] = (value >> 8) & 0xff;
-    buffer[offset + 3] = value & 0xff;
   }
 }
