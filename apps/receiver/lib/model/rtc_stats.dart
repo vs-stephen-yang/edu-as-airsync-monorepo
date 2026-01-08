@@ -132,6 +132,8 @@ class RtcVideoInboundStats {
   final double? jitterBufferDelayAvg;
   final double? qpSumAvg;
 
+  double? currentRoundTripTime; // in seconds
+
   RtcVideoInboundStats({
     this.decoderName,
     this.frameWidth,
@@ -238,6 +240,7 @@ class RtcVideoInboundStats {
     this.totalAssemblyTimeAvg,
     this.jitterBufferDelayAvg,
     this.qpSumAvg,
+    this.currentRoundTripTime,
   });
 }
 
@@ -377,6 +380,7 @@ class RtcVideoOutboundStats {
 
   // extend field from other dictionary
   double? availableOutgoingBitrate;
+  double? currentRoundTripTime; // in seconds
   double? mediaSourceFramesPerSecond;
 
   RtcVideoOutboundStats({
