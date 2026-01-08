@@ -142,6 +142,7 @@ final Map<String, num? Function(RtcVideoInboundStats)>
       s.totalSquaredInterFrameDelayPerSecond,
   'totalInterFrameDelayVariancePerSecond': (s) =>
       s.totalInterFrameDelayVariancePerSecond,
+  'packetLossRate': (s) => s.packetLossRate,
   'pauseCountPerSecond': (s) => s.pauseCountPerSecond,
   'totalPausesDurationPerSecond': (s) => s.totalPausesDurationPerSecond,
   'freezeCountPerSecond': (s) => s.freezeCountPerSecond,

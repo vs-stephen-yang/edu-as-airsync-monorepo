@@ -348,6 +348,8 @@ void main() {
               .having((s) => s.framesRenderedPerSecond,
                   'framesRenderedPerSecond', 30)
               .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
+              .having((s) => s.packetLossRate, 'packetLossRate',
+                  closeTo(0.0196, 0.0001))
               .having(
                   (s) => s.totalInterFrameDelayVariancePerSecond,
                   'totalInterFrameDelayVariancePerSecond',
@@ -369,6 +371,8 @@ void main() {
                   'keyFramesDecodedPerSecond', 2)
               .having((s) => s.headerBytesReceivedPerSecond,
                   'headerBytesReceivedPerSecond', 5000)
+              .having((s) => s.packetLossRate, 'packetLossRate',
+                  closeTo(0.0196, 0.0001))
               .having(
                   (s) => s.totalInterFrameDelayVariancePerSecond,
                   'totalInterFrameDelayVariancePerSecond',
