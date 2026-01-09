@@ -33,6 +33,7 @@ class AirSyncUdpDiscovery {
   RawDatagramSocket? _scanSocket;
   StreamSubscription<RawSocketEvent>? _scanSub;
   Timer? _scanTimer;
+  Timer? _refreshTimer;
 
   final Map<String, GroupBean> _devices = {};
   final Map<String, DateTime> _lastSeen = {};
@@ -65,9 +66,12 @@ class AirSyncUdpDiscovery {
       await _refreshBroadcastTargets();
       _sendAirSyncPacket();
       _pruneDevices();
+      _refreshTimer?.cancel();
+      _refreshTimer = Timer.periodic(_broadcastCacheTtl, (_) async {
+        await _refreshBroadcastTargets();
+      });
       _scanTimer?.cancel();
       _scanTimer = Timer.periodic(_interval, (_) async {
-        await _refreshBroadcastTargets();
         _sendAirSyncPacket();
         _pruneDevices();
       });
@@ -80,6 +84,8 @@ class AirSyncUdpDiscovery {
   void stop() {
     _scanTimer?.cancel();
     _scanTimer = null;
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
     _scanSub?.cancel();
     _scanSub = null;
     _scanSocket?.close();
