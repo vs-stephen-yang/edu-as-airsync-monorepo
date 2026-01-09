@@ -99,11 +99,6 @@ class MirrorReceiverWatchdog {
   void onMirrorVideoResize(String mirrorId) {
   }
 
-  void onAirplaySessionEnded(String mirrorId) {
-    activeMirrorSessions_.remove(mirrorId);
-    mirrorStopper_.stopMirror(mirrorId);
-  }
-
   boolean onServiceRegister(ServiceInfo info) {
     if (nsdManager_ == null) {
       return false;
