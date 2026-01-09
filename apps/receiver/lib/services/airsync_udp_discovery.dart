@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/network_constants.dart';
 import 'package:display_flutter/utility/log.dart';
 
 class AirSyncUdpDiscovery {
@@ -19,9 +20,9 @@ class AirSyncUdpDiscovery {
   static const Duration _broadcastCacheTtl = Duration(seconds: 30);
 
   // AirSync UDP discovery: broadcast "airsync" to 48469 to get JSON replies.
-  static const String _airSyncMessage = 'airsync';
-  static const int _airSyncPortStart = 48469;
-  static const int _airSyncPortRange = 1;
+  static const String _airSyncMessage = NetworkConstants.airSyncMessage;
+  static const int _airSyncPortStart = NetworkConstants.airSyncPort;
+  static const int _airSyncPortRange = NetworkConstants.airSyncPortRange;
 
   final String serviceType;
   final int directChannelPort;

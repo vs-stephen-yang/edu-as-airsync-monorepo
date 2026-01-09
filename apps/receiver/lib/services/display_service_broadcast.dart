@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/network_constants.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:uuid/uuid.dart';
@@ -207,9 +208,9 @@ class DisplayServiceBroadcast {
 }
 
 class UdpResponder {
-  static String udpMessage = 'airsync';
-  static const int defaultPort = 48469;
-  static const int portRangeSize = 1; // Try port 48469 only
+  static String udpMessage = NetworkConstants.airSyncMessage;
+  static const int defaultPort = NetworkConstants.airSyncPort;
+  static const int portRangeSize = NetworkConstants.airSyncPortRange;
 
   RawDatagramSocket? _sock;
   int? _activePort; // Track which port is actually being used
