@@ -72,10 +72,9 @@ class DeviceListProvider with ChangeNotifier {
       directChannelPort: 5100,
       buildResponse: () => '',
       onDevice: (service) {
-        if (!_isDisplayCodeValid(service.displayCode)) return;
         addDevice(service);
       },
-      onRemove: (service) => removeDevice(service.uuid),
+      onRemove: (service) => removeDevice(service.uuid, ip: service.ip),
     );
     unawaited(_udpDiscovery!.start());
   }
@@ -128,9 +127,15 @@ class DeviceListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeDevice(String? uuid) {
-    if (uuid == null) return;
-    final index = _devices.indexWhere((element) => element.uuid == uuid);
+  void removeDevice(String? uuid, {String? ip}) {
+    String? targetUuid = uuid;
+    if (targetUuid == null && ip != null && ip.isNotEmpty) {
+      final index = _devices.indexWhere((element) => element.ip == ip);
+      if (index == -1) return;
+      targetUuid = _devices[index].uuid;
+    }
+    if (targetUuid == null) return;
+    final index = _devices.indexWhere((element) => element.uuid == targetUuid);
     if (index == -1) return;
     _devices.removeAt(index);
     notifyListeners();
@@ -149,6 +154,4 @@ class DeviceListProvider with ChangeNotifier {
     }
   }
 
-  bool _isDisplayCodeValid(String displayCode) =>
-      displayCode.isNotEmpty && !displayCode.contains(RegExp(r'[^0-9]'));
 }

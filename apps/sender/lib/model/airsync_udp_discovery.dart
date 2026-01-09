@@ -109,7 +109,12 @@ class AirSyncUdpDiscovery {
     try {
       raw = utf8.decode(dg.data);
       data = jsonDecode(raw) as Map<String, dynamic>;
-    } catch (_) {
+    } catch (e, st) {
+      log.warning(
+        'UDP discovery failed to decode response from ${dg.address.address}',
+        e,
+        st,
+      );
       return;
     }
 
