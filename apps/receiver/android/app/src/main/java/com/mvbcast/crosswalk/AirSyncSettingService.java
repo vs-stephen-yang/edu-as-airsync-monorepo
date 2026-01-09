@@ -20,6 +20,11 @@ public class AirSyncSettingService extends Service {
         return mBinder;
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
+
 
     private final IAirSyncSettingService.Stub mBinder = new IAirSyncSettingService.Stub() {
         @Override

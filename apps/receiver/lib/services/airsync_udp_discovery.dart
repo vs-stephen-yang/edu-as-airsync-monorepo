@@ -178,33 +178,12 @@ class AirSyncUdpDiscovery {
 
   Future<void> _refreshBroadcastTargets() async {
     final now = DateTime.now();
-    if (_broadcastCacheTime != null &&
-        now.difference(_broadcastCacheTime!) < _broadcastCacheTtl) {
+    if (_broadcastCacheTime != null && now.difference(_broadcastCacheTime!) < _broadcastCacheTtl) {
       return;
     }
 
     final targets = <InternetAddress>{};
     final localIps = <String>{};
-
-    try {
-      final interfaces = await NetworkInterface.list(
-        includeLoopback: false,
-        type: InternetAddressType.IPv4,
-      );
-      for (final iface in interfaces) {
-        for (final addr in iface.addresses) {
-          final ip = addr.address;
-          localIps.add(ip);
-          final bytes = addr.rawAddress;
-          if (bytes.length == 4) {
-            bytes[3] = 255;
-            targets.add(InternetAddress.fromRawAddress(bytes));
-          }
-        }
-      }
-    } catch (e) {
-      log.warning('Failed to list network interfaces', e);
-    }
 
     // Global broadcast (vCast compatible) and SSDP multicast fallback.
     targets.add(InternetAddress('255.255.255.255'));
