@@ -426,7 +426,7 @@ public class EulaActivity extends FlutterActivity {
         WifiHelper.getInstance().registerUsbReceiver(EulaActivity.this);
 
         // Keep multicast lock via service to support discovery in background.
-        startService(new Intent(getApplicationContext(), AirSyncSettingService.class));
+        startService(new Intent(getApplicationContext(), MulticastLockService.class));
     }
 
     @Override

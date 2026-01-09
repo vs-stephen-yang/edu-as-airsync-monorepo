@@ -9,16 +9,10 @@ import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+
 public class AirSyncSettingService extends Service {
-    private WifiManager.MulticastLock multicastLock;
 
     public AirSyncSettingService() {
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        ensureMulticastLock();
     }
 
     @Override
@@ -26,42 +20,6 @@ public class AirSyncSettingService extends Service {
         return mBinder;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        ensureMulticastLock();
-        return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        if (multicastLock != null) {
-            if (multicastLock.isHeld()) {
-                multicastLock.release();
-            }
-            multicastLock = null;
-        }
-        super.onDestroy();
-    }
-
-    private void ensureMulticastLock() {
-        try {
-            WifiManager wifiManager =
-                    (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager == null) {
-                return;
-            }
-            if (multicastLock == null) {
-                // Keep multicast enabled for discovery traffic.
-                multicastLock = wifiManager.createMulticastLock("multicast_lock");
-                multicastLock.setReferenceCounted(false);
-            }
-            if (!multicastLock.isHeld()) {
-                multicastLock.acquire();
-            }
-        } catch (SecurityException ignored) {
-            // Ignore if permission is missing on specific builds.
-        }
-    }
 
     private final IAirSyncSettingService.Stub mBinder = new IAirSyncSettingService.Stub() {
         @Override
