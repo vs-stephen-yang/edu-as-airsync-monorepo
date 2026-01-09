@@ -26,7 +26,6 @@ class MirrorReceiverWatchdog {
   }
 
   private static final String NSD_LOG_PREFIX = "NSD";
-  private static final int CCAST_BLANK_TIMEOUT = 12000;  // 12 second timeout, similar to vCast
   private static final long SERVICE_CHECK_INTERVAL = 6000L;  // 6 second health check, similar to vCast
   private static final long SERVICE_RETRY_BASE_MS = 2000L;
   private static final long SERVICE_RETRY_MAX_MS = 30000L;
@@ -48,10 +47,6 @@ class MirrorReceiverWatchdog {
   // Track retry attempts and scheduled tasks per service.
   private final Map<String, Integer> serviceRetryCounts_ = new ConcurrentHashMap<>();
   private final Map<String, Runnable> serviceRetryRunnables_ = new ConcurrentHashMap<>();
-
-  // Timeout mechanism - automatic disconnect after 12 seconds without video
-  private final Handler timeoutHandler_ = new Handler(Looper.getMainLooper());
-  private final Map<String, Runnable> timeoutRunnables_ = new ConcurrentHashMap<>();
 
   // Track active mirror sessions (for MDNS refresh logic)
   private final Set<String> activeMirrorSessions_ = ConcurrentHashMap.newKeySet();
@@ -90,40 +85,23 @@ class MirrorReceiverWatchdog {
 
   void dispose() {
     stop();
-    timeoutHandler_.removeCallbacksAndMessages(null);
-    timeoutRunnables_.clear();
     activeMirrorSessions_.clear();
   }
 
   void onMirrorStart(String mirrorId, String mirrorType) {
     activeMirrorSessions_.add(mirrorId);
-    if ("google_cast".equals(mirrorType) || "airplay".equals(mirrorType)) {
-      Runnable timeoutRunnable = () -> {
-        Log.w(tag_, "Mirror session " + mirrorId + " timeout (no video for 12s), stopping.");
-        mirrorStopper_.stopMirror(mirrorId);
-      };
-      timeoutRunnables_.put(mirrorId, timeoutRunnable);
-      timeoutHandler_.postDelayed(timeoutRunnable, CCAST_BLANK_TIMEOUT);
-    }
   }
 
   void onMirrorStop(String mirrorId) {
     activeMirrorSessions_.remove(mirrorId);
-    cancelTimeout(mirrorId);
   }
 
   void onMirrorVideoResize(String mirrorId) {
-    Runnable timeoutRunnable = timeoutRunnables_.remove(mirrorId);
-    if (timeoutRunnable != null) {
-      timeoutHandler_.removeCallbacks(timeoutRunnable);
-      Log.i(tag_, "Video received for " + mirrorId + ", timeout cancelled.");
-    }
   }
 
   void onAirplaySessionEnded(String mirrorId) {
     activeMirrorSessions_.remove(mirrorId);
     mirrorStopper_.stopMirror(mirrorId);
-    cancelTimeout(mirrorId);
   }
 
   boolean onServiceRegister(ServiceInfo info) {
@@ -164,13 +142,6 @@ class MirrorReceiverWatchdog {
     cancelServiceRetry(serviceName);
 
     return listener != null;
-  }
-
-  private void cancelTimeout(String mirrorId) {
-    Runnable timeoutRunnable = timeoutRunnables_.remove(mirrorId);
-    if (timeoutRunnable != null) {
-      timeoutHandler_.removeCallbacks(timeoutRunnable);
-    }
   }
 
   /**
