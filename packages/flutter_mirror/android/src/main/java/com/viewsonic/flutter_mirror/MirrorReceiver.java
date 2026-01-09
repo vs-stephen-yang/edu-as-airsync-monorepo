@@ -242,17 +242,6 @@ public class MirrorReceiver implements
         isUibcSupported);
   }
 
-  /**
-   * AirPlay session ended callback
-   * Similar to vCast's RTSPResponder broadcasting ACTION_AIRPLAY_DISCONNECTED
-   */
-  public void onAirplaySessionEnded(String mirrorId) {
-    Log.i(TAG, "AirPlay session ended: " + mirrorId);
-    if (watchdog_ != null) {
-      watchdog_.onAirplaySessionEnded(mirrorId);
-    }
-  }
-
   private native long createInstanceNative(
       TexRegistry textureRegistry, Map<String, Integer> options);
 
