@@ -136,7 +136,7 @@ class GroupListModel with ChangeNotifier {
           await discovery.start();
           _discovery = discovery;
           _ensureUdpDiscovery().setLogEnabled(_udpLogEnabled);
-          _ensureUdpDiscovery().start();
+          await _ensureUdpDiscovery().start();
         } on PlatformException catch (e) {
           final msg = (e.message ?? '').toLowerCase();
           if (msg.contains('listener already in use')) {
