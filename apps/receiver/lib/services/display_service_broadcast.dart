@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/network_constants.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:uuid/uuid.dart';
