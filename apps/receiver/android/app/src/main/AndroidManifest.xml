@@ -60,6 +60,11 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".MulticastLockService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".EulaActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|touchscreen"
