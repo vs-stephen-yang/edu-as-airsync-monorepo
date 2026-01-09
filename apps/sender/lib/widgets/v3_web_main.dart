@@ -289,6 +289,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
 
     // Show the menu below the button with always-visible scrollbar
     String? newValue;
+    bool menuShown = false;
     await showDialog<void>(
       context: context,
       barrierColor: Colors.transparent,
@@ -307,6 +308,8 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
             builder: (themedContext) {
               // Immediately show the menu and close the dialog wrapper
               Future.microtask(() async {
+                if (menuShown) return;
+                menuShown = true;
                 if (themedContext.mounted == false) return;
                 final result = await showMenu<String>(
                   context: themedContext,
@@ -334,6 +337,10 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
                     );
                   }).toList(),
                 );
+
+                // Wait one frame to ensure showMenu overlay is fully removed
+                await WidgetsBinding.instance.endOfFrame;
+
                 newValue = result;
                 if (!themedContext.mounted) return;
                 if (Navigator.canPop(dialogContext)) {
