@@ -15,7 +15,7 @@ class AirSyncUdpDiscovery {
     required this.onRemove,
   });
 
-  static const Duration _interval = Duration(seconds: 2);
+  static const Duration _interval = Duration(seconds: 1);
   static const Duration _deviceTimeout = Duration(seconds: 5);
   static const Duration _broadcastCacheTtl = Duration(seconds: 30);
 
