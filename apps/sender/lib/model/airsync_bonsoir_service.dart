@@ -5,6 +5,7 @@ class AirSyncBonsoirService {
   final String displayCode;
   final String ip;
   final int port;
+  final String source;
 
   AirSyncBonsoirService({
     required this.uuid,
@@ -13,6 +14,7 @@ class AirSyncBonsoirService {
     required this.displayCode,
     required this.ip,
     required this.port,
+    this.source = '',
   });
 
   factory AirSyncBonsoirService.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class AirSyncBonsoirService {
       displayCode: json['attributes']['displayCode'],
       ip: json['attributes']['ip'],
       port: json['port'],
+      source: json['source'] ?? '',
     );
   }
 
@@ -34,6 +37,7 @@ class AirSyncBonsoirService {
       'displayCode': displayCode,
       'ip': ip,
       'port': port,
+      'source': source,
     };
   }
 }

@@ -15,6 +15,8 @@ class AirSyncUdpDiscovery {
   });
 
   static const Duration _interval = Duration(seconds: 2);
+  static const Duration _burstDelay = Duration(milliseconds: 200);
+  static const int _burstCount = 5;
   static const Duration _deviceTimeout = Duration(seconds: 5);
   static const Duration _broadcastCacheTtl = Duration(seconds: 30);
 
@@ -45,6 +47,16 @@ class AirSyncUdpDiscovery {
     _logEnabled = enabled;
   }
 
+  Future<void> scanOnce() async {
+    if (_scanSocket == null) {
+      await start();
+      return;
+    }
+    await _refreshBroadcastTargets();
+    _sendAirSyncPacket();
+    _pruneDevices();
+  }
+
   Future<void> start() async {
     if (_scanSocket != null) return;
     try {
@@ -62,7 +74,7 @@ class AirSyncUdpDiscovery {
 
       // Resolve broadcast targets (subnet broadcast, 255.255.255.255, multicast).
       await _refreshBroadcastTargets();
-      _sendAirSyncPacket();
+      await _sendAirSyncBurst();
       _pruneDevices();
       _scanTimer?.cancel();
       _scanTimer = Timer.periodic(_interval, (_) async {
@@ -99,6 +111,15 @@ class AirSyncUdpDiscovery {
     for (final target in _broadcastTargets) {
       for (int i = 0; i < _airSyncPortRange; i++) {
         socket.send(payload, target, _airSyncPortStart + i);
+      }
+    }
+  }
+
+  Future<void> _sendAirSyncBurst() async {
+    for (int i = 0; i < _burstCount; i++) {
+      _sendAirSyncPacket();
+      if (i < _burstCount - 1) {
+        await Future.delayed(_burstDelay);
       }
     }
   }
@@ -148,6 +169,7 @@ class AirSyncUdpDiscovery {
       displayCode: dc,
       ip: ip,
       port: directChannelPort,
+      source: 'udp',
     );
 
     _lastSeen[id] = DateTime.now();
@@ -166,11 +188,15 @@ class AirSyncUdpDiscovery {
       }
     }
 
-    if (!_devices.containsKey(id)) {
-      _devices[id] = bean;
+    final previous = _devices[id];
+    _devices[id] = bean;
+    if (previous == null ||
+        previous.ip != bean.ip ||
+        previous.displayCode != bean.displayCode ||
+        previous.name != bean.name) {
       onDevice(bean);
-    } else {
-      _devices[id] = bean;
+    } else if (_logEnabled) {
+      log.fine('airsync device unchanged: $id ip=$ip');
     }
   }
 
