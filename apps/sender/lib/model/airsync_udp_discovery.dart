@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -31,14 +32,14 @@ class AirSyncUdpDiscovery {
   final void Function(AirSyncBonsoirService) onDevice;
   final void Function(AirSyncBonsoirService) onRemove;
 
-  RawDatagramSocket? _scanSocket;
-  StreamSubscription<RawSocketEvent>? _scanSub;
+  final Map<String, RawDatagramSocket> _scanSockets = {};
+  final Map<String, StreamSubscription<RawSocketEvent>> _scanSubs = {};
   Timer? _scanTimer;
 
   final Map<String, AirSyncBonsoirService> _devices = {};
   final Map<String, DateTime> _lastSeen = {};
   final Map<String, int> _scores = {};
-  List<InternetAddress> _broadcastTargets = [];
+  Map<String, List<InternetAddress>> _broadcastTargetsByIp = {};
   DateTime? _broadcastCacheTime;
   Set<String> _localIps = {};
   bool _logEnabled = false;
@@ -47,8 +48,41 @@ class AirSyncUdpDiscovery {
     _logEnabled = enabled;
   }
 
+  Future<void> _syncScanSockets(
+    Map<String, InternetAddress> addrByIp,
+  ) async {
+    final desiredIps = addrByIp.keys.toSet();
+    final currentIps = _scanSockets.keys.toSet();
+
+    for (final ip in currentIps.difference(desiredIps)) {
+      _scanSubs.remove(ip)?.cancel();
+      _scanSockets.remove(ip)?.close();
+    }
+
+    for (final ip in desiredIps.difference(currentIps)) {
+      final addr = addrByIp[ip];
+      if (addr == null) continue;
+      try {
+        final socket = await RawDatagramSocket.bind(addr, 0);
+        socket.broadcastEnabled = true;
+        _scanSockets[ip] = socket;
+        _scanSubs[ip] = socket.listen((event) {
+          if (event == RawSocketEvent.read) {
+            final dg = socket.receive();
+            if (dg == null) return;
+            _handleAirSyncResponse(dg);
+          }
+        });
+      } on SocketException catch (e) {
+        if (_logEnabled) {
+          log.fine('airsync udp bind failed: ${addr.address}: $e');
+        }
+      }
+    }
+  }
+
   Future<void> scanOnce() async {
-    if (_scanSocket == null) {
+    if (_scanSockets.isEmpty) {
       await start();
       return;
     }
@@ -58,22 +92,15 @@ class AirSyncUdpDiscovery {
   }
 
   Future<void> start() async {
-    if (_scanSocket != null) return;
+    if (_scanSockets.isNotEmpty) return;
     try {
-      final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      socket.broadcastEnabled = true;
-      _scanSocket = socket;
-
-      _scanSub = socket.listen((event) {
-        if (event == RawSocketEvent.read) {
-          final dg = socket.receive();
-          if (dg == null) return;
-          _handleAirSyncResponse(dg);
-        }
-      });
-
       // Resolve broadcast targets (subnet broadcast, 255.255.255.255, multicast).
       await _refreshBroadcastTargets();
+      if (_scanSockets.isEmpty) {
+        log.warning(
+            'AirSync UDP discovery start failed: no usable IPv4 address');
+        return;
+      }
       await _sendAirSyncBurst();
       _pruneDevices();
       _scanTimer?.cancel();
@@ -91,28 +118,46 @@ class AirSyncUdpDiscovery {
   void stop() {
     _scanTimer?.cancel();
     _scanTimer = null;
-    _scanSub?.cancel();
-    _scanSub = null;
-    _scanSocket?.close();
-    _scanSocket = null;
+    for (final sub in _scanSubs.values) {
+      sub.cancel();
+    }
+    _scanSubs.clear();
+    for (final socket in _scanSockets.values) {
+      socket.close();
+    }
+    _scanSockets.clear();
 
     _devices.clear();
     _lastSeen.clear();
     _scores.clear();
-    _broadcastTargets = [];
+    _broadcastTargetsByIp = {};
     _broadcastCacheTime = null;
     _localIps = {};
   }
 
   void _sendAirSyncPacket() {
-    final socket = _scanSocket;
-    if (socket == null) return;
     final payload = utf8.encode(_airSyncMessage);
-    for (final target in _broadcastTargets) {
-      for (int i = 0; i < _airSyncPortRange; i++) {
-        socket.send(payload, target, _airSyncPortStart + i);
+    _scanSockets.forEach((ip, socket) {
+      final targets = _broadcastTargetsByIp[ip];
+      if (targets == null) return;
+      for (final target in targets) {
+        for (int i = 0; i < _airSyncPortRange; i++) {
+          try {
+            if (_logEnabled) {
+              log.info(
+                  'airsync udp send: local=$ip target=${target.address}:${_airSyncPortStart + i}');
+            }
+            socket.send(payload, target, _airSyncPortStart + i);
+          } catch (e) {
+            // Ignore per-target send failures (e.g. no route on Windows).
+            if (_logEnabled) {
+              log.fine(
+                  'airsync udp send failed: local=$ip target=${target.address}:${_airSyncPortStart + i}');
+            }
+          }
+        }
       }
-    }
+    });
   }
 
   Future<void> _sendAirSyncBurst() async {
@@ -207,8 +252,9 @@ class AirSyncUdpDiscovery {
       return;
     }
 
-    final targets = <InternetAddress>{};
+    final targetsByIp = <String, List<InternetAddress>>{};
     final localIps = <String>{};
+    final addrByIp = <String, InternetAddress>{};
 
     try {
       final interfaces = await NetworkInterface.list(
@@ -219,10 +265,16 @@ class AirSyncUdpDiscovery {
         for (final addr in iface.addresses) {
           final ip = addr.address;
           localIps.add(ip);
-          final bytes = addr.rawAddress;
+          addrByIp[ip] = addr;
+          final bytes = Uint8List.fromList(addr.rawAddress);
           if (bytes.length == 4) {
             bytes[3] = 255;
-            targets.add(InternetAddress.fromRawAddress(bytes));
+            final subnetBroadcast = InternetAddress.fromRawAddress(bytes);
+            targetsByIp[ip] = <InternetAddress>[
+              subnetBroadcast,
+              InternetAddress('255.255.255.255'),
+              InternetAddress('239.255.255.250'),
+            ];
           }
         }
       }
@@ -230,11 +282,9 @@ class AirSyncUdpDiscovery {
       log.warning('Failed to list network interfaces', e);
     }
 
-    // Global broadcast (vCast compatible) and SSDP multicast fallback.
-    targets.add(InternetAddress('255.255.255.255'));
-    targets.add(InternetAddress('239.255.255.250'));
+    await _syncScanSockets(addrByIp);
 
-    _broadcastTargets = targets.toList();
+    _broadcastTargetsByIp = targetsByIp;
     _broadcastCacheTime = now;
     _localIps = localIps;
   }

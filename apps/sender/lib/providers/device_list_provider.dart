@@ -179,8 +179,8 @@ class DeviceListProvider with ChangeNotifier {
           element.source == _sourceUdp &&
           (element.uuid == device.uuid || element.ip == device.ip));
     } else {
-      _devices.removeWhere((element) =>
-          element.uuid == device.uuid || element.ip == device.ip);
+      _devices.removeWhere(
+          (element) => element.uuid == device.uuid || element.ip == device.ip);
     }
     _devices.add(device);
     notifyListeners();
@@ -231,5 +231,4 @@ class DeviceListProvider with ChangeNotifier {
       return "";
     }
   }
-
 }
