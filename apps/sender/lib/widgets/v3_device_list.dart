@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
@@ -38,8 +39,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      _deviceListProvider
-          .startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
+      unawaited(_deviceListProvider.startDiscovery(
+          AppConfig.of(context)?.settings.versionPostfix ?? ''));
     });
     _presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
@@ -397,7 +398,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
 
   @override
   void dispose() {
-    _deviceListProvider.stopDiscovery();
+    unawaited(_deviceListProvider.stopDiscovery());
     _deviceListProvider.clearDevices();
     _channelProvider.resetMessage();
     super.dispose();

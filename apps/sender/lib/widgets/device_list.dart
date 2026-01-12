@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -31,8 +33,8 @@ class _DeviceListState extends State<DeviceList> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      _deviceListProvider
-          .startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
+      unawaited(_deviceListProvider.startDiscovery(
+          AppConfig.of(context)?.settings.versionPostfix ?? ''));
     });
     _presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
@@ -190,7 +192,7 @@ class _DeviceListState extends State<DeviceList> {
 
   @override
   void dispose() {
-    _deviceListProvider.stopDiscovery();
+    unawaited(_deviceListProvider.stopDiscovery());
     _deviceListProvider.clearDevices();
     _channelProvider.resetMessage();
     super.dispose();

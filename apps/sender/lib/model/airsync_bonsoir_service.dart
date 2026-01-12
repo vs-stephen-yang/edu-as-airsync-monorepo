@@ -1,3 +1,33 @@
+enum DeviceSource {
+  bonjour,
+  udp,
+  unknown,
+}
+
+extension DeviceSourceCodec on DeviceSource {
+  String get value {
+    switch (this) {
+      case DeviceSource.bonjour:
+        return 'bonjour';
+      case DeviceSource.udp:
+        return 'udp';
+      case DeviceSource.unknown:
+        return '';
+    }
+  }
+
+  static DeviceSource fromValue(String? value) {
+    switch (value) {
+      case 'bonjour':
+        return DeviceSource.bonjour;
+      case 'udp':
+        return DeviceSource.udp;
+      default:
+        return DeviceSource.unknown;
+    }
+  }
+}
+
 class AirSyncBonsoirService {
   final String uuid;
   final String name;
@@ -5,7 +35,7 @@ class AirSyncBonsoirService {
   final String displayCode;
   final String ip;
   final int port;
-  final String source;
+  final DeviceSource source;
 
   AirSyncBonsoirService({
     required this.uuid,
@@ -14,7 +44,7 @@ class AirSyncBonsoirService {
     required this.displayCode,
     required this.ip,
     required this.port,
-    this.source = '',
+    this.source = DeviceSource.unknown,
   });
 
   factory AirSyncBonsoirService.fromJson(Map<String, dynamic> json) {
@@ -25,7 +55,7 @@ class AirSyncBonsoirService {
       displayCode: json['attributes']['displayCode'],
       ip: json['attributes']['ip'],
       port: json['port'],
-      source: json['source'] ?? '',
+      source: DeviceSourceCodec.fromValue(json['source'] as String?),
     );
   }
 
@@ -37,7 +67,7 @@ class AirSyncBonsoirService {
       'displayCode': displayCode,
       'ip': ip,
       'port': port,
-      'source': source,
+      'source': source.value,
     };
   }
 }
