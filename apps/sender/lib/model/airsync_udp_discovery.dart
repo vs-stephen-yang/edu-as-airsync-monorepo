@@ -214,7 +214,7 @@ class AirSyncUdpDiscovery {
       displayCode: dc,
       ip: ip,
       port: directChannelPort,
-      source: 'udp',
+      source: DeviceSource.udp,
     );
 
     _lastSeen[id] = DateTime.now();
