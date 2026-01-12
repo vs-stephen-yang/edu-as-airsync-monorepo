@@ -683,7 +683,7 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentStop({Reason? reason}) async {
     // handle stream
-    _webRTCHelper.stop();
+    await _webRTCHelper.stop();
 
     // send command
     _stopPresent(reason: reason);

@@ -66,7 +66,7 @@ class WebRTCHelper {
       DesktopCapturerSource s = selectedSource;
       webRTCConnector?.subscriptions
           .add(s.onCaptureError.stream.listen((event) async {
-        await webRTCConnector?.hangUp();
+        await webRTCConnector?.hangUp('onCaptureError');
         await webRTCConnector?.onStreamInterrupted?.call();
       }));
     }
@@ -94,15 +94,15 @@ class WebRTCHelper {
     webRTCConnector?.sendStop(msg);
   }
 
-  void stop() {
+  Future<void> stop() async {
     // handle stream
     webRTCConnector?.stopStream();
-    webRTCConnector?.hangUp();
+    await webRTCConnector?.hangUp('webrtc_helper stop()');
   }
 
   Future<void> close() async {
     try {
-      await webRTCConnector?.hangUp();
+      await webRTCConnector?.hangUp('webrtc_helper close()');
       webRTCConnector = null;
       reconnectStateNotifier.value = ChannelReconnectState.idle;
     } catch (e, stackTrace) {

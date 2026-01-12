@@ -17,10 +17,10 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/bounded_list.dart';
-import 'package:display_cast_flutter/utilities/rtc_metrics_rolling_aggregator.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/list_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/rtc_metrics_rolling_aggregator.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
@@ -398,18 +398,18 @@ class WebRTCConnector {
   // frame duplication in WebRTC.
   //
   // Related: https://issues.chromium.org/issues/40922733
-  void _applyWebMinFrameRateWorkaround(MediaStreamTrack track) {
+  Future<void> _applyWebMinFrameRateWorkaround(MediaStreamTrack track) async {
     int constraintHeight = _getConstraintHeight();
-    track.applyConstraints(
-      <String, dynamic>{
-        'frameRate': {
-          'ideal': _idealTrackFrameRate,
-          'min': min(_idealTrackFrameRate, _minTrackFrameRate),
-        },
-        'width': _trackWidth,
-        'height': constraintHeight,
+    final constraints = <String, dynamic>{
+      'frameRate': {
+        'ideal': _idealTrackFrameRate,
+        'min': min(_idealTrackFrameRate, _minTrackFrameRate),
       },
-    );
+      'width': _trackWidth,
+      'height': constraintHeight,
+    };
+    log.info('Apply web video constraints: $constraints');
+    await track.applyConstraints(constraints);
     log.info(
         'Applied idealFPS: $_idealTrackFrameRate minFPS: $_minTrackFrameRate');
   }
@@ -446,13 +446,14 @@ class WebRTCConnector {
       // Web: popup a system dialog
       // Android: MediaProjection
       // iOS: Broadcast extension
-      await hangUp();
+      await hangUp(
+          'getDisplayMedia [_localStream is null: ${(_localStream == null)}, _pc is null: ${_pc == null}]');
       // return false to run makeCall's failure process.
       return false;
     }
     _localStream?.getTracks().forEach((element) {
       element.onEnded = () async {
-        await hangUp();
+        await hangUp('_localStream onEnded');
         await onStreamInterrupted?.call();
       };
     });
@@ -467,7 +468,7 @@ class WebRTCConnector {
           _screenHeight = _resolutionUltraHd.height.toDouble();
           _maxTrackWidth = _resolutionUltraHd.width;
           _maxTrackHeight = _resolutionUltraHd.height;
-          _applyWebMinFrameRateWorkaround(track);
+          await _applyWebMinFrameRateWorkaround(track);
         }
       }
       await _pc!.addTrack(track, _localStream!);
@@ -911,7 +912,7 @@ class WebRTCConnector {
       if (reconnectState == ChannelReconnectState.reconnecting) {
         reconnectState = ChannelReconnectState.fail;
       }
-      await hangUp();
+      await hangUp('RTCPeerConnectionStateFailed');
       await onStreamInterrupted?.call();
     }
   }
@@ -1042,7 +1043,7 @@ class WebRTCConnector {
   }
 
   // apply resolution and fps for desktop platforms
-  Future<void> applyConstraintsForDesktop() async {
+  Future<void> _applyConstraintsForDesktop() async {
     if (_pc == null) {
       return;
     }
@@ -1123,7 +1124,7 @@ class WebRTCConnector {
       final videoTrack = _localStream?.getVideoTracks().first;
       if (kIsWeb) {
         // Apply both constraints and minimum frame rate for web platform
-        _applyWebMinFrameRateWorkaround(videoTrack!);
+        await _applyWebMinFrameRateWorkaround(videoTrack!);
       } else {
         // For Android and iOS, just apply the basic constraints
         final constraints = <String, dynamic>{
@@ -1132,12 +1133,11 @@ class WebRTCConnector {
           'height': _trackHeight,
           'decodeHeightLimit': _decodeHeightLimit,
         };
-        log.info(
-            "Apply video constraints. width:$_trackWidth height:$_trackHeight");
+        log.info("Apply android/ios video constraints: $constraints");
         await videoTrack?.applyConstraints(constraints);
       }
     } else {
-      await applyConstraintsForDesktop();
+      await _applyConstraintsForDesktop();
     }
   }
 
@@ -1163,7 +1163,8 @@ class WebRTCConnector {
     }
   }
 
-  Future<void> hangUp() async {
+  Future<void> hangUp(String reason) async {
+    log.info('hangUp reason: $reason');
     _isPaused = false; // Reset pause state
     stopStatsTimer();
     stopAppBundleIdMonitor();
