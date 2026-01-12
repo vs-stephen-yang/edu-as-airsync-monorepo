@@ -3,7 +3,7 @@ PODS:
     - AmplitudeSwift (= 1.15.1)
     - Flutter
     - FlutterMacOS
-  - AmplitudeCore (1.2.4)
+  - AmplitudeCore (1.3.1)
   - AmplitudeSwift (1.15.1):
     - AmplitudeCore (< 2.0.0, >= 1.1.0)
     - AnalyticsConnector (~> 1.3.0)
@@ -41,6 +41,8 @@ PODS:
   - flutter_window_close (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
+  - objective_c (0.0.1):
+    - FlutterMacOS
   - open_file_mac (0.0.1):
     - FlutterMacOS
   - package_info_plus (0.0.1):
@@ -51,17 +53,17 @@ PODS:
   - ReachabilitySwift (5.2.4)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
-  - Sentry/HybridSDK (8.46.0)
-  - sentry_flutter (8.14.2):
+  - Sentry/HybridSDK (8.56.2)
+  - sentry_flutter (9.8.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.46.0)
+    - Sentry/HybridSDK (= 8.56.2)
   - share_plus (0.0.1):
     - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - Sparkle (2.7.0)
+  - Sparkle (2.8.1)
   - system_tray (0.0.1):
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
@@ -89,6 +91,7 @@ DEPENDENCIES:
   - flutter_webrtc (from `Flutter/ephemeral/.symlinks/plugins/flutter_webrtc/macos`)
   - flutter_window_close (from `Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
+  - objective_c (from `Flutter/ephemeral/.symlinks/plugins/objective_c/macos`)
   - open_file_mac (from `Flutter/ephemeral/.symlinks/plugins/open_file_mac/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
@@ -142,6 +145,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
+  objective_c:
+    :path: Flutter/ephemeral/.symlinks/plugins/objective_c/macos
   open_file_mac:
     :path: Flutter/ephemeral/.symlinks/plugins/open_file_mac/macos
   package_info_plus:
@@ -169,7 +174,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   amplitude_flutter: 54683fbe7b698c96d39818e410cfeee7c5897cfb
-  AmplitudeCore: 25385873104770c5245ed5780acd3eb1b3ae74b7
+  AmplitudeCore: c47c0a661bec076a197bc75a5a7b4c413da288a5
   AmplitudeSwift: 41d52966044cc377435eda13124854ab7b4ec454
   AnalyticsConnector: 3def11199b4ddcad7202c778bde982ec5da0ebb3
   app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
@@ -186,16 +191,17 @@ SPEC CHECKSUMS:
   flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4
   flutter_window_close: a0f4f388e956ebafa866e3e171ce837c166eab9c
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  objective_c: e5f8194456e8fc943e034d1af00510a1bc29c067
   open_file_mac: 0e554648e2a87ce59e9438e3e5ca3e552e90d89a
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
   screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
-  Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
-  sentry_flutter: 2df8b0aab7e4aba81261c230cbea31c82a62dd1b
+  Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
+  sentry_flutter: f074f75557daea0e1dd9607381a05cc0e3e456fe
   share_plus: 1fa619de8392a4398bfaf176d441853922614e89
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  Sparkle: 9c328bdcfbcaf8f030c4b678eadfd0fcb03822d8
+  Sparkle: a346a4341537c625955751ed3ae4b340b68551fa
   system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
   wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
