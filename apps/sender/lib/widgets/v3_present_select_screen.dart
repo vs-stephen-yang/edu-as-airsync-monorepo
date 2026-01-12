@@ -71,6 +71,8 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(BuildContext context,
       ChannelProvider provider, AudioSwitchManager audioSwitchManager) async {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
     bool isSupported = (Platform.isWindows || VersionUtil.isOpenVersion)
         ? (await FlutterVirtualDisplay.instance.isSupported() ?? false)
         : false;
@@ -83,6 +85,7 @@ class V3PresentSelectScreen extends StatelessWidget {
 
     final isVirtualAudioMissing =
         await audioSwitchManager.isVirtualAudioMissing();
+    if (!context.mounted) return;
     await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {
@@ -119,8 +122,7 @@ class V3PresentSelectScreen extends StatelessWidget {
         // moderator mode
         if (provider.moderatorStatus) {
           await provider.presentStop();
-          await Provider.of<PresentStateProvider>(context, listen: false)
-              .presentModeratorWaitPage();
+          await presentStateProvider.presentModeratorWaitPage();
         } else {
           await provider.presentStop();
           await provider.presentEnd();
