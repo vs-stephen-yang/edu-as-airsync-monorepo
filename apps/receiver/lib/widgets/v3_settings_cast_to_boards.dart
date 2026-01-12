@@ -11,6 +11,7 @@ import 'package:display_flutter/providers/appSettings.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -1078,7 +1079,14 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
     if (ip.isEmpty) return false;
 
     // 排除無效的特殊 IP 地址
-    if (ip == '0.0.0.0' || ip == '127.0.0.1') return false;
+    final instanceInfoProvider =
+        provider.Provider.of<InstanceInfoProvider>(context, listen: false);
+    final localIp = instanceInfoProvider.ipAddress;
+    if (ip == '0.0.0.0' ||
+        ip == '127.0.0.1' ||
+        (localIp.isNotEmpty && ip == localIp)) {
+      return false;
+    }
 
     // IPv4 正則
     final ipv4Pattern = RegExp(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$');
