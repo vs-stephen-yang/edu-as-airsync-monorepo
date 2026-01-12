@@ -52,7 +52,8 @@ class DisplayServiceBroadcast {
   static const Duration _restartDebounce = Duration(seconds: 5);
 
   //
-  AirSyncUdpResponder? _udpResponder;
+  AirSyncUdpResponder? _airSyncResponder;
+  UdpResponder? _udpResponder;
 
   DisplayServiceBroadcast._internal(
     this._serviceType,
@@ -132,7 +133,11 @@ class DisplayServiceBroadcast {
       );
 
       // udp
-      _udpResponder ??= AirSyncUdpResponder();
+      _airSyncResponder ??= AirSyncUdpResponder();
+      final airSyncStarted = await _airSyncResponder?.start(service.toJson());
+      log.info('AirSync UDP responder start result: $airSyncStarted');
+
+      _udpResponder ??= UdpResponder();
       final udpStarted = await _udpResponder?.start(service.toJson());
       log.info('UDP responder start result: $udpStarted');
 
@@ -148,6 +153,8 @@ class DisplayServiceBroadcast {
         log.warning('Bonsoir cleanup failed: $stopError');
       }
       _broadcast = null;
+      _airSyncResponder?.stop();
+      _airSyncResponder = null;
       _udpResponder?.stop();
       _udpResponder = null;
     }
@@ -160,8 +167,10 @@ class DisplayServiceBroadcast {
     } catch (e) {
       log.warning('Bonsoir stop failed: $e');
     } finally {
+      _airSyncResponder?.stop();
       _udpResponder?.stop();
       _broadcast = null;
+      _airSyncResponder = null;
       _udpResponder = null;
       log.info('Broadcast stop completed');
     }
