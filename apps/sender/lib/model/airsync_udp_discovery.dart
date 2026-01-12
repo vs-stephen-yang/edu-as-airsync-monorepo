@@ -164,7 +164,7 @@ class AirSyncUdpDiscovery {
 
     final bean = AirSyncBonsoirService(
       uuid: id,
-      name: name.isEmpty ? id : name,
+      name: name,
       type: serviceType,
       displayCode: dc,
       ip: ip,
