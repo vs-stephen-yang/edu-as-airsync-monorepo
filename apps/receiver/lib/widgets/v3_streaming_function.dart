@@ -27,26 +27,12 @@ import 'package:sprintf/sprintf.dart';
 
 import 'focus_aware_builder.dart';
 
-// SplitScreen, Moderator, Language, WhatsNew,
-const String stateStandby = 'standby';
-// Display Cloud,
-const String stateMenuOff = 'menuOff';
-// SplitScreen, Moderator, Show Display Code, BackArrow
-const String stateMenuOn = 'menuOn';
-// CastSettings
-const String stateCast = 'cast';
-// BackArrow Only (for close display code)
-const String stateBackArrow = 'backArrow';
-
 class V3StreamingFunction extends StatefulWidget {
   const V3StreamingFunction({
     super.key,
     required this.index,
     this.availableWidth,
   });
-
-  static ValueNotifier<String> streamFunctionState =
-      ValueNotifier(stateStandby);
 
   final int index;
   final double? availableWidth;

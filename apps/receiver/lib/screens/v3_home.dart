@@ -31,7 +31,6 @@ class V3Home extends StatefulWidget {
 
   static ValueNotifier<bool> isShowHeaderFooterBar = ValueNotifier(true);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
-  static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
 
   @override
   State<StatefulWidget> createState() => _V3HomeState();
