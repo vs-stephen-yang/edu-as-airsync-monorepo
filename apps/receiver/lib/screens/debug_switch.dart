@@ -27,7 +27,6 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  bool _showOldUI = false;
   bool _showDebugOverlay = false;
   bool _showDeviceInfoOverlay = false;
   bool _useSoftwareDecode = false;
@@ -67,17 +66,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Restart the program to apply the changes.")));
-  }
-
-  void _showOldUIChanged(bool value) async {
-    DeviceFeatureAdapter.showOldUI = value;
-    await DeviceFeatureAdapter.save();
-
-    if (!mounted) return;
-    setState(() {
-      _showOldUI = value;
-      _notifyRestart();
-    });
   }
 
   void _showDebugOverlayChanged(bool value) async {
@@ -203,7 +191,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize() {
-    _showOldUI = DeviceFeatureAdapter.showOldUI;
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
     _showDeviceInfoOverlay = DeviceFeatureAdapter.showDeviceInfoOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
@@ -282,10 +269,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
                             ],
                           ),
                         ),
-                        SwitchListTile(
-                            title: const Text('Show Old UI'),
-                            value: _showOldUI,
-                            onChanged: _showOldUIChanged),
                         SwitchListTile(
                           title: const Text('Show Debug Overlay'),
                           value: _showDebugOverlay,

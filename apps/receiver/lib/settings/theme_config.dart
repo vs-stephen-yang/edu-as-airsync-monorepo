@@ -1,4 +1,3 @@
-import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 
 ThemeData createThemeData(BuildContext context) {
@@ -60,7 +59,7 @@ ThemeData createThemeData(BuildContext context) {
           ),
         )
         .apply(
-          fontFamily: !DeviceFeatureAdapter.showOldUI ? 'Inter' : null,
+          fontFamily: 'Inter',
           bodyColor: textColor,
           displayColor: textColor,
         ),
