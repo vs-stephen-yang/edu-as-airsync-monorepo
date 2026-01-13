@@ -81,7 +81,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         // remove display code overlay
         if (_isDropDownMenuVisible) {
           _isDropDownMenuVisible = false;
-          _dropDownMenuEntry?.remove();
+          _removeOverlay();
         }
       }
     });
@@ -93,6 +93,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
     _otpController.dispose();
     _codeFocusNode.dispose();
     _otpFocusNode.dispose();
+    _removeOverlay();
     super.dispose();
   }
 
@@ -220,7 +221,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                 codeKey, S.of(context).v3_main_display_code_error);
             _isDropDownMenuVisible = false;
             if (_dropDownMenuEntry != null && _dropDownMenuEntry!.mounted) {
-              _dropDownMenuEntry?.remove();
+              _removeOverlay();
             }
 
             widget.onFieldChanged(
@@ -242,11 +243,13 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             _otpController.text.length == otpLength) {
           presentBtnEnable = true;
         }
-        widget.onFieldChanged(V3FieldResult(
-            enable: presentBtnEnable,
-            isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: text.replaceAll(' ', ''),
-            password: _otpController.text));
+        widget.onFieldChanged(
+          V3FieldResult(
+              enable: presentBtnEnable,
+              isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
+              displayCode: text.replaceAll(' ', ''),
+              password: _otpController.text),
+        );
       },
       onTap: () async {
         List? displayList = await DataDisplayCode.getInstance().load();
@@ -296,11 +299,13 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             text.length == otpLength) {
           presentBtnEnable = true;
         }
-        widget.onFieldChanged(V3FieldResult(
-            enable: presentBtnEnable,
-            isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: _codeController.text.replaceAll(' ', ''),
-            password: text));
+        widget.onFieldChanged(
+          V3FieldResult(
+              enable: presentBtnEnable,
+              isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
+              displayCode: _codeController.text.replaceAll(' ', ''),
+              password: text),
+        );
       },
       onFieldSubmitted: (text) {
         widget.onPasswordEnterEvent(text);
@@ -320,7 +325,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             excludeFromSemantics: true,
             onTap: () {
               _isDropDownMenuVisible = false;
-              _dropDownMenuEntry?.remove();
+              _removeOverlay();
             },
             child: Container(
               color: Colors.transparent, // 設置為透明色
@@ -341,7 +346,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    color: Colors.white,
+                    color: context.tokens.color.vsdswColorNeutralInverse,
                     boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
                   ),
                   child: ListView.builder(
@@ -373,7 +378,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                                   .remove(displayList[index]);
                               displayList.removeAt(index);
                               _isDropDownMenuVisible = false;
-                              _dropDownMenuEntry?.remove();
+                              _removeOverlay();
                             },
                           ),
                         ),
@@ -382,7 +387,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                           _codeController.text = _getDisplayCodeVisualIdentity(
                               displayList[index].replaceAll(' ', ''));
                           _isDropDownMenuVisible = false;
-                          _dropDownMenuEntry?.remove();
+                          _removeOverlay();
                         },
                       );
                     },
@@ -395,6 +400,11 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       );
     });
     Overlay.of(context).insert(_dropDownMenuEntry!);
+  }
+
+  void _removeOverlay() {
+    _dropDownMenuEntry?.remove();
+    _dropDownMenuEntry = null;
   }
 
   String _getDisplayCodeVisualIdentity(String displayCode) {
