@@ -109,11 +109,18 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   }
 
   Future<String> getPublicIP() async {
-    final response = await http.get(Uri.parse('https://api.ipify.org'));
-    if (response.statusCode == 200) {
-      return response.body.trim();
-    } else {
+    try {
+      final response =
+          await http.get(Uri.parse('https://api.ipify.org')).timeout(
+        const Duration(seconds: 5),
+      );
+      if (response.statusCode == 200) {
+        return response.body.trim();
+      }
       log.warning('Amplitude HTTP API failed to get public IP');
+      return '';
+    } catch (e) {
+      log.warning('Amplitude HTTP API failed to get public IP: $e');
       return '';
     }
   }

@@ -37,7 +37,7 @@ class DeviceListProvider with ChangeNotifier {
       }
     });
 
-    _udpDiscovery ??= AirSyncUdpDiscovery(
+    final udpDiscovery = _udpDiscovery ??= AirSyncUdpDiscovery(
       serviceType: discoverServices.type,
       directChannelPort: 5100,
       buildResponse: () => '',
@@ -50,9 +50,12 @@ class DeviceListProvider with ChangeNotifier {
         source: DeviceSource.udp,
       ),
     );
-    _udpDiscovery!.setLogEnabled(true);
-    await _udpDiscovery!.start();
-    unawaited(_udpDiscovery!.scanOnce());
+    udpDiscovery.setLogEnabled(true);
+    await udpDiscovery.start();
+    // stopDiscovery() can run during the await and clear _udpDiscovery,
+    // which would make _udpDiscovery! throw on the next line.
+    if (_udpDiscovery != udpDiscovery) return;
+    unawaited(udpDiscovery.scanOnce());
   }
 
   bool checkDisplayCode(BonsoirDiscoveryEvent event) =>
