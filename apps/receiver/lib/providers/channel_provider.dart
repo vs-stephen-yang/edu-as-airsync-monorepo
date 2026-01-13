@@ -35,7 +35,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
-import 'package:display_flutter/widgets/stream_function.dart';
+import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1044,7 +1044,7 @@ class ChannelProvider extends ChangeNotifier
     rtcConnector.init(message, isModeratorMode);
     rtcConnector.onConnect = (() {
       HybridConnectionList().updateSplitScreen();
-      StreamFunction.streamFunctionState.value = stateMenuOff;
+      V3StreamingFunction.streamFunctionState.value = stateMenuOff;
       notifyListeners();
     });
 
@@ -1052,7 +1052,7 @@ class ChannelProvider extends ChangeNotifier
       // update state and quality
       HybridConnectionList().updateSplitScreen();
 
-      StreamFunction.streamFunctionState.value = stateMenuOff;
+      V3StreamingFunction.streamFunctionState.value = stateMenuOff;
       notifyListeners();
     });
 

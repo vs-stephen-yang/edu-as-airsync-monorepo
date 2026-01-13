@@ -19,7 +19,6 @@ class DeviceFeatureAdapter {
 
   static String _deviceType = '';
   static String _sdkVersion = '';
-  static bool showOldUI = false;
   static bool showDebugOverlay = false;
   static bool showDeviceInfoOverlay = false;
   static bool useSoftwareDecode = false;
@@ -31,7 +30,6 @@ class DeviceFeatureAdapter {
   static bool iceGatheringContinually = false;
   static String roomNumber = '';
 
-  static bool defaultShowOldUI = false;
   static bool defaultShowDebugOverlay = false;
   static bool defaultUseSoftwareDecode = false;
   static bool defaultEnableWebRtcH264BaselineProfile = true;
@@ -104,7 +102,6 @@ class DeviceFeatureAdapter {
     final Map<String, dynamic>? params = overrideDefaultParams[_deviceType];
 
     if (params != null) {
-      defaultShowOldUI = params["showOldUI"] ?? defaultShowOldUI;
       defaultShowDebugOverlay =
           params["showDebugOverlay"] ?? defaultShowDebugOverlay;
       defaultUseSoftwareDecode =
@@ -116,7 +113,6 @@ class DeviceFeatureAdapter {
 
   static load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    showOldUI = prefs.getBool("showOldUI") ?? defaultShowOldUI;
     showDebugOverlay =
         prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
     useSoftwareDecode =
@@ -139,7 +135,6 @@ class DeviceFeatureAdapter {
 
   static save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("showOldUI", showOldUI);
     await prefs.setBool("ShowDebugOverlay", showDebugOverlay);
     await prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
     await prefs.setBool(

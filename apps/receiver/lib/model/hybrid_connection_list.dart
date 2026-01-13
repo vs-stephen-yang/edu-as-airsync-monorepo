@@ -2,10 +2,9 @@ import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/widgets/stream_function.dart';
+import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -92,7 +91,7 @@ class HybridConnectionList {
     if (index != -1) {
       // If the removing connector's index matches the enlarged index, reset it
       if (index == enlargedScreenIndex.value) {
-        Home.enlargedScreenPositionIndex.value = null;
+        V3Home.enlargedScreenPositionIndex.value = null;
         enlargedScreenIndex.value = null;
       } else {
         enlargedScreenConnection = enlargedScreenIndex.value == null
@@ -135,10 +134,8 @@ class HybridConnectionList {
     hybridSplitScreenCount.value = inConnectionNumber;
 
     if (inConnectionNumber == 0) {
-      StreamFunction.streamFunctionState.value = stateStandby;
+      V3StreamingFunction.streamFunctionState.value = stateStandby;
     }
-    Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
-    Home.showTitleBottomBar.value = inConnectionNumber == 0 ? true : false;
     V3Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
     V3Home.isShowHeaderFooterBar.value = inConnectionNumber == 0 ? true : false;
 

@@ -4,7 +4,6 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
-import 'package:display_flutter/screens/overlay_tab.dart';
 import 'package:display_flutter/screens/v3_overlay_tab.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/theme_config.dart';
@@ -62,9 +61,7 @@ class OverlayTabApp extends StatelessWidget {
             title: 'AirSync Overlay Tab',
             debugShowCheckedModeBanner: false,
             theme: createThemeData(context),
-            home: !DeviceFeatureAdapter.showOldUI
-                ? const V3OverlayTab()
-                : const OverlayTab(),
+            home: const V3OverlayTab(),
             builder: (context, child) {
               return ValueListenableBuilder(
                 valueListenable: AppPreferences().textSizeOptionNotifier,
