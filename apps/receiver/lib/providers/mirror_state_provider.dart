@@ -13,7 +13,6 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/widgets/v3_bluetooth_touchback_status_notification.dart';
 import 'package:display_flutter/widgets/v3_global_toast.dart';
-import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -336,7 +335,6 @@ class MirrorStateProvider extends ChangeNotifier
       _sizeChanged = true;
 
       HybridConnectionList().updateSplitScreen();
-      V3StreamingFunction.streamFunctionState.value = stateMenuOff;
       notifyListeners();
     }
   }
@@ -366,7 +364,6 @@ class MirrorStateProvider extends ChangeNotifier
       _sizeChanged = true;
 
       HybridConnectionList().updateSplitScreen();
-      V3StreamingFunction.streamFunctionState.value = stateMenuOff;
       notifyListeners();
     }
   }

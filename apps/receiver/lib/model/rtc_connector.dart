@@ -11,7 +11,6 @@ import 'package:display_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
-import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/app_amplitude.dart';
 import 'package:display_flutter/utility/app_analytics_util.dart';
@@ -21,7 +20,6 @@ import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_metrics_rolling_aggregator.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
-import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:uuid/uuid.dart';
@@ -521,16 +519,12 @@ class RTCConnector {
   Future<void> onStopPresent(
       StopPresentMessage msg, bool isModeratorMode) async {
     if (isModeratorMode) {
-      V3StreamingFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
-      V3Home.enlargedScreenPositionIndex.value = null;
       HybridConnectionList().enlargedScreenIndex.value = null;
       HybridConnectionList().updateSplitScreen();
       sessionId = null;
       onShowMode?.call();
       return;
-    } else if (HybridConnectionList.hybridSplitScreenCount.value > 0) {
-      V3StreamingFunction.streamFunctionState.value = stateMenuOff;
     }
     // disconnect the channel
     await disconnectPeerConnection(sendAnalytics: true);
