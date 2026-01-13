@@ -178,10 +178,6 @@ public class MirrorReceiver implements
       String deviceName,
       String deviceModel,
       String mirrorType) {
-    if (watchdog_ != null) {
-      watchdog_.onMirrorStart(mirrorId, mirrorType);
-    }
-
     mirrorListener_.onMirrorStart(
         mirrorId,
         textureId,
@@ -193,19 +189,12 @@ public class MirrorReceiver implements
 
   @Override
   public void onMirrorStop(String mirrorId) {
-    if (watchdog_ != null) {
-      watchdog_.onMirrorStop(mirrorId);
-    }
-
     mirrorListener_.onMirrorStop(mirrorId);
   }
 
   @Override
   public void onMirrorVideoResize(String mirrorId, int width, int height) {
     mirrorListener_.onMirrorVideoResize(mirrorId, width, height);
-    if (watchdog_ != null) {
-      watchdog_.onMirrorVideoResize(mirrorId);
-    }
   }
 
   @Override

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 class MirrorReceiverWatchdog {
@@ -47,9 +46,6 @@ class MirrorReceiverWatchdog {
   // Track retry attempts and scheduled tasks per service.
   private final Map<String, Integer> serviceRetryCounts_ = new ConcurrentHashMap<>();
   private final Map<String, Runnable> serviceRetryRunnables_ = new ConcurrentHashMap<>();
-
-  // Track active mirror sessions (for MDNS refresh logic)
-  private final Set<String> activeMirrorSessions_ = ConcurrentHashMap.newKeySet();
 
   // Watchdog health check mechanism
   private final Handler serviceHandler_ = new Handler(Looper.getMainLooper());
@@ -85,18 +81,6 @@ class MirrorReceiverWatchdog {
 
   void dispose() {
     stop();
-    activeMirrorSessions_.clear();
-  }
-
-  void onMirrorStart(String mirrorId, String mirrorType) {
-    activeMirrorSessions_.add(mirrorId);
-  }
-
-  void onMirrorStop(String mirrorId) {
-    activeMirrorSessions_.remove(mirrorId);
-  }
-
-  void onMirrorVideoResize(String mirrorId) {
   }
 
   boolean onServiceRegister(ServiceInfo info) {
@@ -456,17 +440,8 @@ class MirrorReceiverWatchdog {
   }
 
   /**
-   * Check if there are active mirror sessions
-   */
-  private boolean hasActiveSessions() {
-    return !activeMirrorSessions_.isEmpty();
-  }
-
-  /**
    * Refresh all MDNS services (similar to vCast's periodic MDNS re-registration)
    * This ensures service visibility even without network changes or service failures
-   *
-   * Note: Skip refresh if there are active mirror sessions to avoid connection disruption
    */
   private void refreshMdnsServices() {
     if (nsdManager_ == null || serviceInfos_.isEmpty()) {
@@ -475,13 +450,6 @@ class MirrorReceiverWatchdog {
 
     if (!isNetworkConnected()) {
       Log.i(tag_, "Skipping MDNS refresh due to no network connection");
-      return;
-    }
-
-    // Skip MDNS refresh if there are active mirror sessions
-    // to avoid disrupting ongoing connections
-    if (hasActiveSessions()) {
-      Log.d(tag_, "Skipping MDNS refresh due to active mirror sessions");
       return;
     }
 
