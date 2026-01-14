@@ -60,10 +60,9 @@ class OnStreamingCapability {
 }
 
 class RTCConnector {
-  String mUid = const Uuid().v4();
   final Channel _channel;
   Timer? _connectionTimeoutTimer;
-  StreamController<int> connectionTimeTimeout = StreamController<int>();
+  final _connectionTimeTimeout = StreamController<int>();
 
   final Completer _descriptionSetCompleter = Completer();
 
@@ -228,13 +227,13 @@ class RTCConnector {
     }
   }
 
-  void stopStatsTimer() {
+  void _stopStatsTimer() {
     _statsTimer?.cancel();
     _statsTimer = null;
     _inboundPerSecondCollector.clear();
   }
 
-  void startRtcStatsReport() {
+  void _startRtcStatsReport() {
     final rtcStatsReporter = RtcStatsReporter(
       _handleVideoStatsReport,
       (RtcVideoOutboundStats stats) {},
@@ -256,7 +255,7 @@ class RTCConnector {
     _rtcStatsParser?.addSubscriber(rtcStatsReporter);
   }
 
-  void startStatsTimer() {
+  void _startStatsTimer() {
     _rtcStatsParser = RtcStatsParser();
 
     _statsTimer?.cancel();
@@ -399,7 +398,7 @@ class RTCConnector {
     _pc!.onRemoveTrack = _onRemoveTrack;
     _pc!.onDataChannel = _onDataChannel;
 
-    startStatsTimer();
+    _startStatsTimer();
 
     // TODO: enable by some flag
     // if (xxx) {
@@ -408,8 +407,8 @@ class RTCConnector {
     // }
   }
 
-  void startConnectionTimer(TimeOutCallback onFinish) {
-    if (_connectionTimeoutTimer != null) stopConnectionTimeoutTimer();
+  void _startConnectionTimer(TimeOutCallback onFinish) {
+    if (_connectionTimeoutTimer != null) _stopConnectionTimeoutTimer();
 
     var count = 30;
     _connectionTimeoutTimer =
@@ -417,20 +416,20 @@ class RTCConnector {
       if (timer.tick < 30) {
         // onTick
         count = 30 - timer.tick;
-        connectionTimeTimeout.add(count);
+        _connectionTimeTimeout.add(count);
       } else if (timer.tick == 30) {
         // onFinish
         timer.cancel();
-        connectionTimeTimeout.add(0);
+        _connectionTimeTimeout.add(0);
         log.info('ConnectionTimeout onFinish');
         onFinish();
       }
     });
   }
 
-  void stopConnectionTimeoutTimer() {
+  void _stopConnectionTimeoutTimer() {
     _connectionTimeoutTimer?.cancel();
-    connectionTimeTimeout.add(0);
+    _connectionTimeTimeout.add(0);
   }
 
   void _onJoinDisplay(JoinDisplayMessage msg, bool isModeratorMode) {
@@ -449,7 +448,7 @@ class RTCConnector {
     List<RtcIceServer>? iceServers,
   ) async {
     // Timer
-    startConnectionTimer(() async {
+    _startConnectionTimer(() async {
       if (!isModeratorMode) {
         sendRejectPresent(PresentRejectedReasonCode.timeout.code, 'timeout');
         await disconnectPeerConnection(sendAnalytics: true);
@@ -778,7 +777,7 @@ class RTCConnector {
     if (_statsTimer != null) {
       _trackMetrics();
 
-      stopStatsTimer();
+      _stopStatsTimer();
     }
 
     log.info('[$clientId] Close PeerConnection');
@@ -798,7 +797,7 @@ class RTCConnector {
   }
 
   Future<void> disconnectChannel({required String? reason}) async {
-    stopConnectionTimeoutTimer();
+    _stopConnectionTimeoutTimer();
     await onChannelDisconnect?.call(reason: reason);
   }
 
@@ -904,7 +903,7 @@ class RTCConnector {
 
   void _onAddStream(MediaStream stream) {
     _printPeerConnectionLog('_onAddStream', stream.getTracks().first.id);
-    stopConnectionTimeoutTimer();
+    _stopConnectionTimeoutTimer();
     presentationState = PresentationState.streaming;
     controlAudio(true, setIsAudioEnabled: true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);
@@ -913,7 +912,7 @@ class RTCConnector {
   void _onTrack(RTCTrackEvent event) async {
     _printPeerConnectionLog('_onTrack', event.track);
     if (event.track.kind == 'video') {
-      startRtcStatsReport();
+      _startRtcStatsReport();
       _remoteRenderer?.srcObject = event.streams[0];
     }
   }
