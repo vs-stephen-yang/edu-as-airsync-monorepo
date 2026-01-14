@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/utility/rtc_stats_monitor.dart';
 
 import 'list_util.dart';
 
@@ -77,6 +78,20 @@ class RtcVideoInboundStatsLists {
       decodeTime: decodeTime,
     );
   }
+}
+
+void trackRtcSummary(RtcStatsSummary summary) {
+  final ewmaRttMs =
+      summary.ewmaRttSec != null ? (summary.ewmaRttSec! * 1000).round() : null;
+
+  AppAnalytics.instance.trackTrace(
+    'rtc-stats-summary',
+    properties: {
+      'durationInMs': summary.duration?.inMilliseconds ?? '',
+      'ewmaRttInMs': ewmaRttMs ?? '',
+      'totalInboundVideoBytes': summary.totalInboundVideoBytes ?? '',
+    },
+  );
 }
 
 void trackInboundStats(
