@@ -136,6 +136,7 @@ class RTCConnector {
   DateTime? _lastStatsUpdateTime;
 
   RtcVideoInboundStats? _lastVideoInboundStats;
+  Duration? _firstFrameRenderDelay;
 
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
@@ -500,9 +501,12 @@ class RTCConnector {
       }
 
       if (_firstConnectTime != null) {
-        final Duration delay = DateTime.now().difference(_firstConnectTime!);
-        _trackTrace('first_frame_render_delay',
-            target: delay.inSeconds.toString(), properties: properties);
+        _firstFrameRenderDelay = DateTime.now().difference(_firstConnectTime!);
+        _trackTrace(
+          'first_frame_render_delay',
+          target: _firstFrameRenderDelay?.inSeconds.toString(),
+          properties: properties,
+        );
       }
     };
 
@@ -854,11 +858,18 @@ class RTCConnector {
             ? totalFreezesDuration / durationSeconds
             : null;
 
+    // First frame delay
+    final firstFrameRenderDelaySeconds = _firstFrameRenderDelay != null
+        ? _firstFrameRenderDelay!.inMilliseconds / 1000
+        : null;
+
     trackSessionEvent(
       'on_end',
       properties: {
         if (durationSeconds != null) 'durationSeconds': durationSeconds,
         if (freezeTimeRatio != null) 'freezeTimeRatio': freezeTimeRatio,
+        if (firstFrameRenderDelaySeconds != null)
+          'firstFrameRenderDelaySeconds': firstFrameRenderDelaySeconds,
         ...flattenedPercentiles,
       },
     );
