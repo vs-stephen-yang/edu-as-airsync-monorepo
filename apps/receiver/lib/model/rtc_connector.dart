@@ -170,7 +170,6 @@ class RTCConnector {
 
   Timer? _channelReconnectTimer;
   bool _isRtcFirstConnected = false;
-  DateTime? _firstConnectTime;
 
   // rtc stats
   final _videoBitrateHistory = <int?>[];
@@ -926,9 +925,15 @@ class RTCConnector {
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       if (!_isRtcFirstConnected) {
         _isRtcFirstConnected = true;
-        _firstConnectTime = DateTime.now();
 
-        trackSessionEvent('start_cast');
+        final connectionSetupTime = _haveRemoteOfferTime != null
+            ? DateTime.now().difference(_haveRemoteOfferTime!)
+            : null;
+
+        trackSessionEvent('start_cast', properties: {
+          if (connectionSetupTime != null)
+            'connectionSetupTimeMs': connectionSetupTime.inMilliseconds,
+        });
       }
 
       // Ensure streaming remains uninterrupted even if the channel disconnects
