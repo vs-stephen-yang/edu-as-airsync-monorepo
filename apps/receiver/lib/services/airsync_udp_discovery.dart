@@ -34,6 +34,8 @@ class AirSyncUdpDiscovery {
   final Map<String, RawDatagramSocket> _scanSockets = {};
   final Map<String, StreamSubscription<RawSocketEvent>> _scanSubs = {};
   Timer? _scanTimer;
+  Timer? _refreshTimer;
+  bool _refreshInProgress = false;
 
   final Map<String, GroupBean> _devices = {};
   final Map<String, DateTime> _lastSeen = {};
@@ -93,9 +95,16 @@ class AirSyncUdpDiscovery {
       _pruneDevices();
       _scanTimer?.cancel();
       _scanTimer = Timer.periodic(_interval, (_) async {
-        await _refreshBroadcastTargets();
         _sendAirSyncPacket();
         _pruneDevices();
+      });
+      _refreshTimer?.cancel();
+      _refreshTimer = Timer.periodic(_broadcastCacheTtl, (_) {
+        if (_refreshInProgress) return;
+        _refreshInProgress = true;
+        _refreshBroadcastTargets().whenComplete(() {
+          _refreshInProgress = false;
+        });
       });
     } catch (e) {
       log.warning('AirSync UDP discovery start failed', e);
@@ -106,6 +115,8 @@ class AirSyncUdpDiscovery {
   void stop() {
     _scanTimer?.cancel();
     _scanTimer = null;
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
     for (final sub in _scanSubs.values) {
       sub.cancel();
     }
