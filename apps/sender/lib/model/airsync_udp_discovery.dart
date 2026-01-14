@@ -55,7 +55,7 @@ class AirSyncUdpDiscovery {
     final currentIps = _scanSockets.keys.toSet();
 
     for (final ip in currentIps.difference(desiredIps)) {
-      _scanSubs.remove(ip)?.cancel();
+      await _scanSubs.remove(ip)?.cancel();
       _scanSockets.remove(ip)?.close();
     }
 
