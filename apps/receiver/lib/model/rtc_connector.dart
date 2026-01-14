@@ -132,6 +132,11 @@ class RTCConnector {
 
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
 
+  DateTime? _statsStartTime;
+  DateTime? _lastStatsUpdateTime;
+
+  RtcVideoInboundStats? _lastVideoInboundStats;
+
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
   RtcStatsPresenter? _rtcStatsPresenter;
@@ -369,6 +374,13 @@ class RTCConnector {
 
   void _handleVideoStatsReport(RtcVideoInboundStats stats) {
     _rtcStatsMonitor?.onVideoInboundStats(stats);
+
+    final now = DateTime.now();
+
+    _statsStartTime ??= now;
+    _lastStatsUpdateTime = now;
+
+    _lastVideoInboundStats = stats;
 
     _videoBitrateHistory.add(stats.bytesPerSecond);
 
@@ -820,16 +832,36 @@ class RTCConnector {
     trackInboundStats(
         clientId, filterEverySecond(_videoInboundStatsHistory.elements));
 
+    _trackOnEndMetrics();
+  }
+
+  void _trackOnEndMetrics() {
+    // percentiles of rtc stats
     final flattenedPercentiles =
         _inboundPerSecondCollector.buildSummary().flattenPercentiles();
-    if (flattenedPercentiles.isNotEmpty) {
-      _trackTrace(
-        'rtc_stats_summary',
-        properties: {
-          ...flattenedPercentiles,
-        },
-      );
-    }
+
+    // session duration
+    final duration = (_statsStartTime != null && _lastStatsUpdateTime != null)
+        ? _lastStatsUpdateTime!.difference(_statsStartTime!)
+        : null;
+
+    final durationSeconds = duration?.inSeconds;
+
+    // freeze time ratio
+    final totalFreezesDuration = _lastVideoInboundStats?.totalFreezesDuration;
+    final freezeTimeRatio =
+        (totalFreezesDuration != null && durationSeconds != null)
+            ? totalFreezesDuration / durationSeconds
+            : null;
+
+    trackSessionEvent(
+      'on_end',
+      properties: {
+        if (durationSeconds != null) 'durationSeconds': durationSeconds,
+        if (freezeTimeRatio != null) 'freezeTimeRatio': freezeTimeRatio,
+        ...flattenedPercentiles,
+      },
+    );
   }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
@@ -1061,12 +1093,16 @@ class RTCConnector {
     );
   }
 
-  trackSessionEvent(String name) {
+  trackSessionEvent(
+    String name, {
+    Map<String, Object> properties = const <String, Object>{},
+  }) {
     trackEvent(
       name,
       EventCategory.session,
       mode: 'webrtc',
       participatorId: clientId ?? '',
+      properties: properties,
     );
   }
 }
