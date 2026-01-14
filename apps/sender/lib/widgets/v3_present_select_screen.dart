@@ -9,7 +9,6 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
@@ -76,12 +75,6 @@ class V3PresentSelectScreen extends StatelessWidget {
     bool isSupported = (Platform.isWindows || VersionUtil.isOpenVersion)
         ? (await FlutterVirtualDisplay.instance.isSupported() ?? false)
         : false;
-    // start timeout timer (30 sec)
-    ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-      log.info('timeout');
-      // onFinish
-      selectScreenDialog?.cancel();
-    });
 
     final isVirtualAudioMissing =
         await audioSwitchManager.isVirtualAudioMissing();
@@ -100,7 +93,6 @@ class V3PresentSelectScreen extends StatelessWidget {
       },
     ).then((value) async {
       log.info('selectedSource: ${value?.selectedSource?.type})');
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       if (value != null && value.selectedSource != null) {
         if (WebRTC.platformIsDesktop &&
             value.selectedSource?.type != SourceType.Window) {
@@ -208,7 +200,6 @@ class V3PresentSelectScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: context.tokens.spacing.vsdswSpacingXs),
-                const CountDownText(),
                 Padding(padding: context.tokens.spacing.vsdswSpacingLg),
                 V3CustomWhiteButton(
                   label: S.of(context).v3_lbl_select_screen_ios_start_sharing,
@@ -225,50 +216,6 @@ class V3PresentSelectScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class CountDownText extends StatefulWidget {
-  const CountDownText({super.key});
-
-  @override
-  State<CountDownText> createState() => _CountDownTextState();
-}
-
-class _CountDownTextState extends State<CountDownText> {
-  int countdown = 30;
-
-  @override
-  initState() {
-    super.initState();
-    // start timeout timer (30 sec)
-    ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-      // onFinish
-    }, onTick: (tick) {
-      if (!mounted) return;
-      setState(() {
-        countdown = 30 - tick;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return V3AutoHyphenatingText(
-      '${S.of(context).v3_select_screen_ios_countdown} 0:$countdown',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: context.tokens.color.vsdswColorWarning,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
       ),
     );
   }

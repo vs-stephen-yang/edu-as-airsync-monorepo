@@ -5,7 +5,6 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
@@ -60,20 +59,12 @@ class PresentSelectScreen extends StatelessWidget {
           defaultScreenExtensionWidth, defaultScreenExtensionHeight);
     }
 
-    // start timeout timer (30 sec)
-    ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-      log.info('timeout');
-      // onFinish
-      selectScreenDialog?.cancel();
-    });
-
     if (!context.mounted) return;
     await showDialog<CustomDesktopCapturerSource>(
       context: context,
       builder: (context) => selectScreenDialog = SelectScreenDialog(),
     ).then((value) async {
       log.info('selectedSource: ${value?.selectedSource?.type})');
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       if (value != null && value.selectedSource != null) {
         if (WebRTC.platformIsWindows &&
             value.selectedSource?.type != SourceType.Window) {
