@@ -137,6 +137,7 @@ class RTCConnector {
 
   RtcVideoInboundStats? _lastVideoInboundStats;
   Duration? _firstFrameRenderDelay;
+  DateTime? _haveRemoteOfferTime;
 
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
@@ -500,14 +501,16 @@ class RTCConnector {
         }
       }
 
-      if (_firstConnectTime != null) {
-        _firstFrameRenderDelay = DateTime.now().difference(_firstConnectTime!);
-        _trackTrace(
-          'first_frame_render_delay',
-          target: _firstFrameRenderDelay?.inSeconds.toString(),
-          properties: properties,
-        );
+      if (_haveRemoteOfferTime != null) {
+        _firstFrameRenderDelay =
+            DateTime.now().difference(_haveRemoteOfferTime!);
       }
+
+      _trackTrace(
+        'first_frame_render_delay',
+        target: _firstFrameRenderDelay?.inSeconds.toString(),
+        properties: properties,
+      );
     };
 
     await _peerConnectionConnect(iceServers);
@@ -902,6 +905,10 @@ class RTCConnector {
   //region PeerConnection interface
   void _onSignalingState(RTCSignalingState state) {
     _printPeerConnectionLog('_onSignalingState', state);
+
+    if (state == RTCSignalingState.RTCSignalingStateHaveRemoteOffer) {
+      _haveRemoteOfferTime ??= DateTime.now();
+    }
   }
 
   void _onIceGatheringState(RTCIceGatheringState state) {
