@@ -53,8 +53,11 @@ class PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
     if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {
-      await FlutterVirtualDisplay.instance.startVirtualDisplay(defaultScreenExtensionWidth, defaultScreenExtensionHeight);
+      await FlutterVirtualDisplay.instance.startVirtualDisplay(
+          defaultScreenExtensionWidth, defaultScreenExtensionHeight);
     }
 
     // start timeout timer (30 sec)
@@ -64,6 +67,7 @@ class PresentSelectScreen extends StatelessWidget {
       selectScreenDialog?.cancel();
     });
 
+    if (!context.mounted) return;
     await showDialog<CustomDesktopCapturerSource>(
       context: context,
       builder: (context) => selectScreenDialog = SelectScreenDialog(),
@@ -91,8 +95,7 @@ class PresentSelectScreen extends StatelessWidget {
         // moderator mode
         if (provider.moderatorStatus) {
           unawaited(provider.presentStop());
-          unawaited(Provider.of<PresentStateProvider>(context, listen: false)
-              .presentModeratorWaitPage());
+          unawaited(presentStateProvider.presentModeratorWaitPage());
         } else {
           unawaited(provider.presentStop());
           unawaited(provider.presentEnd());
