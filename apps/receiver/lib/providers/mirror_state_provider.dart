@@ -551,6 +551,29 @@ class MirrorStateProvider extends ChangeNotifier
     _miracastSupport =
         (flavor == 'ifp' && _deviceType != 'dvLED') || (flavor == 'edla');
 
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      _flutterMirrorPlugin?.registerListener(this);
+      _flutterMirrorPlugin?.registerBluetoothTouchBackListener(this);
+      // Since quick decode is only effective in addressing latency issue with
+      // WebRTC (web sender), and using quick decode with AirPlay and ChromeCast
+      // results in decode failures, we have decided to apply quick decode
+      // exclusively to WebRTC scenarios for now.
+      Map<String, int> options =
+          DeviceFeatureAdapter.getDecodeOptions(excludeQuickDecodeParams: true);
+
+      log.info('Initialize mirror. Options: ${options.toString()}');
+
+      await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
+    } on PlatformException catch (e, stackTrace) {
+      log.severe('Mirror initialize failure', e, stackTrace);
+    }
+    isPlatformInitialized = true;
+
+    // flutter_mirror_plugin initialize also handles the permission check process.
+    // We must wait for it to complete; otherwise,
+    // onRequestPermissionsResult may return incorrect results.
     await channel.invokeMethod("startSpecifiedModuleDFSChannelMonitor");
     const EventChannel(
             'com.mvbcast.crosswalk/wifi_helper_specified_module_dfs_channel')
@@ -579,25 +602,6 @@ class MirrorStateProvider extends ChangeNotifier
     }, onError: (error) {
       print('error: $error');
     });
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      _flutterMirrorPlugin?.registerListener(this);
-      _flutterMirrorPlugin?.registerBluetoothTouchBackListener(this);
-      // Since quick decode is only effective in addressing latency issue with
-      // WebRTC (web sender), and using quick decode with AirPlay and ChromeCast
-      // results in decode failures, we have decided to apply quick decode
-      // exclusively to WebRTC scenarios for now.
-      Map<String, int> options =
-          DeviceFeatureAdapter.getDecodeOptions(excludeQuickDecodeParams: true);
-
-      log.info('Initialize mirror. Options: ${options.toString()}');
-
-      await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
-    } on PlatformException catch (e, stackTrace) {
-      log.severe('Mirror initialize failure', e, stackTrace);
-    }
-    isPlatformInitialized = true;
 
     if (_deviceName != _instanceInfoProvider.deviceName) {
       _deviceName = _instanceInfoProvider.deviceName;
