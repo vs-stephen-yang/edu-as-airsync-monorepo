@@ -25,8 +25,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:uuid/uuid.dart';
 
-import 'connect_timer.dart';
-
 enum PresentationState {
   stopStreaming,
   waitForStream,
@@ -62,8 +60,6 @@ class OnStreamingCapability {
 
 class RTCConnector {
   final Channel _channel;
-  Timer? _connectionTimeoutTimer;
-  final _connectionTimeTimeout = StreamController<int>();
 
   final Completer _descriptionSetCompleter = Completer();
 
@@ -429,31 +425,6 @@ class RTCConnector {
     // }
   }
 
-  void _startConnectionTimer(TimeOutCallback onFinish) {
-    if (_connectionTimeoutTimer != null) _stopConnectionTimeoutTimer();
-
-    var count = 30;
-    _connectionTimeoutTimer =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timer.tick < 30) {
-        // onTick
-        count = 30 - timer.tick;
-        _connectionTimeTimeout.add(count);
-      } else if (timer.tick == 30) {
-        // onFinish
-        timer.cancel();
-        _connectionTimeTimeout.add(0);
-        log.info('ConnectionTimeout onFinish');
-        onFinish();
-      }
-    });
-  }
-
-  void _stopConnectionTimeoutTimer() {
-    _connectionTimeoutTimer?.cancel();
-    _connectionTimeTimeout.add(0);
-  }
-
   void _onJoinDisplay(JoinDisplayMessage msg, bool isModeratorMode) {
     clientId = msg.clientId;
     senderVersion = msg.version;
@@ -469,21 +440,6 @@ class RTCConnector {
     bool isModeratorMode,
     List<RtcIceServer>? iceServers,
   ) async {
-    // Timer
-    _startConnectionTimer(() async {
-      if (!isModeratorMode) {
-        sendRejectPresent(PresentRejectedReasonCode.timeout.code, 'timeout');
-        await disconnectPeerConnection(sendAnalytics: true);
-        await disconnectChannel(reason: 'Timeout: present rejected');
-      } else {
-        sendStopPresent(
-            reason: Reason(
-          StopPresentReasonCode.timeout.code,
-          text: 'timeout',
-        ));
-      }
-    });
-
     await _remoteRenderer?.initialize();
     _remoteRenderer?.onFirstFrameRendered = () async {
       log.info('First frame rendered');
@@ -824,7 +780,6 @@ class RTCConnector {
   }
 
   Future<void> disconnectChannel({required String? reason}) async {
-    _stopConnectionTimeoutTimer();
     await onChannelDisconnect?.call(reason: reason);
   }
 
@@ -971,7 +926,6 @@ class RTCConnector {
 
   void _onAddStream(MediaStream stream) {
     _printPeerConnectionLog('_onAddStream', stream.getTracks().first.id);
-    _stopConnectionTimeoutTimer();
     presentationState = PresentationState.streaming;
     controlAudio(true, setIsAudioEnabled: true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);

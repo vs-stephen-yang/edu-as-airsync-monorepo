@@ -89,6 +89,15 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
             .getConnection<MirrorRequest>(widget.index)
             .isBluetoothHIDSupported();
 
+    final isStreamingExpandVisible =
+        (context.splitScreenRatio == SplitScreenRatio.oneThirdFull ||
+                HybridConnectionList.hybridSplitScreenCount.value > 1) &&
+            (context.splitScreenRatio.widthFraction >
+                SplitScreenRatio.floatingDefault.widthFraction);
+
+    final isRTCWaiting =
+        HybridConnectionList().isRTCConnectorWaitForStream(index: widget.index);
+
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
     final hasNameLabel = _hasNameLabel();
@@ -98,21 +107,29 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
         widget.availableWidth ?? MediaQuery.of(context).size.width;
 
     // Calculate widget width
-    // In expanded mode, add width for two drag buttons (27px each = 54px total)
-    final baseWidth = isCollapsed
-        ? 37
-        : ((context.splitScreenRatio == SplitScreenRatio.oneThirdFull ||
-                        HybridConnectionList.hybridSplitScreenCount.value >
-                            1) &&
-                    (context.splitScreenRatio.widthFraction >
-                        SplitScreenRatio.floatingDefault.widthFraction)
-                ? 140
-                : 106) +
-            (isAirplay ? 45 : 0);
+    getExpandedWidgetSize() {
+      // In expanded mode, add width for two drag buttons (27px each = 54px total)
+      double baseWidth = 54;
+      // Add Touch Back button width (27) with 3 padding
+      if (isHIDSupported && !isRTCWaiting) {
+        baseWidth += 30;
+      }
+      // Add streaming collapse/expand button width (27) with 3 padding
+      if (isStreamingExpandVisible && !isRTCWaiting) {
+        baseWidth += 30;
+      }
+      // Add streaming mute/unmute button width (27) with 3 padding
+      if (!isRTCWaiting) {
+        baseWidth += 30;
+      }
+      // Add streaming stop button width with (27) 3 padding
+      baseWidth += 30;
+      // Add function minimize/expand button width with (27) 3 padding
+      baseWidth += 30;
+      return baseWidth;
+    }
 
-    // Add width for drag buttons only in expanded mode
-    _widgetWidth =
-        isCollapsed ? baseWidth.toDouble() : (baseWidth + 54).toDouble();
+    _widgetWidth = isCollapsed ? 37 : getExpandedWidgetSize();
 
     // Initialize position to center only on first build
     _currentX ??= (availableWidth / 2) - (_widgetWidth / 2);
@@ -195,39 +212,33 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                       children: <Widget>[
                         // Left drag button (only in expanded mode)
                         if (!isCollapsed) _buildDragButton(availableWidth),
-                        if (isHIDSupported)
-                          Visibility(
-                            visible: !isCollapsed,
-                            child: V3Focus(
-                              label: S
-                                  .of(context)
-                                  .v3_lbl_streaming_airplay_touchback,
-                              identifier: 'v3_qa_streaming_airplay_touchback',
-                              child: SizedBox(
-                                width: 27,
-                                height: 27,
-                                child: _TouchBackButton(
-                                  widget.index,
-                                  () => onTouchBackPressed(
-                                    mirrorStateProvider,
-                                    isMirrorRequest,
-                                    context,
-                                  ),
+                        Visibility(
+                          visible:
+                              !isCollapsed && isHIDSupported && !isRTCWaiting,
+                          child: V3Focus(
+                            label: S
+                                .of(context)
+                                .v3_lbl_streaming_airplay_touchback,
+                            identifier: 'v3_qa_streaming_airplay_touchback',
+                            child: SizedBox(
+                              width: 27,
+                              height: 27,
+                              child: _TouchBackButton(
+                                widget.index,
+                                () => onTouchBackPressed(
+                                  mirrorStateProvider,
+                                  isMirrorRequest,
+                                  context,
                                 ),
                               ),
                             ),
                           ),
+                        ),
                         // Use Visibility Widget to Maintain Focus on the Correct Icon During Collapse/Expand.
                         Visibility(
                           visible: !isCollapsed &&
-                              (context.splitScreenRatio ==
-                                      SplitScreenRatio.oneThirdFull ||
-                                  HybridConnectionList
-                                          .hybridSplitScreenCount.value >
-                                      1) &&
-                              (context.splitScreenRatio.widthFraction >
-                                  SplitScreenRatio
-                                      .floatingDefault.widthFraction),
+                              isStreamingExpandVisible &&
+                              !isRTCWaiting,
                           child: V3Focus(
                             label: HybridConnectionList()
                                         .enlargedScreenIndex
@@ -310,7 +321,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                           ),
                         ),
                         Visibility(
-                          visible: !isCollapsed,
+                          visible: !isCollapsed && !isRTCWaiting,
                           child: Consumer<MirrorStateProvider>(
                             builder: (_, mirrorStateProvider, __) {
                               var isMute = HybridConnectionList()
