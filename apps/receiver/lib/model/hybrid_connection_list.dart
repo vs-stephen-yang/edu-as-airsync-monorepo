@@ -166,6 +166,24 @@ class HybridConnectionList {
     return presenting;
   }
 
+  bool isRTCConnectorWaitForStream({index}) {
+    bool waiting = false;
+    if (index != null) {
+      var connection = _hybridConnectionList[index];
+      if (connection is RTCConnector &&
+          (connection.presentationState == PresentationState.waitForStream)) {
+        waiting = true;
+      }
+    } else {
+      for (RTCConnector connector in getRtcConnectorMap().values) {
+        if (connector.presentationState == PresentationState.waitForStream) {
+          waiting = true;
+        }
+      }
+    }
+    return waiting;
+  }
+
   bool isStopPresenting(int index) {
     bool stopPresenting = true;
     var connection = _hybridConnectionList[index];

@@ -68,7 +68,9 @@ class StreamingItem extends StatelessWidget {
               ),
             Consumer<ChannelProvider>(
               builder: (_, __, ___) {
-                return HybridConnectionList().isPresenting(index: index)
+                return HybridConnectionList().isPresenting(index: index) ||
+                        HybridConnectionList()
+                            .isRTCConnectorWaitForStream(index: index)
                     ? Positioned(
                         bottom: 0,
                         child: V3StreamingFunction(

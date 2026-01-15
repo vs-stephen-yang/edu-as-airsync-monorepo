@@ -5,8 +5,6 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_extend_casting_time_menu.dart';
 import 'package:flutter/material.dart';
 
-typedef TimeOutCallback = void Function();
-
 class ConnectionTimer {
   static int threeHourTimeLimitSec = 10800;
   static const hintStartTimeSec = 300;
