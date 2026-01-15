@@ -41,7 +41,6 @@ class AirSyncUdpDiscovery {
   final Map<String, DateTime> _lastSeen = {};
   final Map<String, int> _scores = {};
   Map<String, List<InternetAddress>> _broadcastTargetsByIp = {};
-  DateTime? _broadcastCacheTime;
   Set<String> _localIps = {};
   bool _logEnabled = false;
 
@@ -56,7 +55,10 @@ class AirSyncUdpDiscovery {
     final currentIps = _scanSockets.keys.toSet();
 
     for (final ip in currentIps.difference(desiredIps)) {
-      _scanSubs.remove(ip)?.cancel();
+      final sub = _scanSubs.remove(ip);
+      if (sub != null) {
+        await sub.cancel();
+      }
       _scanSockets.remove(ip)?.close();
     }
 
@@ -130,7 +132,6 @@ class AirSyncUdpDiscovery {
     _lastSeen.clear();
     _scores.clear();
     _broadcastTargetsByIp = {};
-    _broadcastCacheTime = null;
     _localIps = {};
   }
 
@@ -220,8 +221,6 @@ class AirSyncUdpDiscovery {
   }
 
   Future<void> _refreshBroadcastTargets() async {
-    final now = DateTime.now();
-
     final targetsByIp = <String, List<InternetAddress>>{};
     final localIps = <String>{};
     final addrByIp = <String, InternetAddress>{};
@@ -255,7 +254,6 @@ class AirSyncUdpDiscovery {
     await _syncScanSockets(addrByIp);
 
     _broadcastTargetsByIp = targetsByIp;
-    _broadcastCacheTime = now;
     _localIps = localIps;
   }
 
