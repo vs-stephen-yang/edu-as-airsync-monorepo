@@ -24,6 +24,7 @@ parameters:
 steps:
   - task: Bash@3
     displayName: Upload to Dropbox (${{ parameters.platform }})
+    continueOnError: true
     env:
       DROPBOX_APP_KEY: $(DROPBOX_APP_KEY)
       DROPBOX_APP_SECRET: $(DROPBOX_APP_SECRET)
