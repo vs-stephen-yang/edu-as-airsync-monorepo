@@ -225,6 +225,7 @@ sentry:
   upload_source_maps: true
   upload_sources: true
   ignore_missing: true
+  url_prefix: "~/"
 
 # https://pub.dev/packages/flutter_launcher_icons
 # 1. flutter pub run flutter_launcher_icons
