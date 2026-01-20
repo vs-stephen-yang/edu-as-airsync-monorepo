@@ -36,10 +36,11 @@ jobs:
           platform: "android"
           buildCommand: "apk"
           extraBuildOptions: ""
-        #ios:
-        #  poolName: 'macOS-latest'
-        #  buildCommand: ''
-        #  extraBuildOptions: '--flavor ifp'
+        ios:
+          poolName: "AirSync macOS Pool"
+          platform: "ios"
+          buildCommand: "ipa"
+          extraBuildOptions: ""
     pool:
       name: $(poolName)
 
@@ -69,6 +70,23 @@ jobs:
       - script: $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
         displayName: Run test
         workingDirectory: "$(Build.SourcesDirectory)"
+
+      - bash: |
+          POSSIBLE_PATHS=(
+            "/Users/agent/Library/Developer/GStreamer/iPhone.sdk/GStreamer.framework"
+            "/Library/Frameworks/GStreamer.framework"
+            "$HOME/Library/Developer/GStreamer/iPhone.sdk/GStreamer.framework"
+          )
+          for path in "${POSSIBLE_PATHS[@]}"; do
+            if [ -d "$path" ]; then
+              echo "Found GStreamer at $path"
+              echo "##vso[task.setvariable variable=GSTREAMER_SDK_IOS]$path"
+              exit 0
+            fi
+          done
+          echo "##vso[task.logissue type=warning]GStreamer SDK not found in standard locations."
+        displayName: 'Set GSTREAMER_SDK_IOS'
+        condition: eq(variables['platform'], 'ios')
 
       # build prod
       - script: $(Flutter.Bin) build $(buildCommand) --no-pub $(extraBuildOptions) -t ./lib/main_production.dart
