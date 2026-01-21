@@ -7,6 +7,7 @@ let VIEWSONIC_PID: UInt16 = 0x1234
 
 public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private var targetScreen: NSScreen? = nil
+  private var targetScreenId: Int? = nil
   private let screenStateQueue = DispatchQueue(label: "flutter_input_injection.screenStateQueue", attributes: .concurrent)
   private var isScreenConfigChanged: Bool = false
 
@@ -246,18 +247,26 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
       print("Screen configuration changed, resetting target screen.")
     }
 
-    if targetScreen == nil || shouldReset {
+    let differentScreenId = targetScreenId != screenId
+
+    if differentScreenId {
+      print("Different screen ID detected; reset the target screen.")
+    }
+
+    if targetScreen == nil || shouldReset || differentScreenId {
       guard let screen = autoVirtualDisplay
               ? findVirtualDisplayScreen()
               : findScreenByScreenNumber(CGDirectDisplayID(screenId))
       else {
         return nil
       }
+      self.targetScreenId = screenId
       self.targetScreen = screen
       screenStateQueue.async(flags: .barrier) {
         self.isScreenConfigChanged = false
       }
     }
+    targetScreenId = screenId
     return targetScreen
   }
   
