@@ -221,7 +221,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     return nil
   }
   
-  private func findScreenBySceenNumber(_ target: CGDirectDisplayID) -> NSScreen? {
+  private func findScreenByScreenNumber(_ target: CGDirectDisplayID) -> NSScreen? {
     let screens = NSScreen.screens
     for screen in screens {
       let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? Int
@@ -236,7 +236,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     guard let virtualScreenDisplayId = findVirtualScreen() else {
       return nil
     }
-    return findScreenBySceenNumber(virtualScreenDisplayId)
+    return findScreenByScreenNumber(virtualScreenDisplayId)
   }
   
   private func findTargetScreen(autoVirtualDisplay: Bool, screenId: Int) -> NSScreen? {
@@ -249,7 +249,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     if targetScreen == nil || shouldReset {
       guard let screen = autoVirtualDisplay
               ? findVirtualDisplayScreen()
-              : findScreenBySceenNumber(CGDirectDisplayID(screenId))
+              : findScreenByScreenNumber(CGDirectDisplayID(screenId))
       else {
         return nil
       }
@@ -300,7 +300,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   }
 
   private func handleMouseMove(_ event: (action: Int, id: Int, x: Int, y: Int)) {
-    // Ignore move events if the mouse is not currently presse or if events are being
+    // Ignore move events if the mouse is not currently press or if events are being
     // skipped until a mouse-up occurs.
     if !mouseDown {
       return
