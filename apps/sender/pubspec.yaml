@@ -116,7 +116,7 @@ dependencies:
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
-      ref: release-0.14.0
+      ref: release-0.15.0
   desktop_screenstate:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-desktop-screenstate
