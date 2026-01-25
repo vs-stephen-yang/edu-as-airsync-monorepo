@@ -20,11 +20,8 @@ param(
         "vcruntime*.pdb"
     ),
 
-    # Output folder for generated .sym files
+    # Output folder for copied PDB files
     [string]$SymbolsDir = "build\symbols",
-
-    # Path to dump_syms executable
-    [string]$DumpSyms = "windows\tools\dump_syms.exe",
 
     # Path to sentry-cli executable
     [string]$SentryCli = "windows\tools\sentry-cli-Windows-x86_64.exe",
@@ -38,21 +35,39 @@ Write-Host "=== Profile: $Profile ==="
 Write-Host "BaseDir: $BaseDir"
 Write-Host ""
 
-# Build absolute scan paths from BaseDir + SubDirs
-$BuildDirs = $SubDirs | ForEach-Object { Join-Path $BaseDir $_ }
+# Build scan patterns from BaseDir + SubDirs
+$ScanPatterns = $SubDirs | ForEach-Object { Join-Path $BaseDir $_ }
 
 Write-Host "=== Collecting PDB Files ==="
-Write-Host "Resolved scan paths:"
-$BuildDirs | ForEach-Object { Write-Host " - $_" }
+Write-Host "Scan patterns:"
+$ScanPatterns | ForEach-Object { Write-Host " - $_" }
 Write-Host ""
 
 # ------------------------------------------------------------
-# Recursively find all PDB files under all scan folders
+# Expand wildcard patterns into real directories (IMPORTANT)
 # ------------------------------------------------------------
+$ScanDirs = @()
+foreach ($p in $ScanPatterns) {
+    # This expands patterns like plugins\*\Release into actual directories
+    $ScanDirs += Get-ChildItem -Path $p -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
+}
+$ScanDirs = $ScanDirs | Sort-Object -Unique
 
+if ($ScanDirs.Count -eq 0) {
+    Write-Error "No existing scan directories resolved from patterns."
+    exit 1
+}
+
+Write-Host "Resolved scan directories:"
+$ScanDirs | ForEach-Object { Write-Host " - $_" }
+Write-Host ""
+
+# ------------------------------------------------------------
+# Recursively find all PDB files under all resolved scan folders
+# ------------------------------------------------------------
 $pdbFiles = @()
 
-foreach ($dir in $BuildDirs) {
+foreach ($dir in $ScanDirs) {
     Write-Host "Scanning: $dir"
     $items = Get-ChildItem -Path $dir -Recurse -Filter *.pdb -ErrorAction SilentlyContinue
     if ($items) {
@@ -71,7 +86,6 @@ Write-Host "Found $($pdbFiles.Count) PDBs before filtering."
 # ------------------------------------------------------------
 # Apply exclusion patterns
 # ------------------------------------------------------------
-
 if ($ExcludePdb.Count -gt 0) {
     Write-Host ""
     Write-Host "Applying exclude patterns:"
@@ -86,14 +100,10 @@ if ($pdbFiles.Count -eq 0) {
     exit 1
 }
 
-# Sort PDBs for stable, readable output
 $pdbFiles = $pdbFiles | Sort-Object FullName
 
 Write-Host ""
 Write-Host "Final PDB count: $($pdbFiles.Count)"
-Write-Host "PDB files to process:"
-$pdbFiles | ForEach-Object { Write-Host "  $($_.FullName)" }
-
 
 # ------------------------------------------------------------
 Write-Host ""
@@ -104,83 +114,72 @@ if (Test-Path $SymbolsDir) {
 }
 New-Item -ItemType Directory -Path $SymbolsDir | Out-Null
 
+# Preserve relative path under BaseDir to avoid collisions
+$baseDirAbs = (Resolve-Path -Path $BaseDir).Path
 
-# ------------------------------------------------------------
+# Keep a set to avoid copying the same file twice
+$copiedPaths = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::OrdinalIgnoreCase)
+
+function Copy-IfNeeded {
+    param(
+        [Parameter(Mandatory = $true)][string]$SrcPath,
+        [Parameter(Mandatory = $true)][string]$DestPath
+    )
+    if (-not (Test-Path $SrcPath)) { return }
+
+    $destDir = Split-Path $DestPath -Parent
+    if (-not (Test-Path $destDir)) {
+        New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+    }
+
+    if ($copiedPaths.Add($DestPath)) {
+        Copy-Item -Path $SrcPath -Destination $DestPath -Force
+    }
+}
+
 Write-Host ""
-Write-Host "=== Converting PDB → SYM ==="
+Write-Host "=== Copying PDB (and matching DLL/EXE) Files ==="
 
-# Collect successful SYM + debug_id info for summary
-$symInfo = @()
+$copiedPdbs = @()
 
 foreach ($pdb in $pdbFiles) {
-
-    $symPath = Join-Path $SymbolsDir ($pdb.BaseName + ".sym")
-
-    Write-Host "Processing: $($pdb.Name)"
-
-    # Call dump_syms to generate .sym
-    $cmd = "`"$DumpSyms`" `"$($pdb.FullName)`" > `"$symPath`""
-    cmd.exe /C $cmd | Out-Null
-
-    # If .sym is missing or empty, skip this PDB
-    if (-not (Test-Path $symPath) -or (Get-Item $symPath).Length -eq 0) {
-        Write-Host "  → .sym not generated (invalid or unsupported PDB)"
-        continue
+    $relative = $pdb.FullName
+    if ($pdb.FullName.StartsWith($baseDirAbs, [System.StringComparison]::OrdinalIgnoreCase)) {
+        $relative = $pdb.FullName.Substring($baseDirAbs.Length).TrimStart("\", "/")
     }
 
-    # Read the first line of the .sym file (MODULE line)
-    $first = Get-Content $symPath -First 1 -ErrorAction SilentlyContinue
-    if (-not $first) {
-        Write-Host "  → Failed to read .sym header"
-        continue
+    # Copy PDB
+    $pdbDest = Join-Path $SymbolsDir $relative
+    Write-Host "Copying PDB: $($pdb.Name)"
+    Copy-IfNeeded -SrcPath $pdb.FullName -DestPath $pdbDest
+
+    $copiedPdbs += [PSCustomObject]@{
+        Name = $pdb.Name
+        Dest = $pdbDest
     }
 
-    $parts = $first.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
-    if ($parts.Count -lt 4 -or $parts[0] -ne "MODULE") {
-        Write-Host "  → Invalid .sym header (no MODULE line)"
-        continue
-    }
-
-    $debugId = $parts[3]
-
-    # Store info for final summary
-    $symInfo += [PSCustomObject]@{
-        PdbName = $pdb.Name
-        SymPath = $symPath
-        DebugId = $debugId
+    # Also copy matching DLL/EXE (helps PE debug companion / unwind)
+    foreach ($ext in @(".dll", ".exe")) {
+        $binPath = Join-Path $pdb.DirectoryName ($pdb.BaseName + $ext)
+        if (Test-Path $binPath) {
+            $binRel = $relative -replace '\.pdb$', $ext
+            $binDest = Join-Path $SymbolsDir $binRel
+            Write-Host "  Copying BIN: $([System.IO.Path]::GetFileName($binPath))"
+            Copy-IfNeeded -SrcPath $binPath -DestPath $binDest
+        }
     }
 }
 
 Write-Host ""
-Write-Host "SYM generation complete."
-
-
-# ------------------------------------------------------------
-# Print final SYM summary, sorted by PDB name
-# ------------------------------------------------------------
-
-Write-Host ""
-Write-Host "Final SYM count: $($symInfo.Count)"
-Write-Host "=== SYM Files Summary ==="
-
-if ($symInfo.Count -eq 0) {
-    Write-Host "No valid SYM files were generated."
-}
-else {
-    $symInfoSorted = $symInfo | Sort-Object PdbName
-    foreach ($item in $symInfoSorted) {
-        Write-Host ("{0}, {1}" -f $item.PdbName, $item.DebugId)
-        # If you also want path, uncomment the next line:
-        # Write-Host ("    {0}" -f $item.SymPath)
-    }
-}
-
+Write-Host "Copy complete."
+Write-Host "Copied PDB count: $($copiedPdbs.Count)"
 
 # ------------------------------------------------------------
 Write-Host ""
 Write-Host "=== Uploading to Sentry ==="
 
-& $SentryCli "debug-files" "upload" "--wait" $SymbolsDir
+# Upload only what we intend: PDB + PE (companion)
+& $SentryCli "debug-files" "upload" "--wait" "--type" "pdb" "--type" "pe" $SymbolsDir
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Upload failed. sentry-cli exit code: $LASTEXITCODE"
