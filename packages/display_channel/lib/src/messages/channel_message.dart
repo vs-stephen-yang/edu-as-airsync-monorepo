@@ -231,6 +231,7 @@ JoinIntentType stringToJoinIntentType(String str) {
 
 class JoinDisplayMessage extends ChannelMessage {
   String? clientId;
+  String? userId;
   String? name;
   String? version;
   String? platform;
@@ -244,6 +245,7 @@ class JoinDisplayMessage extends ChannelMessage {
     final data = _fromJson(json);
 
     clientId = data['clientId'] as String?;
+    userId = data['userId'] as String?;
     name = data['name'] as String?;
     version = data['version'] as String?;
     platform = data['platform'] as String?;
@@ -259,6 +261,7 @@ class JoinDisplayMessage extends ChannelMessage {
   Map<String, dynamic> toJson() {
     return super._toJson({
       'clientId': clientId,
+      'userId': userId,
       'name': name,
       'version': version,
       'platform': platform,
