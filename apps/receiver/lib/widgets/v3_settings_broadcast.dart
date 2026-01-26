@@ -387,6 +387,8 @@ class _CastToBoardsState extends State<CastToBoards> {
                       ),
                       Consumer<ChannelProvider>(
                         builder: (_, channelProvider, __) {
+                          final ref =
+                              riverpod.ProviderScope.containerOf(context);
                           return SizedBox(
                             width: 41,
                             height: 25,
@@ -417,8 +419,6 @@ class _CastToBoardsState extends State<CastToBoards> {
                                         setState(() => _isLoading = true);
 
                                         try {
-                                          final ref = riverpod.ProviderScope
-                                              .containerOf(context);
                                           final groupNotifier =
                                               ref.read(groupProvider.notifier);
                                           bool state =
@@ -459,8 +459,6 @@ class _CastToBoardsState extends State<CastToBoards> {
                                           log.warning(
                                               'Failed to toggle broadcast: $e');
                                           // Ensure state is consistent
-                                          final ref = riverpod.ProviderScope
-                                              .containerOf(context);
                                           final groupNotifier =
                                               ref.read(groupProvider.notifier);
                                           groupNotifier.setBroadcastToGroup(
