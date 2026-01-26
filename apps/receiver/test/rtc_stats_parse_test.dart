@@ -139,7 +139,25 @@ void main() {
         'corruptionMeasurements': 8,
       });
 
-      final reports = [videoReport];
+      final audioReport = StatsReport('IR01', 'inbound-rtp', 0, {
+        'kind': 'audio',
+        'jitterBufferEmittedCount': 980,
+        'jitterBufferDelay': 2.5,
+        'jitterBufferTargetDelay': 3.5,
+        'jitterBufferMinimumDelay': 0.6,
+        'totalProcessingDelay': 346.802,
+        'totalSamplesReceived': 2000,
+        'concealedSamples': 11,
+        'silentConcealedSamples': 12,
+        'concealmentEvents': 13,
+        'insertedSamplesForDeceleration': 14,
+        'removedSamplesForAcceleration': 15,
+        'audioLevel': 0.05,
+        'totalAudioEnergy': 1.2,
+        'totalSamplesDuration': 3.4,
+      });
+
+      final reports = [videoReport, audioReport];
 
       // Act
       parser.onStatsReports(reports);
@@ -255,6 +273,18 @@ void main() {
         'framesAssembledFromMultiplePackets': 1000,
         'headerBytesReceived': 100000,
         'totalProcessingDelay': 300.0,
+        'totalCorruptionProbability': 0.2,
+        'totalSquaredCorruptionProbability': 0.05,
+        'corruptionMeasurements': 10,
+      });
+
+      final audioReport1 = StatsReport('IR01', 'inbound-rtp', 1000, {
+        'kind': 'audio',
+        'jitterBufferEmittedCount': 1000,
+        'jitterBufferDelay': 2000.0, // Makes avg calculation clean (2.0)
+        'jitterBufferTargetDelay': 1500.0,
+        'jitterBufferMinimumDelay': 100.0,
+        'totalProcessingDelay': 300.0,
         'totalSamplesReceived': 10000,
         'concealedSamples': 200,
         'silentConcealedSamples': 100,
@@ -264,9 +294,6 @@ void main() {
         'audioLevel': 0.1,
         'totalAudioEnergy': 5.0,
         'totalSamplesDuration': 9.0,
-        'totalCorruptionProbability': 0.2,
-        'totalSquaredCorruptionProbability': 0.05,
-        'corruptionMeasurements': 10,
       });
 
       // Second report - 1 second later with increments that produce clean per-second rates
@@ -310,6 +337,18 @@ void main() {
         'framesAssembledFromMultiplePackets': 1025,
         'headerBytesReceived': 105000, // +5000 per second
         'totalProcessingDelay': 350.0,
+        'totalCorruptionProbability': 0.5, // +0.3
+        'totalSquaredCorruptionProbability': 0.11, // +0.06
+        'corruptionMeasurements': 12, // +2
+      });
+
+      final audioReport2 = StatsReport('IR01', 'inbound-rtp', 2000, {
+        'kind': 'audio',
+        'jitterBufferEmittedCount': 1025,
+        'jitterBufferDelay': 2050.0, // Makes avg calculation clean
+        'jitterBufferTargetDelay': 1550.0, // Makes avg calculation clean
+        'jitterBufferMinimumDelay': 120.0,
+        'totalProcessingDelay': 350.0,
         'totalSamplesReceived': 10100, // +100 per second
         'concealedSamples': 205, // +5
         'silentConcealedSamples': 102, // +2
@@ -319,14 +358,11 @@ void main() {
         'audioLevel': 0.2,
         'totalAudioEnergy': 7.0, // +2
         'totalSamplesDuration': 10.5, // +1.5
-        'totalCorruptionProbability': 0.5, // +0.3
-        'totalSquaredCorruptionProbability': 0.11, // +0.06
-        'corruptionMeasurements': 12, // +2
       });
 
       // Act
-      parser.onStatsReports([videoReport1]);
-      parser.onStatsReports([videoReport2]);
+      parser.onStatsReports([videoReport1, audioReport1]);
+      parser.onStatsReports([videoReport2, audioReport2]);
 
       // Assert
       final reporterVerify =
