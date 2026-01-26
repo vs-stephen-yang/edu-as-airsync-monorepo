@@ -65,6 +65,9 @@ class RtcVideoInboundStats {
   final double? totalAudioEnergy;
   final double? totalSamplesDuration;
 
+  final double? audioJitterBufferDelay;
+  final int? audioJitterBufferEmittedCount;
+
   // Corruption probabilities
   final double? totalCorruptionProbability;
   final double? totalSquaredCorruptionProbability;
@@ -130,6 +133,7 @@ class RtcVideoInboundStats {
   final double? totalInterFrameDelayAvg;
   final double? totalAssemblyTimeAvg;
   final double? jitterBufferDelayAvg;
+  final double? audioJitterBufferDelayAvg;
   final double? qpSumAvg;
 
   double? currentRoundTripTime; // in seconds
@@ -183,6 +187,8 @@ class RtcVideoInboundStats {
     this.audioLevel,
     this.totalAudioEnergy,
     this.totalSamplesDuration,
+    this.audioJitterBufferDelay,
+    this.audioJitterBufferEmittedCount,
     this.totalCorruptionProbability,
     this.totalSquaredCorruptionProbability,
     this.corruptionMeasurements,
@@ -239,6 +245,7 @@ class RtcVideoInboundStats {
     this.totalInterFrameDelayAvg,
     this.totalAssemblyTimeAvg,
     this.jitterBufferDelayAvg,
+    this.audioJitterBufferDelayAvg,
     this.qpSumAvg,
     this.currentRoundTripTime,
   });

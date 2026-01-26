@@ -89,25 +89,46 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
         return;
       }
 
-      final fpsInfo = 'FPS: '
+      final fpsInfo = 'FPS(Renderered,Decoded,Received,Dropped): '
           '${stats.framesPerSecond?.toStringAsFixed(0)},'
           '${stats.framesDecodedPerSecond},'
-          '${stats.framesReceivedPerSecond} '
-          'Dropped: ${stats.framesDroppedPerSecond}';
+          '${stats.framesReceivedPerSecond},'
+          '${stats.framesDroppedPerSecond}';
+
+      final audioInfo = 'Audio(I,R,C,S): '
+          '${stats.insertedSamplesForDeceleration},${stats.removedSamplesForAcceleration},'
+          '${stats.concealedSamples},${stats.silentConcealedSamples}';
 
       final bytesPerSecond = stats.bytesPerSecond;
       final bitrateKbps =
           bytesPerSecond != null ? bytesPerSecond * 8 / 1024 : null;
 
-      final decodeTimeSec = stats.decodeTime?.toStringAsFixed(3);
-      final jitterSec = stats.jitterBufferDelayAvg?.toStringAsFixed(3);
+      final decodeTimeMs = stats.decodeTime != null
+          ? (stats.decodeTime! * 1000).toStringAsFixed(0)
+          : null;
+
+      final videoJitterBufferDelayMs = stats.jitterBufferDelayAvg != null
+          ? (stats.jitterBufferDelayAvg! * 1000).toStringAsFixed(0)
+          : null;
+      final audioJitterBufferDelayMs = stats.audioJitterBufferDelayAvg != null
+          ? (stats.audioJitterBufferDelayAvg! * 1000).toStringAsFixed(0)
+          : null;
+
+      final rttMs = stats.currentRoundTripTime != null
+          ? (stats.currentRoundTripTime! * 1000).toStringAsFixed(0)
+          : null;
 
       videoInfo = 'Res ${stats.frameWidth}x${stats.frameHeight} '
           'Bitrate: ${bitrateKbps?.toStringAsFixed(0)} Kbps\n'
           '$fpsInfo\n'
-          'JB: $jitterSec s PacketLost: ${stats.packetsLost}\n'
-          'Decode: $decodeTimeSec s\n'
-          '${stats.decoderName}';
+          'Video JB: $videoJitterBufferDelayMs ms Audio JB: $audioJitterBufferDelayMs ms\n'
+          'RTT: $rttMs ms\n'
+          'Packets(Lost,Discarded): ${stats.packetsLost}, ${stats.packetsDiscarded}\n'
+          'pli: ${stats.pliCount} fir: ${stats.firCount} nack: ${stats.nackCount}\n'
+          'Freeze(Count,Duration): ${stats.freezeCount}, ${stats.totalFreezesDuration} s\n'
+          '$audioInfo\n'
+          'DecodeTime: $decodeTimeMs ms\n'
+          'Decoder: ${stats.decoderName}';
 
       if (!mounted) return;
       setState(() {
@@ -314,7 +335,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
               debugOverlayText,
               style: const TextStyle(
                 color: Colors.red,
-                fontSize: 30,
+                fontSize: 25,
               ),
             ),
           ),
