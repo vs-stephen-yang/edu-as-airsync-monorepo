@@ -153,7 +153,15 @@ class RtcStatsParser {
         .where((StatsReport report) => report.values['kind'] == 'video')
         .toList();
 
-    _onVideoInboundStatsReports(videoInboundRtps, selectedCandidatePair);
+    final audioInboundRtps = inboundRtps
+        .where((StatsReport report) => report.values['kind'] == 'audio')
+        .toList();
+
+    _onInboundStatsReports(
+      videoInboundRtps,
+      audioInboundRtps,
+      selectedCandidatePair,
+    );
 
     final mediaSources = reportsByType['media-source'] ?? [];
     final videoMediaSources = mediaSources
@@ -181,8 +189,9 @@ class RtcStatsParser {
     return null;
   }
 
-  void _onVideoInboundStatsReports(
+  void _onInboundStatsReports(
     List<StatsReport> reports,
+    List<StatsReport> audioReports,
     StatsReport? selectCandidatePair,
   ) {
     if (reports.isEmpty) {
@@ -191,6 +200,9 @@ class RtcStatsParser {
 
     final videoInboundRtp = reports.first;
     final values = videoInboundRtp.values;
+
+    final audioValues =
+        audioReports.isNotEmpty ? audioReports.first.values : null;
 
     final decoderName = values['decoderImplementation'];
     final frameWidth = values['frameWidth'];
@@ -243,17 +255,22 @@ class RtcStatsParser {
     final pliCount = values['pliCount'];
 
     // Audio-related metrics
-    final totalSamplesReceived = values['totalSamplesReceived'];
-    final concealedSamples = values['concealedSamples'];
-    final silentConcealedSamples = values['silentConcealedSamples'];
-    final concealmentEvents = values['concealmentEvents'];
+
+    final totalSamplesReceived = audioValues?['totalSamplesReceived'];
+    final concealedSamples = audioValues?['concealedSamples'];
+    final silentConcealedSamples = audioValues?['silentConcealedSamples'];
+    final concealmentEvents = audioValues?['concealmentEvents'];
     final insertedSamplesForDeceleration =
-        values['insertedSamplesForDeceleration'];
+        audioValues?['insertedSamplesForDeceleration'];
     final removedSamplesForAcceleration =
-        values['removedSamplesForAcceleration'];
-    final audioLevel = (values['audioLevel'] as num?)?.toDouble();
-    final totalAudioEnergy = values['totalAudioEnergy'];
-    final totalSamplesDuration = values['totalSamplesDuration'];
+        audioValues?['removedSamplesForAcceleration'];
+    final audioLevel = (audioValues?['audioLevel'] as num?)?.toDouble();
+    final totalAudioEnergy = audioValues?['totalAudioEnergy'];
+    final totalSamplesDuration = audioValues?['totalSamplesDuration'];
+
+    final audioJitterBufferDelay = audioValues?['jitterBufferDelay'];
+    final audioJitterBufferEmittedCount =
+        audioValues?['jitterBufferEmittedCount'];
 
     // Corruption probabilities
     final totalCorruptionProbability = values['totalCorruptionProbability'];
@@ -325,6 +342,7 @@ class RtcStatsParser {
     double? totalAssemblyTimeAvg;
     double? totalInterFrameDelayAvg;
     double? jitterBufferDelayAvg;
+    double? audioJitterBufferDelayAvg;
     double? decodeTimeAvg;
 
     if (_previousVideoInboundStats != null) {
@@ -462,6 +480,13 @@ class RtcStatsParser {
         previous.jitterBufferEmittedCount,
       );
 
+      audioJitterBufferDelayAvg = _avg(
+        audioJitterBufferDelay,
+        previous.audioJitterBufferDelay,
+        audioJitterBufferEmittedCount,
+        previous.audioJitterBufferEmittedCount,
+      );
+
       decodeTimeAvg = _avg(
         totalDecodeTime,
         previous.totalDecodeTime,
@@ -519,6 +544,8 @@ class RtcStatsParser {
       audioLevel: audioLevel,
       totalAudioEnergy: totalAudioEnergy,
       totalSamplesDuration: totalSamplesDuration,
+      audioJitterBufferDelay: audioJitterBufferDelay,
+      audioJitterBufferEmittedCount: audioJitterBufferEmittedCount,
       totalCorruptionProbability: totalCorruptionProbability,
       totalSquaredCorruptionProbability: totalSquaredCorruptionProbability,
       corruptionMeasurements: corruptionMeasurements,
@@ -582,6 +609,7 @@ class RtcStatsParser {
       totalInterFrameDelayAvg: totalInterFrameDelayAvg,
       totalAssemblyTimeAvg: totalAssemblyTimeAvg,
       jitterBufferDelayAvg: jitterBufferDelayAvg,
+      audioJitterBufferDelayAvg: audioJitterBufferDelayAvg,
       qpSumAvg: qpSumAvg,
       currentRoundTripTime: currentRoundTripTime,
     );
