@@ -325,7 +325,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                   debugOverlayText,
                   style: const TextStyle(
                     color: Colors.red,
-                    fontSize: 30,
+                    fontSize: 28,
                   ),
                 ),
               ),
@@ -437,18 +437,39 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         return;
       }
 
-      final fpsInfo = 'FPS: '
-          '${stats.framesPerSecond?.toStringAsFixed(0)}';
+      final fpsInfo = 'FPS(Sent,Encoded,Captured): '
+          '${stats.framesSentPerSecond?.toStringAsFixed(0)},'
+          '${stats.framesEncodedPerSecond?.toStringAsFixed(0)},'
+          '${stats.mediaSourceFramesPerSecond?.toStringAsFixed(0)}';
+
+      final targetBitrateKbps = stats.targetBitrate != null
+          ? (stats.targetBitrate! / 1000).toStringAsFixed(0)
+          : null;
+
+      final availableOutgoingBitrateKbps =
+          stats.availableOutgoingBitrate != null
+              ? (stats.availableOutgoingBitrate! / 1000).toStringAsFixed(0)
+              : null;
+
+      final rttMs = stats.currentRoundTripTime != null
+          ? (stats.currentRoundTripTime! * 1000).toStringAsFixed(0)
+          : null;
+
+      final bytesSentPerSecondKbps = stats.bytesSentPerSecond != null
+          ? (stats.bytesSentPerSecond! * 8 / 1000).toStringAsFixed(0)
+          : null;
 
       final videoInfo = 'Res ${stats.frameWidth}x${stats.frameHeight} '
+          'Bitrate: $bytesSentPerSecondKbps Kbps\n'
           '$fpsInfo\n'
-          'TargetBitrate: ${stats.targetBitrate?.toStringAsFixed(0)}\n'
-          'ContentType: ${stats.contentType}\n'
+          'TargetBitrate: $targetBitrateKbps Kbps\n'
+          'AvailableOutgoingBitrate: $availableOutgoingBitrateKbps Kbps\n'
           'QualityLimitationReason: ${stats.qualityLimitationReason}\n'
-          'pliCount: ${stats.pliCount}\n'
-          'PacketSendDelay: ${stats.packetSendDelayAvgMs?.toStringAsFixed(2)} ms\n'
+          'RTT: $rttMs ms pliCount: ${stats.pliCount} nackCount: ${stats.nackCount}\n'
+          'PacketSendDelay: ${stats.packetSendDelayAvgMs?.toStringAsFixed(0)} ms\n'
+          'EncodeTime: ${stats.encodeTimeAvgMs?.toStringAsFixed(2)} ms\n'
           'Encoder: ${stats.encoderImplementation}\n'
-          'EncodeTime: ${stats.encodeTimeAvgMs?.toStringAsFixed(2)}\n';
+          'ContentType: ${stats.contentType}\n';
 
       if (!mounted) return;
       setState(() {
