@@ -419,11 +419,7 @@ class SelectScreenDialog extends Dialog {
                                         }
                                         if (!context.mounted) return;
                                         setState(() {
-                                          if (index == 1) {
-                                            enableAudioCheckbox = false;
-                                          } else {
-                                            enableAudioCheckbox = true;
-                                          }
+                                          enableAudioCheckbox = (index != 1);
                                         });
                                       },
                                       tabs: [
@@ -497,7 +493,7 @@ class SelectScreenDialog extends Dialog {
                                           enableAudioCheckbox) ...[
                                         Row(
                                           children: [
-                                            Gap(5),
+                                            const Gap(5),
                                             V3Focus(
                                               identifier:
                                                   'v3_qa_select_screen_audio',
@@ -585,7 +581,6 @@ class SelectScreenDialog extends Dialog {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          // TODO
                                           createButton(
                                             label: S
                                                 .of(context)
@@ -600,9 +595,7 @@ class SelectScreenDialog extends Dialog {
                                             backgroundColor: Colors.transparent,
                                             borderColor: context.tokens.color
                                                 .vsdswColorSecondary,
-                                            onPressed: () {
-                                              cancel();
-                                            },
+                                            onPressed: () => cancel(),
                                           ),
                                           createButton(
                                             label: S
@@ -699,7 +692,7 @@ class SelectScreenDialog extends Dialog {
           height: 6,
           decoration: BoxDecoration(
             color: context.tokens.color.vsdswColorTertiary,
-            borderRadius: BorderRadius.all(Radius.circular(18.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(18.0)),
           ),
         )
       ],
@@ -770,13 +763,8 @@ class SelectScreenDialog extends Dialog {
 
   String _getShareName(
       DesktopCapturerSource? selectedSource, bool isExtensionSelected) {
-    if (isExtensionSelected) {
-      return 'extension';
-    }
-    if (selectedSource == null) {
-      return 'screen';
-    }
-
+    if (isExtensionSelected) return 'extension';
+    if (selectedSource == null) return 'screen';
     return selectedSource.type == SourceType.Screen ? 'screen' : 'application';
   }
 

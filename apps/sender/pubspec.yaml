@@ -99,6 +99,7 @@ dependencies:
   open_file: ^3.5.10
   auto_hyphenating_text: ^0.3.0
   amplitude_flutter: ^4.3.9
+  screen_retriever: ^0.2.0
 
   # ViewSonic plug-in
   flutter_webrtc:
@@ -145,7 +146,6 @@ dev_dependencies:
   mockito: ^5.0.0
   sentry_dart_plugin: ^3.1.0
   build_runner: ^2.4.10
-  screen_retriever: ^0.2.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
