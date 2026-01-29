@@ -421,5 +421,11 @@
   "v3_lbl_settings_broadcast_device_favorite": "favori",
   "v3_lbl_settings_broadcast_device_remove": "cihazı kaldır",
   "v3_lbl_settings_broadcast_connect": "Bağlan",
-  "v3_lbl_settings_broadcast_connecting": "Bağlanıyor"
+  "v3_lbl_settings_broadcast_connecting": "Bağlanıyor",
+  "v3_overlay_retry_dialog_title": "Yayın kesildi. Lütfen yayın iznini yeniden alın.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Yayını durdur",
+  "v3_overlay_retry_dialog_retry": "Tekrar Deneyin",
+  "v3_overlay_retry_dialog_end": "Bitir",
+  "v3_zero_fps_capture_failed_wait": "Beklemeye devam edin",
+  "v3_settings_broadcast_ip_error": "Lütfen geçerli bir IP adresi girin."
 }

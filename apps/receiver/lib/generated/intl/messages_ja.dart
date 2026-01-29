@@ -845,6 +845,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "IP アドレスでボードを検索",
     ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "有効な IP アドレスを入力してください。",
+    ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "IP アドレスを入力",
     ),

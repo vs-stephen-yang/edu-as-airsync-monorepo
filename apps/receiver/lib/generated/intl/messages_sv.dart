@@ -837,6 +837,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "Gick med i sessionen",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage("Slut"),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Försök igen",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Stoppa sändning"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Castningen avbryts. Vänligen återhämta castingtillstånd.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Delar",
     ),
@@ -922,6 +931,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Hitta kort via IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Vänligen ange en giltig IP-adress.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Ange IP-adress",
@@ -1154,6 +1166,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Skärmdumpstagning misslyckades",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Fortsätt vänta",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Stäng"),
     "v3_zero_fps_failed_to_repair_message":

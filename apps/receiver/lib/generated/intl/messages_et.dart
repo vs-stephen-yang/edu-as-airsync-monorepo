@@ -837,6 +837,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "liitus sessiooniga",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage("Lõpp"),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Uuesti proovimine",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Peata edastus"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Casting katkestatud. Palun hankige uuesti loitsimisluba.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Edastamine",
     ),
@@ -923,6 +932,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Leia tahvlid IP kaudu",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Palun sisestage kehtiv IP-aadress.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Sisestage IP-aadress",
@@ -1158,6 +1170,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Ekraanipildi jäädvustamine ebaõnnestus",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Oota edasi",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Sulge"),
     "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(

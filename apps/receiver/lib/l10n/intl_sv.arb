@@ -421,5 +421,11 @@
   "v3_lbl_settings_broadcast_device_favorite": "Favoriter",
   "v3_lbl_settings_broadcast_device_remove": "Ta bort enhet",
   "v3_lbl_settings_broadcast_connect": "Anslut",
-  "v3_lbl_settings_broadcast_connecting": "Ansluter"
+  "v3_lbl_settings_broadcast_connecting": "Ansluter",
+  "v3_overlay_retry_dialog_title": "Castningen avbryts. Vänligen återhämta castingtillstånd.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Stoppa sändning",
+  "v3_overlay_retry_dialog_retry": "Försök igen",
+  "v3_overlay_retry_dialog_end": "Slut",
+  "v3_zero_fps_capture_failed_wait": "Fortsätt vänta",
+  "v3_settings_broadcast_ip_error": "Vänligen ange en giltig IP-adress."
 }

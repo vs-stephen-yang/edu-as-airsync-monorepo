@@ -421,5 +421,11 @@
   "v3_lbl_settings_broadcast_device_favorite": "mėgstamiausias",
   "v3_lbl_settings_broadcast_device_remove": "pašalinti įrenginį",
   "v3_lbl_settings_broadcast_connect": "Prisijungti",
-  "v3_lbl_settings_broadcast_connecting": "Jungiamasi"
+  "v3_lbl_settings_broadcast_connecting": "Jungiamasi",
+  "v3_overlay_retry_dialog_title": "Aktorių atranka nutraukta. Prašome iš naujo gauti perdavimo teises.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Sustabdyti transliaciją",
+  "v3_overlay_retry_dialog_retry": "Bandyti dar kartą",
+  "v3_overlay_retry_dialog_end": "Pabaiga",
+  "v3_zero_fps_capture_failed_wait": "Laukti",
+  "v3_settings_broadcast_ip_error": "Įveskite galiojantį IP adresą."
 }

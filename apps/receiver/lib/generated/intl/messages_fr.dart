@@ -612,8 +612,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "Ouvrir le menu des tableaux de diffusion",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "Connecter",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("Connexion"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("Favoris"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("Retirer l\'appareil"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Ouvrir le menu des appareils de diffusion",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Trouver les Tableaux via adresse IP",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage(
@@ -681,6 +693,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "Sélectionner %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage(
+      "Ajouter IP",
+    ),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("Effacer"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "Base de connaissances",
     ),
@@ -755,6 +771,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Basculer sur Miracast"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "Déplacer",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "Agrandir la vue de streaming",
     ),
@@ -835,6 +854,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       " a rejoint la session",
+    ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage("Fin"),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Recommencer",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Arrêt de la diffusion"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Diffusion interrompue. Veuillez obtenir à nouveau l\'autorisation de diffusion.",
     ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Diffusion",
@@ -926,6 +954,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "Appareils de diffusion",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "Trouver les Tableaux via adresse IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Veuillez saisir une adresse IP valide.",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "Saisir l\'adresse IP",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "Aucun résultat",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage(
@@ -1156,6 +1196,46 @@ class MessageLookup extends MessageLookupByLibrary {
       "En attente que d\'autres rejoignent",
     ),
     "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("À suivre"),
+    "v3_zero_fps_capture_failed_message": MessageLookupByLibrary.simpleMessage(
+      "Impossible de récupérer la capture d\'écran depuis l\'application source. Une erreur de capture s\'est peut-être produite. Veuillez vous rendre dans l\'application source pour effectuer une nouvelle capture d\'écran et réessayer.",
+    ),
+    "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
+      "Échec de la Capture d\'écran",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Attendre",
+    ),
+    "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Fermer"),
+    "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
+      "Impossible de redémarrer la fonction de capture d\'écran depuis l\'application source.",
+    ),
+    "v3_zero_fps_failed_to_repair_title": MessageLookupByLibrary.simpleMessage(
+      "Impossible de réparer la fonction de Capture d\'écran",
+    ),
+    "v3_zero_fps_prompt_message": MessageLookupByLibrary.simpleMessage(
+      "Impossible d\'effectuer la capture d\'écran et de l\'envoyer à l\'application de diffusion. Souhaitez-vous redémarrer la fonction de capture d\'écran et réessayer, ou arrêter la diffusion ?",
+    ),
+    "v3_zero_fps_prompt_title": MessageLookupByLibrary.simpleMessage(
+      "Rédemarrage Réussi",
+    ),
+    "v3_zero_fps_repairing_message": MessageLookupByLibrary.simpleMessage(
+      "Redémarrage de la fonction de Capture d\'écran. Cela peut prendre quelques secondes. Veuillez patienter.",
+    ),
+    "v3_zero_fps_repairing_title": MessageLookupByLibrary.simpleMessage(
+      "Réparation de la fonction Capture d\'écran",
+    ),
+    "v3_zero_fps_restart_failed": MessageLookupByLibrary.simpleMessage(
+      "Redémarrage Échoué",
+    ),
+    "v3_zero_fps_restarted_Successfully": MessageLookupByLibrary.simpleMessage(
+      "Rédemarrage Réussi",
+    ),
+    "v3_zero_fps_restarting_content": MessageLookupByLibrary.simpleMessage(
+      "Veuillez patienter",
+    ),
+    "v3_zero_fps_restarting_title": MessageLookupByLibrary.simpleMessage(
+      "Redémarrage en cours",
+    ),
     "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
       "Téléchargement des mises à jour du système",
     ),

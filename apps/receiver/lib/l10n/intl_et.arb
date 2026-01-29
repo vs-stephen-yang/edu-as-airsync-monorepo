@@ -421,5 +421,11 @@
   "v3_lbl_settings_broadcast_device_favorite": "lemmik",
   "v3_lbl_settings_broadcast_device_remove": "eemalda seade",
   "v3_lbl_settings_broadcast_connect": "Ühenda",
-  "v3_lbl_settings_broadcast_connecting": "Ühendamine"
+  "v3_lbl_settings_broadcast_connecting": "Ühendamine",
+  "v3_overlay_retry_dialog_title": "Casting katkestatud. Palun hankige uuesti loitsimisluba.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Peata edastus",
+  "v3_overlay_retry_dialog_retry": "Uuesti proovimine",
+  "v3_overlay_retry_dialog_end": "Lõpp",
+  "v3_zero_fps_capture_failed_wait": "Oota edasi",
+  "v3_settings_broadcast_ip_error": "Palun sisestage kehtiv IP-aadress."
 }
