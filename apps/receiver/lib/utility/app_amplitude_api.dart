@@ -39,11 +39,13 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   @override
   Future<void> trackEvent(
     String name, {
+    String? userId,
     Map<String, dynamic> properties = const <String, dynamic>{},
   }) async {
     //  HTTP API
     await _sendHttpEvent(
       eventType: name,
+      userId: userId,
       eventProperties: {
         ...properties,
         ..._globalProperties,
@@ -54,6 +56,7 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   /// Internal: Send HTTP request to Amplitude
   Future<void> _sendHttpEvent({
     required String eventType,
+    String? userId,
     Map<String, dynamic>? eventProperties,
   }) async {
     final uri = Uri.parse('https://api2.amplitude.com/2/httpapi');
@@ -64,7 +67,7 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
       'api_key': _apiKey,
       'events': [
         {
-          'user_id': _userId,
+          'user_id': userId ?? _userId,
           'device_id': _deviceId,
           'event_type': eventType,
           'time': DateTime.now().millisecondsSinceEpoch,

@@ -104,6 +104,7 @@ class AppAnalytics {
 // It can also be an application life cycle event like initialization or configuration update.
   void trackEvent(
     String name, {
+    String? userId,
     Map<String, Object> properties = const <String, Object>{},
   }) {
     log.info('Track event: $name');
@@ -113,12 +114,14 @@ class AppAnalytics {
       additionalProperties: {
         ...properties,
         ..._globalProperties,
+        if (userId != null) 'user_id': userId,
       },
     );
   }
 
   void trackTrace(
     String message, {
+    String? userId,
     Severity severity = Severity.information,
     Map<String, Object> properties = const <String, Object>{},
   }) {
@@ -128,6 +131,7 @@ class AppAnalytics {
       additionalProperties: {
         ...properties,
         ..._globalProperties,
+        if (userId != null) 'user_id': userId,
       },
     );
   }
@@ -142,42 +146,53 @@ void trackEvent(
   EventCategory category, {
   String? target,
   String? participatorId,
+  String? userId,
   String? mode,
   Map<String, Object> properties = const <String, Object>{},
 }) {
-  AppAnalytics.instance.trackEvent(name, properties: {
-    ...properties,
-    ...{
-      'category': category.name,
-      if (target != null) 'target': target,
-      if (participatorId != null) 'participator_id': participatorId,
-      if (mode != null) 'mode': mode,
-      if (DeviceFeatureAdapter.roomNumber.isNotEmpty)
-        'room_number': DeviceFeatureAdapter.roomNumber,
+  AppAnalytics.instance.trackEvent(
+    name,
+    userId: userId,
+    properties: {
+      ...properties,
+      ...{
+        'category': category.name,
+        if (target != null) 'target': target,
+        if (participatorId != null) 'participator_id': participatorId,
+        if (mode != null) 'mode': mode,
+        if (DeviceFeatureAdapter.roomNumber.isNotEmpty)
+          'room_number': DeviceFeatureAdapter.roomNumber,
+      },
     },
-  });
+  );
 
-  AppAmplitude().trackEvent(name, properties: {
-    ...properties,
-    ...{
-      'category': category.name,
-      if (target != null) 'target': target,
-      if (participatorId != null) 'participator_id': participatorId,
-      if (mode != null) 'mode': mode,
-      if (DeviceFeatureAdapter.roomNumber.isNotEmpty)
-        'room_number': DeviceFeatureAdapter.roomNumber,
+  AppAmplitude().trackEvent(
+    name,
+    userId: userId,
+    properties: {
+      ...properties,
+      ...{
+        'category': category.name,
+        if (target != null) 'target': target,
+        if (participatorId != null) 'participator_id': participatorId,
+        if (mode != null) 'mode': mode,
+        if (DeviceFeatureAdapter.roomNumber.isNotEmpty)
+          'room_number': DeviceFeatureAdapter.roomNumber,
+      },
     },
-  });
+  );
 }
 
 void trackTrace(
   String message, {
   String? target,
+  String? userId,
   Severity severity = Severity.information,
   Map<String, Object> properties = const <String, Object>{},
 }) {
   AppAnalytics.instance.trackTrace(
     message,
+    userId: userId,
     severity: severity,
     properties: {
       ...properties,

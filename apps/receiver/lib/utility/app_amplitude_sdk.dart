@@ -53,12 +53,14 @@ class AppAmplitudeSdk implements AppAmplitudeImplement {
   @override
   Future<void> trackEvent(
     String name, {
+    String? userId,
     Map<String, dynamic> properties = const <String, dynamic>{},
   }) async {
     // Track an event
     await _amplitude?.track(
       BaseEvent(
         name,
+        userId: userId,
         eventProperties: {
           ...properties,
           ..._globalProperties,

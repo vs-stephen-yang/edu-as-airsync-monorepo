@@ -66,6 +66,7 @@ class RTCConnector {
   PresentationState presentationState = PresentationState.stopStreaming;
   String? sessionId;
   String? clientId;
+  String? userId;
   String? senderName;
   String? senderVersion;
   String? senderPlatform;
@@ -427,6 +428,7 @@ class RTCConnector {
 
   void _onJoinDisplay(JoinDisplayMessage msg, bool isModeratorMode) {
     clientId = msg.clientId;
+    userId = msg.userId;
     senderVersion = msg.version;
     senderPlatform = msg.platform;
     if (isModeratorMode) {
@@ -1063,6 +1065,7 @@ class RTCConnector {
     trackTrace(
       name,
       target: target,
+      userId: userId,
       properties: {
         'participator_id': clientId ?? '',
         ...properties,
@@ -1079,6 +1082,7 @@ class RTCConnector {
       EventCategory.session,
       mode: 'webrtc',
       participatorId: clientId ?? '',
+      userId: userId,
       properties: properties,
     );
   }
