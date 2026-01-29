@@ -149,22 +149,29 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
 
     V3NetworkStatusDetector.ensureInitialized();
 
+    final audioSwitchManager = createAudioSwitchManager();
+    final webRTCHelper = WebRTCHelper();
     final appConfig = AppConfig(
       settings: settings,
       profileStore: profileStore,
       appName: packageInfo.appName,
       appVersion: packageInfo.version,
     );
+    final channelProvider = ChannelProvider(
+      baseApiUrl: settings.baseApiUrl,
+      profileStore: profileStore,
+      platformDirectPort: AppConfig.platformDirectPort,
+      webTransportPort: AppConfig.webTransportPort,
+      audioSwitchManager: audioSwitchManager,
+      webRTCHelper: webRTCHelper,
+    );
 
     runApp(MultiProvider(
       providers: [
         Provider<AppConfig>.value(value: appConfig),
-        Provider<AudioSwitchManager>(
-          create: (context) => createAudioSwitchManager(),
-        ),
-        Provider<WebRTCHelper>(
-          create: (context) => WebRTCHelper(),
-        ),
+        Provider<AudioSwitchManager>.value(value: audioSwitchManager),
+        Provider<WebRTCHelper>.value(value: webRTCHelper),
+        ChangeNotifierProvider<ChannelProvider>.value(value: channelProvider),
       ],
       child: Tokens(
         tokens: DefaultTokens(),
@@ -242,7 +249,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(value: DemoProvider()),
         ChangeNotifierProvider.value(value: V3DemoProvider()),
-        ChangeNotifierProvider.value(value: ChannelProvider(context)),
         ChangeNotifierProvider.value(value: DeviceListProvider()),
         ChangeNotifierProvider.value(value: SettingsProvider()),
         ChangeNotifierProvider.value(value: AnnotationModel()),

@@ -12,7 +12,6 @@ import 'package:display_cast_flutter/model/network_diagnostic.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
-import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
@@ -33,7 +32,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 // convert ChannelConnectorError to ChannelConnectError
@@ -72,30 +70,31 @@ final ValueNotifier<int> countHoursValue = ValueNotifier(0);
 final ValueNotifier<bool> presentingState = ValueNotifier(true);
 
 class ChannelProvider extends ChangeNotifier {
-  ChannelProvider(BuildContext context) {
-    final appConfig = context.read<AppConfig>();
-    _baseApiUrl = appConfig.settings.baseApiUrl;
-    _profileStore = appConfig.profileStore;
-    platformDirectPort = AppConfig.platformDirectPort;
-    webTransportPort = AppConfig.webTransportPort;
+  ChannelProvider({
+    required String baseApiUrl,
+    required ProfileStore profileStore,
+    required this.platformDirectPort,
+    required this.webTransportPort,
+    required AudioSwitchManager audioSwitchManager,
+    required WebRTCHelper webRTCHelper,
+  })  : _baseApiUrl = baseApiUrl,
+        _profileStore = profileStore,
+        _audioSwitchManager = audioSwitchManager,
+        _webRTCHelper = webRTCHelper;
 
-    _audioSwitchManager = context.read<AudioSwitchManager>();
-    _webRTCHelper = context.read<WebRTCHelper>();
-  }
-
-  late WebRTCHelper _webRTCHelper;
+  final WebRTCHelper _webRTCHelper;
   Channel? _channel;
   DisplayChannelConnector? _channelConnector;
   RemoteScreenClient? _remoteScreenClient;
 
   String? _clientId;
   var _sessionId = const Uuid().v4();
-  late int platformDirectPort;
-  late int webTransportPort;
-  late AudioSwitchManager _audioSwitchManager;
+  final int platformDirectPort;
+  final int webTransportPort;
+  final AudioSwitchManager _audioSwitchManager;
   PresentStateProvider? _presentStateProvider;
-  late String _baseApiUrl = '';
-  late ProfileStore _profileStore;
+  final String _baseApiUrl;
+  final ProfileStore _profileStore;
 
   DisplayCode? displayCode;
   String? otp;
