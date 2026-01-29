@@ -77,10 +77,12 @@ class ChannelProvider extends ChangeNotifier {
     required this.webTransportPort,
     required AudioSwitchManager audioSwitchManager,
     required WebRTCHelper webRTCHelper,
+    required String userId,
   })  : _baseApiUrl = baseApiUrl,
         _profileStore = profileStore,
         _audioSwitchManager = audioSwitchManager,
-        _webRTCHelper = webRTCHelper;
+        _webRTCHelper = webRTCHelper,
+        _userId = userId;
 
   final WebRTCHelper _webRTCHelper;
   Channel? _channel;
@@ -95,6 +97,7 @@ class ChannelProvider extends ChangeNotifier {
   PresentStateProvider? _presentStateProvider;
   final String _baseApiUrl;
   final ProfileStore _profileStore;
+  final String _userId;
 
   DisplayCode? displayCode;
   String? otp;
@@ -811,6 +814,8 @@ class ChannelProvider extends ChangeNotifier {
         break;
       case null:
         break;
+      default:
+        break;
     }
   }
 
@@ -824,6 +829,7 @@ class ChannelProvider extends ChangeNotifier {
     }
     msg.platform = getPlatformName();
     msg.isConnectedViaModeratorMode = _moderatorStatus;
+    msg.userId = _userId;
 
     _channel?.send(msg);
   }
