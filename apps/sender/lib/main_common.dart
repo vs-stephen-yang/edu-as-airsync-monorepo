@@ -164,6 +164,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       webTransportPort: AppConfig.webTransportPort,
       audioSwitchManager: audioSwitchManager,
       webRTCHelper: webRTCHelper,
+      userId: AppInstanceCreate().instanceId,
     );
 
     runApp(MultiProvider(
