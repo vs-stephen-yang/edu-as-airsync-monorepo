@@ -489,8 +489,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_broadcast_boards": MessageLookupByLibrary.simpleMessage(
       "展開廣播到大屏選單",
     ),
+    "v3_lbl_settings_broadcast_connect": MessageLookupByLibrary.simpleMessage(
+      "連線",
+    ),
+    "v3_lbl_settings_broadcast_connecting":
+        MessageLookupByLibrary.simpleMessage("正在連線"),
+    "v3_lbl_settings_broadcast_device_favorite":
+        MessageLookupByLibrary.simpleMessage("收藏"),
+    "v3_lbl_settings_broadcast_device_remove":
+        MessageLookupByLibrary.simpleMessage("移除裝置"),
     "v3_lbl_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "展開螢幕廣播選單",
+    ),
+    "v3_lbl_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "使用IP搜尋大屏",
     ),
     "v3_lbl_settings_broadcast_to_display_group":
         MessageLookupByLibrary.simpleMessage("展開螢幕群組選單"),
@@ -546,6 +558,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_settings_invite_group_item": MessageLookupByLibrary.simpleMessage(
       "選擇 %s",
     ),
+    "v3_lbl_settings_ip_add": MessageLookupByLibrary.simpleMessage("加入IP"),
+    "v3_lbl_settings_ip_clear": MessageLookupByLibrary.simpleMessage("清除"),
     "v3_lbl_settings_knowledge_base": MessageLookupByLibrary.simpleMessage(
       "知識庫",
     ),
@@ -610,6 +624,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_streaming_shortcut_miracast_toggle":
         MessageLookupByLibrary.simpleMessage("Miracast開關"),
+    "v3_lbl_streaming_shortcut_move": MessageLookupByLibrary.simpleMessage(
+      "移動",
+    ),
     "v3_lbl_streaming_view_expand": MessageLookupByLibrary.simpleMessage(
       "展開分享畫面",
     ),
@@ -672,6 +689,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_moderator_mode": MessageLookupByLibrary.simpleMessage("主持人模式"),
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage("加入"),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage("結束"),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage("重試"),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("停止廣播"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "投影中斷，請重新取得投影權限",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage("投影中"),
     "v3_participant_item_connected": MessageLookupByLibrary.simpleMessage(
       "已連線",
@@ -736,6 +760,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_devices": MessageLookupByLibrary.simpleMessage(
       "傳送端裝置",
+    ),
+    "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
+      "使用IP搜尋大屏",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "請輸入合法的IP位址",
+    ),
+    "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
+      "輸入IP位址",
+    ),
+    "v3_settings_broadcast_not_find": MessageLookupByLibrary.simpleMessage(
+      "無法找到的IP",
     ),
     "v3_settings_broadcast_screen_energy_saving":
         MessageLookupByLibrary.simpleMessage("建議關閉螢幕節能設定，避免螢幕廣播非預期中斷"),
@@ -920,6 +956,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "影像擷取失敗",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "繼續等待",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("關閉"),
     "v3_zero_fps_failed_to_repair_message":

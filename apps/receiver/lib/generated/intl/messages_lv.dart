@@ -853,6 +853,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "pievienojās sesijai",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Beigas",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Mēģināt atkārtoti",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Apraides apturēšana"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Kastings tika pārtraukts. Lūdzu, atkārtoti iegūstiet apraides atļauju.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Pārraide",
     ),
@@ -943,6 +954,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Atrast dēļus pēc IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Lūdzu, ievadiet derīgu IP adresi.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Ievadiet IP adresi",
@@ -1178,6 +1192,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Neizdevās uzņemt ekrānuzņēmumu",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Turpiniet gaidīt",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Aizvērt"),
     "v3_zero_fps_failed_to_repair_message":

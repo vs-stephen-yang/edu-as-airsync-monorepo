@@ -421,5 +421,11 @@
   "v3_lbl_settings_broadcast_device_favorite": "izlase",
   "v3_lbl_settings_broadcast_device_remove": "noņemt ierīci",
   "v3_lbl_settings_broadcast_connect": "Savienot",
-  "v3_lbl_settings_broadcast_connecting": "Savienojas"
+  "v3_lbl_settings_broadcast_connecting": "Savienojas",
+  "v3_overlay_retry_dialog_title": "Kastings tika pārtraukts. Lūdzu, atkārtoti iegūstiet apraides atļauju.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Apraides apturēšana",
+  "v3_overlay_retry_dialog_retry": "Mēģināt atkārtoti",
+  "v3_overlay_retry_dialog_end": "Beigas",
+  "v3_zero_fps_capture_failed_wait": "Turpiniet gaidīt",
+  "v3_settings_broadcast_ip_error": "Lūdzu, ievadiet derīgu IP adresi."
 }

@@ -409,5 +409,22 @@
   "v3_zero_fps_restart_failed": "重新傳輸影像失敗",
   "v3_zero_fps_restarted_Successfully": "重新傳輸影像成功",
   "v3_zero_fps_prompt_title": "重新傳輸影像成功",
-  "v3_zero_fps_prompt_message": "無法成功截取螢幕畫面，是否重試或停止截取螢幕畫面？"
+  "v3_zero_fps_prompt_message": "無法成功截取螢幕畫面，是否重試或停止截取螢幕畫面？",
+  "v3_lbl_streaming_shortcut_move": "移動",
+  "v3_settings_broadcast_ip": "使用IP搜尋大屏",
+  "v3_settings_broadcast_ip_hint": "輸入IP位址",
+  "v3_lbl_settings_ip_clear": "清除",
+  "v3_lbl_settings_ip_add": "加入IP",
+  "v3_settings_broadcast_not_find": "無法找到的IP",
+  "v3_lbl_settings_broadcast_ip_hint": "使用IP搜尋大屏",
+  "v3_lbl_settings_broadcast_device_favorite": "收藏",
+  "v3_lbl_settings_broadcast_device_remove": "移除裝置",
+  "v3_lbl_settings_broadcast_connect": "連線",
+  "v3_lbl_settings_broadcast_connecting": "正在連線",
+  "v3_overlay_retry_dialog_title": "投影中斷，請重新取得投影權限",
+  "v3_overlay_retry_dialog_stop_broadcast": "停止廣播",
+  "v3_overlay_retry_dialog_retry": "重試",
+  "v3_overlay_retry_dialog_end": "結束",
+  "v3_zero_fps_capture_failed_wait": "繼續等待",
+  "v3_settings_broadcast_ip_error": "請輸入合法的IP位址"
 }

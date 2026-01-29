@@ -426,5 +426,6 @@
   "v3_overlay_retry_dialog_stop_broadcast": "ブロードキャストを停止",
   "v3_overlay_retry_dialog_retry": "リトライ",
   "v3_overlay_retry_dialog_end": "終了",
-  "v3_zero_fps_capture_failed_wait": "待機を継続"
+  "v3_zero_fps_capture_failed_wait": "待機を継続",
+  "v3_settings_broadcast_ip_error": "有効な IP アドレスを入力してください。"
 }

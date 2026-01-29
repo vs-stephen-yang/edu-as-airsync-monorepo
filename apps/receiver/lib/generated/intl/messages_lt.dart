@@ -861,6 +861,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "prisijungė prie sesijos",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Pabaiga",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Bandyti dar kartą",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Sustabdyti transliaciją"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Aktorių atranka nutraukta. Prašome iš naujo gauti perdavimo teises.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Siuntimas",
     ),
@@ -954,6 +965,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Rasti lentas pagal IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Įveskite galiojantį IP adresą.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Įveskite IP adresą",
@@ -1190,6 +1204,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Nepavyko padaryti ekrano kopijos",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Laukti",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Uždaryti"),
     "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(

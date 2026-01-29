@@ -832,6 +832,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       " oturuma katıldı",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Bitir",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Tekrar Deneyin",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Yayını durdur"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Yayın kesildi. Lütfen yayın iznini yeniden alın.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Yayınlanıyor",
     ),
@@ -919,6 +930,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "IP ile Panoları Bul",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Lütfen geçerli bir IP adresi girin.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "IP Adresi Girin",
@@ -1153,6 +1167,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Ekran Görüntüsü Alma Başarısız",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Beklemeye devam edin",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Kapat"),
     "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(
