@@ -14,8 +14,6 @@ pr: none
 
 pool:
   name: "AirSync macOS Pool"
-  demands:
-    - Agent.Name -equals Rainbow
 
 variables:
   - name: Flutter.Bin
