@@ -490,7 +490,8 @@ class ChannelProvider extends ChangeNotifier
         'Network connectivity has changed to $result from $_lastConnectivityResult');
     _lastConnectivityResult = result;
 
-    trackTrace('network_connectivity', target: result.name);
+    AppAnalytics.instance
+        .setGlobalProperty('network_connectivity', result.name);
 
     if (result == ConnectivityResult.none) {
       _handleNoConnectivity();
