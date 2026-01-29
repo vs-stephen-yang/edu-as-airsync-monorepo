@@ -56,10 +56,12 @@ class AppAmplitude {
 
   Future<void> trackEvent(
     String name, {
+    String? userId,
     Map<String, dynamic> properties = const <String, dynamic>{},
   }) async {
     await _resolveImplement().trackEvent(
       name,
+      userId: userId,
       properties: properties,
     );
   }
@@ -80,6 +82,7 @@ abstract class AppAmplitudeImplement {
 
   Future<void> trackEvent(
     String name, {
+    String? userId,
     Map<String, dynamic> properties = const <String, dynamic>{},
   });
 }
