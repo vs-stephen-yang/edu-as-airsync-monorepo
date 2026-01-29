@@ -421,8 +421,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Habilitar retroalimentación táctil",
     ),
-        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Cerrar"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Cerrar"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Accesibilidad",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -585,8 +585,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "La compartición de pantalla se ha detenido.\nTiempo total de compartición %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Instalar"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Instalar"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("El modo moderador está activado"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("Aceptar"),

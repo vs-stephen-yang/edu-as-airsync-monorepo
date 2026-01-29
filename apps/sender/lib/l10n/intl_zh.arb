@@ -160,6 +160,7 @@
   "v3_setting_knowledge_base": "知識庫",
   "v3_setting_check_update": "檢查更新",
   "v3_setting_privacy_policy": "隱私政策",
+  "v3_setting_privacy_policy_description": "ViewSonic 致力於保護您的個人隱私。以下隱私權政策",
   "v3_setting_open_source_license": "開源許可證",
   "v3_setting_software_update": "軟體更新",
   "v3_setting_software_update_force_description": "有新版本軟體可供更新，請立即更新",
@@ -265,5 +266,6 @@
   "v3_device_list_next": "下一步",
   "v3_present_joined_before_moderator_on": "已開啟主持人模式",
   "v3_present_joined_before_moderator_on_description": "已開啟主持人模式，請重新連線",
-  "v3_present_joined_before_moderator_on_action": "確定"
+  "v3_present_joined_before_moderator_on_action": "確定",
+  "v3_lbl_v3_exit_close": "關閉"
 }

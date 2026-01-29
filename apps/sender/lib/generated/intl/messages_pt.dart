@@ -581,8 +581,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Compartilhamento de tela foi interrompido.\nTempo total de compartilhamento %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Instalar"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Instalar"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Modo Moderador está Ativado"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

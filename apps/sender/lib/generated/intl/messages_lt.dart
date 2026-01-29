@@ -583,8 +583,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekrano bendrinimas sustabdytas %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Diegti"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Diegti"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatorius įjungtas"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("Gerai"),

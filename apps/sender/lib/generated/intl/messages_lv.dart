@@ -575,8 +575,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekrāna kopīgošana ir apturēta.  \nKopējais kopīgošanas laiks: %s.  ",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Instalēt"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Instalēt"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatora režīms ir ieslēgts"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("Labi"),
