@@ -94,6 +94,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       apiKey: settings.appAmplitudeKey,
       instanceName: settings.envName,
       deviceId: AppInstanceCreate().instanceId,
+      userId: AppInstanceCreate().instanceId,
       appVersion: packageInfo.version,
       clientDeviceInfo: await ClientDeviceInfo.fetch(),
     );
