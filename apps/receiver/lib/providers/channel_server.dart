@@ -203,13 +203,13 @@ class ChannelServer {
     _tunnelServer?.onTunnelConnected = () {
       log.info('Tunnel channel connected');
       _changeTunnelStatus(TunnelStatus.connected);
-      trackTrace('tunnel_connected');
+       AppAnalytics.instance.setGlobalProperty('tunnel_state', 'connected');
     };
 
     _tunnelServer?.onTunnelConnecting = () {
       log.info('Tunnel channel connecting');
       _changeTunnelStatus(TunnelStatus.connecting);
-      trackTrace('tunnel_connecting');
+      AppAnalytics.instance.setGlobalProperty('tunnel_state', 'connecting');
     };
 
     _tunnelServer?.reportTunnelConnectResult = reportTunnelConnectResult;

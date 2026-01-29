@@ -203,7 +203,7 @@ class RTCConnector {
   Future<void> _onChannelState(ChannelState state) async {
     log.info('[$clientId] Channel has changed state to $state');
 
-    _trackTrace('channel_state', target: state.name);
+    AppAnalytics.instance.setGlobalProperty('channel_state', state.name);
 
     switch (state) {
       case ChannelState.initialized:
