@@ -377,13 +377,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
       "Close update dialog",
     ),
-        "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
-          "Start annotation",
-        ),
-        "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
-          "Stop annotation",
-        ),
-        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
+      "Start annotation",
+    ),
+    "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
+      "Stop annotation",
+    ),
+    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
       "Pause off",
     ),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("Pause on"),
@@ -559,8 +559,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Screen sharing has stopped.\nTotal sharing time %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Install"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Install"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderator Mode is On"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

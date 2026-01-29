@@ -409,8 +409,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Włącz sterowanie dotykiem",
     ),
-        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Zamknąć"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Zamknąć"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Ułatwienia dostępu",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -575,8 +575,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Udostępnianie ekranu zostało zatrzymane.\nCałkowity czas udostępniania: %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Zainstaluj"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Zainstaluj"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Tryb moderatora jest włączony"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

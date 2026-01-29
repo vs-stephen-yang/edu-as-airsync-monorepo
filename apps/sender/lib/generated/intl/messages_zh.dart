@@ -301,6 +301,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_lbl_touch_back_off": MessageLookupByLibrary.simpleMessage("停用反控"),
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage("啟用反控"),
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("關閉"),
     "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("可訪問性"),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
       "接收端同意後即可開始分享畫面",
@@ -424,8 +425,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "已停止分享，共計使用 %s 分鐘",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("安裝"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("安裝"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("已開啟主持人模式"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("確定"),
@@ -528,6 +529,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "開源許可證",
     ),
     "v3_setting_privacy_policy": MessageLookupByLibrary.simpleMessage("隱私政策"),
+    "v3_setting_privacy_policy_description":
+        MessageLookupByLibrary.simpleMessage("ViewSonic 致力於保護您的個人隱私。以下隱私權政策"),
     "v3_setting_software_update": MessageLookupByLibrary.simpleMessage("軟體更新"),
     "v3_setting_software_update_deny_action":
         MessageLookupByLibrary.simpleMessage("稍後更新"),

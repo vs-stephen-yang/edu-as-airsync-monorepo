@@ -419,8 +419,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Activer le touchback",
     ),
-        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Fermer"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Fermer"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Accessibilité",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -585,8 +585,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Le partage d\'écran a été arrêté.\nTemps total de partage %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Installer"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Installer"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Le mode modérateur est activé"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

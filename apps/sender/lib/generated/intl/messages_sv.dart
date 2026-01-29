@@ -554,8 +554,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Skärmdelning har avslutats.\nTotal delningstid %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Installera"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Installera"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatorläget är på"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

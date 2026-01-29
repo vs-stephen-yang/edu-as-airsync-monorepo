@@ -470,8 +470,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "画面共有が停止しました。\n合計共有時間は %s です。",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("インストール"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("インストール"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("モデレーターモードが有効です"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

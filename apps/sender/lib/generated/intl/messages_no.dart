@@ -395,8 +395,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Aktiver touchback",
     ),
-        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Lukk"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Lukk"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Tilgjengelighet",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -547,8 +547,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Skjermdeling er stoppet. Total delingstid %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Installer"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Installer"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderator er på"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

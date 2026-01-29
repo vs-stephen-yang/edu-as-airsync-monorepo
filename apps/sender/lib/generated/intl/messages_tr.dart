@@ -557,8 +557,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekran paylaşımı durduruldu.\nToplam paylaşım süresi %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Yükle"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Yükle"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderatör açık"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("TAMAM"),

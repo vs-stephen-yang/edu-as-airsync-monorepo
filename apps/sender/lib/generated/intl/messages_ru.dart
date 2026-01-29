@@ -415,8 +415,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_touch_back_on": MessageLookupByLibrary.simpleMessage(
       "Включить обратное касание",
     ),
-        "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Закрыть"),
-        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+    "v3_lbl_v3_exit_close": MessageLookupByLibrary.simpleMessage("Закрыть"),
+    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Доступность",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
@@ -581,8 +581,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Демонстрация экрана остановлена.\nОбщее время демонстрации %s.",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Установить"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Установить"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Режим модератора включён"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),

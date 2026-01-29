@@ -563,8 +563,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ekraani jagamine on peatatud.  \nKogu jagamisaeg %s.  ",
     ),
     "v3_present_idle_download_virtual_audio_device":
-            MessageLookupByLibrary.simpleMessage("Installi"),
-        "v3_present_joined_before_moderator_on":
+        MessageLookupByLibrary.simpleMessage("Installi"),
+    "v3_present_joined_before_moderator_on":
         MessageLookupByLibrary.simpleMessage("Moderaator on sisse lülitatud"),
     "v3_present_joined_before_moderator_on_action":
         MessageLookupByLibrary.simpleMessage("OK"),
