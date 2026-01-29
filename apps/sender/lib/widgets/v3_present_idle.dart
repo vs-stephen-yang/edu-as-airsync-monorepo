@@ -273,7 +273,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
               alignment: Alignment.center,
               // To avoid misinterpreting the hyphen (“-”), use plain text instead.
               child: Text(
-                'v${AppConfig.of(context)?.appVersion}',
+                'v${context.read<AppConfig>().appVersion}',
                 style: TextStyle(
                   fontSize: 14.0,
                   color: context.tokens.color.vsdswColorOnSurfaceVariant,

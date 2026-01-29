@@ -149,8 +149,16 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
 
     V3NetworkStatusDetector.ensureInitialized();
 
+    final appConfig = AppConfig(
+      settings: settings,
+      profileStore: profileStore,
+      appName: packageInfo.appName,
+      appVersion: packageInfo.version,
+    );
+
     runApp(MultiProvider(
       providers: [
+        Provider<AppConfig>.value(value: appConfig),
         Provider<AudioSwitchManager>(
           create: (context) => createAudioSwitchManager(),
         ),
@@ -158,15 +166,9 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
           create: (context) => WebRTCHelper(),
         ),
       ],
-      child: AppConfig(
-        settings: settings,
-        profileStore: profileStore,
-        appName: packageInfo.appName,
-        appVersion: packageInfo.version,
-        child: Tokens(
-          tokens: DefaultTokens(),
-          child: const MyApp(),
-        ),
+      child: Tokens(
+        tokens: DefaultTokens(),
+        child: const MyApp(),
       ),
     ));
 
@@ -260,7 +262,7 @@ class MyApp extends StatelessWidget {
                           textScaler: textSizeProvider.platformTextScale),
                       child: child!);
 
-                  if (AppConfig.of(context)?.settings.appA11yDebug ?? false) {
+                  if (context.read<AppConfig>().settings.appA11yDebug) {
                     return AccessibilityTools(child: c);
                   }
 

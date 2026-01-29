@@ -73,10 +73,11 @@ final ValueNotifier<bool> presentingState = ValueNotifier(true);
 
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
-    _baseApiUrl = AppConfig.of(context)!.settings.baseApiUrl;
-    _profileStore = AppConfig.of(context)!.profileStore;
-    platformDirectPort = AppConfig.of(context)!.platformDirectPort;
-    webTransportPort = AppConfig.of(context)!.webTransportPort;
+    final appConfig = context.read<AppConfig>();
+    _baseApiUrl = appConfig.settings.baseApiUrl;
+    _profileStore = appConfig.profileStore;
+    platformDirectPort = AppConfig.platformDirectPort;
+    webTransportPort = AppConfig.webTransportPort;
 
     _audioSwitchManager = context.read<AudioSwitchManager>();
     _webRTCHelper = context.read<WebRTCHelper>();

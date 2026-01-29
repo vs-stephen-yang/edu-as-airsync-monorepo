@@ -40,7 +40,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       unawaited(_deviceListProvider.startDiscovery(
-          AppConfig.of(context)?.settings.versionPostfix ?? ''));
+          context.read<AppConfig>().settings.versionPostfix));
     });
     _presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);

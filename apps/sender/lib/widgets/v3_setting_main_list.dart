@@ -113,9 +113,9 @@ class V3SettingMainList extends StatelessWidget {
         V3AutoHyphenatingText(
           VersionUtil.isOpenVersion
               ? S.of(context).v3_setting_app_version_independent(
-                  DateTime.now().year, AppConfig.of(context)?.appVersion)
+                  DateTime.now().year, context.read<AppConfig>().appVersion)
               : S.of(context).v3_setting_app_version(
-                  DateTime.now().year, AppConfig.of(context)?.appVersion),
+                  DateTime.now().year, context.read<AppConfig>().appVersion),
           textAlign: TextAlign.left,
           style: TextStyle(
             fontSize: isAppMode ? 14 : 10,
@@ -165,13 +165,10 @@ class V3SettingMainList extends StatelessWidget {
           trackEvent('click_news', EventCategory.setting);
           PrefLanguageProvider languageProvider =
               Provider.of<PrefLanguageProvider>(context, listen: false);
-          var url = (languageProvider.language == '繁體中文'
-                  ? AppConfig.of(context)?.zhKnowledgeBaseUrl
-                  : AppConfig.of(context)?.enKnowledgeBaseUrl) ??
-              '';
-          if (url.isNotEmpty) {
-            await launchUrl(Uri.parse(url));
-          }
+          var url = languageProvider.language == '繁體中文'
+                  ? context.read<AppConfig>().zhKnowledgeBaseUrl
+                  : context.read<AppConfig>().enKnowledgeBaseUrl;
+          await launchUrl(Uri.parse(url));
         },
       ),
     );
@@ -204,7 +201,7 @@ class V3SettingMainList extends StatelessWidget {
         () {
           trackEvent('click_feedback', EventCategory.setting);
           launchUrl(
-            Uri.parse(AppConfig.of(context)!.feedbackUrl),
+            Uri.parse(context.read<AppConfig>().feedbackUrl),
           );
         },
       ),

@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum CompareVersionResult { forceUpgrade, userChoose, noUpdate, noNetwork }
@@ -53,9 +54,8 @@ class V3UpdateManager {
 
   Future<void> checkUpdateVersion(BuildContext context,
       Function(CompareVersionResult) onUpdateResult) async {
-    String version = AppConfig.of(context)?.appVersion;
-    String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
-    if (api == null) return onUpdateResult(CompareVersionResult.noUpdate);
+    String version = context.read<AppConfig>().appVersion;
+    String api = context.read<AppConfig>().settings.appUpdateVersionEndpoint;
 
     final result = await getVersion(api, version);
     onUpdateResult(result);
@@ -365,13 +365,11 @@ class V3UpdateManager {
                       }
                       if (Platform.isMacOS) {
                         if (VersionUtil.isOpenVersion) {
-                          String? feedURL = AppConfig.of(context)
-                              ?.settings
+                          String feedURL = context.read<AppConfig>()
+                              .settings
                               .appUpdateMacAppcastUrl;
-                          if (feedURL != null) {
-                            await autoUpdater.setFeedURL(feedURL);
-                            await autoUpdater.checkForUpdates();
-                          }
+                          await autoUpdater.setFeedURL(feedURL);
+                          await autoUpdater.checkForUpdates();
                         } else {
                           unawaited(launchUrl(Uri.parse(
                               'macappstore://apps.apple.com/app/airsync-sender/id6453759985')));

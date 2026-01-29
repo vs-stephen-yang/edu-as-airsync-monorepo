@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/widgets/v3_web_download_app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class V3WebDownload extends StatelessWidget {
@@ -123,7 +124,7 @@ class V3WebDownload extends StatelessWidget {
                             html.window.navigator.userAgent.toLowerCase();
                         if (userAgent.contains("mac os")) {
                           launchUrl(Uri.parse(
-                              AppConfig.of(context)!.settings.appStoreUrl));
+                              context.read<AppConfig>().settings.appStoreUrl));
                         } else {
                           launchUrl(Uri.parse(
                               macLink.replaceAll("macappstore", "https")));

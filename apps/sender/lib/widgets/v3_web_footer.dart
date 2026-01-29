@@ -85,14 +85,10 @@ class V3WebFooter extends StatelessWidget {
                         link: true,
                         child: TextButton(
                           onPressed: () {
-                            var url = (languageProvider.language == '繁體中文'
-                                    ? AppConfig.of(context)?.zhKnowledgeBaseUrl
-                                    : AppConfig.of(context)
-                                        ?.enKnowledgeBaseUrl) ??
-                                '';
-                            if (url.isNotEmpty) {
-                              launchUrl(Uri.parse(url));
-                            }
+                            var url = languageProvider.language == '繁體中文'
+                                    ? context.read<AppConfig>().zhKnowledgeBaseUrl
+                                    : context.read<AppConfig>().enKnowledgeBaseUrl;
+                            launchUrl(Uri.parse(url));
                           },
                           isSemanticButton: false,
                           child: V3AutoHyphenatingText(
