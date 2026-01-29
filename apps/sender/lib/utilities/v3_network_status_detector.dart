@@ -39,7 +39,8 @@ class V3NetworkStatusDetector {
     _connectivityResult = result;
 
     // Track network connectivity
-    trackTrace('network_connectivity', properties: {'target': result.name});
+    AppAnalytics.instance
+        .setGlobalProperty('network_connectivity', result.name);
   }
 
   bool isConnected() {

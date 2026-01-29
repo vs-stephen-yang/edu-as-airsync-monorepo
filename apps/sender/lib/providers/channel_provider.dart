@@ -536,9 +536,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void onChannelStateChange(ChannelState state) {
     log.info('Channel state: ${state.name} ${_channel?.closeReason?.code}');
-    trackTrace('channel_state', properties: {
-      'target': state.name,
-    });
+    AppAnalytics.instance.setGlobalProperty('channel_state', state.name);
 
     switch (state) {
       case ChannelState.initialized:
