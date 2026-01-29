@@ -572,7 +572,7 @@ class ResponsiveHeader extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     launchUrl(
-                      Uri.parse(AppConfig.of(context)!.feedbackUrl),
+                      Uri.parse(context.read<AppConfig>().feedbackUrl),
                     );
                   },
                   borderRadius: BorderRadius.circular(8),

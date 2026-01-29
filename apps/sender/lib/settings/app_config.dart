@@ -1,15 +1,12 @@
 import 'package:display_cast_flutter/model/profile.dart';
-import 'package:flutter/material.dart';
 
-class AppConfig extends InheritedWidget {
-  const AppConfig(
-      {super.key,
-      required this.settings,
-      required this.profileStore,
-      required String appName,
-      required String appVersion,
-      required super.child})
-      : _appName = appName,
+class AppConfig {
+  AppConfig({
+    required this.settings,
+    required this.profileStore,
+    required String appName,
+    required String appVersion,
+  })  : _appName = appName,
         _appVersion = appVersion;
 
   final ConfigSettings settings;
@@ -20,16 +17,12 @@ class AppConfig extends InheritedWidget {
 
   final ProfileStore profileStore;
 
-  get appName => _appName;
+  String get appName => _appName;
 
-  get appVersion => _appVersion + settings.versionPostfix;
+  String get appVersion => _appVersion + settings.versionPostfix;
 
-  static AppConfig? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AppConfig>();
-  }
-
-  final int platformDirectPort = 5100;
-  final int webTransportPort = 8001;
+  static const int platformDirectPort = 5100;
+  static const int webTransportPort = 8001;
 
   final String feedbackUrl = 'https://forms.office.com/r/HsuEUMPCU2';
 
@@ -37,9 +30,6 @@ class AppConfig extends InheritedWidget {
       'https://www.viewsonic.com/solution/kb/en_US/airsync-overview/airsync';
   final String zhKnowledgeBaseUrl =
       'https://www.viewsonic.com/solution/kb/t_CN/airsync-overview/airsync';
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }
 
 class SentryConfig {

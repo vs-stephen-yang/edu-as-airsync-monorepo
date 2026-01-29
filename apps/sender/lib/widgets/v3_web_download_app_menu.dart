@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class V3DownloadAppMenu extends StatelessWidget {
@@ -58,7 +59,7 @@ class V3DownloadAppMenu extends StatelessWidget {
                             ),
                           ),
                           QrImageView(
-                            data: AppConfig.of(context)!.settings.storeMobileUrl,
+                            data: context.read<AppConfig>().settings.storeMobileUrl,
                             version: QrVersions.auto,
                             size: 144,
                           ),

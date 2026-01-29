@@ -14,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class DebugSwitch extends StatefulWidget {
   const DebugSwitch({super.key});
@@ -132,7 +133,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _isLogVerbose = isLogLevelVerbose();
     if (!_initialized) {
       final Profile profile =
-          AppConfig.of(context)!.profileStore.getSelectedProfile();
+          context.read<AppConfig>().profileStore.getSelectedProfile();
       final Preset preset = profile.presets.first;
       _isVideoQualityFirst =
           profile.name == ProfileStore.videoQualityFirstProfile;
