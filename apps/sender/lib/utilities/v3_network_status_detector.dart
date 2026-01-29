@@ -25,9 +25,10 @@ class V3NetworkStatusDetector {
   ConnectivityResult get status => _connectivityResult;
 
   Future<void> _initNetworkStatus() async {
-    final result = await _connectivity.checkConnectivity();
-    _connectivityResult = result;
     _connectivity.onConnectivityChanged.listen(_onConnectivityChange);
+
+    final result = await _connectivity.checkConnectivity();
+    _onConnectivityChange(result);
   }
 
   void _onConnectivityChange(ConnectivityResult result) {
