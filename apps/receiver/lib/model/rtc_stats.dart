@@ -132,6 +132,7 @@ class RtcVideoInboundStats {
   final double? decodeTime;
   final double? totalInterFrameDelayAvg;
   final double? totalAssemblyTimeAvg;
+  final double? totalProcessingDelayAvg;
   final double? jitterBufferDelayAvg;
   final double? audioJitterBufferDelayAvg;
   final double? qpSumAvg;
@@ -244,6 +245,7 @@ class RtcVideoInboundStats {
     this.decodeTime,
     this.totalInterFrameDelayAvg,
     this.totalAssemblyTimeAvg,
+    this.totalProcessingDelayAvg,
     this.jitterBufferDelayAvg,
     this.audioJitterBufferDelayAvg,
     this.qpSumAvg,
