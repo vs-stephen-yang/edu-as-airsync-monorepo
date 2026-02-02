@@ -26,6 +26,7 @@ import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
+import 'package:display_cast_flutter/utilities/app_amplify_firehose.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager_factory.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
@@ -85,6 +86,15 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     await AppPreferences.ensureInitialized();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppInstanceCreate.ensureInitialized();
+    try {
+      await AppAmplifyFirehose.instance.ensureConfigured(
+        region: settings.amplifyRegion,
+        identityPoolId: settings.amplifyIdentityPoolId,
+        streamName: settings.firehoseStreamName,
+      );
+    } catch (e, st) {
+      log.warning('Amplify Firehose initialization failed', e, st);
+    }
 
     if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {
       await FlutterVirtualDisplay.instance.initialize();
