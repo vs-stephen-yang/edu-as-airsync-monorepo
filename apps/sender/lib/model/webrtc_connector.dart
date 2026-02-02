@@ -54,6 +54,7 @@ class _EmaState {
 
 class WebRTCConnector {
   WebRTCConnector({
+    required String sessionId,
     required this.preset,
     required this.systemAudio,
     required this.autoVirtualDisplay,
@@ -63,7 +64,7 @@ class WebRTCConnector {
     required this.onStopPresent,
     required this.onTouchEvenWhenPaused,
     required this.reconnectStateNotifier,
-  }) {
+  }) : _sessionId = sessionId {
     if (!kIsWeb && Platform.isAndroid) {
       _flutterInputInjectionPlugin.initialize(
           inputInjectionMethod: InputInjectionMethod.accessibilityService);
@@ -79,6 +80,8 @@ class WebRTCConnector {
   void Function(bool isPause, bool isStop) onTouchEvenWhenPaused;
 
   final AudioSwitchManager audioSwitchManager;
+
+  final String _sessionId;
 
   dynamic _deviceId;
   int _screenId = 0;
@@ -634,23 +637,23 @@ class WebRTCConnector {
     }
   }
 
-  void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
+  void pause({Rect? pauseBtnRect, Rect? stopBtnRect}) {
     _isPaused = true; //
     _pauseButtonRect = pauseBtnRect;
     _stopButtonRect = stopBtnRect;
     // Sends a control message to remotely pause rendering.
     _sendControlMessage(
-      PausePresentMessage(sessionId),
+      PausePresentMessage(_sessionId),
     );
   }
 
-  void resume(String sessionId) {
+  void resume() {
     _isPaused = false; // Clear pause state
     _pauseButtonRect = null; // Clear button position info
     _stopButtonRect = null;
     // Sends a control message to remotely resume rendering.
     _sendControlMessage(
-      ResumePresentMessage(sessionId),
+      ResumePresentMessage(_sessionId),
     );
   }
 
