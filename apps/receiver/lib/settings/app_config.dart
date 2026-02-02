@@ -63,4 +63,9 @@ abstract class ConfigSettings {
 
   // Accessibility. For development only.
   late bool? appA11yDebug;
+
+  // Amplify Firehose
+  late String amplifyRegion;
+  late String amplifyIdentityPoolId;
+  late String firehoseStreamName;
 }

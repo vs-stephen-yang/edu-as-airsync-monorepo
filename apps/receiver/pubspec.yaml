@@ -92,6 +92,12 @@ dependencies:
   flutter_blue_plus: ^2.0.1
   dart_ping: ^9.0.1
 
+  # AWS Amplify Firehose
+  amplify_flutter: ^2.6.1
+  amplify_auth_cognito: ^2.6.1
+  aws_signature_v4: ^0.6.4
+  aws_common: ^0.7.6
+
   # ViewSonic plug-in
   app_ota_flutter:
     git:
