@@ -108,8 +108,11 @@ class V3PresentSelectScreen extends StatelessWidget {
           await FlutterVirtualDisplay.instance.stopVirtualDisplay();
         }
         SelectScreenDialog._timer?.cancel();
-        for (var element in selectScreenDialog!._subscriptions) {
-          await element.cancel();
+        SelectScreenDialog._timer = null;
+        if (selectScreenDialog != null) {
+          for (var element in selectScreenDialog!._subscriptions) {
+            await element.cancel();
+          }
         }
         // moderator mode
         if (provider.moderatorStatus) {
@@ -233,7 +236,7 @@ class SelectScreenDialog extends Dialog {
     required this.isVirtualAudioMissing,
   }) {
     Future.delayed(const Duration(milliseconds: 100), () {
-      _getSources(SourceType.Screen);
+      _getSources([SourceType.Screen, SourceType.Window]);
     });
 
     _subscriptions.add(desktopCapturer.onAdded.stream.listen((source) {
@@ -395,13 +398,6 @@ class SelectScreenDialog extends Dialog {
                                           }
                                         } else {
                                           _isExtensionSelected = false;
-                                          Future.delayed(
-                                              const Duration(milliseconds: 300),
-                                              () {
-                                            _getSources(index == 0
-                                                ? SourceType.Screen
-                                                : SourceType.Window);
-                                          });
                                         }
                                         switch (index) {
                                           case 0:
@@ -943,12 +939,12 @@ class SelectScreenDialog extends Dialog {
     }
   }
 
-  Future<void> _getSources(SourceType sourceType) async {
+  Future<void> _getSources(List<SourceType> sourceTypes) async {
     try {
-      var sources = await desktopCapturer.getSources(types: [sourceType]);
+      final sources = await desktopCapturer.getSources(types: sourceTypes);
       _timer?.cancel();
       _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        desktopCapturer.updateSources(types: [sourceType]);
+        desktopCapturer.updateSources(types: sourceTypes);
       });
       _sources.clear();
       for (var element in sources) {
