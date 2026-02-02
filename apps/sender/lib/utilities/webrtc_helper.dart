@@ -34,6 +34,7 @@ class WebRTCHelper {
   }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
+      sessionId: sessionId,
       preset: profileStore.getSelectedProfile().presets.first,
       systemAudio: systemAudio,
       autoVirtualDisplay: autoVirtualDisplay,
@@ -82,12 +83,12 @@ class WebRTCHelper {
   }
 
   void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
-    webRTCConnector?.pause(sessionId,
+    webRTCConnector?.pause(
         pauseBtnRect: pauseBtnRect, stopBtnRect: stopBtnRect);
   }
 
   void resume(String sessionId) {
-    webRTCConnector?.resume(sessionId);
+    webRTCConnector?.resume();
   }
 
   void sendStop(StopPresentMessage msg) {
