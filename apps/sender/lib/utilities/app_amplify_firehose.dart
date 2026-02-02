@@ -862,25 +862,25 @@ class AppAmplifyFirehose {
   /// Enqueues stats for sending.
   Future<void> enqueueStats({
     required FirehoseStreamType streamType,
-    required String instanceId,
-    required List<Map<String, dynamic>> stats,
+    required String userId,
+    required String sessionId,
+    required Map<String, dynamic> stats,
   }) async {
     final client = _client;
     if (client == null || stats.isEmpty) {
       return;
     }
 
-    final records = stats.map((stat) {
-      return FirehoseRecord.json({
-        ...stat,
-        'instanceid': instanceId,
-        'source_type': streamType.name,
-        'region': _region,
-        'timestamp': DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000,
-      });
-    }).toList();
+    final record = FirehoseRecord.json({
+      ...stats,
+      'user_id': userId,
+      'session_id': sessionId,
+      'source_type': streamType.name,
+      'region': _region,
+      'timestamp': DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000,
+    });
 
-    client.enqueueAll(records);
+    client.enqueueAll([record]);
   }
 
   /// Enqueues log messages for sending.
