@@ -67,4 +67,9 @@ abstract class ConfigSettings {
   late String storeMobileUrl;
 
   late bool appA11yDebug;
+
+  // Amplify Firehose
+  late String amplifyRegion;
+  late String amplifyIdentityPoolId;
+  late String firehoseStreamName;
 }

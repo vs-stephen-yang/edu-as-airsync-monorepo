@@ -59,7 +59,7 @@ dependencies:
   uuid: ^4.5.1
   url_launcher: ^6.3.0
   shared_preferences: ^2.3.2
-  device_info_plus: ^9.1.2
+  device_info_plus: ^10.1.2
   flutter_svg_provider: ^1.0.7
   flutter_window_close: ^1.2.0
   hive: ^2.0.4
@@ -135,6 +135,10 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin
       ref: release-3.8.5
+  amplify_flutter: 2.6.1
+  amplify_auth_cognito: 2.6.1
+  aws_signature_v4: ^0.6.4
+  aws_common: ^0.7.6
   # ViewSonic plug-in
 
 dependency_overrides:
