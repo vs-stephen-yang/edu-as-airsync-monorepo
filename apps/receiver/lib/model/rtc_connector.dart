@@ -6,12 +6,14 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_firehose.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/settings/channel_config.dart';
+import 'package:display_flutter/utilities/app_amplify_firehose.dart';
 import 'package:display_flutter/utility/app_amplitude.dart';
 import 'package:display_flutter/utility/app_analytics_util.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
@@ -387,6 +389,21 @@ class RTCConnector {
     _inboundPerSecondCollector.add(stats);
 
     onVideoStatsReport?.call(stats);
+
+    // Send stats to Firehose (fire-and-forget)
+    unawaited(_sendFirehoseStats(stats));
+  }
+
+  Future<void> _sendFirehoseStats(RtcVideoInboundStats stats) async {
+    final record = stats.toFirehoseJson();
+    if (record.isEmpty) return;
+
+    await AppAmplifyFirehose.instance.enqueueStats(
+      streamType: FirehoseStreamType.decoder,
+      userId: clientId ?? '',
+      sessionId: sessionId ?? '',
+      stats: record,
+    );
   }
 
   Future<void> _peerConnectionConnect(
@@ -761,6 +778,9 @@ class RTCConnector {
 
     if (_statsTimer != null) {
       _trackMetrics();
+
+      // Flush any pending Firehose stats before disconnecting
+      await AppAmplifyFirehose.instance.flush();
 
       _stopStatsTimer();
     }
