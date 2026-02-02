@@ -39,4 +39,14 @@ class StageConfig implements ConfigSettings {
 
   @override
   bool? appA11yDebug; // For development only. Keep null
+
+  @override
+  String amplifyRegion = 'ap-southeast-1';
+
+  @override
+  String amplifyIdentityPoolId =
+      'ap-southeast-1:c5eebe5a-f6cf-4cd3-9aa3-a98e85c01e3d';
+
+  @override
+  String firehoseStreamName = 'airsync-decoder-firehose-delivery-stream';
 }

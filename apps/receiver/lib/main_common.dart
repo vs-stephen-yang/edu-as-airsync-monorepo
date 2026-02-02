@@ -33,6 +33,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/utility/user_timer_manager.dart';
+import 'package:display_flutter/utilities/app_amplify_firehose.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
@@ -128,6 +129,17 @@ Future<void> commonEntry(ConfigSettings settings) async {
     );
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
+
+    // Initialize Amplify Firehose for WebRTC stats reporting
+    try {
+      await AppAmplifyFirehose.instance.ensureConfigured(
+        region: settings.amplifyRegion,
+        identityPoolId: settings.amplifyIdentityPoolId,
+        streamName: settings.firehoseStreamName,
+      );
+    } catch (e, st) {
+      log.warning('Amplify Firehose initialization failed', e, st);
+    }
 
     final appUpdateHelper = AppUpdateHelper();
 
