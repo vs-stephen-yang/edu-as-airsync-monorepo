@@ -72,7 +72,7 @@ extension RtcVideoInboundStatsFirehose on RtcVideoInboundStats {
 
       // Average fields - Decode/Processing
       'video-totalDecodeTime-Avg': decodeTime,
-      'video-totalProcessingDelay-Avg': null,
+      'video-totalProcessingDelay-Avg': totalProcessingDelayAvg,
       'video-totalAssemblyTime-Avg': totalAssemblyTimeAvg,
 
       // Average fields - Jitter buffer

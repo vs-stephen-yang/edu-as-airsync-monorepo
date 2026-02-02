@@ -341,6 +341,7 @@ class RtcStatsParser {
     double? qpSumAvg;
     double? totalAssemblyTimeAvg;
     double? totalInterFrameDelayAvg;
+    double? totalProcessingDelayAvg;
     double? jitterBufferDelayAvg;
     double? audioJitterBufferDelayAvg;
     double? decodeTimeAvg;
@@ -469,6 +470,13 @@ class RtcStatsParser {
       totalInterFrameDelayAvg = _avg(
         totalInterFrameDelay,
         previous.totalInterFrameDelay,
+        framesDecoded,
+        previous.framesDecoded,
+      );
+
+      totalProcessingDelayAvg = _avg(
+        totalProcessingDelay,
+        previous.totalProcessingDelay,
         framesDecoded,
         previous.framesDecoded,
       );
@@ -608,6 +616,7 @@ class RtcStatsParser {
       decodeTime: decodeTimeAvg,
       totalInterFrameDelayAvg: totalInterFrameDelayAvg,
       totalAssemblyTimeAvg: totalAssemblyTimeAvg,
+      totalProcessingDelayAvg: totalProcessingDelayAvg,
       jitterBufferDelayAvg: jitterBufferDelayAvg,
       audioJitterBufferDelayAvg: audioJitterBufferDelayAvg,
       qpSumAvg: qpSumAvg,
