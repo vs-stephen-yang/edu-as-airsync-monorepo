@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/webrtc_connector.dart';
+import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_channel/display_channel.dart';
@@ -34,6 +35,7 @@ class WebRTCHelper {
   }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
+      userId: AppInstanceCreate().instanceId,
       sessionId: sessionId,
       preset: profileStore.getSelectedProfile().presets.first,
       systemAudio: systemAudio,

@@ -16,7 +16,6 @@ import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_amplify_firehose.dart';
-import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/bounded_list.dart';
@@ -54,6 +53,7 @@ class _EmaState {
 
 class WebRTCConnector {
   WebRTCConnector({
+    required String userId,
     required String sessionId,
     required this.preset,
     required this.systemAudio,
@@ -64,7 +64,8 @@ class WebRTCConnector {
     required this.onStopPresent,
     required this.onTouchEvenWhenPaused,
     required this.reconnectStateNotifier,
-  }) : _sessionId = sessionId {
+  })  : _sessionId = sessionId,
+        _userId = userId {
     if (!kIsWeb && Platform.isAndroid) {
       _flutterInputInjectionPlugin.initialize(
           inputInjectionMethod: InputInjectionMethod.accessibilityService);
@@ -82,6 +83,7 @@ class WebRTCConnector {
   final AudioSwitchManager audioSwitchManager;
 
   final String _sessionId;
+  final String _userId;
 
   dynamic _deviceId;
   int _screenId = 0;
@@ -1307,11 +1309,11 @@ class WebRTCConnector {
     if (record.isEmpty) {
       return;
     }
-    final instanceId = AppInstanceCreate().instanceId;
     await AppAmplifyFirehose.instance.enqueueStats(
       streamType: FirehoseStreamType.encoder,
-      instanceId: instanceId,
-      stats: [record],
+      userId: _userId,
+      sessionId: _sessionId,
+      stats: record,
     );
   }
 
