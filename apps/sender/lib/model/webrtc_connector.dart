@@ -9,11 +9,14 @@ import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/rtc_stats.dart';
+import 'package:display_cast_flutter/model/rtc_stats_firehose.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/app_amplify_firehose.dart';
+import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/bounded_list.dart';
@@ -1168,6 +1171,7 @@ class WebRTCConnector {
     _isPaused = false; // Reset pause state
     stopStatsTimer();
     stopAppBundleIdMonitor();
+    await AppAmplifyFirehose.instance.flush();
 
     trackOutboundStats(filterEverySecond(_videoOutboundStatsHistory.elements));
     _trackOutboundPercentiles();
@@ -1294,6 +1298,20 @@ class WebRTCConnector {
     };
   }
 
+  // Send to Firehose
+  Future<void> _sendFirehoseStats(RtcVideoOutboundStats stats) async {
+    final record = stats.toFirehoseJson();
+    if (record.isEmpty) {
+      return;
+    }
+    final instanceId = AppInstanceCreate().instanceId;
+    await AppAmplifyFirehose.instance.enqueueStats(
+      streamType: FirehoseStreamType.encoder,
+      instanceId: instanceId,
+      stats: [record],
+    );
+  }
+
   /// 只取 type=outbound-rtp 且 kind=video，並整理成可上傳的 Map
   List<Map<String, dynamic>> _extractOutboundRtpVideo(
       List<StatsReport> reports) {
@@ -1331,6 +1349,8 @@ class WebRTCConnector {
     _rtcMetricsAggregator?.add(stats);
 
     onVideoStatsReport?.call(stats);
+
+    unawaited(_sendFirehoseStats(stats));
 
     final isWidthChanged =
         stats.frameWidth != null && _actualWidth != stats.frameWidth;
