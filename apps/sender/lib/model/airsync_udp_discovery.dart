@@ -72,6 +72,14 @@ class AirSyncUdpDiscovery {
             if (dg == null) return;
             _handleAirSyncResponse(dg);
           }
+        }, onError: (e) {
+          // 此處加入監聽以攔截非同步 Socket 錯誤，防止 Unhandled Exception
+          if (_logEnabled) {
+            log.warning('Socket error on interface $ip: $e');
+          }
+          // 發生 Errno 49/65 時，清理該失效 Socket
+          _scanSubs.remove(ip)?.cancel();
+          _scanSockets.remove(ip)?.close();
         });
       } on SocketException catch (e) {
         if (_logEnabled) {
@@ -137,9 +145,13 @@ class AirSyncUdpDiscovery {
 
   void _sendAirSyncPacket() {
     final payload = utf8.encode(_airSyncMessage);
-    _scanSockets.forEach((ip, socket) {
+    // 使用 List 備份 keys 以避免在循環中修改 Map 導致 ConcurrentModificationError
+    final currentIps = _scanSockets.keys.toList();
+
+    for (final ip in currentIps) {
+      final socket = _scanSockets[ip];
       final targets = _broadcastTargetsByIp[ip];
-      if (targets == null) return;
+      if (socket == null || targets == null) continue;
       for (final target in targets) {
         for (int i = 0; i < _airSyncPortRange; i++) {
           try {
@@ -148,6 +160,15 @@ class AirSyncUdpDiscovery {
                   'airsync udp send: local=$ip target=${target.address}:${_airSyncPortStart + i}');
             }
             socket.send(payload, target, _airSyncPortStart + i);
+          } on SocketException catch (e) {
+            // 針對 Errno 49 (地址不可用) 強制重整網卡資訊
+            if (e.osError?.errorCode == 49) {
+              _broadcastCacheTime = null;
+            }
+            if (_logEnabled) {
+              log.fine(
+                  'airsync udp send failed: local=$ip target=${target.address}:${_airSyncPortStart + i}');
+            }
           } catch (e) {
             // Ignore per-target send failures (e.g. no route on Windows).
             if (_logEnabled) {
@@ -157,7 +178,7 @@ class AirSyncUdpDiscovery {
           }
         }
       }
-    });
+    }
   }
 
   Future<void> _sendAirSyncBurst() async {
