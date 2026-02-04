@@ -9,7 +9,7 @@ class RtcVideoOutboundStats {
   String? qualityLimitationReason;
   double? qualityLimitationDurationsNone;
   double? qualityLimitationDurationsCpu;
-  double? qualityLimitationDurationsBandwith;
+  double? qualityLimitationDurationsBandwidth;
   double? qualityLimitationDurationsOther;
   int? qualityLimitationResolutionChanges;
   int? pliCount;
@@ -74,7 +74,7 @@ class RtcVideoOutboundStats {
     this.qualityLimitationReason,
     this.qualityLimitationDurationsNone,
     this.qualityLimitationDurationsCpu,
-    this.qualityLimitationDurationsBandwith,
+    this.qualityLimitationDurationsBandwidth,
     this.qualityLimitationDurationsOther,
     this.qualityLimitationResolutionChanges,
     this.pliCount,
