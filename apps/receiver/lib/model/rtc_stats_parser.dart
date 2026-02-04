@@ -56,6 +56,9 @@ double? _packetLossRate(int? lost, int? received) {
     return null;
   }
   final total = lost + received;
+  if (total == 0) {
+    return null;
+  }
   return lost / total;
 }
 
