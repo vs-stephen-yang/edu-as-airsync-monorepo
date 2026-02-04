@@ -131,14 +131,16 @@ Future<void> commonEntry(ConfigSettings settings) async {
     setSentryUser(AppInstanceCreate().displayInstanceID);
 
     // Initialize Amplify Firehose for WebRTC stats reporting
-    try {
-      await AppAmplifyFirehose.instance.ensureConfigured(
-        region: settings.amplifyRegion,
-        identityPoolId: settings.amplifyIdentityPoolId,
-        streamName: settings.firehoseStreamName,
-      );
-    } catch (e, st) {
-      log.warning('Amplify Firehose initialization failed', e, st);
+    if (settings.enableAmplifyFirehose) {
+      try {
+        await AppAmplifyFirehose.initialize(
+          region: settings.amplifyRegion,
+          identityPoolId: settings.amplifyIdentityPoolId,
+          streamName: settings.firehoseStreamName,
+        );
+      } catch (e, st) {
+        log.warning('Amplify Firehose initialization failed', e, st);
+      }
     }
 
     final appUpdateHelper = AppUpdateHelper();

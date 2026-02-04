@@ -398,7 +398,7 @@ class RTCConnector {
     final record = stats.toFirehoseJson();
     if (record.isEmpty) return;
 
-    await AppAmplifyFirehose.instance.enqueueStats(
+    await AppAmplifyFirehose.instance?.enqueueStats(
       streamType: FirehoseStreamType.decoder,
       userId: clientId ?? '',
       sessionId: sessionId ?? '',
@@ -780,7 +780,7 @@ class RTCConnector {
       _trackMetrics();
 
       // Flush any pending Firehose stats before disconnecting
-      await AppAmplifyFirehose.instance.flush();
+      await AppAmplifyFirehose.instance?.flush();
 
       _stopStatsTimer();
     }
