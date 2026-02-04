@@ -65,6 +65,7 @@ abstract class ConfigSettings {
   late bool? appA11yDebug;
 
   // Amplify Firehose
+  late bool enableAmplifyFirehose;
   late String amplifyRegion;
   late String amplifyIdentityPoolId;
   late String firehoseStreamName;

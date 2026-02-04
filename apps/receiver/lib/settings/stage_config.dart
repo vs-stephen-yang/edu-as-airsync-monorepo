@@ -41,6 +41,9 @@ class StageConfig implements ConfigSettings {
   bool? appA11yDebug; // For development only. Keep null
 
   @override
+  bool enableAmplifyFirehose = true;
+
+  @override
   String amplifyRegion = 'ap-southeast-1';
 
   @override
