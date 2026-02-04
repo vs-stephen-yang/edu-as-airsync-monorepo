@@ -46,6 +46,9 @@ class ProductionConfig implements ConfigSettings {
   bool appA11yDebug = false;
 
   @override
+  bool enableAmplifyFirehose = false;
+
+  @override
   String amplifyRegion = 'ap-southeast-1';
 
   @override

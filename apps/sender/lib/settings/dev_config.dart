@@ -41,6 +41,9 @@ class DevConfig implements ConfigSettings {
   bool appA11yDebug = true;
 
   @override
+  bool enableAmplifyFirehose = true;
+
+  @override
   String amplifyRegion = 'ap-southeast-1';
 
   @override

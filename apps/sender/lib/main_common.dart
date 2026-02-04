@@ -86,14 +86,16 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     await AppPreferences.ensureInitialized();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppInstanceCreate.ensureInitialized();
-    try {
-      await AppAmplifyFirehose.instance.ensureConfigured(
-        region: settings.amplifyRegion,
-        identityPoolId: settings.amplifyIdentityPoolId,
-        streamName: settings.firehoseStreamName,
-      );
-    } catch (e, st) {
-      log.warning('Amplify Firehose initialization failed', e, st);
+    if (settings.enableAmplifyFirehose) {
+      try {
+        await AppAmplifyFirehose.initialize(
+          region: settings.amplifyRegion,
+          identityPoolId: settings.amplifyIdentityPoolId,
+          streamName: settings.firehoseStreamName,
+        );
+      } catch (e, st) {
+        log.warning('Amplify Firehose initialization failed', e, st);
+      }
     }
 
     if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {

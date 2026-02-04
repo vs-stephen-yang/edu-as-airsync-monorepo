@@ -1176,7 +1176,7 @@ class WebRTCConnector {
     _isPaused = false; // Reset pause state
     stopStatsTimer();
     stopAppBundleIdMonitor();
-    await AppAmplifyFirehose.instance.flush();
+    await AppAmplifyFirehose.instance?.flush();
 
     trackOutboundStats(filterEverySecond(_videoOutboundStatsHistory.elements));
     _trackOutboundPercentiles();
@@ -1309,7 +1309,7 @@ class WebRTCConnector {
     if (record.isEmpty) {
       return;
     }
-    await AppAmplifyFirehose.instance.enqueueStats(
+    await AppAmplifyFirehose.instance?.enqueueStats(
       streamType: FirehoseStreamType.encoder,
       userId: _userId,
       sessionId: _sessionId,
