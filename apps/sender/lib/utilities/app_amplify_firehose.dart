@@ -751,12 +751,34 @@ class FirehoseClient {
 /// Use [instance] for the shared production instance, or create separate
 /// instances for testing.
 class AppAmplifyFirehose {
-  AppAmplifyFirehose();
+  AppAmplifyFirehose._();
 
   static AppAmplifyFirehose? _instance;
 
-  /// Returns the shared instance for production use.
-  static AppAmplifyFirehose get instance => _instance ??= AppAmplifyFirehose();
+  /// Returns the shared instance, or null if not initialized.
+  static AppAmplifyFirehose? get instance => _instance;
+
+  /// Initializes the shared instance. Call only once at app startup.
+  static Future<AppAmplifyFirehose?> initialize({
+    required String region,
+    required String identityPoolId,
+    required String streamName,
+    FirehoseConfig config = const FirehoseConfig(),
+  }) async {
+    if (_instance != null) {
+      return _instance;
+    }
+
+    final firehose = AppAmplifyFirehose._();
+    await firehose._initialize(
+      region: region,
+      identityPoolId: identityPoolId,
+      streamName: streamName,
+      config: config,
+    );
+    _instance = firehose;
+    return _instance;
+  }
 
   FirehoseClient? _client;
   String? _region;
@@ -769,7 +791,7 @@ class AppAmplifyFirehose {
   /// Whether the firehose is configured and ready.
   bool get isConfigured => _client != null;
 
-  Future<void> ensureConfigured({
+  Future<void> _initialize({
     required String region,
     required String identityPoolId,
     required String streamName,
