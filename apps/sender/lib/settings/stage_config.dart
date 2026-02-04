@@ -53,7 +53,7 @@ class StageConfig implements ConfigSettings {
 
   @override
   String amplifyIdentityPoolId =
-      'ap-southeast-1:c5eebe5a-f6cf-4cd3-9aa3-a98e85c01e3d';
+      'ap-southeast-1:685283a2-355c-4b29-b5fc-627a4901be95';
 
   @override
   String firehoseStreamName = 'airsync-encoder-firehose-delivery-stream';
