@@ -136,7 +136,7 @@ final Map<String, num? Function(RtcVideoOutboundStats)>
   'qualityLimitationDurationsNone': (s) => s.qualityLimitationDurationsNone,
   'qualityLimitationDurationsCpu': (s) => s.qualityLimitationDurationsCpu,
   'qualityLimitationDurationsBandwith': (s) =>
-      s.qualityLimitationDurationsBandwith,
+      s.qualityLimitationDurationsBandwidth,
   'qualityLimitationDurationsOther': (s) => s.qualityLimitationDurationsOther,
 
   // Averages

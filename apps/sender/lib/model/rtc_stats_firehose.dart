@@ -13,7 +13,7 @@ extension RtcVideoOutboundStatsFirehose on RtcVideoOutboundStats {
       'video-qualityLimitationDurations-none': qualityLimitationDurationsNone,
       'video-qualityLimitationDurations-cpu': qualityLimitationDurationsCpu,
       'video-qualityLimitationDurations-bandwidth':
-          qualityLimitationDurationsBandwith,
+          qualityLimitationDurationsBandwidth,
       'video-qualityLimitationDurations-other': qualityLimitationDurationsOther,
       'video-qualityLimitationReason': qualityLimitationReason,
       'video-targetBitrate': targetBitrate,

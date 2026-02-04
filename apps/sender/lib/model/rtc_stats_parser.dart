@@ -268,7 +268,7 @@ class RtcStatsParser {
         qualityLimitationDurationsNone:
             parsedQualityLimitationDurations['none'],
         qualityLimitationDurationsCpu: parsedQualityLimitationDurations['cpu'],
-        qualityLimitationDurationsBandwith:
+        qualityLimitationDurationsBandwidth:
             parsedQualityLimitationDurations['bandwidth'],
         qualityLimitationDurationsOther:
             parsedQualityLimitationDurations['other'],

@@ -80,7 +80,7 @@ void main() {
                   'qualityLimitationDurationsNone', 0.72)
               .having((s) => s.qualityLimitationDurationsCpu,
                   'qualityLimitationDurationsCpu', 0.0)
-              .having((s) => s.qualityLimitationDurationsBandwith,
+              .having((s) => s.qualityLimitationDurationsBandwidth,
                   'qualityLimitationDurationsBandwith', 0.0)
               .having((s) => s.qualityLimitationDurationsOther,
                   'qualityLimitationDurationsOther', 0.0)
@@ -127,7 +127,7 @@ void main() {
                   'qualityLimitationDurationsNone', 0.72)
               .having((s) => s.qualityLimitationDurationsCpu,
                   'qualityLimitationDurationsCpu', 0.0)
-              .having((s) => s.qualityLimitationDurationsBandwith,
+              .having((s) => s.qualityLimitationDurationsBandwidth,
                   'qualityLimitationDurationsBandwith', 0.0)
               .having((s) => s.qualityLimitationDurationsOther,
                   'qualityLimitationDurationsOther', 0.0)
