@@ -4295,6 +4295,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Opening the Bluetooth settings page on your iPad can speed up the pairing process.`
+  String get v3_touchback_ipad_bluetooth_hint {
+    return Intl.message(
+      'Opening the Bluetooth settings page on your iPad can speed up the pairing process.',
+      name: 'v3_touchback_ipad_bluetooth_hint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

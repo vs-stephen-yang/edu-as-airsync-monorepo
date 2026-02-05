@@ -427,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "Retry",
   "v3_overlay_retry_dialog_end": "End",
   "v3_zero_fps_capture_failed_wait": "Keep Waiting",
-  "v3_settings_broadcast_ip_error": "Please enter a valid IP address."
+  "v3_settings_broadcast_ip_error": "Please enter a valid IP address.",
+  "v3_touchback_ipad_bluetooth_hint": "Opening the Bluetooth settings page on your iPad can speed up the pairing process."
 }

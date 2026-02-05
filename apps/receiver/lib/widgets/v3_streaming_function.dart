@@ -607,6 +607,24 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 });
               }
             } else {
+              if (context.mounted) {
+                await showDialog(
+                  context: context,
+                  barrierColor: Colors.transparent,
+                  builder: (BuildContext context) {
+                    return FocusAwareBuilder(
+                      builder: (primaryFocusNode) => V3TouchbackHintAlert(
+                        primaryFocusNode: primaryFocusNode,
+                        deviceName: HybridConnectionList()
+                            .getConnection<MirrorRequest>(widget.index)
+                            .deviceName,
+                        onConfirm: () async {},
+                      ),
+                    );
+                  },
+                );
+              }
+
               final success = await connection.enableTouchback();
               // 更新尺寸
               mirrorStateProvider.onWidgetSizeChanged();
