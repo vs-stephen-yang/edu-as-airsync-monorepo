@@ -1,4 +1,9 @@
 PODS:
+  - amplify_auth_cognito (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - amplify_secure_storage (0.0.1):
+    - Flutter
   - amplitude_flutter (0.0.1):
     - AmplitudeSwift (= 1.15.1)
     - Flutter
@@ -96,6 +101,8 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - amplify_auth_cognito (from `.symlinks/plugins/amplify_auth_cognito/darwin`)
+  - amplify_secure_storage (from `.symlinks/plugins/amplify_secure_storage/ios`)
   - amplitude_flutter (from `.symlinks/plugins/amplitude_flutter/darwin`)
   - app_links (from `.symlinks/plugins/app_links/ios`)
   - bonsoir_darwin (from `.symlinks/plugins/bonsoir_darwin/darwin`)
@@ -131,6 +138,10 @@ SPEC REPOS:
     - SwiftyGif
 
 EXTERNAL SOURCES:
+  amplify_auth_cognito:
+    :path: ".symlinks/plugins/amplify_auth_cognito/darwin"
+  amplify_secure_storage:
+    :path: ".symlinks/plugins/amplify_secure_storage/ios"
   amplitude_flutter:
     :path: ".symlinks/plugins/amplitude_flutter/darwin"
   app_links:
@@ -173,6 +184,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
+  amplify_auth_cognito: b76a0e367489da2b9a3c6e5a8ec74a72a0a7cc2f
+  amplify_secure_storage: ede2a5027299bab196b8baa030ed3f4cf50ce9a9
   amplitude_flutter: 54683fbe7b698c96d39818e410cfeee7c5897cfb
   AmplitudeCore: c47c0a661bec076a197bc75a5a7b4c413da288a5
   AmplitudeSwift: 41d52966044cc377435eda13124854ab7b4ec454
@@ -180,7 +193,7 @@ SPEC CHECKSUMS:
   app_links: e7a6750a915a9e161c58d91bc610e8cd1d4d0ad0
   bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
-  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
+  device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: b159e0c068aef54932bb15dc9fd1571818edaf49
