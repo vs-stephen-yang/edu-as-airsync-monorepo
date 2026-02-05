@@ -1105,6 +1105,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Pairing failed. TouchBack is not activated. Please try again",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Opening the Bluetooth settings page on your iPad can speed up the pairing process.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Cancel"),
     "v3_touchback_restart_bluetooth_btn_restart":
