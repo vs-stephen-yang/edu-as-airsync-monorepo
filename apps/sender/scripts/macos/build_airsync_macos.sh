@@ -206,21 +206,28 @@ fi
 
 # 對 Sparkle Framework 的各個元件進行簽章
 SPARKLE_BASE="macos/Pods/Sparkle/Sparkle.framework/Versions/B"
+SPARKLE_ENTITLEMENTS="macos/Runner/Sparkle.entitlements"
+
+# 檢查 Sparkle entitlements 檔案是否存在
+if [ ! -f "$SPARKLE_ENTITLEMENTS" ]; then
+  echo "❌ Sparkle Entitlements 檔案不存在: $SPARKLE_ENTITLEMENTS"
+  exit 1
+fi
 
 echo "🔐 簽署 Downloader.xpc..."
-codesign --force --entitlements "$ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
+codesign --force --entitlements "$SPARKLE_ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
   "$SPARKLE_BASE/XPCServices/Downloader.xpc/Contents/MacOS/Downloader"
 
 echo "🔐 簽署 Installer.xpc..."
-codesign --force --entitlements "$ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
+codesign --force --entitlements "$SPARKLE_ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
   "$SPARKLE_BASE/XPCServices/Installer.xpc/Contents/MacOS/Installer"
 
 echo "🔐 簽署 Updater.app..."
-codesign --force --entitlements "$ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
+codesign --force --entitlements "$SPARKLE_ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
   "$SPARKLE_BASE/Updater.app/Contents/MacOS/Updater"
 
 echo "🔐 簽署 Autoupdate..."
-codesign --force --entitlements "$ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
+codesign --force --entitlements "$SPARKLE_ENTITLEMENTS" -s "$SIGNING_IDENTITY" \
   "$SPARKLE_BASE/Autoupdate"
 
 echo ""
@@ -240,6 +247,7 @@ xcodebuild archive \
   -scheme Store \
   -archivePath "$OUTPUT_DIR/$ARCHIVE_NAME" \
   -destination "generic/platform=macOS,variant=macos" \
+  -allowProvisioningUpdates \
   ARCHS="x86_64 arm64" \
   ONLY_ACTIVE_ARCH=NO
 
