@@ -1,4 +1,9 @@
 PODS:
+  - amplify_auth_cognito (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - amplify_secure_storage (0.0.1):
+    - FlutterMacOS
   - amplitude_flutter (0.0.1):
     - AmplitudeSwift (= 1.15.1)
     - Flutter
@@ -76,6 +81,8 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - amplify_auth_cognito (from `Flutter/ephemeral/.symlinks/plugins/amplify_auth_cognito/darwin`)
+  - amplify_secure_storage (from `Flutter/ephemeral/.symlinks/plugins/amplify_secure_storage/macos`)
   - amplitude_flutter (from `Flutter/ephemeral/.symlinks/plugins/amplitude_flutter/darwin`)
   - app_links (from `Flutter/ephemeral/.symlinks/plugins/app_links/macos`)
   - auto_updater_macos (from `Flutter/ephemeral/.symlinks/plugins/auto_updater_macos/macos`)
@@ -115,6 +122,10 @@ SPEC REPOS:
     - Sparkle
 
 EXTERNAL SOURCES:
+  amplify_auth_cognito:
+    :path: Flutter/ephemeral/.symlinks/plugins/amplify_auth_cognito/darwin
+  amplify_secure_storage:
+    :path: Flutter/ephemeral/.symlinks/plugins/amplify_secure_storage/macos
   amplitude_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/amplitude_flutter/darwin
   app_links:
@@ -173,6 +184,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
 SPEC CHECKSUMS:
+  amplify_auth_cognito: b76a0e367489da2b9a3c6e5a8ec74a72a0a7cc2f
+  amplify_secure_storage: a0f7269fd7bca15e77c30abae739000a990e8fcd
   amplitude_flutter: 54683fbe7b698c96d39818e410cfeee7c5897cfb
   AmplitudeCore: c47c0a661bec076a197bc75a5a7b4c413da288a5
   AmplitudeSwift: 41d52966044cc377435eda13124854ab7b4ec454
@@ -183,7 +196,7 @@ SPEC CHECKSUMS:
   connectivity_plus: 18d3c32514c886e046de60e9c13895109866c747
   desktop_multi_window: 566489c048b501134f9d7fb6a2354c60a9126486
   desktop_window: fb7c4f12c1129f947ac482296b6f14059d57a3c3
-  device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
+  device_info_plus: ce1b7762849d3ec103d0e0517299f2db7ad60720
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
   flutter_multicast_plugin: a7d914f51e4ea04fa53df2d417fc408639a89a83
