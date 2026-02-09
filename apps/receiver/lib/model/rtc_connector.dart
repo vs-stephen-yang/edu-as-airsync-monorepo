@@ -277,10 +277,10 @@ class RTCConnector {
           // 先把 reports 轉成可上傳的 Map
           _latestReportsPayload = _serializeReports(reports);
 
-          // 每 10 秒上傳一次
+          // 每 10 分鐘上傳一次
           final now = DateTime.now();
           final shouldUpload =
-              now.difference(_lastUploadAt) >= const Duration(seconds: 10);
+              now.difference(_lastUploadAt) >= const Duration(minutes: 10);
 
           if (shouldUpload && !_uploading && _latestReportsPayload != null) {
             _uploading = true;

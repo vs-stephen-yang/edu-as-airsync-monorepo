@@ -26,7 +26,7 @@ class StageConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String appAmplitudeKey = 'fbcb2bdf36101726be62fe98fb34d08e';
+  String appAmplitudeKey = '2881ed396b60f213e066e730070ea119';
 
   @override
   String airSyncUrl = 'stage.airsync.net';
