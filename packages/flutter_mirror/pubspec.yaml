@@ -12,7 +12,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   libcastauth:
     git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth
+      url: https://github.com/Viewsonic-EDU/edu-as-libcastauth.git
       ref: release-0.7.0
   permission_handler: ^12.0.0+1
 
