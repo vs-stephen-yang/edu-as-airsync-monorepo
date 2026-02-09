@@ -13,9 +13,9 @@ import 'package:display_cast_flutter/model/rtc_stats_firehose.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
+import 'package:display_cast_flutter/utilities/app_amplify_firehose.dart';
 import 'package:display_cast_flutter/utilities/app_amplitude.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
-import 'package:display_cast_flutter/utilities/app_amplify_firehose.dart';
 import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/bounded_list.dart';
@@ -1276,10 +1276,10 @@ class WebRTCConnector {
           // 先把 reports 轉成可上傳的 Map
           _latestReportsPayload = _serializeReports(reports);
 
-          // 每 5 秒上傳一次
+          // 每 10 分鐘上傳一次
           final now = DateTime.now();
           final shouldUpload =
-              now.difference(_lastUploadAt) >= const Duration(seconds: 5);
+              now.difference(_lastUploadAt) >= const Duration(minutes: 10);
 
           if (shouldUpload && !_uploading && _latestReportsPayload != null) {
             _uploading = true;
