@@ -482,46 +482,59 @@ class _CastToBoardsState extends State<CastToBoards> {
                   ),
                 ),
                 Gap(context.tokens.spacing.vsdslSpacingSm.top),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AutoSizeText(
-                        S.of(context).v3_settings_broadcast_cast_boards_desc,
-                        minFontSize: 8,
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w400,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      child: Semantics(
-                        label: S.of(context).v3_lbl_settings_broadcast_boards,
-                        identifier: 'v3_qa_settings_broadcast_boards',
-                        child: InkWell(
-                          onTap: settingsProvider.isBroadcastLock
-                              ? null
-                              : () {
-                                  settingsProvider.setPage(
-                                      SettingPageState.broadcastBoards);
-                                },
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                                top: 13, bottom: 13, left: 26),
-                            child: SvgPicture.asset(
-                              settingsProvider.isBroadcastLock
-                                  ? 'assets/images/ic_arrow_right_lock.svg'
-                                  : 'assets/images/ic_arrow_right.svg',
-                              width: 22,
-                              height: 22,
+                Selector<ChannelProvider, bool>(
+                  selector: (_, p) => p.isGroupMode,
+                  builder: (_, isGroupMode, __) {
+                    return Opacity(
+                      opacity: isGroupMode ? 1.0 : 0.3,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: AutoSizeText(
+                              S
+                                  .of(context)
+                                  .v3_settings_broadcast_cast_boards_desc,
+                              minFontSize: 8,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w400,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
                           ),
-                        ),
+                          SizedBox(
+                            child: Semantics(
+                              label: S
+                                  .of(context)
+                                  .v3_lbl_settings_broadcast_boards,
+                              identifier: 'v3_qa_settings_broadcast_boards',
+                              child: InkWell(
+                                onTap: settingsProvider.isBroadcastLock ||
+                                        !isGroupMode
+                                    ? null
+                                    : () {
+                                        settingsProvider.setPage(
+                                            SettingPageState.broadcastBoards);
+                                      },
+                                child: Container(
+                                  padding: const EdgeInsets.only(
+                                      top: 13, bottom: 13, left: 26),
+                                  child: SvgPicture.asset(
+                                    settingsProvider.isBroadcastLock
+                                        ? 'assets/images/ic_arrow_right_lock.svg'
+                                        : 'assets/images/ic_arrow_right.svg',
+                                    width: 22,
+                                    height: 22,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
                 Gap(context.tokens.spacing.vsdslSpacingMd.top),
                 Selector<ChannelProvider, bool>(
