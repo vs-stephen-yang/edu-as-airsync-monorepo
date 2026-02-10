@@ -234,6 +234,7 @@ class SelectScreenDialog extends StatefulWidget {
 
 class _SelectScreenDialogState extends State<SelectScreenDialog> {
   StreamSubscription? _virtualDisplaySubscription;
+  StreamSubscription? _virtualDisplayErrorSubscription;
   final List<StreamSubscription<DesktopCapturerSource>> _subscriptions = [];
   final Map<String, DesktopCapturerSource> _sources = {};
   DesktopCapturerSource? _selectedSource;
@@ -722,7 +723,7 @@ class _SelectScreenDialogState extends State<SelectScreenDialog> {
                     shadows: backgroundColor != Colors.transparent
                         ? [
                             BoxShadow(
-                              color: backgroundColor.withOpacity(0.31),
+                              color: backgroundColor.withValues(alpha: 0.31),
                               blurRadius: 24,
                               offset: const Offset(0, 16),
                               spreadRadius: 0,
@@ -758,9 +759,16 @@ class _SelectScreenDialogState extends State<SelectScreenDialog> {
     return selectedSource.type == SourceType.Screen ? 'screen' : 'application';
   }
 
+  void _clearVirtualDisplaySubscriptions() {
+    _virtualDisplaySubscription?.cancel();
+    _virtualDisplaySubscription = null;
+    _virtualDisplayErrorSubscription?.cancel();
+    _virtualDisplayErrorSubscription = null;
+  }
+
   Future<bool> _startAndWaitForVirtualDisplay() async {
-    // Cancel previous subscription if it exists
-    await _virtualDisplaySubscription?.cancel();
+    // Clear previous subscription if it exists
+    _clearVirtualDisplaySubscriptions();
 
     // Create a Completer to handle asynchronous waiting
     final completer = Completer<bool>();
@@ -769,18 +777,21 @@ class _SelectScreenDialogState extends State<SelectScreenDialog> {
     _virtualDisplaySubscription = FlutterVirtualDisplay
         .instance.onVirtualDisplayStarted.stream
         .listen((_) {
-      log.info('Virtual display started');
       if (!completer.isCompleted) {
         completer.complete(true);
+        _clearVirtualDisplaySubscriptions();
+        log.info('Virtual display started');
       }
     });
 
     // Add error handling
-    FlutterVirtualDisplay.instance.onVirtualDisplayError.stream
+    _virtualDisplayErrorSubscription = FlutterVirtualDisplay
+        .instance.onVirtualDisplayError.stream
         .listen((errorMsg) {
-      log.severe('Virtual display error: $errorMsg');
       if (!completer.isCompleted) {
         completer.complete(false);
+        _clearVirtualDisplaySubscriptions();
+        log.severe('Virtual display error: $errorMsg');
       }
     });
 
@@ -795,57 +806,72 @@ class _SelectScreenDialogState extends State<SelectScreenDialog> {
         .startVirtualDisplay(pixelWidth, pixelHeight);
 
     if (startResult != true) {
-      log.warning('Failed to start virtual display');
       if (!completer.isCompleted) {
         completer.complete(false);
+        _clearVirtualDisplaySubscriptions();
+        log.warning('Failed to start virtual display');
       }
-      await _virtualDisplaySubscription?.cancel();
       return false;
     }
 
     // Wait for the virtual display to start or timeout
     try {
       final result = await completer.future.timeout(const Duration(seconds: 5));
-      if (result && Platform.isWindows) {
-        final baseScreenNumber =
-            (await desktopCapturer.getSources(types: [SourceType.Screen]))
-                .length;
-        await _waitForVirtualDisplayRegistration(baseScreenNumber);
-        await _switchToExtendedDisplayMode();
+      if (result) {
+        await _waitForVirtualDisplayRegistration();
+        if (Platform.isWindows) {
+          await _switchToExtendedDisplayMode();
+        }
       }
       return result;
     } on TimeoutException {
       log.warning('Timed out waiting for virtual display to start');
-      await _virtualDisplaySubscription?.cancel();
       return false;
+    } catch (e) {
+      log.severe('Unexpected error during virtual display startup: $e');
+      return false;
+    } finally {
+      _clearVirtualDisplaySubscriptions();
     }
   }
 
-  Future<void> _waitForVirtualDisplayRegistration(int baseScreenNumber) async {
+  Future<void> _waitForVirtualDisplayRegistration() async {
     const pollingInterval = Duration(milliseconds: 333);
     const maxWait = Duration(seconds: 3);
 
-    final stopwatch = Stopwatch()..start();
-    while (stopwatch.elapsed <= maxWait) {
-      try {
-        final sources =
-            await desktopCapturer.getSources(types: [SourceType.Screen]);
-        if (sources.length > baseScreenNumber) {
+    final initialSources =
+        await desktopCapturer.getSources(types: [SourceType.Screen]);
+    final baseScreenNumber = initialSources.length;
+    _sources.clear();
+    for (var element in initialSources) {
+      _sources[element.id] = element;
+    }
+
+    StreamSubscription<DesktopCapturerSource> localSubscription =
+        desktopCapturer.onAdded.stream.listen((source) {
+      _sources[source.id] = source;
+    });
+
+    try {
+      final stopwatch = Stopwatch()..start();
+      while (stopwatch.elapsed <= maxWait) {
+        await desktopCapturer.updateSources(types: [SourceType.Screen]);
+        // 等待 _subscriptions 更新狀態
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        int currentScreenCount =
+            _sources.values.where((s) => s.type == SourceType.Screen).length;
+        if (currentScreenCount > baseScreenNumber) {
           log.info('Virtual display detected');
           return;
         }
-      } catch (error, stackTrace) {
-        log.warning(
-            'Failed to query screen sources while waiting for virtual display',
-            error,
-            stackTrace);
-        break;
+        await Future.delayed(pollingInterval);
       }
-      await Future.delayed(pollingInterval);
+      log.warning(
+          'Virtual display not detected within timeout; attempting display switch anyway.');
+    } finally {
+      await localSubscription.cancel();
     }
-
-    log.warning(
-        'Virtual display not detected within timeout; attempting display switch anyway.');
   }
 
   Future<void> _switchToExtendedDisplayMode() async {
@@ -904,28 +930,33 @@ class _SelectScreenDialogState extends State<SelectScreenDialog> {
       target: _getShareName(selectedSource, isExtensionSelected),
     );
 
+    _timer?.cancel();
+    for (var element in _subscriptions) {
+      await element.cancel();
+    }
+    CustomDesktopCaptureSource? captureSource;
     if (isExtensionSelected) {
-      await _startAndWaitForVirtualDisplay();
-      _selectedSource =
-          (await desktopCapturer.getSources(types: [SourceType.Screen])).last;
-      if (!mounted) {
-        return;
+      final success = await _startAndWaitForVirtualDisplay();
+      if (success) {
+        _selectedSource = _sources.values.last;
+        widget.annotationModel.selectedSource = null;
+        captureSource = CustomDesktopCaptureSource(
+            _selectedSource, systemAudio, isExtensionSelected);
+      } else {
+        log.warning('Failed to start virtual display');
+        if (mounted) {
+          _isSubmitting = false;
+        }
       }
-      Navigator.pop<CustomDesktopCaptureSource>(
-          context,
-          CustomDesktopCaptureSource(
-              _selectedSource, systemAudio, isExtensionSelected));
-      widget.annotationModel.selectedSource = null;
     } else {
       widget.annotationModel.selectedSource = selectedSource;
       widget.annotationModel.setScreenIndex(selectedSource?.name ?? '');
-      if (!mounted) {
-        return;
-      }
-      Navigator.pop<CustomDesktopCaptureSource>(
-          context,
-          CustomDesktopCaptureSource(
-              selectedSource, systemAudio, isExtensionSelected));
+      captureSource = CustomDesktopCaptureSource(
+          selectedSource, systemAudio, isExtensionSelected);
+    }
+
+    if (mounted) {
+      Navigator.pop<CustomDesktopCaptureSource>(context, captureSource);
     }
   }
 
