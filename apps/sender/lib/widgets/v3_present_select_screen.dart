@@ -31,8 +31,6 @@ import 'package:sprintf/sprintf.dart';
 class V3PresentSelectScreen extends StatelessWidget {
   const V3PresentSelectScreen({super.key});
 
-  static SelectScreenDialog? selectScreenDialog;
-
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
@@ -82,14 +80,13 @@ class V3PresentSelectScreen extends StatelessWidget {
     await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {
-        selectScreenDialog = SelectScreenDialog(
+        return SelectScreenDialog(
           hostName: provider.deviceName ?? '',
           isExtensionEnable:
               (Platform.isWindows || VersionUtil.isOpenVersion) && isSupported,
           annotationModel: context.read<AnnotationModel>(),
           isVirtualAudioMissing: isVirtualAudioMissing,
         );
-        return selectScreenDialog!;
       },
     ).then((value) async {
       log.info('selectedSource: ${value?.selectedSource?.type})');
@@ -106,13 +103,6 @@ class V3PresentSelectScreen extends StatelessWidget {
       } else {
         if (Platform.isWindows || VersionUtil.isOpenVersion) {
           await FlutterVirtualDisplay.instance.stopVirtualDisplay();
-        }
-        SelectScreenDialog._timer?.cancel();
-        SelectScreenDialog._timer = null;
-        if (selectScreenDialog != null) {
-          for (var element in selectScreenDialog!._subscriptions) {
-            await element.cancel();
-          }
         }
         // moderator mode
         if (provider.moderatorStatus) {
@@ -224,61 +214,82 @@ class V3PresentSelectScreen extends StatelessWidget {
   }
 }
 
-//ignore: must_be_immutable
-class SelectScreenDialog extends Dialog {
-  StreamSubscription? _virtualDisplaySubscription;
+class SelectScreenDialog extends StatefulWidget {
+  final String hostName;
+  final bool isExtensionEnable;
+  final AnnotationModel annotationModel;
+  final bool isVirtualAudioMissing;
 
-  SelectScreenDialog({
+  const SelectScreenDialog({
     super.key,
     required this.hostName,
     required this.isExtensionEnable,
     required this.annotationModel,
     required this.isVirtualAudioMissing,
-  }) {
+  });
+
+  @override
+  State<SelectScreenDialog> createState() => _SelectScreenDialogState();
+}
+
+class _SelectScreenDialogState extends State<SelectScreenDialog> {
+  StreamSubscription? _virtualDisplaySubscription;
+  final List<StreamSubscription<DesktopCapturerSource>> _subscriptions = [];
+  final Map<String, DesktopCapturerSource> _sources = {};
+  DesktopCapturerSource? _selectedSource;
+  Timer? _timer;
+  bool _systemAudio = false;
+  bool _isExtensionSelected = false;
+  bool _enableAudioCheckbox = true;
+  bool _isSubmitting = false;
+
+  bool get platformIsDesktop =>
+      Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+
+  @override
+  void initState() {
+    super.initState();
     Future.delayed(const Duration(milliseconds: 100), () {
       _getSources([SourceType.Screen, SourceType.Window]);
     });
 
     _subscriptions.add(desktopCapturer.onAdded.stream.listen((source) {
-      _sources[source.id] = source;
-      _stateSetter?.call(() {});
+      if (!mounted) return;
+      setState(() {
+        _sources[source.id] = source;
+      });
     }));
 
     _subscriptions.add(desktopCapturer.onRemoved.stream.listen((source) {
-      _sources.remove(source.id);
-      _stateSetter?.call(() {});
+      if (!mounted) return;
+      setState(() {
+        _sources.remove(source.id);
+      });
     }));
 
     _subscriptions
         .add(desktopCapturer.onThumbnailChanged.stream.listen((source) {
-      _stateSetter?.call(() {});
+      if (!mounted) return;
+      setState(() {});
     }));
-    annotationModel.presentSourceType = SourceType.Screen;
+    widget.annotationModel.presentSourceType = SourceType.Screen;
   }
 
-  final List<StreamSubscription<DesktopCapturerSource>> _subscriptions = [];
-  final Map<String, DesktopCapturerSource> _sources = {};
-  final bool isExtensionEnable;
-  final AnnotationModel annotationModel;
-  static DesktopCapturerSource? _selectedSource;
-  static StateSetter? _stateSetter;
-  static Timer? _timer;
-  late BuildContext ctx;
-  bool _systemAudio = false;
-  bool _isExtensionSelected = false;
-
-  bool get platformIsDesktop =>
-      Platform.isWindows || Platform.isMacOS || Platform.isLinux;
-  String hostName;
-  final bool isVirtualAudioMissing;
-  bool enableAudioCheckbox = true;
-  bool _isSubmitting = false;
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _virtualDisplaySubscription?.cancel();
+    for (var element in _subscriptions) {
+      element.cancel();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    hostName =
-        hostName.length > 20 ? '${hostName.substring(0, 20)}...' : hostName;
-    ctx = context;
+    final hostName = widget.hostName.length > 20
+        ? '${widget.hostName.substring(0, 20)}...'
+        : widget.hostName;
 
     return Material(
       type: MaterialType.transparency,
@@ -345,7 +356,7 @@ class SelectScreenDialog extends Dialog {
                                   S.of(context).v3_lbl_select_screen_close,
                             ),
                           ),
-                          onTap: () => cancel(),
+                          onTap: () => _cancel(),
                         ),
                       ),
                     ),
@@ -357,303 +368,290 @@ class SelectScreenDialog extends Dialog {
                 flex: 1,
                 child: SizedBox(
                   width: double.infinity,
-                  child: StatefulBuilder(
-                    builder: (context, setState) {
-                      _stateSetter = setState;
+                  child: DefaultTabController(
+                    length: 3,
+                    child: Builder(builder: (context) {
                       final sourceSelected =
                           _selectedSource != null || _isExtensionSelected;
-                      return DefaultTabController(
-                        length: 3,
-                        child: Builder(builder: (context) {
-                          TabController tabController =
-                              DefaultTabController.of(context);
-                          double bottomHeight = 55;
-                          if (platformIsDesktop && enableAudioCheckbox) {
-                            bottomHeight += 48;
-                            if (isVirtualAudioMissing) {
-                              bottomHeight += 48;
-                            }
-                          }
-                          final sc = ScrollController();
-                          return Column(
-                            children: <Widget>[
-                              Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 33),
-                                constraints:
-                                    const BoxConstraints(maxHeight: 48),
-                                child: V3Scrollbar(
-                                  controller: sc,
-                                  child: SingleChildScrollView(
-                                    controller: sc,
-                                    child: TabBar(
-                                      onTap: (index) async {
-                                        _selectedSource = null;
-                                        if (index == 2) {
-                                          if (isExtensionEnable) {
-                                            _isExtensionSelected = true;
-                                          } else {
-                                            tabController.animateTo(
-                                                tabController.previousIndex);
-                                          }
-                                        } else {
-                                          _isExtensionSelected = false;
-                                        }
-                                        switch (index) {
-                                          case 0:
-                                            annotationModel.presentSourceType =
-                                                SourceType.Screen;
-                                            break;
-                                          case 1:
-                                            annotationModel.presentSourceType =
-                                                SourceType.Window;
-                                            break;
-                                          case 2:
-                                            annotationModel.presentSourceType =
-                                                null;
-                                            break;
-                                        }
-                                        if (!context.mounted) return;
-                                        setState(() {
-                                          enableAudioCheckbox = (index != 1);
-                                        });
-                                      },
-                                      tabs: [
+                      TabController tabController =
+                          DefaultTabController.of(context);
+                      double bottomHeight = 55;
+                      if (platformIsDesktop && _enableAudioCheckbox) {
+                        bottomHeight += 48;
+                        if (widget.isVirtualAudioMissing) {
+                          bottomHeight += 48;
+                        }
+                      }
+                      final sc = ScrollController();
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 33),
+                            constraints: const BoxConstraints(maxHeight: 48),
+                            child: V3Scrollbar(
+                              controller: sc,
+                              child: SingleChildScrollView(
+                                controller: sc,
+                                child: TabBar(
+                                  onTap: (index) async {
+                                    _selectedSource = null;
+                                    if (index == 2) {
+                                      if (widget.isExtensionEnable) {
+                                        _isExtensionSelected = true;
+                                      } else {
+                                        tabController.animateTo(
+                                            tabController.previousIndex);
+                                      }
+                                    } else {
+                                      _isExtensionSelected = false;
+                                    }
+                                    switch (index) {
+                                      case 0:
+                                        widget.annotationModel
+                                                .presentSourceType =
+                                            SourceType.Screen;
+                                        break;
+                                      case 1:
+                                        widget.annotationModel
+                                                .presentSourceType =
+                                            SourceType.Window;
+                                        break;
+                                      case 2:
+                                        widget.annotationModel
+                                            .presentSourceType = null;
+                                        break;
+                                    }
+                                    if (!mounted) return;
+                                    setState(() {
+                                      _enableAudioCheckbox = (index != 1);
+                                    });
+                                  },
+                                  tabs: [
+                                    V3Focus(
+                                      identifier: 'v3_qa_select_screen_entire',
+                                      child: _buildTabWidget(
+                                          context,
+                                          S.current
+                                              .present_select_screen_entire),
+                                    ),
+                                    V3Focus(
+                                      identifier: 'v3_qa_select_screen_window',
+                                      child: _buildTabWidget(
+                                          context,
+                                          S.current
+                                              .present_select_screen_window),
+                                    ),
+                                    V3Focus(
+                                      identifier:
+                                          'v3_qa_select_screen_extension',
+                                      child: _buildTabWidget(
+                                          context,
+                                          S.current
+                                              .v3_present_select_screen_extension,
+                                          enable: widget.isExtensionEnable),
+                                    ),
+                                  ],
+                                  labelColor:
+                                      context.tokens.color.vsdswColorSecondary,
+                                  unselectedLabelColor:
+                                      context.tokens.color.vsdswColorOnSurface,
+                                  indicatorColor:
+                                      context.tokens.color.vsdswColorPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Gap(8),
+                          Expanded(
+                            child: Container(
+                              color: context.tokens.color.vsdswColorSurface200,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 64),
+                              child: TabBarView(
+                                children: [
+                                  _buildGridView(SourceType.Screen),
+                                  _buildGridView(SourceType.Window),
+                                  const Align(
+                                    alignment: Alignment.center,
+                                    child: ScreenExtensionPage(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const Gap(10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 33),
+                            constraints:
+                                BoxConstraints(maxHeight: bottomHeight),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  if (platformIsDesktop &&
+                                      _enableAudioCheckbox) ...[
+                                    Row(
+                                      children: [
+                                        const Gap(5),
                                         V3Focus(
                                           identifier:
-                                              'v3_qa_select_screen_entire',
-                                          child: buildTabWidget(
-                                              context,
-                                              S.current
-                                                  .present_select_screen_entire),
+                                              'v3_qa_select_screen_audio',
+                                          child: Checkbox(
+                                            semanticLabel: S
+                                                .of(context)
+                                                .v3_lbl_select_screen_audio,
+                                            value: _systemAudio,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(2.0),
+                                            ),
+                                            side: WidgetStateBorderSide
+                                                .resolveWith(
+                                              (states) => BorderSide(
+                                                  width: 1.0,
+                                                  color: (!widget
+                                                          .isVirtualAudioMissing)
+                                                      ? context.tokens.color
+                                                          .vsdswColorPrimary
+                                                      : context.tokens.color
+                                                          .vsdswColorDisabled),
+                                            ),
+                                            onChanged:
+                                                (!widget.isVirtualAudioMissing)
+                                                    ? (bool? value) {
+                                                        if (!mounted) {
+                                                          return;
+                                                        }
+                                                        setState(() {
+                                                          _systemAudio = value!;
+                                                        });
+                                                      }
+                                                    : null,
+                                          ),
                                         ),
-                                        V3Focus(
-                                          identifier:
-                                              'v3_qa_select_screen_window',
-                                          child: buildTabWidget(
-                                              context,
-                                              S.current
-                                                  .present_select_screen_window),
-                                        ),
-                                        V3Focus(
-                                          identifier:
-                                              'v3_qa_select_screen_extension',
-                                          child: buildTabWidget(
-                                              context,
-                                              S.current
-                                                  .v3_present_select_screen_extension,
-                                              enable: isExtensionEnable),
+                                        const Gap(8),
+                                        Flexible(
+                                          child: V3AutoHyphenatingText(
+                                            S.current
+                                                .v3_present_select_screen_share_audio,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Inter',
+                                                color: (!widget
+                                                        .isVirtualAudioMissing)
+                                                    ? context.tokens.color
+                                                        .vsdswColorOnSurface
+                                                    : context.tokens.color
+                                                        .vsdswColorDisabled),
+                                          ),
                                         ),
                                       ],
-                                      labelColor: context
-                                          .tokens.color.vsdswColorSecondary,
-                                      unselectedLabelColor: context
-                                          .tokens.color.vsdswColorOnSurface,
-                                      indicatorColor: context
-                                          .tokens.color.vsdswColorPrimary,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              const Gap(8),
-                              Expanded(
-                                child: Container(
-                                  color:
-                                      context.tokens.color.vsdswColorSurface200,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 64),
-                                  child: TabBarView(
-                                    children: [
-                                      _buildGridView(SourceType.Screen),
-                                      _buildGridView(SourceType.Window),
-                                      const Align(
-                                        alignment: Alignment.center,
-                                        child: ScreenExtensionPage(),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const Gap(10),
-                              Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 33),
-                                constraints:
-                                    BoxConstraints(maxHeight: bottomHeight),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      if (platformIsDesktop &&
-                                          enableAudioCheckbox) ...[
-                                        Row(
+                                    if (widget.isVirtualAudioMissing)
+                                      MergeSemantics(
+                                        child: Row(
                                           children: [
-                                            const Gap(5),
-                                            V3Focus(
-                                              identifier:
-                                                  'v3_qa_select_screen_audio',
-                                              child: Checkbox(
-                                                semanticLabel: S
-                                                    .of(context)
-                                                    .v3_lbl_select_screen_audio,
-                                                value: _systemAudio,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          2.0),
-                                                ),
-                                                side: WidgetStateBorderSide
-                                                    .resolveWith(
-                                                  (states) => BorderSide(
-                                                      width: 1.0,
-                                                      color: (!isVirtualAudioMissing)
-                                                          ? context.tokens.color
-                                                              .vsdswColorPrimary
-                                                          : context.tokens.color
-                                                              .vsdswColorDisabled),
-                                                ),
-                                                onChanged:
-                                                    (!isVirtualAudioMissing)
-                                                        ? (bool? value) {
-                                                            if (!context
-                                                                .mounted) {
-                                                              return;
-                                                            }
-                                                            setState(() {
-                                                              _systemAudio =
-                                                                  value!;
-                                                            });
-                                                          }
-                                                        : null,
-                                              ),
+                                            const Gap(8),
+                                            SvgPicture.asset(
+                                              width: 16,
+                                              height: 16,
+                                              'assets/images/v3_ic_audio_driver_warning.svg',
                                             ),
                                             const Gap(8),
                                             Flexible(
                                               child: V3AutoHyphenatingText(
                                                 S.current
-                                                    .v3_present_select_screen_share_audio,
+                                                    .v3_present_select_screen_mac_audio_driver,
                                                 style: TextStyle(
-                                                    fontSize: 16,
+                                                    fontSize: 14,
                                                     fontFamily: 'Inter',
-                                                    color: (!isVirtualAudioMissing)
-                                                        ? context.tokens.color
-                                                            .vsdswColorOnSurface
-                                                        : context.tokens.color
-                                                            .vsdswColorDisabled),
+                                                    color: context.tokens.color
+                                                        .vsdswColorWarning),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        if (isVirtualAudioMissing)
-                                          MergeSemantics(
-                                            child: Row(
-                                              children: [
-                                                const Gap(8),
-                                                SvgPicture.asset(
-                                                  width: 16,
-                                                  height: 16,
-                                                  'assets/images/v3_ic_audio_driver_warning.svg',
-                                                ),
-                                                const Gap(8),
-                                                Flexible(
-                                                  child: V3AutoHyphenatingText(
-                                                    S.current
-                                                        .v3_present_select_screen_mac_audio_driver,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily: 'Inter',
-                                                        color: context
-                                                            .tokens
-                                                            .color
-                                                            .vsdswColorWarning),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          createButton(
-                                            label: S
-                                                .of(context)
-                                                .v3_lbl_select_screen_cancel,
-                                            identifier:
-                                                'v3_qa_select_screen_cancel',
-                                            text: S
-                                                .of(context)
-                                                .present_select_screen_cancel,
-                                            textColor: context
-                                                .tokens.color.vsdswColorPrimary,
-                                            backgroundColor: Colors.transparent,
-                                            borderColor: context.tokens.color
-                                                .vsdswColorSecondary,
-                                            onPressed: () => cancel(),
-                                          ),
-                                          createButton(
-                                            label: S
-                                                .of(context)
-                                                .v3_lbl_select_screen_share,
-                                            identifier:
-                                                'v3_qa_select_screen_share',
-                                            text: S.current
-                                                .v3_main_select_role_share,
-                                            textColor: sourceSelected
-                                                ? context.tokens.color
-                                                    .vsdswColorOnPrimary
-                                                : context.tokens.color
-                                                    .vsdswColorOnDisabled,
-                                            backgroundColor: sourceSelected
-                                                ? context.tokens.color
-                                                    .vsdswColorPrimary
-                                                : context.tokens.color
-                                                    .vsdswColorDisabled,
-                                            onPressed: () {
-                                              if (!sourceSelected ||
-                                                  _isSubmitting) {
-                                                return;
-                                              }
-                                              _isSubmitting = true;
-                                              ChannelProvider channelProvider =
-                                                  Provider.of<ChannelProvider>(
-                                                      context,
-                                                      listen: false);
-                                              if (channelProvider
-                                                  .isConnectAvailable()) {
-                                                _ok(
-                                                    _selectedSource,
-                                                    _systemAudio,
-                                                    _isExtensionSelected);
-                                              } else {
-                                                _isSubmitting = false;
-                                                Toast.makeFeatureReconnectToast(
-                                                    channelProvider
-                                                        .reconnectState,
-                                                    channelProvider
-                                                                .reconnectState ==
-                                                            ChannelReconnectState
-                                                                .reconnecting
-                                                        ? S.current
-                                                            .main_feature_reconnecting_toast
-                                                        : S.current
-                                                            .main_feature_reconnect_fail_toast);
-                                              }
-                                            },
-                                          ),
-                                        ],
+                                      ),
+                                  ],
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      _createButton(
+                                        label: S
+                                            .of(context)
+                                            .v3_lbl_select_screen_cancel,
+                                        identifier:
+                                            'v3_qa_select_screen_cancel',
+                                        text: S
+                                            .of(context)
+                                            .present_select_screen_cancel,
+                                        textColor: context
+                                            .tokens.color.vsdswColorPrimary,
+                                        backgroundColor: Colors.transparent,
+                                        borderColor: context
+                                            .tokens.color.vsdswColorSecondary,
+                                        onPressed: () => _cancel(),
+                                      ),
+                                      _createButton(
+                                        label: S
+                                            .of(context)
+                                            .v3_lbl_select_screen_share,
+                                        identifier: 'v3_qa_select_screen_share',
+                                        text:
+                                            S.current.v3_main_select_role_share,
+                                        textColor: sourceSelected
+                                            ? context.tokens.color
+                                                .vsdswColorOnPrimary
+                                            : context.tokens.color
+                                                .vsdswColorOnDisabled,
+                                        backgroundColor: sourceSelected
+                                            ? context
+                                                .tokens.color.vsdswColorPrimary
+                                            : context.tokens.color
+                                                .vsdswColorDisabled,
+                                        onPressed: () {
+                                          if (!sourceSelected ||
+                                              _isSubmitting) {
+                                            return;
+                                          }
+                                          setState(() {
+                                            _isSubmitting = true;
+                                          });
+                                          ChannelProvider channelProvider =
+                                              Provider.of<ChannelProvider>(
+                                                  context,
+                                                  listen: false);
+                                          if (channelProvider
+                                              .isConnectAvailable()) {
+                                            _ok(_selectedSource, _systemAudio,
+                                                _isExtensionSelected);
+                                          } else {
+                                            setState(() {
+                                              _isSubmitting = false;
+                                            });
+                                            Toast.makeFeatureReconnectToast(
+                                                channelProvider.reconnectState,
+                                                channelProvider
+                                                            .reconnectState ==
+                                                        ChannelReconnectState
+                                                            .reconnecting
+                                                    ? S.current
+                                                        .main_feature_reconnecting_toast
+                                                    : S.current
+                                                        .main_feature_reconnect_fail_toast);
+                                          }
+                                        },
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          );
-                        }),
+                            ),
+                          ),
+                        ],
                       );
-                    },
+                    }),
                   ),
                 ),
               ),
@@ -664,7 +662,7 @@ class SelectScreenDialog extends Dialog {
     );
   }
 
-  Widget buildTabWidget(BuildContext context, String text,
+  Widget _buildTabWidget(BuildContext context, String text,
       {bool enable = true}) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -695,7 +693,7 @@ class SelectScreenDialog extends Dialog {
     );
   }
 
-  Widget createButton(
+  Widget _createButton(
       {required String label,
       required String identifier,
       required String text,
@@ -747,13 +745,9 @@ class SelectScreenDialog extends Dialog {
     );
   }
 
-  void cancel() async {
-    _timer?.cancel();
-    for (var element in _subscriptions) {
-      await element.cancel();
-    }
-    if (ctx.mounted) {
-      Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
+  void _cancel() {
+    if (mounted) {
+      Navigator.pop<CustomDesktopCaptureSource>(context, null);
     }
   }
 
@@ -800,7 +794,7 @@ class SelectScreenDialog extends Dialog {
     final startResult = await FlutterVirtualDisplay.instance
         .startVirtualDisplay(pixelWidth, pixelHeight);
 
-    if (!startResult!) {
+    if (startResult != true) {
       log.warning('Failed to start virtual display');
       if (!completer.isCompleted) {
         completer.complete(false);
@@ -910,30 +904,26 @@ class SelectScreenDialog extends Dialog {
       target: _getShareName(selectedSource, isExtensionSelected),
     );
 
-    _timer?.cancel();
-    for (var element in _subscriptions) {
-      await element.cancel();
-    }
     if (isExtensionSelected) {
       await _startAndWaitForVirtualDisplay();
       _selectedSource =
           (await desktopCapturer.getSources(types: [SourceType.Screen])).last;
-      if (ctx.mounted == false) {
+      if (!mounted) {
         return;
       }
       Navigator.pop<CustomDesktopCaptureSource>(
-          ctx,
+          context,
           CustomDesktopCaptureSource(
               _selectedSource, systemAudio, isExtensionSelected));
-      annotationModel.selectedSource = null;
+      widget.annotationModel.selectedSource = null;
     } else {
-      annotationModel.selectedSource = selectedSource;
-      annotationModel.setScreenIndex(selectedSource?.name ?? '');
-      if (ctx.mounted == false) {
+      widget.annotationModel.selectedSource = selectedSource;
+      widget.annotationModel.setScreenIndex(selectedSource?.name ?? '');
+      if (!mounted) {
         return;
       }
       Navigator.pop<CustomDesktopCaptureSource>(
-          ctx,
+          context,
           CustomDesktopCaptureSource(
               selectedSource, systemAudio, isExtensionSelected));
     }
@@ -944,13 +934,19 @@ class SelectScreenDialog extends Dialog {
       final sources = await desktopCapturer.getSources(types: sourceTypes);
       _timer?.cancel();
       _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-        desktopCapturer.updateSources(types: sourceTypes);
+        if (mounted) {
+          desktopCapturer.updateSources(types: sourceTypes);
+        } else {
+          timer.cancel();
+        }
       });
       _sources.clear();
       for (var element in sources) {
         _sources[element.id] = element;
       }
-      _stateSetter?.call(() {});
+      if (mounted) {
+        setState(() {});
+      }
       return;
     } catch (e, stackTrace) {
       log.severe('Failed to capture desktop', e, stackTrace);
@@ -973,8 +969,11 @@ class SelectScreenDialog extends Dialog {
             (map) {
               return ThumbnailWidget(
                 onTap: (source) {
-                  _selectedSource = source;
-                  _stateSetter?.call(() {});
+                  if (mounted) {
+                    setState(() {
+                      _selectedSource = source;
+                    });
+                  }
                 },
                 source: map.value,
                 selected: _selectedSource?.id == map.value.id,
