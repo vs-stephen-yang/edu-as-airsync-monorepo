@@ -51,6 +51,8 @@ class HybridConnectionList {
     'IFP53',
     'IFP51',
     'IFP63',
+    'IFP35',
+    'IFP41',
   ];
 
   // the following device support 6 split screen
