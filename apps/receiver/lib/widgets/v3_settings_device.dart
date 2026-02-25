@@ -7,6 +7,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_overlay_tab.dart';
@@ -431,10 +432,17 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           isLocked: settingsProvider.isDeviceSettingLock,
           title: S.of(context).v3_settings_moderator_mode,
           onTap: () async {
-            channelProvider.setModeratorMode(!channelProvider.moderatorMode);
-            // when the user want to set moderator moe to close, then remove all Presenters
-            if (channelProvider.moderatorMode) {
-              HybridConnectionList().removeAllPresenters();
+            final newValue = !channelProvider.moderatorMode;
+            channelProvider.setModeratorMode(newValue);
+            // when the user want to set moderator mode to close, then remove all Presenters
+            if (!newValue) {
+              MirrorStateProvider mirrorStateProvider =
+                  Provider.of<MirrorStateProvider>(context, listen: false);
+              await mirrorStateProvider.stopAllMirror();
+              await HybridConnectionList().removeAllPresenters();
+              if (context.mounted) {
+                await mirrorStateProvider.restartMirror();
+              }
             }
           },
         );
