@@ -404,3 +404,35 @@ jobs:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
           artifact: 'ReleaseNote'
+
+      # Clean up after generating release note
+      - task: PowerShell@2
+        displayName: Clean up after generating release note
+        condition: always()
+        inputs:
+          targetType: "inline"
+          script: |
+            Write-Host "Cleaning up after generating release note..."
+
+            # Clean downloaded checksum files
+            if (Test-Path "$(Pipeline.Workspace)/md5") {
+              Remove-Item -Path "$(Pipeline.Workspace)/md5" -Recurse -Force
+              Write-Host "Removed $(Pipeline.Workspace)/md5 directory"
+            }
+
+            # Clean generated files in source directory
+            $filesToCleanup = "RELEASE_NOTE_PUBLIC.md", "checksums.md5"
+            foreach ($file in $filesToCleanup) {
+              if (Test-Path $file) {
+                Remove-Item -Path $file -Force
+                Write-Host "Removed $file"
+              }
+            }
+
+            # Clean staging directory
+            if (Test-Path "$(Build.ArtifactStagingDirectory)") {
+              Remove-Item -Path "$(Build.ArtifactStagingDirectory)/*" -Recurse -Force
+              Write-Host "Cleaned ArtifactStagingDirectory"
+            }
+
+            Write-Host "Cleanup completed"
