@@ -23,7 +23,7 @@ dependencies:
   js: ^0.6.5
   flutter_golang_server:
     git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server
+      url: https://github.com/Viewsonic-EDU/edu-as-golang-server
       ref: release-3.8.0
 
 dev_dependencies:
