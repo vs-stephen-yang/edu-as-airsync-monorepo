@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "Moderatora režīms ir ieslēgts",
   "v3_present_joined_before_moderator_on_description": "Moderators ir ieslēgts. Lūdzu, izveidojiet savienojumu vēlreiz.",
   "v3_present_joined_before_moderator_on_action": "Labi",
-  "v3_lbl_v3_exit_close": "Aizvērt"
+  "v3_lbl_v3_exit_close": "Aizvērt",
+  "v3_lbl_sharing_annotation_start": "Sākt anotāciju",
+  "v3_lbl_sharing_annotation_stop": "Anotācijas apturēšana"
 }

@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "Moderaattori on käytössä",
   "v3_present_joined_before_moderator_on_description": "Moderaattori on käytössä, ole hyvä ja yhdistä uudelleen.",
   "v3_present_joined_before_moderator_on_action": "OK",
-  "v3_lbl_v3_exit_close": "Sulje"
+  "v3_lbl_v3_exit_close": "Sulje",
+  "v3_lbl_sharing_annotation_start": "Aloita merkintä",
+  "v3_lbl_sharing_annotation_stop": "Lopeta merkintä"
 }

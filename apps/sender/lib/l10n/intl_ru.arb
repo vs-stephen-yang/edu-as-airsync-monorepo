@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "Режим модератора включён",
   "v3_present_joined_before_moderator_on_description": "Режим модератора включён. Пожалуйста, переподключитесь.",
   "v3_present_joined_before_moderator_on_action": "OK",
-  "v3_lbl_v3_exit_close": "Закрыть"
+  "v3_lbl_v3_exit_close": "Закрыть",
+  "v3_lbl_sharing_annotation_start": "Начать аннотацию",
+  "v3_lbl_sharing_annotation_stop": "Остановить аннотацию"
 }

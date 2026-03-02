@@ -314,7 +314,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
       "アップデートのメッセージを閉じる",
     ),
-    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("一時停止オフ"),
+        "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
+          "注釈を開始",
+        ),
+        "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
+          "注釈を停止",
+        ),
+        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("一時停止オフ"),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("一時停止オン"),
     "v3_lbl_sharing_stop": MessageLookupByLibrary.simpleMessage("共有を停止"),
     "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
