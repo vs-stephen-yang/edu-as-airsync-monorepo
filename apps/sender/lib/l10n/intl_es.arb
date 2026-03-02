@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "El modo moderador está activado",
   "v3_present_joined_before_moderator_on_description": "El modo moderador está activado. Por favor, vuelve a conectarte.",
   "v3_present_joined_before_moderator_on_action": "Aceptar",
-  "v3_lbl_v3_exit_close": "Cerrar"
+  "v3_lbl_v3_exit_close": "Cerrar",
+  "v3_lbl_sharing_annotation_start": "Iniciar anotación",
+  "v3_lbl_sharing_annotation_stop": "Detener anotación"
 }

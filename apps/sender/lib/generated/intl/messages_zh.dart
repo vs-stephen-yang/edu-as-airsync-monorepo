@@ -287,7 +287,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
       "關閉更新選單",
     ),
-    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("結束暫停"),
+        "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
+          "開始註解",
+        ),
+        "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
+          "停止註解",
+        ),
+        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("結束暫停"),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("暫停"),
     "v3_lbl_sharing_stop": MessageLookupByLibrary.simpleMessage("停止分享"),
     "v3_lbl_streaming_expand_button": MessageLookupByLibrary.simpleMessage(
@@ -529,9 +535,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "開源許可證",
     ),
     "v3_setting_privacy_policy": MessageLookupByLibrary.simpleMessage("隱私政策"),
-    "v3_setting_privacy_policy_description":
-        MessageLookupByLibrary.simpleMessage("ViewSonic 致力於保護您的個人隱私。以下隱私權政策"),
-    "v3_setting_software_update": MessageLookupByLibrary.simpleMessage("軟體更新"),
+        "v3_setting_privacy_policy_description":
+            MessageLookupByLibrary.simpleMessage(
+          "ViewSonic致力於保護您的個人隱私。以下隱私權政策將帶您了解ViewSonic會如何於您瀏覽本網站時蒐集並處理您的資料。\nViewSonic透過加密技術並嚴格遵守法規來保護您的資料，確保不被不明人士存取。\n若您使用本網站，則代表您了解並同意ViewSonic蒐集並處理您的資料。\n您在ViewSonic.com綁定或連結的其他網站可能擁有與ViewSonic不同的隱私權政策，請參照該網站的隱私權來了解這些網站如何蒐集並處理您的資料。\n您可以點擊以下連結來了解更多關於ViewSonic的隱私權政策：",
+        ),
+        "v3_setting_software_update": MessageLookupByLibrary.simpleMessage("軟體更新"),
     "v3_setting_software_update_deny_action":
         MessageLookupByLibrary.simpleMessage("稍後更新"),
     "v3_setting_software_update_description":

@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "モデレーターモードが有効です",
   "v3_present_joined_before_moderator_on_description": "モデレーターが有効です。再接続してください。",
   "v3_present_joined_before_moderator_on_action": "OK",
-  "v3_lbl_v3_exit_close": "終了"
+  "v3_lbl_v3_exit_close": "終了",
+  "v3_lbl_sharing_annotation_start": "注釈を開始",
+  "v3_lbl_sharing_annotation_stop": "注釈を停止"
 }

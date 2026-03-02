@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "Moderaator on sisse lülitatud",
   "v3_present_joined_before_moderator_on_description": "Moderaator on sisse lülitatud. Palun ühenduge uuesti.",
   "v3_present_joined_before_moderator_on_action": "OK",
-  "v3_lbl_v3_exit_close": "Sulgema"
+  "v3_lbl_v3_exit_close": "Sulgema",
+  "v3_lbl_sharing_annotation_start": "Alusta annotatsiooni",
+  "v3_lbl_sharing_annotation_stop": "Lõpeta annotatsioon"
 }

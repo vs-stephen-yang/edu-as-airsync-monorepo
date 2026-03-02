@@ -267,5 +267,7 @@
   "v3_present_joined_before_moderator_on": "Tryb moderatora jest włączony",
   "v3_present_joined_before_moderator_on_description": "Tryb moderatora jest włączony. Proszę połączyć się ponownie.",
   "v3_present_joined_before_moderator_on_action": "OK",
-  "v3_lbl_v3_exit_close": "Zamknąć"
+  "v3_lbl_v3_exit_close": "Zamknąć",
+  "v3_lbl_sharing_annotation_start": "Rozpocznij adnotację",
+  "v3_lbl_sharing_annotation_stop": "Zatrzymaj adnotację"
 }

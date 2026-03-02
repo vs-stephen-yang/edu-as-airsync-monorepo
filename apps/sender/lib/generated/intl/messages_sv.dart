@@ -378,7 +378,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
       "Stäng dialogrutan för uppdatering",
     ),
-    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("Paus AV"),
+        "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
+          "Starta annotering",
+        ),
+        "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
+          "Avsluta annotering",
+        ),
+        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage("Paus AV"),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("Paus PÅ"),
     "v3_lbl_sharing_stop": MessageLookupByLibrary.simpleMessage(
       "Stopp för delning",

@@ -385,7 +385,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_lbl_setting_update_close": MessageLookupByLibrary.simpleMessage(
       "Sulge värskendusdialoog",
     ),
-    "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_sharing_annotation_start": MessageLookupByLibrary.simpleMessage(
+          "Alusta annotatsiooni",
+        ),
+        "v3_lbl_sharing_annotation_stop": MessageLookupByLibrary.simpleMessage(
+          "Lõpeta annotatsioon",
+        ),
+        "v3_lbl_sharing_pause_off": MessageLookupByLibrary.simpleMessage(
       "Paus välja lülitatud",
     ),
     "v3_lbl_sharing_pause_on": MessageLookupByLibrary.simpleMessage("Peatage"),
