@@ -302,12 +302,15 @@ class ExpandedContentWidget extends StatelessWidget {
       controller: sc,
       child: SingleChildScrollView(
         controller: sc,
-        child: V3AutoHyphenatingText(
-          text,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: context.tokens.color.vsdswColorOnSurface,
+        child: Container(
+          margin: EdgeInsets.only(right: 12),
+          child: V3AutoHyphenatingText(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: context.tokens.color.vsdswColorOnSurface,
+            ),
           ),
         ),
       ),
