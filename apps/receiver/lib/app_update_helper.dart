@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:app_ota_flutter/model/ota_info.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -36,6 +37,13 @@ class AppUpdateHelper implements AppUpdateListener {
   int _lastLoggedPercent = -1;
 
   get otaFlavor => _otaFlavor;
+
+  // 定義每個型號對應的最低支援日期版本 (白名單)
+  final Map<String, int> _minSupportedVersions = {
+    "IFP35": 20260129,
+    "IFP41": 20260129,
+    "IFP51": 20260205,
+  };
 
   ensureInitialized(ConfigSettings configSettings) async {
     if (configSettings.isDevelopEnvironment) {
@@ -114,14 +122,63 @@ class AppUpdateHelper implements AppUpdateListener {
     _isCheckingUpdate = true;
     log.info('[OTA] checkAppUpdate: Starting OTA process');
 
-    if (_otaFlavor != OtaFlavor.edla) {
-      await AppOtaFlutter().startOTAProcess(
-        OtaApp.display,
-        _otaEnvironment,
-        _otaFlavor,
-        isStartupCheck: isStartupCheck,
-      );
+    String deviceType = '';
+    String? fwVersion;
+    bool isEDLASupportOTA = false;
+    // 安全解析當前設備的版本號
+    try {
+      deviceType = await DeviceInfoVs.deviceType ?? '';
+      fwVersion = await DeviceInfoVs.getFirmwareVersion;
+      log.info(
+          '[OTA] Initial check - deviceType: $deviceType, fwVersion: $fwVersion');
+      // 核心判斷邏輯 (封裝起來更乾淨)
+      isEDLASupportOTA = checkEDLASupport(deviceType, fwVersion);
+      log.info('[OTA] isEDLASupportOTA: $isEDLASupportOTA');
+    } catch (e, stack) {
+      // 即使拋出異常，我們也不 return，讓非 edla 的 flavor 有機會繼續
+      log.warning('[OTA] Failed to get device info: $e', stack);
     }
+
+    // 如果是 edla 且不符合版本支援，則跳過更新並重置 flag
+    if (_otaFlavor == OtaFlavor.edla && !isEDLASupportOTA) {
+      log.info('[OTA] EDLA device version not supported, skipping.');
+      _isCheckingUpdate = false;
+      return;
+    }
+
+    await AppOtaFlutter().startOTAProcess(
+      OtaApp.display,
+      _otaEnvironment,
+      _otaFlavor,
+      isStartupCheck: isStartupCheck,
+      fwVersion: fwVersion,
+    );
+  }
+
+  // 檢查邏輯：
+  // - 檢查型號是否在白名單內
+  // - 檢查當前版本是否大於或等於該型號規定的版本
+  bool checkEDLASupport(String type, String? version) {
+    // A. 如果版本為 null 或空字串，直接判定不支援
+    if (version == null || version.isEmpty) return false;
+
+    // B. 嘗試轉換日期字串為數字
+    // 如果字串包含非數字（如 "v1.0"），tryParse 會回傳 null
+    final int? currentVersion = int.tryParse(version);
+    if (currentVersion == null) {
+      log.warning('[OTA] Invalid fwVersion format: $version');
+      return false;
+    }
+
+    // C. 檢查型號是否存在於清單中
+    final int? minVersion = _minSupportedVersions[type];
+    if (minVersion == null) {
+      log.info('[OTA] Device type $type not in EDLA whitelist');
+      return false;
+    }
+
+    // D. 最終日期比較
+    return currentVersion >= minVersion;
   }
 
   // 重置檢查標記（在下載完成/失敗/無更新時調用）
