@@ -401,9 +401,15 @@ class SfuPublisher {
       // Create local stream
       _localStream =
           await LocalStream.getDisplayMedia(constraints: constraints);
+      final videoTracks = _localStream!.stream.getVideoTracks();
+      log.info('SfuPublisher: Local stream acquired, videoTracks=${videoTracks.length}');
+      if (videoTracks.isEmpty) {
+        log.warning('SfuPublisher: No video tracks in local stream, publish will have no video');
+      }
 
       // Publish stream
       await _ionSfuClient?.publish(_localStream!);
+      log.info('SfuPublisher: Stream published to SFU');
 
       // Start stats monitoring
       _startStatsTimer();
