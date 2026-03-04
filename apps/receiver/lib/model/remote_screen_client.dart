@@ -10,6 +10,7 @@ import 'package:display_flutter/model/video_track_manager.dart';
 import 'package:display_flutter/protoc/event.pb.dart' as pb;
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
+import 'package:display_flutter/utility/cast_to_boards_session_logger.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:display_flutter/utility/rtc_fps_zero_detector.dart';
@@ -320,6 +321,7 @@ class RtcScreenClient extends RemoteScreenClient {
 
       switch (state) {
         case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
+          unawaited(castToBoardsSessionLogger.upload('WebRTC connection failed'));
           // Check FPS on disconnection
           _fpsZeroDetector?.checkOnDisconnect();
           onClose();
@@ -352,6 +354,10 @@ class RtcScreenClient extends RemoteScreenClient {
 
     _client!.onSignalClose = (int code, String? reason) {
       log.warning('Remote screen: signal closed, code=$code, reason=$reason');
+      if (code != 1000) {
+        unawaited(castToBoardsSessionLogger.upload(
+            'Signal closed abnormally: code=$code, reason=$reason'));
+      }
       onClose();
     };
   }
@@ -378,6 +384,10 @@ class RtcScreenClient extends RemoteScreenClient {
     _logUploader?.upload(
       'Remote screen FPS is zero. Sample count: $sampleCount, Duration: $duration, Reason: $reason',
     );
+
+    // Upload full session log for diagnosis
+    unawaited(castToBoardsSessionLogger.upload(
+        'Member FPS zero: sampleCount=$sampleCount, duration=$duration, reason=$reason'));
   }
 
   void handleSignalMessage(String signal) {

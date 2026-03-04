@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
+import 'package:display_flutter/utility/cast_to_boards_session_logger.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:uuid/uuid.dart';
@@ -143,6 +146,8 @@ class DisplayGroupMember {
           _hostFpsZeroLogUploader.upload(
             'Host received FPS zero request from Display Group member. Display code: ${_info.displayCode}',
           );
+          unawaited(castToBoardsSessionLogger.upload(
+              'Member reported FPS zero, displayCode=${_info.displayCode}'));
         }
 
         break;
