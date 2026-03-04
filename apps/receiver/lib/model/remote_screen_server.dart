@@ -12,6 +12,7 @@ import 'package:display_flutter/model/touch_event_manager.dart';
 import 'package:display_flutter/model/zero_fps_detector.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
+import 'package:display_flutter/utility/cast_to_boards_session_logger.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
@@ -134,6 +135,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
         return true;
       }
 
+      castToBoardsSessionLogger.start('host');
       _ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
       roomId = _generateRoomId();
       log.info('Start remote screen publisher for room $roomId');
@@ -178,6 +180,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       }
       _zeroFpsDetector?.dispose();
       _zeroFpsDetector = null;
+      castToBoardsSessionLogger.stop();
     });
   }
 
@@ -235,6 +238,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   void _handleRecreateFailure() {
     log.info('Notifying UI that recreate failed, shutting down server');
+    unawaited(castToBoardsSessionLogger.upload('Host recreate failed after max attempts'));
     callback?.onRecreatePublisherFailure.call();
     unawaited(stopRemoteScreenPublisher());
   }

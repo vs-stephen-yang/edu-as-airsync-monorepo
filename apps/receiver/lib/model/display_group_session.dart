@@ -1,6 +1,7 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/multicast_info.dart';
 import 'package:display_flutter/model/remote_screen_client.dart';
+import 'package:display_flutter/utility/cast_to_boards_session_logger.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/log_uploader_with_cooldown.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class DisplayGroupSession {
     this.onWebRtcClose,
     this.onRemoteScreenStatusChange,
   }) {
+    castToBoardsSessionLogger.start('member');
     _channel.messageStream.listen(_onChannelMessage);
     _channel.stateStream.listen((ChannelState state) {
       onChannelStateChange?.call(state);
@@ -60,6 +62,7 @@ class DisplayGroupSession {
 
   Future<void> stop({required String reason}) async {
     log.info('DisplayGroupSession: Stopping, reason=$reason');
+    castToBoardsSessionLogger.stop();
     _isVideoAvailable = false;
     await _remoteScreenClient?.remove();
     if (_channel.state != ChannelState.closed) {
