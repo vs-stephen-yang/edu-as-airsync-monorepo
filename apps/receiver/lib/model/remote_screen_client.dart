@@ -276,6 +276,7 @@ class RtcScreenClient extends RemoteScreenClient {
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
+      log.info('Remote screen: ontrack fired, kind=${track.kind}, trackId=${track.id}');
       if (track.kind == 'video') {
         // Initialize track manager if not exists
         _trackManager ??= VideoTrackManager(
@@ -299,7 +300,10 @@ class RtcScreenClient extends RemoteScreenClient {
           // Single track mode: render immediately and start monitoring
           log.info('Remote screen: Single track mode - rendering immediately');
           await _remoteScreenRenderer.initialize();
+          log.info('Remote screen: Renderer initialized, textureId=${_remoteScreenRenderer.textureId}');
           _remoteScreenRenderer.srcObject = remoteStream.stream;
+          log.info('Remote screen: srcObject set, streamId=${remoteStream.stream.id}, '
+              'videoTracks=${remoteStream.stream.getVideoTracks().length}');
 
           // Start track monitoring
           _startTrackMonitoring();
@@ -321,6 +325,7 @@ class RtcScreenClient extends RemoteScreenClient {
           onClose();
           break;
         case RTCPeerConnectionState.RTCPeerConnectionStateDisconnected:
+          log.warning('Remote screen: WebRTC disconnected');
           // Check FPS on disconnection
           _fpsZeroDetector?.checkOnDisconnect();
           break;
@@ -328,6 +333,7 @@ class RtcScreenClient extends RemoteScreenClient {
           // Stats monitoring is now handled in ontrack callback
           // No need to start it here anymore
           if (_isFirstConnected) {
+            log.info('Remote screen: WebRTC connected, ontrack fired=${_trackManager != null}');
             onTrack();
             _isFirstConnected = false;
           }
@@ -345,7 +351,7 @@ class RtcScreenClient extends RemoteScreenClient {
     };
 
     _client!.onSignalClose = (int code, String? reason) {
-      log.info('Remote screen: signal closed');
+      log.warning('Remote screen: signal closed, code=$code, reason=$reason');
       onClose();
     };
   }
