@@ -2,6 +2,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/remote_screen_provider.dart';
+import 'package:display_flutter/utility/log.dart';
 
 abstract class DisplayGroupMediator {
   RemoteScreenType getRemoteScreenType();
@@ -19,6 +20,7 @@ class DisplayGroupMediatorObject implements DisplayGroupMediator {
   @override
   Future<RemoteScreenConnector?> createRemoteScreenConnector(
       Channel channel, StartRemoteScreenMessage message) async {
+    log.info('DisplayGroupMediator: Creating connector for sessionId=${message.sessionId}');
     final connector = await _remoteScreenProvider.createRemoteScreenConnector(
         channel, JoinDisplayMessage('123'));
 
@@ -29,6 +31,7 @@ class DisplayGroupMediatorObject implements DisplayGroupMediator {
       iceServers,
     );
 
+    log.info('DisplayGroupMediator: Connector created, type=${getRemoteScreenType()}');
     return connector;
   }
 

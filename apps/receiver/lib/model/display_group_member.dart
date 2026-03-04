@@ -77,14 +77,17 @@ class DisplayGroupMember {
   void _onChannelStateChange(ChannelState state) {
     switch (state) {
       case ChannelState.connected:
+        log.info('DisplayGroupMember [${_info.displayCode}]: Channel connected');
         break;
       case ChannelState.closed:
+        log.info('DisplayGroupMember [${_info.displayCode}]: Channel closed, reason=${_channel.closeReason?.code}');
         // The following situations require re-establishing the connection:
         // 1. When disconnected due to network issues
         // 2. When an old DisplayGroupSession from “Cast to Board Member” has not been cleared and sent a remote close
         if (_channel.closeReason?.code == ChannelCloseCode.networkError ||
             _channel.closeReason?.code == ChannelCloseCode.heartbeatTimeout ||
             _channel.closeReason?.code == ChannelCloseCode.remoteClose) {
+          log.info('DisplayGroupMember [${_info.displayCode}]: Reconnecting...');
           newChannel();
         }
         break;
@@ -106,8 +109,10 @@ class DisplayGroupMember {
         // 根據狀態進行相應處理
         switch (status) {
           case 'accept':
+            log.info('DisplayGroupMember [${_info.displayCode}]: Member accepted invitation');
             break;
           case 'reject':
+            log.info('DisplayGroupMember [${_info.displayCode}]: Member rejected invitation');
             stayOnList = true;
             onRejected();
             break;
@@ -151,6 +156,7 @@ class DisplayGroupMember {
   }
 
   void _sendInviteDisplayGroup() {
+    log.info('DisplayGroupMember [${_info.displayCode}]: Sending invite');
     final message = InviteDisplayGroupMessage(
       hostName: AppPreferences().instanceName,
       displayCode: '',
@@ -160,6 +166,7 @@ class DisplayGroupMember {
   }
 
   void stop() {
+    log.info('DisplayGroupMember [${_info.displayCode}]: Stopping');
     if (_channel.state == ChannelState.connected) {
       // Send stop message to trigger FPS check on receiver side
       // before closing the channel

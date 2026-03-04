@@ -47,16 +47,19 @@ class DisplayGroupSession {
   }
 
   void accept(String hostName) {
+    log.info('DisplayGroupSession: User accepted invitation from $hostName');
     this.hostName = hostName;
     _channel.send(InviteDisplayGroupResultMessage(status: 'accept'));
     _startRemoteScreen();
   }
 
   void reject() {
+    log.info('DisplayGroupSession: User rejected invitation');
     _channel.send(InviteDisplayGroupResultMessage(status: 'reject'));
   }
 
   Future<void> stop({required String reason}) async {
+    log.info('DisplayGroupSession: Stopping, reason=$reason');
     _isVideoAvailable = false;
     await _remoteScreenClient?.remove();
     if (_channel.state != ChannelState.closed) {
@@ -115,12 +118,14 @@ class DisplayGroupSession {
 
   void _startRemoteScreen() {
     final sessionId = Uuid().v4();
+    log.info('DisplayGroupSession: Sending StartRemoteScreen, sessionId=$sessionId');
     _channel.send(StartRemoteScreenMessage(sessionId));
   }
 
   Future<void> _onRemoteScreenInfo(
     RemoteScreenInfoMessage infoMessage,
   ) async {
+    log.info('DisplayGroupSession: Received RemoteScreenInfo, roomId=${infoMessage.ionSfuRoom?.roomId}, signalUrl=${infoMessage.ionSfuRoom?.signalUrl}');
     final rtcClient = RtcScreenClient(
       _channel,
       infoMessage.sessionId,
