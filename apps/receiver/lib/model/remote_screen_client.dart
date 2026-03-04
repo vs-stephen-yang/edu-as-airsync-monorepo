@@ -243,9 +243,11 @@ class RtcScreenClient extends RemoteScreenClient {
 
   Signal _createSignal(String? url) {
     if (url == null) {
+      log.info('RtcScreenClient: Using Proxy (channel) signaling mode');
       // Signaling through the channel
       return _createChannelSignal();
     } else {
+      log.info('RtcScreenClient: Using Direct signaling mode, url=$url');
       // Signaling through a separate websocket connection
       // TODO: Retain for backward compatibility. Plan to deprecate and remove in future versions.
       return _createWebsocketSignal(url);
@@ -259,7 +261,7 @@ class RtcScreenClient extends RemoteScreenClient {
     Function() onTrack,
     Function() onClose,
   ) async {
-    log.info('Remote screen: Create client');
+    log.info('Remote screen: Create client, roomId=$roomId, iceServers count=${iceServers?.length ?? 0}');
 
     final signal = _createSignal(url);
 
