@@ -365,10 +365,14 @@ class V3UpdateManager {
                       }
                       if (Platform.isMacOS) {
                         if (VersionUtil.isOpenVersion) {
-                          String feedURL = context.read<AppConfig>()
+                          String feedURL = context
+                              .read<AppConfig>()
                               .settings
                               .appUpdateMacAppcastUrl;
+                          //  BUG 102750 套件需要init時間
+                          await Future.delayed(Duration(milliseconds: 500));
                           await autoUpdater.setFeedURL(feedURL);
+                          await Future.delayed(Duration(milliseconds: 500));
                           await autoUpdater.checkForUpdates();
                         } else {
                           unawaited(launchUrl(Uri.parse(
