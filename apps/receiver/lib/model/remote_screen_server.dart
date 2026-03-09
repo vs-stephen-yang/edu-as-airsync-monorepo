@@ -599,6 +599,13 @@ class SfuPublisher {
     _videoOutboundStatsHistory.add(stats);
     final fps = stats.framesSentPerSecond ?? 0;
     _onFpsStatsReceived(fps);
+    log.info('SfuPublisher: Stats - '
+        'FPS=${stats.framesSentPerSecond}, '
+        'bitrate=${stats.bytesSentPerSecond}, '
+        'available=${stats.availableOutgoingBitrate?.toStringAsFixed(0)}, '
+        'limit=${stats.qualityLimitationReason}, '
+        'encodeTime=${stats.encodeTimeAvgMs?.toStringAsFixed(1)}ms, '
+        'retransmit/s=${stats.retransmittedPacketsSentPerSecond?.toStringAsFixed(1)}');
   }
 
   List<RtcVideoOutboundStats> getVideoOutboundStatsHistory() {

@@ -112,9 +112,16 @@ class VideoTrackManager {
             (RtcVideoInboundStats stats) {
               trackInfo.latestStats = stats;
               log.info(
-                  'VideoTrackManager: Track stats - $trackId: FPS=${stats.framesDecodedPerSecond}, '
+                  'VideoTrackManager: Track stats - $trackId: '
+                  'FPS=${stats.framesDecodedPerSecond}, '
                   'resolution=${stats.frameWidth}x${stats.frameHeight}, '
-                  'bitrate=${stats.bytesPerSecond}');
+                  'bitrate=${stats.bytesPerSecond}, '
+                  'loss=${stats.packetLossRate?.toStringAsFixed(3)}, '
+                  'jitter=${stats.jitter?.toStringAsFixed(3)}, '
+                  'rtt=${stats.currentRoundTripTime?.toStringAsFixed(3)}, '
+                  'freeze/s=${stats.freezeCountPerSecond}, '
+                  'nack/s=${stats.nackCountPerSecond}, '
+                  'pli/s=${stats.pliCountPerSecond}');
 
               // Notify only if this is the active track
               if (trackId == _activeTrackId) {
