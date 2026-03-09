@@ -71,7 +71,7 @@ class DisplayGroupMember {
     return WebSocketClientConnection(
       url,
       WebSocketClientConnectionConfig(
-        logger: (url, message) => log.info('$url $message}'),
+        logger: (url, message) => log.info('$url $message'),
         allowSelfSignedCertificates: true,
       ),
     );

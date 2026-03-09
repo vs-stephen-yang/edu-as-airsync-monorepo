@@ -75,8 +75,6 @@ class DisplayGroupSession {
   }
 
   void _onChannelMessage(ChannelMessage message) async {
-    log.info('Display Group - Handling message: ${message.messageType}');
-
     switch (message.messageType) {
       case ChannelMessageType.inviteDisplayGroup:
         _onInviteMessage(message as InviteDisplayGroupMessage);

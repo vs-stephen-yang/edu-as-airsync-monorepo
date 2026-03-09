@@ -171,8 +171,6 @@ class RtcScreenClient extends RemoteScreenClient {
 
   /// Start track monitoring (handles both single and multi-track)
   void _startTrackMonitoring() {
-    log.info('Remote screen: Starting track monitoring');
-
     // Cancel existing timer if any
     _statsTimer?.cancel();
 
@@ -391,7 +389,7 @@ class RtcScreenClient extends RemoteScreenClient {
   }
 
   void handleSignalMessage(String signal) {
-    log.info('Remote screen: signal $signal');
+    log.fine('RtcScreenClient: Signal received via proxy channel');
     // handle signal messages from the channel
     _channelSignal?.onPeerMessage(signal);
   }

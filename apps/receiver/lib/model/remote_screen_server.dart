@@ -131,14 +131,14 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   Future<bool> startRemoteScreenPublisher() async {
     return _lock.synchronized(() async {
       if (_sfuPublisher != null && _sfuPublisher!.isStarted()) {
-        log.info('Publisher already started');
+        log.info('RemoteScreenServer: Publisher already started');
         return true;
       }
 
       castToBoardsSessionLogger.start('host');
       _ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
       roomId = _generateRoomId();
-      log.info('Start remote screen publisher for room $roomId');
+      log.info('RemoteScreenServer: Starting publisher for room $roomId');
 
       _zeroFpsDetector = ZeroFpsDetector(
         onZeroFpsNotify: _handleShowZeroFpsUiPrompt,
@@ -159,7 +159,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
       bool success = await _sfuPublisher!.start();
       if (!success) {
-        log.warning('Failed to start publisher');
+        log.warning('RemoteScreenServer: Failed to start publisher');
         await _sfuPublisher!.stop();
         _sfuPublisher = null;
         _zeroFpsDetector?.dispose();
@@ -174,7 +174,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   Future<void> stopRemoteScreenPublisher() async {
     await _lock.synchronized(() async {
       if (_sfuPublisher != null) {
-        log.info('Stop remote screen publisher for room $roomId');
+        log.info('RemoteScreenServer: Stopping publisher for room $roomId');
         await _sfuPublisher!.stop();
         _sfuPublisher = null;
       }
@@ -195,11 +195,11 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   Future<bool> _recreateSfuPublisher() async {
     return await _lock.synchronized(() async {
       if (_zeroFpsDetector == null) {
-        log.info('Server is shutting down, skip recreate');
+        log.info('RemoteScreenServer: Shutting down, skip recreate');
         return false;
       }
 
-      log.info('Recreating entire SfuPublisher');
+      log.info('RemoteScreenServer: Recreating entire SfuPublisher');
 
       if (_sfuPublisher != null) {
         await _sfuPublisher!.stop();
@@ -215,11 +215,11 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       bool success = await _sfuPublisher!.start();
 
       if (!success) {
-        log.severe('Failed to recreate publisher');
+        log.severe('RemoteScreenServer: Failed to recreate publisher');
         await _sfuPublisher!.stop();
         _sfuPublisher = null;
       } else {
-        log.info('SfuPublisher recreated successfully');
+        log.info('RemoteScreenServer: SfuPublisher recreated successfully');
       }
 
       return success;
@@ -227,17 +227,17 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   void _handleShowZeroFpsUiPrompt() {
-    log.info('Notifying UI to show zero FPS prompt');
+    log.info('RemoteScreenServer: Notifying UI to show zero FPS prompt');
     callback?.onShowZeroFpsPrompt.call();
   }
 
   void _handleRecreateSuccess() {
-    log.info('Notifying UI that recreate succeeded');
+    log.info('RemoteScreenServer: Notifying UI that recreate succeeded');
     callback?.onRecreatePublisherSuccess.call();
   }
 
   void _handleRecreateFailure() {
-    log.info('Notifying UI that recreate failed, shutting down server');
+    log.info('RemoteScreenServer: Notifying UI that recreate failed, shutting down server');
     unawaited(castToBoardsSessionLogger.upload('Host recreate failed after max attempts'));
     callback?.onRecreatePublisherFailure.call();
     unawaited(stopRemoteScreenPublisher());
@@ -250,7 +250,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   void addConnector(RtcScreenConnector connector) async {
     // Check if the connector already exists in the map.
     if (_connectorChannels.containsValue(connector)) {
-      log.warning('Channel already exists for connector');
+      log.warning('RemoteScreenServer: Channel already exists for connector');
       return;
     }
     try {
@@ -281,7 +281,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
       _connectorChannels.remove(channelId);
     } on StateError {
-      log.warning('No channel is found for connector');
+      log.warning('RemoteScreenServer: No channel is found for connector');
     } catch (e) {
       log.warning(e);
     }
@@ -377,11 +377,11 @@ class SfuPublisher {
   Future<bool> start() async {
     return _lock.synchronized(() async {
       if (_ionSfuClient != null) {
-        log.warning('Publisher already started');
+        log.warning('SfuPublisher: Already started');
         return true;
       }
 
-      log.info('Starting SfuPublisher for room $_roomId');
+      log.info('SfuPublisher: Starting for room $_roomId');
 
       // Create ion sfu client
       _ionSfuClient = await _createIonSfuClient();
@@ -418,7 +418,7 @@ class SfuPublisher {
       // Start stats monitoring
       _startStatsTimer();
 
-      log.info('SfuPublisher started successfully');
+      log.info('SfuPublisher: Started successfully');
       return true;
     });
   }
@@ -427,11 +427,11 @@ class SfuPublisher {
   Future<void> recreateClient() async {
     await _lock.synchronized(() async {
       if (_ionSfuClient == null) {
-        log.warning('No client to recreate');
+        log.warning('SfuPublisher: No client to recreate');
         return;
       }
 
-      log.info('Recreating ionSfuClient');
+      log.info('SfuPublisher: Recreating ionSfuClient');
 
       final newClient = await _createIonSfuClient();
 
@@ -442,9 +442,9 @@ class SfuPublisher {
         _ionSfuClient = newClient;
         oldClient?.close();
 
-        log.info('ionSfuClient recreated successfully');
+        log.info('SfuPublisher: ionSfuClient recreated successfully');
       } else {
-        log.warning('No local stream available, closing new client');
+        log.warning('SfuPublisher: No local stream available, closing new client');
         newClient.close();
       }
     });
@@ -452,7 +452,7 @@ class SfuPublisher {
 
   Future<Client> _createIonSfuClient() async {
     final uuid = const Uuid().v4();
-    log.info('create ionSfuClient, uuid: $uuid');
+    log.info('SfuPublisher: Creating ionSfuClient, uuid=$uuid');
     final client = await Client.create(
       sid: _roomId,
       uid: uuid,
@@ -463,10 +463,10 @@ class SfuPublisher {
       if (dc.label == API_CHANNEL) {
         return;
       }
-      log.info("New data channel: ${dc.label} ${dc.id}");
+      log.info('SfuPublisher: New data channel: ${dc.label} ${dc.id}');
 
       if (dc.label == null) {
-        log.warning('Data channel has no label');
+        log.warning('SfuPublisher: Data channel has no label');
         return;
       }
 
@@ -474,7 +474,7 @@ class SfuPublisher {
     };
 
     client.onConnectionState = (RTCPeerConnectionState state) async {
-      log.info('ionSfuClient $uuid Connection state: ${state.name}');
+      log.info('SfuPublisher: ionSfuClient $uuid Connection state: ${state.name}');
       if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
         await recreateClient();
       }
@@ -525,7 +525,7 @@ class SfuPublisher {
       _screenHeight,
     );
     log.info(
-        'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+        'SfuPublisher: Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
 
     var constraints = Constraints.defaults;
     // Note: ion-sdk-flutter currently hard-code H264, so the settings here
@@ -639,7 +639,7 @@ class SfuPublisher {
   }
 
   void enableRemoteControlBySessionId(String sessionId, bool enable) {
-    log.info('Enable remote control for $sessionId $enable');
+    log.info('SfuPublisher: Enable remote control for $sessionId $enable');
 
     final channel = _channels[sessionId];
     if (channel == null) {
