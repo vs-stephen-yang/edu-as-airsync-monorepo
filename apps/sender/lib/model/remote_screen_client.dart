@@ -78,6 +78,9 @@ class RtcScreenClient extends RemoteScreenClient {
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
   bool _isFirstConnected = true;
+  bool _hasEverConnected = false;
+  bool _hasReceivedTrack = false;
+  RTCPeerConnectionState? _lastPeerConnectionState;
 
   RtcScreenClient(super.channel, super.sessionId);
 
@@ -146,6 +149,7 @@ class RtcScreenClient extends RemoteScreenClient {
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
       log.info('Remote screen: Track added ${track.label}');
+      _hasReceivedTrack = true;
 
       await _remoteScreenRenderer.initialize();
       _remoteScreenRenderer.srcObject = remoteStream.stream;
@@ -154,12 +158,14 @@ class RtcScreenClient extends RemoteScreenClient {
     };
     _client!.onConnectionState = (RTCPeerConnectionState state) {
       log.info('Remote screen: Connection state ${state.name}');
+      _lastPeerConnectionState = state;
 
       switch (state) {
         case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
           onClose();
           break;
         case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
+          _hasEverConnected = true;
           if (_isFirstConnected) {
             onTrack();
             _isFirstConnected = false;
@@ -178,7 +184,25 @@ class RtcScreenClient extends RemoteScreenClient {
     };
 
     _client!.onSignalClose = (int code, String? reason) {
-      log.info('Remote screen: signal closed');
+      log.warning(
+        'Remote screen: signal closed code=$code reason=$reason '
+        'hasEverConnected=$_hasEverConnected '
+        'hasReceivedTrack=$_hasReceivedTrack '
+        'lastPeerState=${_lastPeerConnectionState?.name}',
+      );
+      // When signaling via the control channel, the channel manages its own
+      // reconnection. After RTC has connected once, a transient signal close
+      // during network recovery does not necessarily mean the media session is
+      // lost, so rely on the RTC-established flag here.
+      final shouldIgnoreSignalClose =
+          _channelSignal != null && _hasEverConnected;
+      if (shouldIgnoreSignalClose) {
+        log.info(
+          'Remote screen: signal closed after RTC was established via channel '
+          'signal — waiting for peer recovery',
+        );
+        return;
+      }
       onClose();
     };
   }
