@@ -115,7 +115,7 @@ class RtcFpsZeroDetector {
 
     _firstSampleTime ??= now;
     _lastSampleTime = now;
-    print('**** fps $fps');
+
     _fpsHistory.add(_FpsSample(
       fps: fps,
       timestamp: now,
