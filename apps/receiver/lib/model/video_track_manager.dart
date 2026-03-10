@@ -212,7 +212,22 @@ class VideoTrackManager {
         _tracks.entries.where((entry) => entry.value.hasValidFps).toList();
 
     if (validTracks.isEmpty) {
-      log.info('VideoTrackManager: No valid tracks available');
+      // Keep the current active track even if its FPS is zero/null,
+      // so onActiveTrackStatsCollected keeps firing for FPS zero detection.
+      // Only clear _activeTrackId when the track is physically removed.
+      if (_activeTrackId != null && _tracks.containsKey(_activeTrackId)) {
+        log.info(
+            'VideoTrackManager: No valid tracks, keeping active track $_activeTrackId for monitoring');
+        return;
+      }
+      // No active track and no valid tracks — fall back to first available
+      if (_tracks.isNotEmpty) {
+        _activeTrackId = _tracks.keys.first;
+        log.info(
+            'VideoTrackManager: No valid tracks, falling back to first track $_activeTrackId for monitoring');
+        return;
+      }
+      log.info('VideoTrackManager: No tracks available');
       _activeTrackId = null;
       return;
     }
