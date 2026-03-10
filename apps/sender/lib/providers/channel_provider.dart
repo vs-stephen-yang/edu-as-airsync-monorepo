@@ -517,6 +517,18 @@ class ChannelProvider extends ChangeNotifier {
 
     reconnectState = ChannelReconnectState.fail;
 
+    // If a remote screen session is active, the control channel timeout should
+    // not tear it down — the RTC media session is independent. Let the RTC
+    // connection state drive the remote screen lifecycle instead.
+    if (_remoteScreenClient != null) {
+      log.info(
+        'Channel reconnect timeout while remote screen is active — '
+        'skipping presentEnd()',
+      );
+      notifyListeners();
+      return;
+    }
+
     presentEnd();
   }
 
@@ -548,8 +560,9 @@ class ChannelProvider extends ChangeNotifier {
         reconnectState = ChannelReconnectState.reconnecting;
         notifyListeners();
 
-        if (!_webRTCHelper.isStreaming()) {
-          // If no streaming is active, interrupt if the channel remains disconnected for an period
+        if (!_webRTCHelper.isStreaming() && _remoteScreenClient == null) {
+          // If neither a sender stream nor a remote screen session is active,
+          // interrupt if the channel remains disconnected for a period.
           _startChannelReconnectTimer();
         }
         break;
@@ -760,7 +773,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void removeRemoteScreenClient() async {
-    await remoteScreenClient?.remove();
+    await _remoteScreenClient?.remove();
+    _remoteScreenClient = null;
     await closeChannel();
     _resetTimer();
     unawaited(_presentStateProvider?.presentMainPage());
@@ -768,7 +782,8 @@ class ChannelProvider extends ChangeNotifier {
 
   void removeShareRemoteScreenClient() async {
     await _remoteScreenClient?.sendStopRemoteScreenMessage();
-    await remoteScreenClient?.remove();
+    await _remoteScreenClient?.remove();
+    _remoteScreenClient = null;
     if (_moderatorStatus) {
       unawaited(_presentStateProvider?.presentModeratorWaitPage());
     }
