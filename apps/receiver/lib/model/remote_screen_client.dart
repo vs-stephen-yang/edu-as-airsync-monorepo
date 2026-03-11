@@ -95,6 +95,10 @@ class RtcScreenClient extends RemoteScreenClient {
   // Multi-track management
   VideoTrackManager? _trackManager;
 
+  // Connection timeout watchdog
+  Timer? _connectionTimeout;
+  static const _connectionTimeoutDuration = Duration(seconds: 30);
+
   @override
   bool get isAudioEnable {
     return remoteScreenRenderer.srcObject != null &&
@@ -260,7 +264,8 @@ class RtcScreenClient extends RemoteScreenClient {
     Function() onTrack,
     Function() onClose,
   ) async {
-    log.info('Remote screen: Create client, roomId=$roomId, iceServers count=${iceServers?.length ?? 0}');
+    log.info(
+        'Remote screen: Create client, roomId=$roomId, iceServers count=${iceServers?.length ?? 0}');
 
     final signal = _createSignal(url);
 
@@ -275,7 +280,8 @@ class RtcScreenClient extends RemoteScreenClient {
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
-      log.info('Remote screen: ontrack fired, kind=${track.kind}, trackId=${track.id}');
+      log.info(
+          'Remote screen: ontrack fired, kind=${track.kind}, trackId=${track.id}');
       if (track.kind == 'video') {
         // Initialize track manager if not exists
         _trackManager ??= VideoTrackManager(
@@ -299,9 +305,11 @@ class RtcScreenClient extends RemoteScreenClient {
           // Single track mode: render immediately and start monitoring
           log.info('Remote screen: Single track mode - rendering immediately');
           await _remoteScreenRenderer.initialize();
-          log.info('Remote screen: Renderer initialized, textureId=${_remoteScreenRenderer.textureId}');
+          log.info(
+              'Remote screen: Renderer initialized, textureId=${_remoteScreenRenderer.textureId}');
           _remoteScreenRenderer.srcObject = remoteStream.stream;
-          log.info('Remote screen: srcObject set, streamId=${remoteStream.stream.id}, '
+          log.info(
+              'Remote screen: srcObject set, streamId=${remoteStream.stream.id}, '
               'videoTracks=${remoteStream.stream.getVideoTracks().length}');
 
           // Start track monitoring
@@ -319,7 +327,8 @@ class RtcScreenClient extends RemoteScreenClient {
 
       switch (state) {
         case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
-          unawaited(castToBoardsSessionLogger.upload('WebRTC connection failed'));
+          unawaited(
+              castToBoardsSessionLogger.upload('WebRTC connection failed'));
           // Check FPS on disconnection
           _fpsZeroDetector?.checkOnDisconnect();
           onClose();
@@ -333,7 +342,10 @@ class RtcScreenClient extends RemoteScreenClient {
           // Stats monitoring is now handled in ontrack callback
           // No need to start it here anymore
           if (_isFirstConnected) {
-            log.info('Remote screen: WebRTC connected, ontrack fired=${_trackManager != null}');
+            _connectionTimeout?.cancel();
+            _connectionTimeout = null;
+            log.info(
+                'Remote screen: WebRTC connected, ontrack fired=${_trackManager != null}');
             onTrack();
             _isFirstConnected = false;
           }
@@ -351,13 +363,24 @@ class RtcScreenClient extends RemoteScreenClient {
     };
 
     _client!.onSignalClose = (int code, String? reason) {
+      _connectionTimeout?.cancel();
+      _connectionTimeout = null;
       log.warning('Remote screen: signal closed, code=$code, reason=$reason');
       if (code != 1000) {
-        unawaited(castToBoardsSessionLogger.upload(
-            'Signal closed abnormally: code=$code, reason=$reason'));
+        unawaited(castToBoardsSessionLogger
+            .upload('Signal closed abnormally: code=$code, reason=$reason'));
       }
       onClose();
     };
+
+    // Start connection timeout watchdog
+    _connectionTimeout = Timer(_connectionTimeoutDuration, () {
+      // 只上傳log不對連線做任何操作
+      log.warning(
+          'Remote screen: Connection timeout, no WebRTC connection after ${_connectionTimeoutDuration.inSeconds}s');
+      unawaited(castToBoardsSessionLogger.upload(
+          'Connection timeout: no WebRTC connection after ${_connectionTimeoutDuration.inSeconds}s'));
+    });
   }
 
   void _onFpsZero({required sampleCount, required duration, required reason}) {
@@ -396,6 +419,8 @@ class RtcScreenClient extends RemoteScreenClient {
 
   @override
   Future remove() async {
+    _connectionTimeout?.cancel();
+    _connectionTimeout = null;
     _fpsZeroDetector?.checkOnDisconnect();
     // Stop stats monitoring and clean up
     stopStatsMonitoring();

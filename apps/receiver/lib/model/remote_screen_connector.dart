@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/multicast_info.dart';
+import 'package:display_flutter/utility/cast_to_boards_session_logger.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
 
@@ -95,9 +96,11 @@ class RtcScreenConnector extends RemoteScreenConnector {
     List<RtcIceServer>? iceServers,
   ) async {
     _sessionId = message.sessionId;
-    log.info('RtcScreenConnector: Received StartRemoteScreen, sessionId=$_sessionId');
+    log.info(
+        'RtcScreenConnector: Received StartRemoteScreen, sessionId=$_sessionId');
     // accept
-    log.info('RtcScreenConnector: Sending accepted status, sessionId=$_sessionId');
+    log.info(
+        'RtcScreenConnector: Sending accepted status, sessionId=$_sessionId');
     sendRemoteScreenState(RemoteScreenStatus.accepted);
     remotePresentationState = RemotePresentationState.waitForStream;
     // info
@@ -110,7 +113,8 @@ class RtcScreenConnector extends RemoteScreenConnector {
       ),
     );
     await _signalHandlerCompleter.future;
-    log.info('RtcScreenConnector: Sending RemoteScreenInfo, roomId=$roomId, host=$host:$port, sessionId=$_sessionId');
+    log.info(
+        'RtcScreenConnector: Sending RemoteScreenInfo, roomId=$roomId, host=$host:$port, sessionId=$_sessionId');
     channel.send(remoteScreenInfoMessage);
     remotePresentationState = RemotePresentationState.streaming;
   }
@@ -118,7 +122,8 @@ class RtcScreenConnector extends RemoteScreenConnector {
   void registerSignalHandler(Function(String message)? handler) {
     _signalHandler = handler;
     if (!_signalHandlerCompleter.isCompleted) {
-      log.info('RtcScreenConnector: Signal handler registered, sessionId=$_sessionId');
+      log.info(
+          'RtcScreenConnector: Signal handler registered, sessionId=$_sessionId');
       _signalHandlerCompleter.complete();
     }
   }
@@ -136,9 +141,14 @@ class RtcScreenConnector extends RemoteScreenConnector {
   }
 
   void onRtcConnectionState(IceConnectionState state) {
-    log.info('RtcScreenConnector: ICE connection state=${state.name}, sessionId=$_sessionId');
+    log.info(
+        'RtcScreenConnector: ICE connection state=${state.name}, sessionId=$_sessionId');
     if (state == IceConnectionState.ICEConnectionStateFailed ||
         state == IceConnectionState.ICEConnectionStateClosed) {
+      if (state == IceConnectionState.ICEConnectionStateFailed) {
+        unawaited(castToBoardsSessionLogger
+            .upload('ICE connection ${state.name}: sessionId=$_sessionId'));
+      }
       remotePresentationState = RemotePresentationState.stopStreaming;
       onDisconnect?.call();
     }

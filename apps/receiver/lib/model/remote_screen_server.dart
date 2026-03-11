@@ -160,6 +160,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       bool success = await _sfuPublisher!.start();
       if (!success) {
         log.warning('RemoteScreenServer: Failed to start publisher');
+        unawaited(
+            castToBoardsSessionLogger.upload('Host publisher failed to start'));
         await _sfuPublisher!.stop();
         _sfuPublisher = null;
         _zeroFpsDetector?.dispose();
