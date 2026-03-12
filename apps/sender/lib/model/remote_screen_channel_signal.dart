@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:events2/events2.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:uuid/uuid.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
-import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:uuid/uuid.dart';
 
 class RemoteScreenChannelSignal extends Signal {
   // send a signal message to the peer
@@ -27,12 +27,12 @@ class RemoteScreenChannelSignal extends Signal {
   void _send(String msg) {
     _sendMessageToPeer(msg);
 
-    log.info('Sent $msg');
+    log.info('RemoteScreenChannelSignal: Send $msg');
   }
 
   // receive a signal message from the peer
   void onPeerMessage(String msg) {
-    log.info('Received $msg');
+    log.info('RemoteScreenChannelSignal: Received $msg');
 
     try {
       final resp = _jsonDecoder.convert(msg);
@@ -54,10 +54,11 @@ class RemoteScreenChannelSignal extends Signal {
         final code = resp['error']['code'];
         final message = resp['error']['message'];
 
-        log.severe('error: code => $code, message => $message');
+        log.severe(
+            'RemoteScreenChannelSignal: error: code => $code, message => $message');
       }
     } catch (e) {
-      log.severe('onmessage: err => $e');
+      log.severe('RemoteScreenChannelSignal: onmessage: err => $e');
     }
   }
 
