@@ -1,17 +1,17 @@
+import 'package:convert/convert.dart';
+import 'package:display_cast_flutter/features/protoc/event.pb.dart' as pb;
+import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/remote_screen_channel_signal.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/remote_screen_util.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
-import 'package:display_cast_flutter/features/protoc/event.pb.dart' as pb;
-import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_multicast_plugin/flutter_multicast_plugin.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
-import 'package:convert/convert.dart';
 
 abstract class RemoteScreenClient {
   RemoteScreenClient(this._channel, String? sessionId)
@@ -33,11 +33,13 @@ abstract class RemoteScreenClient {
   }
 
   Future sendStopRemoteScreenMessage() async {
+    log.info('RemoteScreenClient: Sending StopRemoteScreenMessage $_sessionId');
     final msg = StopRemoteScreenMessage(_sessionId);
     _channel?.send(msg);
   }
 
   Future sendRemoteScreenState(RemoteScreenStatus status) async {
+    log.info('RemoteScreenClient: Sending state ${status.name} $_sessionId');
     final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
     _channel?.send(stateMessage);
   }
@@ -114,7 +116,7 @@ class RtcScreenClient extends RemoteScreenClient {
   bool get isVideoAvailable => _remoteScreenRenderer.textureId != null;
 
   onDataChannelState(RTCDataChannelState state) {
-    log.info('Remote screen: Data channel state ${state.name}');
+    log.info('RemoteScreenClient: Data channel state ${state.name}');
 
     if (state == RTCDataChannelState.RTCDataChannelClosed) {
       _dataChannel = null;
@@ -123,17 +125,20 @@ class RtcScreenClient extends RemoteScreenClient {
 
   // send signal messages to the peer via the channel
   void _sendSignalMessageToPeer(String message) {
+    log.info('RemoteScreenClient: Sending signal message $message');
     _channel?.send(
       RemoteScreenSignalMessage(_sessionId, message),
     );
   }
 
   Signal _createChannelSignal() {
+    log.info('RemoteScreenClient: create channel signal');
     _channelSignal = RemoteScreenChannelSignal(_sendSignalMessageToPeer);
     return _channelSignal!;
   }
 
   Signal _createWebsocketSignal(String url) {
+    log.info('RemoteScreenClient: Using websocket signal: $url');
     return JsonRPCSignal(url);
   }
 
@@ -155,7 +160,8 @@ class RtcScreenClient extends RemoteScreenClient {
     Function() onTrack,
     Function() onClose,
   ) async {
-    log.info('Remote screen: Create client');
+    log.info(
+        'RemoteScreenClient: Connecting to roomId=$roomId, hasSignalUrl=${url != null}, iceServers=${iceServers?.length ?? 0}');
 
     final signal = _createSignal(url);
 
@@ -170,7 +176,7 @@ class RtcScreenClient extends RemoteScreenClient {
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
-      log.info('Remote screen: Track added ${track.label}');
+      log.info('RemoteScreenClient: Track added ${track.label}');
       _hasReceivedTrack = true;
 
       await _remoteScreenRenderer.initialize();
@@ -179,7 +185,7 @@ class RtcScreenClient extends RemoteScreenClient {
           .manageWakelock(AppScene.rtcRemoteScreenDisplaying);
     };
     _client!.onConnectionState = (RTCPeerConnectionState state) {
-      log.info('Remote screen: Connection state ${state.name}');
+      log.info('RemoteScreenClient: Connection state ${state.name}');
       _lastPeerConnectionState = state;
 
       switch (state) {
@@ -198,7 +204,7 @@ class RtcScreenClient extends RemoteScreenClient {
     };
 
     _client!.ondatachannel = (RTCDataChannel dc) {
-      log.info('Remote screen: Data channel added ${dc.label}');
+      log.info('RemoteScreenClient: Data channel added ${dc.label}');
       if (dc.label == _sessionId) {
         _dataChannel = dc;
         _dataChannel!.onDataChannelState = onDataChannelState;
@@ -207,7 +213,7 @@ class RtcScreenClient extends RemoteScreenClient {
 
     _client!.onSignalClose = (int code, String? reason) {
       log.warning(
-        'Remote screen: signal closed code=$code reason=$reason '
+        'RemoteScreenClient: signal closed code=$code reason=$reason '
         'hasEverConnected=$_hasEverConnected '
         'hasReceivedTrack=$_hasReceivedTrack '
         'lastPeerState=${_lastPeerConnectionState?.name}',
@@ -220,7 +226,7 @@ class RtcScreenClient extends RemoteScreenClient {
           _channelSignal != null && _hasEverConnected;
       if (shouldIgnoreSignalClose) {
         log.info(
-          'Remote screen: signal closed after RTC was established via channel '
+          'RemoteScreenClient: signal closed after RTC was established via channel '
           'signal — waiting for peer recovery',
         );
         return;
@@ -237,7 +243,7 @@ class RtcScreenClient extends RemoteScreenClient {
     await _remoteScreenRenderer.dispose();
     _remoteScreenRenderer = RTCVideoRenderer();
 
-    log.info('Remote screen: Closing client');
+    log.info('RemoteScreenClient: Closing client');
     _client?.close();
     _client = null;
 

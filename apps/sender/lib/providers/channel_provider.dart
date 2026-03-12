@@ -345,6 +345,7 @@ class ChannelProvider extends ChangeNotifier {
       onChannelStateChange(state);
     });
     _channel?.messageStream.listen((message) async {
+      log.info('Received channel message ${message.messageType}');
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
           // heartbeatInterval
@@ -603,6 +604,8 @@ class ChannelProvider extends ChangeNotifier {
       sendPresentSignalMessage: (PresentSignalMessage message) {
         // offer, answer, candidate
         message.sessionId = _sessionId;
+        log.info(
+            '[channel send] PresentSignalMessage: sessionId=${message.sessionId}');
         _channel?.send(message);
       },
       onRTCPeerConnectionState: _onRtcConnectionState,
@@ -804,6 +807,7 @@ class ChannelProvider extends ChangeNotifier {
 
   Future sendStartRemoteScreenMessage(String sessionId) async {
     final msg = StartRemoteScreenMessage(sessionId);
+    log.info('[channel send] StartRemoteScreenMessage: sessionId=$sessionId}');
     _channel?.send(msg);
   }
 
@@ -846,11 +850,14 @@ class ChannelProvider extends ChangeNotifier {
     msg.isConnectedViaModeratorMode = _moderatorStatus;
     msg.userId = _userId;
 
+    log.info(
+        '[channel send] JoinDisplayMessage: intent=${msg.intent}, platform=${msg.platform}, isConnectedViaModeratorMode=${msg.isConnectedViaModeratorMode}, userId=${msg.userId}');
     _channel?.send(msg);
   }
 
   void _startPresent() {
     final msg = StartPresentMessage(_sessionId);
+    log.info('[channel send] StartPresentMessage: sessionId=$_sessionId');
     _channel?.send(msg);
   }
 
@@ -867,6 +874,8 @@ class ChannelProvider extends ChangeNotifier {
       );
     }
 
+    log.info(
+        '[channel send] StopPresentMessage: sessionId=$_sessionId, reason=${msg.reason?.code} ${msg.reason?.text}');
     _channel?.send(msg);
 
     _webRTCHelper.sendStop(msg);
