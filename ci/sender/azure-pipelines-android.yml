@@ -26,6 +26,7 @@ variables:
   - group: "store-keystore-secrets"
   - group: "dropbox-secrets"
   - group: "sentry-airsync-sender"
+  - group: "github-secrets"
 
 jobs:
   # -------------------------------------------------------------------
@@ -35,6 +36,9 @@ jobs:
     displayName: Quality Check (lint & test)
     steps:
       - checkout: self
+      - script: |
+          git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+        displayName: Configure GitHub credentials
       - script: $(Flutter.Bin) pub get
         displayName: Fetch dependencies
       - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
@@ -126,6 +130,9 @@ jobs:
 
             echo "Cleanup completed"
 
+      - script: |
+          git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+        displayName: Configure GitHub credentials
       - script: $(Flutter.Bin) pub get
         displayName: Fetch dependencies
 

@@ -14,6 +14,7 @@ variables:
   - name: Dart.Bin
     value: fvm dart
   - group: "sentry-airsync-sender"
+  - group: "github-secrets"
 
 jobs:
   - job: Build
@@ -70,6 +71,9 @@ jobs:
 
             Write-Host "Cleanup completed"
 
+      - script: |
+          git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+        displayName: Configure GitHub credentials
       - script: $(Flutter.Bin) pub get
         displayName: Download packages
 

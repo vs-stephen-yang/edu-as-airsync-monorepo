@@ -21,6 +21,7 @@ variables:
   - name: CMAKE_BUILD_PARALLEL_LEVEL
     value: 4
   - group: "sentry-airsync-sender"
+  - group: "github-secrets"
 
 jobs:
   - job: QualityCheck
@@ -31,6 +32,12 @@ jobs:
     steps:
       - checkout: self
 
+      - task: PowerShell@2
+        displayName: Configure GitHub credentials
+        inputs:
+          targetType: inline
+          script: |
+            git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
       - script: $(Flutter.Bin) pub get
         displayName: Fetch dependencies
 
@@ -68,6 +75,13 @@ jobs:
           script: |
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: PowerShell@2
+        displayName: Configure GitHub credentials
+        inputs:
+          targetType: inline
+          script: |
+            git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
 
       - powershell: |
           git lfs env
