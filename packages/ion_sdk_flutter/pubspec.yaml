@@ -10,7 +10,7 @@ dependencies:
   flutter_webrtc:
      git:
        url: https://github.com/Viewsonic-EDU/edu-as-flutter-webrtc.git
-       ref: release-3.9.0
+       ref: release-3.9.2
   grpc: ^3.0.2
   protobuf: ^2.1.0
   sdp_transform: ^0.3.2
