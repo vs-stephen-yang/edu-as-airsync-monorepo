@@ -9,6 +9,7 @@ schedules:
         - HotFix/*
 
 variables:
+  - group: "github-secrets"
   - name: Flutter.Bin
     value: fvm flutter
 
@@ -56,6 +57,13 @@ jobs:
           script: |
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: PowerShell@2
+        displayName: Configure GitHub credentials
+        inputs:
+          targetType: inline
+          script: |
+            git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
 
       - script: $(Flutter.Bin) pub get
         displayName: Download packages
