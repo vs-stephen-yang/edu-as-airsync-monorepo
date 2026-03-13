@@ -124,7 +124,7 @@ packages:
       path: "."
       ref: "v0.4.0-14"
       resolved-ref: a085ec5d73531f92ab79a4db0ff1566e2e0f6f7a
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window"
+      url: "https://github.com/Viewsonic-EDU/edu-as-android-window"
     source: git
     version: "0.0.0"
   ansicolor:
@@ -139,11 +139,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1.1.4"
-      resolved-ref: b693a90be74a0ac69b507235eddd82d9ef016205
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter"
+      ref: "1.1.5"
+      resolved-ref: "6745eb5df79ee87a8d7e3c22b9fe8c7c977d4c0a"
+      url: "https://github.com/Viewsonic-EDU/edu-as-app-ota-flutter"
     source: git
-    version: "1.1.4"
+    version: "1.1.5"
   archive:
     dependency: transitive
     description:
@@ -492,9 +492,9 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "release-1.0.17-2"
-      resolved-ref: "25f4a6188dafccf897ac913878b09434c34ce9c0"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/dart-webrtc"
+      ref: "release-1.0.17-3"
+      resolved-ref: "9f3bfcbc46e59757ee897a9671e7200be83e9b30"
+      url: "https://github.com/Viewsonic-EDU/edu-as-dart-webrtc"
     source: git
     version: "1.0.17"
   dbus:
@@ -527,7 +527,7 @@ packages:
       path: "."
       ref: "1.3.6"
       resolved-ref: e3a126e026d3200d06a4dc9fb635963ba6d2f089
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS"
+      url: "https://github.com/Viewsonic-EDU/edu-as-device-info-vs"
     source: git
     version: "1.3.6"
   dio:
@@ -542,9 +542,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.9.3"
-      resolved-ref: "9cde15ef22e17fd843560e3d9ad5fc58d08e58dc"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
+      ref: "release-3.9.4"
+      resolved-ref: "9471818d464363ddb21ca599e3f55a0b30a2ee2c"
+      url: "https://github.com/Viewsonic-EDU/edu-as-display-channel"
     source: git
     version: "0.0.1"
   drift:
@@ -710,7 +710,7 @@ packages:
       path: "."
       ref: "release-3.8.0"
       resolved-ref: "40f08373218a84fd96153d5ad80fee78d142e6f6"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server"
+      url: "https://github.com/Viewsonic-EDU/edu-as-golang-server"
     source: git
     version: "0.0.1"
   flutter_input_injection:
@@ -719,7 +719,7 @@ packages:
       path: "."
       ref: "release-0.7.0"
       resolved-ref: "352082cc30e4c30fe1eef949ece520d8485ab0e8"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection"
+      url: "https://github.com/Viewsonic-EDU/edu-as-input-injection"
     source: git
     version: "0.0.1"
   flutter_launcher_icons:
@@ -749,7 +749,7 @@ packages:
       path: "."
       ref: "release-3.9.1"
       resolved-ref: "48b2b4a37ac615aa15f47f9174fce7e8bc33d751"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror"
+      url: "https://github.com/Viewsonic-EDU/edu-as-mirror"
     source: git
     version: "0.0.1"
   flutter_multicast_plugin:
@@ -758,7 +758,7 @@ packages:
       path: "."
       ref: "release-3.8.5"
       resolved-ref: "91afee627613599bc722bfd0e1ae5174b0fedcd0"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-multicast-plugin"
+      url: "https://github.com/Viewsonic-EDU/edu-as-multicast-plugin"
     source: git
     version: "0.0.1"
   flutter_native_splash:
@@ -823,9 +823,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-67"
-      resolved-ref: "8df4ef38e27950dd53dffba9d8add25f96935e17"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
+      ref: "release-0.9.36-68"
+      resolved-ref: fa3354808771f8808ded1b517f9df96cd979c4d9
+      url: "https://github.com/Viewsonic-EDU/edu-as-flutter-webrtc"
     source: git
     version: "0.9.36"
   frontend_server_client:
@@ -984,9 +984,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.61"
-      resolved-ref: "00186a52b296c928b636f625e21e2458d8226073"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
+      ref: "release-0.0.62"
+      resolved-ref: ac70dff114c255dfc87c25e462c2ef8b75b56cb9
+      url: "https://github.com/Viewsonic-EDU/edu-as-ion-sdk-flutter"
     source: git
     version: "1.0.0"
   jni:
@@ -1905,7 +1905,7 @@ packages:
       path: "."
       ref: "release-1.1.0-2"
       resolved-ref: d8686d96c442cce8c29cf71bb6bd119ffbe74053
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/webrtc-interface"
+      url: "https://github.com/Viewsonic-EDU/edu-as-webrtc-interface"
     source: git
     version: "1.1.0"
   win32:
