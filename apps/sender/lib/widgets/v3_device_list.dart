@@ -583,76 +583,79 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
       child: SingleChildScrollView(
         controller: sc,
         padding: EdgeInsets.all(8),
-        child: Container(
-          constraints: isMobile() ? null : BoxConstraints(maxWidth: 300),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: context.tokens.spacing.vsdswSpacingSm.top),
-                height: 56,
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 16),
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: context.tokens.color.vsdswColorSurface100,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                        width: 1,
-                        color: widget.errorMessage == null
-                            ? context.tokens.color.vsdswColorSecondaryVariant
-                            : context.tokens.color.vsdswColorError),
-                    borderRadius: BorderRadius.circular(9999),
-                  ),
-                  shadows: [
-                    BoxShadow(
-                      color: widget.errorMessage == null
-                          ? context.tokens.color.vsdswColorSurface200
-                          : const Color(0xFFFFD9DF),
-                      blurRadius: 0,
-                      offset: const Offset(0, 0),
-                      spreadRadius: 4,
-                    )
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _controller,
-                  focusNode: focusNode,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: InputDecoration(
-                    labelText: focusNode.hasFocus
-                        ? null
-                        : S.current.device_list_enter_pin,
-                    labelStyle: TextStyle(
-                      color: context.tokens.color.vsdswColorOnDisabled,
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      height: 0.11,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            constraints: isMobile() ? null : BoxConstraints(maxWidth: 300),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: context.tokens.spacing.vsdswSpacingSm.top),
+                  height: 56,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(left: 16),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: context.tokens.color.vsdswColorSurface100,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          width: 1,
+                          color: widget.errorMessage == null
+                              ? context.tokens.color.vsdswColorSecondaryVariant
+                              : context.tokens.color.vsdswColorError),
+                      borderRadius: BorderRadius.circular(9999),
                     ),
-                    border: InputBorder.none,
-                    // 去掉底線
-                    enabledBorder: InputBorder.none,
-                    // 去掉底線
-                    focusedBorder: InputBorder.none, // 去掉底線
+                    shadows: [
+                      BoxShadow(
+                        color: widget.errorMessage == null
+                            ? context.tokens.color.vsdswColorSurface200
+                            : const Color(0xFFFFD9DF),
+                        blurRadius: 0,
+                        offset: const Offset(0, 0),
+                        spreadRadius: 4,
+                      )
+                    ],
                   ),
-                  onChanged: _onChanged,
+                  child: TextFormField(
+                    controller: _controller,
+                    focusNode: focusNode,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      labelText: focusNode.hasFocus
+                          ? null
+                          : S.current.device_list_enter_pin,
+                      labelStyle: TextStyle(
+                        color: context.tokens.color.vsdswColorOnDisabled,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 0.11,
+                      ),
+                      border: InputBorder.none,
+                      // 去掉底線
+                      enabledBorder: InputBorder.none,
+                      // 去掉底線
+                      focusedBorder: InputBorder.none, // 去掉底線
+                    ),
+                    onChanged: _onChanged,
+                  ),
                 ),
-              ),
-              if (widget.errorMessage != null)
-                createErrorWidget(widget.errorMessage!),
-              buildButton(
-                buildContext: context,
-                text: S.current.v3_device_list_dialog_connect,
-                enable: buttonEnable,
-                onTap: () {
-                  if (!buttonEnable) return;
-                  widget.onTap.call(_controller.text);
-                },
-              ),
-            ],
+                if (widget.errorMessage != null)
+                  createErrorWidget(widget.errorMessage!),
+                buildButton(
+                  buildContext: context,
+                  text: S.current.v3_device_list_dialog_connect,
+                  enable: buttonEnable,
+                  onTap: () {
+                    if (!buttonEnable) return;
+                    widget.onTap.call(_controller.text);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
