@@ -1,5 +1,11 @@
 trigger: none
 
+pr:
+  branches:
+    include:
+      - main
+      - 'HotFix/*'
+
 schedules:
   - cron: "0 0 * * *"
     displayName: Daily midnight build
