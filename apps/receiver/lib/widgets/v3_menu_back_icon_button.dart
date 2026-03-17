@@ -49,6 +49,7 @@ class V3MenuBackIconButton extends StatelessWidget {
                     right: context.tokens.spacing.vsdslSpacingXs.right)),
             V3AutoHyphenatingText(
               title,
+              backgroundColor: context.tokens.color.vsdslColorSurface1000,
               style: TextStyle(
                 color: context.tokens.color.vsdslColorOnSurfaceInverse,
                 fontSize: 12,

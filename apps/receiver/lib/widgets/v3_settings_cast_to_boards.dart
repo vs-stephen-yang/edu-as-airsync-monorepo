@@ -650,6 +650,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
                       ? S.of(context).v3_settings_device_not_supported
                       : S.of(context).v3_settings_device_unavailable
                   : client.displayCode(),
+              backgroundColor: context.tokens.color.vsdslColorSurface1000,
               style: TextStyle(
                 fontSize: 12,
                 color: context.tokens.color.vsdslColorOnSurfaceInverse,
