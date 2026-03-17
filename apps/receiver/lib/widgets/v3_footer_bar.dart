@@ -31,6 +31,7 @@ class V3FooterBar extends StatelessWidget {
       bottom: 0,
       child: Stack(
         alignment: Alignment.bottomCenter,
+        clipBehavior: Clip.hardEdge,
         children: [
           MultiWindowAdaptiveLayout(
             launcher: SizedBox.shrink(),
