@@ -1244,8 +1244,11 @@ class _V3FindBoardsViaIPState extends State<V3FindBoardsViaIP> {
                       child: CompositedTransformTarget(
                         link: _ipFieldLink,
                         child: TextField(
-                          textAlign: TextAlign.end,
                           controller: _ipController,
+                          maxLines: AppPreferences().textSizeOption !=
+                                  ResizeTextSizeOption.normal
+                              ? 2
+                              : null,
                           style: TextStyle(
                             color:
                                 context.tokens.color.vsdslColorOnSurfaceInverse,
