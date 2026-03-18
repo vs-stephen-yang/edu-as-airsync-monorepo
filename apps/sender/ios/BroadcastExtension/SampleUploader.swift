@@ -1,9 +1,14 @@
 import Foundation
 import ReplayKit
 import OSLog
+import Darwin
 
 private enum Constants {
     static let bufferMaxLength = 10240
+    static let targetOutputWidth = 1080
+    static let targetOutputHeight = 1440
+    static let lowQualityCompression: Float = 0.7
+    static let defaultCompression: Float = 1.0
 }
 
 private struct VideoFrameHeader {
@@ -27,6 +32,36 @@ private struct AudioFrameHeader {
 }
 
 class SampleUploader {
+    private enum DeviceProfile {
+        case defaultProfile
+        case a10FamilyLowQuality
+    }
+
+    private enum DeviceIdentifier {
+        static let a10Family: Set<String> = [
+            "iPad7,5",  // iPad (6th generation) Wi-Fi
+            "iPad7,6",  // iPad (6th generation) Wi-Fi + Cellular
+            "iPad7,11", // iPad (7th generation) Wi-Fi
+            "iPad7,12", // iPad (7th generation) Wi-Fi + Cellular
+            "iPhone9,1", // iPhone 7
+            "iPhone9,3", // iPhone 7
+            "iPhone9,2", // iPhone 7 Plus
+            "iPhone9,4", // iPhone 7 Plus
+            "iPod9,1"    // iPod touch (7th generation)
+        ]
+        static let a12Family: Set<String> = [
+            "iPhone11,2", // iPhone XS
+            "iPhone11,4", // iPhone XS Max
+            "iPhone11,6", // iPhone XS Max (China)
+            "iPhone11,8", // iPhone XR
+            "iPad11,1",   // iPad mini (5th generation) Wi-Fi
+            "iPad11,2",   // iPad mini (5th generation) Wi-Fi + Cellular
+            "iPad11,3",   // iPad Air (3rd generation) Wi-Fi
+            "iPad11,4",   // iPad Air (3rd generation) Wi-Fi + Cellular
+            "iPad11,6",   // iPad (8th generation) Wi-Fi
+            "iPad11,7"    // iPad (8th generation) Wi-Fi + Cellular
+        ]
+    }
     
     private static var imageContext = CIContext(options: nil)
     
@@ -38,6 +73,7 @@ class SampleUploader {
     private var byteIndex = 0
   
     private let serialQueue: DispatchQueue
+    private let deviceProfile: DeviceProfile
 
     private var videoConstraintWidth = 0
     private var videoConstraintHeight = 0
@@ -55,6 +91,7 @@ class SampleUploader {
         self.connection = connection
         self.serialQueue = DispatchQueue(label: "org.jitsi.meet.broadcast.sampleUploader")
         self.isVideo = isVideo
+        self.deviceProfile = Self.resolveDeviceProfile()
         setupConnection()
     }
   
@@ -88,6 +125,36 @@ class SampleUploader {
 }
 
 private extension SampleUploader {
+    private static func resolveDeviceProfile() -> DeviceProfile {
+        let identifier = currentMachineIdentifier()
+        let profile: DeviceProfile = (DeviceIdentifier.a10Family.contains(identifier) || DeviceIdentifier.a12Family.contains(identifier))
+            ? .a10FamilyLowQuality
+            : .defaultProfile
+
+        os_log(.debug, log: broadcastLogger, "SampleUploader device profile: %{public}s (%{public}s)",
+               String(describing: profile),
+               identifier)
+        return profile
+    }
+
+    private static func currentMachineIdentifier() -> String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+
+        let mirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = mirror.children.reduce(into: "") { result, element in
+            guard let value = element.value as? Int8, value != 0 else {
+                return
+            }
+            result.append(Character(UnicodeScalar(UInt8(value))))
+        }
+
+        if identifier == "arm64" || identifier == "x86_64" {
+            return ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? identifier
+        }
+
+        return identifier
+    }
     
     func setupConnection() {
         connection.didOpen = { [weak self] in
@@ -169,10 +236,10 @@ private extension SampleUploader {
     
     func calcScaleFactorWithLimitHeight(width: Int, height: Int, orientation: UInt, constraintWidth: Int, constraintHeight: Int, decodeHeightLimit: Int) -> Double {
         // iOS device capture always portrait; constraint size always landscape
-        var sourceWidth = width
-        var sourceHeight = height
-        var portraitConstraintWidth = constraintHeight
-        var portraitConstraintHeight = constraintWidth
+        let sourceWidth = width
+        let sourceHeight = height
+        let portraitConstraintWidth = constraintHeight
+        let portraitConstraintHeight = constraintWidth
         var widthScaleFactor: Double
         var heightScaleFactor: Double
 
@@ -183,7 +250,7 @@ private extension SampleUploader {
         }
 
         if portraitConstraintHeight > 0 {
-            var limitHeight = (decodeHeightLimit > 0)
+            let limitHeight = (decodeHeightLimit > 0)
                 ? min(constraintHeight, decodeHeightLimit)
                 : portraitConstraintHeight
             heightScaleFactor = Double(sourceHeight) / Double(limitHeight)
@@ -204,6 +271,32 @@ private extension SampleUploader {
         let width = CVPixelBufferGetWidth(imageBuffer)
         let height = CVPixelBufferGetHeight(imageBuffer)
         let orientation = CMGetAttachment(buffer, key: RPVideoSampleOrientationKey as CFString, attachmentModeOut: nil)?.uintValue ?? 0
+
+        if deviceProfile == .a10FamilyLowQuality {
+            let targetWidth = Constants.targetOutputWidth
+            let targetHeight = Constants.targetOutputHeight
+
+            if (width != currWidth || height != currHeight || currConstraintHeight != targetHeight || currDecodeHeightLimit != videoDecodeHeightLimit) {
+                currScaleWidth = Double(targetWidth)
+                currScaleHeight = Double(targetHeight)
+                currWidth = width
+                currHeight = height
+                currConstraintHeight = targetHeight
+                currDecodeHeightLimit = videoDecodeHeightLimit
+            }
+
+            let scaleTransform = CGAffineTransform(
+                scaleX: CGFloat(Double(targetWidth) / Double(width)),
+                y: CGFloat(Double(targetHeight) / Double(height))
+            )
+            return buildVideoPayload(
+                imageBuffer: imageBuffer,
+                scaleTransform: scaleTransform,
+                outputWidth: targetWidth,
+                outputHeight: targetHeight,
+                orientation: orientation
+            )
+        }
 
         //
         // Calculate the currScaleWidth, currScaleHeight, currScaleFactor if changed
@@ -236,29 +329,13 @@ private extension SampleUploader {
         }
 
         let scaleTransform = CGAffineTransform(scaleX: CGFloat(1.0/currScaleFactor), y: CGFloat(1.0/currScaleFactor))
-        let bufferData = self.jpegData(from: imageBuffer, scale: scaleTransform)
-        
-        CVPixelBufferUnlockBaseAddress(imageBuffer, .readOnly)
-        
-        guard let messageData = bufferData else {
-            os_log(.debug, log: broadcastLogger, "corrupted image buffer")
-            return nil
-        }
-        
-        var videoFrameHeader = VideoFrameHeader(
-          width: UInt32(currScaleWidth),
-          height: UInt32(currScaleHeight),
-          orientation: UInt32(orientation),
-          palyoadLength: UInt32(messageData.count))
-      
-        var headerData = Data()
-        withUnsafeBytes(of: &videoFrameHeader) { pointer in
-            headerData.append(contentsOf: pointer)
-        }
-        
-        headerData.append(messageData);
-        
-        return headerData
+        return buildVideoPayload(
+            imageBuffer: imageBuffer,
+            scaleTransform: scaleTransform,
+            outputWidth: Int(currScaleWidth),
+            outputHeight: Int(currScaleHeight),
+            orientation: orientation
+        )
     }
   
     func prepareAudio(sample buffer: CMSampleBuffer) -> Data? {
@@ -318,6 +395,31 @@ private extension SampleUploader {
         
         return headerData
     }
+
+    func buildVideoPayload(imageBuffer: CVPixelBuffer, scaleTransform: CGAffineTransform, outputWidth: Int, outputHeight: Int, orientation: UInt) -> Data? {
+        let bufferData = jpegData(from: imageBuffer, scale: scaleTransform)
+
+        CVPixelBufferUnlockBaseAddress(imageBuffer, .readOnly)
+
+        guard let messageData = bufferData else {
+            os_log(.debug, log: broadcastLogger, "corrupted image buffer")
+            return nil
+        }
+
+        var videoFrameHeader = VideoFrameHeader(
+          width: UInt32(outputWidth),
+          height: UInt32(outputHeight),
+          orientation: UInt32(orientation),
+          palyoadLength: UInt32(messageData.count))
+
+        var headerData = Data()
+        withUnsafeBytes(of: &videoFrameHeader) { pointer in
+            headerData.append(contentsOf: pointer)
+        }
+
+        headerData.append(messageData)
+        return headerData
+    }
     
     func jpegData(from buffer: CVPixelBuffer, scale scaleTransform: CGAffineTransform) -> Data? {
         let image = CIImage(cvPixelBuffer: buffer).transformed(by: scaleTransform)
@@ -325,8 +427,11 @@ private extension SampleUploader {
         guard let colorSpace = image.colorSpace else {
             return nil
         }
-      
-        let options: [CIImageRepresentationOption: Float] = [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: 1.0]
+
+        let compression = (deviceProfile == .a10FamilyLowQuality)
+            ? Constants.lowQualityCompression
+            : Constants.defaultCompression
+        let options: [CIImageRepresentationOption: Float] = [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: compression]
 
         return SampleUploader.imageContext.jpegRepresentation(of: image, colorSpace: colorSpace, options: options)
     }
