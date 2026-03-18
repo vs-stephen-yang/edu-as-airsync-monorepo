@@ -1058,7 +1058,48 @@ class ChannelProvider extends ChangeNotifier
       notifyListeners();
     });
 
+    // Returns true when the IFP is actively pushing a Cast-to-Device
+    // (RemoteShare) stream to this participant. The RTC stream is still alive
+    // even if the port-5100 control socket has dropped, so the participant
+    // must remain in the list until the RTC stream itself ends.
+    bool hasActiveRemoteShare() => _remoteShareConnectors.any(
+          (c) =>
+              c.clientId == rtcConnector.clientId &&
+              c.remotePresentationState != RemotePresentationState.stopStreaming,
+        );
+
+    // Inject the same condition into RTCConnector so it can skip the idle
+    // reconnect timer while a RemoteShare is active (see _startChannelReconnectTimer).
+    rtcConnector.onShouldKeepParticipant = hasActiveRemoteShare;
+
     rtcConnector.onChannelDisconnect = (({String? reason}) async {
+      const terminalDisconnectReasons = <String>{
+        'User stopped the present',
+        'User removed the presenter',
+      };
+      // Retain the participant when the control channel drops but an RTC
+      // session is still alive. Two conditions qualify:
+      //   1. hasEstablishedRtcSession - the sender has an active WebRTC session
+      //      (presenter path, _isRtcFirstConnected == true).
+      //   2. hasActiveRemoteShare - the IFP is streaming its screen TO this
+      //      participant via Cast-to-Device. The participant never sent video to
+      //      the IFP so _isRtcFirstConnected is false, but the outbound RTC
+      //      stream is still healthy.
+      // In both cases the participant is only retained for non-terminal
+      // disconnect reasons (i.e. not an explicit stop or kick by the user).
+      final shouldKeepParticipant =
+          (rtcConnector.hasEstablishedRtcSession || hasActiveRemoteShare()) &&
+              !terminalDisconnectReasons.contains(reason);
+      if (shouldKeepParticipant) {
+        log.warning(
+          '[${rtcConnector.clientId}] Keep participant despite transport '
+          'disconnect. reason=$reason '
+          'presentationState=${rtcConnector.presentationState.name}',
+        );
+        notifyListeners();
+        return;
+      }
+
       // update UI
       bool presenting = false;
       for (RTCConnector rtcConnector
