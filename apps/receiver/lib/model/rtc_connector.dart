@@ -169,6 +169,19 @@ class RTCConnector {
 
   Timer? _channelReconnectTimer;
   bool _isRtcFirstConnected = false;
+  /// Returns true if a WebRTC peer connection has been successfully established
+  /// at least once for this connector (i.e. the sender has started presenting).
+  bool get hasEstablishedRtcSession => _isRtcFirstConnected;
+
+  /// Optional callback injected by ChannelProvider to determine whether this
+  /// participant should be retained when the control channel disconnects but no
+  /// WebRTC session has been established by the sender side.
+  ///
+  /// Returns true when the IFP is actively pushing a Cast-to-Device
+  /// (RemoteShare) stream to this participant. The RTC stream is still alive
+  /// even though the port-5100 control socket has dropped, so the participant
+  /// must not be evicted from the list.
+  bool Function()? onShouldKeepParticipant;
 
   // rtc stats
   final _videoBitrateHistory = <int?>[];
@@ -228,6 +241,19 @@ class RTCConnector {
         // This means that if a disconnection occurs, the channel will continuously attempt to reconnect without changing the state to "closed".
         // A state change to "closed" will only occur if there is an explicit close request from the peer.
         // Note: the case is the sender cancel the waiting state on moderator mode
+        // While RTC is streaming, a "closed" event most likely means the peer
+        // explicitly closed the channel (e.g. the sender cancelled while
+        // waiting in moderator mode) rather than a plain network dropout.
+        // A network dropout transitions the channel to "connecting" and keeps
+        // retrying without ever reaching "closed". Defer the full disconnect
+        // until the RTC session ends to avoid interrupting the video stream.
+        if (_isStreaming()) {
+          log.warning(
+            '[$clientId] Ignore channel closed because RTC is already '
+            'streaming. Waiting for control channel recovery instead.',
+          );
+          return;
+        }
 
         await disconnectChannel(reason: 'Channel closed');
         break;
@@ -348,6 +374,18 @@ class RTCConnector {
   }
 
   void _startChannelReconnectTimer() {
+    // Skip the idle reconnect timer when the owner reports that the participant
+    // should be kept (e.g. a Cast-to-Device / RemoteShare stream is still
+    // running). Without this guard the timer would eventually invoke
+    // disconnectChannel() and evict the participant even though the RTC stream
+    // is healthy. Once the RemoteShare ends the next "connecting" event will
+    // no longer be guarded and the timer will start normally.
+    if (onShouldKeepParticipant?.call() == true) {
+      log.info(
+          '[$clientId] Skip channel reconnect timer - active remote share exists');
+      return;
+    }
+
     log.info('Start channel reconnect timer');
 
     _channelReconnectTimer = Timer(
