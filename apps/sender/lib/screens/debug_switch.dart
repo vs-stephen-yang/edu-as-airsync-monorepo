@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -151,6 +152,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
     super.dispose();
   }
 
+  Future<void> _triggerNativeCrash() async {
+    const channel = MethodChannel('com.viewsonic.display.cast/debug');
+    await channel.invokeMethod('triggerNativeCrash');
+  }
+
   @override
   Widget build(BuildContext context) {
     _initialize(context);
@@ -249,14 +255,32 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         ),
                       ),
                       onPressed: () {
-                        Future(() {
-                          throw Exception(
-                              'Sentry Test Error from Debug Switch');
-                        });
+                        throw Exception('Sentry Test Error from Debug Switch');
                       },
-                      child: const V3AutoHyphenatingText(
-                          'Send Sentry Test Error'),
+                      child:
+                          const V3AutoHyphenatingText('Send Sentry Test Error'),
                     ),
+                    if (!kIsWeb) ...[
+                      const SizedBox(height: 8),
+                      TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.grey),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                        onPressed: () => _triggerNativeCrash(),
+                        child:
+                            const V3AutoHyphenatingText('Trigger Native Crash'),
+                      ),
+                    ],
                   ],
                 ),
               ),

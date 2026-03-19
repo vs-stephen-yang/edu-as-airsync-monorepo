@@ -21,6 +21,20 @@ import Flutter
            self?.supportedOrientation = .all
         }
     }
+
+    let debugChannel = FlutterMethodChannel(
+      name: "com.viewsonic.display.cast/debug",
+      binaryMessenger: controller.binaryMessenger)
+    debugChannel.setMethodCallHandler { (call, result) in
+      if call.method == "triggerNativeCrash" {
+        result(nil)
+        let ptr: UnsafeMutablePointer<Int>? = nil
+        ptr!.pointee = 42  // EXC_BAD_ACCESS
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 

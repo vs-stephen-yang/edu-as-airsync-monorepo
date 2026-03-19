@@ -48,6 +48,20 @@ class AppDelegate: FlutterAppDelegate {
       }
     })
     
+    let debugChannel = FlutterMethodChannel(
+      name: "com.viewsonic.display.cast/debug",
+      binaryMessenger: controller.engine.binaryMessenger)
+    debugChannel.setMethodCallHandler({
+      (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+      if call.method == "triggerNativeCrash" {
+        result(nil)
+        let ptr: UnsafeMutablePointer<Int>? = nil
+        ptr!.pointee = 42  // EXC_BAD_ACCESS
+      } else {
+        result(FlutterMethodNotImplemented)
+      }
+    })
+
     AudioSwitch.register(with: controller.registrar(forPlugin: "audio_switch"))
 
     // 2️⃣ EventChannel：推送前景 App 變化

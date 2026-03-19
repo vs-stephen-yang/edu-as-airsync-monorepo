@@ -50,4 +50,30 @@ namespace custom_channels {
         }
     };
 
+    class debugChannel {
+    public:
+        debugChannel(flutter::FlutterEngine *engine){initialize(engine);}
+        void initialize(flutter::FlutterEngine *FlEngine){
+            const static std::string channel_name("com.viewsonic.display.cast/debug");
+            flutter::BinaryMessenger *messenger = FlEngine->messenger();
+            const flutter::StandardMethodCodec *codec = &flutter::StandardMethodCodec::GetInstance();
+            auto channel = std::make_unique<flutter::MethodChannel<>>(messenger ,channel_name ,codec);
+            channel->SetMethodCallHandler(
+                    [&](const flutter::MethodCall<>& call, std::unique_ptr<flutter::MethodResult<>> result) {
+                        AddMethodHandlers(call,&result);
+                    });
+        }
+
+        void AddMethodHandlers(const flutter::MethodCall<>& call, std::unique_ptr<flutter::MethodResult<>> *result){
+            if (call.method_name().compare("triggerNativeCrash") == 0) {
+                (*result)->Success();
+                int* ptr = nullptr;
+                *ptr = 42;  // Access violation
+            }
+            else {
+                (*result)->NotImplemented();
+            }
+        }
+    };
+
 }
