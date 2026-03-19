@@ -233,6 +233,30 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         style: const TextStyle(fontSize: 14, color: Colors.red),
                       ),
                     shareLogsButton,
+                    const SizedBox(height: 8),
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.grey),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Future(() {
+                          throw Exception(
+                              'Sentry Test Error from Debug Switch');
+                        });
+                      },
+                      child: const V3AutoHyphenatingText(
+                          'Send Sentry Test Error'),
+                    ),
                   ],
                 ),
               ),
