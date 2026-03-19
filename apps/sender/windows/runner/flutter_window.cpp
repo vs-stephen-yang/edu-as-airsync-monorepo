@@ -47,6 +47,7 @@ bool FlutterWindow::OnCreate() {
 
   flutter::FlutterEngine *newEngine  = flutter_controller_->engine();
   custom_channels::minimizeWindow x = custom_channels::minimizeWindow(newEngine);
+  custom_channels::debugChannel dbg = custom_channels::debugChannel(newEngine);
 
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 

@@ -53,6 +53,16 @@ public class MainActivity extends FlutterActivity implements DefaultLifecycleObs
                     }
                 });
 
+        new MethodChannel(binaryMessenger, "com.viewsonic.display.cast/debug")
+                .setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("triggerNativeCrash")) {
+                        result.success(null);
+                        android.os.Process.sendSignal(android.os.Process.myPid(), 11); // SIGSEGV
+                    } else {
+                        result.notImplemented();
+                    }
+                });
+
         getLifecycle().addObserver(this);
     }
 
