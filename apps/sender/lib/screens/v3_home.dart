@@ -15,9 +15,11 @@ import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/v3_exit_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 import "package:universal_html/html.dart" as html;
+import 'package:window_manager/window_manager.dart';
 
 class V3Home extends StatefulWidget {
   const V3Home({super.key});
@@ -56,6 +58,8 @@ class _V3HomeState extends State<V3Home> {
             }).then((value) async {
           if (value) {
             await _handleExitRequest();
+            await windowManager.destroy();
+            exit(0);
           }
           _alertShowing = false;
           return value;
