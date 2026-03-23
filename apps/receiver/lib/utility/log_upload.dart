@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:display_flutter/utility/log.dart';
@@ -9,18 +11,22 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 uploadLog(String message, String logs) async {
   final feedback = SentryFeedback(message: message, name: 'default');
 
-  final content = Uint8List.fromList(utf8.encode(logs)).buffer.asByteData();
+  // Compress in a separate isolate to avoid blocking the main thread
+  final compressed = await Isolate.run(
+    () => GZipCodec().encode(
+      utf8.encode(logs),
+    ),
+  );
+  final content = (compressed as Uint8List).buffer.asByteData();
 
   await Sentry.captureFeedback(
     feedback,
     withScope: (scope) {
-      // Create the attachment
       final attachment = SentryAttachment.fromByteData(
         content,
-        'file.log',
-        contentType: 'text/plain',
+        'file.log.gz',
+        contentType: 'application/gzip',
       );
-
       scope.addAttachment(attachment);
     },
   );
