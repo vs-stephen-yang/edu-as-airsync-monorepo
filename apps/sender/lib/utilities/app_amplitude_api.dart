@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:amplitude_flutter/constants.dart';
 import 'package:display_cast_flutter/utilities/app_amplitude.dart';
@@ -6,6 +7,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 class AppAmplitudeApi implements AppAmplitudeImplement {
   String _apiKey = '';
@@ -15,6 +17,16 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   ClientDeviceInfo? _clientDeviceInfo;
   final _globalProperties = <String, String>{};
   EventMode? _mode;
+  late final http.Client _httpClient = _createHttpClient();
+
+  http.Client _createHttpClient() {
+    final ioClient = HttpClient()
+      ..badCertificateCallback = (cert, host, port) {
+        const allowedHosts = ['api2.amplitude.com'];
+        return allowedHosts.contains(host);
+      };
+    return IOClient(ioClient);
+  }
 
   @override
   Future<void> ensureInitialized({
@@ -98,7 +110,7 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
     });
 
     try {
-      await http.post(
+      await _httpClient.post(
         uri,
         headers: {'Content-Type': 'application/json', 'Accept': '*/*'},
         body: body,
@@ -111,7 +123,7 @@ class AppAmplitudeApi implements AppAmplitudeImplement {
   Future<String> getPublicIP() async {
     try {
       final response =
-          await http.get(Uri.parse('https://api.ipify.org')).timeout(
+          await _httpClient.get(Uri.parse('https://api.ipify.org')).timeout(
         const Duration(seconds: 5),
       );
       if (response.statusCode == 200) {
