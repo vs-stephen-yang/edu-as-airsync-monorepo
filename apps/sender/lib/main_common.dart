@@ -61,7 +61,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     if (settings.sentry != null) {
-      initSentry(settings.sentry!);
+      await initSentry(settings.sentry!);
     }
 
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
