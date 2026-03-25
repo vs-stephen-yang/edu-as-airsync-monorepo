@@ -40,57 +40,60 @@ class _V3RemoteScreenState extends State<V3RemoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints.expand(),
-      child: OrientationBuilder(
-        builder: (_, __) {
-          ChannelProvider channelProvider =
-              Provider.of<ChannelProvider>(context, listen: false);
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              const RemoteVideoView(),
-              IgnorePointer(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 6,
-                      color: context.tokens.color.vsdswColorOnSurface,
+    return ColoredBox(
+      color: Colors.black,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints.expand(),
+        child: OrientationBuilder(
+          builder: (_, __) {
+            ChannelProvider channelProvider =
+                Provider.of<ChannelProvider>(context, listen: false);
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                const RemoteVideoView(),
+                IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 6,
+                        color: context.tokens.color.vsdswColorOnSurface,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              ResizableDraggableWidget(
-                halfScreen: MediaQuery.of(context).size.width / 2,
-                text: S.current.v3_main_receive_app_receive_from
-                    .replaceAll('%s', channelProvider.deviceName ?? ''),
-                onStop: () {
-                  trackEvent('click_exit', EventCategory.session);
+                ResizableDraggableWidget(
+                  halfScreen: MediaQuery.of(context).size.width / 2,
+                  text: S.current.v3_main_receive_app_receive_from
+                      .replaceAll('%s', channelProvider.deviceName ?? ''),
+                  onStop: () {
+                    trackEvent('click_exit', EventCategory.session);
 
-                  if (widget.isModeratorShare) {
-                    channelProvider.removeShareRemoteScreenClient();
-                  } else {
-                    channelProvider.removeRemoteScreenClient();
-                  }
-                },
-              ),
-              IgnorePointer(
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 4,
-                          color: context.tokens.color.vsdswColorSuccess,
+                    if (widget.isModeratorShare) {
+                      channelProvider.removeShareRemoteScreenClient();
+                    } else {
+                      channelProvider.removeRemoteScreenClient();
+                    }
+                  },
+                ),
+                IgnorePointer(
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: context.tokens.color.vsdswColorSuccess,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
