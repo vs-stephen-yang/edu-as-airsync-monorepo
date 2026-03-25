@@ -1,0 +1,128 @@
+name: Agent Cleanup
+
+# 每週日凌晨 2 點執行
+schedules:
+  - cron: "0 18 * * 6"   # UTC 時間（台灣時間週日凌晨 2 點）
+    displayName: Weekly cleanup
+    branches:
+      include:
+        - master
+    always: true          # 即使 code 沒有變動也執行
+
+trigger: none             # 不因 push 觸發
+
+pool:
+  name: "AirSync macOS Pool"
+
+jobs:
+  - job: CleanupAgent
+    displayName: "Cleanup Mac Mini Agent"
+    timeoutInMinutes: 30
+    # 若有多台 Mac mini，讓每台都跑到
+    strategy:
+      parallel: 5
+    steps:
+
+      # ── 顯示清理前磁碟狀況 ──────────────────────────
+      - script: |
+          echo "===== BEFORE CLEANUP ====="
+          df -h /
+          echo ""
+          echo "--- Agent Work Dir Size ---"
+          du -sh "$AGENT_WORKFOLDER" 2>/dev/null || echo "WorkFolder not found"
+          echo ""
+          echo "--- Flutter pub-cache Size ---"
+          du -sh ~/.pub-cache 2>/dev/null || echo "pub-cache not found"
+          echo ""
+          echo "--- npm cache Size ---"
+          du -sh ~/.npm 2>/dev/null || echo "npm cache not found"
+          echo ""
+          echo "--- Xcode DerivedData Size ---"
+          du -sh ~/Library/Developer/Xcode/DerivedData 2>/dev/null || echo "DerivedData not found"
+          echo ""
+          echo "--- CocoaPods cache Size ---"
+          du -sh ~/Library/Caches/CocoaPods 2>/dev/null || echo "CocoaPods cache not found"
+        displayName: "📊 Disk usage BEFORE cleanup"
+
+      # ── 清理 Agent _work 舊目錄 ────────────────────
+      - script: |
+          WORK_DIR="$AGENT_WORKFOLDER"
+          echo "Cleaning agent work folder: $WORK_DIR"
+
+          # 刪除 7 天前未存取的 build 目錄（保留最近的避免影響進行中工作）
+          find "$WORK_DIR" -mindepth 2 -maxdepth 2 -type d -mtime +7 -print -exec rm -rf {} + 2>/dev/null || true
+        displayName: "🧹 Clean agent _work directory"
+
+      # ── 清理 Flutter pub cache（只刪舊版本）──────────
+      - script: |
+          HOSTED_DIR="${PUB_CACHE:-$HOME/.pub-cache}/hosted/pub.dev"
+          if [ ! -d "$HOSTED_DIR" ]; then
+            echo "pub.dev hosted cache not found, skipping."
+            exit 0
+          fi
+
+          cd "$HOSTED_DIR"
+
+          # 取出所有套件名稱（去掉 -semver 後綴）
+          ls | sed -E 's/-[0-9]+\.[0-9]+.*//' | sort -u | while read pkg; do
+            # 找出該套件所有版本，按版本排序，保留最新一個，刪除其餘
+            old_versions=$(ls | grep -E "^${pkg}-[0-9]+\.[0-9]" | sort -V | sed '$d')
+            if [ -n "$old_versions" ]; then
+              echo "$old_versions" | while read ver; do
+                echo "Removing old version: $ver"
+                rm -rf "$ver"
+              done
+            fi
+          done
+
+          echo "Done. Old pub cache versions removed."
+        displayName: "🐦 Clean Flutter pub-cache (old versions only)"
+
+      # ── 清理 npm cache ──────────────────────────────
+      - script: |
+          if command -v npm &> /dev/null; then
+            echo "Running npm cache clean..."
+            npm cache clean --force
+          else
+            echo "npm not found, skipping."
+          fi
+        displayName: "📦 Clean npm cache"
+
+      # ── 清理 Xcode DerivedData ─────────────────────
+      - script: |
+          DERIVED="$HOME/Library/Developer/Xcode/DerivedData"
+          if [ -d "$DERIVED" ]; then
+            echo "Cleaning DerivedData..."
+            # 只刪除超過 3 天未存取的
+            find "$DERIVED" -mindepth 1 -maxdepth 1 -type d -mtime +3 -print -exec rm -rf {} + 2>/dev/null || true
+          else
+            echo "DerivedData not found, skipping."
+          fi
+        displayName: "🔨 Clean Xcode DerivedData"
+
+      # ── 清理 CocoaPods cache ───────────────────────
+      - script: |
+          if command -v pod &> /dev/null; then
+            echo "Cleaning CocoaPods cache..."
+            pod cache clean --all 2>/dev/null || true
+          else
+            echo "CocoaPods not found, skipping."
+          fi
+        displayName: "🦕 Clean CocoaPods cache"
+
+      # ── 清理 Homebrew 舊版本 ────────────────────────
+      - script: |
+          if command -v brew &> /dev/null; then
+            echo "Running brew cleanup..."
+            brew cleanup --prune=7 2>/dev/null || true
+          else
+            echo "Homebrew not found, skipping."
+          fi
+        displayName: "🍺 Clean Homebrew cache"
+
+      # ── 顯示清理後磁碟狀況 ──────────────────────────
+      - script: |
+          echo "===== AFTER CLEANUP ====="
+          df -h /
+        displayName: "📊 Disk usage AFTER cleanup"
+        condition: always()
