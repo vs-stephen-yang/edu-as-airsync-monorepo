@@ -8,13 +8,14 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.viewsonic.miracast.net.EventBase;
+import com.viewsonic.miracast.wifidirect.WifiChannelMonitor;
 import com.viewsonic.miracast.wifidirect.WiFiDirectMgr;
 import com.viewsonic.miracast.wifidirect.WiFiDirectListener;
 
 import java.io.IOException;
 
 public class MiraMgrProxy
-  implements WiFiDirectListener {
+  implements WiFiDirectListener, WifiChannelMonitor.Listener {
 
   private static final String TAG = "MiraMgrProxy";
 
@@ -30,6 +31,10 @@ public class MiraMgrProxy
   private Context context_;
   private Activity activity_;
   private String receiverName_;
+  private MiraMgrListener listener_;
+  private SurfaceTextureProvider surfaceProvider_;
+  private WifiChannelMonitor wifiChannelMonitor_;
+  private boolean isRestarting_ = false;
 
   private static MiraMgrProxy instance_;
 
@@ -69,16 +74,25 @@ public class MiraMgrProxy
     eventBase_.post(() -> {
       context_ = context;
       activity_ = activity;
-
       receiverName_ = receiverName;
+      listener_ = listener;
+      surfaceProvider_ = surfaceTextureProvider;
 
       miraMgr_.start(listener, receiverName, surfaceTextureProvider);
       miraHandler_.post(wifiDirectRunnable_);
+
+      wifiChannelMonitor_ = new WifiChannelMonitor();
+      wifiChannelMonitor_.start(context_, MiraMgrProxy.this);
     });
   }
 
   public void stop() {
     eventBase_.post(() -> {
+      if (wifiChannelMonitor_ != null) {
+        wifiChannelMonitor_.stop();
+        wifiChannelMonitor_ = null;
+      }
+
       miraMgr_.stop();
 
       // Close p2p discovery
@@ -137,5 +151,42 @@ public class MiraMgrProxy
   public void mutePlayer(String mirrorId, boolean mute) {
     eventBase_.post(
       () -> miraMgr_.mutePlayer(mirrorId, mute));
+  }
+
+  @Override
+  public void onWifiChannelChanged(int oldFrequencyMHz, int newFrequencyMHz) {
+    Log.w(TAG, "Wi-Fi channel changed: " + oldFrequencyMHz + " -> " + newFrequencyMHz + " MHz, restarting Miracast");
+    restartMiracast();
+  }
+
+  @Override
+  public void onWifiRestored(int frequencyMHz) {
+    Log.w(TAG, "Wi-Fi restored at " + frequencyMHz + " MHz, restarting Miracast");
+    restartMiracast();
+  }
+
+  private void restartMiracast() {
+    eventBase_.post(() -> {
+      if (isRestarting_) {
+        Log.d(TAG, "Miracast restart already in progress, skipping");
+        return;
+      }
+      isRestarting_ = true;
+
+      Log.i(TAG, "Miracast restart: stopping...");
+      miraMgr_.stop();
+      wifiDirectMgr_.stop();
+      miraHandler_.removeCallbacks(wifiDirectRunnable_);
+
+      // 1-second stabilization delay before re-start
+      miraHandler_.postDelayed(() -> {
+        eventBase_.post(() -> {
+          Log.i(TAG, "Miracast restart: re-starting...");
+          miraMgr_.start(listener_, receiverName_, surfaceProvider_);
+          miraHandler_.post(wifiDirectRunnable_);
+          isRestarting_ = false;
+        });
+      }, 1000);
+    });
   }
 }
