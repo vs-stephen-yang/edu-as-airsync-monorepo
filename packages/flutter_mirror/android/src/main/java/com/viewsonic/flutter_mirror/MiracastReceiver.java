@@ -19,13 +19,18 @@ public class MiracastReceiver implements
 
   private static final String TAG = "MiracastReceiver";
 
-  MiracastReceiverListener listener_;
+  private final MiracastReceiverListener listener_;
+  private final MirrorReceiver mirrorReceiver_;
+  private long instance_;
 
 
   public MiracastReceiver(
-    MiracastReceiverListener listener
+    MiracastReceiverListener listener,
+    MirrorReceiver mirrorReceiver
   ) {
     listener_ = listener;
+    mirrorReceiver_ = mirrorReceiver;
+    instance_ = createInstanceNative(mirrorReceiver_.getNativeInstance());
   }
 
   public void start(
@@ -50,6 +55,15 @@ public class MiracastReceiver implements
   public void stop() {
     Log.d(TAG, "MiracastReceiver.stop()");
     MiraMgrProxy.getInstance().stop();
+  }
+
+  public void dispose() {
+    if (instance_ == 0) {
+      return;
+    }
+
+    destroyInstanceNative(instance_);
+    instance_ = 0;
   }
 
   // Called from native
@@ -97,7 +111,11 @@ public class MiracastReceiver implements
     String codecName,
     int sampleRate,
     int channelCount) {
+    if (instance_ == 0) {
+      return;
+    }
 
+    onAudioFormatUpdateNative(instance_, mirrorId, codecName, sampleRate, channelCount);
   }
 
   @Override
@@ -118,16 +136,49 @@ public class MiracastReceiver implements
   public void onMiracastStart(String mirrorId,
                               long textureId,
                               String deviceName) {
-    listener_.onMiracastStart(mirrorId, textureId, deviceName);
+    if (instance_ == 0) {
+      return;
+    }
+
+    onSessionBeginNative(instance_, mirrorId, deviceName);
   }
 
   @Override
   public void onSessionEnd(String mirrorId) {
-    listener_.onMiracastStop(mirrorId);
+    if (instance_ == 0) {
+      return;
+    }
+
+    onSessionEndNative(instance_, mirrorId);
   }
 
   @Override
   public void onVideoResolution(String mirrorId, int width, int height) {
-    listener_.onMiracastVideoResolution(mirrorId, width, height);
   }
+
+  @Override
+  public void onRtpPacket(String mirrorId, byte[] data, int size) {
+    if (instance_ == 0) {
+      return;
+    }
+
+    onPacketNative(instance_, mirrorId, data, size);
+  }
+
+  private native long createInstanceNative(long mirrorListenerInstance);
+
+  private native void destroyInstanceNative(long instance);
+
+  private native void onSessionBeginNative(long instance, String mirrorId, String deviceName);
+
+  private native void onSessionEndNative(long instance, String mirrorId);
+
+  private native void onPacketNative(long instance, String mirrorId, byte[] data, int size);
+
+  private native void onAudioFormatUpdateNative(
+    long instance,
+    String mirrorId,
+    String codecName,
+    int sampleRate,
+    int channelCount);
 }
