@@ -10,4 +10,6 @@ public interface MiraSessionListener {
   void onMiracastSessionError(String mirrorId, String errorMessage);
 
   void onVideoResolution(String mirrorId, int width, int height);
+
+  void onRtpPacket(String mirrorId, byte[] data, int size);
 }

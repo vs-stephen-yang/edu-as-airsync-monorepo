@@ -6,6 +6,7 @@ import android.view.Surface;
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.net.TcpConnection;
 import com.viewsonic.miracast.net.TcpConnectionListener;
+import com.viewsonic.miracast.rtp.OnReceiveRTPListener;
 import com.viewsonic.miracast.rtp.RTPServer;
 import com.viewsonic.miracast.rtsp.RtspClient;
 import com.viewsonic.miracast.rtsp.RtspHandler;
@@ -194,6 +195,19 @@ public class MiraSession
 
   public void startRtsp() {
     try {
+      if (rtpServer_ == null) {
+        rtpServer_ = new RTPServer(eventBase_, new OnReceiveRTPListener() {
+          @Override
+          public void onRtpData(long seqNum, byte[] data, int size) {
+            if (mirrorListener_ != null) {
+              mirrorListener_.onRtpPacket(id_, data, size);
+            }
+          }
+        });
+        rtpServer_.start();
+        rtspClient_.setRtpPort(rtpServer_.getRtpPort());
+      }
+
       rtspConnection_ = new TcpConnection(eventBase_, buildRtspConnectionListener());
       rtspConnection_.setNoDelay();
       rtspConnection_.connect(ip_, port_);
