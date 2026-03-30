@@ -152,6 +152,10 @@ public class MirrorReceiver implements
         enable);
   }
 
+  long getNativeInstance() {
+    return instance_;
+  }
+
   public boolean onServiceRegister(ServiceInfo info) {
     if (watchdog_ == null) {
       return false;

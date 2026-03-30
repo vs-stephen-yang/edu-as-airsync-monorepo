@@ -129,6 +129,12 @@ add_library(
   ${util_jni_src}
   ${jni_src})
 
+target_sources(
+  flutter_mirror
+  PRIVATE
+  ./media/media_session_gst.cpp
+)
+
 target_include_directories(
   flutter_mirror
   PRIVATE
