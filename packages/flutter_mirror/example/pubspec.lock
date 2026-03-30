@@ -181,7 +181,7 @@ packages:
       path: "."
       ref: "release-0.7.0"
       resolved-ref: "129855d82a71b17695fdf17ff4b83d5e31bdc05b"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth"
+      url: "https://github.com/Viewsonic-EDU/edu-as-libcastauth.git"
     source: git
     version: "1.0.0"
   lints:
