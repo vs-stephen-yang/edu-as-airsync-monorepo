@@ -27,6 +27,7 @@ public class MiraMgrProxy
 
   private final Handler miraHandler_;
   private Runnable wifiDirectRunnable_;
+  private Runnable restartRunnable_;
 
   private Context context_;
   private Activity activity_;
@@ -98,6 +99,8 @@ public class MiraMgrProxy
       // Close p2p discovery
       wifiDirectMgr_.stop();
       miraHandler_.removeCallbacks(wifiDirectRunnable_);
+      miraHandler_.removeCallbacks(restartRunnable_);
+      isRestarting_ = false;
     });
   }
 
@@ -179,14 +182,19 @@ public class MiraMgrProxy
       miraHandler_.removeCallbacks(wifiDirectRunnable_);
 
       // 1-second stabilization delay before re-start
-      miraHandler_.postDelayed(() -> {
+      restartRunnable_ = () -> {
         eventBase_.post(() -> {
+          if (!isRestarting_) {
+            Log.d(TAG, "Miracast restart cancelled (stop was called)");
+            return;
+          }
           Log.i(TAG, "Miracast restart: re-starting...");
           miraMgr_.start(listener_, receiverName_, surfaceProvider_);
           miraHandler_.post(wifiDirectRunnable_);
           isRestarting_ = false;
         });
-      }, 1000);
+      };
+      miraHandler_.postDelayed(restartRunnable_, 1000);
     });
   }
 }
