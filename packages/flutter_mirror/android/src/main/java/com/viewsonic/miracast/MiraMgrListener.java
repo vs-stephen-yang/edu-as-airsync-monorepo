@@ -20,4 +20,6 @@ public interface MiraMgrListener {
   void onSessionEnd(String mirrorId);
 
   void onVideoResolution(String mirrorId, int width, int height);
+
+  void onRtpPacket(String mirrorId, byte[] data, int size);
 }

@@ -1,6 +1,7 @@
 #include "mirror_receiver.h"
 #include <assert.h>
 #include "media/media_session_dump.h"
+#include "media/media_session_gst.h"
 #include "media/media_session_impl.h"
 #include "util/log.h"
 #include "util/thread_checker.h"
@@ -209,10 +210,18 @@ void MirrorReceiver::OnMirrorAuth(
       timeout_sec);
 }
 
-MediaSessionPtr MirrorReceiver::CreateMediaSession() {
-  auto session = std::make_unique<MediaSessionImpl>(
-      *texture_registry_,
-      additional_codec_params_);
+MediaSessionPtr MirrorReceiver::CreateMediaSession(MirrorType mirror_type) {
+  MediaSessionPtr session;
+
+  if (mirror_type == MirrorType::Miracast) {
+    session = std::make_unique<MediaSessionGst>(
+        *texture_registry_,
+        additional_codec_params_);
+  } else {
+    session = std::make_unique<MediaSessionImpl>(
+        *texture_registry_,
+        additional_codec_params_);
+  }
 
   if (!dump_path_.empty()) {
     return std::make_unique<MediaSessionDump>(
@@ -235,7 +244,7 @@ void MirrorReceiver::OnMirrorStart(
   std::string mirror_id = session->GetMirrorId();
   ALOGD("MirrorReceiver::OnMirrorStart(%s)", mirror_id.c_str());
 
-  auto media_session = CreateMediaSession();
+  auto media_session = CreateMediaSession(session->GetMirrorType());
 
   if (!session->StartMirror(
           std::move(media_session))) {

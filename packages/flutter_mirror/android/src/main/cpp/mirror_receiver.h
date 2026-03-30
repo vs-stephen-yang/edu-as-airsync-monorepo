@@ -103,7 +103,7 @@ class MirrorReceiver
   std::vector<MirrorSessionPtr> FindSessionsByType(
       MirrorType mirrorType);
 
-  MediaSessionPtr CreateMediaSession();
+  MediaSessionPtr CreateMediaSession(MirrorType mirror_type);
 
  private:
   jni::MirrorReceiverPtr proxy_;

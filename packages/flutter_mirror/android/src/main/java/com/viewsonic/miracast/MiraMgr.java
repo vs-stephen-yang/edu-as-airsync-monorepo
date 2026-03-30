@@ -229,6 +229,13 @@ public class MiraMgr
   }
 
   @Override
+  public void onRtpPacket(String mirrorId, byte[] data, int size) {
+    if (listener_ != null) {
+      listener_.onRtpPacket(mirrorId, data, size);
+    }
+  }
+
+  @Override
   public void onSourceCapabilities(String mirrorId, boolean isUibcSupported) {
     if (listener_ != null) {
       listener_.onSourceCapabilities(mirrorId, isUibcSupported);

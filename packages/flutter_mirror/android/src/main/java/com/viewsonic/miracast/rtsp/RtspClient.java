@@ -138,6 +138,10 @@ public class RtspClient
     packetLostListener_ = listener;
   }
 
+  public void setRtpPort(int rtpPort) {
+    rtpPort_ = rtpPort;
+  }
+
   public void pause() {
     if (isPlaying()) {
       sendRequestPause();
@@ -680,18 +684,12 @@ public class RtspClient
   }
 
   private void startRTPReceiver(Surface surface) {
-    if (rtpPlayer_ == null) {
-      rtpPlayer_ = new RtpMpegTsPlayer(this, eventBase_);
-    }
-    boolean started = rtpPlayer_.start();
-    if (!started) {
-      Log.e(TAG, "Failed to start RtpMpegTsPlayer");
+    if (rtpPort_ == 0) {
+      Log.e(TAG, "RTP receiver port is not configured");
       rtpPort_ = 0;
       return;
     }
-    rtpPort_ = rtpPlayer_.getPort();
-    Log.d(TAG, "RtpMpegTsPlayer started on port: " + rtpPort_);
-    rtpPlayer_.setSurface(surface);
+    Log.d(TAG, "Native Miracast RTP receiver started on port: " + rtpPort_);
   }
 
   private void startUibc() {

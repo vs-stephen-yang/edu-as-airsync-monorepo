@@ -286,7 +286,7 @@ public class FlutterMirrorPlugin implements
 
     mirrorReceiver_ = new MirrorReceiver(this, this, additionalCodecParams, context_);
 
-    miracastReceiver_ = new MiracastReceiver(this);
+    miracastReceiver_ = new MiracastReceiver(this, mirrorReceiver_);
   }
 
   private void enableDump(String dumpPath) {
@@ -420,6 +420,7 @@ public class FlutterMirrorPlugin implements
 
     if (miracastReceiver_ != null) {
       miracastReceiver_.stop();
+      miracastReceiver_.dispose();
       miracastReceiver_ = null;
     }
 
