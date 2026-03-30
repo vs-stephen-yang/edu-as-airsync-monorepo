@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/screens/debug_switch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class V3DebugInvisibleButton extends StatefulWidget {
@@ -34,7 +35,7 @@ class _V3DebugInvisibleButtonState extends State<V3DebugInvisibleButton> {
   @override
   Widget build(BuildContext context) {
     debugCounter = 0;
-    final isMobile = Platform.isAndroid || Platform.isIOS;
+    final isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
     final buttonSize = const Size(100, 50);
     final padding = isMobile
         ? const EdgeInsets.fromLTRB(0, 0, 0, 24)

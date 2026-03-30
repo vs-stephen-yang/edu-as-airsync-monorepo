@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/V3_focus.dart';
@@ -9,8 +10,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class V3WebFooter extends StatelessWidget {
+class V3WebFooter extends StatefulWidget {
   const V3WebFooter({super.key});
+
+  @override
+  State<V3WebFooter> createState() => _V3WebFooterState();
+}
+
+class _V3WebFooterState extends State<V3WebFooter> {
+  static const int _openDebugCounter = 5;
+  int _debugTapCount = 0;
+
+  void _onLogoTap() {
+    _debugTapCount++;
+    if (_debugTapCount == _openDebugCounter) {
+      _debugTapCount = 0;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const DebugSwitch(),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +67,14 @@ class V3WebFooter extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ExcludeSemantics(
-                  child: Image.asset(
-                    'assets/images/ic_logo_viewsonic_web.png',
-                    width: 189,
-                    height: 31,
+                GestureDetector(
+                  onTap: _onLogoTap,
+                  child: ExcludeSemantics(
+                    child: Image.asset(
+                      'assets/images/ic_logo_viewsonic_web.png',
+                      width: 189,
+                      height: 31,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
