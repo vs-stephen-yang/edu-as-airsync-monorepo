@@ -56,7 +56,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     if (settings.sentry != null) {
-      initSentry(settings.sentry!);
+      await initSentry(settings.sentry!);
     }
 
     await AppOverlayTab().ensureInitialized();
