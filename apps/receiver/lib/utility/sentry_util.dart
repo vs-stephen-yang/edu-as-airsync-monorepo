@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sentry_logging/sentry_logging.dart';
 
-initSentry(SentryConfig config) async {
+Future<void> initSentry(SentryConfig config) async {
   if (kDebugMode) {
     return;
   }
