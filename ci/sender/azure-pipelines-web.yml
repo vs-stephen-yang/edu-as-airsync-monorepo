@@ -5,6 +5,8 @@ trigger:
       - main
       - HotFix/*
 
+pr: none
+
 pool:
   name: "AirSync macOS Pool"
 

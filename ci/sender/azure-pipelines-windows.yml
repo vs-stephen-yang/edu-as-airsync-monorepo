@@ -5,6 +5,8 @@ trigger:
       - main
       - HotFix/*
 
+pr: none
+
 variables:
   - name: Flutter.Bin
     value: fvm flutter
