@@ -192,6 +192,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  Future<void> _triggerNativeCrash() async {
+    const channel = MethodChannel('com.mvbcast.crosswalk/debug');
+    await channel.invokeMethod('triggerNativeCrash');
+  }
+
   void _initialize() {
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
     _showDeviceInfoOverlay = DeviceFeatureAdapter.showDeviceInfoOverlay;
@@ -372,6 +377,20 @@ class _DebugSwitchState extends State<DebugSwitch> {
                             ),
                           ),
                         ),
+                        if (!kIsWeb) ...[
+                          const SizedBox(height: 8),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: _triggerNativeCrash,
+                              child: const Text(
+                                'Trigger Native Crash',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     );
                   },
