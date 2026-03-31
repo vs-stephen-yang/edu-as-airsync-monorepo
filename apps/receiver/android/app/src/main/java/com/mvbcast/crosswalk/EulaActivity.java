@@ -326,6 +326,16 @@ public class EulaActivity extends FlutterActivity {
                 sink.success(is24);
             }
         });
+
+        new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/debug")
+                .setMethodCallHandler((call, result) -> {
+                    if (call.method.equals("triggerNativeCrash")) {
+                        result.success(null);
+                        android.os.Process.sendSignal(android.os.Process.myPid(), 11); // SIGSEGV
+                    } else {
+                        result.notImplemented();
+                    }
+                });
     }
 
     private Size getRealScreenResolution(Context context) {

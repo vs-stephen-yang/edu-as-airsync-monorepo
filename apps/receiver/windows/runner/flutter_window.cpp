@@ -77,6 +77,23 @@ bool FlutterWindow::OnCreate() {
                     result->NotImplemented();
                 }
             });
+    flutter::MethodChannel <flutter::EncodableValue> channelDebug(
+            flutter_controller_->engine()->messenger(),
+            "com.mvbcast.crosswalk/debug",
+            &flutter::StandardMethodCodec::GetInstance());
+
+    channelDebug.SetMethodCallHandler(
+            [](const flutter::MethodCall<> &method_call,
+               std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result) {
+                if (method_call.method_name().compare("triggerNativeCrash") == 0) {
+                    result->Success();
+                    int* ptr = nullptr;
+                    *ptr = 42; // Access violation
+                } else {
+                    result->NotImplemented();
+                }
+            });
+
     // Create EventChannel
     time_channel_ = std::make_unique<
                     flutter::EventChannel<flutter::EncodableValue>>(
