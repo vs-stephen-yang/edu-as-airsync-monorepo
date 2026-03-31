@@ -33,14 +33,16 @@ class _V3DeviceListState extends State<V3DeviceList> {
   AirSyncBonsoirService? _connectService;
   late PresentStateProvider _presentStateProvider;
 
-  bool isPinDialogShown = false;
+  bool _isPinDialogShown = false;
+  bool _isConnecting = false;
+  final ScrollController _listScrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      unawaited(_deviceListProvider.startDiscovery(
-          context.read<AppConfig>().settings.versionPostfix));
+      unawaited(_deviceListProvider
+          .startDiscovery(context.read<AppConfig>().settings.versionPostfix));
     });
     _presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
@@ -55,7 +57,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
         Provider.of<DeviceListProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (_channelProvider.channelConnectError != null && !isPinDialogShown) {
+      if (_channelProvider.channelConnectError != null && !_isPinDialogShown) {
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
       }
     });
@@ -131,11 +133,10 @@ class _V3DeviceListState extends State<V3DeviceList> {
                   child: Consumer<DeviceListProvider>(
                     builder: (BuildContext context, DeviceListProvider value,
                         Widget? child) {
-                      final sc = ScrollController();
                       return V3Scrollbar(
-                        controller: sc,
+                        controller: _listScrollController,
                         child: ListView.builder(
-                          controller: sc,
+                          controller: _listScrollController,
                           padding: EdgeInsets.only(right: 8),
                           itemCount: value.devices.length,
                           itemBuilder: (context, index) {
@@ -169,12 +170,11 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 buildInkWellButton(
                   buildContext: context,
                   text: S.of(context).v3_device_list_next,
-                  enable: _connectService != null,
+                  enable: _connectService != null && !_isConnecting,
                   onTap: () {
-                    if (_connectService == null) return;
+                    setState(() => _isConnecting = true);
                     AppAnalytics.instance.setGlobalProperty(
                         'display_code', _connectService!.displayCode);
-
                     trackEvent('click_quick_connect', EventCategory.session);
                     _channelProvider.startDirectConnect(
                         otp: null,
@@ -398,13 +398,15 @@ class _V3DeviceListState extends State<V3DeviceList> {
 
   @override
   void dispose() {
+    _listScrollController.dispose();
     unawaited(_deviceListProvider.stopDiscovery());
     _deviceListProvider.clearDevices();
     _channelProvider.resetMessage();
     super.dispose();
   }
 
-  _showConnectErrorMessage(ChannelConnectError error) {
+  void _showConnectErrorMessage(ChannelConnectError error) {
+    setState(() => _isConnecting = false);
     switch (error) {
       case ChannelConnectError.instanceNotFound:
       case ChannelConnectError.invalidDisplayCode:
@@ -436,7 +438,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
   }
 
   void _showNewEnterPinDialog({String? errorMsg}) {
-    isPinDialogShown = true;
+    _isPinDialogShown = true;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -447,7 +449,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
           onClose: () {
             _channelProvider.resetMessage();
             Navigator.of(context).pop();
-            isPinDialogShown = false;
+            _isPinDialogShown = false;
           },
           onConnect: (opt) {
             _channelProvider.resetMessage();
@@ -456,7 +458,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
                 properties: {'connectivity': 'intranet'});
             _onConnect(opt);
             Navigator.of(context).pop();
-            isPinDialogShown = false;
+            _isPinDialogShown = false;
           },
         );
       },
@@ -551,16 +553,13 @@ class OTPInputWidget extends StatefulWidget {
 class OTPInputWidgetState extends State<OTPInputWidget> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode focusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
   bool buttonEnable = false;
 
   void _onChanged(String value) {
     if (!mounted) return;
     setState(() {
-      if (value.isNotEmpty) {
-        buttonEnable = true;
-      } else {
-        buttonEnable = false;
-      }
+      buttonEnable = value.isNotEmpty;
     });
   }
 
@@ -576,12 +575,19 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    focusNode.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final sc = ScrollController();
     return V3Scrollbar(
-      controller: sc,
+      controller: _scrollController,
       child: SingleChildScrollView(
-        controller: sc,
+        controller: _scrollController,
         padding: EdgeInsets.all(8),
         child: Align(
           alignment: Alignment.topCenter,
@@ -649,10 +655,7 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
                   buildContext: context,
                   text: S.current.v3_device_list_dialog_connect,
                   enable: buttonEnable,
-                  onTap: () {
-                    if (!buttonEnable) return;
-                    widget.onTap.call(_controller.text);
-                  },
+                  onTap: () => widget.onTap.call(_controller.text),
                 ),
               ],
             ),
