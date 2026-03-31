@@ -36,7 +36,7 @@ android {
     namespace = "com.viewsonic.flutter_mirror"
 
     compileSdk = 35
-    ndkVersion '23.2.8568313'
+    ndkVersion '28.2.13676358'
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
