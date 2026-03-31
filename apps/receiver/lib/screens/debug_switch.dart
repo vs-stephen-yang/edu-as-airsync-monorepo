@@ -366,8 +366,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
-                              throw Exception(
-                                  'Sentry Test Error from Debug Switch');
+                              Future(() async {
+                                throw Exception(
+                                    'Sentry Test Error from Debug Switch');
+                              });
                             },
                             child: const Text(
                               'Send Sentry Test Error',
