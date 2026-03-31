@@ -57,13 +57,11 @@ jobs:
   # ────────────────────────────────────────────────
   # review job：PR 自動 code review
   # 當 PR 開啟或更新（非 draft），Claude 自動審查並留下 approve 或 request changes
-  # 使用 airsync-team self-hosted runner（需有對應 runner 在線上）
   # ────────────────────────────────────────────────
   review:
     # draft PR 不觸發，避免浪費 review 次數
     if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
-    runs-on:
-      group: airsync-team
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
