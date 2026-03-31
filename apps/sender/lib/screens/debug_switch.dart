@@ -241,7 +241,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     TextButton(
                       style: debugButtonStyle,
                       onPressed: () {
-                        throw Exception('Sentry Test Error from Debug Switch');
+                        Future(() async {
+                          throw Exception(
+                              'Sentry Test Error from Debug Switch');
+                        });
                       },
                       child:
                           const V3AutoHyphenatingText('Send Sentry Test Error'),
