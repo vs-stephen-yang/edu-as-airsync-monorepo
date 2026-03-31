@@ -8,7 +8,9 @@ import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log_upload.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 
@@ -349,6 +351,21 @@ class _DebugSwitchState extends State<DebugSwitch> {
                             },
                             child: const Text(
                               'Upload log',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              throw Exception(
+                                  'Sentry Test Error from Debug Switch');
+                            },
+                            child: const Text(
+                              'Send Sentry Test Error',
                               style: TextStyle(
                                 color: Colors.black,
                               ),
