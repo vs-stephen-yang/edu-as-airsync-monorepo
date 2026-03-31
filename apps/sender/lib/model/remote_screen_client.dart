@@ -20,7 +20,7 @@ abstract class RemoteScreenClient {
   final Channel? _channel;
   final String? _sessionId;
 
-  bool _textureSizeChanged = true;
+  bool _textureSizeChanged = false;
 
   Widget get createVideoView;
   bool get isVideoAvailable;
@@ -87,30 +87,8 @@ class RtcScreenClient extends RemoteScreenClient {
   RtcScreenClient(super.channel, super.sessionId);
 
   @override
-  Widget get createVideoView => ValueListenableBuilder<RTCVideoValue>(
-        valueListenable: _remoteScreenRenderer,
-        builder: (context, value, _) {
-          if (!value.renderVideo) return const SizedBox.shrink();
-
-          final double sourceWidth = value.width > 0 ? value.width : 1920.0;
-          final double sourceHeight = value.height > 0 ? value.height : 1080.0;
-
-          return Center(
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: SizedBox(
-                width: sourceWidth,
-                height: sourceHeight,
-                child: Texture(
-                  key: _rtcWidgetKey,
-                  textureId: _remoteScreenRenderer.textureId!,
-                  filterQuality: FilterQuality.high,
-                ),
-              ),
-            ),
-          );
-        },
-      );
+  Widget get createVideoView =>
+      RTCVideoView(_remoteScreenRenderer, key: _rtcWidgetKey);
 
   @override
   bool get isVideoAvailable => _remoteScreenRenderer.textureId != null;
@@ -251,28 +229,29 @@ class RtcScreenClient extends RemoteScreenClient {
   }
 
   void updateTextureInfo() {
-    final context = _rtcWidgetKey.currentContext;
-    if (context == null) {
+    Element? textureElement;
+    void textureVisitor(Element element) {
+      if (textureElement != null) return;
+
+      if (element.widget is Texture) {
+        textureElement = element;
+      } else {
+        element.visitChildElements(textureVisitor);
+      }
+    }
+
+    _rtcWidgetKey.currentContext?.visitChildElements(textureVisitor);
+    if (textureElement == null) {
       log.warning('texture widget not found');
       return;
+    } else {
+      final RenderBox renderBox = textureElement!.findRenderObject() as RenderBox;
+      _textureSize = renderBox.size;
+      _textureOffset = renderBox.localToGlobal(Offset.zero);
+      log.info(
+          'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
+      _textureSizeChanged = false;
     }
-
-    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) {
-      log.warning('texture render box not found');
-      return;
-    }
-
-    // Use localToGlobal on both corners to get the screen-space rect,
-    // correctly accounting for FittedBox scaling transforms.
-    final topLeft = renderBox.localToGlobal(Offset.zero);
-    final bottomRight = renderBox.localToGlobal(
-        Offset(renderBox.size.width, renderBox.size.height));
-    _textureSize = Size(bottomRight.dx - topLeft.dx, bottomRight.dy - topLeft.dy);
-    _textureOffset = topLeft;
-    log.info(
-        'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
-    _textureSizeChanged = false;
   }
 
   @override
