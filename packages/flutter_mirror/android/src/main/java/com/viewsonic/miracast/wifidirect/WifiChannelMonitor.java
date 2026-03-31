@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -89,7 +90,10 @@ public class WifiChannelMonitor {
         });
       }
     };
-    connectivityManager_.registerDefaultNetworkCallback(networkCallback_);
+    NetworkRequest wifiRequest = new NetworkRequest.Builder()
+        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+        .build();
+    connectivityManager_.registerNetworkCallback(wifiRequest, networkCallback_);
 
     // Start safety-net polling
     handler_.postDelayed(pollRunnable_, POLL_INTERVAL_MS);
