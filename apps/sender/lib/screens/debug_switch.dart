@@ -161,22 +161,20 @@ class _DebugSwitchState extends State<DebugSwitch> {
   Widget build(BuildContext context) {
     _initialize(context);
 
-    final shareLogsButton = TextButton(
-      style: ButtonStyle(
-        backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
-        foregroundColor:
-            MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // 设置按钮圆角
-            side: const BorderSide(color: Colors.grey), // 设置按钮边框
-          ),
+    const debugButtonStyle = ButtonStyle(
+      backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+      foregroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+      shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          side: BorderSide(color: Colors.grey),
         ),
       ),
-      onPressed: () {
-        shareLogs();
-      },
+    );
+
+    final shareLogsButton = TextButton(
+      style: debugButtonStyle,
+      onPressed: shareLogs,
       child: const V3AutoHyphenatingText('Get Logs'),
     );
 
@@ -241,19 +239,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     shareLogsButton,
                     const SizedBox(height: 8),
                     TextButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.grey),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                      ),
+                      style: debugButtonStyle,
                       onPressed: () {
                         throw Exception('Sentry Test Error from Debug Switch');
                       },
@@ -263,20 +249,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     if (!kIsWeb) ...[
                       const SizedBox(height: 8),
                       TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: const BorderSide(color: Colors.grey),
-                            ),
-                          ),
-                        ),
-                        onPressed: () => _triggerNativeCrash(),
+                        style: debugButtonStyle,
+                        onPressed: _triggerNativeCrash,
                         child:
                             const V3AutoHyphenatingText('Trigger Native Crash'),
                       ),

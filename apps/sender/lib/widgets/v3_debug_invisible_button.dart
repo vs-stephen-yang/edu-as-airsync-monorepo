@@ -34,7 +34,6 @@ class _V3DebugInvisibleButtonState extends State<V3DebugInvisibleButton> {
 
   @override
   Widget build(BuildContext context) {
-    debugCounter = 0;
     final isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
     final buttonSize = const Size(100, 50);
     final padding = isMobile
