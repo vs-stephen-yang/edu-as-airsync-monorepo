@@ -19,7 +19,7 @@ commonOverlayTabEntry(ConfigSettings settings) {
     WidgetsFlutterBinding.ensureInitialized();
 
     if (settings.sentry != null) {
-      initSentry(settings.sentry!);
+      await initSentry(settings.sentry!);
     }
 
     await DeviceFeatureAdapter.ensureInitialized();
