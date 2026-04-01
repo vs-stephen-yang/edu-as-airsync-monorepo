@@ -111,13 +111,16 @@ jobs:
             - DESCRIPTION: ${{ github.event.pull_request.title }}
 
             **Final Action:**
-            Based on your review findings:
-            - No Critical/Important issues → `gh pr review ${{ github.event.pull_request.number }} --approve -b "Review summary"`
-            - Critical/Important issues found → `gh pr review ${{ github.event.pull_request.number }} --request-changes -b "Detailed feedback"`
-            - Minor suggestions only → Approve with comments
+            Leave a PR comment summarizing your findings using:
+            `gh pr comment ${{ github.event.pull_request.number }} -b "your review"`
+            The comment should include:
+            - Critical/Important issues found (with file path, code snippet, and recommendation)
+            - Minor suggestions (if any)
+            - What looks good
+            Do NOT approve or request changes.
 
           # 限制 Claude 只能用指定工具，避免誤操作
           # Read/Glob/Grep：讀檔案
           # git diff/log/merge-base/rev-parse：查看程式碼變更
-          # gh pr/issue：查看 PR 資訊、留評論、approve/request changes
-          claude_args: '--model claude-opus-4-5-20251101 --allowedTools "Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git merge-base:*),Bash(git rev-parse:*),Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr review:*),Bash(gh pr checks:*)"'
+          # gh pr/issue：查看 PR 資訊、留評論（不含 approve/request changes）
+          claude_args: '--model claude-opus-4-5-20251101 --allowedTools "Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git merge-base:*),Bash(git rev-parse:*),Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr checks:*)"'
