@@ -699,11 +699,12 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentStop({Reason? reason}) async {
+    // send command must before _webRTCHelper.stop() <- it will close data channel
+    _stopPresent(reason: reason);
+
     // handle stream
     await _webRTCHelper.stop();
 
-    // send command
-    _stopPresent(reason: reason);
     _resetTimer();
   }
 
