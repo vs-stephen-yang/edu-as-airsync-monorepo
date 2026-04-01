@@ -28,6 +28,7 @@ variables:
     value: $(Pipeline.Workspace)/gstreamer
   - group: shiftleft-token
   - group: "ifp-keystore-secrets"
+  - group: "github-secrets"
 
 jobs:
   - job: build
@@ -74,13 +75,6 @@ jobs:
       - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
         displayName: Download the flutter SDK
 
-      - task: PowerShell@2
-        inputs:
-          targetType: "inline"
-          script: |
-            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
-            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
-
       - task: ExtractFiles@1
         displayName: Extract the flutter SDK
         inputs:
@@ -112,6 +106,10 @@ jobs:
             gradle | "$(Agent.OS)"
             gradle
           path: $(GRADLE_USER_HOME)
+
+      - script: |
+          git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+        displayName: Configure GitHub credentials
 
       - script: $(Flutter.Bin) build apk
         displayName: Build the plugin and the example App
