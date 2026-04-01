@@ -1159,9 +1159,10 @@ class WebRTCConnector {
     try {
       // stop the event log
       await WebRTCLogManager().stopLog(_pc);
-      await _pc?.close();
-      await _pc?.dispose();
+      final pc = _pc; // fix for a race condition
       _pc = null;
+      await pc?.close();
+      await pc?.dispose();
 
       if (!_descriptionSetCompleter.isCompleted) {
         _descriptionSetCompleter.complete();
