@@ -102,7 +102,10 @@ public class MiraMgrProxy
       // Close p2p discovery
       wifiDirectMgr_.stop();
       miraHandler_.removeCallbacks(wifiDirectRunnable_);
-      miraHandler_.removeCallbacks(restartRunnable_);
+      if (restartRunnable_ != null) {
+        miraHandler_.removeCallbacks(restartRunnable_);
+        restartRunnable_ = null;
+      }
       isRestarting_ = false;
     });
   }
