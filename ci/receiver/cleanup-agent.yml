@@ -10,6 +10,7 @@ schedules:
     always: true          # 即使 code 沒有變動也執行
 
 trigger: none             # 不因 push 觸發
+pr: none                  # 關閉 PR 觸發
 
 pool:
   name: "AirSync macOS Pool"
