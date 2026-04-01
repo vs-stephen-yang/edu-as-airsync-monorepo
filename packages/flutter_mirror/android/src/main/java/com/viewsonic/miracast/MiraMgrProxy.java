@@ -82,6 +82,9 @@ public class MiraMgrProxy
       miraMgr_.start(listener, receiverName, surfaceTextureProvider);
       miraHandler_.post(wifiDirectRunnable_);
 
+      if (wifiChannelMonitor_ != null) {
+        wifiChannelMonitor_.stop();
+      }
       wifiChannelMonitor_ = new WifiChannelMonitor();
       wifiChannelMonitor_.start(context_, MiraMgrProxy.this);
     });
