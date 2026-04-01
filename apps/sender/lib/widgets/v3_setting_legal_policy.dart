@@ -51,14 +51,16 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    V3AutoHyphenatingText(
-                      S.of(context).v3_setting_privacy_policy,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdswColorOnSurfaceInverse,
-                        fontSize: 14,
+                    Expanded(
+                      child: V3AutoHyphenatingText(
+                        S.of(context).v3_setting_privacy_policy,
+                        style: TextStyle(
+                          color:
+                              context.tokens.color.vsdswColorOnSurfaceInverse,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     ExcludeSemantics(
                       child: IconButton(
                         icon: SvgPicture.asset(
