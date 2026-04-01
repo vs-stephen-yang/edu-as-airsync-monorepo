@@ -538,6 +538,9 @@ class ChannelProvider extends ChangeNotifier
     _instanceInfo.displayCode = displayCode;
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
 
+    final groupNotifier = providerContainer?.read(groupProvider.notifier);
+    groupNotifier?.clearClients();
+
     setSentryTag('display.code', displayCode);
     log.info('display code updated: $displayCode');
   }
