@@ -376,6 +376,157 @@ void main() {
     });
   });
 
+  group('addClient - Clear data 場景測試', () {
+    test('新設備不在 history：加到 clients', () {
+      final device =
+          _createDevice(id: '1', name: 'Device 1', displayCode: 'DC1');
+      provider.addClient(device);
+
+      expect(provider.state.clients.length, 1);
+      expect(provider.selectedList.length, 0);
+      expect(provider.state.clients.first.id(), '1');
+    });
+
+    test('設備 ID 在 history：自動加到 selectedList', () {
+      final device =
+          _createDevice(id: '1', name: 'Device 1', displayCode: 'DC1');
+
+      AppPreferences().setGroupSelectedList([
+        {'1': device.toJson()}
+      ]);
+      provider = GroupProvider();
+
+      provider.addClient(device);
+
+      expect(provider.selectedList.length, 1);
+      expect(provider.state.clients.length, 0);
+      expect(provider.selectedList.first.id(), '1');
+    });
+
+    test('Clear data 後：新 ID 同 displayCode 認出為 history 設備，自動加到 selectedList',
+        () {
+      final oldDevice =
+          _createDevice(id: 'old-id', name: 'Device 1', displayCode: 'DC1');
+      final newDevice =
+          _createDevice(id: 'new-id', name: 'Device 1', displayCode: 'DC1');
+
+      AppPreferences().setGroupSelectedList([
+        {'old-id': oldDevice.toJson()}
+      ]);
+      provider = GroupProvider();
+
+      provider.addClient(newDevice);
+
+      expect(provider.selectedList.length, 1);
+      expect(provider.state.clients.length, 0);
+      expect(provider.selectedList.first.id(), 'new-id');
+    });
+
+    test('Clear data 後：selectedList 中的舊設備被替換為新設備', () {
+      final oldDevice =
+          _createDevice(id: 'old-id', name: 'Device 1', displayCode: 'DC1');
+      final newDevice =
+          _createDevice(id: 'new-id', name: 'Device 1', displayCode: 'DC1');
+
+      AppPreferences().setGroupSelectedList([
+        {'old-id': oldDevice.toJson()}
+      ]);
+      provider = GroupProvider();
+
+      provider.addClient(oldDevice); // 先搜到舊設備
+      expect(provider.selectedList.first.id(), 'old-id');
+
+      provider.addClient(newDevice); // Clear data 後同時搜到新設備
+
+      expect(provider.selectedList.length, 1);
+      expect(provider.selectedList.first.id(), 'new-id');
+    });
+
+    test('同 displayCode 非 history 設備：取代 clients 中的舊設備', () {
+      final oldDevice =
+          _createDevice(id: 'old-id', name: 'Device 1', displayCode: 'DC1');
+      final newDevice =
+          _createDevice(id: 'new-id', name: 'Device 1', displayCode: 'DC1');
+
+      provider.addClient(oldDevice);
+      expect(provider.state.clients.first.id(), 'old-id');
+
+      provider.addClient(newDevice);
+
+      expect(provider.state.clients.length, 1);
+      expect(provider.state.clients.first.id(), 'new-id');
+    });
+  });
+
+  group('_addToHistorySelectedList 測試', () {
+    test('勾選設備後 history 有對應 entry', () {
+      final device =
+          _createDevice(id: '1', name: 'Device 1', displayCode: 'DC1');
+      provider.addClient(device);
+      provider.addToSelectedList(device);
+
+      expect(provider.historySelectedList.length, 1);
+      expect(provider.historySelectedList.first.containsKey('1'), true);
+    });
+
+    test('同 ID 的設備重複進 history：entry 不重複', () {
+      final device =
+          _createDevice(id: '1', name: 'Device 1', displayCode: 'DC1');
+
+      // 預先設定 history，再手動勾選同一設備
+      AppPreferences().setGroupSelectedList([
+        {'1': device.toJson()}
+      ]);
+      provider = GroupProvider();
+
+      provider.addToSelectedList(device);
+
+      expect(provider.historySelectedList.length, 1);
+      expect(provider.historySelectedList.first.containsKey('1'), true);
+    });
+
+    test('Clear data：新 ID 同 displayCode 取代 history 中的舊 entry', () {
+      final oldDevice =
+          _createDevice(id: 'old-id', name: 'Device 1', displayCode: 'DC1');
+      final newDevice =
+          _createDevice(id: 'new-id', name: 'Device 1', displayCode: 'DC1');
+
+      // 預先設定 history（舊 ID）
+      AppPreferences().setGroupSelectedList([
+        {'old-id': oldDevice.toJson()}
+      ]);
+      provider = GroupProvider();
+
+      // 使用者手動勾選 Clear data 後的新設備
+      provider.addToSelectedList(newDevice);
+
+      expect(provider.historySelectedList.length, 1);
+      expect(provider.historySelectedList.first.containsKey('new-id'), true);
+      expect(provider.historySelectedList.first.containsKey('old-id'), false);
+    });
+
+    test('Clear data 後 removeFromSelectedList 能正確清除 history', () {
+      final oldDevice =
+          _createDevice(id: 'old-id', name: 'Device 1', displayCode: 'DC1');
+      final newDevice =
+          _createDevice(id: 'new-id', name: 'Device 1', displayCode: 'DC1');
+
+      // 勾選舊設備建立 history，再勾選 Clear data 後的新設備（新 ID 取代舊 entry）
+      AppPreferences().setGroupSelectedList([
+        {'old-id': oldDevice.toJson()}
+      ]);
+      provider = GroupProvider();
+      provider.addToSelectedList(newDevice);
+
+      expect(provider.historySelectedList.first.containsKey('new-id'), true);
+
+      // 取消勾選新設備，history 應清空
+      provider.removeFromSelectedList(newDevice);
+
+      expect(provider.historySelectedList.length, 0);
+    });
+  });
+
   group('邊界情況測試', () {
     test('空列表不會出錯', () {
       final list = provider.getClientList();
@@ -426,11 +577,12 @@ GroupBean _createDevice({
   bool favorite = false,
   bool ipNotFind = false,
   int? favoriteTimestamp,
+  String? displayCode,
 }) {
   final attributes = Attributes(
     id: id,
     fn: name,
-    dc: 'TEST',
+    dc: displayCode ?? 'TEST_$id',
     ip: viaIp ? name : '192.168.1.1',
     igo: '1',
     mc: '1',

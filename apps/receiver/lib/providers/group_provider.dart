@@ -51,6 +51,7 @@ class GroupState {
 
 class GroupProvider extends StateNotifier<GroupState> {
   static int groupMaximum = 10;
+
   GroupProvider()
       : super(GroupState(
           clients: [],
@@ -65,15 +66,22 @@ class GroupProvider extends StateNotifier<GroupState> {
     if (client.id() == AppInstanceCreate().groupID) {
       return;
     }
-    bool inHistory =
-        state.historySelectedList.any((map) => map.containsKey(client.id()));
+    bool inHistory = state.historySelectedList
+        .any((map) => _matchesHistoryEntry(client, map));
+    bool isDuplicate(GroupListItem item) =>
+        item.id() == client.id() ||
+        (client.displayCode().isNotEmpty &&
+            item.displayCode() == client.displayCode());
+
     if (inHistory) {
-      state.selectedList.removeWhere((item) => item.id() == client.id());
-      state = state.copyWith(selectedList: [...state.selectedList, client]);
+      final newSelectedList =
+          state.selectedList.where((item) => !isDuplicate(item)).toList();
+      state = state.copyWith(selectedList: [...newSelectedList, client]);
     } else {
-      state.clients
-          .removeWhere((foundService) => foundService.id() == client.id());
-      final updatedClients = _sortClientsByPriority([...state.clients, client]);
+      final filteredClients =
+          state.clients.where((item) => !isDuplicate(item)).toList();
+      final updatedClients =
+          _sortClientsByPriority([...filteredClients, client]);
       state = state.copyWith(clients: updatedClients);
     }
   }
@@ -139,7 +147,8 @@ class GroupProvider extends StateNotifier<GroupState> {
       ...state.clients
     ];
     for (var element in listenList) {
-      bool inHistory = historyList.any((map) => map.containsKey(element.id()));
+      bool inHistory =
+          historyList.any((map) => _matchesHistoryEntry(element, map));
       if (inHistory) {
         selectedList.add(element);
       } else {
@@ -183,16 +192,27 @@ class GroupProvider extends StateNotifier<GroupState> {
       state.historySelectedList;
 
   void _addToHistorySelectedList(GroupListItem client) {
-    if (!state.historySelectedList.any((map) => map.containsKey(client.id()))) {
-      if (state.historySelectedList.length >= groupMaximum) {
-        state.historySelectedList.removeAt(0);
-      }
-      state.historySelectedList.add({client.id(): client.toJson()});
+    // Remove any existing entry with same id or same displayCode
+    // (handles clear data case where id changes but displayCode stays the same)
+    state.historySelectedList
+        .removeWhere((map) => _matchesHistoryEntry(client, map));
+    if (state.historySelectedList.length >= groupMaximum) {
+      state.historySelectedList.removeAt(0);
     }
+    state.historySelectedList.add({client.id(): client.toJson()});
   }
 
   void _removeFromHistorySelectedList(String clientId) {
     state.historySelectedList.removeWhere((map) => map.containsKey(clientId));
+  }
+
+  /// Returns true if [item] matches the given history [map] entry,
+  /// by ID or by displayCode (to handle clear-data ID changes).
+  bool _matchesHistoryEntry(GroupListItem item, Map<String, dynamic> map) {
+    if (map.containsKey(item.id())) return true;
+    if (item.displayCode().isEmpty) return false;
+    return map.values.any((data) =>
+        (data['service.attributes'] as Map?)?['dc'] == item.displayCode());
   }
 
   // 對客戶端列表進行排序：實現完整的 6 級排序邏輯
@@ -409,7 +429,8 @@ class GroupProvider extends StateNotifier<GroupState> {
           } catch (a) {
             // 舊版本沒有udp，會使用ping的方式確認
             final offline = await UdpResponder.checkConnection(client.ip());
-            client = GroupBean.fromJson(value, favorite: true, offline: offline);
+            client =
+                GroupBean.fromJson(value, favorite: true, offline: offline);
           }
 
           // 排除自己和已經存在的設備
