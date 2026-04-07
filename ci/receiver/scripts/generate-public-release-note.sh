@@ -111,8 +111,8 @@ if [ -z "$FROM_TAG" ]; then
             echo "  To:   $(git log -1 --oneline $LATEST_VERSION_COMMIT)"
         else
             # Strategy C: Use the two most recent tags
-            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
-            PREV_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+            LATEST_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
+            PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
 
             if [ -n "$LATEST_TAG" ] && [ -n "$PREV_TAG" ]; then
                 COMMIT_RANGE="$PREV_TAG..$LATEST_TAG"
@@ -146,7 +146,7 @@ COMMITS=$(git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges | \
     grep -v "^- chore: .*build in pipeline" | \
     grep -v "^- chore: add release note pipeline" | \
     grep -v "^- chore: add disk cleanup.*pipeline" | \
-    grep -v "^- chore: Change version and TAG")
+    grep -v "^- chore: Change version and TAG" || true)
 
 if [ -z "$COMMITS" ]; then
     echo "Warning: No commits found in range $COMMIT_RANGE"
