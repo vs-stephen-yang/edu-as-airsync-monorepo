@@ -22,6 +22,7 @@ class DisplayGroupSession {
 
   final Channel _channel;
   final LogUploaderWithCooldown _memberFpsZeroLogUploader;
+  final bool Function() _isSmartScalingEnabled;
 
   RemoteScreenClient? _remoteScreenClient;
 
@@ -30,11 +31,12 @@ class DisplayGroupSession {
   DisplayGroupSession(
     this._channel,
     this._memberFpsZeroLogUploader, {
+    required bool Function() isSmartScalingEnabled,
     this.onInvitation,
     this.onChannelStateChange,
     this.onWebRtcClose,
     this.onRemoteScreenStatusChange,
-  }) {
+  }) : _isSmartScalingEnabled = isSmartScalingEnabled {
     castToBoardsSessionLogger.start('member');
     _channel.messageStream.listen(_onChannelMessage);
     _channel.stateStream.listen((ChannelState state) {
@@ -131,6 +133,7 @@ class DisplayGroupSession {
       _channel,
       infoMessage.sessionId,
       _memberFpsZeroLogUploader,
+      _isSmartScalingEnabled,
     );
     await rtcClient.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
@@ -149,6 +152,8 @@ class DisplayGroupSession {
   }
 
   Future<void> _onMulticastInfo(MulticastInfoMessage infoMessage) async {
+    // MulticastScreenClient currently hardcodes smart scaling to false.
+    // Revisit this call site if multicast videoView gets implemented.
     final client = MulticastScreenClient(_channel, infoMessage.sessionId, null);
     await client.handleMulticastInfo(MulticastInfo.fromMessage(infoMessage));
     _remoteScreenClient = client;

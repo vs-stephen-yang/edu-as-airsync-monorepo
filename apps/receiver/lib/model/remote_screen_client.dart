@@ -25,11 +25,13 @@ abstract class RemoteScreenClient {
     this._channel,
     String? sessionId,
     this._logUploader,
+    this._isSmartScalingEnabled,
   ) : _sessionId = sessionId ?? const Uuid().v4();
 
   final Channel? _channel;
   final String? _sessionId;
   final LogUploaderWithCooldown? _logUploader;
+  final bool Function() _isSmartScalingEnabled;
 
   bool _textureSizeChanged = false;
 
@@ -110,9 +112,15 @@ class RtcScreenClient extends RemoteScreenClient {
   StatelessWidget? get videoView => RTCVideoView(
         remoteScreenRenderer,
         key: rtcWidgetKey,
+        displaySmartScalingEnabled: _isSmartScalingEnabled(),
       );
 
-  RtcScreenClient(super.channel, super.sessionId, super.logUploader);
+  RtcScreenClient(
+    super.channel,
+    super.sessionId,
+    super.logUploader,
+    super.isSmartScalingEnabled,
+  );
 
   void startStatsMonitoring(
     Duration checkDelay,
@@ -515,7 +523,11 @@ class MulticastScreenClient extends RemoteScreenClient {
   // TODO: implement videoView
   StatelessWidget? get videoView => throw UnimplementedError();
 
-  MulticastScreenClient(super.channel, super.sessionId, super.logUploader);
+  MulticastScreenClient(
+    Channel? channel,
+    String? sessionId,
+    LogUploaderWithCooldown? logUploader,
+  ) : super(channel, sessionId, logUploader, () => false);
 
   handleMulticastInfo(MulticastInfo info) {
     // TODO: multicast plugin receive start

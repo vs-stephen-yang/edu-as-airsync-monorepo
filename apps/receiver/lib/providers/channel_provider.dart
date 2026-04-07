@@ -571,6 +571,7 @@ class ChannelProvider extends ChangeNotifier
     _displayGroupSession = DisplayGroupSession(
       channel,
       _memberFpsZeroLogUploader,
+      isSmartScalingEnabled: () => smartScaling,
       onInvitation: (String hostName, String displayCode) {
         final invitedToGroup = AppPreferences().invitedToGroup;
         switch (invitedToGroup) {
