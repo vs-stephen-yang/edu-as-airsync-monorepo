@@ -57,6 +57,8 @@
   "main_settings_device_name_save": "SAVE",
   "main_settings_pin_visible": "Connect information",
   "toast_maximum_split_screen": "Has reached maximum split screen amount.",
+  "toast_moderator_webrtc_full": "WebRTC connections are full.",
+  "toast_moderator_mirror_full": "Mirror connections are full. {deviceName} can't join."
   "main_settings_device_list": "Quick Connect Password",
   "main_settings_mirror_confirmation": "Mirror confirmation",
   "main_settings_airplay_code": "AirPlay code",

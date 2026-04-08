@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -608,6 +607,26 @@ class S {
       name: 'toast_maximum_split_screen',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `WebRTC connections are full.`
+  String get toast_moderator_webrtc_full {
+    return Intl.message(
+      'WebRTC connections are full.',
+      name: 'toast_moderator_webrtc_full',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mirror connections are full. {deviceName} can't join.`
+  String toast_moderator_mirror_full(String deviceName) {
+    return Intl.message(
+      'Mirror connections are full. $deviceName can\'t join.',
+      name: 'toast_moderator_mirror_full',
+      desc: '',
+      args: [deviceName],
     );
   }
 

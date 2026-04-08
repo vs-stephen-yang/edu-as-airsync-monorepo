@@ -765,18 +765,37 @@ class ChannelProvider extends ChangeNotifier
           );
 
           if (msg.intent == JoinIntentType.present) {
+            log.info(
+              '[connection] WebRTC attempt: '
+              'clientId=${msg.clientId}, '
+              'isModeratorMode=$isModeratorMode, '
+              'connectionCount=${HybridConnectionList().getConnectionCount()}, '
+              'maxHybridConnection=${HybridConnectionList.maxHybridConnection}',
+            );
             if (isModeratorMode) {
+              // 主持人模式 WebRTC 連線上限：總連線數（WebRTC + 非 idle Mirror）不可超過 30。
               if (HybridConnectionList().getConnectionCount() >=
-                      HybridConnectionList.maxHybridConnection ||
-                  HybridConnectionList().connectionListFull()) {
+                  HybridConnectionList.maxModeratorTotalConnection) {
+                log.info(
+                  '[moderator] WebRTC rejected (total full): '
+                  'connectionCount=${HybridConnectionList().getConnectionCount()}, '
+                  'maxModeratorTotalConnection=${HybridConnectionList.maxModeratorTotalConnection}, '
+                  'clientId=${msg.clientId}',
+                );
                 trackEvent(
                   'device_full',
                   EventCategory.session,
                   participatorId: msg.clientId,
                   mode: 'webrtc',
                 );
-
-                sendJoinDisplayRejectMessage(channel);
+                HybridConnectionList.connectionFullNotifier.value =
+                    ModeratorConnectionFullEvent(
+                  type: ModeratorConnectionFullType.webrtcFull,
+                  deviceName: msg.name ?? msg.clientId ?? '',
+                );
+                sendJoinDisplayRejectMessage(channel,
+                    errorCode:
+                        JoinDisplayRejectedReasonCode.maxClientsReached.code);
                 return;
               }
               if (isModeratorMode &&
@@ -796,6 +815,8 @@ class ChannelProvider extends ChangeNotifier
                 sendJoinModeChangedRejectMessage(channel);
                 return;
               }
+              // 非主持人模式 WebRTC 連線上限：以 hybridSplitScreenCount（實際串流中數量）>= maxHybridSplitScreen 判斷。
+              // 此行為不受需求異動影響，維持不變。
               if (HybridConnectionList.hybridSplitScreenCount.value >=
                       HybridConnectionList.maxHybridSplitScreen ||
                   HybridConnectionList().connectionListFull()) {

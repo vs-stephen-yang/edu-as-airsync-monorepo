@@ -9,6 +9,18 @@ import 'package:flutter/services.dart';
 
 import 'connect_timer.dart';
 
+enum ModeratorConnectionFullType {
+  webrtcFull,  // 總連線數（30）已滿
+  mirrorFull,  // Mirror 連線數（maxHybridConnection）已滿
+}
+
+class ModeratorConnectionFullEvent {
+  final ModeratorConnectionFullType type;
+  final String deviceName;
+
+  ModeratorConnectionFullEvent({required this.type, required this.deviceName});
+}
+
 class HybridConnectionList {
   static final HybridConnectionList _instance =
       HybridConnectionList._internal();
@@ -33,7 +45,18 @@ class HybridConnectionList {
     }
   }
 
+  // 主持人模式下 Mirror 連線上限（依機型為 6 或 9），維持該機型原有最大連線數。
+  // 原因：Mirror 連線成功後立即開始串流，消耗系統及網路頻寬資源，故獨立限制不隨 30 人上限放寬。
+  // 非主持人模式不使用此值做連線數判斷，改用 maxHybridSplitScreen。
   static int maxHybridConnection = 6;
+
+  // 主持人模式下 WebRTC + Mirror 合計連線上限。
+  static const int maxModeratorTotalConnection = 30;
+
+  // 主持人模式連線已滿時的通知類型，供 UI 層顯示對應提示訊息。
+  // 設值後應由 UI 消費並重置為 null。
+  static final ValueNotifier<ModeratorConnectionFullEvent?> connectionFullNotifier =
+      ValueNotifier(null);
 
   static String _deviceType = '';
 
@@ -63,14 +86,19 @@ class HybridConnectionList {
     'IFP52_1C',
     'IFP52_2',
   ];
+  // 最大同時投影數（分割畫面上限），依機型為 4、6 或 9。主持人與非主持人模式皆適用。
   static int maxHybridSplitScreen = 4;
 
   ValueNotifier<int?> enlargedScreenIndex = ValueNotifier(null);
 
+  // 目前串流中的連線數（WebRTC 非 stopStreaming + Mirror mirroring）。
+  // 主持人模式用於判斷是否可以再允許投影，非主持人模式用於判斷是否可以接受新連線。
   static ValueNotifier<int> hybridSplitScreenCount = ValueNotifier(0);
 
+  // 實體連線 list，大小為 maxModeratorTotalConnection（30）。
+  // 非主持人模式的上限靠 hybridSplitScreenCount 判斷，不受 list 大小影響。
   final List<dynamic> _hybridConnectionList =
-      List.filled(maxHybridConnection * 2, null);
+      List.filled(maxModeratorTotalConnection, null);
 
   T getConnection<T>(int index) {
     return _hybridConnectionList[index];
@@ -216,10 +244,14 @@ class HybridConnectionList {
     return count;
   }
 
+  // 主持人清單顯示人數：WebRTC + 非 idle Mirror。
   int getConnectionCount() {
     return HybridConnectionList().getRtcConnectorMap().length +
         HybridConnectionList().getModeratorMirrorMap().length;
   }
+
+  // 主持人模式下 Mirror 連線總數（含 idle，用於判斷 Mirror 上限）。
+  int getMirrorCount() => getMirrorMap().length;
 
   bool connectionListFull() {
     return _hybridConnectionList.nonNulls.length >=
