@@ -235,7 +235,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
           HybridConnectionList.maxHybridSplitScreen;
     } else {
       return HybridConnectionList().getConnectionCount() >=
-          HybridConnectionList.maxHybridConnection;
+          HybridConnectionList.maxModeratorTotalConnection;
     }
   }
 

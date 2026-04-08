@@ -204,20 +204,49 @@ class MirrorStateProvider extends ChangeNotifier
 
     final isModerator = ChannelProvider.isModeratorMode;
     final splitCount = HybridConnectionList.hybridSplitScreenCount.value;
-    // This list includes both active and idle connections.
-    final connectionFull = HybridConnectionList().connectionListFull();
     final splitFull = splitCount >= HybridConnectionList.maxHybridSplitScreen;
-    // Moderator limits by connection capacity; general mode limits by split windows.
-    final isFull = isModerator ? connectionFull : splitFull;
-    if (isFull) {
-      stopAcceptedMirror(mirrorId);
-    } else {
-      final mirrorRequest = MirrorRequest(_flutterMirrorPlugin, mirrorId,
-          textureId, deviceName, mirrorType, deviceModel);
-      HybridConnectionList().addConnection(mirrorRequest);
 
-      mirrorRequest.trackSessionEvent('connect_successfully');
+    if (isModerator) {
+      // Mirror 獨立上限：該機型 maxHybridConnection（6 或 9）。
+      if (HybridConnectionList().getMirrorCount() >=
+          HybridConnectionList.maxHybridConnection) {
+        log.info(
+          '[moderator] Mirror rejected (mirror full): '
+          'mirrorCount=${HybridConnectionList().getMirrorCount()}, '
+          'maxHybridConnection=${HybridConnectionList.maxHybridConnection}',
+        );
+        HybridConnectionList.connectionFullNotifier.value =
+            ModeratorConnectionFullEvent(
+          type: ModeratorConnectionFullType.mirrorFull,
+          deviceName: deviceName,
+        );
+        stopAcceptedMirror(mirrorId);
+        return;
+      }
+      if (HybridConnectionList().getConnectionCount() >=
+          HybridConnectionList.maxModeratorTotalConnection) {
+        log.info(
+          '[moderator] Mirror rejected (total full): '
+          'connectionCount=${HybridConnectionList().getConnectionCount()}, '
+          'maxModeratorTotalConnection=${HybridConnectionList.maxModeratorTotalConnection}',
+        );
+        HybridConnectionList.connectionFullNotifier.value =
+            ModeratorConnectionFullEvent(
+          type: ModeratorConnectionFullType.webrtcFull,
+          deviceName: deviceName,
+        );
+        stopAcceptedMirror(mirrorId);
+        return;
+      }
+    } else if (splitFull) {
+      stopAcceptedMirror(mirrorId);
+      return;
     }
+
+    final mirrorRequest = MirrorRequest(_flutterMirrorPlugin, mirrorId,
+        textureId, deviceName, mirrorType, deviceModel);
+    HybridConnectionList().addConnection(mirrorRequest);
+    mirrorRequest.trackSessionEvent('connect_successfully');
 
     notifyListeners();
 

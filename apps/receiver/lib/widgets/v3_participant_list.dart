@@ -11,12 +11,51 @@ import 'package:display_flutter/widgets/v3_participant_mirror_item.dart';
 import 'package:display_flutter/widgets/v3_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 
-class V3ParticipantList extends StatelessWidget {
+class V3ParticipantList extends StatefulWidget {
   const V3ParticipantList({super.key, this.isForMenuUse = false});
 
   final bool isForMenuUse;
+
+  @override
+  State<V3ParticipantList> createState() => _V3ParticipantListState();
+}
+
+class _V3ParticipantListState extends State<V3ParticipantList> {
+  @override
+  void initState() {
+    super.initState();
+    HybridConnectionList.connectionFullNotifier.addListener(_onConnectionFull);
+  }
+
+  @override
+  void dispose() {
+    HybridConnectionList.connectionFullNotifier
+        .removeListener(_onConnectionFull);
+    super.dispose();
+  }
+
+  void _onConnectionFull() {
+    final event = HybridConnectionList.connectionFullNotifier.value;
+    if (event == null) return;
+    HybridConnectionList.connectionFullNotifier.value = null;
+    Future.delayed(Duration.zero, () {
+      if (!mounted) return;
+      final String message;
+      if (event.type == ModeratorConnectionFullType.mirrorFull) {
+        message = S.of(context).toast_moderator_mirror_full(event.deviceName);
+      } else {
+        message = S.of(context).toast_moderator_webrtc_full;
+      }
+      MotionToast(
+        primaryColor: Colors.grey,
+        description: AutoSizeText(message, maxLines: 2),
+        displaySideBar: false,
+      ).show(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +90,7 @@ class V3ParticipantList extends StatelessWidget {
                           ),
                           TextSpan(
                             text:
-                                ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxHybridConnection})',
+                                ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxModeratorTotalConnection})',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
@@ -109,7 +148,7 @@ class V3ParticipantList extends StatelessWidget {
                   ),
                   TextSpan(
                     text:
-                        ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxHybridConnection})',
+                        ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxModeratorTotalConnection})',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
@@ -130,19 +169,19 @@ class V3ParticipantList extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       if (HybridConnectionList().isMirrorRequest(index)) {
                         return V3ParticipantMirrorItem(
-                            index: index, isForMenuUse: isForMenuUse);
+                            index: index, isForMenuUse: widget.isForMenuUse);
                       } else {
                         return Padding(
                           padding: const EdgeInsets.only(right: 5.0),
                           child: V3ParticipantItem(
                             index: index,
-                            isForMenuUse: isForMenuUse,
+                            isForMenuUse: widget.isForMenuUse,
                           ),
                         );
                       }
                     },
                     separatorBuilder: (BuildContext context, int index) {
-                      return isForMenuUse
+                      return widget.isForMenuUse
                           ? Divider(
                               height: context
                                   .tokens.spacing.vsdslSpacingLg.vertical,
