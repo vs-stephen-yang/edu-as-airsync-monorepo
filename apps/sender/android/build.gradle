@@ -20,6 +20,18 @@ subprojects {
     }
 }
 
+// Pin native library versions for Android 16KB page size compliance.
+subprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'eu.simonbinder' && details.requested.name == 'sqlite3-native-library') {
+                details.useVersion '3.49.1'
+                details.because '16KB page size compliance'
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
