@@ -13,6 +13,7 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// TODO: remove once Flutter upgrades its default NDK to r28+
 // Propagate NDK r28 to all plugin library modules for 16KB page size compliance.
 subprojects {
     plugins.withId('com.android.library') {
@@ -20,6 +21,10 @@ subprojects {
     }
 }
 
+// TODO: remove once amplify_flutter upgrades amplify_db_common past 0.4.9.
+// amplify_db_common 0.4.9 pulls in sqlite3-native-library 3.43.0 (4KB LOAD alignment).
+// Upgrading amplify_db_common is currently blocked: >=0.4.10 requires Dart SDK >=3.7.0,
+// but this project is on Dart 3.6.2.
 // Pin native library versions for Android 16KB page size compliance.
 subprojects {
     configurations.all {

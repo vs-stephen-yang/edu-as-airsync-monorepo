@@ -29,6 +29,7 @@ if (propertiesFile.exists()) {
 android {
     namespace = "com.mvbcast.crosswalk"
     compileSdk = flutter.compileSdkVersion
+    // TODO: revert to flutter.ndkVersion once Flutter upgrades its default NDK to r28+
     ndkVersion = project.property("ndkVersion")
 
     compileOptions {
