@@ -493,8 +493,8 @@ packages:
     description:
       path: "."
       ref: "release-1.0.17-3"
-      resolved-ref: "9f3bfcbc46e59757ee897a9671e7200be83e9b30"
-      url: "https://github.com/Viewsonic-EDU/edu-as-dart-webrtc"
+      resolved-ref: ecba80f87ba9ce40e3d0df1c045e07292ab7fce4
+      url: "https://github.com/Viewsonic-EDU/edu-as-dart-webrtc.git"
     source: git
     version: "1.0.17"
   dbus:
@@ -708,8 +708,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.8.0"
-      resolved-ref: "40f08373218a84fd96153d5ad80fee78d142e6f6"
+      ref: "release-3.9.0"
+      resolved-ref: "654a4cea61a07b5dd909ba2c40c9769a3a7bf8c3"
       url: "https://github.com/Viewsonic-EDU/edu-as-golang-server"
     source: git
     version: "0.0.1"
@@ -747,8 +747,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.9.1"
-      resolved-ref: "48b2b4a37ac615aa15f47f9174fce7e8bc33d751"
+      ref: "release-3.9.4"
+      resolved-ref: b5e0190dbdf83b629cd8b3838b0deb2d3057a9ec
       url: "https://github.com/Viewsonic-EDU/edu-as-mirror"
     source: git
     version: "0.0.1"
@@ -823,8 +823,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-68"
-      resolved-ref: fa3354808771f8808ded1b517f9df96cd979c4d9
+      ref: "release-3.9.3"
+      resolved-ref: "40a78f8a079d614755f6768a7fc4a792073952de"
       url: "https://github.com/Viewsonic-EDU/edu-as-flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -984,8 +984,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.62"
-      resolved-ref: ac70dff114c255dfc87c25e462c2ef8b75b56cb9
+      ref: "release-3.9.3"
+      resolved-ref: "706e37240b92bdddb545145c1fc0b4e239aca03c"
       url: "https://github.com/Viewsonic-EDU/edu-as-ion-sdk-flutter"
     source: git
     version: "1.0.0"
@@ -1043,7 +1043,7 @@ packages:
       path: "."
       ref: "release-0.7.0"
       resolved-ref: "129855d82a71b17695fdf17ff4b83d5e31bdc05b"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth"
+      url: "https://github.com/Viewsonic-EDU/edu-as-libcastauth.git"
     source: git
     version: "1.0.0"
   lints:
@@ -1905,7 +1905,7 @@ packages:
       path: "."
       ref: "release-1.1.0-2"
       resolved-ref: d8686d96c442cce8c29cf71bb6bd119ffbe74053
-      url: "https://github.com/Viewsonic-EDU/edu-as-webrtc-interface"
+      url: "https://github.com/Viewsonic-EDU/edu-as-webrtc-interface.git"
     source: git
     version: "1.1.0"
   win32:
