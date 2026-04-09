@@ -29,7 +29,7 @@ if (propertiesFile.exists()) {
 android {
     namespace = "com.mvbcast.crosswalk"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = project.property("ndkVersion")
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
