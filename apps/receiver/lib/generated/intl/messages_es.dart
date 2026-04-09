@@ -857,6 +857,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       " se unió a la sesión",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Finalizar",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Reintentar",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Detener transmisión"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Transmisión interrumpida. Por favor, vuelva a adquirir el permiso de transmisión.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Transmitiendo",
     ),
@@ -947,6 +958,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Buscar tableros por IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Por favor, introduzca una dirección IP válida.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Introducir dirección IP",
@@ -1136,6 +1150,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Emparejamiento fallido. TouchBack no está activado. Por favor, inténtalo de nuevo",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Abrir la página de configuración de Bluetooth en su iPad puede acelerar el proceso de emparejamiento.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Cancelar"),
     "v3_touchback_restart_bluetooth_btn_restart":
@@ -1192,6 +1209,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Captura de pantalla fallida",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Seguir esperando",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Cerrar"),
     "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(

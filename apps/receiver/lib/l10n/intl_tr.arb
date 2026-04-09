@@ -427,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "Tekrar Deneyin",
   "v3_overlay_retry_dialog_end": "Bitir",
   "v3_zero_fps_capture_failed_wait": "Beklemeye devam edin",
-  "v3_settings_broadcast_ip_error": "Lütfen geçerli bir IP adresi girin."
+  "v3_settings_broadcast_ip_error": "Lütfen geçerli bir IP adresi girin.",
+  "v3_touchback_ipad_bluetooth_hint": "iPad'inizde Bluetooth ayarları sayfasını açmak eşleştirme işlemini hızlandırabilir."
 }

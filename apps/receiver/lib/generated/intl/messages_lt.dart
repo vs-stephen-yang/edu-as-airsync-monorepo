@@ -1154,6 +1154,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Susieti nepavyko. \"TouchBack\" nesuaktyvintas. Bandykite dar kartą",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Atidarę \"Bluetooth\" nustatymų puslapį \"iPad\", galite pagreitinti susiejimo procesą.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Atšaukti"),
     "v3_touchback_restart_bluetooth_btn_restart":

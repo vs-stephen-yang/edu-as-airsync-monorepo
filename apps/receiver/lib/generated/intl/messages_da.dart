@@ -831,6 +831,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "deltog i sessionen",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Afslut",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Prøv igen",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Stop udsendelse"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Casting afbrudt. Venligst genindhent castingtilladelse.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Caster",
     ),
@@ -918,6 +929,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Find boards via IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Indtast venligst en gyldig IP-adresse.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Indtast IP-adresse",
@@ -1102,6 +1116,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Parring mislykkedes. TouchBack er ikke aktiveret. Prøv venligst igen",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Åbning af Bluetooth-indstillingssiden på din iPad kan fremskynde parringsprocessen.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Annuller"),
     "v3_touchback_restart_bluetooth_btn_restart":
@@ -1150,6 +1167,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Skærmbillede mislykkedes",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Bliv ved med at vente",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Luk"),
     "v3_zero_fps_failed_to_repair_message":

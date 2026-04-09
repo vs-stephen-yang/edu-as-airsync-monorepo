@@ -421,5 +421,12 @@
   "v3_lbl_settings_broadcast_device_favorite": "favorit",
   "v3_lbl_settings_broadcast_device_remove": "fjern enhed",
   "v3_lbl_settings_broadcast_connect": "Forbind",
-  "v3_lbl_settings_broadcast_connecting": "Forbinder"
+  "v3_lbl_settings_broadcast_connecting": "Forbinder",
+  "v3_overlay_retry_dialog_title": "Casting afbrudt. Venligst genindhent castingtilladelse.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Stop udsendelse",
+  "v3_overlay_retry_dialog_retry": "Prøv igen",
+  "v3_overlay_retry_dialog_end": "Afslut",
+  "v3_zero_fps_capture_failed_wait": "Bliv ved med at vente",
+  "v3_settings_broadcast_ip_error": "Indtast venligst en gyldig IP-adresse.",
+  "v3_touchback_ipad_bluetooth_hint": "Åbning af Bluetooth-indstillingssiden på din iPad kan fremskynde parringsprocessen."
 }

@@ -427,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "Uuesti proovimine",
   "v3_overlay_retry_dialog_end": "Lõpp",
   "v3_zero_fps_capture_failed_wait": "Oota edasi",
-  "v3_settings_broadcast_ip_error": "Palun sisestage kehtiv IP-aadress."
+  "v3_settings_broadcast_ip_error": "Palun sisestage kehtiv IP-aadress.",
+  "v3_touchback_ipad_bluetooth_hint": "Bluetoothi seadete lehe avamine iPadis võib sidumisprotsessi kiirendada."
 }

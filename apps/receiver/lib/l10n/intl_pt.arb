@@ -421,5 +421,12 @@
   "v3_lbl_settings_broadcast_device_favorite": "favorito",
   "v3_lbl_settings_broadcast_device_remove": "remover dispositivo",
   "v3_lbl_settings_broadcast_connect": "Conectar",
-  "v3_lbl_settings_broadcast_connecting": "Conectando"
+  "v3_lbl_settings_broadcast_connecting": "Conectando",
+  "v3_overlay_retry_dialog_title": "Transmissão interrompida. Por favor, recupere a permissão de transmissão.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Parar Transmissão",
+  "v3_overlay_retry_dialog_retry": "Tentar Novamente",
+  "v3_overlay_retry_dialog_end": "Encerrar",
+  "v3_zero_fps_capture_failed_wait": "Continuar Esperando",
+  "v3_settings_broadcast_ip_error": "Por favor, insira um endereço IP válido.",
+  "v3_touchback_ipad_bluetooth_hint": "Abrir a página de configurações de Bluetooth no seu iPad pode acelerar o processo de emparelhamento."
 }

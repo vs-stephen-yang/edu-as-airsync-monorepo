@@ -421,5 +421,12 @@
   "v3_lbl_settings_broadcast_device_favorite": "suosikki",
   "v3_lbl_settings_broadcast_device_remove": "poista laite",
   "v3_lbl_settings_broadcast_connect": "Yhdistä",
-  "v3_lbl_settings_broadcast_connecting": "Yhdistetään"
+  "v3_lbl_settings_broadcast_connecting": "Yhdistetään",
+  "v3_overlay_retry_dialog_title": "Lähetys keskeytyi. Hanki lähetyslupa uudelleen.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Lopeta lähetys",
+  "v3_overlay_retry_dialog_retry": "Yritä uudelleen",
+  "v3_overlay_retry_dialog_end": "Lopeta",
+  "v3_zero_fps_capture_failed_wait": "Jatka odottamista",
+  "v3_settings_broadcast_ip_error": "Anna kelvollinen IP-osoite.",
+  "v3_touchback_ipad_bluetooth_hint": "Bluetooth-asetussivun avaaminen iPadillasi voi nopeuttaa pariliitosprosessia."
 }

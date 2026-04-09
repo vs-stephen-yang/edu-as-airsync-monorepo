@@ -847,6 +847,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       " dołączył do sesji",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Zakończ",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Spróbuj ponownie",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Zatrzymaj transmisję"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Transmisja przerwana. Proszę ponownie uzyskać pozwolenie na transmisję.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Przesyłanie",
     ),
@@ -937,6 +948,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Znajdź tablice przez IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Proszę wprowadzić prawidłowy adres IP.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Wprowadź adres IP",
@@ -1128,6 +1142,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Parowanie nie powiodło się. Sterowanie dotykowe nie jest aktywowane. Spróbuj ponownie",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Otworzenie strony ustawień Bluetooth na iPadzie może przyspieszyć proces parowania.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Anuluj"),
     "v3_touchback_restart_bluetooth_btn_restart":
@@ -1177,6 +1194,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Nie udało się wykonać zrzutu ekranu",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Czekaj dalej",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Zamknij"),
     "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(

@@ -878,6 +878,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "開源許可證",
     ),
     "v3_settings_privacy_policy": MessageLookupByLibrary.simpleMessage("隱私權政策"),
+    "v3_settings_privacy_policy_description": MessageLookupByLibrary.simpleMessage(
+      "ViewSonic 致力於保護您的隱私，並嚴肅看待個人資料之處理。以下隱私權政策說明您透過本網站所提供之個人資料，在被 ViewSonic 蒐集後，將如何進行處理與使用。ViewSonic 採用各項安全技術以維護您的資訊安全，並遵循相關政策以防止未經授權之個人資料使用。當您使用本網站時，即表示您同意我們蒐集與使用您的相關資訊。\n\n您自 ViewSonic.com 連結前往之其他網站，可能訂有與 ViewSonic 不同之隱私權政策。建議您詳閱該等網站之隱私權政策，以了解其在您瀏覽期間所蒐集之資訊將如何被使用。\n\n請點選以下連結，以進一步了解我們的隱私權政策。",
+    ),
     "v3_settings_resize_text_size": MessageLookupByLibrary.simpleMessage(
       "調整字體大小",
     ),
@@ -916,6 +919,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "配對失敗，未啟用反控。請重新操作。",
+    ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "藍牙配對時，iPad請停留在藍牙設定畫面",
     ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("取消"),
