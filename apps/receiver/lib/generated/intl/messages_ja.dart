@@ -1021,6 +1021,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "ペアリングに失敗しました。タッチバックが有効になっていません。もう一度お試しください。",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "iPad の Bluetooth 設定画面を開くと、ペアリング処理を早めることができます。",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("キャンセル"),
     "v3_touchback_restart_bluetooth_btn_restart":

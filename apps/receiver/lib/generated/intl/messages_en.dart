@@ -15,13 +15,13 @@ import 'package:intl/message_lookup_by_library.dart';
 
 final messages = new MessageLookup();
 
-String m_toast_moderator_mirror_full(String deviceName) =>
-    'Mirror connections are full. ${deviceName} can\'t join.';
-
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
+
+  static String m2(deviceName) =>
+      "Mirror connections are full. ${deviceName} can\'t join.";
 
   static String m0(value) =>
       "Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times. ";
@@ -195,7 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
       "Has reached maximum split screen amount.",
     ),
-    "toast_moderator_mirror_full": m_toast_moderator_mirror_full,
+    "toast_moderator_mirror_full": m2,
     "toast_moderator_webrtc_full": MessageLookupByLibrary.simpleMessage(
       "WebRTC connections are full.",
     ),

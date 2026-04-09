@@ -421,5 +421,12 @@
   "v3_lbl_settings_broadcast_device_favorite": "favoritt",
   "v3_lbl_settings_broadcast_device_remove": "fjern enhet",
   "v3_lbl_settings_broadcast_connect": "Koble til",
-  "v3_lbl_settings_broadcast_connecting": "Kobler til"
+  "v3_lbl_settings_broadcast_connecting": "Kobler til",
+  "v3_overlay_retry_dialog_title": "Casting avbrutt. Vennligst gjenvinn casting-tillatelse.",
+  "v3_overlay_retry_dialog_stop_broadcast": "Stopp sending",
+  "v3_overlay_retry_dialog_retry": "Prøv igjen",
+  "v3_overlay_retry_dialog_end": "Avslutt",
+  "v3_zero_fps_capture_failed_wait": "Fortsett å vente",
+  "v3_settings_broadcast_ip_error": "Vennligst skriv inn en gyldig IP-adresse.",
+  "v3_touchback_ipad_bluetooth_hint": "Åpning av Bluetooth-innstillingssiden på iPad-en din kan akselerere sammenkoblingsprosessen."
 }

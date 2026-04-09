@@ -837,6 +837,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "liittyi istuntoon",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Lopeta",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Yritä uudelleen",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Lopeta lähetys"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Lähetys keskeytyi. Hanki lähetyslupa uudelleen.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Lähetys",
     ),
@@ -928,6 +939,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Etsi taulut IP:n avulla",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Anna kelvollinen IP-osoite.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Anna IP-osoite",
@@ -1114,6 +1128,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Pariliitos epäonnistui. TouchBack ei ole aktivoitu. Yritä uudelleen",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Bluetooth-asetussivun avaaminen iPadillasi voi nopeuttaa pariliitosprosessia.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Peruuta"),
     "v3_touchback_restart_bluetooth_btn_restart":
@@ -1164,6 +1181,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Näyttökuvan ottaminen epäonnistui",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Jatka odottamista",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Sulje"),
     "v3_zero_fps_failed_to_repair_message": MessageLookupByLibrary.simpleMessage(

@@ -1144,6 +1144,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Pārošana neizdevās. TouchBack nav aktivizēts. Lūdzu, mēģiniet vēlreiz",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Bluetooth iestatījumu lapas atvēršana iPad ierīcē var paātrināt savienošanas pārī procesu.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Atcelt"),
     "v3_touchback_restart_bluetooth_btn_restart":

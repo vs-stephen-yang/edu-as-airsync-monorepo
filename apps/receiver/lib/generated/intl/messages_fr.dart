@@ -1151,6 +1151,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Échec de l\'appairage. Le retour tactile n\'est pas activé. Veuillez réessayer",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Ouvrir la page des paramètres Bluetooth sur votre iPad peut accélérer le processus d\'appairage.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Annuler"),
     "v3_touchback_restart_bluetooth_btn_restart":

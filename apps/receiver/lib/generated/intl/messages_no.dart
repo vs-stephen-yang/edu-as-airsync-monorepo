@@ -821,6 +821,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_new_sharing_join_session": MessageLookupByLibrary.simpleMessage(
       "ble med i økten",
     ),
+    "v3_overlay_retry_dialog_end": MessageLookupByLibrary.simpleMessage(
+      "Avslutt",
+    ),
+    "v3_overlay_retry_dialog_retry": MessageLookupByLibrary.simpleMessage(
+      "Prøv igjen",
+    ),
+    "v3_overlay_retry_dialog_stop_broadcast":
+        MessageLookupByLibrary.simpleMessage("Stopp sending"),
+    "v3_overlay_retry_dialog_title": MessageLookupByLibrary.simpleMessage(
+      "Casting avbrutt. Vennligst gjenvinn casting-tillatelse.",
+    ),
     "v3_participant_item_casting": MessageLookupByLibrary.simpleMessage(
       "Casting",
     ),
@@ -907,6 +918,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_settings_broadcast_ip": MessageLookupByLibrary.simpleMessage(
       "Finn tavler via IP",
+    ),
+    "v3_settings_broadcast_ip_error": MessageLookupByLibrary.simpleMessage(
+      "Vennligst skriv inn en gyldig IP-adresse.",
     ),
     "v3_settings_broadcast_ip_hint": MessageLookupByLibrary.simpleMessage(
       "Skriv inn IP-adresse",
@@ -1095,6 +1109,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Paring mislyktes. TouchBack er ikke aktivert. Vennligst prøv igjen",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Åpning av Bluetooth-innstillingssiden på iPad-en din kan akselerere sammenkoblingsprosessen.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Avbryt"),
     "v3_touchback_restart_bluetooth_btn_restart":
@@ -1143,6 +1160,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "v3_zero_fps_capture_failed_title": MessageLookupByLibrary.simpleMessage(
       "Skjermbildeopptak mislyktes",
+    ),
+    "v3_zero_fps_capture_failed_wait": MessageLookupByLibrary.simpleMessage(
+      "Fortsett å vente",
     ),
     "v3_zero_fps_close": MessageLookupByLibrary.simpleMessage("Lukk"),
     "v3_zero_fps_failed_to_repair_message":

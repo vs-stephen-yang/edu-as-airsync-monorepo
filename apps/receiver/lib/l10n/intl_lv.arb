@@ -427,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "Mēģināt atkārtoti",
   "v3_overlay_retry_dialog_end": "Beigas",
   "v3_zero_fps_capture_failed_wait": "Turpiniet gaidīt",
-  "v3_settings_broadcast_ip_error": "Lūdzu, ievadiet derīgu IP adresi."
+  "v3_settings_broadcast_ip_error": "Lūdzu, ievadiet derīgu IP adresi.",
+  "v3_touchback_ipad_bluetooth_hint": "Bluetooth iestatījumu lapas atvēršana iPad ierīcē var paātrināt savienošanas pārī procesu."
 }

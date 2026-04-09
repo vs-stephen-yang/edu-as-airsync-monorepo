@@ -160,6 +160,7 @@
   "v3_participant_item_controlling": "接收畫面並控制中",
   "v3_settings_legal_policy": "法律和政策",
   "v3_settings_privacy_policy": "隱私權政策",
+  "v3_settings_privacy_policy_description": "ViewSonic 致力於保護您的隱私，並嚴肅看待個人資料之處理。以下隱私權政策說明您透過本網站所提供之個人資料，在被 ViewSonic 蒐集後，將如何進行處理與使用。ViewSonic 採用各項安全技術以維護您的資訊安全，並遵循相關政策以防止未經授權之個人資料使用。當您使用本網站時，即表示您同意我們蒐集與使用您的相關資訊。\n\n您自 ViewSonic.com 連結前往之其他網站，可能訂有與 ViewSonic 不同之隱私權政策。建議您詳閱該等網站之隱私權政策，以了解其在您瀏覽期間所蒐集之資訊將如何被使用。\n\n請點選以下連結，以進一步了解我們的隱私權政策。",
   "v3_settings_open_source_license": "開源許可證",
   "v3_authorize_prompt_decline": "拒絕",
   "v3_authorize_prompt_accept": "接受",
@@ -426,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "重試",
   "v3_overlay_retry_dialog_end": "結束",
   "v3_zero_fps_capture_failed_wait": "繼續等待",
-  "v3_settings_broadcast_ip_error": "請輸入合法的IP位址"
+  "v3_settings_broadcast_ip_error": "請輸入合法的IP位址",
+  "v3_touchback_ipad_bluetooth_hint": "藍牙配對時，iPad請停留在藍牙設定畫面"
 }

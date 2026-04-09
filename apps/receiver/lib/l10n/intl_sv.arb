@@ -427,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "Försök igen",
   "v3_overlay_retry_dialog_end": "Slut",
   "v3_zero_fps_capture_failed_wait": "Fortsätt vänta",
-  "v3_settings_broadcast_ip_error": "Vänligen ange en giltig IP-adress."
+  "v3_settings_broadcast_ip_error": "Vänligen ange en giltig IP-adress.",
+  "v3_touchback_ipad_bluetooth_hint": "Att öppna Bluetooth-inställningssidan på din iPad kan snabba upp parningsprocessen."
 }

@@ -1119,6 +1119,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Eşleştirme başarısız oldu. Dokunmatik Geri Dönüş etkinleştirilmedi. Lütfen tekrar deneyin",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "iPad\'inizde Bluetooth ayarları sayfasını açmak eşleştirme işlemini hızlandırabilir.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("İptal"),
     "v3_touchback_restart_bluetooth_btn_restart":

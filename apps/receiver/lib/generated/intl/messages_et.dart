@@ -1122,6 +1122,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_touchback_fail_message": MessageLookupByLibrary.simpleMessage(
       "Sidumine ebaõnnestus. TouchBack pole aktiveeritud. Palun proovi uuesti",
     ),
+    "v3_touchback_ipad_bluetooth_hint": MessageLookupByLibrary.simpleMessage(
+      "Bluetoothi seadete lehe avamine iPadis võib sidumisprotsessi kiirendada.",
+    ),
     "v3_touchback_restart_bluetooth_btn_cancel":
         MessageLookupByLibrary.simpleMessage("Tühista"),
     "v3_touchback_restart_bluetooth_btn_restart":

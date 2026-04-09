@@ -427,5 +427,6 @@
   "v3_overlay_retry_dialog_retry": "リトライ",
   "v3_overlay_retry_dialog_end": "終了",
   "v3_zero_fps_capture_failed_wait": "待機を継続",
-  "v3_settings_broadcast_ip_error": "有効な IP アドレスを入力してください。"
+  "v3_settings_broadcast_ip_error": "有効な IP アドレスを入力してください。",
+  "v3_touchback_ipad_bluetooth_hint": "iPad の Bluetooth 設定画面を開くと、ペアリング処理を早めることができます。"
 }
