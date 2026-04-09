@@ -24,7 +24,7 @@ if (propertiesFile.exists()) {
 android {
     namespace = "com.viewsonic.display.cast"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = project.property("ndkVersion")
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -81,6 +81,7 @@ android {
 
     packagingOptions {
         pickFirst '**/liblog.so'
+        pickFirst '**/libgojni.so'
         jniLibs {
             useLegacyPackaging = true
         }
