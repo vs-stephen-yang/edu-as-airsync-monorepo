@@ -102,10 +102,7 @@ dependencies:
   screen_retriever: ^0.2.0
 
   # ViewSonic plug-in
-  flutter_webrtc:
-    git:
-      url: https://github.com/Viewsonic-EDU/edu-as-flutter-webrtc
-      ref: release-3.9.1
+  flutter_webrtc: any
   display_channel:
     git:
       url: https://github.com/Viewsonic-EDU/edu-as-display-channel
@@ -113,7 +110,7 @@ dependencies:
   ion_sdk_flutter:
     git:
       url: https://github.com/Viewsonic-EDU/edu-as-ion-sdk-flutter
-      ref: release-3.9.1
+      ref: release-3.9.3
   flutter_input_injection:
     git:
       url: https://github.com/Viewsonic-EDU/edu-as-input-injection
@@ -143,6 +140,14 @@ dependencies:
 
 dependency_overrides:
   uuid: ^4.5.1
+  flutter_webrtc:
+    git:
+      url: https://github.com/Viewsonic-EDU/edu-as-flutter-webrtc
+      ref: release-3.9.3
+  flutter_golang_server:
+    git:
+      url: https://github.com/Viewsonic-EDU/edu-as-golang-server
+      ref: release-3.9.0
 
 dev_dependencies:
   flutter_test:
