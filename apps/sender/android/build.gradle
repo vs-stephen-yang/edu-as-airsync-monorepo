@@ -13,6 +13,13 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Propagate NDK r28 to all plugin library modules for 16KB page size compliance.
+subprojects {
+    plugins.withId('com.android.library') {
+        android.ndkVersion = project.property("ndkVersion")
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
