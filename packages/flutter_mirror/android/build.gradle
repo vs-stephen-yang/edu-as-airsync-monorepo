@@ -90,7 +90,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-    implementation 'com.google.oboe:oboe:1.7.0'
+    implementation 'com.google.oboe:oboe:1.9.3'
     implementation 'com.viewsonic.airplay:airplay:0.20.0'
     implementation 'com.viewsonic.googlecast:googlecast:0.11.0'
 
