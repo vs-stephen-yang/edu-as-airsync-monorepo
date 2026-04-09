@@ -172,6 +172,7 @@ android {
     }
 
     packagingOptions {
+        exclude '**/libz.so' // googlecast AAR bundles a 4KB-aligned libz; use Android system libz instead
         pickFirst '**/libairplayreceiver.so'
         pickFirst '**/libevent*.so'
         pickFirst '**/libcast.so'
