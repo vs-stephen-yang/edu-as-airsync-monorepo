@@ -1,0 +1,10 @@
+name: 'Test - Workflow PR'
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  scan:
+    uses: Viewsonic-EDU/edu-security-lab-va/.github/workflows/workflow-scan-pr.yml@main
