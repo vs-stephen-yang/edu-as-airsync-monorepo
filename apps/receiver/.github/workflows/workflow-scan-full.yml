@@ -1,0 +1,16 @@
+name: 'Test - Workflow Full'
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  schedule:
+    - cron: '30 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    uses: Viewsonic-EDU/edu-security-lab-va/.github/workflows/workflow-scan-full.yml@main
+    with:
+      product_name: "edu/airsync/edu-as-airsync-receiver"
