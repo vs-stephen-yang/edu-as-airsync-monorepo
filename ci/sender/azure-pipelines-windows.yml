@@ -1,0 +1,193 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - HotFix/*
+
+pr: none
+
+variables:
+  - name: Flutter.Bin
+    value: fvm flutter
+  - name: AdvancedInstaller.Bin
+    value: 'C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com'
+  - name: Installer.Dir
+    value: "$(Build.SourcesDirectory)/windows/package/"
+  - name: Build.Dir
+    value: "$(Build.SourcesDirectory)/build/windows/x64/runner/Release"
+  - name: Package.Bin
+    value: "$(Build.SourcesDirectory)/windows/scripts/package.ps1"
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate --split-debug-info=debug_info/"
+  - name: CMAKE_BUILD_PARALLEL_LEVEL
+    value: 4
+  - group: "sentry-airsync-sender"
+  - group: "github-secrets"
+
+jobs:
+  - job: QualityCheck
+    displayName: Quality Check (Lint and Test)
+    condition: true
+    pool:
+      name: "AirSync Windows Pool"
+    steps:
+      - checkout: self
+
+      - task: PowerShell@2
+        displayName: Configure GitHub credentials
+        inputs:
+          targetType: inline
+          script: |
+            git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Analyze code
+
+      - script: $(Flutter.Bin) test -j 8 --no-pub --coverage --branch-coverage
+        displayName: Run tests with coverage
+
+  - job: Build
+    displayName: Build App (Windows)
+    dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
+    pool:
+      name: "AirSync Windows Pool"
+
+    strategy:
+      matrix:
+        stage:
+          target: stage
+        production:
+          target: production
+
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: false
+        persistCredentials: true
+        lfs: true
+
+      - task: PowerShell@2
+        displayName: Authenticate Git Repos
+        inputs:
+          targetType: inline
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: PowerShell@2
+        displayName: Configure GitHub credentials
+        inputs:
+          targetType: inline
+          script: |
+            git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+
+      - powershell: |
+          git lfs env
+          git lfs ls-files
+          git lfs pull origin HEAD
+          git lfs status
+        displayName: Pull Git LFS objects
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+
+      - script: $(Flutter.Bin) build windows -t ./lib/main_$(target).dart $(Flutter.Build.Options)
+        displayName: Build Windows app
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: $(CMAKE_BUILD_PARALLEL_LEVEL)
+
+      # Uploading debug symbols
+      - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
+        displayName: Uploading debug symbols
+        enabled: "true"
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
+
+      # Uploading native debug symbols
+      - task: PowerShell@2
+        displayName: Uploading native debug symbols
+        inputs:
+          filePath: "windows/scripts/upload_symbols.ps1"
+          arguments: "Release"
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
+
+      - task: CopyFiles@2
+        displayName: Copy Build Output
+        inputs:
+          SourceFolder: "$(Build.Dir)"
+          Contents: "**"
+          TargetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Build Artifact
+        inputs:
+          targetPath: "$(Build.ArtifactStagingDirectory)"
+          artifact: "build_$(target)"
+
+  - job: Package
+    displayName: Package Installer
+    dependsOn: Build
+    condition: succeeded('Build')
+    pool:
+      name: "Windows Build Servers"
+      demands:
+        - EVKey -equals 1
+
+    strategy:
+      matrix:
+        stage:
+          target: stage
+          packageEnv: stage
+        production:
+          target: production
+          packageEnv: prod
+
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: false
+        lfs: true
+        submodules: true
+
+      - task: DownloadPipelineArtifact@2
+        displayName: Download Build Artifact
+        inputs:
+          artifact: "build_$(target)"
+          path: "$(System.ArtifactsDirectory)/build"
+
+      - task: CopyFiles@2
+        displayName: Restore Build Output
+        inputs:
+          OverWrite: true
+          SourceFolder: "$(System.ArtifactsDirectory)/build"
+          Contents: "**"
+          TargetFolder: "$(Build.Dir)"
+
+      - task: PowerShell@2
+        displayName: Run Packaging Script
+        inputs:
+          filePath: "$(Package.Bin)"
+          arguments: "$(packageEnv)"
+          pwsh: true
+
+      - task: CopyFiles@2
+        displayName: Copy Installer Output
+        inputs:
+          SourceFolder: "$(Installer.Dir)"
+          Contents: "**"
+          TargetFolder: "$(Build.ArtifactStagingDirectory)/package"
+
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Package Artifact
+        inputs:
+          targetPath: "$(Build.ArtifactStagingDirectory)/package"
+          artifact: "package_$(target)"

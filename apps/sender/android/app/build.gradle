@@ -1,0 +1,119 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+    id "io.sentry.android.gradle" version "4.11.0"
+}
+
+// Region of Signing the app for release. Do NOT EDIT.
+def storeKeyExist = false
+
+def keystoreProperties = new Properties()
+
+def propertiesFile = rootProject.file('../../keystore.properties')
+
+if (propertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(propertiesFile))
+
+    // Check each key settings is exist or not.
+    storeKeyExist = keystoreProperties.getProperty("storeStoreFile") != null
+}
+// End of Region of Signing the app for release. Do NOT EDIT.
+
+android {
+    namespace = "com.viewsonic.display.cast"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = project.property("ndkVersion")
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    // Region of Signing the app for release. Do NOT EDIT.
+    signingConfigs {
+        if (storeKeyExist) {
+            STORE {
+                storeFile file(keystoreProperties['storeStoreFile'])
+                storePassword keystoreProperties['storeStorePassword']
+                keyAlias keystoreProperties['storeKeyAlias']
+                keyPassword keystoreProperties['storeKeyPassword']
+            }
+        }
+    }
+    // End of Region of Signing the app for release. Do NOT EDIT.
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.viewsonic.display.cast"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Region of Signing the app for release. Do NOT EDIT.
+            //signingConfig signingConfigs.debug
+            if (storeKeyExist) {
+                signingConfig = signingConfigs.STORE
+            } else {
+                signingConfig = signingConfigs.debug
+            }
+            // End of Region of Signing the app for release. Do NOT EDIT.
+        }
+    }
+
+    packagingOptions {
+        pickFirst '**/liblog.so'
+        pickFirst '**/libgojni.so'
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+dependencies {
+    implementation 'io.sentry:sentry-android:8.14.0'
+}
+
+flutter {
+    source "../.."
+}
+
+// https://docs.sentry.io/platforms/android/configuration/gradle/#configure
+sentry {
+    // Disables or enables debug log output
+    debug = true
+
+    org = System.getenv("SENTRY_ORG")
+    projectName = System.getenv("SENTRY_PROJECT")
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+
+    includeProguardMapping = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    uploadNativeSymbols = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    includeNativeSources = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    includeSourceContext = System.getenv('SENTRY_AUTH_TOKEN') != null
+}

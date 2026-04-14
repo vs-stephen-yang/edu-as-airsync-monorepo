@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.5" version="18.5" Modules="update" RootPath="." Language="en" Id="{7BA7C867-76FE-4863-AA23-874CB28F4B60}">
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;aiu-ue.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;aiu-ue_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.UpdaterEditorComponent">
+    <ROW Section="Update" Key="Name" Value="AirSync Sender"/>
+    <ROW Section="Update" Key="ProductVersion" Value="2.0.0" ValueLocId="-"/>
+    <ROW Section="Update" Key="URL" Value="https://store2.myviewboard.com/uploads/AirSyncSender/AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="Size" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="SHA256" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="MD5" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="ServerFileName" Value="AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="Flags" Value="Sys64|Os64|Advertises" ValueLocId="-"/>
+    <ROW Section="Update" Key="RegistryKey" Value="HKUD\Software\ViewSonic\AirSync Sender\Version" ValueLocId="-"/>
+    <ROW Section="Update" Key="Version" Value="2.0.0" ValueLocId="-"/>
+    <ROW Section="Update" Key="AutoCloseApplication" Value="[APPDIR]launcher.exe|--exe=AirSync_Sender.exe;;AlwaysRestart" ValueLocId="-"/>
+    <ATTRIBUTE name="OutputFileName" value="updates.txt"/>
+    <ATTRIBUTE name="OutputFolder" value="package"/>
+  </COMPONENT>
+</DOCUMENT>

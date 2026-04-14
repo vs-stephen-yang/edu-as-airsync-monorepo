@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:www.dev.airsync.net/download</string>
+		<string>applinks:www.dev.airsync.net</string>
+		<string>applinks:www.airsync.net/download</string>
+		<string>applinks:www.airsync.net</string>
+		<string>applinks:www.stage.airsync.net/download</string>
+		<string>applinks:www.stage.airsync.net</string>
+		<string>applinks:airsync.net/app/download</string>
+		<string>applinks:stage.airsync.net/app/download</string>
+		<string>applinks:dev.airsync.net/app/download</string>
+	</array>
+	<key>com.apple.developer.networking.multicast</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.viewsonic.display.cast</string>
+	</array>
+</dict>
+</plist>

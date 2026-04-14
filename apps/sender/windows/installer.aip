@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.5" version="21.2.2" PreviousModules="professional" Modules="enterprise" RootPath="." Language="en" Id="{CA8BCCFC-0D00-4251-8B2A-C4C856EBCDB6}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="HiddenItems" Value="ActSyncAppComponent;CPLAppletComponent;AppXAppDetailsComponent;FixupComponent;AppXCapabilitiesComponent;AppXDependenciesComponent;AppXProductDetailsComponent;AppXVisualAssetsComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;MsiXDiffComponent;MsixManifestEditorComponent;ActSyncAppComponent;CPLAppletComponent;AutorunComponent;GameUxComponent;SilverlightSlnComponent;SharePointSlnComponent"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+    <ROW Property="AI_IA_APPLICATION_ID" Value="66c6f7ba5a890781774d63ae"/>
+    <ROW Property="AI_IA_ENABLE" Value="0"/>
+    <ROW Property="AI_IA_SEND_HTTPS" Value="1"/>
+    <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_ALL"/>
+    <ROW Property="ALLUSERS" Value="1"/>
+    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName][|EnvSuffix]." ValueLocId="*"/>
+    <ROW Property="EnvSuffix" Value=" " MultiBuildValue="DefaultBuild:#DefaultBuild_1:-stage#ReleaseBuild_1:-dev"/>
+    <ROW Property="Manufacturer" Value="ViewSonic"/>
+    <ROW Property="ProductCode" Value="1033:{0E41D677-D0BE-4756-9910-EA3740811789} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="AirSync Sender"/>
+    <ROW Property="ProductVersion" Value="3.8.2.45861" Options="20"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
+    <ROW Property="UpgradeCode" Value="{08FD1E6A-15AB-4AB9-882F-E0AD81C4D601}"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME#DefaultBuild_1:Windows 9x/ME#ReleaseBuild_1:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME#DefaultBuild_1:Windows 9x/ME#ReleaseBuild_1:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT" MultiBuildValue="DefaultBuild:Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86#DefaultBuild_1:Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86#ReleaseBuild_1:Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0#DefaultBuild_1:Windows NT 4.0#ReleaseBuild_1:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0#DefaultBuild_1:Windows NT 4.0#ReleaseBuild_1:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000#DefaultBuild_1:Windows 2000#ReleaseBuild_1:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000#DefaultBuild_1:Windows 2000#ReleaseBuild_1:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003#DefaultBuild_1:Windows XP/2003#ReleaseBuild_1:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003#DefaultBuild_1:Windows XP/2003#ReleaseBuild_1:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="DefaultBuild:32-bit Windows versions#DefaultBuild_1:32-bit Windows versions#ReleaseBuild_1:32-bit Windows versions" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="LocalAppDataFolder" Directory_Parent="TARGETDIR" DefaultDir="LOCALA~1|LocalAppDataFolder" IsPseudoRoot="1"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="airsyncaudio_Dir" Directory_Parent="drivers_Dir" DefaultDir="AIRSYN~1|airsyncaudio"/>
+    <ROW Directory="assets_1_Dir" Directory_Parent="cupertino_icons_Dir" DefaultDir="assets"/>
+    <ROW Directory="assets_2_Dir" Directory_Parent="wakelock_plus_Dir" DefaultDir="assets"/>
+    <ROW Directory="assets_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="assets"/>
+    <ROW Directory="cupertino_icons_Dir" Directory_Parent="packages_Dir" DefaultDir="CUPERT~1|cupertino_icons"/>
+    <ROW Directory="data_Dir" Directory_Parent="APPDIR" DefaultDir="data"/>
+    <ROW Directory="drivers_Dir" Directory_Parent="APPDIR" DefaultDir="drivers"/>
+    <ROW Directory="flags_Dir" Directory_Parent="flutter_multi_formatter_Dir" DefaultDir="flags"/>
+    <ROW Directory="flutter_assets_Dir" Directory_Parent="data_Dir" DefaultDir="FLUTTE~1|flutter_assets"/>
+    <ROW Directory="flutter_multi_formatter_Dir" Directory_Parent="packages_Dir" DefaultDir="FLUTTE~1|flutter_multi_formatter"/>
+    <ROW Directory="fonts_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="fonts"/>
+    <ROW Directory="hyphenate_patterns_Dir" Directory_Parent="hyphenator_impure_Dir" DefaultDir="HYPHEN~1|hyphenate_patterns"/>
+    <ROW Directory="hyphenator_impure_Dir" Directory_Parent="packages_Dir" DefaultDir="HYPHEN~1|hyphenator_impure"/>
+    <ROW Directory="images_Dir" Directory_Parent="assets_Dir" DefaultDir="images"/>
+    <ROW Directory="indirect_display_Dir" Directory_Parent="drivers_Dir" DefaultDir="INDIRE~1|indirect_display"/>
+    <ROW Directory="lottie_files_Dir" Directory_Parent="assets_Dir" DefaultDir="LOTTIE~1|lottie_files"/>
+    <ROW Directory="packages_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="packages"/>
+    <ROW Directory="png_Dir" Directory_Parent="flags_Dir" DefaultDir="png"/>
+    <ROW Directory="shaders_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="shaders"/>
+    <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools"/>
+    <ROW Directory="wakelock_plus_Dir" Directory_Parent="packages_Dir" DefaultDir="WAKELO~1|wakelock_plus"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AI_IA_ENABLE" ComponentId="{A319836F-BA19-4C77-B55C-E7BDDF31293B}" Directory_="APPDIR" Attributes="260" KeyPath="AI_IA_ENABLE" Options="1"/>
+    <ROW Component="APPDIR" ComponentId="{65CC1664-DF5F-4669-ADF1-C2A16799FE5D}" Directory_="APPDIR" Attributes="0"/>
+    <ROW Component="AirSync_Sender.exe" ComponentId="{78575E77-7E7F-42EB-ADF1-6353527D3308}" Directory_="APPDIR" Attributes="256" KeyPath="AirSync_Sender.exe"/>
+    <ROW Component="AssetManifest.bin" ComponentId="{28215972-C7FA-4F67-A927-56EF4B2E185A}" Directory_="flutter_assets_Dir" Attributes="0" KeyPath="AssetManifest.bin" Type="0"/>
+    <ROW Component="CupertinoIcons.ttf" ComponentId="{580AD59B-FDB1-48DC-9500-24BFC770F7E6}" Directory_="assets_1_Dir" Attributes="0" Type="0"/>
+    <ROW Component="CustomIcons.ttf" ComponentId="{AB8B82DA-2AEE-4DC8-940E-95B07772397F}" Directory_="fonts_Dir" Attributes="0" Type="0"/>
+    <ROW Component="ProductInformation" ComponentId="{4B1841DC-601F-47AA-89A4-610F5A65E9D1}" Directory_="APPDIR" Attributes="260" KeyPath="Version"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{8A6E9F44-DB30-4AE3-9A31-A96F629A8E58}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="WinSparkle.dll" ComponentId="{87F32BC1-E763-4220-AC41-370A997067F1}" Directory_="APPDIR" Attributes="256" KeyPath="WinSparkle.dll"/>
+    <ROW Component="ad.png" ComponentId="{036315A3-5B40-4BBC-BF08-9E625ACA8BA1}" Directory_="png_Dir" Attributes="0" KeyPath="ad.png" Type="0"/>
+    <ROW Component="airsyncaudio.cat" ComponentId="{8AD9789D-CFFE-41BB-8A76-734DD311401A}" Directory_="airsyncaudio_Dir" Attributes="0" KeyPath="airsyncaudio.cat" Type="0"/>
+    <ROW Component="app.so" ComponentId="{6EEEA41B-FDDF-48CE-A357-D7CD30EB66D3}" Directory_="data_Dir" Attributes="0" KeyPath="app.so" Type="0"/>
+    <ROW Component="app_links_plugin.dll" ComponentId="{93971628-CB3C-4AAB-98F7-B963240B5887}" Directory_="APPDIR" Attributes="256" KeyPath="app_links_plugin.dll"/>
+    <ROW Component="auto_updater_windows_plugin.dll" ComponentId="{D2240D48-049B-4B2C-992F-634B377570CD}" Directory_="APPDIR" Attributes="256" KeyPath="auto_updater_windows_plugin.dll"/>
+    <ROW Component="bonsoir_windows_plugin.dll" ComponentId="{A8F31CDE-2EAA-4157-94BA-93BD80AA25F9}" Directory_="APPDIR" Attributes="256" KeyPath="bonsoir_windows_plugin.dll"/>
+    <ROW Component="connectivity_plus_plugin.dll" ComponentId="{CC521518-7BE0-4389-BCFC-B225BC864ABE}" Directory_="APPDIR" Attributes="256" KeyPath="connectivity_plus_plugin.dll"/>
+    <ROW Component="crashpad_handler.exe" ComponentId="{DEDF74AF-014C-4736-BDB7-78015E0CB55B}" Directory_="APPDIR" Attributes="256" KeyPath="crashpad_handler.exe"/>
+    <ROW Component="crashpad_wer.dll" ComponentId="{5F82167C-A20E-44F4-84C6-4244802E8BB2}" Directory_="APPDIR" Attributes="256" KeyPath="crashpad_wer.dll"/>
+    <ROW Component="custom_actions.dll" ComponentId="{6EE266AD-8F87-46C4-BEBC-9F2FE9F6F7E7}" Directory_="APPDIR" Attributes="256" KeyPath="custom_actions.dll"/>
+    <ROW Component="dartjni.dll" ComponentId="{DA9C52D9-C996-43BF-B252-265868755899}" Directory_="APPDIR" Attributes="256" KeyPath="dartjni.dll"/>
+    <ROW Component="desktop_multi_window_plugin.dll" ComponentId="{CE2D6A2F-8D2F-444C-8A9F-52D96F894399}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_multi_window_plugin.dll"/>
+    <ROW Component="desktop_screenstate_plugin.dll" ComponentId="{50E79E90-D696-4EEC-8859-CB173AA1A513}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_screenstate_plugin.dll"/>
+    <ROW Component="desktop_window_plugin.dll" ComponentId="{6A555317-900D-443B-BD0A-1A6C415674E8}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
+    <ROW Component="devcon.exe" ComponentId="{DB53C66A-B973-43EC-9D4D-F62102DF07FD}" Directory_="tools_Dir" Attributes="256" KeyPath="devcon.exe"/>
+    <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{12BBAEAE-F47D-409E-97E5-783BF339FBC4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
+    <ROW Component="flutter_virtual_display_plugin.dll" ComponentId="{A80DDE0B-1AD6-4FAC-B463-2DB273CB292B}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_virtual_display_plugin.dll"/>
+    <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{7BE6E933-AD6E-4E4D-AAFC-D915EA00FC30}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
+    <ROW Component="flutter_window_close_plugin.dll" ComponentId="{A0866AE4-9E83-4D98-AF3E-849B9683F6F4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_window_close_plugin.dll"/>
+    <ROW Component="flutter_windows.dll" ComponentId="{7AC28546-FBA8-4C3B-99C0-239D5D2EFCFE}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_windows.dll"/>
+    <ROW Component="hyphbg.tex" ComponentId="{F9D89C82-0477-482C-8FCB-4B48CF38D11A}" Directory_="hyphenate_patterns_Dir" Attributes="0" KeyPath="hyphbg.tex" Type="0"/>
+    <ROW Component="ic_activate_off.svg" ComponentId="{C10313F1-3545-444F-B4C0-04B59AED08EF}" Directory_="images_Dir" Attributes="0" KeyPath="ic_activate_off.svg" Type="0"/>
+    <ROW Component="indirect_display_1_2.inf" ComponentId="{5892D9D8-89F0-49FE-A1A5-342033FA7DEC}" Directory_="indirect_display_Dir" Attributes="256" Condition="VersionNT64" KeyPath="indirect_display_1_2.dll"/>
+    <ROW Component="ink_sparkle.frag" ComponentId="{BFD6B9B3-D751-428D-9D8C-C02A880823C1}" Directory_="shaders_Dir" Attributes="0" KeyPath="ink_sparkle.frag" Type="0"/>
+    <ROW Component="launcher.exe" ComponentId="{9E513C78-8C39-475A-90EA-13D36B4D57B1}" Directory_="APPDIR" Attributes="256" KeyPath="launcher.exe"/>
+    <ROW Component="libwebrtc.dll" ComponentId="{1D51C5E6-5F93-44D1-B646-A305D8D05B30}" Directory_="APPDIR" Attributes="256" KeyPath="libwebrtc.dll"/>
+    <ROW Component="msvcp140.dll" ComponentId="{23249871-6713-42B8-9882-26ACF4BD7D2B}" Directory_="APPDIR" Attributes="256" KeyPath="msvcp140.dll"/>
+    <ROW Component="no_sleep.js" ComponentId="{6137EDBF-0961-43B4-BFC4-2275285C08BD}" Directory_="assets_2_Dir" Attributes="0" KeyPath="no_sleep.js" Type="0"/>
+    <ROW Component="permission_handler_windows_plugin.dll" ComponentId="{514FDDFE-3352-4E79-B4A2-87AEE8BC8AA9}" Directory_="APPDIR" Attributes="256" KeyPath="permission_handler_windows_plugin.dll"/>
+    <ROW Component="profiles.json" ComponentId="{1970CE3B-6233-499E-AB6B-8FB3BA9DDE82}" Directory_="assets_Dir" Attributes="0" KeyPath="profiles.json" Type="0"/>
+    <ROW Component="screen_extension.json" ComponentId="{AF649E01-BD34-4A3C-8FF2-B983339BD8F3}" Directory_="lottie_files_Dir" Attributes="0" KeyPath="screen_extension.json" Type="0"/>
+    <ROW Component="screen_retriever_windows_plugin.dll" ComponentId="{D25D8405-22AE-4530-8F4C-0772EFE18A95}" Directory_="APPDIR" Attributes="256" KeyPath="screen_retriever_windows_plugin.dll"/>
+    <ROW Component="sentry.dll" ComponentId="{560C2184-E8D4-4AD6-A212-81F7ADFB0D74}" Directory_="APPDIR" Attributes="256" KeyPath="sentry.dll"/>
+    <ROW Component="share_plus_plugin.dll" ComponentId="{D6C731BB-8FEE-493E-A5A7-4497C6FD455E}" Directory_="APPDIR" Attributes="256" KeyPath="share_plus_plugin.dll"/>
+    <ROW Component="system_tray_plugin.dll" ComponentId="{266B0A14-26BD-4FCF-89B7-8787E9DF9660}" Directory_="APPDIR" Attributes="256" KeyPath="system_tray_plugin.dll"/>
+    <ROW Component="updater.exe" ComponentId="{79C846D7-470C-49C0-854C-DCBFAD4170CC}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
+    <ROW Component="url_launcher_windows_plugin.dll" ComponentId="{37C8813E-2619-4851-BA70-0F781E67D1CE}" Directory_="APPDIR" Attributes="256" KeyPath="url_launcher_windows_plugin.dll"/>
+    <ROW Component="vcruntime140.dll" ComponentId="{7D964E36-BAEF-4697-9748-6D927C4B8E2E}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140.dll"/>
+    <ROW Component="vcruntime140_1.dll" ComponentId="{E175E220-6237-43EF-B4E3-F43F53F3CC58}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140_1.dll"/>
+    <ROW Component="virtualdisplayservice.exe" ComponentId="{D5C5A453-89C4-4A0B-91DB-78978786B1D6}" Directory_="APPDIR" Attributes="256" KeyPath="virtualdisplayservice.exe"/>
+    <ROW Component="win32audio_plugin.dll" ComponentId="{67979FFD-9616-4626-9C4C-4ABDEE66BC98}" Directory_="APPDIR" Attributes="256" KeyPath="win32audio_plugin.dll"/>
+    <ROW Component="window_manager_plugin.dll" ComponentId="{B038C02F-A85B-491B-892F-432D637F08BB}" Directory_="APPDIR" Attributes="256" KeyPath="window_manager_plugin.dll"/>
+    <ROW Component="window_size_plugin.dll" ComponentId="{705B5D9F-82C3-4E27-9D8F-3F312ACD610E}" Directory_="APPDIR" Attributes="256" KeyPath="window_size_plugin.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ROW Feature="airsyncaudio" Feature_Parent="MainFeature" Title="airsyncaudio" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ROW Feature="indirect_display_1_2" Feature_Parent="MainFeature" Title="indirect_display_1_2" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="AirSync_Sender.exe" Component_="AirSync_Sender.exe" FileName="DISPLA~1.EXE|AirSync_Sender.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="updater.exe" Component_="updater.exe" FileName="updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="vcruntime140.dll" Component_="vcruntime140.dll" FileName="VCRUNT~1.DLL|vcruntime140.dll" Attributes="0" SourcePath="redist\vcruntime140.dll" SelfReg="false"/>
+    <ROW File="vcruntime140_1.dll" Component_="vcruntime140_1.dll" FileName="VCRUNT~2.DLL|vcruntime140_1.dll" Attributes="0" SourcePath="redist\vcruntime140_1.dll" SelfReg="false"/>
+    <ROW File="msvcp140.dll" Component_="msvcp140.dll" FileName="msvcp140.dll" Attributes="0" SourcePath="redist\msvcp140.dll" SelfReg="false"/>
+    <ROW File="app.so" Component_="app.so" FileName="app.so" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\app.so" SelfReg="false"/>
+    <ROW File="AssetManifest.bin" Component_="AssetManifest.bin" FileName="ASSETM~1.BIN|AssetManifest.bin" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.bin" SelfReg="false"/>
+    <ROW File="AssetManifest.json" Component_="AssetManifest.bin" FileName="ASSETM~1.JSO|AssetManifest.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.json" SelfReg="false"/>
+    <ROW File="ic_activate_off.svg" Component_="ic_activate_off.svg" FileName="IC_ACT~1.SVG|ic_activate_off.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_activate_off.svg" SelfReg="false"/>
+    <ROW File="ic_activate_on.svg" Component_="ic_activate_off.svg" FileName="IC_ACT~2.SVG|ic_activate_on.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_activate_on.svg" SelfReg="false"/>
+    <ROW File="ic_exit.svg" Component_="ic_activate_off.svg" FileName="ic_exit.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_exit.svg" SelfReg="false"/>
+    <ROW File="ic_launcher.png" Component_="ic_activate_off.svg" FileName="IC_LAU~1.PNG|ic_launcher.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_launcher.png" SelfReg="false"/>
+    <ROW File="ic_logo_build_by.png" Component_="ic_activate_off.svg" FileName="IC_LOG~1.PNG|ic_logo_build_by.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_build_by.png" SelfReg="false"/>
+    <ROW File="ic_logo_my_viewboard.png" Component_="ic_activate_off.svg" FileName="IC_LOG~2.PNG|ic_logo_my_viewboard.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_my_viewboard.png" SelfReg="false"/>
+    <ROW File="touch_app_black.svg" Component_="ic_activate_off.svg" FileName="TOUCH_~1.SVG|touch_app_black.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\touch_app_black.svg" SelfReg="false"/>
+    <ROW File="FontManifest.json" Component_="AssetManifest.bin" FileName="FONTMA~1.JSO|FontManifest.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\FontManifest.json" SelfReg="false"/>
+    <ROW File="CustomIcons.ttf" Component_="CustomIcons.ttf" FileName="CUSTOM~1.TTF|CustomIcons.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\CustomIcons.ttf" SelfReg="false"/>
+    <ROW File="MaterialIconsRegular.otf" Component_="CustomIcons.ttf" FileName="MATERI~1.OTF|MaterialIcons-Regular.otf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\MaterialIcons-Regular.otf" SelfReg="false"/>
+    <ROW File="NOTICES.Z" Component_="AssetManifest.bin" FileName="NOTICES.Z" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\NOTICES.Z" SelfReg="false"/>
+    <ROW File="CupertinoIcons.ttf" Component_="CupertinoIcons.ttf" FileName="CUPERT~1.TTF|CupertinoIcons.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\cupertino_icons\assets\CupertinoIcons.ttf" SelfReg="false"/>
+    <ROW File="ad.png" Component_="ad.png" FileName="ad.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ad.png" SelfReg="false"/>
+    <ROW File="ae.png" Component_="ad.png" FileName="ae.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ae.png" SelfReg="false"/>
+    <ROW File="af.png" Component_="ad.png" FileName="af.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\af.png" SelfReg="false"/>
+    <ROW File="ag.png" Component_="ad.png" FileName="ag.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ag.png" SelfReg="false"/>
+    <ROW File="ai.png" Component_="ad.png" FileName="ai.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ai.png" SelfReg="false"/>
+    <ROW File="al.png" Component_="ad.png" FileName="al.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\al.png" SelfReg="false"/>
+    <ROW File="am.png" Component_="ad.png" FileName="am.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\am.png" SelfReg="false"/>
+    <ROW File="an.png" Component_="ad.png" FileName="an.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\an.png" SelfReg="false"/>
+    <ROW File="ao.png" Component_="ad.png" FileName="ao.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ao.png" SelfReg="false"/>
+    <ROW File="aq.png" Component_="ad.png" FileName="aq.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\aq.png" SelfReg="false"/>
+    <ROW File="ar.png" Component_="ad.png" FileName="ar.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ar.png" SelfReg="false"/>
+    <ROW File="as.png" Component_="ad.png" FileName="as.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\as.png" SelfReg="false"/>
+    <ROW File="at.png" Component_="ad.png" FileName="at.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\at.png" SelfReg="false"/>
+    <ROW File="au.png" Component_="ad.png" FileName="au.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\au.png" SelfReg="false"/>
+    <ROW File="aw.png" Component_="ad.png" FileName="aw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\aw.png" SelfReg="false"/>
+    <ROW File="ax.png" Component_="ad.png" FileName="ax.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ax.png" SelfReg="false"/>
+    <ROW File="az.png" Component_="ad.png" FileName="az.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\az.png" SelfReg="false"/>
+    <ROW File="ba.png" Component_="ad.png" FileName="ba.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ba.png" SelfReg="false"/>
+    <ROW File="bb.png" Component_="ad.png" FileName="bb.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bb.png" SelfReg="false"/>
+    <ROW File="bd.png" Component_="ad.png" FileName="bd.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bd.png" SelfReg="false"/>
+    <ROW File="be.png" Component_="ad.png" FileName="be.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\be.png" SelfReg="false"/>
+    <ROW File="bf.png" Component_="ad.png" FileName="bf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bf.png" SelfReg="false"/>
+    <ROW File="bg.png" Component_="ad.png" FileName="bg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bg.png" SelfReg="false"/>
+    <ROW File="bh.png" Component_="ad.png" FileName="bh.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bh.png" SelfReg="false"/>
+    <ROW File="bi.png" Component_="ad.png" FileName="bi.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bi.png" SelfReg="false"/>
+    <ROW File="bj.png" Component_="ad.png" FileName="bj.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bj.png" SelfReg="false"/>
+    <ROW File="bl.png" Component_="ad.png" FileName="bl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bl.png" SelfReg="false"/>
+    <ROW File="bm.png" Component_="ad.png" FileName="bm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bm.png" SelfReg="false"/>
+    <ROW File="bn.png" Component_="ad.png" FileName="bn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bn.png" SelfReg="false"/>
+    <ROW File="bo.png" Component_="ad.png" FileName="bo.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bo.png" SelfReg="false"/>
+    <ROW File="bq.png" Component_="ad.png" FileName="bq.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bq.png" SelfReg="false"/>
+    <ROW File="br.png" Component_="ad.png" FileName="br.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\br.png" SelfReg="false"/>
+    <ROW File="bs.png" Component_="ad.png" FileName="bs.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bs.png" SelfReg="false"/>
+    <ROW File="bt.png" Component_="ad.png" FileName="bt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bt.png" SelfReg="false"/>
+    <ROW File="bv.png" Component_="ad.png" FileName="bv.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bv.png" SelfReg="false"/>
+    <ROW File="bw.png" Component_="ad.png" FileName="bw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bw.png" SelfReg="false"/>
+    <ROW File="by.png" Component_="ad.png" FileName="by.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\by.png" SelfReg="false"/>
+    <ROW File="bz.png" Component_="ad.png" FileName="bz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bz.png" SelfReg="false"/>
+    <ROW File="ca.png" Component_="ad.png" FileName="ca.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ca.png" SelfReg="false"/>
+    <ROW File="cc.png" Component_="ad.png" FileName="cc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cc.png" SelfReg="false"/>
+    <ROW File="cd.png" Component_="ad.png" FileName="cd.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cd.png" SelfReg="false"/>
+    <ROW File="cf.png" Component_="ad.png" FileName="cf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cf.png" SelfReg="false"/>
+    <ROW File="cg.png" Component_="ad.png" FileName="cg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cg.png" SelfReg="false"/>
+    <ROW File="ch.png" Component_="ad.png" FileName="ch.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ch.png" SelfReg="false"/>
+    <ROW File="ci.png" Component_="ad.png" FileName="ci.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ci.png" SelfReg="false"/>
+    <ROW File="ck.png" Component_="ad.png" FileName="ck.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ck.png" SelfReg="false"/>
+    <ROW File="cl.png" Component_="ad.png" FileName="cl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cl.png" SelfReg="false"/>
+    <ROW File="cm.png" Component_="ad.png" FileName="cm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cm.png" SelfReg="false"/>
+    <ROW File="cn.png" Component_="ad.png" FileName="cn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cn.png" SelfReg="false"/>
+    <ROW File="co.png" Component_="ad.png" FileName="co.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\co.png" SelfReg="false"/>
+    <ROW File="cr.png" Component_="ad.png" FileName="cr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cr.png" SelfReg="false"/>
+    <ROW File="cu.png" Component_="ad.png" FileName="cu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cu.png" SelfReg="false"/>
+    <ROW File="cv.png" Component_="ad.png" FileName="cv.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cv.png" SelfReg="false"/>
+    <ROW File="cw.png" Component_="ad.png" FileName="cw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cw.png" SelfReg="false"/>
+    <ROW File="cx.png" Component_="ad.png" FileName="cx.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cx.png" SelfReg="false"/>
+    <ROW File="cy.png" Component_="ad.png" FileName="cy.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cy.png" SelfReg="false"/>
+    <ROW File="cz.png" Component_="ad.png" FileName="cz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cz.png" SelfReg="false"/>
+    <ROW File="de.png" Component_="ad.png" FileName="de.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\de.png" SelfReg="false"/>
+    <ROW File="dj.png" Component_="ad.png" FileName="dj.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dj.png" SelfReg="false"/>
+    <ROW File="dk.png" Component_="ad.png" FileName="dk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dk.png" SelfReg="false"/>
+    <ROW File="dm.png" Component_="ad.png" FileName="dm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dm.png" SelfReg="false"/>
+    <ROW File="do.png" Component_="ad.png" FileName="do.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\do.png" SelfReg="false"/>
+    <ROW File="dz.png" Component_="ad.png" FileName="dz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dz.png" SelfReg="false"/>
+    <ROW File="ec.png" Component_="ad.png" FileName="ec.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ec.png" SelfReg="false"/>
+    <ROW File="ee.png" Component_="ad.png" FileName="ee.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ee.png" SelfReg="false"/>
+    <ROW File="eg.png" Component_="ad.png" FileName="eg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\eg.png" SelfReg="false"/>
+    <ROW File="eh.png" Component_="ad.png" FileName="eh.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\eh.png" SelfReg="false"/>
+    <ROW File="er.png" Component_="ad.png" FileName="er.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\er.png" SelfReg="false"/>
+    <ROW File="es.png" Component_="ad.png" FileName="es.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\es.png" SelfReg="false"/>
+    <ROW File="et.png" Component_="ad.png" FileName="et.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\et.png" SelfReg="false"/>
+    <ROW File="eu.png" Component_="ad.png" FileName="eu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\eu.png" SelfReg="false"/>
+    <ROW File="fi.png" Component_="ad.png" FileName="fi.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fi.png" SelfReg="false"/>
+    <ROW File="fj.png" Component_="ad.png" FileName="fj.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fj.png" SelfReg="false"/>
+    <ROW File="fk.png" Component_="ad.png" FileName="fk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fk.png" SelfReg="false"/>
+    <ROW File="fm.png" Component_="ad.png" FileName="fm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fm.png" SelfReg="false"/>
+    <ROW File="fo.png" Component_="ad.png" FileName="fo.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fo.png" SelfReg="false"/>
+    <ROW File="fr.png" Component_="ad.png" FileName="fr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fr.png" SelfReg="false"/>
+    <ROW File="ga.png" Component_="ad.png" FileName="ga.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ga.png" SelfReg="false"/>
+    <ROW File="gbeng.png" Component_="ad.png" FileName="gb-eng.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-eng.png" SelfReg="false"/>
+    <ROW File="gbnir.png" Component_="ad.png" FileName="gb-nir.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-nir.png" SelfReg="false"/>
+    <ROW File="gbsct.png" Component_="ad.png" FileName="gb-sct.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-sct.png" SelfReg="false"/>
+    <ROW File="gbwls.png" Component_="ad.png" FileName="gb-wls.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-wls.png" SelfReg="false"/>
+    <ROW File="gb.png" Component_="ad.png" FileName="gb.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb.png" SelfReg="false"/>
+    <ROW File="gd.png" Component_="ad.png" FileName="gd.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gd.png" SelfReg="false"/>
+    <ROW File="ge.png" Component_="ad.png" FileName="ge.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ge.png" SelfReg="false"/>
+    <ROW File="gf.png" Component_="ad.png" FileName="gf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gf.png" SelfReg="false"/>
+    <ROW File="gg.png" Component_="ad.png" FileName="gg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gg.png" SelfReg="false"/>
+    <ROW File="gh.png" Component_="ad.png" FileName="gh.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gh.png" SelfReg="false"/>
+    <ROW File="gi.png" Component_="ad.png" FileName="gi.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gi.png" SelfReg="false"/>
+    <ROW File="gl.png" Component_="ad.png" FileName="gl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gl.png" SelfReg="false"/>
+    <ROW File="gm.png" Component_="ad.png" FileName="gm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gm.png" SelfReg="false"/>
+    <ROW File="gn.png" Component_="ad.png" FileName="gn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gn.png" SelfReg="false"/>
+    <ROW File="gp.png" Component_="ad.png" FileName="gp.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gp.png" SelfReg="false"/>
+    <ROW File="gq.png" Component_="ad.png" FileName="gq.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gq.png" SelfReg="false"/>
+    <ROW File="gr.png" Component_="ad.png" FileName="gr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gr.png" SelfReg="false"/>
+    <ROW File="gs.png" Component_="ad.png" FileName="gs.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gs.png" SelfReg="false"/>
+    <ROW File="gt.png" Component_="ad.png" FileName="gt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gt.png" SelfReg="false"/>
+    <ROW File="gu.png" Component_="ad.png" FileName="gu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gu.png" SelfReg="false"/>
+    <ROW File="gw.png" Component_="ad.png" FileName="gw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gw.png" SelfReg="false"/>
+    <ROW File="gy.png" Component_="ad.png" FileName="gy.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gy.png" SelfReg="false"/>
+    <ROW File="hk.png" Component_="ad.png" FileName="hk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hk.png" SelfReg="false"/>
+    <ROW File="hm.png" Component_="ad.png" FileName="hm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hm.png" SelfReg="false"/>
+    <ROW File="hn.png" Component_="ad.png" FileName="hn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hn.png" SelfReg="false"/>
+    <ROW File="hr.png" Component_="ad.png" FileName="hr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hr.png" SelfReg="false"/>
+    <ROW File="ht.png" Component_="ad.png" FileName="ht.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ht.png" SelfReg="false"/>
+    <ROW File="hu.png" Component_="ad.png" FileName="hu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hu.png" SelfReg="false"/>
+    <ROW File="id.png" Component_="ad.png" FileName="id.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\id.png" SelfReg="false"/>
+    <ROW File="ie.png" Component_="ad.png" FileName="ie.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ie.png" SelfReg="false"/>
+    <ROW File="il.png" Component_="ad.png" FileName="il.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\il.png" SelfReg="false"/>
+    <ROW File="im.png" Component_="ad.png" FileName="im.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\im.png" SelfReg="false"/>
+    <ROW File="in.png" Component_="ad.png" FileName="in.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\in.png" SelfReg="false"/>
+    <ROW File="io.png" Component_="ad.png" FileName="io.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\io.png" SelfReg="false"/>
+    <ROW File="iq.png" Component_="ad.png" FileName="iq.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\iq.png" SelfReg="false"/>
+    <ROW File="ir.png" Component_="ad.png" FileName="ir.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ir.png" SelfReg="false"/>
+    <ROW File="is.png" Component_="ad.png" FileName="is.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\is.png" SelfReg="false"/>
+    <ROW File="it.png" Component_="ad.png" FileName="it.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\it.png" SelfReg="false"/>
+    <ROW File="je.png" Component_="ad.png" FileName="je.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\je.png" SelfReg="false"/>
+    <ROW File="jm.png" Component_="ad.png" FileName="jm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\jm.png" SelfReg="false"/>
+    <ROW File="jo.png" Component_="ad.png" FileName="jo.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\jo.png" SelfReg="false"/>
+    <ROW File="jp.png" Component_="ad.png" FileName="jp.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\jp.png" SelfReg="false"/>
+    <ROW File="ke.png" Component_="ad.png" FileName="ke.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ke.png" SelfReg="false"/>
+    <ROW File="kg.png" Component_="ad.png" FileName="kg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kg.png" SelfReg="false"/>
+    <ROW File="kh.png" Component_="ad.png" FileName="kh.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kh.png" SelfReg="false"/>
+    <ROW File="ki.png" Component_="ad.png" FileName="ki.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ki.png" SelfReg="false"/>
+    <ROW File="km.png" Component_="ad.png" FileName="km.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\km.png" SelfReg="false"/>
+    <ROW File="kn.png" Component_="ad.png" FileName="kn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kn.png" SelfReg="false"/>
+    <ROW File="kp.png" Component_="ad.png" FileName="kp.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kp.png" SelfReg="false"/>
+    <ROW File="kr.png" Component_="ad.png" FileName="kr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kr.png" SelfReg="false"/>
+    <ROW File="kw.png" Component_="ad.png" FileName="kw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kw.png" SelfReg="false"/>
+    <ROW File="ky.png" Component_="ad.png" FileName="ky.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ky.png" SelfReg="false"/>
+    <ROW File="kz.png" Component_="ad.png" FileName="kz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kz.png" SelfReg="false"/>
+    <ROW File="la.png" Component_="ad.png" FileName="la.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\la.png" SelfReg="false"/>
+    <ROW File="lb.png" Component_="ad.png" FileName="lb.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lb.png" SelfReg="false"/>
+    <ROW File="lc.png" Component_="ad.png" FileName="lc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lc.png" SelfReg="false"/>
+    <ROW File="li.png" Component_="ad.png" FileName="li.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\li.png" SelfReg="false"/>
+    <ROW File="lk.png" Component_="ad.png" FileName="lk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lk.png" SelfReg="false"/>
+    <ROW File="lr.png" Component_="ad.png" FileName="lr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lr.png" SelfReg="false"/>
+    <ROW File="ls.png" Component_="ad.png" FileName="ls.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ls.png" SelfReg="false"/>
+    <ROW File="lt.png" Component_="ad.png" FileName="lt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lt.png" SelfReg="false"/>
+    <ROW File="lu.png" Component_="ad.png" FileName="lu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lu.png" SelfReg="false"/>
+    <ROW File="lv.png" Component_="ad.png" FileName="lv.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lv.png" SelfReg="false"/>
+    <ROW File="ly.png" Component_="ad.png" FileName="ly.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ly.png" SelfReg="false"/>
+    <ROW File="ma.png" Component_="ad.png" FileName="ma.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ma.png" SelfReg="false"/>
+    <ROW File="mc.png" Component_="ad.png" FileName="mc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mc.png" SelfReg="false"/>
+    <ROW File="md.png" Component_="ad.png" FileName="md.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\md.png" SelfReg="false"/>
+    <ROW File="me.png" Component_="ad.png" FileName="me.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\me.png" SelfReg="false"/>
+    <ROW File="mf.png" Component_="ad.png" FileName="mf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mf.png" SelfReg="false"/>
+    <ROW File="mg.png" Component_="ad.png" FileName="mg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mg.png" SelfReg="false"/>
+    <ROW File="mh.png" Component_="ad.png" FileName="mh.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mh.png" SelfReg="false"/>
+    <ROW File="mk.png" Component_="ad.png" FileName="mk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mk.png" SelfReg="false"/>
+    <ROW File="ml.png" Component_="ad.png" FileName="ml.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ml.png" SelfReg="false"/>
+    <ROW File="mm.png" Component_="ad.png" FileName="mm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mm.png" SelfReg="false"/>
+    <ROW File="mn.png" Component_="ad.png" FileName="mn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mn.png" SelfReg="false"/>
+    <ROW File="mo.png" Component_="ad.png" FileName="mo.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mo.png" SelfReg="false"/>
+    <ROW File="mp.png" Component_="ad.png" FileName="mp.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mp.png" SelfReg="false"/>
+    <ROW File="mq.png" Component_="ad.png" FileName="mq.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mq.png" SelfReg="false"/>
+    <ROW File="mr.png" Component_="ad.png" FileName="mr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mr.png" SelfReg="false"/>
+    <ROW File="ms.png" Component_="ad.png" FileName="ms.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ms.png" SelfReg="false"/>
+    <ROW File="mt.png" Component_="ad.png" FileName="mt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mt.png" SelfReg="false"/>
+    <ROW File="mu.png" Component_="ad.png" FileName="mu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mu.png" SelfReg="false"/>
+    <ROW File="mv.png" Component_="ad.png" FileName="mv.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mv.png" SelfReg="false"/>
+    <ROW File="mw.png" Component_="ad.png" FileName="mw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mw.png" SelfReg="false"/>
+    <ROW File="mx.png" Component_="ad.png" FileName="mx.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mx.png" SelfReg="false"/>
+    <ROW File="my.png" Component_="ad.png" FileName="my.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\my.png" SelfReg="false"/>
+    <ROW File="mz.png" Component_="ad.png" FileName="mz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mz.png" SelfReg="false"/>
+    <ROW File="na.png" Component_="ad.png" FileName="na.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\na.png" SelfReg="false"/>
+    <ROW File="nc.png" Component_="ad.png" FileName="nc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nc.png" SelfReg="false"/>
+    <ROW File="ne.png" Component_="ad.png" FileName="ne.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ne.png" SelfReg="false"/>
+    <ROW File="nf.png" Component_="ad.png" FileName="nf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nf.png" SelfReg="false"/>
+    <ROW File="ng.png" Component_="ad.png" FileName="ng.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ng.png" SelfReg="false"/>
+    <ROW File="ni.png" Component_="ad.png" FileName="ni.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ni.png" SelfReg="false"/>
+    <ROW File="nl.png" Component_="ad.png" FileName="nl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nl.png" SelfReg="false"/>
+    <ROW File="no.png" Component_="ad.png" FileName="no.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\no.png" SelfReg="false"/>
+    <ROW File="np.png" Component_="ad.png" FileName="np.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\np.png" SelfReg="false"/>
+    <ROW File="nr.png" Component_="ad.png" FileName="nr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nr.png" SelfReg="false"/>
+    <ROW File="nu.png" Component_="ad.png" FileName="nu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nu.png" SelfReg="false"/>
+    <ROW File="nz.png" Component_="ad.png" FileName="nz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nz.png" SelfReg="false"/>
+    <ROW File="om.png" Component_="ad.png" FileName="om.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\om.png" SelfReg="false"/>
+    <ROW File="pa.png" Component_="ad.png" FileName="pa.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pa.png" SelfReg="false"/>
+    <ROW File="pe.png" Component_="ad.png" FileName="pe.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pe.png" SelfReg="false"/>
+    <ROW File="pf.png" Component_="ad.png" FileName="pf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pf.png" SelfReg="false"/>
+    <ROW File="pg.png" Component_="ad.png" FileName="pg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pg.png" SelfReg="false"/>
+    <ROW File="ph.png" Component_="ad.png" FileName="ph.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ph.png" SelfReg="false"/>
+    <ROW File="pk.png" Component_="ad.png" FileName="pk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pk.png" SelfReg="false"/>
+    <ROW File="pl.png" Component_="ad.png" FileName="pl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pl.png" SelfReg="false"/>
+    <ROW File="pm.png" Component_="ad.png" FileName="pm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pm.png" SelfReg="false"/>
+    <ROW File="pn.png" Component_="ad.png" FileName="pn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pn.png" SelfReg="false"/>
+    <ROW File="pr.png" Component_="ad.png" FileName="pr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pr.png" SelfReg="false"/>
+    <ROW File="ps.png" Component_="ad.png" FileName="ps.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ps.png" SelfReg="false"/>
+    <ROW File="pt.png" Component_="ad.png" FileName="pt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pt.png" SelfReg="false"/>
+    <ROW File="pw.png" Component_="ad.png" FileName="pw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pw.png" SelfReg="false"/>
+    <ROW File="py.png" Component_="ad.png" FileName="py.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\py.png" SelfReg="false"/>
+    <ROW File="qa.png" Component_="ad.png" FileName="qa.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\qa.png" SelfReg="false"/>
+    <ROW File="re.png" Component_="ad.png" FileName="re.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\re.png" SelfReg="false"/>
+    <ROW File="ro.png" Component_="ad.png" FileName="ro.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ro.png" SelfReg="false"/>
+    <ROW File="rs.png" Component_="ad.png" FileName="rs.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\rs.png" SelfReg="false"/>
+    <ROW File="ru.png" Component_="ad.png" FileName="ru.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ru.png" SelfReg="false"/>
+    <ROW File="rw.png" Component_="ad.png" FileName="rw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\rw.png" SelfReg="false"/>
+    <ROW File="sa.png" Component_="ad.png" FileName="sa.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sa.png" SelfReg="false"/>
+    <ROW File="sb.png" Component_="ad.png" FileName="sb.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sb.png" SelfReg="false"/>
+    <ROW File="sc.png" Component_="ad.png" FileName="sc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sc.png" SelfReg="false"/>
+    <ROW File="sd.png" Component_="ad.png" FileName="sd.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sd.png" SelfReg="false"/>
+    <ROW File="se.png" Component_="ad.png" FileName="se.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\se.png" SelfReg="false"/>
+    <ROW File="sg.png" Component_="ad.png" FileName="sg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sg.png" SelfReg="false"/>
+    <ROW File="sh.png" Component_="ad.png" FileName="sh.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sh.png" SelfReg="false"/>
+    <ROW File="si.png" Component_="ad.png" FileName="si.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\si.png" SelfReg="false"/>
+    <ROW File="sj.png" Component_="ad.png" FileName="sj.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sj.png" SelfReg="false"/>
+    <ROW File="sk.png" Component_="ad.png" FileName="sk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sk.png" SelfReg="false"/>
+    <ROW File="sl.png" Component_="ad.png" FileName="sl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sl.png" SelfReg="false"/>
+    <ROW File="sm.png" Component_="ad.png" FileName="sm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sm.png" SelfReg="false"/>
+    <ROW File="sn.png" Component_="ad.png" FileName="sn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sn.png" SelfReg="false"/>
+    <ROW File="so.png" Component_="ad.png" FileName="so.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\so.png" SelfReg="false"/>
+    <ROW File="sr.png" Component_="ad.png" FileName="sr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sr.png" SelfReg="false"/>
+    <ROW File="ss.png" Component_="ad.png" FileName="ss.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ss.png" SelfReg="false"/>
+    <ROW File="st.png" Component_="ad.png" FileName="st.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\st.png" SelfReg="false"/>
+    <ROW File="sv.png" Component_="ad.png" FileName="sv.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sv.png" SelfReg="false"/>
+    <ROW File="sx.png" Component_="ad.png" FileName="sx.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sx.png" SelfReg="false"/>
+    <ROW File="sy.png" Component_="ad.png" FileName="sy.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sy.png" SelfReg="false"/>
+    <ROW File="sz.png" Component_="ad.png" FileName="sz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sz.png" SelfReg="false"/>
+    <ROW File="tc.png" Component_="ad.png" FileName="tc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tc.png" SelfReg="false"/>
+    <ROW File="td.png" Component_="ad.png" FileName="td.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\td.png" SelfReg="false"/>
+    <ROW File="tf.png" Component_="ad.png" FileName="tf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tf.png" SelfReg="false"/>
+    <ROW File="tg.png" Component_="ad.png" FileName="tg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tg.png" SelfReg="false"/>
+    <ROW File="th.png" Component_="ad.png" FileName="th.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\th.png" SelfReg="false"/>
+    <ROW File="tj.png" Component_="ad.png" FileName="tj.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tj.png" SelfReg="false"/>
+    <ROW File="tk.png" Component_="ad.png" FileName="tk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tk.png" SelfReg="false"/>
+    <ROW File="tl.png" Component_="ad.png" FileName="tl.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tl.png" SelfReg="false"/>
+    <ROW File="tm.png" Component_="ad.png" FileName="tm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tm.png" SelfReg="false"/>
+    <ROW File="tn.png" Component_="ad.png" FileName="tn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tn.png" SelfReg="false"/>
+    <ROW File="to.png" Component_="ad.png" FileName="to.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\to.png" SelfReg="false"/>
+    <ROW File="tr.png" Component_="ad.png" FileName="tr.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tr.png" SelfReg="false"/>
+    <ROW File="tt.png" Component_="ad.png" FileName="tt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tt.png" SelfReg="false"/>
+    <ROW File="tv.png" Component_="ad.png" FileName="tv.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tv.png" SelfReg="false"/>
+    <ROW File="tw.png" Component_="ad.png" FileName="tw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tw.png" SelfReg="false"/>
+    <ROW File="tz.png" Component_="ad.png" FileName="tz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tz.png" SelfReg="false"/>
+    <ROW File="ua.png" Component_="ad.png" FileName="ua.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ua.png" SelfReg="false"/>
+    <ROW File="ug.png" Component_="ad.png" FileName="ug.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ug.png" SelfReg="false"/>
+    <ROW File="um.png" Component_="ad.png" FileName="um.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\um.png" SelfReg="false"/>
+    <ROW File="us.png" Component_="ad.png" FileName="us.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\us.png" SelfReg="false"/>
+    <ROW File="uy.png" Component_="ad.png" FileName="uy.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\uy.png" SelfReg="false"/>
+    <ROW File="uz.png" Component_="ad.png" FileName="uz.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\uz.png" SelfReg="false"/>
+    <ROW File="va.png" Component_="ad.png" FileName="va.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\va.png" SelfReg="false"/>
+    <ROW File="vc.png" Component_="ad.png" FileName="vc.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vc.png" SelfReg="false"/>
+    <ROW File="ve.png" Component_="ad.png" FileName="ve.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ve.png" SelfReg="false"/>
+    <ROW File="vg.png" Component_="ad.png" FileName="vg.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vg.png" SelfReg="false"/>
+    <ROW File="vi.png" Component_="ad.png" FileName="vi.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vi.png" SelfReg="false"/>
+    <ROW File="vn.png" Component_="ad.png" FileName="vn.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vn.png" SelfReg="false"/>
+    <ROW File="vu.png" Component_="ad.png" FileName="vu.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vu.png" SelfReg="false"/>
+    <ROW File="wf.png" Component_="ad.png" FileName="wf.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\wf.png" SelfReg="false"/>
+    <ROW File="ws.png" Component_="ad.png" FileName="ws.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ws.png" SelfReg="false"/>
+    <ROW File="xk.png" Component_="ad.png" FileName="xk.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\xk.png" SelfReg="false"/>
+    <ROW File="ye.png" Component_="ad.png" FileName="ye.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ye.png" SelfReg="false"/>
+    <ROW File="yt.png" Component_="ad.png" FileName="yt.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\yt.png" SelfReg="false"/>
+    <ROW File="za.png" Component_="ad.png" FileName="za.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\za.png" SelfReg="false"/>
+    <ROW File="zm.png" Component_="ad.png" FileName="zm.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\zm.png" SelfReg="false"/>
+    <ROW File="zw.png" Component_="ad.png" FileName="zw.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\zw.png" SelfReg="false"/>
+    <ROW File="ink_sparkle.frag" Component_="ink_sparkle.frag" FileName="INK_SP~1.FRA|ink_sparkle.frag" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\shaders\ink_sparkle.frag" SelfReg="false"/>
+    <ROW File="icudtl.dat" Component_="app.so" FileName="icudtl.dat" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\icudtl.dat" SelfReg="false"/>
+    <ROW File="flutter_input_injection_plugin.dll" Component_="flutter_input_injection_plugin.dll" FileName="FLUTTE~1.DLL|flutter_input_injection_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_input_injection_plugin.dll" SelfReg="false"/>
+    <ROW File="flutter_webrtc_plugin.dll" Component_="flutter_webrtc_plugin.dll" FileName="FLUTTE~2.DLL|flutter_webrtc_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_webrtc_plugin.dll" SelfReg="false"/>
+    <ROW File="flutter_windows.dll" Component_="flutter_windows.dll" FileName="FLUTTE~3.DLL|flutter_windows.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_windows.dll" SelfReg="false"/>
+    <ROW File="flutter_window_close_plugin.dll" Component_="flutter_window_close_plugin.dll" FileName="FLUTTE~4.DLL|flutter_window_close_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_window_close_plugin.dll" SelfReg="false"/>
+    <ROW File="libwebrtc.dll" Component_="libwebrtc.dll" FileName="LIBWEB~1.DLL|libwebrtc.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\libwebrtc.dll" SelfReg="false"/>
+    <ROW File="url_launcher_windows_plugin.dll" Component_="url_launcher_windows_plugin.dll" FileName="URL_LA~1.DLL|url_launcher_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\url_launcher_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="window_size_plugin.dll" Component_="window_size_plugin.dll" FileName="WINDOW~1.DLL|window_size_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\window_size_plugin.dll" SelfReg="false"/>
+    <ROW File="bonsoir_windows_plugin.dll" Component_="bonsoir_windows_plugin.dll" FileName="BONSOI~1.DLL|bonsoir_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\bonsoir_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="demo_remote.png" Component_="ic_activate_off.svg" FileName="DEMO_R~1.PNG|demo_remote.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\demo_remote.png" SelfReg="false"/>
+    <ROW File="ic_cast_screen.svg" Component_="ic_activate_off.svg" FileName="IC_CAS~1.SVG|ic_cast_screen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_cast_screen.svg" SelfReg="false"/>
+    <ROW File="ic_quick_connect.svg" Component_="ic_activate_off.svg" FileName="IC_QUI~1.SVG|ic_quick_connect.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_quick_connect.svg" SelfReg="false"/>
+    <ROW File="ic_receiver.svg" Component_="ic_activate_off.svg" FileName="IC_REC~1.SVG|ic_receiver.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_receiver.svg" SelfReg="false"/>
+    <ROW File="RobotoRegular.ttf" Component_="CustomIcons.ttf" FileName="ROBOTO~1.TTF|Roboto-Regular.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\Roboto-Regular.ttf" SelfReg="false"/>
+    <ROW File="connectivity_plus_plugin.dll" Component_="connectivity_plus_plugin.dll" FileName="CONNEC~1.DLL|connectivity_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\connectivity_plus_plugin.dll" SelfReg="false"/>
+    <ROW File="profiles.json" Component_="profiles.json" FileName="PROFIL~1.JSO|profiles.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\profiles.json" SelfReg="false"/>
+    <ROW File="flutter_virtual_display_plugin.dll" Component_="flutter_virtual_display_plugin.dll" FileName="FLUTTE~5.DLL|flutter_virtual_display_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_virtual_display_plugin.dll" SelfReg="false"/>
+    <ROW File="launcher.exe" Component_="launcher.exe" FileName="launcher.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\launcher.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="share_plus_plugin.dll" Component_="share_plus_plugin.dll" FileName="SHARE_~1.DLL|share_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\share_plus_plugin.dll" SelfReg="false"/>
+    <ROW File="virtualdisplayservice.exe" Component_="virtualdisplayservice.exe" FileName="VIRTUA~1.EXE|virtual-display-service.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\virtual-display-service.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="ic_device_list_error.svg" Component_="ic_activate_off.svg" FileName="IC_DEV~1.SVG|ic_device_list_error.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_device_list_error.svg" SelfReg="false"/>
+    <ROW File="ic_device_list_qrcode.svg" Component_="ic_activate_off.svg" FileName="IC_DEV~2.SVG|ic_device_list_qrcode.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_device_list_qrcode.svg" SelfReg="false"/>
+    <ROW File="ic_device_list_screen.svg" Component_="ic_activate_off.svg" FileName="IC_DEV~3.SVG|ic_device_list_screen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_device_list_screen.svg" SelfReg="false"/>
+    <ROW File="ic_logo_airsync.svg" Component_="ic_activate_off.svg" FileName="IC_LOG~1.SVG|ic_logo_airsync.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_airsync.svg" SelfReg="false"/>
+    <ROW File="ic_logo_airsync_icon.ico" Component_="ic_activate_off.svg" FileName="IC_LOG~1.ICO|ic_logo_airsync_icon.ico" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_airsync_icon.ico" SelfReg="false"/>
+    <ROW File="ic_logo_airsync_icon.png" Component_="ic_activate_off.svg" FileName="IC_LOG~3.PNG|ic_logo_airsync_icon.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_airsync_icon.png" SelfReg="false"/>
+    <ROW File="ic_logo_viewsonic_mobile.png" Component_="ic_activate_off.svg" FileName="IC_LOG~5.PNG|ic_logo_viewsonic_mobile.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic_mobile.png" SelfReg="false"/>
+    <ROW File="ic_logo_viewsonic_web.png" Component_="ic_activate_off.svg" FileName="IC_LOG~6.PNG|ic_logo_viewsonic_web.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic_web.png" SelfReg="false"/>
+    <ROW File="ic_menu_minimal.svg" Component_="ic_activate_off.svg" FileName="IC_MEN~1.SVG|ic_menu_minimal.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_menu_minimal.svg" SelfReg="false"/>
+    <ROW File="ic_qr_close.svg" Component_="ic_activate_off.svg" FileName="IC_QR_~1.SVG|ic_qr_close.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_qr_close.svg" SelfReg="false"/>
+    <ROW File="ic_store_appstore.svg" Component_="ic_activate_off.svg" FileName="IC_STO~1.SVG|ic_store_appstore.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_store_appstore.svg" SelfReg="false"/>
+    <ROW File="ic_store_google_play.svg" Component_="ic_activate_off.svg" FileName="IC_STO~2.SVG|ic_store_google_play.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_store_google_play.svg" SelfReg="false"/>
+    <ROW File="ic_wallpaper.png" Component_="ic_activate_off.svg" FileName="IC_WAL~1.PNG|ic_wallpaper.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_wallpaper.png" SelfReg="false"/>
+    <ROW File="ic_wallpaper_web.png" Component_="ic_activate_off.svg" FileName="IC_WAL~2.PNG|ic_wallpaper_web.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_wallpaper_web.png" SelfReg="false"/>
+    <ROW File="ic_web_connection.png" Component_="ic_activate_off.svg" FileName="IC_WEB~1.PNG|ic_web_connection.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_web_connection.png" SelfReg="false"/>
+    <ROW File="ic_web_download_mac.svg" Component_="ic_activate_off.svg" FileName="IC_WEB~1.SVG|ic_web_download_mac.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_web_download_mac.svg" SelfReg="false"/>
+    <ROW File="ic_web_download_qrcode.svg" Component_="ic_activate_off.svg" FileName="IC_WEB~2.SVG|ic_web_download_qrcode.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_web_download_qrcode.svg" SelfReg="false"/>
+    <ROW File="ic_web_download_windows.svg" Component_="ic_activate_off.svg" FileName="IC_WEB~3.SVG|ic_web_download_windows.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_web_download_windows.svg" SelfReg="false"/>
+    <ROW File="ic_web_planetary_rings.svg" Component_="ic_activate_off.svg" FileName="IC_WEB~4.SVG|ic_web_planetary_rings.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_web_planetary_rings.svg" SelfReg="false"/>
+    <ROW File="img_scanframe_scan.png" Component_="ic_activate_off.svg" FileName="IMG_SC~1.PNG|img_scanframe_scan.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\img_scanframe_scan.png" SelfReg="false"/>
+    <ROW File="v3_ic_airsync.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~1.SVG|v3_ic_airsync.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_airsync.svg" SelfReg="false"/>
+    <ROW File="v3_ic_arrow_back.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~2.SVG|v3_ic_arrow_back.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_arrow_back.svg" SelfReg="false"/>
+    <ROW File="v3_ic_arrow_back_white.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~3.SVG|v3_ic_arrow_back_white.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_arrow_back_white.svg" SelfReg="false"/>
+    <ROW File="v3_ic_arrow_left.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~4.SVG|v3_ic_arrow_left.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_arrow_left.svg" SelfReg="false"/>
+    <ROW File="v3_ic_arrow_right.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~5.SVG|v3_ic_arrow_right.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_arrow_right.svg" SelfReg="false"/>
+    <ROW File="v3_ic_display_code_error.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~6.SVG|v3_ic_display_code_error.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_display_code_error.svg" SelfReg="false"/>
+    <ROW File="v3_ic_error_black.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~7.SVG|v3_ic_error_black.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_error_black.svg" SelfReg="false"/>
+    <ROW File="v3_ic_ios_start_sharing.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~8.SVG|v3_ic_ios_start_sharing.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_ios_start_sharing.svg" SelfReg="false"/>
+    <ROW File="v3_ic_menu_close.svg" Component_="ic_activate_off.svg" FileName="V3_IC_~9.SVG|v3_ic_menu_close.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_menu_close.svg" SelfReg="false"/>
+    <ROW File="v3_ic_options.svg" Component_="ic_activate_off.svg" FileName="V3_IC~10.SVG|v3_ic_options.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_options.svg" SelfReg="false"/>
+    <ROW File="v3_ic_qrcode.svg" Component_="ic_activate_off.svg" FileName="V3_IC~11.SVG|v3_ic_qrcode.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_qrcode.svg" SelfReg="false"/>
+    <ROW File="v3_ic_select_receive.svg" Component_="ic_activate_off.svg" FileName="V3_IC~12.SVG|v3_ic_select_receive.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_select_receive.svg" SelfReg="false"/>
+    <ROW File="v3_ic_select_share.svg" Component_="ic_activate_off.svg" FileName="V3_IC~13.SVG|v3_ic_select_share.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_select_share.svg" SelfReg="false"/>
+    <ROW File="v3_ic_setting.svg" Component_="ic_activate_off.svg" FileName="V3_IC~14.SVG|v3_ic_setting.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_setting.svg" SelfReg="false"/>
+    <ROW File="v3_ic_setting_external.svg" Component_="ic_activate_off.svg" FileName="V3_IC~15.SVG|v3_ic_setting_external.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_setting_external.svg" SelfReg="false"/>
+    <ROW File="v3_ic_setting_radio_selected.svg" Component_="ic_activate_off.svg" FileName="V3_IC~16.SVG|v3_ic_setting_radio_selected.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_setting_radio_selected.svg" SelfReg="false"/>
+    <ROW File="v3_ic_setting_radio_unselect.svg" Component_="ic_activate_off.svg" FileName="V3_IC~17.SVG|v3_ic_setting_radio_unselect.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_setting_radio_unselect.svg" SelfReg="false"/>
+    <ROW File="v3_ic_sharing_pause_off.svg" Component_="ic_activate_off.svg" FileName="V3_IC~18.SVG|v3_ic_sharing_pause_off.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_sharing_pause_off.svg" SelfReg="false"/>
+    <ROW File="v3_ic_sharing_pause_on.svg" Component_="ic_activate_off.svg" FileName="V3_IC~19.SVG|v3_ic_sharing_pause_on.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_sharing_pause_on.svg" SelfReg="false"/>
+    <ROW File="v3_ic_sharing_pen.svg" Component_="ic_activate_off.svg" FileName="V3_IC~20.SVG|v3_ic_sharing_pen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_sharing_pen.svg" SelfReg="false"/>
+    <ROW File="v3_ic_switch_off.svg" Component_="ic_activate_off.svg" FileName="V3_IC~21.SVG|v3_ic_switch_off.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_switch_off.svg" SelfReg="false"/>
+    <ROW File="v3_ic_switch_on.svg" Component_="ic_activate_off.svg" FileName="V3_IC~22.SVG|v3_ic_switch_on.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_switch_on.svg" SelfReg="false"/>
+    <ROW File="screen_extension.json" Component_="screen_extension.json" FileName="SCREEN~1.JSO|screen_extension.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\lottie_files\screen_extension.json" SelfReg="false"/>
+    <ROW File="vsdslspinnersty1.json" Component_="screen_extension.json" FileName="VSDSL-~1.JSO|vsdsl-spinner-sty1.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\lottie_files\vsdsl-spinner-sty1.json" SelfReg="false"/>
+    <ROW File="InterVariable.ttf" Component_="CustomIcons.ttf" FileName="INTERV~1.TTF|InterVariable.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\InterVariable.ttf" SelfReg="false"/>
+    <ROW File="no_sleep.js" Component_="no_sleep.js" FileName="no_sleep.js" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\wakelock_plus\assets\no_sleep.js" SelfReg="false"/>
+    <ROW File="desktop_multi_window_plugin.dll" Component_="desktop_multi_window_plugin.dll" FileName="DESKTO~2.DLL|desktop_multi_window_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\desktop_multi_window_plugin.dll" SelfReg="false"/>
+    <ROW File="desktop_screenstate_plugin.dll" Component_="desktop_screenstate_plugin.dll" FileName="DESKTO~3.DLL|desktop_screenstate_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\desktop_screenstate_plugin.dll" SelfReg="false"/>
+    <ROW File="system_tray_plugin.dll" Component_="system_tray_plugin.dll" FileName="SYSTEM~1.DLL|system_tray_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\system_tray_plugin.dll" SelfReg="false"/>
+    <ROW File="app_links_plugin.dll" Component_="app_links_plugin.dll" FileName="APP_LI~1.DLL|app_links_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\app_links_plugin.dll" SelfReg="false"/>
+    <ROW File="auto_updater_windows_plugin.dll" Component_="auto_updater_windows_plugin.dll" FileName="AUTO_U~1.DLL|auto_updater_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\auto_updater_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="ic_drag.svg" Component_="ic_activate_off.svg" FileName="ic_drag.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_drag.svg" SelfReg="false"/>
+    <ROW File="ic_expend.svg" Component_="ic_activate_off.svg" FileName="IC_EXP~1.SVG|ic_expend.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_expend.svg" SelfReg="false"/>
+    <ROW File="ic_logo_viewsonic_desktop.png" Component_="ic_activate_off.svg" FileName="IC_LOG~7.PNG|ic_logo_viewsonic_desktop.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_viewsonic_desktop.png" SelfReg="false"/>
+    <ROW File="ic_minimize.svg" Component_="ic_activate_off.svg" FileName="IC_MIN~1.SVG|ic_minimize.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_minimize.svg" SelfReg="false"/>
+    <ROW File="v3_ic_accessibility_arrow.svg" Component_="ic_activate_off.svg" FileName="V3_IC~23.SVG|v3_ic_accessibility_arrow.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_accessibility_arrow.svg" SelfReg="false"/>
+    <ROW File="v3_ic_accessibility_selected.svg" Component_="ic_activate_off.svg" FileName="V3_IC~24.SVG|v3_ic_accessibility_selected.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_accessibility_selected.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_arrow_bottom.svg" Component_="ic_activate_off.svg" FileName="V3_IC~25.SVG|v3_ic_annotation_arrow_bottom.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_arrow_bottom.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_arrow_top.svg" Component_="ic_activate_off.svg" FileName="V3_IC~26.SVG|v3_ic_annotation_arrow_top.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_arrow_top.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_close.svg" Component_="ic_activate_off.svg" FileName="V3_IC~27.SVG|v3_ic_annotation_close.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_close.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_drag.svg" Component_="ic_activate_off.svg" FileName="V3_IC~28.SVG|v3_ic_annotation_drag.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_drag.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_eraser.svg" Component_="ic_activate_off.svg" FileName="V3_IC~29.SVG|v3_ic_annotation_eraser.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_eraser.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_eraser_disable.svg" Component_="ic_activate_off.svg" FileName="V3_IC~30.SVG|v3_ic_annotation_eraser_disable.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_eraser_disable.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_expand.svg" Component_="ic_activate_off.svg" FileName="V3_IC~31.SVG|v3_ic_annotation_expand.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_expand.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_extend.svg" Component_="ic_activate_off.svg" FileName="V3_IC~32.SVG|v3_ic_annotation_extend.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_extend.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_minimize.svg" Component_="ic_activate_off.svg" FileName="V3_IC~33.SVG|v3_ic_annotation_minimize.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_minimize.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_on.svg" Component_="ic_activate_off.svg" FileName="V3_IC~34.SVG|v3_ic_annotation_on.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_on.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_pen.svg" Component_="ic_activate_off.svg" FileName="V3_IC~35.SVG|v3_ic_annotation_pen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_pen.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_pen_disable.svg" Component_="ic_activate_off.svg" FileName="V3_IC~36.SVG|v3_ic_annotation_pen_disable.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_pen_disable.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_shrink.svg" Component_="ic_activate_off.svg" FileName="V3_IC~37.SVG|v3_ic_annotation_shrink.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_shrink.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_stroke_medium.svg" Component_="ic_activate_off.svg" FileName="V3_IC~38.SVG|v3_ic_annotation_stroke_medium.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_stroke_medium.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_stroke_thick.svg" Component_="ic_activate_off.svg" FileName="V3_IC~39.SVG|v3_ic_annotation_stroke_thick.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_stroke_thick.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_stroke_thin.svg" Component_="ic_activate_off.svg" FileName="V3_IC~40.SVG|v3_ic_annotation_stroke_thin.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_stroke_thin.svg" SelfReg="false"/>
+    <ROW File="v3_ic_annotation_trash.svg" Component_="ic_activate_off.svg" FileName="V3_IC~41.SVG|v3_ic_annotation_trash.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_annotation_trash.svg" SelfReg="false"/>
+    <ROW File="v3_ic_audio_driver_warning.svg" Component_="ic_activate_off.svg" FileName="V3_IC~42.SVG|v3_ic_audio_driver_warning.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_audio_driver_warning.svg" SelfReg="false"/>
+    <ROW File="v3_ic_web_download_thumb.svg" Component_="ic_activate_off.svg" FileName="V3_IC~43.SVG|v3_ic_web_download_thumb.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_web_download_thumb.svg" SelfReg="false"/>
+    <ROW File="v3_ic_web_main_download.svg" Component_="ic_activate_off.svg" FileName="V3_IC~44.SVG|v3_ic_web_main_download.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\v3_ic_web_main_download.svg" SelfReg="false"/>
+    <ROW File="ViewSonicAirSyncEULA20241115.txt" Component_="profiles.json" FileName="VIEWSO~2.TXT|ViewSonic-AirSync-EULA-20241115.txt" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\ViewSonic-AirSync-EULA-20241115.txt" SelfReg="false"/>
+    <ROW File="webtransport_cert_hashes.json" Component_="profiles.json" FileName="WEBTRA~1.JSO|webtransport_cert_hashes.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\webtransport_cert_hashes.json" SelfReg="false"/>
+    <ROW File="NotoSansTCRegular.ttf" Component_="CustomIcons.ttf" FileName="NOTOSA~1.TTF|NotoSansTC-Regular.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\NotoSansTC-Regular.ttf" SelfReg="false"/>
+    <ROW File="permission_handler_windows_plugin.dll" Component_="permission_handler_windows_plugin.dll" FileName="PERMIS~1.DLL|permission_handler_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\permission_handler_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="screen_retriever_windows_plugin.dll" Component_="screen_retriever_windows_plugin.dll" FileName="SCREEN~1.DLL|screen_retriever_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\screen_retriever_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="sentry.dll" Component_="sentry.dll" FileName="sentry.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\sentry.dll" SelfReg="false"/>
+    <ROW File="window_manager_plugin.dll" Component_="window_manager_plugin.dll" FileName="WINDOW~2.DLL|window_manager_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\window_manager_plugin.dll" SelfReg="false"/>
+    <ROW File="WinSparkle.dll" Component_="WinSparkle.dll" FileName="WINSPA~1.DLL|WinSparkle.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\WinSparkle.dll" SelfReg="false"/>
+    <ROW File="hyphbg.tex" Component_="hyphbg.tex" FileName="hyph-bg.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-bg.tex" SelfReg="false"/>
+    <ROW File="hyphcs.tex" Component_="hyphbg.tex" FileName="hyph-cs.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-cs.tex" SelfReg="false"/>
+    <ROW File="hyphda.tex" Component_="hyphbg.tex" FileName="hyph-da.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-da.tex" SelfReg="false"/>
+    <ROW File="hyphde1996.tex" Component_="hyphbg.tex" FileName="HYPH-D~1.TEX|hyph-de-1996.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-de-1996.tex" SelfReg="false"/>
+    <ROW File="hyphel.tex" Component_="hyphbg.tex" FileName="hyph-el.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-el.tex" SelfReg="false"/>
+    <ROW File="hyphenus.tex" Component_="hyphbg.tex" FileName="HYPH-E~1.TEX|hyph-en-us.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-en-us.tex" SelfReg="false"/>
+    <ROW File="hyphes419.tex" Component_="hyphbg.tex" FileName="HYPH-E~2.TEX|hyph-es-419.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-es-419.tex" SelfReg="false"/>
+    <ROW File="hypheses.tex" Component_="hyphbg.tex" FileName="HYPH-E~3.TEX|hyph-es-es.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-es-es.tex" SelfReg="false"/>
+    <ROW File="hyphfi.tex" Component_="hyphbg.tex" FileName="hyph-fi.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-fi.tex" SelfReg="false"/>
+    <ROW File="hyphfr.tex" Component_="hyphbg.tex" FileName="hyph-fr.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-fr.tex" SelfReg="false"/>
+    <ROW File="hyphhu.tex" Component_="hyphbg.tex" FileName="hyph-hu.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-hu.tex" SelfReg="false"/>
+    <ROW File="hyphit.tex" Component_="hyphbg.tex" FileName="hyph-it.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-it.tex" SelfReg="false"/>
+    <ROW File="hyphnb.tex" Component_="hyphbg.tex" FileName="hyph-nb.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-nb.tex" SelfReg="false"/>
+    <ROW File="hyphnl.tex" Component_="hyphbg.tex" FileName="hyph-nl.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-nl.tex" SelfReg="false"/>
+    <ROW File="hyphpl.tex" Component_="hyphbg.tex" FileName="hyph-pl.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-pl.tex" SelfReg="false"/>
+    <ROW File="hyphptbr.tex" Component_="hyphbg.tex" FileName="HYPH-P~1.TEX|hyph-pt-br.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-pt-br.tex" SelfReg="false"/>
+    <ROW File="hyphptpt.tex" Component_="hyphbg.tex" FileName="HYPH-P~2.TEX|hyph-pt-pt.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-pt-pt.tex" SelfReg="false"/>
+    <ROW File="hyphro.tex" Component_="hyphbg.tex" FileName="hyph-ro.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-ro.tex" SelfReg="false"/>
+    <ROW File="hyphru.tex" Component_="hyphbg.tex" FileName="hyph-ru.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-ru.tex" SelfReg="false"/>
+    <ROW File="hyphsv.tex" Component_="hyphbg.tex" FileName="hyph-sv.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-sv.tex" SelfReg="false"/>
+    <ROW File="hyphtr.tex" Component_="hyphbg.tex" FileName="hyph-tr.tex" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\packages\hyphenator_impure\hyphenate_patterns\hyph-tr.tex" SelfReg="false"/>
+    <ROW File="desktop_window_plugin.dll" Component_="desktop_window_plugin.dll" FileName="DESKTO~1.DLL|desktop_window_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\desktop_window_plugin.dll" SelfReg="false"/>
+    <ROW File="win32audio_plugin.dll" Component_="win32audio_plugin.dll" FileName="WIN32A~1.DLL|win32audio_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\win32audio_plugin.dll" SelfReg="false"/>
+    <ROW File="devcon.exe" Component_="devcon.exe" FileName="devcon.exe" Attributes="0" SourcePath="prebuilt\tools\devcon.exe" SelfReg="false"/>
+    <ROW File="custom_actions.dll" Component_="custom_actions.dll" FileName="CUSTOM~1.DLL|custom_actions.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\custom_actions.dll" SelfReg="false"/>
+    <ROW File="AssetManifest.bin.json" Component_="AssetManifest.bin" FileName="ASSETM~2.JSO|AssetManifest.bin.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.bin.json" SelfReg="false"/>
+    <ROW File="NOTICES" Component_="AssetManifest.bin" FileName="NOTICES" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\NOTICES" SelfReg="false"/>
+    <ROW File="airsyncaudio.cat" Component_="airsyncaudio.cat" FileName="AIRSYN~1.CAT|airsyncaudio.cat" Attributes="0" SourcePath="prebuilt\virtual-audio-cable-binaries\prebuilt\airsyncaudio.cat" SelfReg="false"/>
+    <ROW File="airsyncaudio.sys" Component_="airsyncaudio.cat" FileName="AIRSYN~1.SYS|airsyncaudio.sys" Attributes="0" SourcePath="prebuilt\virtual-audio-cable-binaries\prebuilt\airsyncaudio.sys" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.cat" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.CAT|indirect_display_1_2.cat" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display\indirect_display_1_2.cat" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.dll" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.DLL|indirect_display_1_2.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display\indirect_display_1_2.dll" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.inf" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display\indirect_display_1_2.inf" SelfReg="false"/>
+    <ROW File="airsyncaudio.inf" Component_="airsyncaudio.cat" FileName="AIRSYN~1.INF|airsyncaudio.inf" Attributes="0" SourcePath="prebuilt\virtual-audio-cable-binaries\prebuilt\airsyncaudio.inf" SelfReg="false"/>
+    <ROW File="crashpad_handler.exe" Component_="crashpad_handler.exe" FileName="CRASHP~1.EXE|crashpad_handler.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\crashpad_handler.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="crashpad_wer.dll" Component_="crashpad_wer.dll" FileName="CRASHP~1.DLL|crashpad_wer.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\crashpad_wer.dll" SelfReg="false"/>
+    <ROW File="dartjni.dll" Component_="dartjni.dll" FileName="dartjni.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\dartjni.dll" SelfReg="false"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.custcomp.MsiEmbeddedUIComponent">
+    <ROW MsiEmbeddedUI="embeddeduiproxy" FileName="embeddeduiproxy.dll" Attributes="3" MessageFilter="201359327" Data="&lt;AI_HOME&gt;bin\x86\embeddeduiproxy.dll"/>
+    <ROW MsiEmbeddedUI="InstallerAnalytics" FileName="InstallerAnalytics.dll" Attributes="0" Data="&lt;AI_TEMPLATES&gt;PlaceHolder.dat"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.AiPersistentPropComponent">
+    <ROW Property="AI_IA_ENABLE" Registry="AI_IA_ENABLE" HklmSearch="AI_IA_ENABLE" HkcuSearch="AI_IA_ENABLE_1" Hklm64Search="AI_IA_ENABLE_2" Hkcu64Search="AI_IA_ENABLE_3"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
+    <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BootstrapperUISequenceComponent">
+    <ROW Action="AI_DetectSoftware" Sequence="151"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="prod" BuildOrder="1" BuildType="0" PackageFolder="package" PackageFileName="AirSyncSender-[|ProductVersion]" Languages="en" InstallationType="4" UseLargeSchema="true" MsiPackageType="x64"/>
+    <ROW BuildKey="DefaultBuild_1" BuildName="stage" BuildOrder="2" BuildType="0" PackageFolder="package" PackageFileName="AirSyncSender-[|ProductVersion][|EnvSuffix]" Languages="en" InstallationType="4" UseLargeSchema="true" MsiPackageType="x64"/>
+    <ROW BuildKey="ReleaseBuild_1" BuildName="dev" BuildOrder="3" BuildType="0" PackageFolder="package" PackageFileName="AirSyncSender-[|ProductVersion][|EnvSuffix]" Languages="en" InstallationType="4" UseLargeSchema="true" MsiPackageType="x64"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
+    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="0" UseSha256="1" Subject="CN=ViewSonic International Corporation, O=ViewSonic International Corporation, S=New Taipei City, C=TW, SERIALNUMBER=23553019, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=TW" Store="User\MY"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DynamicPropertyComponent">
+    <ROW Property="ProductVersion" Type="2" SourcePath="AirSync_Sender.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="LicenseAgreementDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\LicenseAgreementDlg.aip"/>
+    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceTypeDlg.aip"/>
+    <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceWelcomeDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="Themes.aip" Path="&lt;AI_FRAGS&gt;Themes.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
+    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRepairDlg.aip"/>
+    <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_IA_ENABLE" Signature_="AI_IA_ENABLE"/>
+    <ROW Property="AI_IA_ENABLE" Signature_="AI_IA_ENABLE_1"/>
+    <ROW Property="AI_IA_ENABLE" Signature_="AI_IA_ENABLE_2"/>
+    <ROW Property="AI_IA_ENABLE" Signature_="AI_IA_ENABLE_3"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="InstallerAnalytics.dll" SourcePath="&lt;AI_CUSTACTS&gt;InstallerAnalytics.dll"/>
+    <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiConditionComponent">
+    <ROW Feature_="indirect_display_1_2" Level="0" Condition="((VersionNT &lt; 500) OR (NOT VersionNT))"/>
+    <ROW Feature_="airsyncaudio" Level="0" Condition="((VersionNT &lt; 500) OR (NOT VersionNT))"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ROW Dialog_="LicenseAgreementDlg" Control="AgreementText" Type="ScrollableText" X="20" Y="60" Width="330" Height="120" Attributes="7" Text="eula.rtf" Order="400" TextLocId="_2" MsiKey="LicenseAgreementDlg#AgreementText"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="198"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="202"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="601"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="601"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="399" Options="1"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="299" Options="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
+    <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
+    <ROW Dialog_="CancelDlg" Control_="Yes" Event="DoAction" Argument="AI_IaLogPkgExitUserAbort" Condition="VersionMsi &lt; &quot;4.05&quot; OR UILevel = 2 OR LIMITUI = 1 OR UPGRADINGPRODUCTCODE" Ordering="101"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="[AI_IA_ENABLE]" Argument="1" Condition="AI_INSTALL" Ordering="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
+    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DATA_SETTER" Type="51" Source="InstallAudioDriverNode" Target="DevconPath=[#devcon.exe];InfPath=[#airsyncaudio.inf];Hwid=Root\AirSyncAudio"/>
+    <ROW Action="AI_DATA_SETTER_1" Type="51" Source="RemoveAudioDriverNode" Target="DevconPath=[#devcon.exe];InfPath=[#airsyncaudio.inf];Hwid=Root\AirSyncAudio"/>
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DetectSoftware" Type="257" Source="SoftwareDetector.dll" Target="OnDetectSoftware"/>
+    <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
+    <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
+    <ROW Action="AI_IaLogCustomInfo" Type="65" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogCustomInfo"/>
+    <ROW Action="AI_IaLogInstallData" Type="65" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogInstallData"/>
+    <ROW Action="AI_IaLogMachineInfo" Type="321" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogMachineInfo"/>
+    <ROW Action="AI_IaLogPkgExitFatalError" Type="65" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogFatalError"/>
+    <ROW Action="AI_IaLogPkgExitFinish" Type="65" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogFinish"/>
+    <ROW Action="AI_IaLogPkgExitUserAbort" Type="65" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogUserAbort" WithoutSeq="true"/>
+    <ROW Action="AI_IaLogPkgStarted" Type="321" Source="InstallerAnalytics.dll" Target="OnAnalyticsLogStart"/>
+    <ROW Action="AI_IaToggle" Type="65" Source="InstallerAnalytics.dll" Target="OnAnalyticsToggle"/>
+    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Type="65" Source="aicustact.dll" Target="PreserveInstallType"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="AI_UPDATER_SERVICE_CONFIG" Type="3090" Source="updater.exe" Target="/configservice -name &quot;AirSyncSenderUpdater&quot;"/>
+    <ROW Action="AI_UPDATER_UNINSTALL" Type="82" Source="updater.exe" Target="/clean silent"/>
+    <ROW Action="InstallAudioDriverNode" Type="3153" Source="custom_actions.dll" Target="InstallAudio" AdditionalSeq="AI_DATA_SETTER"/>
+    <ROW Action="RemoveAudioDriverNode" Type="3153" Source="custom_actions.dll" Target="UninstallAudio" AdditionalSeq="AI_DATA_SETTER_1"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFiles64Folder][Manufacturer]\[ProductName]#DefaultBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]#ReleaseBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDriverPackagesComponent">
+    <ROW InfFileName="indirect_display_1_2.inf" Flags="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
+    <ROW Feature_="MainFeature" Component_="APPDIR"/>
+    <ROW Feature_="MainFeature" Component_="ProductInformation"/>
+    <ROW Feature_="MainFeature" Component_="vcruntime140.dll"/>
+    <ROW Feature_="MainFeature" Component_="vcruntime140_1.dll"/>
+    <ROW Feature_="MainFeature" Component_="msvcp140.dll"/>
+    <ROW Feature_="MainFeature" Component_="AirSync_Sender.exe"/>
+    <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
+    <ROW Feature_="MainFeature" Component_="updater.exe"/>
+    <ROW Feature_="MainFeature" Component_="app.so"/>
+    <ROW Feature_="MainFeature" Component_="AssetManifest.bin"/>
+    <ROW Feature_="MainFeature" Component_="ic_activate_off.svg"/>
+    <ROW Feature_="MainFeature" Component_="CustomIcons.ttf"/>
+    <ROW Feature_="MainFeature" Component_="CupertinoIcons.ttf"/>
+    <ROW Feature_="MainFeature" Component_="ad.png"/>
+    <ROW Feature_="MainFeature" Component_="ink_sparkle.frag"/>
+    <ROW Feature_="MainFeature" Component_="flutter_input_injection_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="flutter_webrtc_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="flutter_windows.dll"/>
+    <ROW Feature_="MainFeature" Component_="flutter_window_close_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="libwebrtc.dll"/>
+    <ROW Feature_="MainFeature" Component_="url_launcher_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="window_size_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="bonsoir_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="connectivity_plus_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="profiles.json"/>
+    <ROW Feature_="MainFeature" Component_="flutter_virtual_display_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="launcher.exe"/>
+    <ROW Feature_="MainFeature" Component_="share_plus_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="virtualdisplayservice.exe"/>
+    <ROW Feature_="MainFeature" Component_="screen_extension.json"/>
+    <ROW Feature_="MainFeature" Component_="no_sleep.js"/>
+    <ROW Feature_="MainFeature" Component_="desktop_multi_window_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="desktop_screenstate_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="system_tray_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="AI_IA_ENABLE"/>
+    <ROW Feature_="MainFeature" Component_="app_links_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="auto_updater_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="permission_handler_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="screen_retriever_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="sentry.dll"/>
+    <ROW Feature_="MainFeature" Component_="window_manager_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="WinSparkle.dll"/>
+    <ROW Feature_="MainFeature" Component_="hyphbg.tex"/>
+    <ROW Feature_="MainFeature" Component_="desktop_window_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="win32audio_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="devcon.exe"/>
+    <ROW Feature_="MainFeature" Component_="custom_actions.dll"/>
+    <ROW Feature_="MainFeature" Component_="airsyncaudio.cat"/>
+    <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.inf"/>
+    <ROW Feature_="MainFeature" Component_="crashpad_handler.exe"/>
+    <ROW Feature_="MainFeature" Component_="crashpad_wer.dll"/>
+    <ROW Feature_="MainFeature" Component_="dartjni.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
+    <ROW IniFile="AppDir" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ApplicationName" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationName" Value="[ProductName]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ApplicationVersion" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationVersion" Value="[ProductVersion]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="CheckFrequency" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="CheckFrequency" Value="2" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="CompanyName" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="CompanyName" Value="[Manufacturer]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="DefaultCommandLine" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="DefaultCommandLine" Value="/checknow -minuseractions" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="DownloadsFolder" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="DownloadsFolder" Value="[CommonAppDataFolder][Manufacturer]\[ProductName]\updates\" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="Flags" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="Flags" Value="PerMachine|ShowConfigOptionsButton" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ID" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="ID" Value="[UpgradeCode]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="SupportServiceName" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="SupportServiceName" Value="AirSyncSenderUpdater" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="URL" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://store2.myviewboard.com/uploads/AirSyncSender[EnvSuffix]/updates.txt" Action="0" Component_="updater.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="746"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="56"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="55"/>
+    <ROW Action="AI_UPDATER_UNINSTALL" Condition="($updater.exe = 2) AND (?updater.exe = 3) AND NOT (UPGRADINGPRODUCTCODE)" Sequence="1551"/>
+    <ROW Action="AI_UPDATER_SERVICE_CONFIG" Condition="( ( ( NOT Installed AND VersionNT) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; AND VersionNT) ) AND ($updater.exe = 3) )" Sequence="5801"/>
+    <ROW Action="AI_DETECT_MODERNWIN" Condition="(VersionNT &gt;= 603)" Sequence="57" MsiKey="AI_DETECT_MODERNWIN"/>
+    <ROW Action="AI_DETECT_WINTHEME" Condition="(VersionNT &gt;= 603)" Sequence="58" MsiKey="AI_DETECT_WINTHEME"/>
+    <ROW Action="AI_IaToggle" Sequence="102"/>
+    <ROW Action="AI_IaLogPkgStarted" Condition="VersionMsi &lt; &quot;4.05&quot; OR UILevel = 2 OR LIMITUI = 1 OR UPGRADINGPRODUCTCODE" Sequence="54"/>
+    <ROW Action="AI_IaLogPkgExitFinish" Condition="VersionMsi &lt; &quot;4.05&quot; OR UILevel = 2 OR LIMITUI = 1 OR UPGRADINGPRODUCTCODE" Sequence="-1"/>
+    <ROW Action="AI_IaLogPkgExitFatalError" Condition="VersionMsi &lt; &quot;4.05&quot; OR UILevel = 2 OR LIMITUI = 1 OR UPGRADINGPRODUCTCODE" Sequence="-3"/>
+    <ROW Action="AI_IaLogPkgExitUserAbort" Condition="VersionMsi &lt; &quot;4.05&quot; OR UILevel = 2 OR LIMITUI = 1 OR UPGRADINGPRODUCTCODE" Sequence="-2"/>
+    <ROW Action="AI_IaLogInstallData" Sequence="1402"/>
+    <ROW Action="AI_IaLogMachineInfo" Sequence="399"/>
+    <ROW Action="AI_IaLogCustomInfo" Sequence="1401"/>
+    <ROW Action="AI_DetectSoftware" Sequence="101"/>
+    <ROW Action="InstallAudioDriverNode" Condition="( NOT Installed )" Sequence="6402"/>
+    <ROW Action="AI_DATA_SETTER" Condition="( NOT Installed )" Sequence="6401"/>
+    <ROW Action="RemoveAudioDriverNode" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1602"/>
+    <ROW Action="AI_DATA_SETTER_1" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) )" Sequence="1601"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="746"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="54"/>
+    <ROW Action="AI_DpiContentScale" Sequence="53"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="52"/>
+    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Sequence="199"/>
+    <ROW Action="AI_IaToggle" Sequence="99"/>
+    <ROW Action="AI_IaLogPkgStarted" Condition="VersionMsi &lt; &quot;4.05&quot; OR UILevel = 2 OR LIMITUI = 1 OR UPGRADINGPRODUCTCODE" Sequence="51"/>
+    <ROW Action="AI_IaLogMachineInfo" Sequence="399"/>
+    <ROW Action="AI_DetectSoftware" Sequence="101"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="( Version9X OR VersionNT64 )" Description="[ProductName] cannot be installed on [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
+    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_IA_ENABLE" Root="2" Key="Software\[Manufacturer]\[ProductCode]" Name="AI_IA_ENABLE" Type="2"/>
+    <ROW Signature_="AI_IA_ENABLE_1" Root="1" Key="Software\[Manufacturer]\[ProductCode]" Name="AI_IA_ENABLE" Type="2"/>
+    <ROW Signature_="AI_IA_ENABLE_2" Root="2" Key="Software\[Manufacturer]\[ProductCode]" Name="AI_IA_ENABLE" Type="18"/>
+    <ROW Signature_="AI_IA_ENABLE_3" Root="1" Key="Software\[Manufacturer]\[ProductCode]" Name="AI_IA_ENABLE" Type="18"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AI_IA_ENABLE" Root="-1" Key="Software\[Manufacturer]\[ProductCode]" Name="AI_IA_ENABLE" Value="[AI_IA_ENABLE]" Component_="AI_IA_ENABLE"/>
+    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
+    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="ProductCode" Root="-1" Key="Software\[Manufacturer]\[ProductCode]" Name="\"/>
+    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
+    <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
+    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
+    <ROW ServiceControl="updater" Name="AirSyncSenderUpdater" Event="160" Wait="1" Component_="updater.exe"/>
+    <ROW ServiceControl="virtualdisplayservice.exe" Name="Viewsonic AirSync Virtual Display Service" Event="161" Wait="1" Component_="virtualdisplayservice.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
+    <ROW ServiceInstall="updater" Name="AirSyncSenderUpdater" DisplayName="AirSync Sender Updater" ServiceType="16" StartType="3" ErrorControl="1" Arguments="/runservice" Component_="updater.exe" Description="Updater Support Service"/>
+    <ROW ServiceInstall="virtualdisplayservice.exe" Name="Viewsonic AirSync Virtual Display Service" DisplayName="Viewsonic AirSync Virtual Display Service" ServiceType="16" StartType="2" ErrorControl="1" Component_="virtualdisplayservice.exe" Description="Viewsonic AirSync Virtual Display Service"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="AirSyncSender" Directory_="SHORTCUTDIR" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="LocalAppDataFolder" Advertised="true"/>
+    <ROW Shortcut="AirSyncSender_1" Directory_="DesktopFolder" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="LocalAppDataFolder" Advertised="true"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ATTRIBUTE name="UsedTheme" value="classic"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
+    <ROW Directory_="APPDIR" SourcePath="..\build\windows\x64\runner\Release" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store|/*.pdb" ExcludeFlags="6" FileAddOptions="4"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
+    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" Description="[|UpdaterName] [|ProductVersion][|EnvSuffix]"/>
+  </COMPONENT>
+</DOCUMENT>
