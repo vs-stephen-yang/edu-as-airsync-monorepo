@@ -1,0 +1,175 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - group: ifp-keystore-secrets
+  - name: Flutter.Version
+    value: "3.27.4"
+  - name: Flutter.Url
+    value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
+  - name: Flutter.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+  - name: GRADLE_USER_HOME
+    value: $(Pipeline.Workspace)/.gradle
+  - name: Maven.Settings
+    value: /Users/runner/.m2/settings.xml
+    #value: $env:USERPROFILE\.m2\settings.xml
+  - name: GStreamer.Version
+    value: "1.26.4"
+  - name: GStreamer.Path
+    value: $(Pipeline.Workspace)/gstreamer
+  - group: shiftleft-token
+  - group: "ifp-keystore-secrets"
+  - group: "github-secrets"
+
+jobs:
+  - job: build
+    pool:
+      vmImage: "macOS-15"
+    steps:
+      - checkout: self
+        persistCredentials: "true"
+
+      - task: JavaToolInstaller@0
+        inputs:
+          versionSpec: "17"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
+
+      # Cache GStreamer SDK to avoid repeated downloads
+      - task: Cache@2
+        displayName: Cache GStreamer SDK
+        inputs:
+          key: 'gstreamer | "$(Agent.OS)" | "$(GStreamer.Version)"'
+          path: $(GStreamer.Path)
+          restoreKeys: |
+            gstreamer | "$(Agent.OS)"
+
+      # Download GStreamer SDK from Azure Artifacts if cache miss
+      - task: UniversalPackages@0
+        displayName: Download GStreamer SDK from Azure Artifacts
+        condition: ne(variables['CacheRestored'], 'true')
+        inputs:
+          command: download
+          downloadDirectory: $(GStreamer.Path)
+          feedsToUse: internal
+          vstsFeed: 'myViewBoard_Artifacts'
+          vstsFeedPackage: 'gstreamer-android-sdk'
+          vstsPackageVersion: '$(GStreamer.Version)'
+
+      # Set GSTREAMER_SDK_ANDROID environment variable for CMake
+      - script: |
+          echo "##vso[task.setvariable variable=GSTREAMER_SDK_ANDROID]$(GStreamer.Path)"
+          echo "GStreamer SDK path: $(GStreamer.Path)"
+          ls -la $(GStreamer.Path)
+        displayName: Set GSTREAMER_SDK_ANDROID environment variable
+
+      - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
+
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+      - task: MavenAuthenticate@0
+        displayName: "Provides maven credentials for Azure Artifacts"
+        inputs:
+          artifactsFeeds: "myViewBoard_Artifacts"
+
+      - task: PowerShell@2
+        displayName: Extract the credentials of Azure Artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            [xml]$doc = Get-Content -path $(Maven.Settings)
+            $username=$doc.settings.servers.server.username
+            $password=$doc.settings.servers.server.password
+            Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
+            Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
+
+      - task: Cache@2
+        displayName: Configure Gradle caching
+        enabled: "true"
+        inputs:
+          key: 'gradle | "$(Agent.OS)" | android/build.gradle, example/android/app/build.gradle, example/android/build.gradle'
+          restoreKeys: |
+            gradle | "$(Agent.OS)"
+            gradle
+          path: $(GRADLE_USER_HOME)
+
+      - script: |
+          git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+        displayName: Configure GitHub credentials
+
+      - script: $(Flutter.Bin) build apk
+        displayName: Build the plugin and the example App
+        workingDirectory: "$(Build.SourcesDirectory)/example"
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.caching=true"
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
+          GSTREAMER_SDK_ANDROID: $(GStreamer.Path)
+
+      - script: ./gradlew --stop
+        displayName: Stop Gradle daemon
+        workingDirectory: "$(Build.SourcesDirectory)/example/android"
+
+      - task: AndroidSigning@3
+        inputs:
+          apkFiles: "**/*.apk"
+          apksign: true
+          apksignerKeystoreFile: "ifp.keystore"
+          apksignerKeystorePassword: "$(ifp.keystore.password)"
+          apksignerKeystoreAlias: "$(ifp.keystore.alias)"
+          apksignerKeyPassword: "$(ifp.key.password)"
+          zipalign: true
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: "$(Build.SourcesDirectory)/example/build/app/outputs/flutter-apk/"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: "$(Build.ArtifactStagingDirectory)"
+
+  - job: code_scanning
+    condition: eq(variables['EnableCodeScanning'], 'true')
+    pool:
+      vmImage: "windows-2022"
+    steps:
+      # Download ShiftLeft
+      - task: PowerShell@2
+        displayName: Download ShiftLeft cli
+        inputs:
+          targetType: "inline"
+          script: |
+            Invoke-WebRequest -Uri 'https://cdn.shiftleft.io/download/sl-latest-windows-x64.zip' -OutFile $(Agent.HomeDirectory)\sl.zip
+            Expand-Archive -Force -Path $(Agent.HomeDirectory)\sl.zip -DestinationPath $(Agent.HomeDirectory)\
+      # Install Java Runtime
+      - task: JavaToolInstaller@0
+        displayName: Install Java Tool
+        inputs:
+          versionSpec: "17"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
+      # Analyze with ShiftLeft
+      - task: CmdLine@2
+        displayName: Analyze with NG SAST - C/C++
+        inputs:
+          script: |
+            $(Agent.HomeDirectory)\sl.exe analyze --app $(Build.Repository.Name)-cpp --tag branch=$(Build.SourceBranchName) --cpg --c
+          workingDirectory: "$(Build.SourcesDirectory)"
+        env:
+          SHIFTLEFT_ACCESS_TOKEN: $(SHIFTLEFT_ACCESS_TOKEN)
