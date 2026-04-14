@@ -1,0 +1,76 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - name: Flutter.Version
+    value: "3.22.3"
+  - name: Flutter.Url
+    value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
+  - name: Flutter.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin
+  - name: Pub.Bin
+    value: $HOME/.pub-cache/bin
+
+jobs:
+  - job: unittest
+    pool:
+      vmImage: "macOS-15"
+    steps:
+      - checkout: self
+
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: "inline"
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: JavaToolInstaller@0
+        inputs:
+          versionSpec: "11"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
+
+      - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
+
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+      - script: |
+          echo "##vso[task.prependpath]$(Flutter.Bin)"
+          echo "##vso[task.prependpath]$(Pub.Bin)"
+        displayName: 'Add Flutter and Pub Cache Bin to PATH'
+
+      - script: flutter pub get
+        displayName: Get dependencies
+
+      - script: flutter analyze --no-pub --no-fatal-infos
+        displayName: Run lint checks
+
+      - script: flutter test -j 2 --no-pub --coverage --branch-coverage test/unittest
+        displayName: Run unit test
+
+      - script: |
+          flutter pub global activate cobertura
+          cobertura convert
+        displayName: 'Convert LCOV to Cobertura'
+
+      - task: PublishCodeCoverageResults@2    
+        inputs:
+          summaryFileLocation: 'coverage/cobertura.xml'  # Path to your coverage summary file
+        displayName: 'Publish Code Coverage Results'
+
+    
