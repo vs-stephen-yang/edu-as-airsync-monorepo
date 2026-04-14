@@ -1,0 +1,234 @@
+import 'dart:convert';
+
+import 'package:display_flutter/model/text_scale_option.dart';
+import 'package:display_flutter/widgets/v3_settings_device.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class AppPreferences {
+  static final AppPreferences _instance = AppPreferences._internal();
+
+  //private "Named constructors"
+  AppPreferences._internal();
+
+  // passes the instantiation to the _instance object
+  factory AppPreferences() => _instance;
+
+  static ensureInitialized() async {
+    await _instance._load();
+    await _instance.loadInvitedToGroupSelectedItem();
+    await _instance.loadSelectedConnectivityType();
+    await _instance._loadGroupSelectedList();
+    await _instance._loadFavoriteList();
+    await _instance.loadTextSizeOption();
+  }
+
+  bool _showEULA = true;
+  String _instanceName = '';
+  String _entityId = '';
+  String _moderatorId = '';
+
+  bool get showEULA => _showEULA;
+
+  String get instanceName => _instanceName;
+
+  String get entityId => _entityId;
+
+  String get moderatorId => _moderatorId;
+
+  set({
+    bool? showEULA,
+    String? instanceName,
+    String? entityId,
+    String? moderatorId,
+    String? connectivityType,
+  }) {
+    if (showEULA != null) {
+      _showEULA = showEULA;
+    }
+    if (instanceName != null && instanceName.isNotEmpty) {
+      _instanceName = instanceName;
+    }
+    if (entityId != null) {
+      _entityId = entityId;
+    }
+    if (moderatorId != null) {
+      _moderatorId = moderatorId;
+    }
+    _save();
+  }
+
+  _save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('app_showEULA', _showEULA);
+    await prefs.setString('app_instanceName', _instanceName);
+    await prefs.setString('app_entityId', _entityId);
+    await prefs.setString('app_moderatorId', _moderatorId);
+  }
+
+  _load() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _showEULA = prefs.getBool('app_showEULA') ?? true;
+
+    _instanceName = prefs.getString('app_instanceName') ?? '';
+
+    final hadOverride = await hadOverrideDeviceName();
+
+    /// Due to old version of the app is using 'AirSync' as default device name
+    /// We need to use a flag to is using AirSync as default device name, but when user decide to change the device name as 'AirSync', should not be able to override it
+    if ((_instanceName == 'AirSync' && !hadOverride) || instanceName.isEmpty) {
+      _instanceName = await generateDefaultDeviceName();
+      await prefs.setString('app_instanceName', _instanceName);
+
+      /// When user change device name, we need to set the flag to true
+      await prefs.setBool('override_device_name', true);
+    }
+
+    _entityId = prefs.getString('app_entityId') ?? '';
+    _moderatorId = prefs.getString('app_moderatorId') ?? '';
+  }
+
+  /// Due to old version of the app is using 'AirSync' as default device name
+  /// We need to use a flag to is using AirSync as default device name, but when user decide to change the device name as 'AirSync', should not be able to override it
+  Future<bool> hadOverrideDeviceName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? override = prefs.getBool('override_device_name');
+    if (override ?? false) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<String> generateDefaultDeviceName() async {
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final uniqueId = timestamp.substring(timestamp.length - 5);
+
+    return 'AirSync$uniqueId';
+  }
+
+  Future<void> reloadPreferences() async {
+    await _load();
+  }
+
+  String _invitedToGroup = InvitedToGroupOption.notifyMe.value.toString();
+
+  String get invitedToGroup {
+    return int.tryParse(_invitedToGroup)?.toString() ??
+        InvitedToGroupOption.notifyMe.value.toString();
+  }
+
+  void setInvitedToGroupSelectedItem({String? item}) async {
+    if (item != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _invitedToGroup = item;
+      await prefs.setString('app_setting_invited_to_group', item);
+    }
+  }
+
+  loadInvitedToGroupSelectedItem() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _invitedToGroup =
+        prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
+  }
+
+  List<Map<String, dynamic>> _groupSelectedList = [];
+
+  List<Map<String, dynamic>> get groupSelectedList => _groupSelectedList;
+
+  void setGroupSelectedList(List<Map<String, dynamic>> selectedList) async {
+    _groupSelectedList = selectedList;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = jsonEncode(selectedList);
+    await prefs.setString('app_setting_group_selected_list', jsonString);
+  }
+
+  _loadGroupSelectedList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('app_setting_group_selected_list');
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      _groupSelectedList =
+          jsonList.map((item) => Map<String, dynamic>.from(item)).toList();
+    }
+  }
+
+  List<Map<String, dynamic>> _favoriteList = [];
+
+  List<Map<String, dynamic>> get favoriteList => _favoriteList;
+
+  void setFavoriteList(List<Map<String, dynamic>> favoriteList) async {
+    _favoriteList = favoriteList;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = jsonEncode(favoriteList);
+    await prefs.setString('app_setting_favorite_list', jsonString);
+  }
+
+  _loadFavoriteList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('app_setting_favorite_list');
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      _favoriteList =
+          jsonList.map((item) => Map<String, dynamic>.from(item)).toList();
+    }
+  }
+
+  String get connectivityType => connectivityTypeNotifier.value;
+
+  ValueNotifier<String> connectivityTypeNotifier =
+      ValueNotifier<String>(ConnectivityType.both.name);
+
+  Future<void> setSelectedConnectivityType(ConnectivityType type) async {
+    connectivityTypeNotifier.value = type.name;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        'app_settings_connectivity_type', connectivityTypeNotifier.value);
+  }
+
+  loadSelectedConnectivityType() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String type = prefs.getString('app_settings_connectivity_type') ??
+        ConnectivityType.both.name;
+    connectivityTypeNotifier.value = type;
+  }
+
+  /// 文字縮放相關功能
+  ValueNotifier<int> textSizeOptionNotifier =
+      ValueNotifier<int>(ResizeTextSizeOption.normal.value);
+
+  ResizeTextSizeOption get textSizeOption =>
+      ResizeTextSizeOption.fromValue(textSizeOptionNotifier.value);
+
+  double get textScale {
+    switch (textSizeOption) {
+      case ResizeTextSizeOption.normal:
+        return 1.0;
+      case ResizeTextSizeOption.large:
+        return 1.5;
+      case ResizeTextSizeOption.xlarge:
+        return 2.0;
+    }
+  }
+
+  Future<void> setTextSizeOption(ResizeTextSizeOption option) async {
+    textSizeOptionNotifier.value = option.value;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('app_text_size_option', option.value);
+  }
+
+  Future<void> loadTextSizeOption() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int value = prefs.getInt('app_text_size_option') ??
+        ResizeTextSizeOption.normal.value;
+    textSizeOptionNotifier.value = value;
+  }
+}
+
+enum ConnectivityType {
+  both,
+  local,
+  internet,
+}

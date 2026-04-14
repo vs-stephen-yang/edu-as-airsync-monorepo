@@ -1,0 +1,134 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+
+pr:
+  branches:
+    include:
+      - master
+      - hotfix/*
+
+pool:
+  name: "AirSync macOS Pool"
+
+variables:
+  - name: Flutter.Bin
+    value: fvm flutter
+
+jobs:
+  - job: Build
+    strategy:
+      matrix:
+        openproduction:
+          flavor: "open-production"
+          buildOptions: "--flavor openproduction -t lib/main_production.dart"
+    steps:
+      - checkout: self
+        persistCredentials: "true"
+        lfs: "true"
+
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: "inline"
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: MavenAuthenticate@0
+        displayName: "Provides maven credentials for Azure Artifacts"
+        inputs:
+          artifactsFeeds: "myViewBoard_Artifacts"
+
+      - task: PowerShell@2
+        displayName: Extract the credentials of Azure Artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            [xml]$doc = Get-Content -path ~/.m2/settings.xml
+            $username=$doc.settings.servers.server.username
+            $password=$doc.settings.servers.server.password
+            Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
+            Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
+
+      - task: PowerShell@2
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            Write-Host "Cleaning build artifacts..."
+            if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+              Write-Host "Removed build/ directory"
+            }
+            if (Test-Path "debug_info") {
+              Remove-Item -Path "debug_info" -Recurse -Force
+              Write-Host "Removed debug_info/ directory"
+            }
+            if (Test-Path ".dart_tool") {
+              Remove-Item -Path ".dart_tool" -Recurse -Force
+              Write-Host "Removed .dart_tool/ directory"
+            }
+            Write-Host "Cleanup completed"
+
+      - script: |
+          # Ensure git config is available in this shell session
+          git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+
+          # Download packages
+          $(Flutter.Bin) pub get
+        displayName: Download packages
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # lint
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Run lint checks
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # test
+      - script: $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
+        displayName: Run test
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      - script: $(Flutter.Bin) build apk $(buildOptions)
+        displayName: Build App
+        workingDirectory: "$(Build.SourcesDirectory)"
+        env:
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
+
+      - task: PowerShell@2
+        displayName: Clean up build artifacts after build
+        condition: always()
+        inputs:
+          targetType: "inline"
+          script: |
+            Write-Host "Cleaning up after build..."
+
+            # Clean build outputs
+            if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+              Write-Host "Removed build/ directory"
+            }
+
+            # Clean debug info
+            if (Test-Path "debug_info") {
+              Remove-Item -Path "debug_info" -Recurse -Force
+              Write-Host "Removed debug_info/ directory"
+            }
+
+            # Clean Gradle cache (optional, can save more space)
+            if (Test-Path "$env:HOME/.gradle/caches") {
+              Write-Host "Gradle cache size before cleanup:"
+              Get-ChildItem -Path "$env:HOME/.gradle/caches" -Recurse | Measure-Object -Property Length -Sum | Select-Object @{Name="Size(MB)";Expression={[math]::Round($_.Sum / 1MB, 2)}}
+
+              # Only clean temporary files, keep downloaded dependencies
+              if (Test-Path "$env:HOME/.gradle/caches/build-cache-1") {
+                Remove-Item -Path "$env:HOME/.gradle/caches/build-cache-1" -Recurse -Force
+                Write-Host "Cleaned Gradle build cache"
+              }
+            }
+
+            Write-Host "Post-build cleanup completed"

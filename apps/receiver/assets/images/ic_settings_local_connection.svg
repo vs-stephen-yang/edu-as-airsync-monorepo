@@ -1,0 +1,9 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="vsds/icon/shield-check-inside">
+        <path id="Vector"
+            d="M31.9978 56.3202C21.3078 53.2961 13.1534 41.8595 13.1534 29.4535V21.151C13.1534 19.9546 13.8492 18.8675 14.9356 18.3663L30.7134 11.0887C31.5284 10.7127 32.4673 10.7127 33.2823 11.0887L49.0601 18.3663C50.1465 18.8674 50.8423 19.9546 50.8423 21.151V29.4535C50.8423 41.8595 42.6879 53.2961 31.9978 56.3202Z"
+            stroke="white" stroke-width="4.53333" />
+        <path id="Ellipse 2845" d="M42.6667 28.5861L29.9193 41.3335L24 35.4142" stroke="white"
+            stroke-width="4.53333" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+</svg>
