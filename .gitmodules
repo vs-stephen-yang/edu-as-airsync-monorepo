@@ -1,0 +1,3 @@
+[submodule "apps/sender/windows/prebuilt/virtual-audio-cable-binaries"]
+	path = apps/sender/windows/prebuilt/virtual-audio-cable-binaries
+	url = https://github.com/Viewsonic-EDU/edu-as-virtual-audio-cable-binaries.git

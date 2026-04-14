@@ -5,13 +5,10 @@ pre-commit:
       run: |
         files=$(git diff --cached --name-only --diff-filter=ACM \
         | grep '\.dart$' \
-        | grep -v '^lib/generated/')
+        | grep -v '/generated/')
 
         # If any files remain, format them
         if [ -n "$files" ]; then
           dart format $files
           git add $files
         fi
-    # analyze:
-    #   run: fvm.bat flutter analyze --no-pub --no-fatal-infos
-
