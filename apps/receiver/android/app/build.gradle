@@ -1,0 +1,246 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+    id "io.sentry.android.gradle" version "5.8.0"
+}
+
+// Region of Signing the app for release. Do NOT EDIT.
+def suffixNameExist = false
+def ifpKeyExist = false
+def storeKeyExist = false
+
+def keystoreProperties = new Properties()
+
+def propertiesFile = rootProject.file('../../keystore.properties')
+
+if (propertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(propertiesFile))
+
+    // Check suffix name settings is exist or not. This settings only available in debug mode!
+    suffixNameExist = keystoreProperties.getProperty("suffixName") != null
+    // Check each key settings is exist or not.
+    ifpKeyExist = keystoreProperties.getProperty("ifpStoreFile") != null
+    storeKeyExist = keystoreProperties.getProperty("storeStoreFile") != null
+}
+// End of Region of Signing the app for release. Do NOT EDIT.
+
+android {
+    namespace = "com.mvbcast.crosswalk"
+    compileSdk = flutter.compileSdkVersion
+    // TODO: revert to flutter.ndkVersion once Flutter upgrades its default NDK to r28+
+    ndkVersion = project.property("ndkVersion")
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    // Region of Signing the app for release. Do NOT EDIT.
+    signingConfigs {
+        if (ifpKeyExist) {
+            IFP {
+                storeFile file(keystoreProperties['ifpStoreFile'])
+                storePassword keystoreProperties['ifpStorePassword']
+                keyAlias keystoreProperties['ifpKeyAlias']
+                keyPassword keystoreProperties['ifpKeyPassword']
+            }
+        }
+        if (storeKeyExist) {
+            STORE {
+                storeFile file(keystoreProperties['storeStoreFile'])
+                storePassword keystoreProperties['storeStorePassword']
+                keyAlias keystoreProperties['storeKeyAlias']
+                keyPassword keystoreProperties['storeKeyPassword']
+            }
+        }
+    }
+    // End of Region of Signing the app for release. Do NOT EDIT.
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.mvbcast.crosswalk"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+        // https://developer.android.com/studio/build/build-variants#resolve_matching_errors
+        missingDimensionStrategy 'distribute', 'googlePlay'
+
+        if (project.hasProperty("ABI_ARM_ONLY") && ABI_ARM_ONLY.toBoolean()) {
+            ndk {
+                abiFilters("armeabi-v7a", "arm64-v8a")
+            }
+        } else if (project.hasProperty("ABI_EXCLUDE_X86") && ABI_EXCLUDE_X86.toBoolean()) {
+            ndk {
+                abiFilters("armeabi-v7a", "arm64-v8a", "x86_64")
+            }
+        }
+    }
+
+    flavorDimensions("channel", "stage")
+    productFlavors {
+        edla {
+            dimension "channel"
+        }
+        ifp {
+            dimension "channel"
+        }
+        open {
+            dimension "channel"
+        }
+        store {
+            dimension "channel"
+        }
+        dev {
+            dimension "stage"
+            versionNameSuffix "-d"
+        }
+        stage {
+            dimension "stage"
+            versionNameSuffix "-s"
+        }
+        production {
+            dimension "stage"
+            versionCode android.defaultConfig.versionCode + 1
+        }
+    }
+
+    sourceSets {
+        // "open" use same source code with "ifp"
+        open.java.srcDir "src/ifp/java"
+        // "edla" use same source code with "ifp"
+        edla.java.srcDir "src/ifp/java"
+    }
+
+    buildTypes {
+        debug {
+            if (ifpKeyExist) {
+                signingConfig = signingConfigs.IFP
+            }
+            if (suffixNameExist) {
+                applicationIdSuffix = keystoreProperties["suffixName"]
+            }
+        }
+        profile {
+            if (ifpKeyExist) {
+                signingConfig = signingConfigs.IFP
+            }
+        }
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            productFlavors {
+                edla {
+                    if (ifpKeyExist) {
+                        signingConfig = signingConfigs.IFP
+                    } else {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+                ifp {
+                    if (ifpKeyExist) {
+                        signingConfig = signingConfigs.IFP
+                    } else {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+                open {
+                    if (storeKeyExist) {
+                        signingConfig = signingConfigs.STORE
+                    } else {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+                store {
+                    if (storeKeyExist) {
+                        signingConfig = signingConfigs.STORE
+                    } else {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+            }
+        }
+    }
+    lint {
+        checkReleaseBuilds false
+    }
+
+    packagingOptions {
+        exclude '**/libz.so' // googlecast AAR bundles a 4KB-aligned libz; use Android system libz instead
+        pickFirst '**/libairplayreceiver.so'
+        pickFirst '**/libevent*.so'
+        pickFirst '**/libcast.so'
+        pickFirst '**/liblog.so'
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libgstreamer_android.so'
+        pickFirst '**/org/freedesktop/gstreamer/GStreamer.class'
+        // see: https://issuetracker.google.com/issues/299314630?pli=1
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/LICENSE-notice.md")
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    buildFeatures {
+        aidl true
+        buildConfig true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+//    implementation project(path: ':libwebrtc')
+//    implementation project(':base')
+//    implementation project(':p2p')
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation('io.socket:socket.io-client:2.1.2') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+
+    // region FireBase for "store"
+    storeImplementation 'com.google.firebase:firebase-core:21.1.1'
+    // *** Use 21.1.0 may cause "Remote Config HTTP errors for some RTL locales" ***
+    // https://github.com/firebase/firebase-android-sdk/issues/3757
+    storeImplementation 'com.google.firebase:firebase-config:23.0.0'
+    // endregion
+
+    implementation 'com.google.android.gms:play-services-base:18.2.0'
+    implementation 'io.sentry:sentry-android:8.17.0'
+}
+
+flutter {
+    source = "../.."
+}
+
+// https://docs.sentry.io/platforms/android/configuration/gradle/#configure
+sentry {
+    // Disables or enables debug log output
+    debug = true
+
+    org = System.getenv("SENTRY_ORG")
+    projectName = System.getenv("SENTRY_PROJECT")
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+
+    includeProguardMapping = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    uploadNativeSymbols = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    includeNativeSources = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    includeSourceContext = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    autoInstallation {
+      enabled = false
+    }
+}

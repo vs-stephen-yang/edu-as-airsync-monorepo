@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:node="merge">
+
+	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+	<application tools:ignore="GoogleAppIndexingWarning"
+		android:icon="@mipmap/ic_launcher">
+		<receiver
+			android:name=".helper.BootDeviceReceiver"
+			android:enabled="true"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+		</receiver>
+
+		<receiver
+			android:name=".EulaActivity$AppAlarmOTA"
+			android:enabled="true"
+			android:exported="true"
+			android:permission="com.mvbcast.crosswalk.AppAlarmOTA" />
+	</application>
+</manifest>

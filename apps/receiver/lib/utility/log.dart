@@ -1,0 +1,81 @@
+import 'dart:io';
+import 'package:display_flutter/utility/log_storage.dart';
+import 'package:logging/logging.dart';
+
+Logger log = Logger('airsync');
+
+const _maxLogSize = 1000;
+
+void initLogger() {
+  Logger.root.level = Level.INFO; // defaults to Level.INFO
+
+  Logger.root.onRecord.listen((record) {
+    String msg = '${record.time} ${record.level.name} ${record.message}';
+
+    if (record.error != null) {
+      msg += ' ${record.error.toString()}';
+    }
+    if (record.stackTrace != null) {
+      msg += '\n${record.stackTrace.toString()}';
+    }
+
+    // ignore: avoid_print
+    print('${record.level.name} ${record.message}');
+
+    _logStorage?.addLog(msg);
+  });
+}
+
+bool isLogLevelVerbose() {
+  return Logger.root.level == Level.FINEST;
+}
+
+void setLogLevelVerbose(bool isVerbose) {
+  Logger.root.level = isVerbose ? Level.FINEST : Level.INFO;
+}
+
+LogStorage? _logStorage;
+
+void enableLogToMemory(bool enable) {
+  if (enable) {
+    _logStorage = LogStorage(_maxLogSize);
+  } else {
+    _logStorage?.clearLogs();
+    _logStorage = null;
+  }
+}
+
+String getLogs() {
+  if (_logStorage == null) {
+    return "";
+  }
+
+  return _logStorage!.getLogs().join(Platform.lineTerminator);
+}
+
+Future<void> writeLogToFile(File file) async {
+  if (_logStorage == null) {
+    return;
+  }
+
+  final logContent = _logStorage!.getLogs().join(Platform.lineTerminator);
+
+  await file.writeAsString(
+    logContent,
+    flush: true,
+  );
+}
+
+class ChunkedLogger {
+  final Logger _logger;
+
+  ChunkedLogger(this._logger);
+
+  void info(String message, {int chunkSize = 800}) {
+    for (int i = 0; i < message.length; i += chunkSize) {
+      final end =
+          (i + chunkSize < message.length) ? i + chunkSize : message.length;
+      _logger.info(message.substring(i, end));
+    }
+  }
+}

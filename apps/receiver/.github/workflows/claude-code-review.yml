@@ -1,0 +1,126 @@
+name: Claude Code
+
+on:
+  # 有人在 PR 或 issue 留言時觸發（用來讓 claude job 回應 @claude 呼叫）
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  # PR 開啟/更新時觸發 review job（限目標 branch 為 master 或 HotFix* 的 PR）
+  pull_request:
+    branches: [master, 'HotFix*']
+    types: [opened, synchronize, ready_for_review]
+  issues:
+    types: [opened, assigned]
+
+# 同一個 PR 同時只跑一個 workflow，新 push 會取消舊的
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # ────────────────────────────────────────────────
+  # claude job：回應 @claude 呼叫
+  # 當有人在 PR comment、review comment、issue 裡 tag @claude，
+  # Claude 會進來執行對應指令（e.g. 修 bug、解釋程式碼、更新 PR description）
+  # ────────────────────────────────────────────────
+  claude:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write        # 允許 Claude 讀寫檔案、推 commit
+      pull-requests: write   # 允許 Claude 留言、更新 PR description
+      issues: read
+      id-token: write
+      actions: read          # 允許 Claude 讀 CI 結果
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
+
+  # ────────────────────────────────────────────────
+  # review job：PR 自動 code review
+  # 當 PR 開啟或更新（非 draft），Claude 自動審查並留下 approve 或 request changes
+  # ────────────────────────────────────────────────
+  review:
+    # draft PR 不觸發，避免浪費 review 次數
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50                              # 抓足夠的 commit 歷史供 diff 使用
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Fetch base branch for diff
+        # 把 base branch 也抓下來，讓 git diff 可以正確比對
+        run: git fetch origin ${{ github.base_ref }} --depth=50
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # prompt 告訴 Claude 要做什麼：
+          # 1. 讀 CLAUDE.md 了解專案規範
+          # 2. 用 git diff 看這次 PR 改了什麼
+          # 3. 依照 code-reviewer.md 的 checklist 審查
+          # 4. 根據結果 approve 或 request changes
+          prompt: |
+            ## Code Review Request
+
+            Review this PR using the code-reviewer checklist.
+
+            **Context:**
+            - Repository: ${{ github.repository }}
+            - PR Number: ${{ github.event.pull_request.number }}
+            - Base Branch: ${{ github.base_ref }}
+
+            **Instructions:**
+            1. Read CLAUDE.md for project-specific conventions
+            2. Use git diff to examine changes: `git diff origin/${{ github.base_ref }}...HEAD`
+            3. Apply the code-reviewer checklist from `.claude/skills/requesting-code-review/code-reviewer.md`
+
+            **Review Parameters:**
+            - WHAT_WAS_IMPLEMENTED: Changes in PR #${{ github.event.pull_request.number }}
+            - PLAN_OR_REQUIREMENTS: PR description and project conventions in CLAUDE.md
+            - BASE_REF: origin/${{ github.base_ref }}
+            - HEAD_REF: HEAD
+            - DESCRIPTION: ${{ github.event.pull_request.title }}
+
+            **Final Action:**
+            Leave a PR comment summarizing your findings using:
+            `gh pr comment ${{ github.event.pull_request.number }} -b "your review"`
+            The comment should include:
+            - Critical/Important issues found (with file path, code snippet, and recommendation)
+            - Minor suggestions (if any)
+            - What looks good
+            Do NOT approve or request changes.
+
+          # 限制 Claude 只能用指定工具，避免誤操作
+          # Read/Glob/Grep：讀檔案
+          # git diff/log/merge-base/rev-parse：查看程式碼變更
+          # gh pr/issue：查看 PR 資訊、留評論（不含 approve/request changes）
+          claude_args: '--model claude-opus-4-5-20251101 --allowedTools "Read,Glob,Grep,Bash(git diff:*),Bash(git log:*),Bash(git merge-base:*),Bash(git rev-parse:*),Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr checks:*)"'
