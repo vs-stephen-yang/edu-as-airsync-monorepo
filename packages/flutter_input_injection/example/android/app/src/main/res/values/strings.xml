@@ -1,0 +1,5 @@
+<resources>
+  <string name="accessibility_service_description">Accessibility service is used to simulate touch
+    screen events for remote control of the device.</string>
+
+</resources>

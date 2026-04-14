@@ -1,0 +1,46 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - name: Flutter.Bin
+    value: fvm flutter
+
+jobs:
+  - job: Build
+    strategy:
+      matrix:
+        mac:
+          poolName: "AirSync macOS Pool"
+          platform: "mac"
+          buildCommand: "macos"
+          extraBuildOptions: ""
+        android:
+          poolName: "AirSync macOS Pool"
+          platform: "android"
+          buildCommand: "apk"
+          extraBuildOptions: "--flavor ifp"
+        windows:
+          poolName: "AirSync Windows Pool"
+          platform: "windows"
+          buildCommand: "windows"
+          extraBuildOptions: ""
+    pool:
+      name: $(poolName)
+
+    steps:
+      - script: $(Flutter.Bin) pub get
+        displayName: Download packages
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # lint
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Run lint checks
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # build
+      - script: $(Flutter.Bin) build $(buildCommand) --no-pub $(extraBuildOptions)
+        displayName: Build
+        workingDirectory: "$(Build.SourcesDirectory)/example"
