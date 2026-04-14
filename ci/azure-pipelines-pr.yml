@@ -1,0 +1,209 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  - group: "github-secrets"
+  - name: Flutter.Bin
+    value: fvm flutter
+
+stages:
+  # ── Stage 1: Detect affected packages using melos ──
+  - stage: Detect
+    jobs:
+      - job: DetectChanges
+        pool:
+          name: "AirSync macOS Pool"
+        steps:
+          - checkout: self
+            fetchDepth: 0
+            persistCredentials: "true"
+
+          - script: |
+              git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+            displayName: Configure GitHub credentials
+
+          - script: dart pub global activate melos 6.3.2
+            displayName: Install melos
+
+          - script: melos bootstrap
+            displayName: Bootstrap workspace
+
+          - bash: |
+              CHANGED_PKGS=$(melos list --since=origin/main --parsable 2>/dev/null || echo "")
+
+              SENDER_AFFECTED=false
+              RECEIVER_AFFECTED=false
+
+              if echo "$CHANGED_PKGS" | grep -q "display_cast_flutter"; then
+                SENDER_AFFECTED=true
+              fi
+
+              if echo "$CHANGED_PKGS" | grep -q "display_flutter"; then
+                RECEIVER_AFFECTED=true
+              fi
+
+              echo "Changed packages:"
+              echo "$CHANGED_PKGS"
+              echo ""
+              echo "Sender affected: $SENDER_AFFECTED"
+              echo "Receiver affected: $RECEIVER_AFFECTED"
+
+              echo "##vso[task.setvariable variable=senderAffected;isOutput=true]$SENDER_AFFECTED"
+              echo "##vso[task.setvariable variable=receiverAffected;isOutput=true]$RECEIVER_AFFECTED"
+            name: changes
+            displayName: Detect affected packages via melos
+
+  # ── Stage 2: Quality check — lint + test on ALL affected packages ──
+  - stage: QualityCheck
+    dependsOn: Detect
+    jobs:
+      - job: LintAndTest
+        pool:
+          name: "AirSync macOS Pool"
+        steps:
+          - checkout: self
+            fetchDepth: 0
+            persistCredentials: "true"
+            submodules: "recursive"
+
+          - script: |
+              git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+            displayName: Configure GitHub credentials
+
+          - script: dart pub global activate melos 6.3.2
+            displayName: Install melos
+
+          - script: melos bootstrap
+            displayName: Bootstrap workspace
+
+          - script: melos exec --since=origin/main -- dart analyze . --no-fatal-infos
+            displayName: Analyze affected packages
+
+          - script: melos exec --since=origin/main --dir-exists=test -- $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
+            displayName: Test affected packages
+
+  # ── Stage 3: Build affected apps ──
+  - stage: Build
+    dependsOn:
+      - Detect
+      - QualityCheck
+    variables:
+      senderAffected: $[stageDependencies.Detect.DetectChanges.outputs['changes.senderAffected']]
+      receiverAffected: $[stageDependencies.Detect.DetectChanges.outputs['changes.receiverAffected']]
+    jobs:
+      # Sender: build all platforms
+      - job: BuildSender
+        condition: eq(variables.senderAffected, 'true')
+        strategy:
+          matrix:
+            mac:
+              poolName: "AirSync macOS Pool"
+              buildCommand: "macos"
+              extraBuildOptions: "--flavor Store"
+            windows:
+              poolName: "AirSync Windows Pool"
+              buildCommand: "windows"
+              extraBuildOptions: ""
+            web:
+              poolName: "AirSync macOS Pool"
+              buildCommand: "web"
+              extraBuildOptions: ""
+            android:
+              poolName: "AirSync macOS Pool"
+              buildCommand: "apk"
+              extraBuildOptions: ""
+            ios:
+              poolName: "AirSync macOS Pool"
+              buildCommand: "ipa"
+              extraBuildOptions: ""
+        pool:
+          name: $(poolName)
+        steps:
+          - checkout: self
+            persistCredentials: "true"
+            lfs: "true"
+            submodules: "recursive"
+
+          - script: |
+              git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+            displayName: Configure GitHub credentials
+
+          - script: $(Flutter.Bin) pub get
+            displayName: Download packages
+            workingDirectory: "$(Build.SourcesDirectory)/apps/sender"
+
+          - bash: |
+              POSSIBLE_PATHS=(
+                "/Users/agent/Library/Developer/GStreamer/iPhone.sdk/GStreamer.framework"
+                "/Library/Frameworks/GStreamer.framework"
+                "$HOME/Library/Developer/GStreamer/iPhone.sdk/GStreamer.framework"
+              )
+              for path in "${POSSIBLE_PATHS[@]}"; do
+                if [ -d "$path" ]; then
+                  echo "Found GStreamer at $path"
+                  echo "##vso[task.setvariable variable=GSTREAMER_SDK_IOS]$path"
+                  exit 0
+                fi
+              done
+              echo "##vso[task.logissue type=warning]GStreamer SDK not found."
+            displayName: Set GSTREAMER_SDK_IOS
+            condition: eq(variables['buildCommand'], 'ipa')
+
+          - script: $(Flutter.Bin) build $(buildCommand) --no-pub $(extraBuildOptions) -t ./lib/main_production.dart
+            displayName: Build $(buildCommand)
+            workingDirectory: "$(Build.SourcesDirectory)/apps/sender"
+            env:
+              CMAKE_BUILD_PARALLEL_LEVEL: 8
+
+      # Receiver: build APK
+      - job: BuildReceiver
+        condition: eq(variables.receiverAffected, 'true')
+        pool:
+          name: "AirSync macOS Pool"
+        steps:
+          - checkout: self
+            persistCredentials: "true"
+            lfs: "true"
+
+          - task: PowerShell@2
+            displayName: Configure Azure DevOps credentials
+            inputs:
+              targetType: "inline"
+              script: |
+                $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+                git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+          - script: |
+              git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+            displayName: Configure GitHub credentials
+
+          - task: MavenAuthenticate@0
+            displayName: Provides maven credentials for Azure Artifacts
+            inputs:
+              artifactsFeeds: "myViewBoard_Artifacts"
+
+          - task: PowerShell@2
+            displayName: Extract Azure Artifacts credentials
+            inputs:
+              targetType: "inline"
+              script: |
+                [xml]$doc = Get-Content -path ~/.m2/settings.xml
+                $username=$doc.settings.servers.server.username
+                $password=$doc.settings.servers.server.password
+                Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$username"
+                Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$password"
+
+          - script: $(Flutter.Bin) pub get
+            displayName: Download packages
+            workingDirectory: "$(Build.SourcesDirectory)/apps/receiver"
+
+          - script: $(Flutter.Bin) build apk --flavor openproduction -t lib/main_production.dart
+            displayName: Build receiver APK
+            workingDirectory: "$(Build.SourcesDirectory)/apps/receiver"
+            env:
+              ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME)
+              ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD)
