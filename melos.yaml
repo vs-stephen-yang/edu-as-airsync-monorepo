@@ -1,0 +1,43 @@
+name: airsync_workspace
+
+packages:
+  - apps/*
+  - apps/sender/packages/*
+  - packages/*
+
+sdkPath: .fvm/flutter_sdk
+
+command:
+  bootstrap:
+    runPubGetInParallel: true
+
+scripts:
+  analyze:
+    description: Analyze all packages
+    run: melos exec -- dart analyze . --no-fatal-infos
+
+  test:
+    description: Run all tests
+    exec: flutter test -j 4 --no-pub --coverage --branch-coverage
+    packageFilters:
+      dirExists: test
+
+  test:sender:
+    description: Run sender tests
+    exec: flutter test -j 4 --no-pub --coverage --branch-coverage
+    packageFilters:
+      scope: display_cast_flutter
+
+  test:receiver:
+    description: Run receiver tests
+    exec: flutter test -j 4 --no-pub --coverage --branch-coverage
+    packageFilters:
+      scope: display_flutter
+
+  format:
+    description: Format all Dart files
+    run: dart format .
+
+  clean:
+    description: Clean all packages
+    run: melos exec -- flutter clean
