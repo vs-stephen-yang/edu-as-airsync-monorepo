@@ -1,0 +1,310 @@
+parameters:
+  platform: ''          # Platform name (Android/iOS/macOS/Windows)
+  versionName: ''
+  runNumber: ''
+  envName: ''
+
+  # Flexible file uploads (up to 3 files)
+  file1: ''
+  file1_subfolder: ''   # e.g., "apk_production", "ipa_stage", "dmg_dev"
+
+  file2: ''
+  file2_subfolder: ''
+
+  file3: ''
+  file3_subfolder: ''
+
+  # Flexible directory uploads (up to 2 directories)
+  dir1: ''
+  dir1_subfolder: ''    # e.g., "archive_stage", "app_production"
+
+  dir2: ''
+  dir2_subfolder: ''
+
+steps:
+  - task: Bash@3
+    displayName: Upload to Dropbox (${{ parameters.platform }})
+    env:
+      DROPBOX_APP_KEY: $(DROPBOX_APP_KEY)
+      DROPBOX_APP_SECRET: $(DROPBOX_APP_SECRET)
+      DROPBOX_REFRESH_TOKEN: $(DROPBOX_REFRESH_TOKEN)
+    inputs:
+      targetType: inline
+      script: |
+        set -euo pipefail
+
+        echo "=================================="
+        echo "🔍 Checking Dropbox credentials..."
+        echo "=================================="
+
+        # Check if environment variables are set
+        MISSING_VARS=()
+
+        if [ -z "${DROPBOX_APP_KEY:-}" ]; then
+          echo "❌ DROPBOX_APP_KEY is EMPTY or NOT SET"
+          MISSING_VARS+=("DROPBOX_APP_KEY")
+        else
+          echo "✅ DROPBOX_APP_KEY is set (length: ${#DROPBOX_APP_KEY})"
+        fi
+
+        if [ -z "${DROPBOX_APP_SECRET:-}" ]; then
+          echo "❌ DROPBOX_APP_SECRET is EMPTY or NOT SET"
+          MISSING_VARS+=("DROPBOX_APP_SECRET")
+        else
+          echo "✅ DROPBOX_APP_SECRET is set (length: ${#DROPBOX_APP_SECRET})"
+        fi
+
+        if [ -z "${DROPBOX_REFRESH_TOKEN:-}" ]; then
+          echo "❌ DROPBOX_REFRESH_TOKEN is EMPTY or NOT SET"
+          MISSING_VARS+=("DROPBOX_REFRESH_TOKEN")
+        else
+          echo "✅ DROPBOX_REFRESH_TOKEN is set (length: ${#DROPBOX_REFRESH_TOKEN})"
+        fi
+
+        echo "=================================="
+
+        # Exit if any required variable is missing
+        if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+          echo ""
+          echo "❌ ERROR: Missing required Dropbox credentials!"
+          echo "   Missing variables: ${MISSING_VARS[*]}"
+          echo ""
+          echo "💡 Please ensure the 'dropbox-secrets' variable group contains:"
+          echo "   - DROPBOX_APP_KEY"
+          echo "   - DROPBOX_APP_SECRET"
+          echo "   - DROPBOX_REFRESH_TOKEN"
+          exit 1
+        fi
+
+        echo "✅ All Dropbox credentials are present"
+        echo ""
+
+        PLATFORM="${{ parameters.platform }}"
+
+        echo "🔐 Getting Dropbox access token..."
+        RESPONSE=$(curl -s -X POST https://api.dropboxapi.com/oauth2/token \
+          -u "${DROPBOX_APP_KEY}:${DROPBOX_APP_SECRET}" \
+          -d grant_type=refresh_token \
+          -d refresh_token="${DROPBOX_REFRESH_TOKEN}")
+
+        ACCESS_TOKEN=$(echo "$RESPONSE" | tr ',' '\n' | grep '"access_token"' | cut -d '"' -f4)
+
+        if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
+          echo "❌ Failed to retrieve Dropbox access token"
+          echo "❗ Full Dropbox response for debugging: $RESPONSE"
+          exit 1
+        fi
+
+        VERSION_FOLDER="v${{ parameters.versionName }}-build-${{ parameters.runNumber }}"
+        DROPBOX_BASE="/Apps/airsync-receiver-ci/Receiver-${PLATFORM}/${VERSION_FOLDER}"
+
+        upload_file() {
+          local file_path="$1"
+          local relative_path="$2"
+          # Remove leading slash to avoid double slashes
+          relative_path="${relative_path#/}"
+          local dropbox_path="${DROPBOX_BASE}/${relative_path}"
+          local file_size=$(stat -f%z "$file_path" 2>/dev/null || stat -c%s "$file_path" 2>/dev/null)
+
+          echo "📤 Uploading: $file_path → $dropbox_path"
+
+          # For files larger than 150MB, use upload session API
+          if [ "$file_size" -gt 157286400 ]; then
+            file_size_mb=$((file_size / 1048576))
+            echo "   📦 Large file detected (${file_size_mb}MB), using chunked upload..."
+
+            # Create temp directory for chunks
+            chunk_dir=$(mktemp -d)
+            chunk_size=100  # 100MB chunks (safe margin under 150MB limit)
+
+            # Split file into chunks
+            echo "   → Splitting file into chunks..."
+            split -b ${chunk_size}m "$file_path" "${chunk_dir}/chunk_"
+
+            # Start session with first chunk
+            first_chunk=$(ls "${chunk_dir}"/chunk_* | head -n 1)
+            echo "   → Starting upload session..."
+            session_response=$(curl -s -X POST https://content.dropboxapi.com/2/files/upload_session/start \
+              --header "Authorization: Bearer $ACCESS_TOKEN" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$first_chunk")
+
+            session_id=$(echo "$session_response" | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+
+            if [ -z "$session_id" ]; then
+              echo "   ❌ Failed to start session: $session_response"
+              rm -rf "$chunk_dir"
+              return 1
+            fi
+
+            # Upload remaining chunks
+            offset=$(stat -f%z "$first_chunk" 2>/dev/null || stat -c%s "$first_chunk" 2>/dev/null)
+            chunk_num=1
+            total_chunks=$(ls "${chunk_dir}"/chunk_* | wc -l | tr -d ' ')
+
+            for chunk_file in $(ls "${chunk_dir}"/chunk_* | tail -n +2); do
+              chunk_num=$((chunk_num + 1))
+              chunk_file_size=$(stat -f%z "$chunk_file" 2>/dev/null || stat -c%s "$chunk_file" 2>/dev/null)
+              echo "   → Uploading chunk $chunk_num/$total_chunks..."
+
+              curl -s -X POST https://content.dropboxapi.com/2/files/upload_session/append_v2 \
+                --header "Authorization: Bearer $ACCESS_TOKEN" \
+                --header "Dropbox-API-Arg: {\"cursor\": {\"session_id\": \"$session_id\", \"offset\": $offset}}" \
+                --header "Content-Type: application/octet-stream" \
+                --data-binary @"$chunk_file" > /dev/null
+
+              offset=$((offset + chunk_file_size))
+            done
+
+            # Finish session
+            echo "   → Finalizing upload..."
+            finish_response=$(curl -s -X POST https://content.dropboxapi.com/2/files/upload_session/finish \
+              --header "Authorization: Bearer $ACCESS_TOKEN" \
+              --header "Dropbox-API-Arg: {\"cursor\": {\"session_id\": \"$session_id\", \"offset\": $offset}, \"commit\": {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}}" \
+              --header "Content-Type: application/octet-stream")
+
+            # Clean up
+            rm -rf "$chunk_dir"
+
+            case "$finish_response" in
+              *'"error"'*)
+                echo "   ❌ Upload failed: $finish_response"
+                return 1
+                ;;
+            esac
+            echo "   ✅ Large file uploaded successfully"
+          else
+            # Regular upload for files <= 150MB
+            response=$(curl -s -X POST https://content.dropboxapi.com/2/files/upload \
+              --header "Authorization: Bearer $ACCESS_TOKEN" \
+              --header "Dropbox-API-Arg: {\"path\": \"$dropbox_path\", \"mode\": \"overwrite\"}" \
+              --header "Content-Type: application/octet-stream" \
+              --data-binary @"$file_path")
+
+            # Check for errors using string matching
+            case "$response" in
+              *'"error"'*)
+                echo "   ❌ Upload failed: $response"
+                return 1
+                ;;
+            esac
+            echo "   ✅ Uploaded successfully"
+          fi
+        }
+
+        upload_dir() {
+          local dir_path="$1"
+          local relative_base="$2"
+          # Remove leading slash to avoid double slashes
+          relative_base="${relative_base#/}"
+          echo "📂 Uploading directory: $dir_path → ${DROPBOX_BASE}/${relative_base}"
+          find "$dir_path" -type f | while read -r file; do
+            rel_path="${relative_base}/${file#$dir_path/}"
+            upload_file "$file" "$rel_path"
+          done
+        }
+
+        # Upload file1
+        FILE1="${{ parameters.file1 }}"
+        SUBFOLDER1="${{ parameters.file1_subfolder }}"
+        if [ -n "$FILE1" ] && [ -f "$FILE1" ]; then
+          filename=$(basename "$FILE1")
+          rel_path="${SUBFOLDER1}/${filename}"
+          upload_file "$FILE1" "$rel_path"
+
+          # Auto-upload debug_info directory if exists
+          debug_info_dir="${FILE1}.debug_info"
+          if [ -d "$debug_info_dir" ]; then
+            debug_info_rel_path="${SUBFOLDER1}/${filename}.debug_info"
+            echo "📂 Uploading debug info directory: $debug_info_dir"
+            upload_dir "$debug_info_dir" "$debug_info_rel_path"
+          fi
+        elif [ -n "$FILE1" ]; then
+          echo "⚠️  Skipping file1: file not found at $FILE1"
+        fi
+
+        # Upload file2
+        FILE2="${{ parameters.file2 }}"
+        SUBFOLDER2="${{ parameters.file2_subfolder }}"
+        if [ -n "$FILE2" ] && [ -f "$FILE2" ]; then
+          filename=$(basename "$FILE2")
+          rel_path="${SUBFOLDER2}/${filename}"
+          upload_file "$FILE2" "$rel_path"
+
+          debug_info_dir="${FILE2}.debug_info"
+          if [ -d "$debug_info_dir" ]; then
+            debug_info_rel_path="${SUBFOLDER2}/${filename}.debug_info"
+            echo "📂 Uploading debug info directory: $debug_info_dir"
+            upload_dir "$debug_info_dir" "$debug_info_rel_path"
+          fi
+        elif [ -n "$FILE2" ]; then
+          echo "⚠️  Skipping file2: file not found at $FILE2"
+        fi
+
+        # Upload file3
+        FILE3="${{ parameters.file3 }}"
+        SUBFOLDER3="${{ parameters.file3_subfolder }}"
+        if [ -n "$FILE3" ] && [ -f "$FILE3" ]; then
+          filename=$(basename "$FILE3")
+          rel_path="${SUBFOLDER3}/${filename}"
+          upload_file "$FILE3" "$rel_path"
+
+          debug_info_dir="${FILE3}.debug_info"
+          if [ -d "$debug_info_dir" ]; then
+            debug_info_rel_path="${SUBFOLDER3}/${filename}.debug_info"
+            echo "📂 Uploading debug info directory: $debug_info_dir"
+            upload_dir "$debug_info_dir" "$debug_info_rel_path"
+          fi
+        elif [ -n "$FILE3" ]; then
+          echo "⚠️  Skipping file3: file not found at $FILE3"
+        fi
+
+        # Upload dir1
+        DIR1="${{ parameters.dir1 }}"
+        DIR1_SUBFOLDER="${{ parameters.dir1_subfolder }}"
+        DIR1_UPLOADED=""
+        if [ -n "$DIR1" ] && [ -d "$DIR1" ]; then
+          # Upload directory contents to the specified subfolder
+          upload_dir "$DIR1" "$DIR1_SUBFOLDER"
+          DIR1_UPLOADED="true"
+        elif [ -n "$DIR1" ]; then
+          echo "⚠️  Skipping dir1: directory not found at $DIR1"
+        fi
+
+        # Upload dir2
+        DIR2="${{ parameters.dir2 }}"
+        DIR2_SUBFOLDER="${{ parameters.dir2_subfolder }}"
+        DIR2_UPLOADED=""
+        if [ -n "$DIR2" ] && [ -d "$DIR2" ]; then
+          # Upload directory contents to the specified subfolder
+          upload_dir "$DIR2" "$DIR2_SUBFOLDER"
+          DIR2_UPLOADED="true"
+        elif [ -n "$DIR2" ]; then
+          echo "⚠️  Skipping dir2: directory not found at $DIR2"
+        fi
+
+        echo ""
+        echo "=================================="
+        echo "✅ Upload to Dropbox completed!"
+        echo "=================================="
+        echo "📁 Dropbox path: $DROPBOX_BASE"
+        echo "=================================="
+        echo ""
+
+        # Clean up local archives after successful upload
+        if [ "$DIR1_UPLOADED" = "true" ] && [ -n "$DIR1" ] && [ -d "$DIR1" ]; then
+          echo "🗑️  Deleting local archive: $DIR1"
+          rm -rf "$DIR1"
+          echo "✅ Archive deleted successfully"
+        fi
+
+        if [ "$DIR2_UPLOADED" = "true" ] && [ -n "$DIR2" ] && [ -d "$DIR2" ]; then
+          echo "🗑️  Deleting local archive: $DIR2"
+          rm -rf "$DIR2"
+          echo "✅ Archive deleted successfully"
+        fi
+
+        echo ""
+        echo "=================================="
+        echo "✅ All operations completed!"
+        echo "=================================="

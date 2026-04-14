@@ -1,0 +1,438 @@
+trigger: none
+pr: none
+
+pool:
+  name: "AirSync macOS Pool"
+
+variables:
+  - name: Flutter.Bin
+    value: fvm flutter
+  - name: GRADLE_OPTS
+    value: "-Dorg.gradle.jvmargs=-Xmx5g"
+  - name: Flutter.Verbose
+    value: ""
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate --split-debug-info=debug_info/"
+  - name: Signing.Arguments
+    value: "--min-sdk-version 21"
+  - name: Release.Type
+    value: "Production"  # Options: Production, Stage, HotFix
+  - group: "ifp-keystore-secrets"
+  - group: "store-keystore-secrets"
+  - group: "sentry-airsync-receiver"
+
+jobs:
+  - job: QualityCheck
+    displayName: Quality Check (Lint and Test)
+    condition: true
+    steps:
+      - checkout: self
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Get packages
+
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Run flutter analyze
+
+      - script: $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
+        displayName: Run flutter test
+
+  - job: Build
+    dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
+    strategy:
+      maxParallel: 4
+      matrix:
+        edlaStage:
+          flavor: "edlaStage"
+          channel: "edla"
+          target: "stage"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+          targetPlatform: "--target-platform android-arm,android-arm64"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
+
+        edlaProduction:
+          flavor: "edlaProduction"
+          channel: "edla"
+          target: "production"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+          targetPlatform: "--target-platform android-arm,android-arm64"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
+
+        ifpStage:
+          flavor: "ifpStage"
+          channel: "ifp"
+          target: "stage"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+          targetPlatform: "--target-platform android-arm,android-arm64"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
+
+        ifpProduction:
+          flavor: "ifpProduction"
+          channel: "ifp"
+          target: "production"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+          targetPlatform: "--target-platform android-arm,android-arm64"
+          gradleArgsSuffix: "-PABI_ARM_ONLY=true"
+
+        openStage:
+          flavor: "openStage"
+          channel: "open"
+          target: "stage"
+          appFileExt: '.apk'
+          signingConfig: "store"
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
+
+        openProduction:
+          flavor: "openProduction"
+          channel: "open"
+          target: "production"
+          appFileExt: '.apk'
+          signingConfig: "store"
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
+
+        storeStage:
+          flavor: "storeStage"
+          channel: "store"
+          target: "stage"
+          appFileExt: '.aab'
+          signingConfig: "store"
+          appbundle: true
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
+
+        storeProduction:
+          flavor: "storeProduction"
+          channel: "store"
+          target: "production"
+          appFileExt: '.aab'
+          signingConfig: "store"
+          appbundle: true
+          targetPlatform: "--target-platform android-arm,android-arm64,android-x64"
+          gradleArgsSuffix: "-PABI_EXCLUDE_X86=true"
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: "false"
+        persistCredentials: "true"
+        clean: true
+
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: "inline"
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: MavenAuthenticate@0
+        displayName: "Provides maven credentials for Azure Artifacts"
+        inputs:
+          artifactsFeeds: "myViewBoard_Artifacts"
+
+      - task: PowerShell@2
+        displayName: Extract the credentials of Azure Artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            [xml]$doc = Get-Content -path ~/.m2/settings.xml
+            $username=$doc.settings.servers.server.username
+            $password=$doc.settings.servers.server.password
+            Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$username"
+            Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$password"
+
+      - task: PowerShell@2
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            Write-Host "Cleaning build artifacts..."
+            if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+              Write-Host "Removed build/ directory"
+            }
+            if (Test-Path "debug_info") {
+              Remove-Item -Path "debug_info" -Recurse -Force
+              Write-Host "Removed debug_info/ directory"
+            }
+            if (Test-Path ".dart_tool") {
+              Remove-Item -Path ".dart_tool" -Recurse -Force
+              Write-Host "Removed .dart_tool/ directory"
+            }
+            Write-Host "Cleanup completed"
+
+      - script: |
+          # Ensure git config is available in this shell session
+          git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+
+          # Download packages
+          $(Flutter.Bin) pub get
+        displayName: Download packages
+
+
+      # Build Single APK
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) $(targetPlatform) $(gradleArgsSuffix)
+        displayName: Build Single APK
+        condition: ne(variables['appbundle'], true)
+
+      # Build Split APK
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) $(targetPlatform) --split-per-abi
+        displayName: Build Split APK
+        condition: eq(variables['splitPerAbi'], true)
+
+      # Build App bundle
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build appbundle --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) $(targetPlatform)
+        displayName: Build App Bundle
+        condition: eq(variables['appbundle'], true)
+
+
+      # Uploading debug symbols - MOVED TO upload-dropbox.yml
+      # - script: $(Flutter.Bin) packages pub run sentry_dart_plugin
+      #   displayName: Uploading debug symbols
+      #   enabled: "true"
+      #   env:
+      #     SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+      #     SENTRY_ORG: $(SENTRY_ORG)
+      #     SENTRY_PROJECT: $(SENTRY_PROJECT)
+
+      - task: AndroidSigning@3
+        displayName: Sign App - ifp
+        condition: eq(variables['signingConfig'], 'ifp')
+        inputs:
+          apkFiles: '$(Build.SourcesDirectory)/build/app/outputs/**/*$(appFileExt)'
+          keystoreFile: ifp.keystore
+          keystorePass: $(ifp.keystore.password)
+          keystoreAlias: $(ifp.keystore.alias)
+          keyPass: '$(ifp.key.password)'
+          apksignerArguments: $(Signing.Arguments)
+
+      - task: AndroidSigning@3
+        displayName: Sign App - store
+        condition: eq(variables['signingConfig'], 'store')
+        inputs:
+          apkFiles: '$(Build.SourcesDirectory)/build/app/outputs/**/*$(appFileExt)'
+          keystoreFile: store.keystore
+          keystorePass: $(store.keystore.password)
+          keystoreAlias: $(store.keystore.alias)
+          keyPass: '$(store.key.password)'
+          apksignerArguments: $(Signing.Arguments)
+
+      # Prepare to publish
+      - task: CopyFiles@2
+        displayName: Copy artifacts
+        inputs:
+          flattenFolders: true
+          contents: |
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/bundle/**/*.aab
+
+          targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      # Copy debug symbols for Sentry upload (will be uploaded in upload pipeline)
+      - task: CopyFiles@2
+        displayName: Copy debug symbols
+        inputs:
+          flattenFolders: false
+          contents: |
+            debug_info/**
+            build/app/intermediates/stripped_native_libs/**
+          targetFolder: "$(Build.ArtifactStagingDirectory)/debug_symbols"
+
+      # Rename single APK
+      - task: PowerShell@2
+        displayName: Rename Single
+        condition: ne(variables['appbundle'], true)
+        inputs:
+          filePath: "ci/scripts/rename.ps1"
+          arguments: -Wd $(Build.ArtifactStagingDirectory) -Channel $(channel) -Target $(target) -Single
+
+      # Rename split APKs
+      - task: PowerShell@2
+        displayName: Rename Split
+        condition: eq(variables['splitPerAbi'], true)
+        inputs:
+          filePath: "ci/scripts/rename.ps1"
+          arguments: -Wd $(Build.ArtifactStagingDirectory) -Channel $(channel) -Target $(target) -Split
+
+      # Rename bundle
+      - task: PowerShell@2
+        displayName: Rename App Bundle
+        condition: eq(variables['appbundle'], true)
+        inputs:
+          filePath: "ci/scripts/rename.ps1"
+          arguments: -Wd $(Build.ArtifactStagingDirectory) -Channel $(channel) -Target $(target) -Bundle
+
+      - task: PowerShell@2
+        displayName: Calculate Checksum
+        inputs:
+          targetType: 'inline'
+          script: |
+            # 1. Define the output checksum file
+            $out = "$(Build.ArtifactStagingDirectory)\checksums_$(target)_$(channel).md5"
+
+            # 2. Create or clear the file so it’s empty
+            #    This will overwrite any existing file or create a new one.
+            Set-Content -Path $out -Value "" -Encoding utf8
+
+            # 3. Find every .apk and .aab, compute MD5, and append to the now‐empty file
+            Get-ChildItem -Path "$(Build.ArtifactStagingDirectory)" -Recurse -File |
+              Where-Object { $_.Extension -ieq '.apk' -or $_.Extension -ieq '.aab' } |
+              ForEach-Object {
+                $hash = Get-FileHash -Path $_.FullName -Algorithm MD5
+                "{0}  {1}" -f $_.Name, $hash.Hash |
+                  Out-File -FilePath $out -Encoding utf8 -Append
+              }
+
+
+      # Publish artifacts
+      - task: PublishPipelineArtifact@1
+        displayName: Publish build
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: '$(target)_$(channel)'
+          publishLocation: 'pipeline'
+
+      # Clean up build artifacts after publishing
+      - task: PowerShell@2
+        displayName: Clean up build artifacts after publishing
+        condition: always()
+        inputs:
+          targetType: "inline"
+          script: |
+            Write-Host "Cleaning up after build..."
+
+            # Clean build outputs
+            if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+              Write-Host "Removed build/ directory"
+            }
+
+            # Clean debug info
+            if (Test-Path "debug_info") {
+              Remove-Item -Path "debug_info" -Recurse -Force
+              Write-Host "Removed debug_info/ directory"
+            }
+
+            # Clean staging directory
+            if (Test-Path "$(Build.ArtifactStagingDirectory)") {
+              Remove-Item -Path "$(Build.ArtifactStagingDirectory)/*" -Recurse -Force
+              Write-Host "Cleaned ArtifactStagingDirectory"
+            }
+
+            # Clean Gradle cache (optional, can save more space)
+            if (Test-Path "$env:HOME/.gradle/caches") {
+              Write-Host "Gradle cache size before cleanup:"
+              Get-ChildItem -Path "$env:HOME/.gradle/caches" -Recurse | Measure-Object -Property Length -Sum | Select-Object @{Name="Size(MB)";Expression={[math]::Round($_.Sum / 1MB, 2)}}
+
+              # Only clean temporary files, keep downloaded dependencies
+              if (Test-Path "$env:HOME/.gradle/caches/build-cache-1") {
+                Remove-Item -Path "$env:HOME/.gradle/caches/build-cache-1" -Recurse -Force
+                Write-Host "Cleaned Gradle build cache"
+              }
+            }
+
+            Write-Host "Post-build cleanup completed"
+
+
+  - job: ReleaseNote
+    displayName: Generate Release Note
+    dependsOn: Build
+    condition: succeeded('Build')
+    pool:
+      name: "AirSync macOS Pool"
+
+    steps:
+      - checkout: self
+        fetchDepth: 0
+        fetchTags: true
+        persistCredentials: "true"
+
+      # Download all per-flavor checksum artifacts
+      - task: DownloadPipelineArtifact@2
+        displayName: Download checksum files
+        inputs:
+          path: '$(Pipeline.Workspace)/md5'
+
+      # Merge all MD5 files into one combined file
+      - task: PowerShell@2
+        displayName: Concatenate MD5 lists
+        inputs:
+          targetType: 'inline'
+          script: |
+            $output = "checksums.md5"
+
+            # Initialize the output file with a header
+            "## File Checksums" | Out-File -FilePath $output -Encoding utf8
+
+            # Find all matching checksum files and merge their contents
+            Get-ChildItem -Path "$(Pipeline.Workspace)/md5" -Recurse -Filter 'checksums_*.md5' |
+              Sort-Object Name |
+              ForEach-Object {
+                Write-Host "Appending file: $($_.FullName)"
+                Get-Content -Path $_.FullName |
+                  Out-File -FilePath $output -Encoding utf8 -Append
+              }
+
+      # 5. Generate public release note
+      - script: ci/scripts/generate-public-release-note.sh -ReleaseType $(Release.Type)
+        displayName: Generate RELEASE_NOTE_PUBLIC.md
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # 6. Copy final output to artifact staging directory
+      - task: CopyFiles@2
+        displayName: Copy artifacts
+        inputs:
+          sourceFolder: '$(Build.SourcesDirectory)'
+          contents: |
+            RELEASE_NOTE_PUBLIC.md
+            checksums.md5
+          targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+      # 6. Publish final release note
+      - task: PublishPipelineArtifact@1
+        displayName: Publish release note
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: 'ReleaseNote'
+
+      # Clean up after generating release note
+      - task: PowerShell@2
+        displayName: Clean up after generating release note
+        condition: always()
+        inputs:
+          targetType: "inline"
+          script: |
+            Write-Host "Cleaning up after generating release note..."
+
+            # Clean downloaded checksum files
+            if (Test-Path "$(Pipeline.Workspace)/md5") {
+              Remove-Item -Path "$(Pipeline.Workspace)/md5" -Recurse -Force
+              Write-Host "Removed $(Pipeline.Workspace)/md5 directory"
+            }
+
+            # Clean generated files in source directory
+            $filesToCleanup = "RELEASE_NOTE_PUBLIC.md", "checksums.md5"
+            foreach ($file in $filesToCleanup) {
+              if (Test-Path $file) {
+                Remove-Item -Path $file -Force
+                Write-Host "Removed $file"
+              }
+            }
+
+            # Clean staging directory
+            if (Test-Path "$(Build.ArtifactStagingDirectory)") {
+              Remove-Item -Path "$(Build.ArtifactStagingDirectory)/*" -Recurse -Force
+              Write-Host "Cleaned ArtifactStagingDirectory"
+            }
+
+            Write-Host "Cleanup completed"

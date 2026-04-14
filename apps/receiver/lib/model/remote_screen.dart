@@ -1,0 +1,4 @@
+enum RemoteScreenType {
+  rtc,
+  multicast,
+}

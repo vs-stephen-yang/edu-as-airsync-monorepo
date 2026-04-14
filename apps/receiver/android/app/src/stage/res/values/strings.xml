@@ -1,0 +1,3 @@
+<resources>
+    <string name="vbs_ota_url" translatable="false">"https://jqi0t9ku01.execute-api.us-east-1.amazonaws.com/dev/otacheck"</string>
+</resources>
