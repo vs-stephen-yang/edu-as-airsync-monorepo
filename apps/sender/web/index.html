@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="AirSync Sender for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]">
+
+  <meta http-equiv="Content-Security-Policy" content="
+          default-src 'none';
+          script-src 'self' 'nonce-flutter-init' 'wasm-unsafe-eval' 'nonce-amplitude-init' https://cdn.amplitude.com https://*.amplitude.com https://browser.sentry-cdn.com https://js.sentry-cdn.com;
+          style-src 'self'
+          'sha256-lqY1z1jZBRwzSDzqmC1KrNLwTEQn5zyMIV0KJLIr+Ys='
+          'sha256-zDudSZ1QIxb4NBLFkJxjz60o8wfeebMVes57tfLshz0='
+          'sha256-Hcn+KfZJN1e7dqySjsmRhOqvK9vlxUF2BM4w7jfIJaE='
+          'sha256-5Kh4U+mrZKxSbfNel5YEvkxCByeWhRSNJAjrMJe0/Kg=';
+          img-src 'self' data:;
+          font-src 'self';
+          connect-src 'self' https: wss: https://api2.amplitude.com https://*.amplitude.com;
+          manifest-src 'self';
+          object-src 'none';
+          base-uri 'self';
+          form-action 'none';
+          frame-ancestors 'none';
+        ">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="AirSync Sender">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>AirSync Sender</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- This script adds the flutter initialization JS code -->
+  <script nonce="flutter-init" src="flutter.js" defer></script>
+
+  <style>
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .loading-spinner {
+      animation: fade 4s;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0.2;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="center loading-spinner">
+    <img src="icons/Icon-192.png">
+  </div>
+
+  <script nonce="flutter-init">
+    {{flutter_js}}
+    {{flutter_build_config}}
+    _flutter.loader.load({
+      config: {
+        'entryPointBaseUrl': 'main.dart.js?v=' + {{flutter_service_worker_version}},
+        'canvasKitBaseUrl': '/canvaskit/',
+      },
+      onEntrypointLoaded: async function(engineInitializer) {
+        const appRunner = await engineInitializer.initializeEngine();
+        await appRunner.runApp();
+      },
+    });
+
+    // Immediate function to handle service worker registration
+    (function () {
+      console.log('[APP] Page loaded, checking for service worker support');
+
+      if (!('serviceWorker' in navigator)) {
+        console.error('[APP] Service workers not supported in this browser');
+        return;
+      }
+
+      navigator.serviceWorker.ready.then(registration => {
+        if (registration.active) {
+          console.log("[APP] Sending message to service worker on refresh...");
+          registration.active.postMessage({ type: "reload" });
+        }
+      }).catch(error => console.error("[APP] Service worker not ready:", error));
+
+      // Wait for page to fully load
+      window.addEventListener('appinstalled', () => {
+        console.log('[APP] installed, registering service worker');
+
+        // Register the service worker
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('[APP] Service worker registration successful:', registration.scope);
+
+            // Check if this is a new installation
+            if (registration.installing) {
+              const sw = registration.installing;
+              console.log('[APP] Service worker installing');
+
+              // Track installation progress
+              sw.addEventListener('statechange', event => {
+                console.log('[APP] Service worker state changed to:', sw.state);
+
+                if (sw.state === 'activated') {
+                  console.log('[APP] Service worker activated - checking cache');
+                  checkCacheStatus();
+                }
+              });
+            } else if (registration.active) {
+              console.log('[APP] Service worker already active');
+              checkCacheStatus();
+            }
+          })
+          .catch(error => {
+            console.error('[APP] Service worker registration failed:', error);
+          });
+
+        // Handle messages from the service worker
+        navigator.serviceWorker.addEventListener('message', event => {
+          console.log('[APP] Received message from service worker:', event.data);
+
+          if (event.data && event.data.type === 'CACHE_STATUS') {
+            console.log(`[APP] Cache contains ${event.data.count} files`);
+
+            // If cache is empty after activation, force caching
+            if (event.data.count === 0 && navigator.serviceWorker.controller) {
+              console.log('[APP] Cache appears empty, forcing manual cache');
+              forceCaching();
+            }
+          } else if (event.data && event.data.type === 'CACHE_RESULT') {
+            console.log(`[APP] Manual caching ${event.data.success ? 'succeeded' : 'failed'}`);
+            if (event.data.success) {
+              setTimeout(checkCacheStatus, 1000);
+            }
+          }
+        });
+      });
+
+      // Check cache status
+      function checkCacheStatus() {
+        console.log('[APP] Checking cache status');
+
+        // First try direct cache check
+        caches.open('flutter-app-cache')
+          .then(cache => cache.keys())
+          .then(requests => {
+            console.log(`[APP] Direct cache check: ${requests.length} files in cache`);
+
+            if (requests.length === 0) {
+              // Cache is empty, try to force caching if we have an active service worker
+              if (navigator.serviceWorker.controller) {
+                console.log('[APP] Cache is empty, asking service worker to check');
+                navigator.serviceWorker.controller.postMessage('CHECK_CACHE');
+              } else {
+                console.log('[APP] No controller, cannot verify with service worker');
+              }
+            }
+          })
+          .catch(error => {
+            console.error('[APP] Error checking cache:', error);
+          });
+      }
+    })();
+  </script>
+  <script type="text/javascript" nonce="amplitude-init">
+    !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}}
+    ;if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.")
+    ;else{var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}}
+    ,s=function(e,t,r){return function(n){e._q.push({name:t,args:Array.prototype.slice.call(r,0),resolve:n})}}
+    ,o=function(e,t,r){e._q.push({name:t,args:Array.prototype.slice.call(r,0)})}
+    ,i=function(e,t,r){e[t]=function(){if(r)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))};o(e,t,Array.prototype.slice.call(arguments))}}
+    ,a=function(e){for(var t=0;t<g.length;t++)i(e,g[t],!1);for(var r=0;r<m.length;r++)i(e,m[r],!0)}
+    ;r.invoked=!0;var c=t.createElement("script")
+    ;c.type="text/javascript",c.integrity="sha384-R0H1kXlk6r2aEQMtwVcPolpk0NAuIqM/8NlxAv24Gr3/PBJPl+9elu0bc3o/FDjR",c.crossOrigin="anonymous",c.async=!0
+    ,c.src="https://cdn.amplitude.com/libs/analytics-browser-2.11.10-min.js.gz"
+    ,c.onload=function(){e.amplitude.runQueuedFunctions||console.log("[Amplitude] Error: could not load SDK")}
+    ;var l=t.getElementsByTagName("script")[0];l.parentNode.insertBefore(c,l);for(var u=function(){return this._q=[],this}
+    ,p=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<p.length;d++)n(u,p[d]);r.Identify=u
+    ;for(var f=function(){return this._q=[],this},v=["getEventProperties","setProductId","setQuantity","setPrice","setRevenue","setRevenueType","setEventProperties"],y=0;y<v.length;y++)n(f,v[y]);r.Revenue=f;var g=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],m=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"]
+    ;a(r),r.createInstance=function(e){return r._iq[e]={_q:[]},a(r._iq[e]),r._iq[e]},e.amplitude=r}}(window,document)}();
+  </script>
+</body>
+
+</html>

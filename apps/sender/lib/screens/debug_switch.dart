@@ -1,0 +1,270 @@
+import 'dart:io';
+
+import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_colors.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/profile_util.dart';
+import 'package:display_cast_flutter/utilities/share_log.dart';
+import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/widgets/menu_dialog.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
+class DebugSwitch extends StatefulWidget {
+  const DebugSwitch({super.key});
+
+  @override
+  State createState() => _DebugSwitchState();
+}
+
+class _DebugSwitchState extends State<DebugSwitch> {
+  bool _initialized = false;
+  bool _isLogVerbose = false;
+  bool _iceGatheringContinually = false;
+  bool _isVideoQualityFirst = false;
+  String _rtcLogsDir = '';
+  bool _enableRTCEventLogs = false;
+  bool _enableRTCStatsLogs = false;
+  int _maxBitrateKbps = 0;
+  int _minBitrateKbps = 0;
+  bool _showDebugOverlay = false;
+  final ScrollController _scrollController =
+      ScrollController(); // 新增 ScrollController
+
+  void _notifyRestart() {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: V3AutoHyphenatingText(
+            "Restart the program to apply the changes.")));
+  }
+
+  void _showDebugOverlayChanged(bool value) async {
+    WebRTCUtil.showDebugOverlay = value;
+    await WebRTCUtil.saveShowDebugOverlay(value);
+
+    if (!mounted) return;
+    setState(() {
+      _showDebugOverlay = value;
+      _notifyRestart();
+    });
+  }
+
+  void _changeLogVerbose(bool value) async {
+    setLogLevelVerbose(value);
+
+    if (!mounted) return;
+    setState(() {
+      _isLogVerbose = value;
+    });
+  }
+
+  void _changeRTCLogs(WebRTCLogType type, bool value) async {
+    if (kIsWeb) {
+      return; // not supported
+    }
+
+    String? dir;
+    if (value && _rtcLogsDir == '') {
+      if (Platform.isIOS) {
+        final Directory documentsDirectory =
+            await getApplicationDocumentsDirectory();
+        dir = documentsDirectory.path;
+      } else {
+        dir = await FilePicker.platform.getDirectoryPath();
+      }
+      if (dir == null) {
+        // cancel
+        value = false;
+      }
+    }
+
+    if (!mounted) return;
+    setState(() {
+      if (type == WebRTCLogType.stats) {
+        _enableRTCStatsLogs = value;
+      } else {
+        _enableRTCEventLogs = value;
+      }
+      if (!_enableRTCStatsLogs && !_enableRTCEventLogs) {
+        _rtcLogsDir = '';
+        WebRTCLogManager().clear();
+      } else {
+        if (dir != null) {
+          _rtcLogsDir = dir;
+        }
+        WebRTCLogManager()
+            .setup(_rtcLogsDir, _enableRTCStatsLogs, _enableRTCEventLogs);
+      }
+    });
+  }
+
+  void _changeVideoProfile(bool value) async {
+    String selectedProfile;
+    if (value) {
+      selectedProfile = ProfileStore.videoQualityFirstProfile;
+    } else {
+      selectedProfile = ProfileStore.videoSmoothnessFirstProfile;
+    }
+    await ProfileUtil.saveSelectedProfile(selectedProfile);
+
+    if (!mounted) return;
+    setState(() {
+      _isVideoQualityFirst = value;
+      _notifyRestart();
+    });
+  }
+
+  void _changeGatheringPolicy(bool value) async {
+    await WebRTCUtil.saveIceGatheringContinually(value);
+
+    if (!mounted) return;
+    setState(() {
+      _iceGatheringContinually = value;
+      _notifyRestart();
+    });
+  }
+
+  void _initialize(BuildContext context) {
+    _isLogVerbose = isLogLevelVerbose();
+    if (!_initialized) {
+      final Profile profile =
+          context.read<AppConfig>().profileStore.getSelectedProfile();
+      final Preset preset = profile.presets.first;
+      _isVideoQualityFirst =
+          profile.name == ProfileStore.videoQualityFirstProfile;
+      _maxBitrateKbps = preset.parameters.maxBitrateKbps;
+      _minBitrateKbps = preset.parameters.minBitrateKbps;
+      _iceGatheringContinually = WebRTCUtil.iceGatheringContinually;
+      _showDebugOverlay = WebRTCUtil.showDebugOverlay;
+    }
+    _initialized = true;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // 記得在dispose時釋放
+    super.dispose();
+  }
+
+  Future<void> _triggerNativeCrash() async {
+    const channel = MethodChannel('com.viewsonic.display.cast/debug');
+    await channel.invokeMethod('triggerNativeCrash');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _initialize(context);
+
+    const debugButtonStyle = ButtonStyle(
+      backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+      foregroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+      shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          side: BorderSide(color: Colors.grey),
+        ),
+      ),
+    );
+
+    final shareLogsButton = TextButton(
+      style: debugButtonStyle,
+      onPressed: shareLogs,
+      child: const V3AutoHyphenatingText('Get Logs'),
+    );
+
+    return MenuDialog(
+      backgroundColor: AppColors.primaryGrey,
+      topTitleText: 'Debug Switch',
+      content: Column(
+        children: [
+          Expanded(
+            child: Scrollbar(
+              controller: _scrollController, // 使用 ScrollController
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: _scrollController, // 這裡也要使用相同的 ScrollController
+                child: Column(
+                  children: [
+                    SwitchListTile(
+                      title: const V3AutoHyphenatingText('Show Debug Overlay'),
+                      value: _showDebugOverlay, // Use static value
+                      onChanged: _showDebugOverlayChanged,
+                    ),
+                    SwitchListTile(
+                        title:
+                            const V3AutoHyphenatingText('video_quality_first'),
+                        value: _isVideoQualityFirst,
+                        onChanged: _changeVideoProfile),
+                    V3AutoHyphenatingText(
+                      "minBitrateKbps: $_minBitrateKbps",
+                      style: const TextStyle(fontSize: 14, color: Colors.red),
+                    ),
+                    V3AutoHyphenatingText("maxBitrateKbps: $_maxBitrateKbps",
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.red)),
+                    SwitchListTile(
+                        title: const V3AutoHyphenatingText(
+                            'ICE Gathering Continually'),
+                        value: _iceGatheringContinually,
+                        onChanged: _changeGatheringPolicy),
+                    SwitchListTile(
+                        title: const V3AutoHyphenatingText('Verbose Log'),
+                        value: _isLogVerbose,
+                        onChanged: _changeLogVerbose),
+                    SwitchListTile(
+                        title: const V3AutoHyphenatingText(
+                            'Enable RTC Stats Logs'),
+                        value: _enableRTCStatsLogs,
+                        onChanged: (value) {
+                          _changeRTCLogs(WebRTCLogType.stats, value);
+                        }),
+                    SwitchListTile(
+                        title: const V3AutoHyphenatingText(
+                            'Enable RTC Event Logs'),
+                        value: _enableRTCEventLogs,
+                        onChanged: (value) {
+                          _changeRTCLogs(WebRTCLogType.event, value);
+                        }),
+                    if (_rtcLogsDir != '')
+                      V3AutoHyphenatingText(
+                        _rtcLogsDir,
+                        style: const TextStyle(fontSize: 14, color: Colors.red),
+                      ),
+                    shareLogsButton,
+                    const SizedBox(height: 8),
+                    TextButton(
+                      style: debugButtonStyle,
+                      onPressed: () {
+                        Future(() async {
+                          throw Exception(
+                              'Sentry Test Error from Debug Switch');
+                        });
+                      },
+                      child:
+                          const V3AutoHyphenatingText('Send Sentry Test Error'),
+                    ),
+                    if (!kIsWeb) ...[
+                      const SizedBox(height: 8),
+                      TextButton(
+                        style: debugButtonStyle,
+                        onPressed: _triggerNativeCrash,
+                        child:
+                            const V3AutoHyphenatingText('Trigger Native Crash'),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

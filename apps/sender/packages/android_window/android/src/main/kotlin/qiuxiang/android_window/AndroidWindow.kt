@@ -1,0 +1,216 @@
+package qiuxiang.android_window
+
+import android.annotation.SuppressLint
+import android.app.Service
+import android.graphics.PixelFormat
+import android.util.DisplayMetrics
+import android.view.*
+import android.widget.LinearLayout
+import io.flutter.embedding.android.FlutterSurfaceView
+import io.flutter.embedding.android.FlutterView
+import io.flutter.embedding.engine.FlutterEngine
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import android.content.res.Configuration
+import android.util.Log
+import android.content.Context
+import android.view.WindowManager
+
+class AndroidWindow(
+  val service: Service,
+  private val focusable: Boolean,
+  width: Int,
+  height: Int,
+  private val x: Int,
+  private val y: Int,
+  private val engine: FlutterEngine
+) {
+  private var startX = 0f
+  private var startY = 0f
+  private var initialX = 0
+  private var initialY = 0
+  private var dragging = false
+  private lateinit var flutterView: FlutterView
+  private var windowManager = service.getSystemService(Service.WINDOW_SERVICE) as WindowManager
+  private val inflater = service.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+  private val metrics = DisplayMetrics()
+
+  @SuppressLint("InflateParams")
+  private var rootView = inflater.inflate(R.layout.floating, null) as ViewGroup
+  private val layoutParams = WindowManager.LayoutParams(
+    width, height, if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+      WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+    } else {
+      @Suppress("Deprecation") WindowManager.LayoutParams.TYPE_TOAST
+    }, if (focusable) 0 else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT
+  )
+
+  fun open() {
+    engine.platformViewsController.attach(inflater.context, engine.renderer, engine.dartExecutor)
+    val floatingApi = AndroidWindowApi(this)
+    Pigeon.AndroidWindowApi.setUp(engine.dartExecutor.binaryMessenger, floatingApi)
+    layoutParams.gravity = Gravity.START or Gravity.TOP
+    layoutParams.x = x
+    layoutParams.y = y
+    windowManager.addView(rootView, layoutParams)
+    @Suppress("Deprecation") windowManager.defaultDisplay.getRealMetrics(metrics)
+    flutterView = FlutterView(inflater.context, FlutterSurfaceView(inflater.context, true))
+    flutterView.attachToFlutterEngine(engine)
+    @Suppress("ClickableViewAccessibility") flutterView.setOnTouchListener { _, event ->
+      when (event.action) {
+        MotionEvent.ACTION_MOVE -> {
+          if (dragging) {
+            setPosition(
+              initialX + (event.rawX - startX).roundToInt(), initialY + (event.rawY - startY).roundToInt()
+            )
+          } else {
+            startX = event.rawX
+            startY = event.rawY
+            initialX = layoutParams.x
+            initialY = layoutParams.y
+          }
+        }
+
+        MotionEvent.ACTION_DOWN -> {
+          if (focusable) {
+            layoutParams.flags = layoutParams.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            windowManager.updateViewLayout(rootView, layoutParams)
+          }
+        }
+      }
+      false
+    }
+    @Suppress("ClickableViewAccessibility") rootView.setOnTouchListener { _, event ->
+      when (event.action) {
+        MotionEvent.ACTION_DOWN -> {
+          layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+          windowManager.updateViewLayout(rootView, layoutParams)
+          true
+        }
+
+        else -> false
+      }
+    }
+    engine.lifecycleChannel.appIsResumed()
+    rootView.findViewById<LinearLayout>(R.id.floating_window).addView(
+        flutterView, ViewGroup.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+        )
+      )
+    val orientation = service.resources.configuration.orientation
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      flutterView.layoutParams.height = metrics.heightPixels - getStatusBarHeight(service) - getNavigationBarHeight(service);
+      flutterView.layoutParams.width = metrics.widthPixels;
+      flutterView.requestLayout()
+    }
+  }
+
+  fun dragStart() {
+    dragging = true
+  }
+
+  fun dragEnd() {
+    dragging = false
+  }
+
+  fun close() {
+    flutterView.detachFromFlutterEngine()
+    windowManager.removeView(rootView)
+  }
+
+  fun updateLayout() {
+    @Suppress("Deprecation") windowManager.defaultDisplay.getRealMetrics(metrics)
+    setPosition(layoutParams.x, layoutParams.y)
+  }
+
+  fun setLayout(width: Int, height: Int) {
+    val orientation = service.resources.configuration.orientation
+    var newWidth = 0
+    var newHeight = 0
+    var chkWidth = width
+    var chkHeight = height
+    if (width > metrics.widthPixels) {
+      chkWidth = metrics.widthPixels
+    }
+    if (height > metrics.heightPixels) {
+      chkHeight = metrics.heightPixels
+      chkHeight = chkHeight;
+    }
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      newWidth = max(chkWidth, chkHeight)
+      newHeight = min(chkWidth, chkHeight)
+    } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      newWidth = min(chkWidth, chkHeight)
+      newHeight = max(chkWidth, chkHeight)
+    } else {
+      newWidth = chkWidth
+      newHeight = chkHeight
+    }
+    layoutParams.width = newWidth
+    layoutParams.height = newHeight
+    windowManager.updateViewLayout(rootView, layoutParams)
+  }
+
+  fun setPosition(x: Int, y: Int) {
+    layoutParams.x = min(max(0, x), metrics.widthPixels - layoutParams.width)
+    layoutParams.y = min(max(0, y), metrics.heightPixels - layoutParams.height)
+    windowManager.updateViewLayout(rootView, layoutParams)
+  }
+
+  fun onOrientationChange(newConfig: Configuration) {
+    var newWidth = 0
+    var newHeight = 0
+    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      newWidth = max(layoutParams.width, layoutParams.height)
+      newHeight = min(layoutParams.width, layoutParams.height)
+    } else {
+      newWidth = min(layoutParams.width, layoutParams.height)
+      newHeight = max(layoutParams.width, layoutParams.height)
+    }
+    setLayout(newWidth, newHeight)
+
+    flutterView.layoutParams = LinearLayout.LayoutParams(
+      ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+    )
+    flutterView.layoutParams.height =
+      metrics.heightPixels - getStatusBarHeight(service) - getNavigationBarHeight(service);
+    flutterView.layoutParams.width = metrics.widthPixels;
+    flutterView.requestLayout()
+  }
+
+  fun getStatusBarHeight(context: Context): Int {
+    val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resourceId > 0) {
+      context.resources.getDimensionPixelSize(resourceId)
+    } else {
+      0
+    }
+  }
+
+  fun getNavigationBarHeight(context: Context): Int {
+    val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+      ?: return 0
+
+    val realMetrics = DisplayMetrics()
+    val displayMetrics = DisplayMetrics()
+
+    val display = windowManager.defaultDisplay
+
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+      // API 30+ (Android 11 以上)
+      display.getRealMetrics(realMetrics)
+      display.getMetrics(displayMetrics)
+    } else {
+      // API 29 以下
+      display.getMetrics(displayMetrics)
+      display.getRealMetrics(realMetrics)
+    }
+
+    val realHeight = realMetrics.heightPixels // 總高度（包含 Navigation Bar）
+    val displayHeight = displayMetrics.heightPixels // 應用可用高度
+    return realHeight - displayHeight
+  }
+
+
+}
