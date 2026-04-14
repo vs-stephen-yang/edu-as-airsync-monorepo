@@ -1,0 +1,22 @@
+PODS:
+  - flutter_input_injection (0.0.1):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+
+DEPENDENCIES:
+  - flutter_input_injection (from `Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+
+EXTERNAL SOURCES:
+  flutter_input_injection:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+
+SPEC CHECKSUMS:
+  flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+
+PODFILE CHECKSUM: 236401fc2c932af29a9fcf0e97baeeb2d750d367
+
+COCOAPODS: 1.11.3
