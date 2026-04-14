@@ -1,0 +1,91 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: "windows-2022"
+
+variables:
+  - name: Flutter.Version
+    value: "3.16.4"
+  - name: Flutter.Url
+    value: https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip
+  - name: Flutter.Bin.Dir
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/
+  - name: GO_CACHE_DIR
+    value: $(Pipeline.Workspace)/.cache/go-build/
+
+steps:
+  - checkout: self
+    submodules: true
+
+  - task: GoTool@0
+    inputs:
+      version: "1.23.4"
+
+  - powershell: |
+      Write-Host "##vso[task.setvariable variable=GOCACHE;]$Env:GOCACHE"
+
+  - task: Cache@2
+    displayName: Cache GO packages
+    inputs:
+      key: 'go | "$(Agent.OS)" | go_lib/go.mod'
+      restoreKeys: |
+        go | "$(Agent.OS)"
+      path: $(GOCACHE)
+
+  - task: Go@0
+    displayName: "Run GO static analysis"
+    inputs:
+      command: "vet"
+      arguments: "./server"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/go_lib"
+
+  - task: Go@0
+    displayName: "Install gomobile"
+    inputs:
+      command: "install"
+      arguments: "golang.org/x/mobile/cmd/gomobile@latest"
+
+  # https://go.dev/wiki/Mobile
+  - task: PowerShell@2
+    displayName: "Initialize gomobile"
+    inputs:
+      targetType: "inline"
+      script: |
+        $GOPATH = @(go env GOPATH)
+        $Env:Path += [IO.Path]::PathSeparator + "$GOPATH\bin"
+        & $GOPATH\bin\gomobile init
+        & go get -d golang.org/x/mobile/cmd/gomobile
+      workingDirectory: "$(Build.SourcesDirectory)/go_lib"
+
+  - task: PowerShell@2
+    displayName: "Build lib-server.aar"
+    inputs:
+      targetType: "inline"
+      script: |
+        $GOPATH = @(go env GOPATH)
+        $Env:Path += [IO.Path]::PathSeparator + "$GOPATH\bin"
+        & $GOPATH\bin\gomobile bind -v -o ../android/libs/lib-server.aar -target=android -androidapi 24 ./server
+      workingDirectory: "$(Build.SourcesDirectory)/go_lib"
+
+  - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
+    displayName: Download the flutter SDK
+
+  - task: ExtractFiles@1
+    displayName: Extract the flutter SDK
+    inputs:
+      archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+      destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+  - task: PowerShell@2
+    displayName: Run flutter static analysis
+    inputs:
+      targetType: "inline"
+      script: |
+        $Env:Path += [IO.Path]::PathSeparator + "$(Flutter.Bin.Dir)"
+        flutter pub get
+        flutter analyze --no-fatal-infos
+      workingDirectory: "$(Build.SourcesDirectory)"

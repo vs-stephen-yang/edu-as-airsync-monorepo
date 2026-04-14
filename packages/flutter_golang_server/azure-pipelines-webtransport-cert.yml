@@ -1,0 +1,31 @@
+# Azure DevOps Pipeline for macOS
+# Generates and stores WebTransport certificates
+
+trigger:
+  - main
+
+pool:
+  vmImage: macos-latest
+
+steps:
+  - checkout: self
+
+  - script: |
+      brew install openssl  # ✅ Install OpenSSL via Homebrew
+      echo "✅ OpenSSL installed at: $(brew --prefix openssl)"
+    displayName: 'Install OpenSSL on macOS-latest'
+
+  - script: |
+      export PATH="$(brew --prefix openssl)/bin:$PATH"  # ✅ Use Homebrew OpenSSL
+      chmod +x script/generate_certs.sh
+      ./script/generate_certs.sh $(START_DATE) $(END_DATE)
+      chmod +x script/generate_certs_hash.sh
+      ./script/generate_certs_hash.sh $(CERT_DIR)
+    displayName: 'Generate WebTransport Certs'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: "$(CERT_DIR)"  # ✅ Save generated certificates as artifacts
+      artifact: "WebTransportCerts"
+      publishLocation: "pipeline"
+    displayName: 'Upload Certificates to Pipeline Artifacts'
