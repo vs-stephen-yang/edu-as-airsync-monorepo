@@ -1,0 +1,9 @@
+[submodule "third_party/ion-sfu"]
+	path = third_party/ion-sfu
+	url = https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sfu
+[submodule "third_party/transport"]
+	path = third_party/transport
+	url = https://viewsonic-ssi.visualstudio.com/Display%20App/_git/pion-transport
+[submodule "third_party/mdns"]
+	path = third_party/mdns
+	url = https://viewsonic-ssi.visualstudio.com/Display%20App/_git/pion-mdns
