@@ -1,0 +1,109 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+      - 'HotFix/*'
+
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Daily midnight build
+    branches:
+      include:
+        - main
+        - HotFix/*
+
+variables:
+  - group: "github-secrets"
+  - name: Flutter.Bin
+    value: fvm flutter
+
+jobs:
+  - job: Build
+    strategy:
+      matrix:
+        mac:
+          poolName: "AirSync macOS Pool"
+          platform: "macos"
+          buildCommand: "macos"
+          extraBuildOptions: "--flavor Store"
+        windows:
+          poolName: "AirSync Windows Pool"
+          platform: "windows"
+          buildCommand: "windows"
+          extraBuildOptions: ""
+        web:
+          poolName: "AirSync macOS Pool"
+          platform: "web"
+          buildCommand: "web"
+          extraBuildOptions: ""
+        android:
+          poolName: "AirSync macOS Pool"
+          platform: "android"
+          buildCommand: "apk"
+          extraBuildOptions: ""
+        ios:
+          poolName: "AirSync macOS Pool"
+          platform: "ios"
+          buildCommand: "ipa"
+          extraBuildOptions: ""
+    pool:
+      name: $(poolName)
+
+    steps:
+      - checkout: self
+        persistCredentials: "true"
+        lfs: "true"
+
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: "inline"
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: PowerShell@2
+        displayName: Configure GitHub credentials
+        inputs:
+          targetType: inline
+          script: |
+            git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Download packages
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # lint
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Run lint checks
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # test
+      - script: $(Flutter.Bin) test -j 4 --no-pub --coverage --branch-coverage
+        displayName: Run test
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      - bash: |
+          POSSIBLE_PATHS=(
+            "/Users/agent/Library/Developer/GStreamer/iPhone.sdk/GStreamer.framework"
+            "/Library/Frameworks/GStreamer.framework"
+            "$HOME/Library/Developer/GStreamer/iPhone.sdk/GStreamer.framework"
+          )
+          for path in "${POSSIBLE_PATHS[@]}"; do
+            if [ -d "$path" ]; then
+              echo "Found GStreamer at $path"
+              echo "##vso[task.setvariable variable=GSTREAMER_SDK_IOS]$path"
+              exit 0
+            fi
+          done
+          echo "##vso[task.logissue type=warning]GStreamer SDK not found in standard locations."
+        displayName: 'Set GSTREAMER_SDK_IOS'
+        condition: eq(variables['platform'], 'ios')
+
+      # build prod
+      - script: $(Flutter.Bin) build $(buildCommand) --no-pub $(extraBuildOptions) -t ./lib/main_production.dart
+        displayName: Build prod
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: 8

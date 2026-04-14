@@ -1,0 +1,434 @@
+# 讓使用者選擇要建置哪些環境
+parameters:
+  - name: buildDev
+    displayName: 'Build Dev Environment'
+    type: boolean
+    default: false
+
+# Tag 觸發，QualityCheck → Build（dev/stage/production × IPA）
+trigger:
+  tags:
+    include:
+      - '*'
+pr: none
+
+pool:
+  name: "AirSync macOS Pool"
+
+variables:
+  - name: Flutter.Bin
+    value: fvm flutter
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate"
+  - name: Split.Debug.Root
+    value: "$(Build.ArtifactStagingDirectory)/debug_info"
+  - group: "sender-apple-p12"
+  - group: "dropbox-secrets"
+  - group: "sentry-airsync-sender"
+  - group: "github-secrets"
+
+jobs:
+  # -------------------------------------------------------------------
+  # 1) 品質檢查
+  # -------------------------------------------------------------------
+  - job: QualityCheck
+    displayName: Quality Check (lint & test)
+    steps:
+      - checkout: self
+      - script: |
+          git config --global url."https://$(GITHUB_PAT)@github.com/".insteadOf "https://github.com/"
+        displayName: Configure GitHub credentials
+      - script: $(Flutter.Bin) pub get
+        displayName: Fetch dependencies
+      - script: $(Flutter.Bin) analyze --no-pub --no-fatal-infos
+        displayName: Analyze code
+      - script: $(Flutter.Bin) test -j 8 --no-pub --coverage --branch-coverage
+        displayName: Run tests with coverage
+
+  # -------------------------------------------------------------------
+  # 2) Build（矩陣 dev/stage/production；輸出 IPA + xcarchive）
+  #    - 命名：iOS_<env>_v<version>.ipa
+  #      env: dev=D, stage=S, production=""
+  #    - 版本號：production 的 build-number = pubspec code + 1；其餘使用原 code
+  # -------------------------------------------------------------------
+  - job: Build
+    displayName: Build iOS (IPA with signing)
+    dependsOn: QualityCheck
+    condition: succeeded('QualityCheck')
+    strategy:
+      maxParallel: 3
+      matrix:
+        ${{ if eq(parameters.buildDev, true) }}:
+          dev:
+            envName: "dev"
+            envMark: "D"
+            isProd: "false"
+        stage:
+          envName: "stage"
+          envMark: "S"
+          isProd: "false"
+        production:
+          envName: "production"
+          envMark: ""          # 沒有尾碼
+          isProd: "true"
+
+    steps:
+      - checkout: self
+        persistCredentials: true
+        clean: true
+
+      # 配置 Git credentials for CocoaPods
+      - script: |
+          echo "machine viewsonic-ssi.visualstudio.com login $(GIT_CREDENTIALS)" > ~/.netrc
+          chmod 0600 ~/.netrc
+        displayName: Configure Git credentials
+
+      # 安裝 Rust（供某些 native dependencies 使用）
+      - script: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup target add aarch64-apple-darwin
+        displayName: Install Rust for arm64
+
+      # 安裝憑證
+      #      - task: InstallAppleCertificate@2
+      #        displayName: Install Apple Certificate
+      #        inputs:
+      #          certSecureFile: 'Certificates.p12'
+      #          certPwd: '$(IOS_CERT_PASSWORD)'
+      #          keychain: 'temp'
+      #          opensslPkcsArgs: '-legacy'
+
+      # 驗證憑證安裝 + 檢查 Apple ID 登入狀態
+      - task: Bash@3
+        displayName: Verify Certificate & Apple Account
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================="
+            echo "🔍 Verifying code signing setup..."
+            echo "=================================="
+
+            echo "📜 Available signing identities:"
+            security find-identity -v -p codesigning
+
+            echo ""
+            echo "🔑 Keychains:"
+            security list-keychains
+
+            echo ""
+            echo "🍎 Checking Xcode Apple ID login status..."
+            # 檢查是否有登入的 Apple 帳號
+            if defaults read com.apple.dt.Xcode IDEProvisioningTeams &>/dev/null; then
+              echo "✅ Xcode has Apple ID logged in"
+              defaults read com.apple.dt.Xcode IDEProvisioningTeams
+            else
+              echo "⚠️  No Apple ID logged in to Xcode"
+              echo "   Build may require manually installed Provisioning Profiles"
+            fi
+
+            echo "=================================="
+
+      # 清理之前的構建產物
+      - task: Bash@3
+        displayName: Clean previous build artifacts
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning build artifacts..."
+
+            # Clean build outputs
+            if [ -d "build" ]; then
+              rm -rf "build"
+              echo "Removed build/ directory"
+            fi
+
+            # Clean debug info
+            if [ -d "$(Split.Debug.Root)" ]; then
+              rm -rf "$(Split.Debug.Root)"
+              echo "Removed debug_info/ directory"
+            fi
+
+            # Clean dart tool
+            if [ -d ".dart_tool" ]; then
+              rm -rf ".dart_tool"
+              echo "Removed .dart_tool/ directory"
+            fi
+
+            # Clean iOS derived data
+            if [ -d "ios/DerivedData" ]; then
+              rm -rf "ios/DerivedData"
+              echo "Removed ios/DerivedData/ directory"
+            fi
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            echo "Cleanup completed"
+
+      # 讀 pubspec 的 version，計算 build number（prod +1）
+      - task: Bash@3
+        displayName: Resolve version
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            ver_line=$(grep '^version: ' pubspec.yaml | head -n1 | cut -c 10-)
+            name="${ver_line%%+*}"
+            code_s="${ver_line##*+}"
+            if [ "$(isProd)" = "true" ]; then code=$((code_s+1)); else code=$code_s; fi
+
+            echo "##vso[task.setvariable variable=APP_VERSION_NAME]$name"
+            echo "##vso[task.setvariable variable=APP_VERSION_CODE]$code"
+
+            echo "Version: $name"
+            echo "Build Number: $code"
+
+      # 設定檔案名稱變數（供 Dropbox 上傳使用）
+      - task: Bash@3
+        displayName: Set artifact filenames
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            VERSION_NAME="${APP_VERSION_NAME}"
+            ENV_MARK="$(envMark)"
+
+            # 根據環境設定檔案名稱
+            if [ -n "$ENV_MARK" ]; then
+              IPA_NAME="iOS_${ENV_MARK}_v${VERSION_NAME}.ipa"
+              ARCHIVE_NAME="iOS_${ENV_MARK}_v${VERSION_NAME}.xcarchive"
+            else
+              IPA_NAME="iOS_v${VERSION_NAME}.ipa"
+              ARCHIVE_NAME="iOS_v${VERSION_NAME}.xcarchive"
+            fi
+
+            echo "##vso[task.setvariable variable=IPA_FILE_NAME]$IPA_NAME"
+            echo "##vso[task.setvariable variable=ARCHIVE_FILE_NAME]$ARCHIVE_NAME"
+
+            echo "IPA Filename: $IPA_NAME"
+            echo "Archive Filename: $ARCHIVE_NAME"
+
+      # 建置 IPA - 呼叫獨立腳本
+      - task: Bash@3
+        displayName: Build IPA
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================================="
+            echo "🚀 Starting iOS IPA Build Process"
+            echo "=================================================="
+            echo ""
+
+            echo "📦 Build Configuration:"
+            echo "   Environment: $(envName)"
+            echo "   Version: $APP_VERSION_NAME"
+            echo "   Build Number: $APP_VERSION_CODE"
+            echo "   Output: $(Build.ArtifactStagingDirectory)/ipa"
+            echo ""
+
+            echo "=================================================="
+            echo "🔨 Executing build script..."
+            echo "=================================================="
+            echo ""
+
+            # 呼叫建置腳本
+            bash scripts/ios/build_airsync_ipa.sh \
+              "$(envName)" \
+              "$APP_VERSION_NAME" \
+              "$APP_VERSION_CODE" \
+              "$(Build.ArtifactStagingDirectory)/ipa"
+
+            BUILD_EXIT_CODE=$?
+
+            echo ""
+            echo "=================================================="
+            if [ $BUILD_EXIT_CODE -eq 0 ]; then
+              echo "✅ Build completed successfully!"
+            else
+              echo "❌ Build failed with exit code: $BUILD_EXIT_CODE"
+            fi
+            echo "=================================================="
+
+            exit $BUILD_EXIT_CODE
+
+      # Upload debug symbols to Sentry
+      - task: Bash@3
+        displayName: Upload debug symbols to Sentry
+        condition: succeeded()
+        env:
+          SENTRY_AUTH_TOKEN: $(SENTRY_AUTH_TOKEN)
+          SENTRY_ORG: $(SENTRY_ORG)
+          SENTRY_PROJECT: $(SENTRY_PROJECT)
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================================="
+            echo "📤 Uploading debug symbols to Sentry"
+            echo "=================================================="
+            echo ""
+
+            DEBUG_INFO_PATH="$(Build.ArtifactStagingDirectory)/ipa/$(IPA_FILE_NAME).debug_info"
+
+            echo "Release: $(APP_VERSION_NAME)+$(APP_VERSION_CODE)"
+            echo "Debug symbols path: $DEBUG_INFO_PATH"
+            echo ""
+
+            # Check if debug info directory exists
+            if [ ! -d "$DEBUG_INFO_PATH" ]; then
+              echo "❌ Debug info directory not found: $DEBUG_INFO_PATH"
+              exit 1
+            fi
+
+            echo "✅ Debug info directory found"
+            echo "📊 Debug symbols files:"
+            ls -lh "$DEBUG_INFO_PATH" | head -10
+            echo ""
+
+            # Upload to Sentry
+            $(Flutter.Bin) packages pub run sentry_dart_plugin \
+              --include-sources \
+              --release $(APP_VERSION_NAME)+$(APP_VERSION_CODE) \
+              --upload-sources \
+              --wait \
+              --debug-symbols "$DEBUG_INFO_PATH"
+
+            echo ""
+            echo "=================================================="
+            echo "✅ Debug symbols uploaded successfully!"
+            echo "=================================================="
+
+      # 顯示產物資訊
+      - task: Bash@3
+        displayName: Display Build Artifacts
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            echo "=================================================="
+            echo "📦 Build Artifacts Summary"
+            echo "=================================================="
+            echo ""
+
+            ARTIFACT_DIR="$(Build.ArtifactStagingDirectory)/ipa"
+
+            if [ -d "$ARTIFACT_DIR" ]; then
+              echo "📁 Artifact Directory: $ARTIFACT_DIR"
+              echo ""
+
+              echo "📊 Files:"
+              FILE_COUNT=0
+              TOTAL_SIZE=0
+
+              for file in "$ARTIFACT_DIR"/*; do
+                if [ -f "$file" ]; then
+                  FILE_COUNT=$((FILE_COUNT + 1))
+                  SIZE=$(stat -f '%z' "$file")
+                  TOTAL_SIZE=$((TOTAL_SIZE + SIZE))
+                  SIZE_MB=$(echo "scale=2; $SIZE / 1048576" | bc)
+                  echo "   [$FILE_COUNT] $(basename "$file")"
+                  echo "       Size: ${SIZE_MB} MB"
+                fi
+              done
+
+              if [ -d "$ARTIFACT_DIR"/*.xcarchive 2>/dev/null ]; then
+                for archive in "$ARTIFACT_DIR"/*.xcarchive; do
+                  if [ -d "$archive" ]; then
+                    FILE_COUNT=$((FILE_COUNT + 1))
+                    echo "   [$FILE_COUNT] $(basename "$archive") (archive)"
+                  fi
+                done
+              fi
+
+              echo ""
+              TOTAL_SIZE_MB=$(echo "scale=2; $TOTAL_SIZE / 1048576" | bc)
+              echo "📊 Summary:"
+              echo "   Total files: $FILE_COUNT"
+              echo "   Total size: ${TOTAL_SIZE_MB} MB"
+              echo ""
+
+              echo "=================================================="
+              echo "✅ Artifacts ready for publishing"
+              echo "=================================================="
+            else
+              echo "❌ Artifact directory not found: $ARTIFACT_DIR"
+              echo ""
+              echo "=================================================="
+            fi
+
+      # 發佈產物（每個 env 各一份）
+      - task: PublishPipelineArtifact@1
+        displayName: Publish IPA Artifact
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/ipa'
+          artifact: 'ipa_$(envName)'
+
+      # Upload to Dropbox
+      - template: ci/upload-to-dropbox.yml
+        parameters:
+          platform: iOS
+          envName: $(envName)
+          versionName: $(APP_VERSION_NAME)
+          runNumber: $(Build.BuildNumber)
+          file1: "$(Build.ArtifactStagingDirectory)/ipa/$(IPA_FILE_NAME)"
+          file1_subfolder: "ipa_$(envName)"
+          dir1: "$(Build.ArtifactStagingDirectory)/ipa/$(ARCHIVE_FILE_NAME)"
+          dir1_subfolder: "archive_$(envName)"
+
+      # Clean up build artifacts after publishing
+      - task: Bash@3
+        displayName: Clean up build artifacts after publishing
+        condition: always()
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+            echo "Cleaning up after build..."
+
+            # Clean build outputs
+            if [ -d "build" ]; then
+              rm -rf "build"
+              echo "Removed build/ directory"
+            fi
+
+            # Clean debug info
+            if [ -d "$(Split.Debug.Root)" ]; then
+              rm -rf "$(Split.Debug.Root)"
+              echo "Removed debug_info/ directory"
+            fi
+
+            # Clean staging directory
+            if [ -d "$(Build.ArtifactStagingDirectory)" ]; then
+              rm -rf "$(Build.ArtifactStagingDirectory)"/*
+              echo "Cleaned ArtifactStagingDirectory"
+            fi
+
+            # Clean iOS derived data and archives
+            if [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
+              echo "XCode DerivedData size before cleanup:"
+              du -sh "$HOME/Library/Developer/Xcode/DerivedData" 2>/dev/null || echo "Unable to calculate size"
+
+              # Clean old derived data (keep last day's worth)
+              find "$HOME/Library/Developer/Xcode/DerivedData" -mindepth 1 -maxdepth 1 -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
+              echo "Cleaned old XCode DerivedData"
+            fi
+
+            # Clean iOS build cache
+            if [ -d "ios/build" ]; then
+              rm -rf "ios/build"
+              echo "Removed ios/build/ directory"
+            fi
+
+            echo "Post-build cleanup completed"

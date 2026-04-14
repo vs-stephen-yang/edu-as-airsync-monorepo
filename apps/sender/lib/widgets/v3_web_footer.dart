@@ -1,0 +1,146 @@
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/screens/debug_switch.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/web_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class V3WebFooter extends StatefulWidget {
+  const V3WebFooter({super.key});
+
+  @override
+  State<V3WebFooter> createState() => _V3WebFooterState();
+}
+
+class _V3WebFooterState extends State<V3WebFooter> {
+  static const int _openDebugCounter = 5;
+  int _debugTapCount = 0;
+
+  void _onLogoTap() {
+    _debugTapCount++;
+    if (_debugTapCount == _openDebugCounter) {
+      _debugTapCount = 0;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const DebugSwitch(),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: isBigThan768(context) ? 389 : 368,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: ExcludeSemantics(
+              child: Image.asset(
+                'assets/images/ic_wallpaper_web.png',
+                width: 1920,
+                // height: 160,
+                alignment: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: isBigThan1920(context)
+                ? 67
+                : isBigThan1536(context)
+                    ? 99
+                    : isBigThan1280(context)
+                        ? 120
+                        : 143,
+            right: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: _onLogoTap,
+                  child: ExcludeSemantics(
+                    child: Image.asset(
+                      'assets/images/ic_logo_viewsonic_web.png',
+                      width: 189,
+                      height: 31,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Wrap(
+                  children: [
+                    V3Focus(
+                      label: S.current.v3_lbl_main_privacy,
+                      identifier: 'v3_qa_main_privacy',
+                      button: false,
+                      link: true,
+                      child: TextButton(
+                        onPressed: () {
+                          launchUrl(Uri.parse(
+                              '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
+                        },
+                        isSemanticButton: false,
+                        child: V3AutoHyphenatingText(
+                          S.of(context).v3_main_privacy,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: context.tokens.color.vsdswColorOnSurface,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Consumer<PrefLanguageProvider>(
+                        builder: (_, languageProvider, __) {
+                      return V3Focus(
+                        label: S.current.v3_lbl_main_knowledge_base,
+                        identifier: 'v3_qa_main_knowledge_base',
+                        button: false,
+                        link: true,
+                        child: TextButton(
+                          onPressed: () {
+                            var url = languageProvider.language == '繁體中文'
+                                    ? context.read<AppConfig>().zhKnowledgeBaseUrl
+                                    : context.read<AppConfig>().enKnowledgeBaseUrl;
+                            launchUrl(Uri.parse(url));
+                          },
+                          isSemanticButton: false,
+                          child: V3AutoHyphenatingText(
+                            S.of(context).v3_main_knowledge_base,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: context.tokens.color.vsdswColorOnSurface,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                V3AutoHyphenatingText(
+                  S.of(context).v3_main_copy_rights(DateTime.now().year),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

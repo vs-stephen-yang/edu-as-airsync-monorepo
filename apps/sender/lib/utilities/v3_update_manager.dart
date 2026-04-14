@@ -1,0 +1,531 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:auto_updater/auto_updater.dart';
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/updater_windows.dart';
+import 'package:display_cast_flutter/utilities/version_util.dart';
+import 'package:display_cast_flutter/widgets/V3_focus.dart';
+import 'package:display_cast_flutter/widgets/v3_auto_hyphenating_text.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+enum CompareVersionResult { forceUpgrade, userChoose, noUpdate, noNetwork }
+
+class V3UpdateManager {
+  static final V3UpdateManager _instance = V3UpdateManager._internal();
+
+  factory V3UpdateManager() {
+    return _instance;
+  }
+
+  V3UpdateManager._internal();
+
+  bool _isDialogShowing = false;
+
+  Future<void> showUpdateDialog(
+      BuildContext context, CompareVersionResult status) async {
+    if (_isDialogShowing) {
+      return;
+    }
+    _isDialogShowing = true;
+
+    if (Platform.isIOS) {
+      unawaited(_showUpdateDialogIos(context, status).then((_) {
+        _isDialogShowing = false;
+      }));
+    } else if (Platform.isAndroid) {
+      unawaited(_showUpdateDialogAndroid(context, status).then((_) {
+        _isDialogShowing = false;
+      }));
+    } else {
+      unawaited(_showUpdateDialogDesktop(context, status).then((_) {
+        _isDialogShowing = false;
+      }));
+    }
+  }
+
+  Future<void> checkUpdateVersion(BuildContext context,
+      Function(CompareVersionResult) onUpdateResult) async {
+    String version = context.read<AppConfig>().appVersion;
+    String api = context.read<AppConfig>().settings.appUpdateVersionEndpoint;
+
+    final result = await getVersion(api, version);
+    onUpdateResult(result);
+  }
+
+  CompareVersionResult compareVersion(
+      String currentVersion, String targetVersion, String minVersion) {
+    List<int> current =
+        currentVersion.split('-').first.split('.').map(int.parse).toList();
+    List<int> target = targetVersion.split('.').map(int.parse).toList();
+    List<int> min = minVersion.split('.').map(int.parse).toList();
+    CompareVersionResult result = CompareVersionResult.noUpdate;
+
+    for (int i = 0; i < min.length; i++) {
+      if (min[i] > current[i]) {
+        return CompareVersionResult.forceUpgrade;
+      }
+      if (min[i] != current[i]) break;
+    }
+
+    for (int i = 0; i < target.length; i++) {
+      if (target[i] > current[i]) {
+        return CompareVersionResult.userChoose;
+      }
+      if (target[i] != current[i]) break;
+    }
+    return result;
+  }
+
+  Future<CompareVersionResult> getVersion(
+      String url, String currentVersion) async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse(url),
+      );
+
+      if (response.statusCode >= HttpStatus.ok &&
+          response.statusCode < HttpStatus.multiStatus) {
+        Map json = jsonDecode(response.body);
+        String targetVersion = '';
+        String minSupportedVersion = '';
+        if (Platform.isAndroid) {
+          targetVersion = json['android']['target-version'];
+          minSupportedVersion = json['android']['min-supported-version'];
+        } else if (Platform.isIOS) {
+          targetVersion = json['ios']['target-version'];
+          minSupportedVersion = json['ios']['min-supported-version'];
+        } else if (Platform.isMacOS) {
+          if (VersionUtil.isOpenVersion) {
+            targetVersion = json['macos-ind']['target-version'];
+            minSupportedVersion = json['macos-ind']['min-supported-version'];
+          } else {
+            targetVersion = json['macos']['target-version'];
+            minSupportedVersion = json['macos']['min-supported-version'];
+          }
+        } else if (Platform.isWindows) {
+          targetVersion = json['windows']['target-version'];
+          minSupportedVersion = json['windows']['min-supported-version'];
+        } else if (kIsWeb) {
+          targetVersion = json['web']['target-version'];
+          minSupportedVersion = json['web']['min-supported-version'];
+        }
+
+        return compareVersion(
+            currentVersion, targetVersion, minSupportedVersion);
+      }
+    } catch (e) {
+      debugPrint('Error getting version: $e');
+    }
+
+    return CompareVersionResult.noUpdate;
+  }
+
+  Future<void> _showUpdateDialogIos(
+      BuildContext context, CompareVersionResult status) async {
+    bool isUpdate = (status == CompareVersionResult.forceUpgrade ||
+        status == CompareVersionResult.userChoose);
+
+    await showCupertinoDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PopScope(
+              canPop: false,
+              child: CupertinoAlertDialog(
+                // Can not use V3AutoHyphenatingText
+                title: Text(_dialogTittle(context, status)),
+                // Can not use V3AutoHyphenatingText
+                content: Text(_dialogDescription(context, status)),
+                actions: [
+                  if (status == CompareVersionResult.userChoose)
+                    CupertinoDialogAction(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(
+                          S.of(context).v3_setting_software_update_deny_action,
+                          style: const TextStyle(
+                              color: Color(0xFF007AFF), fontSize: 17)),
+                    ),
+                  if (isUpdate)
+                    CupertinoDialogAction(
+                      onPressed: () {
+                        if (status == CompareVersionResult.userChoose) {
+                          Navigator.of(context).pop();
+                        }
+                        launchUrl(Uri.parse(
+                            'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
+                      },
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(
+                          status == CompareVersionResult.forceUpgrade
+                              ? S
+                                  .of(context)
+                                  .v3_setting_software_update_force_action
+                              : S
+                                  .of(context)
+                                  .v3_setting_software_update_positive_action,
+                          style: const TextStyle(
+                              color: Color(0xFF007AFF), fontSize: 17)),
+                    ),
+                  if (!isUpdate)
+                    CupertinoDialogAction(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(
+                          S
+                              .of(context)
+                              .v3_setting_software_update_no_available_action,
+                          style: const TextStyle(
+                              color: Color(0xFF007AFF), fontSize: 17)),
+                    ),
+                ],
+              ),
+            ));
+  }
+
+  Future<void> _showUpdateDialogAndroid(
+      BuildContext context, CompareVersionResult status) async {
+    bool isUpdate = (status == CompareVersionResult.forceUpgrade ||
+        status == CompareVersionResult.userChoose);
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PopScope(
+            canPop: false,
+            child: AlertDialog(
+              // Can not use V3AutoHyphenatingText
+              title: Text(_dialogTittle(context, status)),
+              // Can not use V3AutoHyphenatingText
+              content: Text(_dialogDescription(context, status)),
+              actions: [
+                if (status == CompareVersionResult.userChoose)
+                  V3Focus(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_deny_action,
+                    identifier: 'v3_qa_setting_software_update_deny_action',
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(
+                          S.of(context).v3_setting_software_update_deny_action),
+                    ),
+                  ),
+                if (isUpdate)
+                  V3Focus(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_positive_action,
+                    identifier: 'v3_qa_setting_software_update_positive_action',
+                    child: TextButton(
+                      onPressed: () async {
+                        if (status == CompareVersionResult.userChoose) {
+                          Navigator.of(context).pop();
+                        }
+                        unawaited(launchUrl(Uri.parse(
+                            'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast')));
+                      },
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(S
+                          .of(context)
+                          .v3_setting_software_update_positive_action),
+                    ),
+                  ),
+                if (!isUpdate)
+                  V3Focus(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_no_available_action,
+                    identifier:
+                        'v3_qa_setting_software_update_no_available_action',
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(S
+                          .of(context)
+                          .v3_setting_software_update_no_available_action),
+                    ),
+                  ),
+              ],
+            )));
+  }
+
+  Future<void> _showUpdateDialogDesktop(
+      BuildContext context, CompareVersionResult status) async {
+    bool isUpdate = (status == CompareVersionResult.forceUpgrade ||
+        status == CompareVersionResult.userChoose);
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PopScope(
+            canPop: false,
+            child: AlertDialog(
+              title: Stack(
+                children: [
+                  if (status == CompareVersionResult.userChoose)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: V3Focus(
+                        identifier: 'v3_qa_setting_update_close',
+                        child: IconButton(
+                          iconSize: 12,
+                          icon: Icon(
+                            Icons.close,
+                            semanticLabel:
+                                S.current.v3_lbl_setting_update_close,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: context.tokens.spacing.vsdswSpacingMd.top),
+                    child: Center(
+                      // Can not use V3AutoHyphenatingText
+                      child: Text(
+                        _dialogTittle(context, status),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdswColorOnSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                              context.tokens.textStyle.vsdswHeadingMd.fontSize,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              content: SizedBox(
+                width: 436,
+                height: 128,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    V3AutoHyphenatingText(
+                      _dialogDescription(context, status),
+                      style: TextStyle(
+                        color: context.tokens.color.vsdswColorOnSurface,
+                        fontWeight: FontWeight.w400,
+                        fontSize: context.tokens.textStyle.vsdswBodySm.fontSize,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Divider(),
+                  ],
+                ),
+              ),
+              actions: [
+                if (status == CompareVersionResult.userChoose)
+                  _updateDialogButton(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_deny_action,
+                    identifier: 'v3_qa_setting_software_update_deny_action',
+                    text: S.of(context).v3_setting_software_update_deny_action,
+                    textColor: context.tokens.color.vsdswColorSecondary,
+                    backgroundColor: Colors.transparent,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                if (isUpdate)
+                  _updateDialogButton(
+                    label:
+                        S.of(context).v3_lbl_setting_software_update_now_action,
+                    identifier: 'v3_qa_setting_software_update_now_action',
+                    text: S
+                        .of(context)
+                        .v3_setting_software_update_positive_action,
+                    textColor: context.tokens.color.vsdswColorOnPrimary,
+                    backgroundColor: context.tokens.color.vsdswColorPrimary,
+                    onPressed: () async {
+                      if (status == CompareVersionResult.userChoose) {
+                        Navigator.of(context).pop();
+                      }
+                      if (Platform.isMacOS) {
+                        if (VersionUtil.isOpenVersion) {
+                          String feedURL = context
+                              .read<AppConfig>()
+                              .settings
+                              .appUpdateMacAppcastUrl;
+                          //  BUG 102750 套件需要init時間
+                          await Future.delayed(Duration(milliseconds: 500));
+                          await autoUpdater.setFeedURL(feedURL);
+                          await Future.delayed(Duration(milliseconds: 500));
+                          await autoUpdater.checkForUpdates();
+                        } else {
+                          unawaited(launchUrl(Uri.parse(
+                              'macappstore://apps.apple.com/app/airsync-sender/id6453759985')));
+                        }
+                      } else {
+                        // windows
+                        try {
+                          await installUpdates();
+                          exit(0);
+                        } on UpdateErrorExecption catch (e) {
+                          if (context.mounted) {
+                            unawaited(
+                                _showUpdateErrorDialogDesktop(context, e));
+                          }
+                        }
+                      }
+                    },
+                  ),
+                if (!isUpdate)
+                  _updateDialogButton(
+                    label: S
+                        .of(context)
+                        .v3_lbl_setting_software_update_no_available,
+                    identifier: 'v3_qa_setting_software_update_no_available',
+                    text: S
+                        .of(context)
+                        .v3_setting_software_update_no_available_action,
+                    textColor: context.tokens.color.vsdswColorSecondary,
+                    backgroundColor: Colors.transparent,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+              ],
+            )));
+  }
+
+  String _dialogTittle(BuildContext context, CompareVersionResult status) {
+    return status == CompareVersionResult.noNetwork
+        ? S.of(context).v3_setting_software_update_no_available
+        : status == CompareVersionResult.noUpdate
+            ? S.of(context).v3_setting_software_update_no_available
+            : S.of(context).v3_setting_software_update;
+  }
+
+  String _dialogDescription(BuildContext context, CompareVersionResult status) {
+    return status == CompareVersionResult.forceUpgrade
+        ? S.of(context).v3_setting_software_update_force_description
+        : status == CompareVersionResult.userChoose
+            ? S.of(context).v3_setting_software_update_description
+            : status == CompareVersionResult.noUpdate
+                ? S
+                    .of(context)
+                    .v3_setting_software_update_no_available_description
+                : S
+                    .of(context)
+                    .v3_setting_software_update_no_internet_description;
+  }
+
+  Widget _updateDialogButton(
+      {required String text,
+      required Color textColor,
+      required Color backgroundColor,
+      required String label,
+      required String identifier,
+      required GestureTapCallback onPressed}) {
+    return V3Focus(
+      label: label,
+      identifier: identifier,
+      child: Material(
+        color: Colors.transparent,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor,
+            foregroundColor: textColor,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            elevation: backgroundColor == Colors.transparent ? 0 : 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(9999),
+            ),
+            shadowColor: backgroundColor.withValues(alpha: 0.31),
+          ),
+          child: Text(text),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showUpdateErrorDialogDesktop(
+      BuildContext context, UpdateErrorExecption e) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: V3Focus(
+                      identifier: 'v3_qa_setting_software_update_fail_close',
+                      button: true,
+                      child: IconButton(
+                        iconSize: 12,
+                        icon: Icon(
+                          Icons.close,
+                          semanticLabel: S.current
+                              .v3_lbl_setting_software_update_fail_close,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: context.tokens.spacing.vsdswSpacingMd.top),
+                    child: Center(
+                      child: V3AutoHyphenatingText(
+                        S.of(context).v3_setting_software_update,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              content: SizedBox(
+                width: 436,
+                height: 128,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    V3AutoHyphenatingText(
+                        '${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
+                    const Spacer(),
+                    const Divider(),
+                  ],
+                ),
+              ),
+              actions: [
+                _updateDialogButton(
+                  label: S.of(context).v3_lbl_setting_software_update_fail_ok,
+                  identifier: 'v3_qa_setting_software_update_fail_ok',
+                  text: S.of(context).device_list_enter_pin_ok,
+                  textColor: context.tokens.color.vsdswColorSecondary,
+                  backgroundColor: Colors.transparent,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ));
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm nx affected -t lint --fix --base=HEAD || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    }
+  }
+}
