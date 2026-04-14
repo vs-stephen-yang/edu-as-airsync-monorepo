@@ -1,0 +1,100 @@
+group = "com.viewsonic.flutter_mirror"
+version = "1.0"
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.0")
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+          url 'https://viewsonic-ssi.pkgs.visualstudio.com/_packaging/myViewBoard_Artifacts/maven/v1'
+          name 'myViewBoard_Artifacts'
+          authentication {
+              basic(BasicAuthentication)
+          }
+          credentials {
+              username project.AZURE_ARTIFACTS_USERNAME
+              password project.AZURE_ARTIFACTS_PASSWORD
+          }
+        }
+    }
+}
+
+apply plugin: "com.android.library"
+
+android {
+    namespace = "com.viewsonic.flutter_mirror"
+
+    compileSdk = 35
+    ndkVersion '28.2.13676358'
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdk 24
+        externalNativeBuild {
+            cmake {
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86_64"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+    buildFeatures {
+        prefab true
+    }
+
+    testOptions {
+      unitTests.all {
+        useJUnitPlatform {
+          // excludeTags 'slow'
+        }
+      }
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+                // 只排除 GStreamer.java，讓 flutter_multicast_plugin 提供（避免 DEX 衝突）
+                // androidmedia 檔案直接在根目錄編譯，不複製到子目錄
+                exclude 'org/freedesktop/gstreamer/GStreamer.java'
+            }
+        }
+    }
+}
+
+// 在 Java 編譯前執行，確保 CMake 已經產生並複製了 GStreamer Java 檔案
+tasks.withType(JavaCompile).configureEach {
+    // Make Java compilation depend on native build (which generates GStreamer Java files)
+    dependsOn tasks.matching { it.name.startsWith('externalNativeBuild') }
+}
+
+dependencies {
+    implementation 'com.google.oboe:oboe:1.9.3'
+    implementation 'com.viewsonic.airplay:airplay:0.20.0'
+    implementation 'com.viewsonic.googlecast:googlecast:0.11.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+}

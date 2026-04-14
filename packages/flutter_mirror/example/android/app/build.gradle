@@ -1,0 +1,101 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def keystoreExist = false
+
+def keystoreProperties = new Properties()
+
+// load keystore from C:\Users\<user>\keystore\keystore.properties
+def homePath = System.properties['user.home']
+def keystorePath = "${homePath}${File.separator}keystore${File.separator}keystore.properties"
+
+def keystorePropertiesFile = new File(keystorePath)
+if (keystorePropertiesFile.exists()) {
+    // Load your keystore.properties file into the keystoreProperties object.
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreExist = keystoreProperties.getProperty("storeFile") != null
+}
+
+android {
+    namespace = "com.viewsonic.flutter_mirror_example"
+    compileSdk = flutter.compileSdkVersion
+    // ndkVersion = flutter.ndkVersion
+    ndkVersion = '28.2.13676358'
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.viewsonic.flutter_mirror_example"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+  if (keystoreExist) {
+      signingConfigs {
+        ifp {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+      }
+
+      buildTypes {
+        debug {
+          signingConfig = signingConfigs.ifp
+        }
+        release {
+          signingConfig = signingConfigs.ifp
+        }
+      }
+    } else {
+      buildTypes {
+        // ERROR:D8: com.android.tools.r8.kotlin.H
+        // see https://github.com/flutter/flutter/issues/159610
+        release {
+          signingConfig = signingConfigs.debug
+          minifyEnabled = true
+        }
+        profile {
+          minifyEnabled = true
+        }
+        debug {
+          minifyEnabled = true
+        }
+      }
+    }
+
+    packagingOptions {
+        pickFirst '**/libairplayreceiver.so'
+        pickFirst '**/libevent*.so'
+        pickFirst '**/libcast.so'
+    }
+}
+
+flutter {
+    source = "../.."
+}
