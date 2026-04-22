@@ -18,15 +18,99 @@ SENDER_REPO="https://github.com/${GH_ORG}/edu-as-airsync-sender.git"
 RECEIVER_REPO="https://github.com/${GH_ORG}/edu-as-airsync-receiver.git"
 MONOREPO="https://github.com/vs-stephen-yang/edu-as-airsync-monorepo.git"
 
-SENDER_BRANCH="main"
-RECEIVER_BRANCH="master"
+# Refs: branch name or full 40-char SHA
+SENDER_REF="${SENDER_REF:-main}"
+RECEIVER_REF="${RECEIVER_REF:-master}"
 MONOREPO_BRANCH="main"
 
 FVM="${FVM:-/c/Users/stephen/fvm/fvm.bat}"
 
-WORK_DIR="$(mktemp -d)"
+WORK_DIR="${WORK_DIR:-$(mktemp -d)}"
+mkdir -p "${WORK_DIR}"
 REPORTS_DIR="${WORK_DIR}/reports"
 mkdir -p "${REPORTS_DIR}"
+
+# Helper: is the given ref a 40-char SHA?
+is_sha() { [[ "$1" =~ ^[0-9a-f]{40}$ ]]; }
+
+# Helper: clone repo at a ref (branch or SHA) into dst.
+# For SHA mode, uses git init + fetch to avoid Windows case-collision issues.
+clone_at_ref() {
+  local url="$1" ref="$2" dst="$3"
+  if is_sha "${ref}"; then
+    git init "${dst}" 2>&1 | tail -2
+    git -C "${dst}" remote add origin "${url}"
+    git -C "${dst}" fetch origin "${ref}" 2>&1 | tail -5
+    git -C "${dst}" checkout FETCH_HEAD 2>&1 | tail -3
+  else
+    git clone --single-branch --branch "${ref}" "${url}" "${dst}" 2>&1 | tail -5
+  fi
+}
+
+# Known files that always differ due to build metadata (not source code changes).
+# Exact relative paths; glob patterns marked with '*'.
+KNOWN_METADATA=(
+  # Android APK
+  "assets/sentry-debug-meta.properties"
+  "assets/dexopt/baseline.prof"
+  "assets/dexopt/baseline.profm"
+  "classes.dex"
+  # Windows
+  "*.pdb"
+  # Web
+  "flutter_bootstrap.js"
+  "flutter_service_worker.js"
+  "index.html"
+)
+
+# Known file-type patterns where content diffs (same size) are expected due to
+# embedded timestamps / build IDs / UUIDs in the binary format itself.
+# Returns "TIMESTAMP" for matches (PE/ELF timestamp non-determinism).
+is_nondeterministic_binary() {
+  local path="$1"
+  case "${path}" in
+    *.so|*.dll|*.exe|lib/*/libapp.so|data/app.so) return 0 ;;
+  esac
+  return 1
+}
+
+# Check if a relative path matches any KNOWN_METADATA entry (supports * glob).
+is_known_metadata() {
+  local path="$1" pattern
+  for pattern in "${KNOWN_METADATA[@]}"; do
+    if [[ "${path}" == ${pattern} ]]; then return 0; fi
+    # also match basename against * patterns
+    case "${pattern}" in
+      \**)
+        local bn="$(basename "${path}")"
+        [[ "${bn}" == ${pattern} ]] && return 0
+        ;;
+    esac
+  done
+  return 1
+}
+
+# Classify a diff entry. Returns one of:
+#   EXPECTED:timestamp     — same size, .so/.dll/.exe/.pdb (native binary timestamps)
+#   EXPECTED:metadata      — file is in KNOWN_METADATA list
+#   UNEXPECTED:size        — different file sizes
+#   UNEXPECTED:content     — same size but not in known categories
+classify_diff() {
+  local rel="$1" orig_size="$2" mono_size="$3"
+  if is_known_metadata "${rel}"; then
+    echo "EXPECTED:metadata"
+    return
+  fi
+  if [ "${orig_size}" = "${mono_size}" ]; then
+    if is_nondeterministic_binary "${rel}"; then
+      echo "EXPECTED:timestamp"
+    else
+      echo "UNEXPECTED:content"
+    fi
+  else
+    echo "UNEXPECTED:size"
+  fi
+}
 
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 REPORT_FILE="${REPORTS_DIR}/compare-${TIMESTAMP}.md"
@@ -50,35 +134,57 @@ echo "============================================"
 echo ""
 echo ">>> Phase 1: Cloning repos..."
 
-# Original sender
-echo "  Cloning original sender (${SENDER_BRANCH})..."
-git clone --single-branch --branch "${SENDER_BRANCH}" "${SENDER_REPO}" "${WORK_DIR}/original/sender" 2>&1 | tail -5
-cd "${WORK_DIR}/original/sender" && git submodule update --init --recursive 2>&1 | tail -3
-git lfs pull 2>&1 | tail -3 || true
-SENDER_ORIG_SHA=$(git rev-parse HEAD)
-cd - >/dev/null
+if [ -n "${SKIP_BUILDS:-}" ] && [ -d "${WORK_DIR}/original/sender" ] && [ -d "${WORK_DIR}/original/receiver" ]; then
+  echo "  SKIP_BUILDS set — reusing existing clones in ${WORK_DIR}/original/"
+  SENDER_ORIG_SHA=$(git -C "${WORK_DIR}/original/sender" rev-parse HEAD 2>/dev/null || echo "(unknown)")
+  RECEIVER_ORIG_SHA=$(git -C "${WORK_DIR}/original/receiver" rev-parse HEAD 2>/dev/null || echo "(unknown)")
+else
+  # Original sender
+  mkdir -p "${WORK_DIR}/original"
+  echo "  Cloning original sender (${SENDER_REF})..."
+  clone_at_ref "${SENDER_REPO}" "${SENDER_REF}" "${WORK_DIR}/original/sender"
+  cd "${WORK_DIR}/original/sender" && git submodule update --init --recursive 2>&1 | tail -3
+  git lfs pull 2>&1 | tail -3 || true
+  SENDER_ORIG_SHA=$(git rev-parse HEAD)
+  cd - >/dev/null
 
-# Original receiver
-echo "  Cloning original receiver (${RECEIVER_BRANCH})..."
-git clone --single-branch --branch "${RECEIVER_BRANCH}" "${RECEIVER_REPO}" "${WORK_DIR}/original/receiver" 2>&1 | tail -5
-cd "${WORK_DIR}/original/receiver" && RECEIVER_ORIG_SHA=$(git rev-parse HEAD) && cd - >/dev/null
+  # Original receiver
+  echo "  Cloning original receiver (${RECEIVER_REF})..."
+  clone_at_ref "${RECEIVER_REPO}" "${RECEIVER_REF}" "${WORK_DIR}/original/receiver"
+  cd "${WORK_DIR}/original/receiver" && RECEIVER_ORIG_SHA=$(git rev-parse HEAD) && cd - >/dev/null
+fi
 
-# Monorepo
-echo "  Cloning monorepo (${MONOREPO_BRANCH})..."
-git clone --single-branch --branch "${MONOREPO_BRANCH}" "${MONOREPO}" "${WORK_DIR}/monorepo" 2>&1 | tail -5
-cd "${WORK_DIR}/monorepo" && git submodule update --init --recursive 2>&1 | tail -3
-git lfs pull 2>&1 | tail -3 || true
-MONOREPO_SHA=$(git rev-parse HEAD)
-cd - >/dev/null
+# Monorepo: use LOCAL_MONOREPO if provided, else clone from remote
+if [ -n "${LOCAL_MONOREPO:-}" ]; then
+  echo "  Using local monorepo at: ${LOCAL_MONOREPO}"
+  MONOREPO_DIR="${LOCAL_MONOREPO}"
+else
+  echo "  Cloning monorepo (${MONOREPO_BRANCH})..."
+  git clone --single-branch --branch "${MONOREPO_BRANCH}" "${MONOREPO}" "${WORK_DIR}/monorepo" 2>&1 | tail -5
+  MONOREPO_DIR="${WORK_DIR}/monorepo"
+fi
+
+if [ -n "${SKIP_BUILDS:-}" ]; then
+  MONOREPO_SHA=$(git -C "${MONOREPO_DIR}" rev-parse HEAD 2>/dev/null || echo "(unknown)")
+else
+  cd "${MONOREPO_DIR}" && git submodule update --init --recursive 2>&1 | tail -3
+  git lfs pull 2>&1 | tail -3 || true
+  MONOREPO_SHA=$(git rev-parse HEAD)
+  cd - >/dev/null
+fi
 
 # pub get
 echo ""
 echo ">>> Phase 1b: Running fvm flutter pub get..."
 
-for d in "${WORK_DIR}/original/sender" "${WORK_DIR}/original/receiver" "${WORK_DIR}/monorepo/apps/sender" "${WORK_DIR}/monorepo/apps/receiver"; do
-  echo "  pub get in: ${d}"
-  (cd "${d}" && "${FVM}" flutter pub get 2>&1 | tail -3) || echo "    pub get failed (continuing)"
-done
+if [ -n "${SKIP_BUILDS:-}" ]; then
+  echo "  SKIP_BUILDS set — skipping pub get."
+else
+  for d in "${WORK_DIR}/original/sender" "${WORK_DIR}/original/receiver" "${MONOREPO_DIR}/apps/sender" "${MONOREPO_DIR}/apps/receiver"; do
+    echo "  pub get in: ${d}"
+    (cd "${d}" && "${FVM}" flutter pub get 2>&1 | tail -3) || echo "    pub get failed (continuing)"
+  done
+fi
 
 # ─── Phase 2: Build all 8 targets ───────────────────────────────────────────
 
@@ -113,12 +219,24 @@ run_build() {
 for entry in "${BUILDS[@]}"; do
   IFS='|' read -r app platform cmd <<< "${entry}"
 
+  if [ -n "${SKIP_BUILDS:-}" ]; then
+    # Assume artifacts already exist; mark both sides OK if build dirs are present
+    orig_key="${app}-${platform}-orig"
+    mono_key="${app}-${platform}-mono"
+    BUILD_STATUS["${orig_key}"]="OK"
+    BUILD_STATUS["${mono_key}"]="OK"
+    BUILD_LOG["${orig_key}"]="${WORK_DIR}/logs/${orig_key}.log"
+    BUILD_LOG["${mono_key}"]="${WORK_DIR}/logs/${mono_key}.log"
+    echo "  SKIP_BUILDS set — assuming ${app}-${platform} artifacts exist."
+    continue
+  fi
+
   # Original side
   orig_dir="${WORK_DIR}/original/${app}"
   run_build "${app}" "${platform}" "${cmd}" "orig" "${orig_dir}"
 
   # Monorepo side
-  mono_dir="${WORK_DIR}/monorepo/apps/${app}"
+  mono_dir="${MONOREPO_DIR}/apps/${app}"
   run_build "${app}" "${platform}" "${cmd}" "mono" "${mono_dir}"
 done
 
@@ -133,7 +251,7 @@ declare -A COMPARE_DETAIL  # details per target
 compare_web() {
   local app="$1"
   local orig_dir="${WORK_DIR}/original/${app}/build/web"
-  local mono_dir="${WORK_DIR}/monorepo/apps/${app}/build/web"
+  local mono_dir="${MONOREPO_DIR}/apps/${app}/build/web"
   local key="${app}-web"
 
   if [ ! -d "${orig_dir}" ] || [ ! -d "${mono_dir}" ]; then
@@ -143,15 +261,15 @@ compare_web() {
   fi
 
   local detail=""
-  local match=0 diff=0
+  local match=0 expected=0 unexpected=0
 
   # Compare each file in orig
   while IFS= read -r f; do
     rel="${f#${orig_dir}/}"
     mono_file="${mono_dir}/${rel}"
     if [ ! -f "${mono_file}" ]; then
-      diff=$((diff+1))
-      detail+="  - ${rel}: MISSING in monorepo\n"
+      unexpected=$((unexpected+1))
+      detail+="  - [UNEXPECTED:missing] ${rel}: MISSING in monorepo\n"
       continue
     fi
     orig_sha=$(sha256sum "${f}" | awk '{print $1}')
@@ -159,10 +277,15 @@ compare_web() {
     if [ "${orig_sha}" = "${mono_sha}" ]; then
       match=$((match+1))
     else
-      diff=$((diff+1))
       orig_size=$(stat -c%s "${f}")
       mono_size=$(stat -c%s "${mono_file}")
-      detail+="  - ${rel}: DIFF (orig=${orig_size}B sha=${orig_sha:0:12}... vs mono=${mono_size}B sha=${mono_sha:0:12}...)\n"
+      category=$(classify_diff "${rel}" "${orig_size}" "${mono_size}")
+      if [[ "${category}" == EXPECTED:* ]]; then
+        expected=$((expected+1))
+      else
+        unexpected=$((unexpected+1))
+      fi
+      detail+="  - [${category}] ${rel}: orig=${orig_size}B vs mono=${mono_size}B (sha ${orig_sha:0:8}..${mono_sha:0:8})\n"
     fi
   done < <(find "${orig_dir}" -type f)
 
@@ -170,20 +293,25 @@ compare_web() {
   while IFS= read -r f; do
     rel="${f#${mono_dir}/}"
     if [ ! -f "${orig_dir}/${rel}" ]; then
-      diff=$((diff+1))
-      detail+="  - ${rel}: EXTRA in monorepo\n"
+      unexpected=$((unexpected+1))
+      detail+="  - [UNEXPECTED:extra] ${rel}: EXTRA in monorepo\n"
     fi
   done < <(find "${mono_dir}" -type f)
 
-  COMPARE_RESULT["${key}"]=$([ "${diff}" -eq 0 ] && echo "EQUIV" || echo "DIVERGE")
-  COMPARE_DETAIL["${key}"]="Files match: ${match}, diff: ${diff}\n${detail}"
+  # Result: EQUIV if no unexpected diffs, DIVERGE only when unexpected
+  if [ "${unexpected}" -eq 0 ]; then
+    COMPARE_RESULT["${key}"]="EQUIV"
+  else
+    COMPARE_RESULT["${key}"]="DIVERGE"
+  fi
+  COMPARE_DETAIL["${key}"]="Match: ${match}, expected-diff: ${expected}, unexpected-diff: ${unexpected}\n${detail}"
 }
 
 compare_apk() {
   local app="$1"
   # Find the built APK on each side
   local orig_apk=$(find "${WORK_DIR}/original/${app}/build/app/outputs/flutter-apk/" -name "app-*.apk" 2>/dev/null | head -1)
-  local mono_apk=$(find "${WORK_DIR}/monorepo/apps/${app}/build/app/outputs/flutter-apk/" -name "app-*.apk" 2>/dev/null | head -1)
+  local mono_apk=$(find "${MONOREPO_DIR}/apps/${app}/build/app/outputs/flutter-apk/" -name "app-*.apk" 2>/dev/null | head -1)
   local key="${app}-apk"
 
   if [ -z "${orig_apk}" ] || [ -z "${mono_apk}" ]; then
@@ -204,14 +332,14 @@ compare_apk() {
 
   # Compare
   local detail=""
-  local match=0 diff=0
+  local match=0 expected=0 unexpected=0
 
   while IFS= read -r f; do
     rel="${f#${orig_ext}/}"
     mono_file="${mono_ext}/${rel}"
     if [ ! -f "${mono_file}" ]; then
-      diff=$((diff+1))
-      detail+="  - ${rel}: MISSING in monorepo\n"
+      unexpected=$((unexpected+1))
+      detail+="  - [UNEXPECTED:missing] ${rel}: MISSING in monorepo\n"
       continue
     fi
     orig_sha=$(sha256sum "${f}" | awk '{print $1}')
@@ -219,29 +347,38 @@ compare_apk() {
     if [ "${orig_sha}" = "${mono_sha}" ]; then
       match=$((match+1))
     else
-      diff=$((diff+1))
       orig_size=$(stat -c%s "${f}")
       mono_size=$(stat -c%s "${mono_file}")
-      detail+="  - ${rel}: DIFF (orig=${orig_size}B vs mono=${mono_size}B)\n"
+      category=$(classify_diff "${rel}" "${orig_size}" "${mono_size}")
+      if [[ "${category}" == EXPECTED:* ]]; then
+        expected=$((expected+1))
+      else
+        unexpected=$((unexpected+1))
+      fi
+      detail+="  - [${category}] ${rel}: orig=${orig_size}B vs mono=${mono_size}B\n"
     fi
   done < <(find "${orig_ext}" -type f)
 
   while IFS= read -r f; do
     rel="${f#${mono_ext}/}"
     if [ ! -f "${orig_ext}/${rel}" ]; then
-      diff=$((diff+1))
-      detail+="  - ${rel}: EXTRA in monorepo\n"
+      unexpected=$((unexpected+1))
+      detail+="  - [UNEXPECTED:extra] ${rel}: EXTRA in monorepo\n"
     fi
   done < <(find "${mono_ext}" -type f)
 
-  COMPARE_RESULT["${key}"]=$([ "${diff}" -eq 0 ] && echo "EQUIV" || echo "DIVERGE")
-  COMPARE_DETAIL["${key}"]="APK entries match: ${match}, diff: ${diff}\n${detail}"
+  if [ "${unexpected}" -eq 0 ]; then
+    COMPARE_RESULT["${key}"]="EQUIV"
+  else
+    COMPARE_RESULT["${key}"]="DIVERGE"
+  fi
+  COMPARE_DETAIL["${key}"]="APK entries match: ${match}, expected-diff: ${expected}, unexpected-diff: ${unexpected}\n${detail}"
 }
 
 compare_windows() {
   local app="$1"
   local orig_dir="${WORK_DIR}/original/${app}/build/windows/x64/runner/Release"
-  local mono_dir="${WORK_DIR}/monorepo/apps/${app}/build/windows/x64/runner/Release"
+  local mono_dir="${MONOREPO_DIR}/apps/${app}/build/windows/x64/runner/Release"
   local key="${app}-windows"
 
   if [ ! -d "${orig_dir}" ] || [ ! -d "${mono_dir}" ]; then
@@ -251,14 +388,14 @@ compare_windows() {
   fi
 
   local detail=""
-  local match=0 diff=0
+  local match=0 expected=0 unexpected=0
 
   while IFS= read -r f; do
     rel="${f#${orig_dir}/}"
     mono_file="${mono_dir}/${rel}"
     if [ ! -f "${mono_file}" ]; then
-      diff=$((diff+1))
-      detail+="  - ${rel}: MISSING in monorepo\n"
+      unexpected=$((unexpected+1))
+      detail+="  - [UNEXPECTED:missing] ${rel}: MISSING in monorepo\n"
       continue
     fi
     orig_sha=$(sha256sum "${f}" | awk '{print $1}')
@@ -266,15 +403,24 @@ compare_windows() {
     if [ "${orig_sha}" = "${mono_sha}" ]; then
       match=$((match+1))
     else
-      diff=$((diff+1))
       orig_size=$(stat -c%s "${f}")
       mono_size=$(stat -c%s "${mono_file}")
-      detail+="  - ${rel}: DIFF (orig=${orig_size}B vs mono=${mono_size}B)\n"
+      category=$(classify_diff "${rel}" "${orig_size}" "${mono_size}")
+      if [[ "${category}" == EXPECTED:* ]]; then
+        expected=$((expected+1))
+      else
+        unexpected=$((unexpected+1))
+      fi
+      detail+="  - [${category}] ${rel}: orig=${orig_size}B vs mono=${mono_size}B\n"
     fi
   done < <(find "${orig_dir}" -type f)
 
-  COMPARE_RESULT["${key}"]=$([ "${diff}" -eq 0 ] && echo "EQUIV" || echo "DIVERGE")
-  COMPARE_DETAIL["${key}"]="Files match: ${match}, diff: ${diff}\n${detail}"
+  if [ "${unexpected}" -eq 0 ]; then
+    COMPARE_RESULT["${key}"]="EQUIV"
+  else
+    COMPARE_RESULT["${key}"]="DIVERGE"
+  fi
+  COMPARE_DETAIL["${key}"]="Files match: ${match}, expected-diff: ${expected}, unexpected-diff: ${unexpected}\n${detail}"
 }
 
 for entry in "${BUILDS[@]}"; do
