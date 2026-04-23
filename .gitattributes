@@ -10,3 +10,7 @@
 *.pkg filter=lfs diff=lfs merge=lfs -text
 *.dmg filter=lfs diff=lfs merge=lfs -text
 *.msi filter=lfs diff=lfs merge=lfs -text
+
+# macOS Flutter framework binaries
+*.framework/Versions/*/App filter=lfs diff=lfs merge=lfs -text
+*.framework/Versions/*/FlutterMacOS filter=lfs diff=lfs merge=lfs -text
