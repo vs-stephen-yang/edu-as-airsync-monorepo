@@ -63,6 +63,32 @@ KNOWN_METADATA=(
   "index.html"
 )
 
+# Native binaries known to embed source-path-derived data.
+# Two common sources:
+#   1. __FILE__/CHECK macros embed full source paths (e.g. libflutter_mirror.so)
+#   2. MSVC embeds path-hash GUIDs in anonymous lambda/namespace mangled names
+#      (e.g. crashpad_handler.exe, sentry.dll — PE alignment causes ±512 B size diffs)
+# Matched by basename.
+PATH_EMBEDDED_LIBS=(
+  # Android native libs (__FILE__ in CHECK macros)
+  "libflutter_mirror.so"
+  "libmulticast_android.so"
+  # Windows (MSVC anonymous-lambda/namespace GUIDs derived from TU path)
+  "crashpad_handler.exe"
+  "crashpad_wer.dll"
+  "sentry.dll"
+)
+
+# Check if the basename of a path matches a known path-embedding library.
+is_path_embedded_lib() {
+  local bn="$(basename "$1")"
+  local pattern
+  for pattern in "${PATH_EMBEDDED_LIBS[@]}"; do
+    [[ "${bn}" == "${pattern}" ]] && return 0
+  done
+  return 1
+}
+
 # Known file-type patterns where content diffs (same size) are expected due to
 # embedded timestamps / build IDs / UUIDs in the binary format itself.
 # Returns "TIMESTAMP" for matches (PE/ELF timestamp non-determinism).
@@ -93,12 +119,18 @@ is_known_metadata() {
 # Classify a diff entry. Returns one of:
 #   EXPECTED:timestamp     — same size, .so/.dll/.exe/.pdb (native binary timestamps)
 #   EXPECTED:metadata      — file is in KNOWN_METADATA list
+#   EXPECTED:path          — native lib with embedded __FILE__ strings (size varies with build path length)
 #   UNEXPECTED:size        — different file sizes
 #   UNEXPECTED:content     — same size but not in known categories
 classify_diff() {
   local rel="$1" orig_size="$2" mono_size="$3"
   if is_known_metadata "${rel}"; then
     echo "EXPECTED:metadata"
+    return
+  fi
+  if is_path_embedded_lib "${rel}"; then
+    # Any diff (size or content) in these libs is attributable to embedded build paths
+    echo "EXPECTED:path"
     return
   fi
   if [ "${orig_size}" = "${mono_size}" ]; then
@@ -216,28 +248,49 @@ run_build() {
   fi
 }
 
+# Collect unique apps in order of first appearance in BUILDS
+seen_apps=""
+APPS=()
 for entry in "${BUILDS[@]}"; do
-  IFS='|' read -r app platform cmd <<< "${entry}"
-
-  if [ -n "${SKIP_BUILDS:-}" ]; then
-    # Assume artifacts already exist; mark both sides OK if build dirs are present
-    orig_key="${app}-${platform}-orig"
-    mono_key="${app}-${platform}-mono"
-    BUILD_STATUS["${orig_key}"]="OK"
-    BUILD_STATUS["${mono_key}"]="OK"
-    BUILD_LOG["${orig_key}"]="${WORK_DIR}/logs/${orig_key}.log"
-    BUILD_LOG["${mono_key}"]="${WORK_DIR}/logs/${mono_key}.log"
-    echo "  SKIP_BUILDS set — assuming ${app}-${platform} artifacts exist."
-    continue
+  IFS='|' read -r a _ _ <<< "${entry}"
+  if [[ " ${seen_apps} " != *" ${a} "* ]]; then
+    APPS+=("${a}")
+    seen_apps="${seen_apps} ${a}"
   fi
+done
 
-  # Original side
-  orig_dir="${WORK_DIR}/original/${app}"
-  run_build "${app}" "${platform}" "${cmd}" "orig" "${orig_dir}"
+# Build one app at a time: finish ALL of an app's platforms (orig + mono)
+# before moving to the next app. Reduces context-switching between Gradle
+# caches and keeps disk I/O focused on one pubspec/flavor set.
+for app in "${APPS[@]}"; do
+  echo ""
+  echo "────────────────────────────────────────────────────────────"
+  echo " Building app: ${app}"
+  echo "────────────────────────────────────────────────────────────"
 
-  # Monorepo side
-  mono_dir="${MONOREPO_DIR}/apps/${app}"
-  run_build "${app}" "${platform}" "${cmd}" "mono" "${mono_dir}"
+  for entry in "${BUILDS[@]}"; do
+    IFS='|' read -r entry_app platform cmd <<< "${entry}"
+    [ "${entry_app}" = "${app}" ] || continue
+
+    if [ -n "${SKIP_BUILDS:-}" ]; then
+      orig_key="${app}-${platform}-orig"
+      mono_key="${app}-${platform}-mono"
+      BUILD_STATUS["${orig_key}"]="OK"
+      BUILD_STATUS["${mono_key}"]="OK"
+      BUILD_LOG["${orig_key}"]="${WORK_DIR}/logs/${orig_key}.log"
+      BUILD_LOG["${mono_key}"]="${WORK_DIR}/logs/${mono_key}.log"
+      echo "  SKIP_BUILDS set — assuming ${app}-${platform} artifacts exist."
+      continue
+    fi
+
+    # Original side
+    orig_dir="${WORK_DIR}/original/${app}"
+    run_build "${app}" "${platform}" "${cmd}" "orig" "${orig_dir}"
+
+    # Monorepo side
+    mono_dir="${MONOREPO_DIR}/apps/${app}"
+    run_build "${app}" "${platform}" "${cmd}" "mono" "${mono_dir}"
+  done
 done
 
 # ─── Phase 3: Normalize & compare ───────────────────────────────────────────
